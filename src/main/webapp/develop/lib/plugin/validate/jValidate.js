@@ -266,7 +266,9 @@
         ['less-than-equal','请输入小于或等于前面的值'],
         ['great-than','请输入大于前面的值'],
         ['great-than-equal','请输入大于或等于前面的值'],
-        ['validate-date' , '请输入有效的日期,格式为 %s. 例如:%s.'],
+        //['validate-date' , '请输入有效的日期,格式为 %s. 例如:%s.'],
+        /*TODO 20160415 cyc 格式省略*/
+        ['validate-date' , '请输入有效的日期,例如:2006-03-12'],
         ['validate-selection' , '请选择.'],
         ['validate-file' , function(v,elm,args,metadata) {
             return jValidation.util.format("文件类型应该为[%s]其中之一",[args.join(',')]);

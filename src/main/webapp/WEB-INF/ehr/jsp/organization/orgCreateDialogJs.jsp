@@ -23,7 +23,7 @@
         /* *************************** 模块初始化 ***************************** */
         organizationInfo = {
             $form: $("#div_organization_info_form"),
-            $organizationCode: $("#org_code"),
+            $orgCode: $("#org_code"),
             $fullName: $('#full_name'),
             $shortName: $('#short_name'),
             $location: $('#location'),
@@ -41,7 +41,7 @@
                 this.bindEvents();
             },
             initForm: function () {
-                this.$organizationCode.ligerTextBox({width: 240});
+                this.$orgCode.ligerTextBox({width: 240});
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
                 this.$location.ligerComboBox({width: 240});
@@ -77,15 +77,15 @@
             bindEvents: function () {
                 var self = this;
                 $("#location,.u-dropdown-icon").click(function(){
-                    self.$organizationCode.click();
+                    self.$orgCode.click();
                 });
                 var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
                     if(Util.isStrEquals($(elm).attr('id'),'org_code')){
                         var result = new jValidation.ajax.Result();
-                        var organizationCode = self.$organizationCode.val();
+                        var orgCode = self.$orgCode.val();
                         var dataModel = $.DataModel.init();
                         dataModel.fetchRemote("${contextRoot}/organization/validationOrg", {
-                            data: {organizationCode:organizationCode},
+                            data: {orgCode:orgCode},
                             async: false,
                             success: function (data) {
                                 if (data.successFlg) {
