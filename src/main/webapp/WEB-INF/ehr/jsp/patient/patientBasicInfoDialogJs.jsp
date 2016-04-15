@@ -140,9 +140,9 @@
                     email: patientModel.email
                 });
                 this.$cardForm.attrScan();
-                var pic = patientModel.localPath;
+                var pic = patientModel.picPath;
                 if(!(Util.isStrEquals(pic,null)||Util.isStrEquals(pic,""))){
-                    this.picPath.html('<img src="${contextRoot}/patient/showImage?localImgPath='+pic+'" class="f-w88 f-h110" ></img>');
+                    this.picPath.html('<img src="${contextRoot}/patient/showImage" class="f-w88 f-h110" ></img>');
                 }
             }
         };
@@ -228,6 +228,8 @@
                     self.$form.show();
                     self.$cardInfo.css('visibility','hidden');
                     self.$recordForm.hide();
+                    console.log('coming');
+                    return false;
                 });
                 self.$cardManagerDialog.click(function () {
                     self.$cardManagerDialog.addClass("f-click-down").removeClass("f-click-up");
@@ -235,6 +237,8 @@
                     self.$cardInfo.css('visibility','visible');
                     self.$recordForm.hide();
                     self.$form.hide();
+                    console.log('coming');
+                    return false;
                 });
 
                 self.$recordManagerDialog.click(function () {

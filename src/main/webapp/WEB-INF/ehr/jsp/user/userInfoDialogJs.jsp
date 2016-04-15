@@ -19,8 +19,7 @@
         // 表单校验工具类
         var jValidation = $.jValidation;
 
-        var allData = JSON.parse('${allData}');
-//        var orgLoc = allData[0];
+        var allData = ${allData};
         var user = allData.obj;
 
 
@@ -96,17 +95,17 @@
                 this.$tel.ligerTextBox({width: 240});
                 this.$org.addressDropdown({
                     tabsData: [
-                        {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
-                        {name: '城市', code:'id',value:'name',url: '${contextRoot}/address/getChildByParent'},
-                        {
-                            name: '医院', code:'organizationCode',value:'fullName',url: '${contextRoot}/address/getOrgs', beforeAjaxSend: function (ds, $options) {
-                            var province = $options.eq(0).attr('title'),
-                                    city = $options.eq(1).attr('title');
-                            ds.params = $.extend({}, ds.params, {
-                                province: province,
-                                city: city
-                            });
-                        }
+                        {name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
+                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                        {name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',
+                            beforeAjaxSend: function (ds, $options) {
+                                var province = $options.eq(0).attr('title'),
+                                        city = $options.eq(1).attr('title');
+                                ds.params = $.extend({}, ds.params, {
+                                    province: province,
+                                    city: city
+                                });
+                            }
                         }
                     ]
                 });
@@ -118,8 +117,11 @@
                     textField: 'value',
                     dataParmName: 'detailModelList',
                     urlParms: {
-                    dictId: 4
-                }
+                        dictId: 4
+                    },
+                    onSuccess: function () {
+                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
+                    }
                 });
 
                 this.$userType.ligerComboBox({
@@ -132,7 +134,8 @@
                     },
                     onSuccess: function () {
                         self.$form.Fields.fillValues({userType: user.userType});
-                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
+                        self.$userType.parent().removeClass('l-text-focus')
+//                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
                     },
                     onSelected: function (value) {
                         if (value == 'Doctor')
@@ -163,9 +166,9 @@
                 self.$idCardCopy.val(user.idCardNo);
                 self.$emailCopy.val(user.email);
 
-                var pic = user.localPath;
-                if (!(Util.isStrEquals(pic, null) || Util.isStrEquals(pic, ""))) {
-                    self.$imageShow.html('<img src="${contextRoot}/user/showImage?localImgPath=' + pic + '" class="f-w88 f-h110"></img>');
+                var pic = user.imgRemotePath;
+                if (!Util.isStrEmpty(pic)) {
+                    self.$imageShow.html('<img src="${contextRoot}/user/showImage" class="f-w88 f-h110"></img>');
                 }
 
                 if ('${mode}' == 'view') {
@@ -230,6 +233,7 @@
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
+                        debugger
                         var organizationKeys = userModel.organization['keys'];
 
                         userModel.organization = organizationKeys[2];
@@ -256,7 +260,7 @@
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUser", {
-                        data: {userModelJsonData:userModelJsonData},
+                        data: {userModelJsonData: userModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
                                 win.closeUserInfoDialog();
@@ -281,12 +285,12 @@
                                 data: {userId: userModelres.id},
                                 success: function (data) {
                                     if (data.successFlg)
-                                        //重置当前用户密码，需重登
-                                        if ((userModelres.id)==(data.obj)){
-                                            $.Notice.success('重置成功，请重新登录!',function(){
-                                                location.href='${contextRoot}/logout';
+                                    //重置当前用户密码，需重登
+                                        if ((userModelres.id) == (data.obj)) {
+                                            $.Notice.success('重置成功，请重新登录!', function () {
+                                                location.href = '${contextRoot}/logout';
                                             });
-                                        }else{
+                                        } else {
                                             $.Notice.success('重置成功!');
                                         }
                                     else
@@ -334,6 +338,7 @@
                 this.$affirmBtn.click(function () {
                     publicKeyMsgDialog.close();
                 })
+                self.$userType.removeClass("l-text-focus")
             }
         };
 
