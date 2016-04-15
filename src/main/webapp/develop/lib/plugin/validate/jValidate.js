@@ -178,11 +178,20 @@
             }
         },
 
-        isDate : function(v,dateFormat) {
+        isDate : function(v,dateFormat,elm) {
             var MONTH = "MM";
             var DAY = "dd";
             var YEAR = "yyyy";
+
             var regex = '^'+dateFormat.replace(YEAR,'\\d{4}').replace(MONTH,'\\d{2}').replace(DAY,'\\d{2}')+'$';
+            //cyc
+            var dateF2="yyyyMMdd";
+            var regex1= '^'+dateF2.replace(YEAR,'\\d{4}').replace(MONTH,'\\d{2}').replace(DAY,'\\d{2}')+'$';
+            if(new RegExp(regex1).test(v)){
+                v= v.substr(0,4)+"-"+v.substr(4,2)+"-"+v.substr(6,2)
+                $(elm).val(v)
+            }
+
             if(!new RegExp(regex).test(v)) return false;
 
             var year = v.substr(dateFormat.indexOf(YEAR),4);
@@ -958,7 +967,7 @@
         ['validate-date', function(v,elm,args,metadata) {
             var dateFormat = args.singleArgument || 'yyyy-MM-dd';
             metadata._error = jValidation.util.format(jValidation.util.getI18nMsg(metadata.className),[dateFormat,dateFormat.replace('yyyy','2006').replace('MM','03').replace('dd','12')]);
-            return jValidation.util.isDate(v,dateFormat);
+            return jValidation.util.isDate(v,dateFormat,elm);
         }],
         ['validate-selection', function(v,elm,args,metadata) {
             return elm.options ? elm.selectedIndex > 0 : !((v == null) || (v.length == 0));
