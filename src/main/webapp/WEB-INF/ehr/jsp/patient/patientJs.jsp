@@ -28,7 +28,7 @@
                 grid.set({
                     url: url,
                     parms: params,
-                    newPage:1
+//                    newPage:1
                 });
                 grid.reload();
             }
@@ -53,6 +53,7 @@
                 bindEvents: function () {
                     var self = this;
                     self.$searchBtn.click(function () {
+                        patientMaster.grid.options.newpage = 1;
                         patientMaster.reloadGrid();
                     });
                 }

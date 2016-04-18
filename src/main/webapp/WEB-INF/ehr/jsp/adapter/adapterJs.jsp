@@ -210,7 +210,7 @@
                 },
                 reloadGrid: function () {
                     var values = this.formatParms(retrieve.$element.Fields.getValues());
-                    adapterGrid.options.newPage = 1;
+//                    adapterGrid.options.newPage = 1;
                     adapterGrid.setOptions({parms: $.extend({}, values)});
                     //重新查询
                     adapterGrid.loadData(true);
@@ -240,6 +240,7 @@
                     var self = this;
                     //搜索适配方案
                     retrieve.$searchBtn.click(function () {
+                        adapterGrid.options.newPage = 1;
                         self.reloadGrid();
                     });
                     //新增适配方案

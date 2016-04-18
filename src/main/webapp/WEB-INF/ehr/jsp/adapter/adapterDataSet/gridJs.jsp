@@ -42,13 +42,13 @@
             columns:columns,
             url: url,
             parms: params,
-            newPage:1
+//            newPage:1
           });
         else
           this.grid.set({
             url: url,
             parms: params,
-            newPage:1
+//            newPage:1
           });
 //        this.grid.reload();
       }
@@ -126,6 +126,7 @@
         $title :$('#left_title'),
         init: function () {
           this.$searchNm.ligerTextBox({width: 240, isSearch: true, search: function () {
+            master.grid.options.newPage = 1;
             master.reloadGrid();
           }});
           this.$element.show();
@@ -177,7 +178,8 @@
             var url = '${contextRoot}' + cfg[cfgModel].left.search;
             reloadGrid.call(this, url, values, this.getColumn());
           }else{
-            this.grid.setOptions({parms: $.extend({},values), newPage:1});
+            this.grid.setOptions({parms: $.extend({},values)});
+//            this.grid.setOptions({parms: $.extend({},values), newPage:1});
             //重新查询
             this.grid.loadData(true);
           }
@@ -221,6 +223,7 @@
         $title: $('#right_title'),
         init: function () {
           this.$searchNm.ligerTextBox({width: 240, isSearch: true, search: function () {
+            entryMater.grid.options.newPage = 1;
             entryMater.reloadGrid();
           }});
           this.$element.show();
@@ -270,7 +273,8 @@
           if (changeFlag){
             reloadGrid.call(this, '${contextRoot}'+cfg[cfgModel].right.search, values, this.getColumn());
           }else{
-            this.grid.setOptions({parms: $.extend({},values), newPage:1});
+            this.grid.setOptions({parms: $.extend({},values)});
+//            this.grid.setOptions({parms: $.extend({},values), newPage:1});
             //重新查询
             this.grid.loadData(true);
           }
