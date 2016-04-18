@@ -16,8 +16,8 @@
 
         //公钥管理弹框
         var publicKeyMsgDialog = null;
-		var envelop = JSON.parse('${envelop}');
-		var org = envelop.obj;
+		<%--var envelop = JSON.parse('${envelop}');--%>
+		var org = ${envelop}.obj;
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
