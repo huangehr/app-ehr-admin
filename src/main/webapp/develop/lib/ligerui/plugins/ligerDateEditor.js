@@ -227,6 +227,7 @@
                 this.className = "l-trigger-hover";
             }).click(function ()
             {
+
                 if (p.disabled) return;
                 g.bulidContent();
                 g.toggleDateEditor(g.dateeditor.is(":visible"));
@@ -251,6 +252,10 @@
                 $(this).removeClass("l-box-dateeditor-over");
             }).click(function ()
             {
+                //TODO CYC 20160418 日期控件选中事件之后原本提示错误的输入框 提示删除
+                $(g.element).closest("div").removeClass("validation-failed");
+                $(".SD-tipbox").remove();
+
                 $(".l-box-dateeditor-selected", g.body.tbody).removeClass("l-box-dateeditor-selected");
                 if (!$(this).hasClass("l-box-dateeditor-today"))
                     $(this).addClass("l-box-dateeditor-selected");
