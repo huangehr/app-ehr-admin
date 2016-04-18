@@ -28,6 +28,7 @@ $(function(){
 				var url='';
 				switch(DataDO.data[i]['level']){
 					case 1:AClass="menu-tit1";IClass="a"+DataDO.data[i]['id'];break;//判断是否第一级菜单
+					case 2:AClass="";IClass="me two";break;
 					default:AClass="";IClass="me";break;
 				}
 				if(DataDO.data[i]["url"]){
@@ -60,6 +61,9 @@ $(function(){
 					$(this).addClass("on").next("ul").slideDown()
 					$(this).closest("li").siblings("li").find("ul").slideUp();
 					$(this).closest("li").siblings("li").find(".on").removeClass("on");
+					if($(this).find("i.two") && $(this).closest("li").find("ul").length!=0){
+						$(this).find("i.two").addClass("on")
+					}
 					var naval='';//面包屑
 					var navalId=''//id
 					if($(this).attr("data-url")){

@@ -178,11 +178,21 @@
             }
         },
 
-        isDate : function(v,dateFormat) {
+        isDate : function(v,dateFormat,elm,isdateinput) {
+            //TODO CYC 201604158 isdateinput是否日期控件验证
             var MONTH = "MM";
             var DAY = "dd";
             var YEAR = "yyyy";
             var regex = '^'+dateFormat.replace(YEAR,'\\d{4}').replace(MONTH,'\\d{2}').replace(DAY,'\\d{2}')+'$';
+            //TODO CYC 201604158
+            if(isdateinput=="1"){
+                var dateF2="yyyyMMdd";
+                var regex1= '^'+dateF2.replace(YEAR,'\\d{4}').replace(MONTH,'\\d{2}').replace(DAY,'\\d{2}')+'$';
+                if(new RegExp(regex1).test(v)){
+                    v= v.substr(0,4)+"-"+v.substr(4,2)+"-"+v.substr(6,2)
+                    $(elm).val(v)
+                }
+            }
             if(!new RegExp(regex).test(v)) return false;
 
             var year = v.substr(dateFormat.indexOf(YEAR),4);
@@ -380,6 +390,7 @@
                 var elements =jValidation.util.getFormElements(jForm);
                 elements.each(function(){
                     $(this).bind('blur', function(event){
+
                         jValidation.Validation.validateElement(event.target || event.srcElement, {
                             useTitle: useTitles,
                             onElementValidate: callback,
@@ -958,7 +969,7 @@
         ['validate-date', function(v,elm,args,metadata) {
             var dateFormat = args.singleArgument || 'yyyy-MM-dd';
             metadata._error = jValidation.util.format(jValidation.util.getI18nMsg(metadata.className),[dateFormat,dateFormat.replace('yyyy','2006').replace('MM','03').replace('dd','12')]);
-            return jValidation.util.isDate(v,dateFormat);
+            return jValidation.util.isDate(v,dateFormat,elm,"1");
         }],
         ['validate-selection', function(v,elm,args,metadata) {
             return elm.options ? elm.selectedIndex > 0 : !((v == null) || (v.length == 0));
@@ -989,6 +1000,8 @@
             if((provinceCode < 11) || (provinceCode > 91)) return false;
             var forTestDate = v.length == 18 ? v : v.substr(0,6)+"19"+v.substr(6,15);
             var birthday = forTestDate.substr(6,8);
+            //TODO CYC 20160418
+            //if(!jValidation.util.isDate(birthday,'yyyyMMdd')) return false;
             if(!jValidation.util.isDate(birthday,'yyyyMMdd')) return false;
             if(v.length == 18) {
                 v = v.replace(/x$/i,"a");

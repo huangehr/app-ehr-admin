@@ -60,22 +60,22 @@
     <div class="m-form-group">
         <label>户籍地址：</label>
 
-        <div class="l-text-wrapper m-form-control">
-            <input type="text" id="inp_birthPlace" class="required useTitle" data-attr-scan="birthPlaceFull"/>
+        <div class="l-text-wrapper m-form-control" id="div_birthPlaceTitle" title="">
+            <input type="text" id="inp_birthPlace" class="required useTitle f-toe" data-attr-scan="birthPlaceFull"/>
         </div>
     </div>
     <div class="m-form-group">
         <label>家庭地址：</label>
 
-        <div class="l-text-wrapper m-form-control">
-            <input type="text" id="inp_homeAddress" class="required useTitle" data-attr-scan="homeAddressFull"/>
+        <div class="l-text-wrapper m-form-control" id="div_homeAddressTitle" title="">
+            <input type="text" id="inp_homeAddress" class="required useTitle f-toe" data-attr-scan="homeAddressFull"/>
         </div>
     </div>
     <div class="m-form-group">
         <label>工作地址：</label>
 
-        <div class="l-text-wrapper m-form-control">
-            <input type="text" id="inp_workAddress" class="required useTitle" data-attr-scan="workAddressFull"/>
+        <div class="l-text-wrapper m-form-control" id="div_workAddressTitle" title="">
+            <input type="text" id="inp_workAddress" class="required useTitle f-toe" data-attr-scan="workAddressFull"/>
         </div>
     </div>
     <div class="m-form-group">

@@ -20,7 +20,7 @@
             }
 
             function reloadGrid (url, params) {
-                this.grid.setOptions({parms: params,newPage:1});
+                this.grid.setOptions({parms: params});
                 this.grid.loadData(true);
             }
 
