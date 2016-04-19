@@ -29,6 +29,7 @@ $(function(){
 				switch(DataDO.data[i]['level']){
 					case 1:AClass="menu-tit1";IClass="a"+DataDO.data[i]['id'];break;//判断是否第一级菜单
 					case 2:AClass="";IClass="me two";break;
+					case 3:AClass="three";IClass="me ";break;
 					default:AClass="";IClass="me";break;
 				}
 				if(DataDO.data[i]["url"]){
@@ -58,11 +59,11 @@ $(function(){
 			var ObjCyc=$(this).find("a");
 			ObjCyc.bind("click",function(){
 				if(ObjCyc.attr("href")=="javascript:void(0);"){
-					$(this).addClass("on").next("ul").slideDown()
-					$(this).closest("li").siblings("li").find("ul").slideUp();
+					$(this).addClass("on").next("ul").slideToggle();
+					//$(this).closest("li").siblings("li").find("ul").slideUp();
 					$(this).closest("li").siblings("li").find(".on").removeClass("on");
 					if($(this).find("i.two") && $(this).closest("li").find("ul").length!=0){
-						$(this).find("i.two").addClass("on")
+						$(this).find("i.two").toggleClass("on")
 					}
 					var naval='';//面包屑
 					var navalId=''//id
@@ -86,7 +87,36 @@ $(function(){
 			})
 		}
 	})
+		$(window).load(function(){
+			$(".l-layout-left").mCustomScrollbar({
+				theme:"dark", //主题颜色
+				scrollButtons:{
+					enable:true //是否使用上下滚动按钮
+				},
+				autoHideScrollbar: true, //是否自动隐藏滚动条
+				scrollInertia :0,//滚动延迟
+				horizontalScroll : false,//水平滚动条
+				callbacks:{
+					//onScrollStart:function(){
+					//	//$("#mCSB_1_container").css("overflow","hidden");
+					//	//$("#mCSB_1").css("overflow","hidden");
+					//},
+					//onTotalScroll: function(){
+					//	$("#mCSB_1_container").css("overflow","inherit");
+					//	$("#mCSB_1").css("overflow","inherit");
+					//} //滚动完成后触发事件
+				}
+			});
+
+		});
 	$("body").delegate(".menucyc> li","click",function(){
-		$(this).siblings().find("ul").slideUp()
+		//$(this).siblings().find("ul").slideUp()
 	})
+	//$("body").delegate(".menucyc .three","click",function(){
+	//	$("#mCSB_1_container").css("overflow","inherit");
+	//	$("#mCSB_1").css("overflow","inherit");
+	//})
+	//$("body").delegate(".menucyc .three","click",function(){
+	//	$(".")
+	//})
 })
