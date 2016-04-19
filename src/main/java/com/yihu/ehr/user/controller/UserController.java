@@ -2,9 +2,11 @@ package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.deploy.util.ArrayUtil;
+import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.patient.controller.PatientController;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.RestTemplates;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.URLDecoder;
@@ -168,7 +171,6 @@ public class UserController extends BaseUIController {
         String url = "/users/";
         String resultStr = "";
         Envelop envelop = new Envelop();
-//        Map<String, Object> params = new HashMap<>();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         ObjectMapper mapper = new ObjectMapper();
         RestTemplates templates = new RestTemplates();
@@ -211,6 +213,7 @@ public class UserController extends BaseUIController {
                 userModel.setUserType(userDetailModel.getUserType());
                 userModel.setOrganization(userDetailModel.getOrganization());
                 userModel.setMajor("");
+                userModel.setImgLocalPath("");
                 if(userDetailModel.getUserType().equals("Doctor")){
                     userModel.setMajor(userDetailModel.getMajor());
                 }
@@ -256,7 +259,7 @@ public class UserController extends BaseUIController {
     }
 
     @RequestMapping("getUser")
-    public Object getUser(Model model, String userId, String mode) throws IOException {
+    public Object getUser(Model model, String userId, String mode, HttpSession session) throws IOException {
         String url = "/users/admin/"+userId;
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -266,6 +269,11 @@ public class UserController extends BaseUIController {
         params.put("userId", userId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+
+            Envelop ep = getEnvelop(resultStr);
+            UserDetailModel userDetailModel = toModel(toJson(ep.getObj()),UserDetailModel.class);
+            session.setAttribute("userImageStream",userDetailModel.getImgLocalPath() == null ? "" :userDetailModel.getImgLocalPath());
+
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/userInfoDialog");
@@ -352,29 +360,25 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("showImage")
     @ResponseBody
-    public void showImage(HttpServletRequest request, HttpServletResponse response, String localImgPath) throws Exception {
+    public void showImage(HttpSession session, HttpServletResponse response) throws Exception {
+
         response.setContentType("text/html; charset=UTF-8");
         response.setContentType("image/jpeg");
-        FileInputStream fis = null;
-        OutputStream os = null;
-        try {
-            File file = new File(localImgPath);
-            if (!file.exists()) {
-                return;
-            }
+        OutputStream outputStream = null;
+        String fileStream = (String) session.getAttribute("userImageStream");
+        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
 
-            fis = new FileInputStream(localImgPath);
-            os = response.getOutputStream();
-            int count = 0;
-            byte[] buffer = new byte[1024 * 1024];
-            while ((count = fis.read(buffer)) != -1)
-                os.write(buffer, 0, count);
-            os.flush();
+        try {
+            outputStream = response.getOutputStream();
+
+            byte[] bytes = Base64.decode(imageStream);
+            outputStream.write(bytes);
+            outputStream.flush();
         } catch (IOException e) {
-            LogService.getLogger().error(e.getMessage());
+            LogService.getLogger(PatientController.class).error(e.getMessage());
         } finally {
-            if (os != null) os.close();
-            if (fis != null) fis.close();
+            if (outputStream != null)
+                outputStream.close();
         }
     }
 
@@ -398,7 +402,5 @@ public class UserController extends BaseUIController {
 
         return envelop;
     }
-
-
 
 }

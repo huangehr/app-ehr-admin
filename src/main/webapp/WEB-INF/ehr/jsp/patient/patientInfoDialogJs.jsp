@@ -118,9 +118,9 @@
                     });
                     self.$patientCopyId.val(patientModel.idCardNo);
 
-                   var pic = patientModel.localPath;
+                   var pic = patientModel.picPath;
                     if(!Util.isStrEmpty(pic)){
-                        self.$picPath.html('<img src="${contextRoot}/patient/showImage?localImgPath='+pic+'" class="f-w88 f-h110"></img>');
+                        self.$picPath.html('<img src="${contextRoot}/patient/showImage" class="f-w88 f-h110"></img>');
                     }
                 }
             },

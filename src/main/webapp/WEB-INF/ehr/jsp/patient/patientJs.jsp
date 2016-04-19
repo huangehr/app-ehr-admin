@@ -28,7 +28,7 @@
                 grid.set({
                     url: url,
                     parms: params,
-                    newPage:1
+//                    newPage:1
                 });
                 grid.reload();
             }
@@ -52,9 +52,11 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    self.$searchBtn.click(function () {
-                        patientMaster.reloadGrid();
-                    });
+//                    self.$searchBtn.click(function () {
+//                        debugger
+//                        patientMaster.grid.options.newPage = 1;
+//                        patientMaster.reloadGrid();
+//                    });
                 }
             };
 
@@ -89,7 +91,9 @@
                             }
                         ],
                         onDblClickRow: function (row) {
-                            $.ligerDialog.open({
+                            var wait=null;
+                            wait = $.Notice.waitting('正在加载中...');
+                            var dialog = $.ligerDialog.open({
                                 title:'',
                                 height: 600,
                                 width: 570,
@@ -100,12 +104,16 @@
                                     idCardNo: row.idCardNo,
                                     patientDialogType: 'patientInfoMessage'
                                 },
-                                isHidden: false
+                                isHidden: false,
+                                onLoaded:function() {
+                                    wait.close();
+                                    dialog.show();
+                                    var wrap = '<span style="position:relative; z-index:10;"><div class="f-ib f-tac f-w100 f-click-down" id="div_patientBasicMsgDialog">病人基本信息</div><div class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_cardManagerDialog">卡管理</div></span>';
+                                    $('.l-dialog .l-dialog-tc-inner').eq(0).append( $(wrap));
+                                    $('.l-dialog .l-dialog-title').eq(0).css({position:'absolute',left:-40,width:'100%',height:40,'z-index': 2});
+                                }
                             });
-                            var buttonsWrap = '<span style="position:relative; z-index:10;"><button class="f-ib f-tac f-w100 f-click-down" id="div_patientBasicMsgDialog">病人基本信息</button><button class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_cardManagerDialog">卡管理</button></span>';
-                            $('.l-dialog .l-dialog-tc-inner').eq(0).append( $(buttonsWrap));
-                            $('.l-dialog .l-dialog-title').eq(0).css({position:'absolute',left:-40,width:'100%',height:40,'z-index': 2});
-
+                            dialog.hide();
                         }
                     }));
                     grid.adjustToWidth();
@@ -127,6 +135,11 @@
                     reloadGrid.call(this, '${contextRoot}/patient/searchPatient', values);
                 },
                 bindEvents: function () {
+
+                    patientRetrieve.$searchBtn.click(function () {
+                        grid.options.newPage = 1;
+                        patientMaster.reloadGrid();
+                    });
 
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){

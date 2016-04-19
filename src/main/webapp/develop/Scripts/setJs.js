@@ -426,9 +426,19 @@ set.list = {
     },
     event: function () {
         $("#btn_create").click(function () {
+            if(!set.list.versionStage)
+            {
+                $.Notice.error("已发布版本不可新增，请确认!");
+                return;
+            }
             set.list.addSet();
         });
         $("#btn_add_element").click(function () {
+            if(!set.list.versionStage)
+            {
+                $.Notice.error("已发布版本不可新增，请确认!");
+                return;
+            }
             set.list.addElement();
         });
         $("#btn_Delete_relation").click(function () {

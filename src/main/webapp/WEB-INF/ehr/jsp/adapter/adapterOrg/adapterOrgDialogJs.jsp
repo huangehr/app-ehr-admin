@@ -49,7 +49,9 @@
             initForm: function () {
                 this.$type.ligerComboBox({valueField: 'id',textField: 'name',readonly:mode=='modify'});
                 infoForm.initAdapterOrg(infoForm.$parent, "");
+
                 this.initDDL(21, this.$type);
+
                 this.$name.ligerTextBox({width:240,validate:{required:true }});
                 this.$description.ligerTextBox({width:240,height:180 });
 
@@ -91,7 +93,7 @@
                                     infoForm.initAdapterOrg(infoForm.$parent, '1');
                                     $('#parent_div').show();
                                 }
-                                infoForm.initOrg(infoForm.$org, type);
+                             infoForm.initOrg(infoForm.$org, type);
                             }
                         });
                         var manager = target.ligerGetComboBoxManager();
@@ -237,6 +239,9 @@
                     }
                 });
                 this.$btnSave.click(function () {
+                    //TODO cyc20160418 二级下拉菜单验证
+                    $("#inp_adapterorg_org").addClass("required");
+
                     var dataMode;
                     var values = self.$form.Fields.getValues();
                     var ajaxFun;
