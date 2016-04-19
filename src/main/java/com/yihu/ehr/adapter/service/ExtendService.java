@@ -1,22 +1,21 @@
 package com.yihu.ehr.adapter.service;
 
 import com.yihu.ehr.util.HttpClientUtil;
-import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -142,6 +141,91 @@ public class ExtendService<T> {
     public String doDelete(String url, Map parms) throws Exception{
 
         return HttpClientUtil.doDelete(url, parms, username, password);
+    }
+
+    private static final String BOUNDARY = "----------HV2ymHFg03ehbqgZCaKO6jyH";
+    private StringBuffer appendParm(StringBuffer contentBody, Map<String, Object> formData){
+
+        for(String key: formData.keySet()){
+            contentBody.append("\r\n")
+                    .append("Content-Disposition: form-data; name=\"")
+                    .append(key + "\"")
+                    .append("\r\n")
+                    .append("\r\n")
+                    .append(formData.get(key))
+                    .append("\r\n")
+                    .append("--")
+                    .append(BOUNDARY);
+        }
+        return contentBody;
+    }
+
+    private HttpURLConnection openConnection(URL url) throws IOException {
+
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(60000);
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setUseCaches(false);
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Connection", "Keep-Alive");
+        connection.setRequestProperty("Charset", "UTF-8");
+        connection.setRequestProperty("Content-Type",
+                "multipart/form-data; boundary=" + BOUNDARY);
+        return connection;
+    }
+
+    public String doPostFile(String urlStr, Map<String, Object> formData, String fileName, String fileKey, InputStream is, int size) throws IOException {
+
+        HttpURLConnection connection = openConnection(new URL(urlStr));
+        OutputStream out = connection.getOutputStream();
+
+        // 传输内容
+        StringBuffer contentBody = new StringBuffer("--" + BOUNDARY);
+
+        // 1. 处理文字形式的POST请求
+        appendParm(contentBody, formData);
+        out.write(contentBody.toString().getBytes("utf-8"));
+
+        // 2. 处理文件上传
+        contentBody = new StringBuffer();
+        contentBody.append("\r\n")
+                .append("Content-Disposition:form-data; name=\"")
+                .append(fileKey + "\"; ") // form中field的名称
+                .append("filename=\"")
+                .append(fileName + "\"") // 上传文件的文件名
+                .append("\r\n")
+                .append("Content-Type:application/octet-stream")
+                .append("\r\n\r\n");
+        out.write(contentBody.toString().getBytes("utf-8"));
+
+        // 开始真正向服务器写文件
+        DataInputStream dis = new DataInputStream(is);
+        int bytes = 0;
+        byte[] bufferOut = new byte[size];
+        bytes = dis.read(bufferOut);
+        out.write(bufferOut, 0, bytes);
+        dis.close();
+        contentBody.append("------------" + BOUNDARY);
+        out.write(contentBody.toString().getBytes("utf-8"));
+        out.write(("------------" + BOUNDARY + "--\r\n").getBytes("UTF-8"));
+
+        // 3. 写结尾
+        String endBoundary = "\r\n--" + BOUNDARY + "--\r\n";
+        out.write(endBoundary.getBytes("utf-8"));
+        out.flush();
+        out.close();
+
+        // 4. 从服务器获得回答的内容
+        String strLine = "";
+        String strResponse = "";
+        InputStream in = connection.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        while ((strLine = reader.readLine()) != null) {
+            strResponse += strLine + "\n";
+        }
+        connection.disconnect();
+        return strResponse;
     }
 
     protected Class getModelClass() {
