@@ -9,6 +9,7 @@
  */
 
 (function ($, win) {
+
     var Util  = $.Util;
     var comboWrap = '<div class="m-combo-dropdown">' +
                         '<div class="m-input-box l-text-combobox j-text-wrapper f-h30">' +
@@ -51,6 +52,7 @@
     };
 
     function init (opts) {
+
         var self = this;
         this.opt = $.extend({},defaults, opts);
         this.tabs = [];
@@ -235,6 +237,10 @@
         $inputBox.addClass('l-text-focus');
         $dropdownIcon.addClass('f-combo-focus');
         $tabWrap.show();
+        //TODO cyc 20160419 地址选择滚动条
+        if($(this).closest(".m-form-group").offset().top>250){
+            $tabWrap.addClass("on")
+        }
     }
     function handleData(data,ds) {
         var self = this;

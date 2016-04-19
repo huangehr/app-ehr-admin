@@ -159,6 +159,7 @@
                         $('#inp_adapterorg_name').val(name);
                     },
                     conditionSearchClick: function (g) {
+
                         var param = g.rules.length > 0 ? g.rules[0].value : '';
                         param = {param: param}
                         g.grid.set({
@@ -239,9 +240,10 @@
                     }
                 });
                 this.$btnSave.click(function () {
+
                     //TODO cyc20160418 二级下拉菜单验证
                     $("#inp_adapterorg_org").addClass("required");
-
+					
                     var dataMode;
                     var values = self.$form.Fields.getValues();
                     var ajaxFun;
@@ -306,6 +308,8 @@
         };
         /* *************************** 页面初始化 **************************** */
         pageInit();
-
+        $("#inp_adapterorg_org").closest(".l-text-wrapper").click(function(){
+            $("#inp_adapterorg_org").addClass("required")
+        })
     })(jQuery, window);
 </script>
