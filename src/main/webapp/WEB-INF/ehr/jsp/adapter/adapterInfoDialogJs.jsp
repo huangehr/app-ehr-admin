@@ -168,6 +168,8 @@
                                 }
                             });
                 }
+                if(mode!='new')
+                    this.$code.focus();
             },
             bindEvents: function () {
                 var self = this;
