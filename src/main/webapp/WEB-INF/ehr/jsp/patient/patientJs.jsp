@@ -52,10 +52,11 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    self.$searchBtn.click(function () {
-                        patientMaster.grid.options.newpage = 1;
-                        patientMaster.reloadGrid();
-                    });
+//                    self.$searchBtn.click(function () {
+//                        debugger
+//                        patientMaster.grid.options.newPage = 1;
+//                        patientMaster.reloadGrid();
+//                    });
                 }
             };
 
@@ -74,10 +75,11 @@
                         },
                         columns: [
                             {display: '姓名', name: 'name', width: '15%',align: 'left'},
-                            {display: '身份证号', name: 'idCardNo', width: '20%', align: 'left'},
-                            {display: '性别', name: 'gender', width: '10%'},
+                            {display: '身份证号', name: 'idCardNo', width: '10%', align: 'left'},
+                            {display: '性别', name: 'gender', width: '5%'},
                             {display: '联系方式', name: 'telephoneNo', width: '15%', resizable: true,align: 'left'},
                             {display: '家庭地址', name: 'homeAddress', width: '30%', minColumnWidth: 20,align: 'left'},
+                            {display: '注册时间', name: 'registerTime', width: '15%', minColumnWidth: 20,align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
 //									var html ='<div class="grid_edit" title="修改" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:open", row.idCardNo) + '"></div>'
@@ -85,8 +87,8 @@
 //										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:delete", row.idCardNo) + '"></div>';
                                 var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:open", row.idCardNo) + '"></a> ';
                                 html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:delete", row.idCardNo) + '"></a>';
-									return html;
-								}
+                                return html;
+                            }
                             }
                         ],
                         onDblClickRow: function (row) {
@@ -134,6 +136,11 @@
                     reloadGrid.call(this, '${contextRoot}/patient/searchPatient', values);
                 },
                 bindEvents: function () {
+
+                    patientRetrieve.$searchBtn.click(function () {
+                        grid.options.newPage = 1;
+                        patientMaster.reloadGrid();
+                    });
 
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){

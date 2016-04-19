@@ -57,5 +57,32 @@
         height: 22px;
         line-height: 22px;
     }
+    .btn_hide{
+        display: inline-block;
+        margin-bottom: 0;
+        font-weight: normal;
+        text-align: center;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        background-image: none;
+        border: 1px solid transparent;
+        white-space: nowrap;
+        padding: 6px 12px;
+        font-size: 12px;
+        line-height: 1.42857143;
+        border-radius: 4px;
+        -webkit-user-select: none;
+        color:#a8a8a8;
+        background: url(${staticRoot}/images/app/hui_btn.png);
+    }
 
+    .edit_delete{
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        background: url(${staticRoot}/images/app/shanchu_btn.png) center no-repeat;
+    }
 </style>

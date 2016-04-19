@@ -66,10 +66,19 @@
                        style="  margin-right: 20px;margin-top: -26px;">
                         批量删除
                     </a>
+                    <%--<div id="btn_Delete_hide" class="btn_hide J_add-btn f-fr f-mr10"--%>
+                    <%--style="  margin-right: 20px;margin-top: -26px;display:none;">--%>
+                    <%--批量删除--%>
+                    <%--</div>--%>
                     <a id="btn_create" class="btn btn-primary J_add-btn f-fr f-mr10"
                        style="  margin-right: 20px;margin-top: -26px;">
                         新增
                     </a>
+                    <%--<div id="btn_create_hide" class="btn_hide J_add-btn f-fr f-mr10"--%>
+                    <%--style="margin-right: 20px;margin-top: -26px; display: none;">--%>
+                    <%--新增--%>
+                    <%--</div>--%>
+
                     <%--<a id="btn_Update_relation" class="btn btn-primary J_add-btn f-fr f-mr10"--%>
                        <%--style="  margin-right: 20px;margin-top: -26px;">--%>
                         <%--<spring:message code="btn.edit"/>--%>

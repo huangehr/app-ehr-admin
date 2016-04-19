@@ -65,6 +65,12 @@
             <input type="text" id="inp_select_userType" data-type="select" data-attr-scan="userType">
         </div>
     </div>
+    <div class="m-form-group m-form-readonly">
+        <label>用户来源<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control ">
+            <input type="text" id="inp_source" class="max-length-150 validate-special-char" data-attr-scan="sourceName"/>
+        </div>
+    </div>
     <div class="m-form-group">
         <label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control f-w240 ">
@@ -78,6 +84,7 @@
             <input type="text" id="inp_major" class="max-length-150 validate-special-char" data-attr-scan="major"/>
         </div>
     </div>
+
     <div>
         <hr class="u-border">
         <div class="f-pr u-bd">
