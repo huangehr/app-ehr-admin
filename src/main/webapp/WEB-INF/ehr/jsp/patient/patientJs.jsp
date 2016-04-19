@@ -52,10 +52,11 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    self.$searchBtn.click(function () {
-                        patientMaster.grid.options.newpage = 1;
-                        patientMaster.reloadGrid();
-                    });
+//                    self.$searchBtn.click(function () {
+//                        debugger
+//                        patientMaster.grid.options.newPage = 1;
+//                        patientMaster.reloadGrid();
+//                    });
                 }
             };
 
@@ -134,6 +135,11 @@
                     reloadGrid.call(this, '${contextRoot}/patient/searchPatient', values);
                 },
                 bindEvents: function () {
+
+                    patientRetrieve.$searchBtn.click(function () {
+                        grid.options.newPage = 1;
+                        patientMaster.reloadGrid();
+                    });
 
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){

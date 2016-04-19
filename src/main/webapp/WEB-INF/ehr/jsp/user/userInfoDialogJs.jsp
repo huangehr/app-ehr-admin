@@ -46,6 +46,7 @@
             $tel: $('#inp_userTel'),
             $org: $('#inp_org'),
             $major: $('#inp_major'),
+            $source:$('#inp_source'),
             $userSex: $('input[name="gender"]', this.$form),
             $marriage: $("#inp_select_marriage"),
             $userType: $("#inp_select_userType"),
@@ -110,6 +111,7 @@
                     ]
                 });
                 this.$major.ligerTextBox({width: 240});
+//                this.$source.ligerTextBox({width: 240});
                 this.$userSex.ligerRadio();
                 this.$marriage.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
@@ -144,6 +146,21 @@
                             $('#inp_major_div').hide();
                     }
                 });
+
+
+                this.$source.ligerComboBox({
+                    url: '${contextRoot}/dict/searchDictEntryList',
+                    valueField: 'code',
+                    textField: 'value',
+                    dataParmName: 'detailModelList',
+                    urlParms: {
+                        dictId: 26
+                    },
+                    onSuccess: function () {
+                        self.$form.Fields.fillValues({sourceName:user.sourceName,});
+                    },
+
+                });
                 this.$form.attrScan();
                 this.$form.Fields.fillValues({
                     id: user.id,
@@ -157,7 +174,8 @@
                     major: user.major,
                     publicKey: user.publicKey,
                     validTime: user.validTime,
-                    startTime: user.startTime
+                    startTime: user.startTime,
+                    sourceName:user.sourceName,
                 });
                 self.$publicKeyMessage.val(user.publicKey);
                 self.$publicKeyValidTime.html(user.validTime);

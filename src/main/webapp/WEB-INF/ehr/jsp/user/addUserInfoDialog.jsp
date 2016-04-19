@@ -58,6 +58,12 @@
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label>用户来源<spring:message code="spe.colon"/></label>
+		<div class="l-text-wrapper m-form-control ">
+			<input type="text" id="inp_source" class="max-length-150 validate-special-char" data-attr-scan=""/>
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control  f-w240" id="inp_org1">
 			<input type="text" id="inp_org"  data-type="comboSelect" class="validate-org-length"

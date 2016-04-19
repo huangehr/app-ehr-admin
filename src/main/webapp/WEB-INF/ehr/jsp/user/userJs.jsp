@@ -89,12 +89,12 @@
                             // 隐藏列：hide: true（隐藏），isAllowHide: false（列名右击菜单中不显示）
                             {name: 'id', hide: true, isAllowHide: false},
                             {display: '用户类型', name: 'userTypeName', width: '10%',align:'left'},
-                            {display: '姓名', name: 'realName', width: '8%',align:'left'},
-                            {display: '账号',name: 'loginCode', width:'12%', isAllowHide: false,align:'left'},
-                            {display: '所属机构', name: 'organizationName', width: '17%',align:'left'},
-                            {display: '联系方式', name: 'telephone',width: '12%',align:'left'},
-                            {display: '用户邮箱', name: 'email', width: '12%', resizable: true,align:'left'},
-                            {display: '是否生/失效', name: 'activated', width: '8%', minColumnWidth: 20,render:function(row){
+                            {display: '姓名', name: 'realName', width: '10%',align:'left'},
+                            {display: '账号',name: 'loginCode', width:'10%', isAllowHide: false,align:'left'},
+                            {display: '所属机构', name: 'organizationName', width: '10%',align:'left'},
+                            {display: '联系方式', name: 'telephone',width: '10%',align:'left'},
+                            {display: '用户邮箱', name: 'email', width: '10%', resizable: true,align:'left'},
+                            {display: '是否生/失效', name: 'activated', width: '10%', minColumnWidth: 20,render:function(row){
 								var html ='';
 								if(Util.isStrEquals(row.activated,true)){
 //										html +='<div class="grid_on"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:failure", row.id,0) + '"></div>';
@@ -105,7 +105,8 @@
 								}
 								return html;
                             }},
-							{display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
+                            {display:'用户来源',name:'sourceName',width:'10%'},
+							{display: '最近登录时间', name: 'lastLoginTime', width: '10%',align:'left'},
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
 //								var html ='<div class="grid_edit"    title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id,'modify') + '"></div>'
@@ -157,7 +158,7 @@
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 650,
+                            height: 700,
                             width: 600,
                             isDrag:true,
                             isResize:true,

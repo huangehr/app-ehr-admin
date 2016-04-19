@@ -272,8 +272,7 @@ public class UserController extends BaseUIController {
 
             Envelop ep = getEnvelop(resultStr);
             UserDetailModel userDetailModel = toModel(toJson(ep.getObj()),UserDetailModel.class);
-//            session.removeAttribute("userImageStream");
-            session.setAttribute("userImageStream",userDetailModel.getImgLocalPath());
+            session.setAttribute("userImageStream",userDetailModel.getImgLocalPath() == null ? "" :userDetailModel.getImgLocalPath());
 
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
