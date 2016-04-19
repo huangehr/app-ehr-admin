@@ -171,6 +171,12 @@
                             title = '修改标准字典';
                         }
                         else {
+
+                            if(!versionStage)
+                            {
+                                $.Notice.error("已发布版本不可新增，请确认!");
+                                return;
+                            }
                             title = '新增标准字典';
                         }
                         var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
@@ -192,7 +198,7 @@
                     });
 
                     $.subscribe('stddict:dictInfoGrid:delete', function (event, id) {
-                        console.log(versionStage);
+
                         if(!versionStage)
                         {
                             $.Notice.error("已发布版本不可删除，请确认!");
@@ -299,6 +305,12 @@
                             title = '修改字典项';
                         }
                         else {
+
+                            if(!versionStage)
+                            {
+                                $.Notice.error("已发布版本不可新增，请确认!");
+                                return;
+                            }
                             dictId = dictMaster.grid.getSelectedRow().id;
                             title = '新增字典项';
                         }
