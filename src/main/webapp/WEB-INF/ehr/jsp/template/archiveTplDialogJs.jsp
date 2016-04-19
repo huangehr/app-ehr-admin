@@ -164,7 +164,9 @@
                                         $.Notice.success('新增成功');
                                         parent.reloadGrids();
                                         parent.closeDialog();
-                                    } else {
+                                    } else if(data.errorMsg){
+                                        $.Notice.error(data.errorMsg);
+                                    }else {
                                         $.Notice.error('新增失败');
                                     }
                                 },

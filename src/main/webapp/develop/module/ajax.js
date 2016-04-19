@@ -15,6 +15,54 @@
  * @copyright:   2015 www.yihu.com
  */
 (function ($, win) {
+
+    function isTimeOut(XMLHttpRequest){
+        return XMLHttpRequest.getResponseHeader("sessionStatus") == "timeOut";
+    }
+
+    function gotoIndex(){
+        location.href = "/ehr/login";
+    }
+
+    var _ajax = $.ajax;
+    $.ajax = function(opt){
+        var fn = {
+            complete: function(XMLHttpRequest, textStatus, errorThrown){},
+            success: function(data, textStatus, XMLHttpRequest){},
+            error: function(XMLHttpRequest, textStatus, errorThrown){}
+        }
+        if(opt.complete){
+            fn.complete = opt.complete;
+        }
+        if(opt.success){
+            fn.success = opt.success;
+        }
+        if(opt.error){
+            fn.error = opt.error;
+        }
+        var _opt = $.extend(opt,{
+            complete:function(XMLHttpRequest, textStatus, errorThrown){
+                if(isTimeOut(XMLHttpRequest)){
+                    return gotoIndex();
+                }
+                fn.complete(XMLHttpRequest, textStatus, errorThrown);
+            },
+            success: function(data, textStatus, XMLHttpRequest){
+                if(isTimeOut(XMLHttpRequest)){
+                    return gotoIndex();
+                }
+                fn.success(data, textStatus, XMLHttpRequest);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                if(isTimeOut(XMLHttpRequest)){
+                    return gotoIndex();
+                }
+                fn.error(XMLHttpRequest, textStatus, errorThrown);
+            },
+        });
+        return _ajax(_opt);
+    };
+
     $.AjaxUtil = {
         ajax: function(url,options){
 

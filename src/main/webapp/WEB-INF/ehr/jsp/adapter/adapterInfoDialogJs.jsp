@@ -90,7 +90,8 @@
                             urlParms: {
                                 page: 1,
                                 rows: 1000,
-                                dictId: 4
+                                dictId: 4,
+                                isPublic: "false"
                             },
                             onSelected: function (value) {
                                 var typeValue = types.getValue();
