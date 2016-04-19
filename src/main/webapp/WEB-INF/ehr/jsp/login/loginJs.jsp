@@ -185,15 +185,21 @@
 
   })(jQuery, window);
   $(function(){
-
     $.extend({TipBox:function(){
       var CycLeft=259+$("#inp_user_name").offset().left;
       $("body").append('<style>.SD-tipbox\{ left:'+CycLeft+'px !important\}</style>');
     }})
     $.TipBox();
     $(window).resize(function(){
-      debugger;
       $.TipBox();
+    })
+    $("#inp_captcha_code").focus(function(){
+        $(this).removeClass("required");
+      $(".SD-tipbox").remove();
+       $(this).removeClass("validation-failed")
+    })
+    $("#inp_captcha_code").blur(function(){
+      $(this).addClass("required")
     })
   })
 </script>

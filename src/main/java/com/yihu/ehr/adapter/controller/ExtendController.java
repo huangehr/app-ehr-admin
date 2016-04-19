@@ -197,7 +197,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
             params = beforeUpdate(params);
             String resultStr = "";
-            if(StringUtils.isEmpty(id))
+            if(StringUtils.isEmpty(id) || "0".equals(id))
                 resultStr = service.add(params);
             else
                 resultStr = service.update(params);

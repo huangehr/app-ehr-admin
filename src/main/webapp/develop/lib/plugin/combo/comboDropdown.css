@@ -11,7 +11,7 @@
 .u-select-title { margin-right: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ccc }
 .u-select-title { position: absolute; height: 30px; line-height: 30px; color: #333; padding-left: 5px; }
 
-.m-select-panel { border: 1px solid #ccc; border-top: none; padding: 5px; width: 240px; background: #fff; font-size: 12px }
+.m-select-panel { border: 1px solid #ccc; border-top: none;border-bottom: none; min-height:200px ;padding: 5px; width: 240px; background: #fff; font-size: 12px }
 .m-select-panel dl { line-height: 2; clear: both; padding: 3px 0; margin: 0 }
 .m-select-panel dl:after { display: block; clear: both; content: " ";  font-size: 0; height: 0; visibility: hidden }
 .m-select-panel dt { display: inline-block; width: 35px; float: left; line-height: 25px; padding-right: 10px; font-weight: 700; text-align: right }
@@ -23,4 +23,8 @@
 
 .m-combo-tab { position: absolute; left: 0; top: 28px; width: 240px; z-index: 999 }
 .m-combo-dropdown { float: left; margin-right: 10px }
+/*TODO cyc 20160419 地址选择机构选则修改*/
+.j-select-content{height: 200px;overflow-y: auto;overflow-x: hidden;}
+.m-combo-tab.f-dn.on{top:auto;bottom:35px;border-bottom: 1px #ddd solid;}
+
 

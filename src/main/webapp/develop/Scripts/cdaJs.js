@@ -367,6 +367,11 @@ cda.list = {
     event: function () {
 
         $("#btn_create").click(function () {
+            if(!cda.list.versionStage)
+            {
+                $.Notice.error("已发布版本不可新增，请确认!");
+                return;
+            }
             cda.list.addCdaInfo();
         });
         $("#btn_Delete").click(function () {
