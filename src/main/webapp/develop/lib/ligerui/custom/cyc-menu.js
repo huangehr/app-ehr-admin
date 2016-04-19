@@ -141,13 +141,14 @@ $(function(){
 		$("#mCSB_1").css("overflow","hidden");
 	}
 	/*注册事件*/
-	if($("#form_login").length==0){
-		document.getElementsByClassName("l-layout")[0].addEventListener('DOMMouseScroll',scrollFunc,false);
-	}//W3C
-	window.onmousewheel=document.onmousewheel=scrollFunc;//IE/Opera/Chrome
-	if($("#form_login").length==0){
+	if(navigator.userAgent.indexOf('Firefox') >= 0){
+		if($("#form_login").length==0){
+			document.getElementsByClassName("l-layout")[0].addEventListener('DOMMouseScroll',scrollFunc,false);
+		}//W3C
+	}else{}
 
-		document.getElementsByClassName("l-layout")[0].onmousewheel = function(event) {
+	if($("#form_login").length==0){
+		$(".l-layout")[0].onmousewheel = function(event) {
 			$(".three").next("ul").hide();
 			$("#mCSB_1_container").css("overflow","hidden");
 			$("#mCSB_1").css("overflow","hidden");
