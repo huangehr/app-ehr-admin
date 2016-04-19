@@ -91,6 +91,10 @@
         manager.clear();
     };
 
+    CustomCombo.prototype.on = function (eventKey, callFunc) {
+        $(this.getLigerComboBox().unselect).on(eventKey, callFunc);
+    };
+
     $.fn.customCombo = function (url, parms, selectedCall, child, readOnly) {
         el = this;
 
@@ -118,7 +122,7 @@
                 }
             }
 
-        return new CustomCombo(el, url,
+        var me = new CustomCombo(el, url,
             {
                 parms: parms,
                 child: child,
@@ -126,5 +130,10 @@
                 readonly: readOnly || false
             }
         );
+        if(child)
+            me.on("changeValue",function () {
+                child.ligerGetComboBoxManager().clear();
+            });
+        return me;
     }
 })(jQuery, window);

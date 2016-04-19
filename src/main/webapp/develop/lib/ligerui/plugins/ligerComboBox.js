@@ -465,6 +465,7 @@
             }).click(function ()
             {
                 g.clear();
+                $(g.unselect).trigger('changeValue');
             });
         },
         _setDisabled: function (value)

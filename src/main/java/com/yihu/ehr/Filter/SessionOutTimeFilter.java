@@ -4,7 +4,8 @@ import com.yihu.ehr.constants.SessionAttributeKeys;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -32,14 +33,16 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (httpServletRequest.getSession(false) == null) {
-            httpServletResponse.getWriter().print("<script>top.location.href='"
-                    + httpServletRequest.getContextPath() + "/login'</script>");
-            return;
-        }
+        if (httpServletRequest.getSession(false) == null
+                || httpServletRequest.getSession().getAttribute(SessionAttributeKeys.CurrentUser)==null) {
 
-        Object obj = httpServletRequest.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        if (obj == null) {
+            // AJAX REQUEST PROCESS
+            if ("XMLHttpRequest".equalsIgnoreCase(httpServletRequest.getHeader("X-Requested-With"))) {
+                httpServletResponse.setHeader("sessionStatus", "timeOut");
+                httpServletResponse.getWriter().print("{}");
+                return;
+            }
+
             httpServletResponse.getWriter().print("<script>top.location.href='"
                     + httpServletRequest.getContextPath() + "/login'</script>");
             return;
