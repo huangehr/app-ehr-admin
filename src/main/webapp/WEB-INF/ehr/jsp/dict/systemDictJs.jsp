@@ -116,8 +116,8 @@
 //								var html ='<div class="grid_edit"  style=""  title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDict:systemInfoModifyDialog:update", row.id,row.name) + '"></div>'
 //										+'<div class="grid_delete"  style="" title="删除"' +
 //										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "systemDict:systemInfoModifyDialog:delete", row.id) + '"></div>';
-                                var html = '<a href="javascript:void(0)" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDict:systemInfoModifyDialog:update", row.id, row.name) + '">编辑</a>/' +
-                                        '<a href="javascript:void(0)" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "systemDict:systemInfoModifyDialog:delete", row.id) + '">删除</a>';
+                                var html = '<a class="grid_edit" href="javascript:void(0)" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDict:systemInfoModifyDialog:update", row.id, row.name) + '"></a>' +
+                                        '<a class="grid_delete" href="javascript:void(0)" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "systemDict:systemInfoModifyDialog:delete", row.id) + '"></a>';
                                 return html;
                             }
                             }
