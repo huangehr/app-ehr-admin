@@ -211,9 +211,7 @@
                     var addUser = self.$form.Fields.getValues();
                     if (validator.validate()) {
                         var organizationKeys = addUser.organization['keys'];
-//                        addUser.organizationCode = organizationKeys[2];
-//                        addUser.orgName = addUser.organization['names'][2];
-                        debugger
+
                         addUser.organization = organizationKeys[2];
                         addUser.source = source.getValue();
                         if (userImgHtml == 0) {

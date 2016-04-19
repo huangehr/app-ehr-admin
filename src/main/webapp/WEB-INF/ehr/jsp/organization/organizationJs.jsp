@@ -76,7 +76,7 @@
                     });
                     self.$newRecordBtn.click(function () {
                         self.addOrgInfoDialog = $.ligerDialog.open({
-                            height: 640,
+                            height: 750,
                             width: 600,
                             title: '新增机构信息',
                             url: '${contextRoot}/organization/dialog/create'

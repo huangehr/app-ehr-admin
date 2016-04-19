@@ -83,7 +83,14 @@
                         extensions: 'gif,jpg,jpeg,bmp,png',
                         mimeTypes: 'image/*'
                     },
-                    auto: false
+                    auto: false,
+                    async:false
+                });
+                self.$uploader.instance.on( 'uploadSuccess', function( file, resp ) {
+                    $.ligerDialog.alert("保存成功",function () {
+                    });
+                    win.closeUserInfoDialog();
+                    win.reloadMasterUpdateGrid();
                 });
             },
             initForm: function () {
@@ -188,7 +195,6 @@
                 if (!Util.isStrEmpty(pic)) {
                     self.$imageShow.html('<img src="${contextRoot}/user/showImage" class="f-w88 f-h110"></img>');
                 }
-
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");
                     this.$resetPassword.hide();

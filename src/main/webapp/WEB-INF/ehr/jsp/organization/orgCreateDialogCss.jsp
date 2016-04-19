@@ -19,7 +19,11 @@
 		/*border-top: 1px solid #ccc;*/
 		text-align: left;
 	}
-	.save-toolbar{
-		margin-left: 360px;
-	}
+	.save-toolbar{ margin-left: 360px; }
+	.u-border{ border-top:1px dashed #cccccc;margin-top: 10px; margin-bottom: 16px;}
+	.u-bd{ border: 1px solid #c8c8c8;height: 100px;margin-left: 10px;margin-right: 10px; }
+	.f-wtl{ width:40px;top: -10px;left: 10px;background: #fff;text-align: center; }
+	.div-aptitude-manager{ margin-top: 40px;width: 70px; }
+	.u-upload{ margin-top: -50px; margin-left: 80px;}
+
 </style>

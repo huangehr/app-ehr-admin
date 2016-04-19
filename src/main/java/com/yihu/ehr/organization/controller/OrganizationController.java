@@ -6,15 +6,26 @@ import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.RestTemplates;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.encode.*;
+import com.yihu.ehr.util.encode.Base64;
 import com.yihu.ehr.util.log.LogService;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -165,24 +176,51 @@ public class OrganizationController extends BaseUIController{
 
     @RequestMapping("updateOrg")
     @ResponseBody
-    public Object updateOrg(String orgModel,String addressModel,String mode) {
+    public Object updateOrg(String orgModel, String addressModel, String mode, HttpServletRequest request) throws UnsupportedEncodingException {
         //新增或修改 根据mode 选择
         String url = "/organizations";
         String envelopStr = "";
         Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        params.put("mOrganizationJsonData",orgModel);
-        params.put("geography_model_json_data",addressModel);
+//        Map<String, Object> params = new HashMap<>();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        RestTemplates templates = new RestTemplates();
+        String orgJsonData = URLDecoder.decode(orgModel,"UTF-8");
+        String orgData[] = orgJsonData.split(";");
+        orgModel = orgData[0];
+        addressModel = orgData[1];
+
+
+        params.add("mOrganizationJsonData",orgModel);
+        params.add("geography_model_json_data",addressModel);
         try {
-            if("new".equals(mode)){
-                envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+
+            request.setCharacterEncoding("UTF-8");
+            InputStream inputStream = request.getInputStream();
+            String imageName = request.getParameter("name");
+
+            int temp = 0;
+            byte[] tempBuffer = new byte[1024];
+            byte[] fileBuffer = new byte[0];
+            while ((temp = inputStream.read(tempBuffer)) != -1) {
+                fileBuffer = ArrayUtils.addAll(fileBuffer,ArrayUtils.subarray(tempBuffer,0,temp));
+            }
+            inputStream.close();
+
+            String restStream = Base64.encode(fileBuffer);
+            String imageStream = URLEncoder.encode(restStream,"UTF-8");
+
+            params.add("inputStream",imageStream);
+            params.add("imageName",imageName);
+
+            if("new".equals(orgData[2])){
+                envelopStr = templates.doPost(comUrl + url, params);
             }else {
                 ObjectMapper objectMapper = new ObjectMapper();
                 //读取参数，转化为模型
                 OrgDetailModel org = objectMapper.readValue(orgModel,OrgDetailModel.class);
                 //查询数据库得到对应的模型
                 String getOrgUrl = "/organizations/"+org.getOrgCode();
-                String envelopStrGet = HttpClientUtil.doGet(comUrl + getOrgUrl, params, username, password);
+                String envelopStrGet = templates.doGet(comUrl + getOrgUrl, params);
                 envelop = objectMapper.readValue(envelopStrGet,Envelop.class);
                 if (!envelop.isSuccessFlg()){
                     return envelop;
@@ -197,8 +235,8 @@ public class OrganizationController extends BaseUIController{
                 orgForUpdate.setOrgType(org.getOrgType());
                 orgForUpdate.setTags(org.getTags());
                 String mOrgUpdateJson = objectMapper.writeValueAsString(orgForUpdate);
-                params.put("mOrganizationJsonData",mOrgUpdateJson);
-                envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+                params.add("mOrganizationJsonData",mOrgUpdateJson);
+                envelopStr = templates.doPut(comUrl + url, params);
             }
             return envelopStr;
         } catch (Exception e) {
