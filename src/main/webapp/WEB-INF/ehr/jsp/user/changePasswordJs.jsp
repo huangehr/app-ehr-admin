@@ -96,7 +96,12 @@
                         var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
                         var mediumRegex = new RegExp("^(?=.{9,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[a-z])(?=.*\\W))|((?=.*[0-9])(?=.*\\W))).*$");
                         var enoughRegex = new RegExp("(?=.{8,}).*");
-                        if(Util.isStrEmpty(value)||value.indexOf(' ').length != 1){
+
+                        if(value.split(' ').length > 1){
+                            return;
+                        }
+                        if(Util.isStrEmpty(value)){
+                            debugger
                             self.$intensionMiddle.removeClass('s-bc4');
                             self.$intensionPowerful.removeClass('s-bc12');
                             self.$intensionWeak.removeClass('s-bc13');
