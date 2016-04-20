@@ -58,7 +58,7 @@
 <script src="${staticRoot}/lib/ligerui/custom/ligerGridEx.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/customCombo.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/cyc-menu.js"></script>
-
+<script src="${staticRoot}/lib/ligerui/custom/jquery.mousewheel.js"></script>
 <script>
     (function ($, win) {
         $(function () {
