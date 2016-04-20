@@ -69,9 +69,30 @@
             <div class="f-pa f-w20 f-wtl">
                 高级
             </div>
+
+
+            <%--<div class="div-aptitude-manager">--%>
+                <%--&nbsp;资质管理:--%>
+                <%--<div id="div_aptitude_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img " data-alone-file=true>--%>
+                    <%--<!--用来存放item-->--%>
+                    <%--<div id="div_aptitude_file_picker" class="uploader-list"></div>--%>
+                    <%--<div id="div_file_list" class="f-mt10"></div>--%>
+                <%--</div>--%>
+            <%--</div>--%>
+            <div class="div-aptitude-manager-show">
+                &nbsp;资质管理:
+                <div id="div_aptitude_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img " data-alone-file=true>
+                    <!--用来存放item-->
+                    <div id="div_file_list" class="uploader-list"></div>
+                    <div id="div_file_picker" class="f-mt10 u-image-btn"></div>
+                </div>
+            </div>
+
+            <hr class="u-border">
+
             <div class="m-form-group" hidden="hidden" id="div_publicKeyMessage">
-                <label>公钥信息:</label>
-                <div class="l-text-wrapper m-form-control ">
+                <label class="lbl-public-key">公钥信息:</label>
+                <div class="l-text-wrapper m-form-control f-ml130">
                     <textarea type="text" class="required useTitle u-public-key-msg" data-attr-scan="publicKey"
                               readonly="readonly"></textarea>
                 </div>

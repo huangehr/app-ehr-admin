@@ -384,7 +384,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("/changePassWord")
     @ResponseBody
-    public Object chAangePassWord(String userId,String passWord){
+    public Object changePassWord(String userId,String passWord){
         String getUserUrl = "/users/changePassWord";
         String resultStr = "";
         Envelop envelop = new Envelop();
