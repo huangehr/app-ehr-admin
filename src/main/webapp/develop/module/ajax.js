@@ -21,7 +21,7 @@
     }
 
     function gotoIndex(){
-        location.href = "/ehr/login";
+        top.location.href = $.Context.PATH + "/login";
     }
 
     var _ajax = $.ajax;
