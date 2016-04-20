@@ -194,12 +194,22 @@
       $.TipBox();
     })
     $("#inp_captcha_code").focus(function(){
+      $("#div_error_msg").html("")
         $(this).removeClass("required");
       $(".SD-tipbox").remove();
        $(this).removeClass("validation-failed")
     })
-    $("#inp_captcha_code").blur(function(){
-      $(this).addClass("required")
+    $("#inp_captcha_code").hover(function(){
+      debugger;
+      $(this).addClass("required");
+      if($(this).val()==''){
+        $(".SD-tipbox .cntBox").each(function(i){
+          if($(this).html()=="验证码错误"){
+            $(this).html("该项为必输项，不允许为空")
+          }
+        })
+      }
+
     })
   })
 </script>
