@@ -79,7 +79,11 @@ public class LoginController extends BaseUIController {
 
 //                判断用户密码是否初始密码
                 if (password.equals("123456")) {
+                    model.addAttribute("current_user.loginCode", userDetailModel.getLoginCode());
+                    model.addAttribute("current_user.id", userDetailModel.getId());
                     model.addAttribute("defaultPassWord", true);
+                    model.addAttribute("contentPage", "user/changePassword");
+                    return "generalView";
                 } else {
 
                     SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
@@ -101,8 +105,9 @@ public class LoginController extends BaseUIController {
                     conditionMap.add("imageName", "");
                     RestTemplates templates = new RestTemplates();
                     resultStr = templates.doPost(comUrl + url, conditionMap);
+                    return "redirect:/index";
                 }
-                return "redirect:/index";
+
             } else {
 
                 model.addAttribute("userName", userName);

@@ -38,4 +38,18 @@
 	.save-toolbar{
 		margin-left: 360px;
 	}
+
+
+
+    .div-aptitude-manager-show{ margin-top: 40px;width: 100px; }
+    .u-upload{ margin-top: -40px; margin-left: 90px;margin-bottom: 16px;}
+    .u-upload .uploader-list { width: 70px;  height: 70px; background:url("");border:1px solid #c8c8c8; }
+    .u-image-btn{ bottom: 55px; margin-top: 6px; }
+    .webuploader-pick-hover{ background: url(${staticRoot}/images/app/add_hui.png)}
+    .webuploader-pick{ background: url(${staticRoot}/images/app/add_hui.png);width: 22px;height: 22px;  padding-top: 0;  padding-bottom: 0;  padding-right: 0;  padding-left: 0;}
+    .f-ml130{ margin-left: 130px; }
+    .lbl-public-key{ width: 123px; top: 70px; }
+    .f-w70 { width: 70px }
+    .f-h70{ height: 70px }
+
 </style>

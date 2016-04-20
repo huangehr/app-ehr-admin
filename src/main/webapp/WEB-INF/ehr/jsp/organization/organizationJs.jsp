@@ -86,6 +86,7 @@
             };
             master = {
                 orgInfoDialog: null,
+                updateOrgInfoDialog:null,
                 grid: null,
                 init: function () {
                     this.grid = $("#div_org_info_grid").ligerGrid($.LigerGridEx.config({
@@ -139,7 +140,7 @@
                         onDblClickRow : function (row){
                             var mode = 'view';
                             this.orgInfoDialog = $.ligerDialog.open({
-                                height: 700,
+                                height: 750,
                                 width: 600,
                                 title : '机构基本信息',
                                 url: '${contextRoot}/organization/dialog/orgInfo',
@@ -191,11 +192,11 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
+                    self.updateOrgInfoDialog = $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
                         var title = '修改机构信息';
                             self.orgInfoDialog = $.ligerDialog.open({
                             isHidden: false,
-                            height: 650,
+                            height: 750,
                             width: 600,
                             title:title,
                             url: '${contextRoot}/organization/dialog/orgInfo',
@@ -238,7 +239,10 @@
                     callback.call(win);
                     master.reloadGrid();
                 }
+                debugger
                 retrieve.addOrgInfoDialog.close();
+
+                master.updateOrgInfoDialog.close();
             };
 
             /* *************************** 页面初始化 **************************** */
