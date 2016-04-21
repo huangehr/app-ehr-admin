@@ -14,7 +14,6 @@
             var changePassWordInfo = null;
 
             var errorPassWords = sessionStorage.getItem("errorPassWord");
-
             var userId = '${current_user.id}';
             /* *************************** 函数定义 ******************************* */
 
