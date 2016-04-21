@@ -59,6 +59,7 @@
             $selectPublicKeyMessage: $("#div_publicKeyMessage"),
             $selectPublicKeyValidTime: $("#div_publicKey_validTime"),
             $selectPublicKeyStartTime: $("#div_publicKey_startTime"),
+            $filePicker:$("#div_file_picker"),
 
             $affirmBtn: $('#div_affirm_btn'),
 
@@ -93,8 +94,6 @@
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
                 this.$location.ligerComboBox({width: 240});
-//                this.$publicKeyValidTime.ligerTextBox({width: 240});
-//                this.$publicKeyStartTime.ligerTextBox({width: 240});
                 this.$tags.ligerTextBox({width: 240, height: 28});
                 this.$admin.ligerTextBox({width: 240, height: 28});
                 this.$tel.ligerTextBox({width: 240, height: 28});
@@ -146,13 +145,13 @@
                     this.$form.addClass("m-form-readonly");
                     this.$publicKey.hide();
                     this.$footer.hide();
-//                    this.$updateOrgBtn.hide();
-//                    this.$cancelBtn.hide();
                     this.$selectPublicKeyMessage.show();
                     this.$selectPublicKeyValidTime.show();
                     this.$selectPublicKeyStartTime.show();
+                    this.$filePicker.addClass("hidden");
                 }
                 if ('${mode}' == 'modify') {
+                    debugger
                     //this.$publicManage.hide();
                 }
                 var pic = org.imgRemotePath;
