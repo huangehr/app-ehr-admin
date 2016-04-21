@@ -78,8 +78,8 @@ public class LoginController extends BaseUIController {
                 }
 
 //                判断用户密码是否初始密码
+                model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 if (password.equals("123456")) {
-                    model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                     request.getSession().setAttribute("defaultPassWord", true);
                     model.addAttribute("contentPage", "user/changePassword");
                     return "generalView";
@@ -93,7 +93,7 @@ public class LoginController extends BaseUIController {
                         lastLoginTime = now;
                     }
 
-                    model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+//                    model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                     request.getSession().setAttribute("last_login_time", lastLoginTime);
                     //update lastLoginTime
                     userDetailModel.setLastLoginTime(now);

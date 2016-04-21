@@ -15,6 +15,7 @@
             var Util = $.Util;
             var retrieve = null;
             var master = null;
+            var orgData = ${orgData};
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
@@ -45,6 +46,11 @@
                     }});
                     this.$element.show();
                     this.$element.attrScan();
+                    if(!Util.isStrEmpty(orgData)){
+                        this.$searchOrgName.val(orgData.orgCode)
+                        $("#div-searchNm").addClass("m-form-readonly");
+                        $("#a-back").removeClass("hidden");
+                    }
                 },
                 initVersionDDL: function (target) {
                     var dataModel = $.DataModel.init();

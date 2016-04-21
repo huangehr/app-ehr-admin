@@ -23,14 +23,12 @@
             <input type="text" id="short_name" class="required useTitle f-w240 max-length-100 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="shortName"/>
         </div>
     </div>
-
     <div class="m-form-group">
         <label><spring:message code="lbl.local"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" id="location"  class="required useTitle f-w240 max-length-500 validate-special-char" data-type="comboSelect"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="location"/>
         </div>
     </div>
-
     <div class="m-form-group">
         <label><spring:message code="lbl.join.mode"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
@@ -70,15 +68,6 @@
                 高级
             </div>
 
-
-            <%--<div class="div-aptitude-manager">--%>
-                <%--&nbsp;资质管理:--%>
-                <%--<div id="div_aptitude_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img " data-alone-file=true>--%>
-                    <%--<!--用来存放item-->--%>
-                    <%--<div id="div_aptitude_file_picker" class="uploader-list"></div>--%>
-                    <%--<div id="div_file_list" class="f-mt10"></div>--%>
-                <%--</div>--%>
-            <%--</div>--%>
             <div class="div-aptitude-manager-show">
                 &nbsp;资质管理:
                 <div id="div_aptitude_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img " data-alone-file=true>
@@ -90,16 +79,16 @@
 
             <hr class="u-border">
 
-            <div class="m-form-group" hidden="hidden" id="div_publicKeyMessage">
+            <div class="m-form-group f-h100" hidden="hidden" id="div_publicKeyMessage">
                 <label class="lbl-public-key">公钥信息:</label>
                 <div class="l-text-wrapper m-form-control f-ml130">
-                    <textarea type="text" class="required useTitle u-public-key-msg" data-attr-scan="publicKey"
+                    <textarea type="text" class="required useTitle u-public-key-msg f-w400" data-attr-scan="publicKey"
                               readonly="readonly"></textarea>
                 </div>
             </div>
-            <div class="m-form-group" hidden="hidden" id="div_publicKey_validTime">
-                <label>有效时间：</label>
-                <div class="l-text-wrapper m-form-control ">
+            <div class="m-form-group f-h50" hidden="hidden" id="div_publicKey_validTime">
+                <label class="f-mt-20">有效时间：</label>
+                <div class="l-text-wrapper m-form-control f-mt-20">
                     <input type="text" class="required useTitle u-f-mt5"
                            data-attr-scan="validTime"/>
                 </div>

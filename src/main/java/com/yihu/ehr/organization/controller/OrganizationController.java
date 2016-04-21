@@ -190,10 +190,8 @@ public class OrganizationController extends BaseUIController {
         String url = "/organizations";
         String envelopStr = "";
         Envelop envelop = new Envelop();
-//        Map<String, Object> params = new HashMap<>();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         RestTemplates templates = new RestTemplates();
-
 
         String orgJsonData = URLDecoder.decode(orgModel, "UTF-8");
         String orgData[] = orgJsonData.split(";");
