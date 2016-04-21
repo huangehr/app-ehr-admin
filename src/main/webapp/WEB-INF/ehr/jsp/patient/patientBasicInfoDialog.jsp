@@ -193,6 +193,62 @@
 </div>
 
 <!--######档案管理 > 档案信息对话框模板页######-->
-<div id="div_record_info_form">
+<div id="div_archive_info" class="f-pa card-dialog" data-role-form style=" visibility: hidden;left:0;top:0;">
+    <div class="f-pr u-bd f-mt20">
+        <div class="f-pa f-w70 f-wtl">
+            已关联档案
+        </div>
+        <div class="f-mt30">
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_select_archiveStrat" placeholder="时间" data-type="select" data-attr-scan="">
+            </div>
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_select_archiveEnd" placeholder="时间" data-type="select" data-attr-scan="">
+            </div>
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_select_archiveOrg" placeholder="就诊机构" data-type="select" data-attr-scan="">
+            </div>
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam  f-ml50" id="div_addArchive">
+                <span>关联档案</span>
+            </div>
 
+            <div id="div_archive_info_form" data-role-form class="f-mt10">
+
+                <!--档案基本信息 -->
+                <div id="div_archive_basicMsg" class="u-card-basicMsg m-form-inline m-form-readonly">
+                    <div class="m-form-group">
+                        <label>就诊时间：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_archiveTime" class="required useTitle" data-attr-scan="archiveTime"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>就诊机构：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_archiveOrg" class="required useTitle" data-attr-scan="archiveOrg"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>关联时间：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_archiveRelateTime" class="required useTitle"
+                                   data-attr-scan="archiveRelateTime"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>说明：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_archiveExplain" class="required useTitle"
+                                   data-attr-scan="description"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>

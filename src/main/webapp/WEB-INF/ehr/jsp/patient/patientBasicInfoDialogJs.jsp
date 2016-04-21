@@ -19,6 +19,14 @@
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
+            var wrap = '<span style="position:relative; z-index:10;">' +
+                    '<div class="f-ib f-tac f-w100 f-click-down" id="div_patientBasicMsgDialog">病人基本信息</div>' +
+                    '<div class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_cardManagerDialog">卡管理</div>' +
+                    '<div class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_archiveManagerDialog">档案管理</div>' +
+                    '<div class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_familyManagerDialog">家庭管理</div>' +
+                    '</span>';
+            $('.l-dialog .l-dialog-tc-inner').eq(1).append( $(wrap));
+            $('.l-dialog .l-dialog-title').eq(1).css({position:'absolute',left:-40,width:'100%',height:40,'z-index': 2});
             patientInfo.init();
         }
         function cardInfoRefresh(){
@@ -34,7 +42,8 @@
             $form: $("#div_patient_info_form"),
             $cardInfo:$("#div_card_info"),
             $cardForm: $("#div_card_info_form"),
-            $recordForm: $("#div_record_info_form"),
+            $archiveInfo:$("#div_archive_info"),
+            $archiveForm: $("#div_archive_info_form"),
 
             $realName: $("#inp_realName"),
             $idCardNo: $("#inp_idCardNo"),
@@ -52,9 +61,6 @@
             $residenceType: $('input[name="residenceType"]', this.$form),
             $patientTel: $("#inp_patientTel"),
             $patientEmail: $("#inp_patientEmail"),
-            $patientBasicMsgDialog: $("#div_patientBasicMsgDialog"),
-            $cardManagerDialog: $("#div_cardManagerDialog"),
-            $recordManagerDialog: $("#div_recordManagerDialog"),
             $cardSearch: $("#inp_card_search"),
             $cardBasicMsg: $("#div_card_basicMsg"),
             $addCard: $("#div_addCard"),
@@ -193,6 +199,7 @@
                         }
                         }
                     ],
+                    allowHideColumn:false,
                     inWindow: false,
                     height:400,
                     onDblClickRow: function (row) {
@@ -225,28 +232,33 @@
                 cardInfoGrid.loadData(true);
             },
             bindEvents: function () {
+                //标签页切换
+                var patientBasicMsgDialog = $("#div_patientBasicMsgDialog");
+                var cardManagerDialog = $("#div_cardManagerDialog");
+                var archiveManagerDialog = $("#div_archiveManagerDialog");
                 var self = patientInfo;
-                self.$recordForm.hide();
-
-                self.$patientBasicMsgDialog.click(function () {
-                    self.$patientBasicMsgDialog.addClass("f-click-down").removeClass("f-click-up");
-                    self.$cardManagerDialog.removeClass("f-click-down").addClass("f-click-up");
+                debugger;
+                patientBasicMsgDialog.click(function () {
+                    patientBasicMsgDialog.addClass("f-click-down").removeClass("f-click-up");
+                    cardManagerDialog.removeClass("f-click-down").addClass("f-click-up");
+                    archiveManagerDialog.removeClass("f-click-down").addClass("f-click-up");
                     self.$form.show();
                     self.$cardInfo.css('visibility','hidden');
-                    self.$recordForm.hide();
-                    return false;
+                    self.$archiveInfo.css('visibility','hidden');
                 });
-                self.$cardManagerDialog.click(function () {
-                    self.$cardManagerDialog.addClass("f-click-down").removeClass("f-click-up");
-                    self.$patientBasicMsgDialog.removeClass("f-click-down").addClass("f-click-up");
+                cardManagerDialog.click(function () {
+                    cardManagerDialog.addClass("f-click-down").removeClass("f-click-up");
+                    patientBasicMsgDialog.removeClass("f-click-down").addClass("f-click-up");
+                    archiveManagerDialog.removeClass("f-click-down").addClass("f-click-up");
                     self.$cardInfo.css('visibility','visible');
-                    self.$recordForm.hide();
+                    self.$archiveInfo.css('visibility','hidden');
                     self.$form.hide();
-                    return false;
                 });
-
-                self.$recordManagerDialog.click(function () {
-                    self.$recordForm.show();
+                archiveManagerDialog.click(function () {
+                    archiveManagerDialog.addClass("f-click-down").removeClass("f-click-up");
+                    cardManagerDialog.removeClass("f-click-down").addClass("f-click-up");
+                    patientBasicMsgDialog.removeClass("f-click-down").addClass("f-click-up");
+                    self.$archiveInfo.css('visibility','visible');
                     self.$cardInfo.css('visibility','hidden');
                     self.$form.hide();
                 });
