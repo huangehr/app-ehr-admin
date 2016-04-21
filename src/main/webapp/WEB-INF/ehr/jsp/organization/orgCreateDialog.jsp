@@ -89,8 +89,8 @@
                 &nbsp;资质管理:
                 <div id="div_aptitude_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img " data-alone-file=true>
                     <!--用来存放item-->
-                    <div id="div_aptitude_file_picker" class="uploader-list"></div>
-                    <%--<div id="aptitude-file-picker" class="f-mt10">d</div>--%>
+                    <div id="div_file_list" class="uploader-list"></div>
+                    <div id="div_file_picker" class="f-mt10 u-image-btn"></div>
                 </div>
             </div>
         </div>

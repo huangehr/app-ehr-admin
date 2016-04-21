@@ -52,6 +52,13 @@ $(function(){
 			//$('body').html(Objcount);
 			$(obj).html(Objcount);
 			$(".menucyc").menu(".menucyc")
+            if($("#form_login").length==0){
+                $('.menucyc').bind('mousewheel', function(event, delta, deltaX, deltaY) {
+                    $(".three").next("ul").hide();
+                    $("#mCSB_1_container").css("overflow","hidden");
+                    $("#mCSB_1").css("overflow","hidden");
+                });
+            }
 
 		},
 		menu:function(obj){
@@ -135,24 +142,25 @@ $(function(){
 		//$(this).siblings().find("ul").slideUp()
 	})
 	//火狐banding
-	var scrollFunc=function(e){
-		$(".three").next("ul").hide();
-		$("#mCSB_1_container").css("overflow","hidden");
-		$("#mCSB_1").css("overflow","hidden");
-	}
-	/*注册事件*/
-	if(navigator.userAgent.indexOf('Firefox') >= 0){
-		if($("#form_login").length==0){
-			document.getElementsByClassName("l-layout")[0].addEventListener('DOMMouseScroll',scrollFunc,false);
-		}//W3C
-	}else{}
-
+	//var scrollFunc=function(e){
+	//	$(".three").next("ul").hide();
+	//	$("#mCSB_1_container").css("overflow","hidden");
+	//	$("#mCSB_1").css("overflow","hidden");
+	//}
+	///*注册事件*/
+	//if(navigator.userAgent.indexOf('Firefox') >= 0){
+	//	if($("#form_login").length==0){
+	//		document.getElementsByClassName("l-layout")[0].addEventListener('DOMMouseScroll',scrollFunc,false);
+	//	}//W3C
+	//}
 	if($("#form_login").length==0){
-		$(".l-layout")[0].onmousewheel = function(event) {
-			$(".three").next("ul").hide();
-			$("#mCSB_1_container").css("overflow","hidden");
-			$("#mCSB_1").css("overflow","hidden");
-		};
+		//$(".l-layout")[0].onmousewheel = function(event) {
+		//	$(".three").next("ul").hide();
+		//	$("#mCSB_1_container").css("overflow","hidden");
+		//	$("#mCSB_1").css("overflow","hidden");
+		//};
+		// jquery 兼容的滚轮事件
+
 	}
 
 

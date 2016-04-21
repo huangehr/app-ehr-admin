@@ -28,6 +28,8 @@
 
         var treeId = sessionStorage.getItem("treeId");
 
+        var bo = false
+
         /* ************************** 变量定义结束 **************************** */
 
         /* *************************** 函数定义 ******************************* */
@@ -57,8 +59,9 @@
             init: function () {
 
                 //判断用户是否初始密码
-                var bo = Util.getUrlQueryString("defaultPassWord");
-                if(Util.isStrEquals(bo,'true'))
+                bo = Util.isStrEmpty(${defaultPassWord})?false:true;
+
+                if(bo)
                     window.location.href = "${contextRoot}/user/initialChangePassword";
 
                 this.$mainContent.ligerLayout({
