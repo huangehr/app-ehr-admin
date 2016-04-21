@@ -36,7 +36,7 @@
             $updateOrgBtn: $("#div_update_btn"),
             $cancelBtn: $("#btn_cancel"),
             $uploader:$("#div_aptitude_img_upload"),
-            $orgImageShow:$("#div_aptitude_file_picker"),
+            $orgImageShow:$("#div_file_list"),
 
             init: function () {
 
@@ -45,7 +45,7 @@
 
                 this.$uploader.instance = this.$uploader.webupload({
                     server: "${contextRoot}/organization/updateOrg",
-                    pick: {id: '#div_aptitude_file_picker'},
+                    pick: {id: '#div_file_picker'},
                     accept: {
                         title: 'Images',
                         extensions: 'gif,jpg,jpeg,bmp,png',
@@ -54,6 +54,14 @@
                     auto: false,
 
                 });
+                this.$uploader.instance.on('uploadSuccess', function (file, resp) {
+                    $.ligerDialog.alert("保存成功", function () {
+                        win.parent.closeAddOrgInfoDialog(function () {
+
+                        });
+                    });
+                });
+
             },
             initForm: function () {
                 this.$orgCode.ligerTextBox({width: 240});
@@ -136,7 +144,6 @@
 							street: orgAddress.names[3]
 						};
 
-
                         if (Util.isStrEmpty(orgImgHtml)) {
                             updateOrg(orgModel,addressModel,'new');
                         } else {
@@ -178,7 +185,7 @@
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddUserInfoDialog(function () {
+                                win.parent.closeAddOrgInfoDialog(function () {
                                     win.parent.$.Notice.success('机构新增成功');
                                 });
                             } else {

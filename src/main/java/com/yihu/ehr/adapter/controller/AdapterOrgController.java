@@ -326,9 +326,9 @@ public class AdapterOrgController extends BaseUIController {
             Map<String, Object> adapterOrgParams = new HashMap<>();
             adapterOrgParams.put("sorts","");
             adapterOrgParams.put("filters","");
-            adapterOrgParams.put("fields","");
+            adapterOrgParams.put("fields","code");
             adapterOrgParams.put("page",1);
-            adapterOrgParams.put("size",10000);
+            adapterOrgParams.put("size",999);
             String  adapterOrgResultStr = HttpClientUtil.doGet(comUrl + adapterOrgListUrl, adapterOrgParams, username, password);
             Envelop adapterOrgEnvelop = getEnvelop(adapterOrgResultStr);
             List<AdapterOrgModel> adapterOrgModelList = (List<AdapterOrgModel>)getEnvelopList(adapterOrgEnvelop.getDetailModelList(),new ArrayList<AdapterOrgModel>(),AdapterOrgModel.class);

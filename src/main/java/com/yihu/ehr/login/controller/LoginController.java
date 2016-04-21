@@ -79,9 +79,12 @@ public class LoginController extends BaseUIController {
 
 //                判断用户密码是否初始密码
                 if (password.equals("123456")) {
-                    model.addAttribute("defaultPassWord", true);
+                    model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                    request.getSession().setAttribute("defaultPassWord", true);
+                    model.addAttribute("contentPage", "user/changePassword");
+                    return "generalView";
                 } else {
-
+                    request.getSession().removeAttribute("defaultPassWord");
                     SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
                     String now = sdf.format(new Date());
                     if (userDetailModel.getLastLoginTime() != null) {
@@ -101,8 +104,9 @@ public class LoginController extends BaseUIController {
                     conditionMap.add("imageName", "");
                     RestTemplates templates = new RestTemplates();
                     resultStr = templates.doPost(comUrl + url, conditionMap);
+                    return "redirect:/index";
                 }
-                return "redirect:/index";
+
             } else {
 
                 model.addAttribute("userName", userName);
