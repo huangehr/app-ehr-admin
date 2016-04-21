@@ -1,8 +1,6 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.deploy.util.ArrayUtil;
-import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -28,8 +26,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.lang.reflect.Array;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;

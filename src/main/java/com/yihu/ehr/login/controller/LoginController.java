@@ -79,13 +79,12 @@ public class LoginController extends BaseUIController {
 
 //                判断用户密码是否初始密码
                 if (password.equals("123456")) {
-                    model.addAttribute("current_user.loginCode", userDetailModel.getLoginCode());
-                    model.addAttribute("current_user.id", userDetailModel.getId());
-                    model.addAttribute("defaultPassWord", true);
+                    model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                    request.getSession().setAttribute("defaultPassWord", true);
                     model.addAttribute("contentPage", "user/changePassword");
                     return "generalView";
                 } else {
-
+                    request.getSession().removeAttribute("defaultPassWord");
                     SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
                     String now = sdf.format(new Date());
                     if (userDetailModel.getLastLoginTime() != null) {
