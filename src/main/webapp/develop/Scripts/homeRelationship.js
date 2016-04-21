@@ -3,8 +3,6 @@
  */
 
 /* ************************** 变量定义 ******************************** */
-var _url = $("#hd_url").val();
-var _id = $("#hd_id").val();
 var home={};
 /* ************************** 变量定义结束 ******************************** */
 /* *************************** 函数定义 ******************************* */
@@ -16,65 +14,88 @@ home.list={
     rows: null,
     enableData: [],
     init:function(){
-        this.columns=[
-            {display: '姓名', name: 'name', align: 'left'},
-            {display: '年龄', name: 'age', align: 'left'},
-            {display: '关系', name: 'relationshipName', align: 'left'},
-            {display: '关联时间', name: 'relationTime', align: 'left'}
-        ];
 
-        this.columns_group=[
-            {display: '户主', name: 'name', align: 'left'},
-            {display: '关系', name: 'relationshipName', align: 'left'},
-            {display: '关联时间', name: 'relationTime', align: 'left'}
-        ];
     },
     getHomeMembersList: function () {
+        debugger;
+        var _homeUrl = $("#hd_url").val();
         //TODO: 获取家庭关系列表
         var u= home.list;
-
+        var _id = $("#hd_id").val();
         u.grid = $("#div_home_relationship").ligerGrid($.LigerGridEx.config({
-            url: _url + "/home_relation/home_relationship_list",
+            url: _homeUrl + "/home_relation/home_relationship_list",
             // 传给服务器的ajax 参数
             parms: {
                 id: _id
             },
             async: true,
-            columns: u.columns,
+            columns: [
+                {display: '姓名', name: 'name', align: 'left'},
+                {display: '年龄', name: 'age', align: 'left'},
+                {display: '关系', name: 'relationshipName', align: 'left'},
+                {display: '关联时间', name: 'relationTime', align: 'left'}
+            ],
             pageSizeOptions: [10, 15, 20, 30, 40, 50],
             pageSize: 15,
             rownumbers: true,
-            height: "100%"
+            usePager:false,
+            unSetValidateAttr: false,
+            height:'573px'
         }));
 
         window.grid = u.grid;
+
+        $(".l-grid-body2").css({
+            'overflow-x':'hidden'
+        });
     },
     getHomeGroupList:function(){
         //TODO: 获取家庭群组列表
         var u= home.list;
+        var _id = $("#hd_id").val();
+        var _homeUrl = $("#hd_url").val();
+        var u= home.list;
 
         u.grid_group = $("#div_home_group").ligerGrid($.LigerGridEx.config({
-            url: _url + "/home_relation/home_group_list",
+            url: _homeUrl + "/home_relation/home_group_list",
             // 传给服务器的ajax 参数
             parms: {
                 id: _id
             },
             async: true,
-            columns: u.columns_group,
+            columns: [
+                {display: '户主', name: 'name', align: 'left'},
+                {display: '关系', name: 'relationshipName', align: 'left'},
+                {display: '关联时间', name: 'relationTime', align: 'left'}
+            ],
             pageSizeOptions: [10, 15, 20, 30, 40, 50],
             pageSize: 15,
             rownumbers: true,
-            height: "100%"
+            usePager:false,
+            unSetValidateAttr: false,
+            height:'573px'
         }));
 
         window.grid_group = u.grid_group;
+        $(".l-grid-body2").css({
+            'overflow-x':'hidden'
+        });
     },
     event:function(){
+        debugger;
         var u= home.list;
         $("#btn_members").click(function(){
+            $(this).addClass('btn-primary');
+            $("#btn_group").removeClass('btn-primary');
+            $("#div_home_relationship").show();
+            $("#div_home_group").hide();
             u.getHomeMembersList();
         });
         $("#btn_group").click(function(){
+            $(this).addClass('btn-primary');
+            $("#btn_members").removeClass('btn-primary');
+            $("#div_home_relationship").hide();
+            $("#div_home_group").show();
             u.getHomeGroupList();
         });
         //初始化时显示家庭关系页
