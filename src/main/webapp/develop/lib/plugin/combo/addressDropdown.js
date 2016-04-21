@@ -241,6 +241,9 @@
         if($(this).closest(".m-form-group").offset().top>250){
             $tabWrap.addClass("on")
         }
+        if($(this).closest(".l-dialog-table").length==1 && $(this).closest(".l-dialog-table").height()<400 ){
+            $tabWrap.addClass("small")
+        }
     }
     function handleData(data,ds) {
         var self = this;

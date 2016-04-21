@@ -24,7 +24,9 @@
 .m-combo-tab { position: absolute; left: 0; top: 28px; width: 240px; z-index: 999 }
 .m-combo-dropdown { float: left; margin-right: 10px }
 /*TODO cyc 20160419 地址选择机构选则修改*/
-.j-select-content{height: 200px;overflow-y: auto;overflow-x: hidden;}
+.j-select-content{ height: 200px;width:100%;overflow-y: auto;overflow-x: hidden;}
 .m-combo-tab.f-dn.on{top:auto;bottom:35px;border-bottom: 1px #ddd solid;}
+.m-combo-tab.f-dn.on.small .j-select-content{height: 120px}
+.m-combo-tab.f-dn.on.small .u-select-tab{ height: 38px;}
 
 
