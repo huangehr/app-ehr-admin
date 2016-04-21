@@ -1,5 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+
+<div class="pop_tab">
+    <ul>
+        <li class="cur" id="btn_basic">基础属性</li>
+        <li id="" >卡管理</li>
+        <li id="btn_home_relation" >家庭关系</li>
+
+    </ul>
+</div>
 <!--######人口管理页面 > 人口信息对话框模板页######-->
 <div id="div_patient_info_form" data-role-form class="m-form-inline f-mt20" style="overflow:auto">
     <div>
@@ -129,4 +138,8 @@
         </div>
     </div>
     <input type="hidden" id="inp_patientCopyId">
+</div>
+
+<div id="div_home_relation" data-role-form class="m-form-inline" style="overflow:auto;display: none;height: 623px;">
+        这是家庭关系网
 </div>

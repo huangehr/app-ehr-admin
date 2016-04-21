@@ -1,18 +1,19 @@
 package com.yihu.ehr.patient.controller;
 
 import com.yihu.ehr.util.RestTemplates;
+import com.yihu.ehr.util.URLQueryBuilder;
 import com.yihu.ehr.util.controller.BaseUIController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by AndyCai on 2016/4/20.
  */
-@RestController
+@Controller
 @RequestMapping("/home_relation")
 public class HomeRelationshipController extends BaseUIController {
 
@@ -28,19 +29,25 @@ public class HomeRelationshipController extends BaseUIController {
 
 
     @RequestMapping("/home_relationship")
-    @ResponseBody
     public String homeRelationship(Model model) {
-        model.addAttribute("contentPage", "/patient/homeRelationship");
+
+        model.addAttribute("contentPage", "patient/homeRelationship");
         return "simpleView";
+
     }
 
     @RequestMapping("/home_relationship_list")
     @ResponseBody
-    public Object getHomeRelationshipList(String id,int page,int pageSize)
+    public Object getHomeRelationshipList(String id,int page,int rows)
     {
         try {
             String url = "/home_relationship";
-            String result = restTemplates.doGet(comUrl + url, id, page, pageSize);
+            URLQueryBuilder queryBuilder = new URLQueryBuilder();
+            queryBuilder.setPageNumber(page);
+            queryBuilder.setPageSize(rows);
+            queryBuilder.addFilter("householderIdCardNo","=",id,"");
+
+            String result = restTemplates.doGet(comUrl + url+"?"+queryBuilder.toString(), id, page, rows);
             return result;
         }
         catch (Exception ex)
@@ -50,11 +57,15 @@ public class HomeRelationshipController extends BaseUIController {
     }
 
     @RequestMapping("/home_group_list")
-    public Object getHomeGroupList(String id,int page,int pageSize)
+    public Object getHomeGroupList(String id,int page,int rows)
     {
         try {
             String url = "/home_group";
-            String result = restTemplates.doGet(comUrl + url, id, page, pageSize);
+            URLQueryBuilder queryBuilder = new URLQueryBuilder();
+            queryBuilder.setPageNumber(page);
+            queryBuilder.setPageSize(rows);
+            queryBuilder.addFilter("idCardNo","=",id,"");
+            String result = restTemplates.doGet(comUrl + url, id, page, rows);
             return result;
         }
         catch (Exception ex)
