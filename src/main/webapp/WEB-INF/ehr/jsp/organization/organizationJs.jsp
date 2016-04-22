@@ -124,11 +124,9 @@
                                 render: function (row) {
                                     var html = '';
                                     if (row.activityFlag == 1) {
-//									html +='<div class="grid_off" title="" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:activityFlg", row.orgCode,'1') + '"></div>';
                                         html += '<a class="grid_on" title="已激活" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '1') + '"></a>';
 
                                     } else {
-//									html +='<div class="grid_on" title="" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:activityFlg", row.orgCode,'0') + '"></div>';
                                         html += '<a class="grid_off" title="未激活" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '0') + '"></a>';
 
                                     }
@@ -140,9 +138,6 @@
                                 display: '操作', name: 'operator', width: '14%', render: function (row) {
                                 var html = '';
 
-//								html +='<div class="grid_edit"  style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode,'modify') + '"></div>'
-//										+'<div class="grid_delete"  style="" title="删除"' +
-//										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:del", row.orgCode,'del') + '"></div>';
                                 html += '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a>';
                                 html += '<a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode, 'modify') + '"></a>';
                                 html += '<a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:del", row.orgCode, 'del') + '"></a>';
@@ -186,7 +181,6 @@
                     });
                 },
                 reloadGrid: function () {
-                    //var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
                     var orgAddress = retrieve.$element.Fields.location.getValue();
                     var values = $.extend({}, retrieve.$element.Fields.getValues(),
@@ -252,7 +246,6 @@
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, {'orgData': JSON.stringify(orgData)});
-                        <%--win.location.href = '${contextRoot}/template/initial';--%>
 
                     })
                 }
