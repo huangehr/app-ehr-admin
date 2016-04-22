@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script type="text/javascript" src="${staticRoot}/Scripts/homeRelationship.js"></script>
 <script>
     (function ($, win) {
 
@@ -25,6 +26,7 @@
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             patientInfo.init();
+            tab_click();
         }
 
         /* *************************** 函数定义结束******************************* */
@@ -275,6 +277,27 @@
                 })
             }
         };
+
+        function tab_click(){
+          $("#btn_basic").click(function(){
+              $("li").removeClass('cur');
+              $(this).addClass('cur');
+              $("#div_patient_info_form").show();
+              $("#div_home_relation").hide();
+          });
+
+            $("#btn_home_relation").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_patient_info_form").hide();
+                $("#div_home_relation").show();
+                $.get("${contextRoot}/home_relation/home_relationship",function(data){
+                    $("#div_home_relation").html(data);
+                    home.list.event();
+                });
+            });
+        };
+
         /* *************************** 模块初始化结束 ***************************** */
 
         /* *************************** 页面初始化 **************************** */

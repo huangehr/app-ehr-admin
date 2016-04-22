@@ -9,19 +9,19 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <%--家庭关系页--%>
-<div class="f-pr u-bd f-mt20">
+<div class="f-pr">
 
-  <div class="f-mt30">
+  <div >
     <div class="switch f-tac f-h50">
       <button id="btn_members" class="btn btn-primary f-mt10">家庭成员</button>
       <button id="btn_group" class="btn f-mt10">家庭群</button>
     </div>
 
     <%--家庭成员列表--%>
-    <div id="div_home_relationship" data-role-form class="f-mt10">
+    <div id="div_home_relationship" data-role-form style="height: 573px;">
     </div>
 
-    <div id="div_home_group" data-role-form class="f-mt10">
+    <div id="div_home_group" data-role-form  style="height: 573px;display: none;">
     </div>
 
     <input type="hidden" id="hd_url" value="${contextRoot}"/>

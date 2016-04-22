@@ -21,7 +21,8 @@
         </div>
 
         <div class="m-form-group f-mt10">
-            <div class="m-form-control">
+            <div class="m-form-control" id="div-searchNm">
+                <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb hidden" id="a-back">返回上一层 </a>
                 <!--输入框带查询-->
                 <input type="text" id="inp_searchOrgName" placeholder="请输入模板或医疗机构" class="f-ml10 " data-attr-scan="orgName"/>
             </div>

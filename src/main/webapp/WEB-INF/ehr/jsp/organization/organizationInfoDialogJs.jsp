@@ -16,10 +16,8 @@
 
         //公钥管理弹框
         var publicKeyMsgDialog = null;
-        <%--var envelop = JSON.parse('${envelop}');--%>
-        var org =
-        ${envelop}.
-        obj;
+
+        var org =${envelop}.obj;
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -59,6 +57,7 @@
             $selectPublicKeyMessage: $("#div_publicKeyMessage"),
             $selectPublicKeyValidTime: $("#div_publicKey_validTime"),
             $selectPublicKeyStartTime: $("#div_publicKey_startTime"),
+            $filePicker: $("#div_file_picker"),
 
             $affirmBtn: $('#div_affirm_btn'),
 
@@ -93,8 +92,6 @@
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
                 this.$location.ligerComboBox({width: 240});
-//                this.$publicKeyValidTime.ligerTextBox({width: 240});
-//                this.$publicKeyStartTime.ligerTextBox({width: 240});
                 this.$tags.ligerTextBox({width: 240, height: 28});
                 this.$admin.ligerTextBox({width: 240, height: 28});
                 this.$tel.ligerTextBox({width: 240, height: 28});
@@ -146,13 +143,13 @@
                     this.$form.addClass("m-form-readonly");
                     this.$publicKey.hide();
                     this.$footer.hide();
-//                    this.$updateOrgBtn.hide();
-//                    this.$cancelBtn.hide();
                     this.$selectPublicKeyMessage.show();
                     this.$selectPublicKeyValidTime.show();
                     this.$selectPublicKeyStartTime.show();
+                    this.$filePicker.addClass("hidden");
                 }
                 if ('${mode}' == 'modify') {
+                    debugger
                     //this.$publicManage.hide();
                 }
                 var pic = org.imgRemotePath;
@@ -198,46 +195,29 @@
                         };
 
                         if (Util.isStrEmpty(orgImgHtml)) {
-                            updateOrg(orgModel,addressModel,'');
+                            updateOrg(orgModel, addressModel, '');
                         } else {
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
                             if (image) {
-                                upload.options.formData.orgModel = encodeURIComponent(JSON.stringify(orgModel)+";"+JSON.stringify(addressModel)+";update");
+                                upload.options.formData.orgModel = encodeURIComponent(JSON.stringify(orgModel) + ";" + JSON.stringify(addressModel) + ";update");
                                 upload.upload();
                             } else {
-                                updateOrg(orgModel,addressModel,'');
+                                updateOrg(orgModel, addressModel, '');
                             }
                         }
 
-                        <%--dataModel.createRemote("${contextRoot}/organization/updateOrg", {--%>
-                            <%--data: {--%>
-                                <%--orgModel: JSON.stringify(orgModel),--%>
-                                <%--addressModel: JSON.stringify(addressModel),--%>
-                                <%--mode: "modify"--%>
-                            <%--},--%>
-                            <%--success: function (data) {--%>
-                                <%--if (data.successFlg) {--%>
-                                    <%--parent.reloadMasterGrid();--%>
-                                    <%--$.Notice.success('操作成功');--%>
-                                    <%--//dialog.close();--%>
-                                    <%--win.closeDialog();--%>
-                                <%--} else {--%>
-                                    <%--$.Notice.error(data.errorMsg);--%>
-                                <%--}--%>
-                            <%--}--%>
-                        <%--})--%>
                     } else {
                         return;
                     }
                 });
 
-                function updateOrg(orgModel,addressModel,msg) {
+                function updateOrg(orgModel, addressModel, msg) {
                     var orgModel = JSON.stringify(orgModel);
                     var addressModel = JSON.stringify(addressModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
-                        data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
+                        data: {orgModel: orgModel, addressModel: addressModel, mode: msg},
                         success: function (data) {
                             if (data.successFlg) {
                                 win.parent.closeAddOrgInfoDialog(function () {
@@ -277,7 +257,6 @@
                                     $.ligerDialog.alert('分配公钥成功');
                                 } else {
                                     $.Notice.error(data.errorMsg);
-                                    //$.Notice.error({type: 'success', msg: '公钥分配失败！'});
                                 }
                             }
                         });

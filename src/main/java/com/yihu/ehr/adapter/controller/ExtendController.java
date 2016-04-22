@@ -44,7 +44,8 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
     }
 
     @RequestMapping("/initial")
-    public String gotoList(Model model, String dataModel){
+    public String gotoList(Model model, String dataModel,String orgData){
+        model.addAttribute("orgData",StringUtils.isEmpty(orgData)?false:orgData);
         model.addAttribute("dataModel",dataModel);
         model.addAttribute("contentPage", this.listUrl);
         return "pageView";
