@@ -8,7 +8,7 @@
       <input id="adapter_org" value='${adapterOrg}' hidden="none" />
 		<span class="f-ml20">标准名称：</span><input class="f-fwb f-ml20 f-mt10" id="adapterorg_name"/>
 		<span class="f-ml20">标准类别：</span><input class="f-mt10" id="adapterorg_type"/>
-		<span class="f-ml20">采集机构：</span><input class="f-mt10" id="adapterorg_org"/>
+		<span class="f-ml20">发布机构：</span><input class="f-mt10" id="adapterorg_org"/>
       <span class="f-ml20">继承标准：</span><input class="f-mt10" id="adapterorg_parent"/>
     </div>
     <div class="switch f-tac f-h50">

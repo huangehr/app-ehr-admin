@@ -194,7 +194,13 @@
             };
 
             /* *************************** 页面功能 **************************** */
-
+            win.getVersion =  function(){
+                var mgr = retrieve.$searchVersionDDL.ligerGetComboBoxManager();
+                return {
+                    v : mgr.getValue(),
+                    n : mgr.getText()
+                };
+            }
             win.reloadGrids =  function (){
                 master.reloadGrid();
             };

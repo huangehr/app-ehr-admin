@@ -21,7 +21,10 @@
     }
 
     function gotoIndex(){
-        top.location.href = $.Context.PATH + "/login";
+        $.ligerDialog.alert("您太久没操作，请重新登录！", "提示", "warn", function(){
+            top.location.href = $.Context.PATH + "/login";
+        }, null);
+        throw new error("time out！");
     }
 
     var _ajax = $.ajax;
@@ -43,21 +46,21 @@
         var _opt = $.extend(opt,{
             complete:function(XMLHttpRequest, textStatus, errorThrown){
                 if(isTimeOut(XMLHttpRequest)){
-                    return gotoIndex();
-                }
-                fn.complete(XMLHttpRequest, textStatus, errorThrown);
+                    gotoIndex();
+                }else
+                    fn.complete(XMLHttpRequest, textStatus, errorThrown);
             },
             success: function(data, textStatus, XMLHttpRequest){
                 if(isTimeOut(XMLHttpRequest)){
-                    return gotoIndex();
-                }
-                fn.success(data, textStatus, XMLHttpRequest);
+                    gotoIndex();
+                }else
+                    fn.success(data, textStatus, XMLHttpRequest);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown){
                 if(isTimeOut(XMLHttpRequest)){
-                    return gotoIndex();
-                }
-                fn.error(XMLHttpRequest, textStatus, errorThrown);
+                    gotoIndex();
+                }else
+                    fn.error(XMLHttpRequest, textStatus, errorThrown);
             },
         });
         return _ajax(_opt);
