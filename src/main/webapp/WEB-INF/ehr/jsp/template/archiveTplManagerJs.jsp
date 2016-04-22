@@ -47,7 +47,7 @@
                     this.$element.show();
                     this.$element.attrScan();
                     if(!Util.isStrEmpty(orgData)){
-                        this.$searchOrgName.val(orgData.orgCode)
+                        this.$searchOrgName.val(orgData.orgName)
                         $("#div-searchNm").addClass("m-form-readonly");
                         $("#a-back").removeClass("hidden");
                     }
@@ -151,6 +151,7 @@
                         urlParms['id'] = id;
                         }
                         urlParms['mode'] = mode;
+                        urlParms['orgCode'] = orgData.orgCode;
 						var title = '新增模板';
 						if(mode=='copy'){
 							title='复制模板';
@@ -165,7 +166,7 @@
                             urlParms: urlParms,
                             isHidden: false,
                             opener: true,
-                            load: true
+                            load: true,
                         });
                     });
 

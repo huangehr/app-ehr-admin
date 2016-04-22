@@ -44,7 +44,7 @@
             $userTel: $('#inp_userTel'),
             $org: $('#inp_org'),
             $major: $('#inp_major'),
-            $source: $('#inp_source'),
+//            $source: $('#inp_source'),
             $sex: $('input[name="gender"]', this.$form),
             $uploader: $("#div_user_img_upload"),
             $inp_select_marriage: $("#inp_select_marriage"),
@@ -148,19 +148,19 @@
                     }
                 });
 
-                source = this.$source.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 26
-                    },
-                    onSuccess: function () {
-                        self.$form.Fields.fillValues({sourceName: user.sourceName,});
-                    },
+                <%--source = this.$source.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 26--%>
+                    <%--},--%>
+                    <%--onSuccess: function () {--%>
+                        <%--self.$form.Fields.fillValues({sourceName: user.sourceName,});--%>
+                    <%--},--%>
 
-                });
+                <%--});--%>
 
 
                 this.$form.attrScan();
@@ -213,7 +213,7 @@
                         var organizationKeys = addUser.organization['keys'];
 
                         addUser.organization = organizationKeys[2];
-                        addUser.source = source.getValue();
+//                        addUser.source = source.getValue();
                         if (userImgHtml == 0) {
                             updateUser(addUser);
                         } else {
