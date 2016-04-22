@@ -27,7 +27,7 @@
             function reloadGrid (url, params) {
                 grid.set({
                     url: url,
-                    parms: params,
+                    parms: params
 //                    newPage:1
                 });
                 grid.reload();
@@ -73,6 +73,7 @@
                             city:'',
                             district:''
                         },
+                       allowHideColumn:false,
                         columns: [
                             {display: '姓名', name: 'name', width: '15%',align: 'left'},
                             {display: '身份证号', name: 'idCardNo', width: '10%', align: 'left'},
@@ -101,6 +102,7 @@
                                 url: '${contextRoot}/patient/patientDialogType',
                                 load: true,
                                 isDrag:true,
+                                show:false,
                                 urlParms: {
                                     idCardNo: row.idCardNo,
                                     patientDialogType: 'patientInfoMessage'
@@ -109,9 +111,6 @@
                                 onLoaded:function() {
                                     wait.close();
                                     dialog.show();
-                                    var wrap = '<span style="position:relative; z-index:10;"><div class="f-ib f-tac f-w100 f-click-down" id="div_patientBasicMsgDialog">病人基本信息</div><div class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_cardManagerDialog">卡管理</div></span>';
-                                    $('.l-dialog .l-dialog-tc-inner').eq(0).append( $(wrap));
-                                    $('.l-dialog .l-dialog-title').eq(0).css({position:'absolute',left:-40,width:'100%',height:40,'z-index': 2});
                                 }
                             });
                             dialog.hide();
