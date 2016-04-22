@@ -193,6 +193,28 @@
 </div>
 
 <!--######档案管理 > 档案信息对话框模板页######-->
-<div id="div_record_info_form">
+<div id="div_archive_info" class="f-pa card-dialog" data-role-form style=" visibility: hidden;left:0;top:0;">
+    <div class="f-pr u-bd f-mt20">
+        <div class="f-pa f-w88 f-wtl">
+            已关联档案
+        </div>
+        <div class="f-mt20">
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_select_start" placeholder="时间" data-type="select" data-attr-scan="">
+            </div>
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_select_end" placeholder="时间" data-type="select" data-attr-scan="">
+            </div>
+            <div class="f-ml10 f-fl f-mt10 f-w240">
+                <input type="text" id="inp_select_archiveOrg" placeholder="就诊机构" data-type="select" data-attr-scan="">
+            </div>
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam  f-ml166 f-mt10" id="div_search_archive">
+                <span>搜索</span>
+            </div>
 
+            <div id="div_archive_info_form" data-role-form class="f-mt10">
+
+            </div>
+        </div>
+    </div>
 </div>
