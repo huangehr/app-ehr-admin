@@ -128,16 +128,3 @@
 
 </div>
 
-
-<%--
-<div id="div_public_manage" class="u-public-manage">
-    <div class="l-button u-btn u-btn-cancel u-btn-small f-ib f-vam u-btn-color" id="div_allot_publicKey">
-        <span>分配公钥</span>
-    </div>
-    <textarea class="txt-public-content" id="txt_publicKey_message" data-attr-scan="publicKey"></textarea>
-    <label class="f-ml">有效时间：</label><label id="lbl_publicKey_validTime" ></label>
-    <label class="f-ml-t">生成时间：</label><label id="lbl_publicKey_startTime" ></label>
-    <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_affirm_btn">
-        <span>确认</span>
-    </div>
-</div>--%>
