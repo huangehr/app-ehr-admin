@@ -84,8 +84,9 @@ home.list={
         });
     },
     event:function(){
-        debugger;
+
         var u= home.list;
+        $("#btn_members").unbind('click');
         $("#btn_members").click(function(){
             $(this).addClass('btn-primary');
             $("#btn_group").removeClass('btn-primary');
@@ -93,6 +94,7 @@ home.list={
             $("#div_home_group").hide();
             u.getHomeMembersList();
         });
+        $("#btn_group").unbind('click');
         $("#btn_group").click(function(){
             $(this).addClass('btn-primary');
             $("#btn_members").removeClass('btn-primary');
