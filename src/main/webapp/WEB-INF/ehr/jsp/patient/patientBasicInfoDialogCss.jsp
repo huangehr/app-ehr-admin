@@ -14,6 +14,8 @@
   .card-dialog td div{font-size: 12px}
   .card-dialog  div span{font-size: 12px}
   .f-w88{ width: 88px; }
+  .f-ml166{ margin-left: 166px;}
+  .f-w120{ width: 120px;}
   .f-h110{ height: 110px }
   .f-click-up{
     border-radius: 4px;
