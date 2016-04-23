@@ -19,21 +19,23 @@ home.list={
     getHomeMembersList: function () {
         debugger;
         var _homeUrl = $("#hd_url").val();
-        //TODO: 获取家庭关系列表
+        // 获取家庭关系列表
         var u= home.list;
         var _id = $("#hd_id").val();
         u.grid = $("#div_home_relationship").ligerGrid($.LigerGridEx.config({
             url: _homeUrl + "/home_relation/home_relationship_list",
             // 传给服务器的ajax 参数
             parms: {
-                id: _id
+                id: _id,
+                page:1,
+                rows:100
             },
             async: true,
             columns: [
                 {display: '姓名', name: 'name', align: 'left'},
                 {display: '年龄', name: 'age', align: 'left'},
                 {display: '关系', name: 'relationshipName', align: 'left'},
-                {display: '关联时间', name: 'relationTime', align: 'left'}
+                {display: '关联时间', name: 'createTime', align: 'left'}
             ],
             pageSizeOptions: [10, 15, 20, 30, 40, 50],
             pageSize: 15,
@@ -82,8 +84,9 @@ home.list={
         });
     },
     event:function(){
-        debugger;
+
         var u= home.list;
+        $("#btn_members").unbind('click');
         $("#btn_members").click(function(){
             $(this).addClass('btn-primary');
             $("#btn_group").removeClass('btn-primary');
@@ -91,6 +94,7 @@ home.list={
             $("#div_home_group").hide();
             u.getHomeMembersList();
         });
+        $("#btn_group").unbind('click');
         $("#btn_group").click(function(){
             $(this).addClass('btn-primary');
             $("#btn_members").removeClass('btn-primary');

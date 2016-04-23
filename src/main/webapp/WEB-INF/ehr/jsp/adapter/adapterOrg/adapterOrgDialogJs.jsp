@@ -81,20 +81,13 @@
                             data: data.detailModelList,
                             onSelected : function (value, text) {
                                 var type = value;
-                                if(type == 1){
+                                if(type == 1)
                                     $('#parent_div').hide();
-                                }
-                                else if(type==2){
-                                    //厂商，初始标准只能是厂商
+                                else{
                                     infoForm.initAdapterOrg(infoForm.$parent, type);
                                     $('#parent_div').show();
                                 }
-                                else if(type==3){
-                                    //区域,初始标准只能选择厂商或区域
-                                    infoForm.initAdapterOrg(infoForm.$parent, '1');
-                                    $('#parent_div').show();
-                                }
-                             infoForm.initOrg(infoForm.$org, type);
+                                infoForm.initOrg(infoForm.$org, type);
                             }
                         });
                         var manager = target.ligerGetComboBoxManager();

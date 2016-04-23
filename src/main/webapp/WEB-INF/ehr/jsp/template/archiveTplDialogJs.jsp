@@ -21,6 +21,7 @@
             var model = ${model};
             model = Util.isStrEquals(model.id,"0")?${orgData}:${model};
             <%--var orgData = ${orgData};--%>
+            var version = parent.getVersion();
             var msg = mode == 'new' ? '新增' : mode=='copy'? '复制' : "修改";
             var firstInit = true;
             /* ************************** 变量定义结束 **************************** */
@@ -75,15 +76,9 @@
                                 }
                                 firstInit = false;
                             }
-
-                        },
-                        onSuccess:function(){
-                            if(!Util.isStrEmpty(model.orgCode)){
-                                self.versionNo.setValue(self.versionNo.data[0].version);
-                            }
                         }
-
                     });
+
                     this.$org.addressDropdown({
                         width: 240,
                         selectBoxWidth: 240,
@@ -100,23 +95,18 @@
                                 });
                             }
                             }
-                        ],
-
+                        ]
                     });
 
                     this.$form.attrScan();
-                    if(!Util.isStrEquals(mode,'new')||!Util.isStrEmpty(model.orgCode))
+                    if(mode!='new')
                         this.$form.Fields.fillValues({
                             id: model.id,
                             title: mode=='copy'? '': model.title,
                             cdaVersion: model.cdaVersion,
-                            organizationCode: [model.province, model.city, Util.isStrEmpty(model.organizationCode)?model.fullName:model.organizationCode]
+                            organizationCode: [model.province, model.city, model.organizationCode]
                         });
                     $('#oldTitle').val(model.title);
-                    if(!Util.isStrEmpty(model.orgCode)){
-                        $("#div-org").addClass("m-form-readonly");
-                    }
-
                 },
                 initCombo : function (target, url, parms, value, text, parentValue){
                     this.cda = target.customCombo(url, parms);
