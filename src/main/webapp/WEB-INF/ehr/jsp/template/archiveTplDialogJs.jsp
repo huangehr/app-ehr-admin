@@ -19,6 +19,8 @@
             var addArchiveTplInfo = null;
             var mode = '${mode}';
             var model = ${model};
+            model = Util.isStrEquals(model.id,"0")?${orgData}:${model};
+            <%--var orgData = ${orgData};--%>
             var version = parent.getVersion();
             var msg = mode == 'new' ? '新增' : mode=='copy'? '复制' : "修改";
             var firstInit = true;
@@ -56,14 +58,12 @@
                     self.$title.ligerTextBox({width: 240});
                     this.initCombo(self.$dataset, urls.cdaDocument, {});
                     self.versionNo = self.$versionNo.ligerComboBox({
-                        readonly: true,
                         url: '${contextRoot}/adapter/versions',
                         valueField: 'version',
                         textField: 'versionName',
                         dataParmName: 'detailModelList',
                         width: 240,
                         onSelected: function (value) {
-                            debugger
                             var parms = {
                                 version: value,
                                 searchName: ""
@@ -99,19 +99,13 @@
                     });
 
                     this.$form.attrScan();
-
                     if(mode!='new')
                         this.$form.Fields.fillValues({
                             id: model.id,
                             title: mode=='copy'? '': model.title,
-//                            cdaVersion: model.cdaVersion,
+                            cdaVersion: model.cdaVersion,
                             organizationCode: [model.province, model.city, model.organizationCode]
                         });
-
-                    var versionMgr = this.$versionNo.ligerGetComboBoxManager();
-                    versionMgr.selectValue(version.v);
-                    versionMgr.setText(version.n);
-
                     $('#oldTitle').val(model.title);
                 },
                 initCombo : function (target, url, parms, value, text, parentValue){

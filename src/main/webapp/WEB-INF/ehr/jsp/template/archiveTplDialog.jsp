@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <div class="m-form-group">
+    <div class="m-form-group" id="div-org">
         <label>医疗机构：</label>
 
         <div class="m-form-control essential">

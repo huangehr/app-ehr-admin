@@ -46,7 +46,7 @@
             $tel: $('#inp_userTel'),
             $org: $('#inp_org'),
             $major: $('#inp_major'),
-            $source:$('#inp_source'),
+//            $source:$('#inp_source'),
             $userSex: $('input[name="gender"]', this.$form),
             $marriage: $("#inp_select_marriage"),
             $userType: $("#inp_select_userType"),
@@ -155,19 +155,19 @@
                 });
 
 
-                this.$source.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 26
-                    },
-                    onSuccess: function () {
-                        self.$form.Fields.fillValues({sourceName:user.sourceName,});
-                    },
+                <%--this.$source.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 26--%>
+                    <%--},--%>
+                    <%--onSuccess: function () {--%>
+                        <%--self.$form.Fields.fillValues({sourceName:user.sourceName,});--%>
+                    <%--},--%>
 
-                });
+                <%--});--%>
                 this.$form.attrScan();
                 this.$form.Fields.fillValues({
                     id: user.id,

@@ -11,8 +11,9 @@
         var seq = parent.getSeq();
         var mode = '${mode}';
         if(!Util.isStrEquals(mode,'new')){
-            var orgDataSetJsonModel = '${info}';
-            var info = $.parseJSON(orgDataSetJsonModel);
+            <%--var orgDataSetJsonModel = '${info}';--%>
+//            var info = $.parseJSON(orgDataSetJsonModel);
+            var info = ${info};
         }
         var cfgModel = parent.getDialogOpener();
         var cfg = [
