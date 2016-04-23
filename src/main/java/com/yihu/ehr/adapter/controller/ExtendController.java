@@ -1,10 +1,13 @@
 package com.yihu.ehr.adapter.controller;
 
 import com.yihu.ehr.adapter.service.ExtendService;
+import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +29,18 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
     @Autowired
     public T service;
 
+    @Value("${service-gateway.username}")
+    private String username;
+    @Value("${service-gateway.password}")
+    private String password;
+    @Value("${service-gateway.url}")
+    private String comUrl;
+
     public String listUrl = "";
     public String modifyUrl = "";
     public String addUrl = "";
 
     public Map<String, String> comboKv = null;
-
 
     public void init(String listUrl, String modifyUrl){
         this.init(listUrl, modifyUrl, modifyUrl);
@@ -53,9 +62,10 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
 
     @RequestMapping("/gotoModify")
-    public Object gotoModify(Model model, String id, String mode, String extParms){
+    public Object gotoModify(Model model, String id, String mode, String extParms,String orgCode){
+
+        Envelop envelop = new Envelop();
         try {
-            Envelop envelop = new Envelop();
             if (!StringUtils.isEmpty(id)){
                 Map<String, Object> params = new HashMap<>();
                 params.put("id",id);
@@ -73,6 +83,16 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
             plan = afterGotoModify(plan);
 
+
+
+            String getOrgUrl = "/organizations/" + orgCode;
+            Map<String, Object> params = new HashMap<>();
+            params.put("orgCode", orgCode);
+
+            String resultStr = HttpClientUtil.doGet(comUrl + getOrgUrl, params, username, password);
+            envelop = toModel(resultStr,Envelop.class);
+
+            model.addAttribute("orgData",toJson(envelop.getObj()));
             model.addAttribute("model",toJson(plan));
             model.addAttribute("mode",mode);
             model.addAttribute("contentPage", getModeUrl(mode));

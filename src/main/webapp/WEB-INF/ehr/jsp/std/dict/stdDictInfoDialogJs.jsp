@@ -51,7 +51,8 @@
 
                 this.$form.attrScan();
 
-				var info = $.parseJSON('${info}')
+				<%--var info = $.parseJSON('${info}')--%>
+				var info = ${info};
                 this.$form.Fields.fillValues({
                     name: info.name,
                     code: info.code,

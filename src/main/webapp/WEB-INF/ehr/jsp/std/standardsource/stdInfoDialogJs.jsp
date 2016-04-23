@@ -43,8 +43,8 @@
                 this.$form.attrScan();
 				var std = '';
 				if(mode == 'modify'){
-					var envelop = JSON.parse('${envelop}');
-					var std = envelop.obj;
+					<%--var envelop = JSON.parse('${envelop}');--%>
+					var std = ${envelop}.obj;
 				}
                 this.$form.Fields.fillValues({
                     name: std.name,

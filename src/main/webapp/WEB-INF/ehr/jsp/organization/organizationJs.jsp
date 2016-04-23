@@ -96,7 +96,6 @@
             };
             master = {
                 orgInfoDialog: null,
-                updateOrgInfoDialog: null,
                 grid: null,
                 init: function () {
                     this.grid = $("#div_org_info_grid").ligerGrid($.LigerGridEx.config({
@@ -117,17 +116,17 @@
                             {display: '联系方式', name: 'tel', width: '8%', align: "left"},
                             {display: '机构地址', name: 'locationStrName', width: '20%', align: "left"},
                             {
-                                display: '是否激活',
+                                display: '是否生/失效',
                                 name: 'activityFlagName',
                                 width: '8%',
                                 isAllowHide: false,
                                 render: function (row) {
                                     var html = '';
                                     if (row.activityFlag == 1) {
-                                        html += '<a class="grid_on" title="已激活" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '1') + '"></a>';
+                                        html += '<a class="grid_on" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '1','失效') + '"></a>';
 
                                     } else {
-                                        html += '<a class="grid_off" title="未激活" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '0') + '"></a>';
+                                        html += '<a class="grid_off" title="未生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:activityFlg", row.orgCode, '0','生效') + '"></a>';
 
                                     }
                                     return html;
@@ -206,7 +205,7 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    self.updateOrgInfoDialog = $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
+                    $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
                         var title = '修改机构信息';
                         self.orgInfoDialog = $.ligerDialog.open({
                             isHidden: false,
@@ -221,8 +220,8 @@
                             }
                         });
                     });
-                    $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg) {
-                        $.ligerDialog.confirm('确认修改该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                    $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg,msg) {
+                        $.ligerDialog.confirm('是否对该机构进行'+msg+'操作', function (yes) {
                             if (yes) {
                                 self.activity(orgCode, activityFlg);
                             }
@@ -264,10 +263,14 @@
                     callback.call(win);
                     master.reloadGrid();
                 }
-                debugger
-                retrieve.addOrgInfoDialog.close();
+                if (!Util.isStrEmpty(retrieve.addOrgInfoDialog)){
+                    retrieve.addOrgInfoDialog.close();
+                }else {
+                    master.orgInfoDialog.close();
+                }
 
-                master.updateOrgInfoDialog.close();
+
+
             };
 
             /* *************************** 页面初始化 **************************** */
