@@ -6,11 +6,14 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.RestTemplates;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +35,9 @@ public class CdaController extends BaseUIController{
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+    @Value("${service-gateway.standard}")
+    public String standardUrl;
 
     @RequestMapping("initial")
     public String cdaInitial(Model model) {
@@ -417,14 +423,17 @@ public class CdaController extends BaseUIController{
             return result;
         }
         try {
-            String url = "/cda/SaveRelationship";
-            Map<String, Object> params = new HashMap<>();
-            params.put("dataSetIds", strDatasetIds);
-            params.put("cdaId", strCdaId);
-            params.put("versionCode", strVersionCode);
-            params.put("xmlInfo", xmlInfo);
-            String _rus = HttpClientUtil.doPost(comUrl + url, params, username, password);
-//todo:数据集选择过存在http请求头太大问题
+            MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
+            conditionMap.add("data_set_ids", strDatasetIds);
+            conditionMap.add("document_Id", strCdaId);
+            conditionMap.add("version", strVersionCode);
+            conditionMap.add("xml_info", xmlInfo);
+            String url = standardUrl + "/documents/data_set_relationships";
+
+            RestTemplates template = new RestTemplates();
+            String _rus = template.doPost(url, conditionMap);
+
+
             //测试
 //            conditionMap.add("dataSetIds", strDatasetIds);
 //            conditionMap.add("cdaId", strCdaId);

@@ -108,7 +108,7 @@
               { display: '标准代码', name: 'code',hide:true,  isAllowHide: false },
               { display: '标准类别', name: 'typeValue', width: '15%' ,align:'left'},
               { display: '标准名称',name: 'name', width: '25%', align:'left', isAllowHide: false },
-              { display: '采集机构', name: 'orgValue', width: '23%',resizable: true ,align:'left'},
+              { display: '发布机构', name: 'orgValue', width: '23%',resizable: true ,align:'left'},
               { display: '继承标准', name: 'parentValue', width: '25%',minColumnWidth: 20 ,align:'left'},
               { display: '操作', name: 'operator', width: '12%', render: function (row) {
 //				  var html ='<div class="grid_edit"  style=""  title="维护" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterInfo:manager", row.code,'manager') + '"></div>'
