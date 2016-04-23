@@ -96,7 +96,6 @@
             };
             master = {
                 orgInfoDialog: null,
-                updateOrgInfoDialog: null,
                 grid: null,
                 init: function () {
                     this.grid = $("#div_org_info_grid").ligerGrid($.LigerGridEx.config({
@@ -206,7 +205,7 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    self.updateOrgInfoDialog = $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
+                    $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
                         var title = '修改机构信息';
                         self.orgInfoDialog = $.ligerDialog.open({
                             isHidden: false,
@@ -264,10 +263,14 @@
                     callback.call(win);
                     master.reloadGrid();
                 }
-                debugger
-                retrieve.addOrgInfoDialog.close();
+                if (!Util.isStrEmpty(retrieve.addOrgInfoDialog)){
+                    retrieve.addOrgInfoDialog.close();
+                }else {
+                    master.orgInfoDialog.close();
+                }
 
-                master.updateOrgInfoDialog.close();
+
+
             };
 
             /* *************************** 页面初始化 **************************** */

@@ -149,7 +149,6 @@
                     this.$filePicker.addClass("hidden");
                 }
                 if ('${mode}' == 'modify') {
-                    debugger
                     //this.$publicManage.hide();
                 }
                 var pic = org.imgRemotePath;
@@ -224,6 +223,8 @@
                                     win.parent.$.Notice.success('修改成功');
                                 });
                             } else {
+                                win.parent.closeAddOrgInfoDialog(function () {
+                                });
                                 window.top.$.Notice.error(data.errorMsg);
                             }
                         }

@@ -60,7 +60,8 @@
 				}
                 this.$form.attrScan();
                 if(mode !='new'){
-                    var app = (JSON.parse('${app}')).obj;
+                    <%--var app = (JSON.parse('${app}')).obj;--%>
+                    var app = ${app}.obj;
 					var tags = '';
 					for(var i=0;i<app.tags.length;i++){
 						tags += (app.tags)[i]+';'

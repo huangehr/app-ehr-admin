@@ -17,7 +17,8 @@
         var orgData;
         var versions;
         var types;
-        var adapterPlan = $.parseJSON('${model}');
+        <%--var adapterPlan = $.parseJSON('${model}');--%>
+        var adapterPlan = ${model};
         var firstInit = true;
         /* ************************** 变量定义结束 **************************** */
 

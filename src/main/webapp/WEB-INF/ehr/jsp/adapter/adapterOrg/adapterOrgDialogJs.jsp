@@ -12,7 +12,8 @@
         var initType = '${initType}';
         var frm = '${frm}';
         if(!Util.isStrEquals(mode,'new')){
-            var info = JSON.parse('${info}');
+            <%--var info = JSON.parse('${info}');--%>
+            var info = ${info};
         }
 
         /* *************************** 函数定义 ******************************* */
