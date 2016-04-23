@@ -15,7 +15,7 @@
   .pop_tab {
     height: 36px;
     line-height: 36px;
-    background: url(${staticRoot}/images/sub_bg_01.gif) #d4e7f0 repeat-x left bottom;
+    background: url(${staticRoot}/images/sub_bg_01.png) #d4e7f0 repeat-x left bottom;
     padding-left: 2px;
   }
 
