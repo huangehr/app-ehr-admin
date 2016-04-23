@@ -30,4 +30,5 @@
 
 .l-layout-left .mCSB_inside > .mCSB_container{margin-right:0px}
 
+.l-layout-drophandle-left{ display:none!important;}
 /*.menucyc ul{  width:190px;position:absolute; border:1px #ddd solid;left:190px;top:-1px; display:none; }*/
