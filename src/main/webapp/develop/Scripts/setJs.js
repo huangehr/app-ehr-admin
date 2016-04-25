@@ -638,18 +638,18 @@ set.elementAttr = {
         var url = set.list._url + "/std/dataset/getMetaDataDict?version=" + version;
         set.elementAttr.dict_select = $("#criterionDict").ligerComboBox({
             condition: { inputWidth: 90 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: 'param', label:''}] },
-            url: url,
+            //url: url,
             grid: getGridOptions(true),
             valueField: 'id',
             textField: 'name',
-            width : 240,
+            width : 230,
             selectBoxHeight : 260,
             //selectBoxWidth: 400,
-            autocomplete: true,
-            keySupport: true,
+            //autocomplete: true,
             //width: 400,
             onSelected: function(id,name){
                 $("#criterionDict").val(name);
+                //$("#criterionDict").blur();
             },
             conditionSearchClick: function (g) {
                 var param = g.rules.length>0? g.rules[0].value : '';
@@ -662,9 +662,9 @@ set.elementAttr = {
             },
             onSuccess: function () {
                 //set.elementAttr.dict_select.setValue(initValue);
-                $("#criterionDict").css({"width": 213, "height": 28});
-                $(".l-text-combobox").css({"width": 229});
-                $(".l-box-select-absolute").css({"width": 229});
+                //$("#criterionDict").css({"width": 213, "height": 27});
+                //$(".l-text-combobox").css({"width": 229});
+                //$(".l-box-select-absolute").css({"width": 229});
             },
             onAfterSetData: function () {
 
