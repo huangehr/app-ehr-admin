@@ -71,7 +71,7 @@
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     $.ligerDialog.alert("保存成功", function () {
                         win.parent.closeAddUserInfoDialog(function () {
-                            win.parent.$.Notice.success('用户新增成功');
+                            //win.parent.$.Notice.success('用户新增成功');
                         });
                     });
                 });
