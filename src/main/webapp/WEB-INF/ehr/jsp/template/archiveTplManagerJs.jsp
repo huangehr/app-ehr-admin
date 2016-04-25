@@ -5,17 +5,24 @@
 <script>
     (function ($, win) {
         $(function () {
+            /* ************************** 全局变量定义 **************************** */
+
             var urls = {
                 list: "${contextRoot}/template/list",
                 gotoModify: "${contextRoot}/template/gotoModify",
                 delete: "${contextRoot}/template/lsit",
                 uploadTplFile: "${contextRoot}/template/update_tpl_content"
             }
-            /* ************************** 全局变量定义 **************************** */
+
             var Util = $.Util;
             var retrieve = null;
             var master = null;
-            var orgData = ${orgData};
+            var dataModel = '${dataModel}';
+            try{
+                dataModel = eval('(' + dataModel + ')');
+            }catch(e){
+                dataModel = {};
+            }
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
@@ -40,17 +47,20 @@
                 $addBtn: $('#btn_add'),
 
                 init: function () {
+                    if(dataModel.orgCode){
+                        $('#headerArea').css('height', '80px');
+                        $('#conditionArea').show();
+                        $('#h_org_type').val(dataModel.orgType);
+                        $('#h_org_code').val(dataModel.orgCode);
+                        $('#h_org_name').val(dataModel.orgName);
+                        this.$searchOrgName.attr('placeholder', '请输入模版名称');
+                    }
                     this.initVersionDDL(this.$searchVersionDDL);
                     this.$searchOrgName.ligerTextBox({width: 240,isSearch:true,search: function() {
                         master.reloadGrid();
                     }});
                     this.$element.show();
                     this.$element.attrScan();
-                    if(!Util.isStrEmpty(orgData)){
-                        this.$searchOrgName.val(orgData.orgName)
-                        $("#div-searchNm").addClass("m-form-readonly");
-                        $("#a-back").removeClass("hidden");
-                    }
                 },
                 initVersionDDL: function (target) {
                     var dataModel = $.DataModel.init();
@@ -134,9 +144,15 @@
                     this.grid.adjustToWidth();
                 },
                 formatParms: function (values) {
+                    var ext = {
+                        searchName: values.orgName
+                    }
+                    if(dataModel.orgCode){
+                        ext.orgCode = dataModel.orgCode;
+                    }
                     return {
                         filters: "cdaVersion="+values.version,
-                        extParms: '{"searchName":"'+ values.orgName+'"}'
+                        extParms: JSON.stringify(ext)
                     }
                 },
                 reloadGrid: function () {
@@ -147,11 +163,13 @@
                     var self = this;
                     $.subscribe('tpl:tplInfo:open',function(event,id,mode){
                         var urlParms = {};
-                        if(!Util.isStrEmpty(id)){
-                        urlParms['id'] = id;
-                        }
+                        if(!Util.isStrEmpty(id))
+                            urlParms['id'] = id;
+
+                        if(dataModel.orgCode)
+                            urlParms['extParms'] = JSON.stringify({orgCode: dataModel.orgCode});
+
                         urlParms['mode'] = mode;
-                        urlParms['orgCode'] = orgData.orgCode;
 						var title = '新增模板';
 						if(mode=='copy'){
 							title='复制模板';
@@ -166,7 +184,7 @@
                             urlParms: urlParms,
                             isHidden: false,
                             opener: true,
-                            load: true,
+                            load: true
                         });
                     });
 
