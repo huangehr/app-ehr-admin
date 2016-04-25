@@ -1,5 +1,5 @@
 package com.yihu.ehr.patient.controller;
-import com.sun.net.httpserver.HttpsServer;
+
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
@@ -7,15 +7,12 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.RestTemplates;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
-import org.apache.catalina.connector.CoyoteInputStream;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.ResizableByteArrayOutputStream;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,11 +21,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.util.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

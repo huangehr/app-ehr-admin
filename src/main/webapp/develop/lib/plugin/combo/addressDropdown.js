@@ -253,6 +253,9 @@
             var name = data[key][ds.value];
             var abbrChars = $.Pinyin.getAbbrChars(name);
             var fullChars = $.Pinyin.getFullChars(name);
+            if(!$.trim(abbrChars) && name.length) {
+                abbrChars = name.charAt(0).toLocaleUpperCase();
+            }
             dataTemp.push(Util.format("{0}||{1}||{2}||{3}",abbrChars,fullChars,id,name));
         }
         dataTemp.sort();
