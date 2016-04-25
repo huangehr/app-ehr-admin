@@ -29,8 +29,8 @@ public class HomeRelationshipController extends BaseUIController {
 
 
     @RequestMapping("/home_relationship")
-    public String homeRelationship(Model model) {
-
+    public String homeRelationship(Model model,String id) {
+        model.addAttribute("id", id);
         model.addAttribute("contentPage", "patient/homeRelationship");
         return "simpleView";
 
@@ -47,7 +47,7 @@ public class HomeRelationshipController extends BaseUIController {
             queryBuilder.setPageSize(rows);
             queryBuilder.addFilter("householderIdCardNo","=",id,"");
 
-            String result = restTemplates.doGet(comUrl + url+"?"+queryBuilder.toString(), id, page, rows);
+            String result = restTemplates.doGet(comUrl + url+"?"+queryBuilder.toString(), page, rows);
             return result;
         }
         catch (Exception ex)
@@ -57,6 +57,7 @@ public class HomeRelationshipController extends BaseUIController {
     }
 
     @RequestMapping("/home_group_list")
+    @ResponseBody
     public Object getHomeGroupList(String id,int page,int rows)
     {
         try {
@@ -65,7 +66,7 @@ public class HomeRelationshipController extends BaseUIController {
             queryBuilder.setPageNumber(page);
             queryBuilder.setPageSize(rows);
             queryBuilder.addFilter("idCardNo","=",id,"");
-            String result = restTemplates.doGet(comUrl + url, id, page, rows);
+            String result = restTemplates.doGet(comUrl + url+"?"+queryBuilder.toString(), page, rows);
             return result;
         }
         catch (Exception ex)

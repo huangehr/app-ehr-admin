@@ -291,9 +291,10 @@
                 $(this).addClass('cur');
                 $("#div_patient_info_form").hide();
                 $("#div_home_relation").show();
-                $.get("${contextRoot}/home_relation/home_relationship",function(data){
+                console.log("carc_no:"+$("#inp_idCardNo").val());
+                $.get("${contextRoot}/home_relation/home_relationship?id="+$("#inp_idCardNo").val(),function(data){
                     $("#div_home_relation").html(data);
-                    home.list.event();
+                    home.list.init();
                 });
             });
         };
