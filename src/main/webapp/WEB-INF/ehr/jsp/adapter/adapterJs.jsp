@@ -190,7 +190,7 @@
 //										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3},'{4}','{5}'])", "adapter:adapterInfo:release", row.org,row.version,text,row.id) + '"></div>';
                                 html += '<a class="label_a" title="'+text+'" style="margin-left:5px; href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "adapter:adapterInfo:release", row.org, row.version,text,row.id) + '">' + text + '</a>';
 								html += '<a class="grid_edit" title="编辑" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}',])", "adapter:adapterInfo:open", row.id, 'modify') + '"></a>' +
-								'<a class="grid_delete" title="删除" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "adapter:adapterInfo:delete", row.id) + '"></a>';
+								'<a class="grid_delete" title="删除" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterInfo:delete",row.id,row.status) + '"></a>';
 
 
 								return html;
@@ -251,6 +251,12 @@
                     retrieve.$deleteBtn.click(function () {
                         var rows = adapterGrid.getSelectedRows();
                         if (rows.length > 0) {
+                            for(var j = 0; j<rows.length; j++){
+                                if(Util.isStrEquals(rows[j].status,1)){
+                                    $.Notice.error("方案代码"+rows[j].code+"处于已发布状态，不可删除！");
+                                    return
+                                }
+                            }
                             $.ligerDialog.confirm('确定删除这些方案信息?', function (yes) {
                                 if (yes) {
                                     var id = "";
@@ -270,9 +276,10 @@
                     });
                     //删除适配方案
                     $.subscribe('adapter:adapterInfo:delete', function (event, id,status) {
+                        debugger
                         if(status==1)
                         {
-                            $.ligerDialog.tip("已发布方案不可删除！");
+                            $.Notice.error("已发布方案不可删除！");
                             return;
                         }
 

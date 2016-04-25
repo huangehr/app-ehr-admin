@@ -6,7 +6,6 @@ import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.RestTemplates;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.encode.Base64;
 import com.yihu.ehr.util.log.LogService;
 import org.apache.catalina.connector.CoyoteInputStream;
 import org.apache.commons.lang.ArrayUtils;
@@ -24,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.util.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -195,7 +195,7 @@ public class PatientController extends BaseUIController {
             }
             inputStream.close();
 
-            String restStream = Base64.encode(fileBuffer);
+            String restStream = Base64.getEncoder().encodeToString(fileBuffer);
             String imageStream = URLEncoder.encode(restStream, "UTF-8");
 
             params.add("inputStream", imageStream);
@@ -323,7 +323,7 @@ public class PatientController extends BaseUIController {
 //                outputStream.write(buffer, 0, count);
 //            outputStream.flush();
 
-            byte[] bytes = Base64.decode(imageStream);
+            byte[] bytes = Base64.getDecoder().decode(imageStream);
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {

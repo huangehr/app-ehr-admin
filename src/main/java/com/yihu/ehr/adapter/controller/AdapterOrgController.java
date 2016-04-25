@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.print.DocFlavor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -194,11 +195,25 @@ public class AdapterOrgController extends BaseUIController {
 
         String url = "/adapterOrg/orgs";
         String resultStr = "";
+        String filters = "org="+code;
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("codes",code);
         try {
-            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+
+            params.put("fields", "");
+            params.put("filters",filters);
+            params.put("sorts","");
+            params.put("page",1);
+            params.put("size",code.split(",").length);
+
+            resultStr = HttpClientUtil.doGet(comUrl + "/adapter/plans", params, username, password);
+            result = toModel(resultStr,Envelop.class);
+            if (result.getDetailModelList().size() > 0){
+                return resultStr;
+            }else {
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            }
 
             return resultStr;
         } catch (Exception e) {
