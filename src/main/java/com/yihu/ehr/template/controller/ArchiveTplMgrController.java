@@ -2,6 +2,7 @@ package com.yihu.ehr.template.controller;
 
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.PageParms;
+import com.yihu.ehr.agModel.template.TemplateModel;
 import com.yihu.ehr.template.service.TemplateService;
 import com.yihu.ehr.util.Envelop;
 import org.apache.commons.lang.StringUtils;
@@ -56,11 +57,12 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
 
     @RequestMapping("validateTitle")
     @ResponseBody
-    public Object validateTitle(String version, String title) {
+    public Object validateTitle(String version, String title, String orgCode) {
         String url = "/template/title/existence";
         Map<String, Object> params = new HashMap<>();
         params.put("version", version);
         params.put("title", title);
+        params.put("org_code", orgCode);
 
         try {
             String resultStr = service.search(url, params);
@@ -103,5 +105,31 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
             e.printStackTrace();
             return faild("系统出错！");
         }
+    }
+
+    @Override
+    public Object afterGotoModify(Object rs, Map params) {
+
+        if("new".equals(params.get("mode"))){
+            String orgCode;
+            TemplateModel template = (TemplateModel) rs;
+            if(!StringUtils.isEmpty(orgCode = (String) params.get("orgCode"))){
+                try {
+                    Envelop envelop = getEnvelop(
+                            service.doGet(
+                                    service.comUrl + "/organizations/" + orgCode, new HashMap<>()));
+                    if(envelop.isSuccessFlg()){
+                        Map<String, String> obj = (Map<String, String>) envelop.getObj();
+                        template.setOrganizationCode(obj.get("orgCode"));
+                        template.setProvince(obj.get("province"));
+                        template.setCity(obj.get("city"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return template;
+        }
+        return rs;
     }
 }
