@@ -70,7 +70,7 @@ public class AdapterOrgController extends BaseUIController {
             else {
                 model.addAttribute("initType",type);
             }
-            model.addAttribute("info", resultStr);
+            model.addAttribute("info", StringUtils.isEmpty(resultStr)?toJson(result):resultStr);
             model.addAttribute("mode",mode);
             model.addAttribute("frm",frm);
             model.addAttribute("contentPage","/adapter/adapterOrg/adapterOrgDialog");
