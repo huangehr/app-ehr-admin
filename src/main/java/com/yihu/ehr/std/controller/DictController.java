@@ -2,6 +2,7 @@ package com.yihu.ehr.std.controller;
 
 import com.yihu.ehr.agModel.standard.dict.DictEntryModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.Envelop;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -132,9 +134,12 @@ public class DictController  extends BaseUIController {
      */
     @RequestMapping("saveDict")
     @ResponseBody
-    public Object saveDict(String cdaVersion, String dictId, String code, String name, String baseDict, String stdSource, String stdVersion, String description,String userId) {
+    public Object saveDict(String cdaVersion, String dictId, String code, String name, String baseDict, String stdSource, String stdVersion, String description,HttpServletRequest request) {
         Envelop result = new Envelop();
         String resultStr = "";
+
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        String userId = userDetailModel.getId().toString();
 
         if (StringUtils.isEmpty(cdaVersion)) {
             result.setSuccessFlg(false);
@@ -161,6 +166,7 @@ public class DictController  extends BaseUIController {
         dictModel.setSourceId(stdSource);
         dictModel.setDescription(description);
         dictModel.setAuthor(userId);
+        dictModel.setStdVersion(cdaVersion);
 
         params.put("version_code",cdaVersion);
         params.put("json_data",toJson(dictModel));
