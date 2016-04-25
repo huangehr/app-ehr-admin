@@ -18,7 +18,7 @@
         <label>原密码<spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="password" id="inp_old_passWord"
-                   class="required useTitle ajax validate-special-char" required-title=""
+                   class="required useTitle ajax validate-special-char" required-title=<spring:message code="lbl.must.input"/>
                    data-attr-scan="password"/>
         </div>
     </div>
@@ -26,7 +26,7 @@
         <label>输入新密码<spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential" id="div-pw-btn">
             <input type="password" id="inp_new_passWord" onkeyup="value=value.replace(/[\s\.\/]/ig,'')"
-                   class="required useTitle ajax length-range-8-16 validate-special-char" required-title="" data-attr-scan="newPassWord"/>
+                   class="required useTitle ajax length-range-8-16 validate-special-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="newPassWord"/>
         </div>
     </div>
     <div class="m-form-group f-ml100 f-w500">
@@ -55,8 +55,8 @@
         <label>再次输入<spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="password" id="inp_again_passWord" onkeyup="value=value.replace(/[\s\.\/]/ig,'')"
-                   class="required useTitle ajax equals-inp_new_passWord validate-space validate-special-char" required-title=""
-                    <spring:message code="lbl.must.input"/> />
+                   class="required useTitle ajax equals-inp_new_passWord validate-space validate-special-char" required-title=<spring:message code="lbl.must.input"/>
+                     />
         </div>
     </div>
     <div id="div_changePassWord_toolbar" class="m-form-control pane-attribute-toolbar">

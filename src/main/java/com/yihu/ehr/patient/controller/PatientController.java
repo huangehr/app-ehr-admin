@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.util.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -192,8 +194,8 @@ public class PatientController extends BaseUIController {
                 fileBuffer = ArrayUtils.addAll(fileBuffer, ArrayUtils.subarray(tempBuffer, 0, temp));
             }
             inputStream.close();
+
             String restStream = Base64.getEncoder().encodeToString(fileBuffer);
-            //String restStream = Base64.encode(fileBuffer);
             String imageStream = URLEncoder.encode(restStream, "UTF-8");
 
             params.add("inputStream", imageStream);
@@ -320,8 +322,8 @@ public class PatientController extends BaseUIController {
 //            while ((count = fis.read(buffer)) != -1)
 //                outputStream.write(buffer, 0, count);
 //            outputStream.flush();
+
             byte[] bytes = Base64.getDecoder().decode(imageStream);
-            //byte[] bytes = Base64.decode(imageStream);
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {

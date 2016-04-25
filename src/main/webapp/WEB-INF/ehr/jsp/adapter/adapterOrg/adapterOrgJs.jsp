@@ -195,6 +195,10 @@
                 dataModel.updateRemote('${contextRoot}/adapterorg/delAdapterOrg',{
                   data:{code:code},
                   success:function(data){
+                    if(!Util.isStrEmpty(data.detailModelList)){
+                      $.Notice.error('该标准已存在适配方案,不可删除');
+                      return;
+                    }
                     if(data.successFlg){
                       $.Notice.success( '删除成功！');
                       master.reloadGrid();

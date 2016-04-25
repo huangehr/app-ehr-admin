@@ -68,7 +68,7 @@
 											$.Notice.success( '操作成功！');
 											master.reloadGrid();
 										}else{
-											$.Notice.error('操作失败');
+											$.Notice.error(data.errorMsg);
 										}
                                     }
                                 });
