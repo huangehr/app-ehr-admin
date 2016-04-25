@@ -50,6 +50,7 @@ public class StdSourceManagerController extends BaseUIController {
 
     @RequestMapping("template/stdInfo")
     public String stdInfoTemplate(Model model, String id, String mode) {
+        Envelop envelop = new Envelop();
         String url = "/source/"+id;
         String envelopStr = "";
         try{
@@ -57,7 +58,7 @@ public class StdSourceManagerController extends BaseUIController {
         }catch(Exception ex){
             LogService.getLogger(StdSourceManagerController.class).error(ex.getMessage());
         }
-        model.addAttribute("envelop", envelopStr);
+        model.addAttribute("envelop", StringUtils.isEmpty(envelopStr)?toJson(envelop):envelopStr);
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","/std/standardsource/stdInfoDialog");
         return "simpleView";
