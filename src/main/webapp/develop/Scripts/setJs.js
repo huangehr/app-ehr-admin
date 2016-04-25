@@ -231,13 +231,13 @@ set.list = {
                     u.getElementList(versionCode, rowdata.id);
                 },
                 onAfterShowData: function (currentData) {
-                    u.grid.select(0);
-                    //if (set.list.selectObj != null) {
-                    //    u.grid.select(set.list.selectObj);
-                    //}
-                    //else {
-                    //    u.grid.select(0);
-                    //}
+                    //u.grid.select(0);
+                    if (set.list.selectObj != null) {
+                        u.grid.select(set.list.selectObj);
+                    }
+                    else {
+                        u.grid.select(0);
+                    }
                 },
                 onError: function (a, b) {
                 }

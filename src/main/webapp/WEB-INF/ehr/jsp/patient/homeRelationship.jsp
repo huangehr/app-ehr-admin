@@ -25,6 +25,6 @@
     </div>
 
     <input type="hidden" id="hd_url" value="${contextRoot}"/>
-    <input type="hidden" id="hd_id" value="<%request.getParameter("id");%>"/>
+    <input type="hidden" id="hd_id" value="${id}"/>
   </div>
 </div>
