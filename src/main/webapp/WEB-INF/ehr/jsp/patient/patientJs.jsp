@@ -96,8 +96,8 @@
                             var wait=null;
                             wait = $.Notice.waitting('正在加载中...');
                             var dialog = $.ligerDialog.open({
-                                title:'',
-                                height: 600,
+                                title:'人口基本属性',
+                                height: 625,
                                 width: 570,
                                 url: '${contextRoot}/patient/patientDialogType',
                                 load: true,
@@ -144,10 +144,13 @@
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){
                         $.ligerDialog.open({
-                            isHidden:true,
+                            isHidden:false,
                             title:'新增人口信息',
                             width:600,
                             height:600,
+                            load: true,
+                            isDrag:true,
+                            show:false,
                             url:'${contextRoot}/patient/patientDialogType',
                             urlParms:{
                                 patientDialogType:'addPatient'
@@ -157,10 +160,13 @@
                     //修改人口信息
                   $.subscribe('patient:patientInfoModifyDialog:open',function(event,idCardNo){
                         $.ligerDialog.open({
-                            isHidden:true,
+                            isHidden:false,
                             title:'修改人口信息',
                             width:600,
-                            height:700,
+                            height:720,
+                            load: true,
+                            isDrag:true,
+                            show:false,
                             url:'${contextRoot}/patient/patientDialogType',
                             urlParms:{
                                 idCardNo:idCardNo,
