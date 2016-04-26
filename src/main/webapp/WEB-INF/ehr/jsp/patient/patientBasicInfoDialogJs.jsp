@@ -21,16 +21,50 @@
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
-            var wrap = '<span style="position:relative; z-index:10;">' +
-                    '<div class="f-ib f-tac f-w100 f-click-down" id="div_patientBasicMsgDialog">病人基本信息</div>' +
-                    '<div class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_cardManagerDialog">卡管理</div>' +
-                    '<div class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_archiveManagerDialog">档案管理</div>' +
-                    '<div class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_familyManagerDialog">家庭管理</div>' +
-                    '</span>';
-            $('.l-dialog .l-dialog-tc-inner').eq(1).append( $(wrap));
-            $('.l-dialog .l-dialog-title').eq(1).css({position:'absolute',left:-40,width:'100%',height:40,'z-index': 2});
             patientInfo.init();
-            $(window).resize();
+            tab_click();
+        }
+        function tab_click(){
+            $("#btn_basic").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_patient_info_form").show();
+                $("#div_card_info").hide();
+                $("#div_home_relation").hide();
+                $("#div_archive_info").hide();
+                $(window).resize();
+            });
+            $("#btn_card").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_card_info").show();
+                $("#div_patient_info_form").hide();
+                $("#div_home_relation").hide();
+                $("#div_archive_info").hide();
+                $(window).resize();
+            });
+            $("#btn_archive").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_archive_info").show();
+                $("#div_patient_info_form").hide();
+                $("#div_card_info").hide();
+                $("#div_home_relation").hide();
+                $(window).resize();
+            });
+            $("#btn_home_relation").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_home_relation").show();
+                $("#div_patient_info_form").hide();
+                $("#div_card_info").hide();
+                $("#div_archive_info").hide();
+                $.get("${contextRoot}/home_relation/home_relationship",function(data){
+                    $("#div_home_relation").html(data);
+                    home.list.event();
+                });
+                $(window).resize();
+            });
         }
         function cardInfoRefresh(){
             var searchNm = cardFormInit.$cardSearch.val();
@@ -50,9 +84,7 @@
         patientInfo = {
             $form: $("#div_patient_info_form"),
             $cardInfo:$("#div_card_info"),
-            $cardForm: $("#div_card_info_form"),
             $archiveInfo:$("#div_archive_info"),
-            $archiveForm: $("#div_archive_info_form"),
 
             $realName: $("#inp_realName"),
             $idCardNo: $("#inp_idCardNo"),
@@ -77,6 +109,9 @@
                 this.bindEvents();
                 cardFormInit.init();
                 archiveFormInit.init();
+                $("#div_card_info").hide();
+                $("#div_home_relation").hide();
+                $("#div_archive_info").hide();
             },
             initForm: function () {
                 this.$realName.ligerTextBox({width: 240});
@@ -132,42 +167,12 @@
                 this.$birthPlaceTitle.attr("title",patientModel.birthPlaceFull);
                 this.$homeAddressTitle.attr("title",patientModel.homeAddressFull);
                 this.$workAddressTitle.attr("title",patientModel.workAddressFull);
-                this.$cardForm.attrScan();
                 var pic = patientModel.picPath;
                 if(!(Util.isStrEquals(pic,null)||Util.isStrEquals(pic,""))){
                     this.picPath.html('<img src="${contextRoot}/patient/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110" ></img>');
                 }
             },
             bindEvents: function () {
-                //标签页切换
-                var patientBasicMsgDialog = $("#div_patientBasicMsgDialog");
-                var cardManagerDialog = $("#div_cardManagerDialog");
-                var archiveManagerDialog = $("#div_archiveManagerDialog");
-                var self = patientInfo;
-                patientBasicMsgDialog.click(function () {
-                    patientBasicMsgDialog.addClass("f-click-down").removeClass("f-click-up");
-                    cardManagerDialog.removeClass("f-click-down").addClass("f-click-up");
-                    archiveManagerDialog.removeClass("f-click-down").addClass("f-click-up");
-                    self.$form.show();
-                    self.$cardInfo.css('visibility', 'hidden');
-                    self.$archiveInfo.css('visibility', 'hidden');
-                });
-                cardManagerDialog.click(function () {
-                    cardManagerDialog.addClass("f-click-down").removeClass("f-click-up");
-                    patientBasicMsgDialog.removeClass("f-click-down").addClass("f-click-up");
-                    archiveManagerDialog.removeClass("f-click-down").addClass("f-click-up");
-                    self.$cardInfo.css('visibility', 'visible');
-                    self.$archiveInfo.css('visibility', 'hidden');
-                    self.$form.hide();
-                });
-                archiveManagerDialog.click(function () {
-                    archiveManagerDialog.addClass("f-click-down").removeClass("f-click-up");
-                    cardManagerDialog.removeClass("f-click-down").addClass("f-click-up");
-                    patientBasicMsgDialog.removeClass("f-click-down").addClass("f-click-up");
-                    self.$archiveInfo.css('visibility', 'visible');
-                    self.$cardInfo.css('visibility', 'hidden');
-                    self.$form.hide();
-                });
             }
         };
         cardFormInit = {
@@ -175,6 +180,8 @@
             $addCard: $("#div_addCard"),
             $cardSearch: $("#inp_card_search"),
             $cardBasicMsg: $("#div_card_basicMsg"),
+
+            $cardForm: $("#div_card_info_form"),
 
             $cardType:$("#inp_cardType"),
             $cardNo:$("#inp_cardNo"),
@@ -186,6 +193,7 @@
             $cardExplain:$("#inp_cardExplain"),
 
             init: function () {
+                this.$cardForm.attrScan();
                 this.$cardType.ligerTextBox({width: 240});
                 this.$cardNo.ligerTextBox({width: 240});
                 this.$holderName.ligerTextBox({width: 240});
@@ -214,7 +222,7 @@
                         cardInfoRefresh();
                     }
                 });
-                cardInfoGrid = $("#div_card_info_form").ligerGrid($.LigerGridEx.config({
+                cardInfoGrid = cardFormInit.$cardForm.ligerGrid($.LigerGridEx.config({
                     url: '${contextRoot}/card/searchCard',
                     parms: {
                         idCardNo: idCardNo,
@@ -247,7 +255,7 @@
                         dataModel.createRemote('${contextRoot}/card/getCard', {
                             data: {id: row.id,cardType:row.cardType},
                             success: function (data) {
-                                patientInfo.$cardForm.Fields.fillValues({
+                                cardFormInit.$cardForm.Fields.fillValues({
                                     cardType:data.obj.typeName,
                                     number:data.obj.number,
                                     ownerName:data.obj.ownerName,
@@ -314,6 +322,7 @@
             $selectEnd:$('#inp_select_end'),
             $selectArchiveOrg:$('#inp_select_archiveOrg'),
             $searchArchive:$('#div_search_archive'),
+            $archiveForm: $("#div_archive_info_form"),
             init: function () {
                 this.$selectStart.ligerDateEditor({format: "yyyy-MM-dd"});
                 this.$selectEnd.ligerDateEditor({format: "yyyy-MM-dd"});
@@ -345,7 +354,7 @@
                     ]
                 });
 
-                archiveInfoGrid = $("#div_archive_info_form").ligerGrid($.LigerGridEx.config({
+                archiveInfoGrid = this.$archiveForm.ligerGrid($.LigerGridEx.config({
                     <%--url: '${contextRoot}/archive/searchArchive',--%>
                     url: '${contextRoot}/card/searchCard',
                     parms: {

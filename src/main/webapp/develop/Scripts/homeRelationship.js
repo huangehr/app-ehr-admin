@@ -14,10 +14,12 @@ home.list={
     rows: null,
     enableData: [],
     init:function(){
-
+        //var id = $.Util.getUrlQueryString('id');
+        //$("#hd_id").val(id);
+        this.event();
     },
     getHomeMembersList: function () {
-        debugger;
+
         var _homeUrl = $("#hd_url").val();
         // 获取家庭关系列表
         var u= home.list;
@@ -35,7 +37,7 @@ home.list={
                 {display: '姓名', name: 'name', align: 'left'},
                 {display: '年龄', name: 'age', align: 'left'},
                 {display: '关系', name: 'relationshipName', align: 'left'},
-                {display: '关联时间', name: 'createTime', align: 'left'}
+                {display: '关联时间', name: 'relationTime', align: 'left'}
             ],
             pageSizeOptions: [10, 15, 20, 30, 40, 50],
             pageSize: 15,
@@ -47,12 +49,12 @@ home.list={
 
         window.grid = u.grid;
 
-        $(".l-grid-body2").css({
+        $("#div_home_relationship .l-grid-body2").css({
             'overflow-x':'hidden'
         });
     },
     getHomeGroupList:function(){
-        //TODO: 获取家庭群组列表
+        //获取家庭群组列表
         var u= home.list;
         var _id = $("#hd_id").val();
         var _homeUrl = $("#hd_url").val();
@@ -62,13 +64,15 @@ home.list={
             url: _homeUrl + "/home_relation/home_group_list",
             // 传给服务器的ajax 参数
             parms: {
-                id: _id
+                id: _id,
+                page:1,
+                rows:100
             },
             async: true,
             columns: [
                 {display: '户主', name: 'name', align: 'left'},
                 {display: '关系', name: 'relationshipName', align: 'left'},
-                {display: '关联时间', name: 'relationTime', align: 'left'}
+                {display: '关联时间', name: 'createTime', align: 'left'}
             ],
             pageSizeOptions: [10, 15, 20, 30, 40, 50],
             pageSize: 15,

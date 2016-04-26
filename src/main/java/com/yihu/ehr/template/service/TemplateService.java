@@ -1,7 +1,7 @@
 package com.yihu.ehr.template.service;
 
 import com.yihu.ehr.adapter.service.ExtendService;
-import com.yihu.ehr.model.profile.MTemplate;
+import com.yihu.ehr.agModel.template.TemplateModel;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  * @created 2016-4-18
  */
 @Service
-public class TemplateService extends ExtendService<MTemplate> {
+public class TemplateService extends ExtendService<TemplateModel> {
 
     public TemplateService() {
         init(

@@ -19,8 +19,6 @@
             var addArchiveTplInfo = null;
             var mode = '${mode}';
             var model = ${model};
-            model = Util.isStrEquals(model.id,"0")?${orgData}:${model};
-            <%--var orgData = ${orgData};--%>
             var version = parent.getVersion();
             var msg = mode == 'new' ? '新增' : mode=='copy'? '复制' : "修改";
             var firstInit = true;
@@ -80,6 +78,7 @@
                     });
 
                     this.$org.addressDropdown({
+                        lazyLoad: mode!='new' || (mode=='new' && !Util.isStrEmpty(model.organizationCode)),
                         width: 240,
                         selectBoxWidth: 240,
                         tabsData: [
@@ -98,15 +97,25 @@
                         ]
                     });
 
+                    $('#inp_versionNo_wrap').addClass('u-ui-readonly');
+                    if(mode=='new' && !Util.isStrEmpty(model.organizationCode))
+                        $('#inp_org_wrap').addClass('u-ui-readonly');
+
                     this.$form.attrScan();
-                    if(mode!='new')
-                        this.$form.Fields.fillValues({
-                            id: model.id,
-                            title: mode=='copy'? '': model.title,
-                            cdaVersion: model.cdaVersion,
-                            organizationCode: [model.province, model.city, model.organizationCode]
-                        });
+
+                    this.$form.Fields.fillValues({
+                        id: model.id,
+                        title: mode=='copy'? '': model.title,
+//                            cdaVersion: model.cdaVersion,
+                        organizationCode: [model.province, model.city, model.organizationCode]
+                    });
+
+                    var versionMgr = this.$versionNo.ligerGetComboBoxManager();
+                    versionMgr.selectValue(version.v);
+                    versionMgr.setText(version.n);
+
                     $('#oldTitle').val(model.title);
+                    $(this.$title).focus();
                 },
                 initCombo : function (target, url, parms, value, text, parentValue){
                     this.cda = target.customCombo(url, parms);
@@ -123,20 +132,23 @@
                             var values = addArchiveTplInfo.$form.Fields.getValues();
                             var newTitle = values.title;
                             var version = values.cdaVersion;
+                            var orgCode = values.organizationCode.keys[2];
                             if(mode=='modify'&&Util.isStrEquals(oldTitle,newTitle)){
                                 return true;
                             }else{
-                                return checkTitle(elm,version,newTitle);
+                                if(Util.isStrEmpty(orgCode))
+                                    return true;
+                                return checkTitle(elm, version, newTitle, orgCode);
                             }
                         }
                     })
 
-                    function checkTitle(elm,version,newTitle){
+                    function checkTitle(elm,version,newTitle,orgCode){
                         if(Util.isStrEquals($(elm).attr('id'),'inp_title')){
                             var result = new jValidation.ajax.Result();
                             var dataModel = $.DataModel.init();
                             dataModel.fetchRemote("${contextRoot}/template/validateTitle", {
-                                data: {version:version,title: newTitle},
+                                data: {version:version,title: newTitle, orgCode: orgCode},
                                 async: false,
                                 success: function (data) {
                                     if (data.successFlg) {

@@ -1,5 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<div class="pop_tab">
+    <ul>
+        <li class="cur" id="btn_basic">基础属性</li>
+        <li id="btn_card" >卡管理</li>
+        <li id="btn_archive" >档案管理</li>
+        <li id="btn_home_relation" >家庭关系</li>
+
+    </ul>
+</div>
 <!--######人口基本管理 > 人口基本信息对话框模板页######-->
 <div id="div_patient_info_form" data-role-form class="m-form-inline m-form-readonly f-mt20 f-pr">
     <div id="div_patient_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
@@ -106,7 +115,7 @@
 </div>
 
 <!--######卡管理 > 卡信息对话框模板页######-->
-<div id="div_card_info" class="f-pa card-dialog" data-role-form style=" visibility: hidden;left:0;top:0;">
+<div id="div_card_info" data-role-form class="m-form-inline">
     <div class="f-pr u-bd f-mt20">
         <div class="f-pa f-w70 f-wtl">
             已关联卡
@@ -119,7 +128,7 @@
                 <input type="text" id="inp_card_search" placeholder="卡号"/>
             </div>
             <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam  f-ml50" id="div_addCard">
-                <span>关联卡</span>
+                <span>认领卡</span>
             </div>
 
             <div id="div_card_info_form" data-role-form class="f-mt10">
@@ -193,7 +202,7 @@
 </div>
 
 <!--######档案管理 > 档案信息对话框模板页######-->
-<div id="div_archive_info" class="f-pa card-dialog" data-role-form style=" visibility: hidden;left:0;top:0;">
+<div id="div_archive_info" data-role-form class="m-form-inline" >
     <div class="f-pr u-bd f-mt20">
         <div class="f-pa f-w88 f-wtl">
             已关联档案
@@ -217,4 +226,7 @@
             </div>
         </div>
     </div>
+</div>
+<div id="div_home_relation" data-role-form class="m-form-inline">
+    这是家庭关系网
 </div>
