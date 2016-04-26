@@ -69,11 +69,12 @@
                     auto: false
                 });
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
-                    $.ligerDialog.alert("保存成功", function () {
+                    if(!resp.successFlg)
+                        win.parent.$.Notice.error(resp.errorMsg);
+                    else
+                        win.parent.$.Notice.success('修改成功');
                         win.parent.closeAddUserInfoDialog(function () {
-                            //win.parent.$.Notice.success('用户新增成功');
                         });
-                    });
                 });
             },
             initForm: function () {

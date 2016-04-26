@@ -322,7 +322,7 @@ public class OrganizationController extends BaseUIController {
 
     @RequestMapping("showImage")
     @ResponseBody
-    public void showImage(HttpSession session, HttpServletResponse response) throws Exception {
+    public void showImage(String timestamp,HttpSession session, HttpServletResponse response) throws Exception {
 
         response.setContentType("text/html; charset=UTF-8");
         response.setContentType("image/jpeg");
