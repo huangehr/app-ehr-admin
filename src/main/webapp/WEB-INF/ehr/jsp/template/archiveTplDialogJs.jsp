@@ -78,6 +78,7 @@
                     });
 
                     this.$org.addressDropdown({
+                        lazyLoad: mode!='new' || (mode=='new' && !Util.isStrEmpty(model.organizationCode)),
                         width: 240,
                         selectBoxWidth: 240,
                         tabsData: [
