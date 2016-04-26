@@ -115,7 +115,7 @@
                     versionMgr.setText(version.n);
 
                     $('#oldTitle').val(model.title);
-                    $(this.$title).focus();
+                    $('#inp_versionNo').focus();
                 },
                 initCombo : function (target, url, parms, value, text, parentValue){
                     this.cda = target.customCombo(url, parms);
