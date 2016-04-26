@@ -1,4 +1,5 @@
 package com.yihu.ehr.patient.controller;
+
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
@@ -18,15 +19,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.util.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.*;
 
 /**
  * Created by zqb on 2015/8/14.
@@ -63,8 +66,7 @@ public class PatientController extends BaseUIController {
                 model.addAttribute("patientModel", toJson(result));
                 model.addAttribute("patientDialogType", patientDialogType);
                 model.addAttribute("contentPage", "patient/patientInfoDialog");
-//                return "generalView";
-                return "simpleView";
+                return "generalView";
             } else {
                 url = "/populations/";
                 //todo 该controller的download方法放后台处理
@@ -77,8 +79,7 @@ public class PatientController extends BaseUIController {
                     model.addAttribute("patientModel", resultStr);
                     if (patientDialogType.equals("updatePatient")) {
                         model.addAttribute("contentPage", "patient/patientInfoDialog");
-                        //return "generalView";
-                        return "simpleView";
+                        return "generalView";
                     } else if (patientDialogType.equals("patientInfoMessage")) {
                         model.addAttribute("contentPage", "patient/patientBasicInfoDialog");
                         return "simpleView";

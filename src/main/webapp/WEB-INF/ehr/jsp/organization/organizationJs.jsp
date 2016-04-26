@@ -244,7 +244,7 @@
                             orgName: orgName,
                         }
                         $("#contentPage").empty();
-                        $("#contentPage").load(url, {'orgData': JSON.stringify(orgData)});
+                        $("#contentPage").load(url, {'dataModel': JSON.stringify(orgData)});
 
                     })
                 }

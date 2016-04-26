@@ -57,9 +57,13 @@
                     <td class="td-left">
                         <%--<input type="text" id="criterionDict" class="validate-special-char" style="width: 227px;" placeholder="请选择检验字典"/>--%>
                         <%--<input id="metaDataDict"/>--%>
-                        <div class="l-text-wrapper m-form-control ">
-                            <input type="text" id="criterionDict" data-type="select" class="">
-                        </div>
+                        <%--<div class="l-text-wrapper m-form-control">--%>
+                            <%----%>
+                            <%--&lt;%&ndash;<input type="text" id="criterionDict" data-type="select" class="">&ndash;%&gt;--%>
+                        <%--</div>--%>
+                            <div class="  " style="width: 210px">
+                                <input type="text" id="criterionDict" data-type="select" class="">
+                            </div>
                         <%--<select id="criterionDict" data-type="select" data-placeholder="请选择检验字典" data-attr-scan="dictId"></select>--%>
                     </td>
                     <td>

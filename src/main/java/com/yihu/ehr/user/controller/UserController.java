@@ -9,7 +9,6 @@ import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.RestTemplates;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.encode.Base64;
 import com.yihu.ehr.util.log.LogService;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +31,9 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Base64;
 import java.util.Map;
+import java.util.*;
 
 /**
  * @author zlf
@@ -189,7 +190,7 @@ public class UserController extends BaseUIController {
         }
         inputStream.close();
 
-        String restStream = Base64.encode(fileBuffer);
+        String restStream = Base64.getEncoder().encodeToString(fileBuffer);
         String imageStream = URLEncoder.encode(restStream,"UTF-8");
 
         params.add("inputStream",imageStream);
@@ -370,7 +371,7 @@ public class UserController extends BaseUIController {
         try {
             outputStream = response.getOutputStream();
 
-            byte[] bytes = Base64.decode(imageStream);
+            byte[] bytes = Base64.getDecoder().decode(imageStream);
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {

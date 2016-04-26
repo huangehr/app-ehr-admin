@@ -48,6 +48,7 @@ public class AppController extends BaseUIController {
             if (mode.equals("new")){
                 app = new AppDetailModel();
                 ((AppDetailModel)app).setStatus("WaitingForApprove");
+                app = toJson(app);
             }else{
                 String url = "/apps/"+appId;
                 RestTemplates template = new RestTemplates();

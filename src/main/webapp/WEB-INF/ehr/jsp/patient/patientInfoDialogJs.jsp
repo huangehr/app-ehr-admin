@@ -76,9 +76,9 @@
                 $("#div_patient_info_form").hide();
                 $("#div_card_info").hide();
                 $("#div_archive_info").hide();
-                $.get("${contextRoot}/home_relation/home_relationship",function(data){
+                $.get("${contextRoot}/home_relation/home_relationship?id="+$("#inp_idCardNo").val(),function(data){
                     $("#div_home_relation").html(data);
-                    home.list.event();
+                    home.list.init();
                 });
                 $(window).resize();
             });
@@ -211,7 +211,7 @@
                     });
                     self.$patientCopyId.val(patientModel.idCardNo);
 
-                   var pic = patientModel.picPath;
+                    var pic = patientModel.picPath;
                     if(!Util.isStrEmpty(pic)){
                         self.$picPath.html('<img src="${contextRoot}/patient/showImage" class="f-w88 f-h110"></img>');
                     }
@@ -274,48 +274,48 @@
 
                 //修改人口信息
                 patientInfo.$updateBtn.click(function () {
-                 var picHtml = self.$picPath.children().length;
-                 if(validator.validate()){
-                    var addressList = self.$form.Fields.birthPlaceInfo.getValue();
-                    var homeAddressList = self.$form.Fields.homeAddressInfo.getValue();
-                    var workAddressList = self.$form.Fields.workAddressInfo.getValue();
-                    var values = $.extend({},self.$form.Fields.getValues(),{
-                        birthPlaceInfo: {
-                            province:  addressList.names[0] || null,
-                            city: addressList.names[1] || null,
-                            district: addressList.names[2] || null,
-                            street: addressList.names[3] || null
-                        },
-                        homeAddressInfo:{
-                            province:  homeAddressList.names[0] || null,
-                            city: homeAddressList.names[1] || null,
-                            district: homeAddressList.names[2] || null,
-                            street: homeAddressList.names[3] || null
-                        },
-                        workAddressInfo:{
-                            province:  workAddressList.names[0] || null,
-                            city: workAddressList.names[1] || null,
-                            district: workAddressList.names[2] || null,
-                            street: workAddressList.names[3] || null
-                        }
-                    });
-                     var jsonData = JSON.stringify(values)+";"+patientDialogType;
-                    if(picHtml == 0){
-                        updatePatient(jsonData);
-//                        updatePatient(JSON.stringify(values));
-                    }else{
-                        var upload = self.$patientImgUpload.instance;
-                        var image = upload.getFiles().length;
-                        if(image){
-                            upload.options.formData.patientJsonData =   encodeURIComponent(jsonData);
-                            upload.upload();
-                            win.parent.patientDialogRefresh();
-                        }else{
+                    var picHtml = self.$picPath.children().length;
+                    if(validator.validate()){
+                        var addressList = self.$form.Fields.birthPlaceInfo.getValue();
+                        var homeAddressList = self.$form.Fields.homeAddressInfo.getValue();
+                        var workAddressList = self.$form.Fields.workAddressInfo.getValue();
+                        var values = $.extend({},self.$form.Fields.getValues(),{
+                            birthPlaceInfo: {
+                                province:  addressList.names[0] || null,
+                                city: addressList.names[1] || null,
+                                district: addressList.names[2] || null,
+                                street: addressList.names[3] || null
+                            },
+                            homeAddressInfo:{
+                                province:  homeAddressList.names[0] || null,
+                                city: homeAddressList.names[1] || null,
+                                district: homeAddressList.names[2] || null,
+                                street: homeAddressList.names[3] || null
+                            },
+                            workAddressInfo:{
+                                province:  workAddressList.names[0] || null,
+                                city: workAddressList.names[1] || null,
+                                district: workAddressList.names[2] || null,
+                                street: workAddressList.names[3] || null
+                            }
+                        });
+                        var jsonData = JSON.stringify(values)+";"+patientDialogType;
+                        if(picHtml == 0){
                             updatePatient(jsonData);
+//                        updatePatient(JSON.stringify(values));
+                        }else{
+                            var upload = self.$patientImgUpload.instance;
+                            var image = upload.getFiles().length;
+                            if(image){
+                                upload.options.formData.patientJsonData =   encodeURIComponent(jsonData);
+                                upload.upload();
+                                win.parent.patientDialogRefresh();
+                            }else{
+                                updatePatient(jsonData);
+                            }
                         }
-                    }
-                  }else{
-                    return
+                    }else{
+                        return
                     }
                 });
 

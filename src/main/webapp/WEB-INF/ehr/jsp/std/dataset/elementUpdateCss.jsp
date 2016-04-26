@@ -46,7 +46,7 @@
   .modal-body .table input{
     font-family: SimSun;
     font-size: 12px;
-    height: 30px;
+    /*height: 30px;*/
     width: 240px;
   }
   .modal-body .table input[type="checkbox"] {

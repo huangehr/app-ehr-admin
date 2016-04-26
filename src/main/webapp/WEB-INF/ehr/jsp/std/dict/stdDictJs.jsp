@@ -14,6 +14,7 @@
             var entryMater = null;
 
             var versionStage = null;
+            var selectRowObj=null;
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
 
@@ -142,9 +143,16 @@
                                 }
                             },
                             onAfterShowData: function () {
-                                this.select(0);
+                                if(selectRowObj!=null)
+                                {
+                                    this.select(selectRowObj);
+                                }
+                                else {
+                                    this.select(0);
+                                }
                             },
                             onSelectRow: function (row) {
+                                selectRowObj = row;
                                 entryMater.init();
                                 entryMater.reloadGrid();
                             }
