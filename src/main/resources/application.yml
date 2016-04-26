@@ -29,8 +29,7 @@ service-gateway:
   stdsourceurl: http://localhost:10000/api/v1.0/admin/standard_source
   adaption: http://localhost:10000/api/v1.0/adapter
   template: http://localhost:10000/api/v1.0/template
-  standard: http:///localhost:10000/api/v1.0/std
-
+  standard: http://172.19.103.75:10000/api/v1.0/std
 fast-dfs:
   tracker-server: 172.19.103.54:22122
 
@@ -47,7 +46,7 @@ service-gateway:
   stdsourceurl: http://172.19.103.75:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.75:10000/api/v1.0/adapter
   template: http://172.19.103.75:10000/api/v1.0/template
-  standard: http:///172.19.103.75:10000/api/v1.0/std
+  standard: http://172.19.103.75:10000/api/v1.0/std
 
 fast-dfs:
   tracker-server: 172.19.103.13:22122
