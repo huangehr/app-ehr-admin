@@ -4,7 +4,8 @@
 <div class="pop_tab">
     <ul>
         <li class="cur" id="btn_basic">基础属性</li>
-        <li id="" >卡管理</li>
+        <li id="btn_card" >卡管理</li>
+        <li id="btn_archive" >档案管理</li>
         <li id="btn_home_relation" >家庭关系</li>
 
     </ul>
@@ -119,7 +120,7 @@
         <div class="m-form-group f-mt20" id="reset_password">
             <hr class="u-border">
             <div class="f-pr u-bd">
-                <div class="f-pa f-w20 f-wtl">
+                <div class="f-pa f-w40 f-wtl">
                     高级
                 </div>
                 <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mt10 f-mb10 f-ml100" id="div_resetPassword">
@@ -140,6 +141,123 @@
     <input type="hidden" id="inp_patientCopyId">
 </div>
 
-<div id="div_home_relation" data-role-form class="m-form-inline" style="overflow:auto;display: none;height: 623px;">
+<!--######卡管理 > 卡信息对话框模板页######-->
+<div id="div_card_info" data-role-form class="m-form-inline">
+    <div class="f-pr u-bd f-mt20">
+        <div class="f-pa f-w90 f-wtl">
+            已关联卡
+        </div>
+        <div class="f-mt30">
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_select_cardType" placeholder="类型" data-type="select" data-attr-scan="">
+            </div>
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_card_search" placeholder="卡号"/>
+            </div>
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam  f-ml50" id="div_addCard">
+                <span>关联卡</span>
+            </div>
+
+            <div id="div_card_info_form" data-role-form class="f-mt10">
+
+                <!--卡基本信息 -->
+                <div id="div_card_basicMsg" class="u-card-basicMsg m-form-inline m-form-readonly">
+                    <div class="m-form-group">
+                        <label>类型：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_cardType" class="required useTitle" data-attr-scan="cardType"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>卡号：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_cardNo" class="required useTitle" data-attr-scan="number"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>持有人姓名：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_HolderName" class="required useTitle"
+                                   data-attr-scan="ownerName"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>发行地：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_issueAddress" class="required useTitle" data-attr-scan="local"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>发行机构：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_issueOrg" class="required useTitle" data-attr-scan="releaseOrgName"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>关联时间：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_addDate" class="required useTitle" data-attr-scan="createDate"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>状态：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_cardStatus" class="required useTitle"
+                                   data-attr-scan="statusName"/>
+                        </div>
+                    </div>
+                    <div class="m-form-group">
+                        <label>说明：</label>
+
+                        <div class="l-text-wrapper m-form-control">
+                            <input type="text" id="inp_cardExplain" class="required useTitle"
+                                   data-attr-scan="description"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--######档案管理 > 档案信息对话框模板页######-->
+<div id="div_archive_info" data-role-form class="m-form-inline" >
+    <div class="f-pr u-bd f-mt20">
+        <div class="f-pa f-w90 f-wtl">
+            已关联档案
+        </div>
+        <div class="f-mt20">
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_select_start" placeholder="时间" data-type="select" data-attr-scan="">
+            </div>
+            <div class="f-ml10 f-fl">
+                <input type="text" id="inp_select_end" placeholder="时间" data-type="select" data-attr-scan="">
+            </div>
+            <div class="f-ml10 f-fl f-mt10 f-w240">
+                <input type="text" id="inp_select_archiveOrg" placeholder="就诊机构" data-type="select" data-attr-scan="">
+            </div>
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam  f-ml100 f-mt10" id="div_search_archive">
+                <span>搜索</span>
+            </div>
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam  f-ml30 f-mt10" id="div_add_archive">
+                <span>关联档案</span>
+            </div>
+
+            <div id="div_archive_info_form" data-role-form class="f-mt10">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="div_home_relation" data-role-form class="m-form-inline" >
         这是家庭关系网
 </div>

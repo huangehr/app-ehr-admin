@@ -1,35 +1,32 @@
 package com.yihu.ehr.patient.controller;
-import com.sun.net.httpserver.HttpsServer;
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.RestTemplates;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.encode.Base64;
 import com.yihu.ehr.util.log.LogService;
-import org.apache.catalina.connector.CoyoteInputStream;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.ResizableByteArrayOutputStream;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zqb on 2015/8/14.
@@ -66,7 +63,8 @@ public class PatientController extends BaseUIController {
                 model.addAttribute("patientModel", toJson(result));
                 model.addAttribute("patientDialogType", patientDialogType);
                 model.addAttribute("contentPage", "patient/patientInfoDialog");
-                return "generalView";
+//                return "generalView";
+                return "simpleView";
             } else {
                 url = "/populations/";
                 //todo 该controller的download方法放后台处理
@@ -79,7 +77,8 @@ public class PatientController extends BaseUIController {
                     model.addAttribute("patientModel", resultStr);
                     if (patientDialogType.equals("updatePatient")) {
                         model.addAttribute("contentPage", "patient/patientInfoDialog");
-                        return "generalView";
+                        //return "generalView";
+                        return "simpleView";
                     } else if (patientDialogType.equals("patientInfoMessage")) {
                         model.addAttribute("contentPage", "patient/patientBasicInfoDialog");
                         return "simpleView";
@@ -195,7 +194,7 @@ public class PatientController extends BaseUIController {
             }
             inputStream.close();
 
-            String restStream = Base64.encode(fileBuffer);
+            String restStream = Base64.getEncoder().encodeToString(fileBuffer);
             String imageStream = URLEncoder.encode(restStream, "UTF-8");
 
             params.add("inputStream", imageStream);
@@ -323,7 +322,7 @@ public class PatientController extends BaseUIController {
 //                outputStream.write(buffer, 0, count);
 //            outputStream.flush();
 
-            byte[] bytes = Base64.decode(imageStream);
+            byte[] bytes = Base64.getDecoder().decode(imageStream);
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {
