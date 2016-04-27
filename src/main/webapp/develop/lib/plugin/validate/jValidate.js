@@ -295,7 +295,7 @@
         ['validate-money','请输入正确的数值,最高保留2位小数'],
         ['validate-contact-way','请输入有效的电话号码或手机号码'],
         ['validate-org-length','请选择到医院一级！'],
-        ['validate-org-code','请输入正确的组织代码格式，如:46650460-6'],
+        ['validate-org-code','请输入正确的组织代码格式，如:46650460-X'],
         ['validate-special-char','不允许输入 \' 符号']
 
     ];
@@ -1033,7 +1033,7 @@
                 return false;
             return true;
         }],
-        ['validate-org-code', /^[a-z0-9A-Z]+[-]*[a-z0-9A-Z]+$/],
+        ['validate-org-code', /^[0-9A-Z]{8}[-][0-9A-Z]{1}$/],
         ['validate-special-char', function (v,elm,args,metadata) {
             var pattern = new RegExp("[']");
             if (pattern.test(v))
