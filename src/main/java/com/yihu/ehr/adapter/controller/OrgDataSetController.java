@@ -70,7 +70,9 @@ public class OrgDataSetController {
                 resultStr="";
             }
             model.addAttribute("sort","");
-            model.addAttribute("info", resultStr);
+
+//            model.addAttribute("info", resultStr);
+            model.addAttribute("info", StringUtils.isEmpty(resultStr)?toJson(envelop):resultStr);
             model.addAttribute("mode",mode);
 
             model.addAttribute("contentPage","/adapter/orgCollection/dialog");
@@ -102,7 +104,8 @@ public class OrgDataSetController {
                 model.addAttribute("rs", "success");
             }
             model.addAttribute("sort","");
-            model.addAttribute("info", resultStr);
+//            model.addAttribute("info", resultStr);
+            model.addAttribute("info", StringUtils.isEmpty(resultStr)?toJson(result):resultStr);
             model.addAttribute("mode",mode);
 
             model.addAttribute("contentPage","/adapter/orgCollection/dialog");
