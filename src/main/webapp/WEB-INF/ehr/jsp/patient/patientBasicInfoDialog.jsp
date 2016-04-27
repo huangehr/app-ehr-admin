@@ -127,8 +127,8 @@
             <div class="f-ml10 f-fl">
                 <input type="text" id="inp_card_search" placeholder="卡号"/>
             </div>
-            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam  f-ml50" id="div_addCard">
-                <span>认领卡</span>
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam  f-ml50" id="div_search">
+                <span>搜索</span>
             </div>
 
             <div id="div_card_info_form" data-role-form class="f-mt10">
