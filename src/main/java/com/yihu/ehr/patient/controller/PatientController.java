@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.util.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,7 +64,8 @@ public class PatientController extends BaseUIController {
                 model.addAttribute("patientModel", toJson(result));
                 model.addAttribute("patientDialogType", patientDialogType);
                 model.addAttribute("contentPage", "patient/patientInfoDialog");
-                return "generalView";
+//                return "generalView";
+                return "simpleView";
             } else {
                 url = "/populations/";
                 //todo 该controller的download方法放后台处理
@@ -79,7 +78,8 @@ public class PatientController extends BaseUIController {
                     model.addAttribute("patientModel", resultStr);
                     if (patientDialogType.equals("updatePatient")) {
                         model.addAttribute("contentPage", "patient/patientInfoDialog");
-                        return "generalView";
+                        //return "generalView";
+                        return "simpleView";
                     } else if (patientDialogType.equals("patientInfoMessage")) {
                         model.addAttribute("contentPage", "patient/patientBasicInfoDialog");
                         return "simpleView";

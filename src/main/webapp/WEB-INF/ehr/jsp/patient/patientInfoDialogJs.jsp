@@ -18,7 +18,6 @@
         var archiveFormInit = null;
         // 表单校验工具类
         var jValidation = $.jValidation;
-        var dialog = this;
         var dataModel = $.DataModel.init();
         var patientModel = "";
         var idCardNo="";
@@ -101,7 +100,8 @@
                         }
                     }
                     win.parent.patientDialogRefresh();
-                    dialog.close();
+                    win.parent.patientDialogClose();
+                    //dialog.close();
                 }
             })
         }
@@ -169,7 +169,8 @@
                     $('#inp_img_url').val(resp.url);
                     $( '#'+file.id ).addClass('upload-state-done');
                     $.ligerDialog.alert("保存成功",function () {
-                        dialog.close();
+                        win.parent.patientDialogClose();
+                        //dialog.close();
                     });
                 });
             },
@@ -343,7 +344,8 @@
                 });
                 //关闭dailog的方法
                 patientInfo.$cancelBtn.click(function(){
-                    dialog.close();
+                    win.parent.patientDialogClose();
+                    //dialog.close();
                 })
             }
         };

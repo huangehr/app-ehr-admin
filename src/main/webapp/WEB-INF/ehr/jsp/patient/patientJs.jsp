@@ -16,6 +16,8 @@
 
             // 页面主模块，对应于用户信息表区域
             var patientMaster = null;
+
+            var patientDialog=null;
             /* ************************** 变量定义结束 ******************************** */
 
             /* *************************** 函数定义 ******************************* */
@@ -143,7 +145,7 @@
 
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){
-                        $.ligerDialog.open({
+                        patientDialog = $.ligerDialog.open({
                             isHidden:false,
                             title:'新增人口信息',
                             width:600,
@@ -159,7 +161,7 @@
                     });
                     //修改人口信息
                   $.subscribe('patient:patientInfoModifyDialog:open',function(event,idCardNo){
-                        $.ligerDialog.open({
+                      patientDialog = $.ligerDialog.open({
                             isHidden:false,
                             title:'修改人口信息',
                             width:600,
@@ -200,6 +202,9 @@
             /* ************************* Dialog页面回调接口 ************************** */
             win.patientDialogRefresh = function () {
                 patientMaster.reloadGrid();
+            };
+            win.patientDialogClose = function () {
+                patientDialog.close();
             };
             /* ************************* Dialog页面回调接口结束 ************************** */
             /* *************************** 页面初始化 **************************** */
