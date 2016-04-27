@@ -295,7 +295,7 @@
         ['validate-money','请输入正确的数值,最高保留2位小数'],
         ['validate-contact-way','请输入有效的电话号码或手机号码'],
         ['validate-org-length','请选择到医院一级！'],
-        ['validate-org-code','请输入正确的组织代码格式'],
+        ['validate-org-code','请输入正确的组织代码格式，如:46650460-6'],
         ['validate-special-char','不允许输入 \' 符号']
 
     ];
