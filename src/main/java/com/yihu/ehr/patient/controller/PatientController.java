@@ -301,7 +301,7 @@ public class PatientController extends BaseUIController {
      */
     @RequestMapping("showImage")
     @ResponseBody
-    public void showImage(HttpSession session, HttpServletResponse response, String localImgPath) throws Exception {
+    public void showImage(String timestamp,HttpSession session, HttpServletResponse response, String localImgPath) throws Exception {
         response.setContentType("text/html; charset=UTF-8");
         response.setContentType("image/jpeg");
         FileInputStream fis = null;

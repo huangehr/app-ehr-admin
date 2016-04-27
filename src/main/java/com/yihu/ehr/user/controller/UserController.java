@@ -272,6 +272,7 @@ public class UserController extends BaseUIController {
 
             Envelop ep = getEnvelop(resultStr);
             UserDetailModel userDetailModel = toModel(toJson(ep.getObj()),UserDetailModel.class);
+            session.removeAttribute("userImageStream");
             session.setAttribute("userImageStream",userDetailModel.getImgLocalPath() == null ? "" :userDetailModel.getImgLocalPath());
 
             model.addAttribute("allData", resultStr);
@@ -360,7 +361,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("showImage")
     @ResponseBody
-    public void showImage(HttpSession session, HttpServletResponse response) throws Exception {
+    public void showImage(String timestamp,HttpSession session, HttpServletResponse response) throws Exception {
 
         response.setContentType("text/html; charset=UTF-8");
         response.setContentType("image/jpeg");
