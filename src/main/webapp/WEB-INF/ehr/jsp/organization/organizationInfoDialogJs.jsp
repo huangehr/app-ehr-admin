@@ -153,7 +153,7 @@
                 }
                 var pic = org.imgRemotePath;
                 if (!Util.isStrEmpty(pic)) {
-                    this.$orgImageShow.html('<img src="${contextRoot}/organization/showImage" class="f-w70 f-h70"></img>');
+                    this.$orgImageShow.html('<img src="${contextRoot}/organization/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w70 f-h70"></img>');
                 }
             },
             initDDL: function (dictId, target) {

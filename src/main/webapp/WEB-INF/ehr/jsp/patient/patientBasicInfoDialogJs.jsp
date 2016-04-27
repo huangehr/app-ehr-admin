@@ -169,7 +169,7 @@
                 this.$workAddressTitle.attr("title",patientModel.workAddressFull);
                 var pic = patientModel.picPath;
                 if(!(Util.isStrEquals(pic,null)||Util.isStrEquals(pic,""))){
-                    this.picPath.html('<img src="${contextRoot}/patient/showImage" class="f-w88 f-h110" ></img>');
+                    this.picPath.html('<img src="${contextRoot}/patient/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110" ></img>');
                 }
             },
             bindEvents: function () {

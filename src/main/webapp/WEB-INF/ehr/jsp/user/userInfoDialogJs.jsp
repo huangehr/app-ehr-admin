@@ -87,8 +87,10 @@
                     async:false
                 });
                 self.$uploader.instance.on( 'uploadSuccess', function( file, resp ) {
-                    $.ligerDialog.alert("保存成功",function () {
-                    });
+                    if(!resp.successFlg)
+                        $.Notice.error(resp.errorMsg);
+                    else
+                        $.Notice.success('修改成功');
                     win.closeUserInfoDialog();
                     win.reloadMasterUpdateGrid();
                 });
@@ -193,7 +195,7 @@
 
                 var pic = user.imgRemotePath;
                 if (!Util.isStrEmpty(pic)) {
-                    self.$imageShow.html('<img src="${contextRoot}/user/showImage" class="f-w88 f-h110"></img>');
+                    self.$imageShow.html('<img src="${contextRoot}/user/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
                 }
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");

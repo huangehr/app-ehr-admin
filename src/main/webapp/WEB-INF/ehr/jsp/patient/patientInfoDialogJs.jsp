@@ -214,7 +214,7 @@
 
                     var pic = patientModel.picPath;
                     if(!Util.isStrEmpty(pic)){
-                        self.$picPath.html('<img src="${contextRoot}/patient/showImage" class="f-w88 f-h110"></img>');
+                        self.$picPath.html('<img src="${contextRoot}/patient/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
                     }
                 }
             },
