@@ -25,6 +25,9 @@
         if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
             patientModel =${patientModel}.obj;
             idCardNo = patientModel.idCardNo;
+            //todo:暂不发布
+            $("#btn_archive").hide();
+            $("#btn_home_relation").hide();
         }else{
             $(".pop_tab").hide();
         }
@@ -397,6 +400,7 @@
                         cardInfoRefresh();
                     }
                 });
+                this.$cardForm.attrScan();
                 cardInfoGrid = cardFormInit.$cardForm.ligerGrid($.LigerGridEx.config({
                     url: '${contextRoot}/card/searchCard',
                     parms: {
@@ -430,16 +434,18 @@
                         dataModel.createRemote('${contextRoot}/card/getCard', {
                             data: {id: row.id,cardType:row.cardType},
                             success: function (data) {
-                                cardFormInit.$cardForm.Fields.fillValues({
-                                    cardType:data.obj.typeName,
-                                    number:data.obj.number,
-                                    ownerName:data.obj.ownerName,
-                                    local:data.obj.local,
-                                    releaseOrgName:data.obj.releaseOrgName,
-                                    createDate:data.obj.createDate,
-                                    statusName:data.obj.statusName,
-                                    description:data.obj.description
-                                });
+                                if (data.successFlg) {
+                                    cardFormInit.$cardForm.Fields.fillValues({
+                                        cardType: data.obj.typeName,
+                                        number: data.obj.number,
+                                        ownerName: data.obj.ownerName,
+                                        local: data.obj.local,
+                                        releaseOrgName: data.obj.releaseOrgName,
+                                        createDate: data.obj.createDate,
+                                        statusName: data.obj.statusName,
+                                        description: data.obj.description
+                                    });
+                                }
                             }
                         });
                     }

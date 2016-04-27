@@ -22,6 +22,9 @@
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             patientInfo.init();
+            //todo:暂不发布
+            $("#btn_archive").hide();
+            $("#btn_home_relation").hide();
             tab_click();
         }
         function tab_click(){
@@ -177,7 +180,7 @@
         };
         cardFormInit = {
             $selectCardType:$('#inp_select_cardType'),
-            $addCard: $("#div_addCard"),
+            $search: $("#div_search"),
             $cardSearch: $("#inp_card_search"),
             $cardBasicMsg: $("#div_card_basicMsg"),
 
@@ -239,7 +242,7 @@
                         {display: '状态', name: 'statusName', width: '8%'},
                         {
                             display: '操作', name: 'operator', width: '14%', render: function (row) {
-                            var html = '<a href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:cardInfoModifyDialog:open", row.id,row.cardType) + '">解除关联</a>  ';
+                            var html = '<a href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "card:archive:view", row.id,row.cardType) + '">查看</a>  ';
                             return html;
                         }
                         }
@@ -255,16 +258,18 @@
                         dataModel.createRemote('${contextRoot}/card/getCard', {
                             data: {id: row.id,cardType:row.cardType},
                             success: function (data) {
-                                cardFormInit.$cardForm.Fields.fillValues({
-                                    cardType:data.obj.typeName,
-                                    number:data.obj.number,
-                                    ownerName:data.obj.ownerName,
-                                    local:data.obj.local,
-                                    releaseOrgName:data.obj.releaseOrgName,
-                                    createDate:data.obj.createDate,
-                                    statusName:data.obj.statusName,
-                                    description:data.obj.description
-                                });
+                                if (data.successFlg) {
+                                    cardFormInit.$cardForm.Fields.fillValues({
+                                        cardType: data.obj.typeName,
+                                        number: data.obj.number,
+                                        ownerName: data.obj.ownerName,
+                                        local: data.obj.local,
+                                        releaseOrgName: data.obj.releaseOrgName,
+                                        createDate: data.obj.createDate,
+                                        statusName: data.obj.statusName,
+                                        description: data.obj.description
+                                    });
+                                }
                             }
                         });
                     }
@@ -278,40 +283,33 @@
                 cardInfoGrid.loadData(true);
             },
             bindEvents: function () {
-                //解绑卡信息
-                $.subscribe('patient:cardInfoModifyDialog:open',function(event,id,cardType){
-                    $.ligerDialog.confirm('确认解除关联该卡信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
-                        if (yes) {
-                            var dataModel = $.DataModel.init();
-                            dataModel.updateRemote('${contextRoot}/card/detachCard', {
-                                data: {id: id,cardType:cardType},
-                                success: function (data) {
-                                    if (data.successFlg) {
-                                        $.ligerDialog.alert('解除关联成功');
-                                        cardFormInit.searchCard();
-                                    } else {
-                                        $.Notice.error('解除关联失败');
-                                    }
-                                }
-                            });
+                //查看档案信息
+                $.subscribe('card:archive:view',function(event,id,cardType){
+                    //todo:档案赞不发布，先查看卡信息
+                    $.ligerDialog.open({ width:450, height:500,target: cardFormInit.$cardBasicMsg});
+                    var self = this;
+                    var dataModel = $.DataModel.init();
+                    dataModel.createRemote('${contextRoot}/card/getCard', {
+                        data: {id: id,cardType:cardType},
+                        success: function (data) {
+                            if (data.successFlg) {
+                                cardFormInit.$cardForm.Fields.fillValues({
+                                    cardType: data.obj.typeName,
+                                    number: data.obj.number,
+                                    ownerName: data.obj.ownerName,
+                                    local: data.obj.local,
+                                    releaseOrgName: data.obj.releaseOrgName,
+                                    createDate: data.obj.createDate,
+                                    statusName: data.obj.statusName,
+                                    description: data.obj.description
+                                });
+                            }
                         }
-                    })
+                    });
                 });
-                //添加卡
-                cardFormInit.$addCard.click(function(){
-                    var idCardNo = patientInfo.$form.Fields.idCardNo.getValue();
-                    $.ligerDialog.open({
-                        height: 640,
-                        width: 600,
-                        title: '新增卡',
-                        url: '${contextRoot}/card/addCardInfoDialog',
-                        urlParms: {
-                            idCardNo: idCardNo
-                        },
-                        onClosed: function () {
-                            cardInfoRefresh();
-                        }
-                    })
+                //搜索
+                cardFormInit.$search.click(function(){
+                    cardInfoRefresh();
                 })
             }
 
