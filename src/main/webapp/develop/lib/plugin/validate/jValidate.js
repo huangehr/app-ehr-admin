@@ -1029,7 +1029,13 @@
         ['validate-contact-way',/^((0[1-9]{3})?(0[12][0-9])?[-])?\d{6,8}|0?(13[0-9]|15[012356789]|18[012356789]|14[57])[0-9]{8}$/],
         ['validate-org-length', function (v,elm,args,metadata) {
             v = eval("("+v+")");
-            if(v.keys[0]!="" && (v.keys.length<3 || v.keys[2]==""))
+            var  len;
+            if (Util.isStrEquals(elm.id,"location"))
+                len = 1;
+            else
+                len = 2;
+            
+            if(v.keys[0]!="" && (v.keys.length<3 || v.keys[len]==""))
                 return false;
             return true;
         }],
