@@ -30,7 +30,7 @@ $(function(){
 					case 1:AClass="menu-tit1";IClass="a"+DataDO.data[i]['id'];break;//判断是否第一级菜单
 					case 2:AClass="";IClass="me two";break;
 					case 3:AClass="three";IClass="me ";break;
-					default:AClass="";IClass="me";break;
+					default:AClass="rignav";IClass="me";break;
 				}
 				if(DataDO.data[i]["url"]){
 					url=DataDO.data[i]["url"];
@@ -97,11 +97,15 @@ $(function(){
 					}
 					//console.log()
 				}
+
 				if($(this).hasClass("three")){//第三级
 					$(this).closest("li").siblings("li").find("ul").hide();
 					$(this).addClass("on").next("ul").fadeIn();
 					$("#mCSB_1_container").css("overflow","inherit");
 					$("#mCSB_1").css("overflow","inherit");
+				}
+				if($(this).hasClass("rignav") &&$(this).attr("data-url")!="") {
+					$(".rignav").closest("ul").slideUp()
 				}
 			})
 
