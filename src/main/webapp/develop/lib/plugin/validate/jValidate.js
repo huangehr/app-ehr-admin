@@ -1029,6 +1029,7 @@
         ['validate-contact-way',/^((0[1-9]{3})?(0[12][0-9])?[-])?\d{6,8}|0?(13[0-9]|15[012356789]|18[012356789]|14[57])[0-9]{8}$/],
         ['validate-org-length', function (v,elm,args,metadata) {
             v = eval("("+v+")");
+<<<<<<< HEAD
             var  len;
             if (Util.isStrEquals(elm.id,"location"))
                 len = 1;
@@ -1040,6 +1041,13 @@
             return true;
         }],
         ['validate-org-code', /^[0-9A-Z]{8}[-][0-9A-Z]{1}$/],
+=======
+            if(v.keys[0]!="" && (v.keys.length<3 || v.keys[2]==""))
+                return false;
+            return true;
+        }],
+        ['validate-org-code', /^[a-z0-9A-Z]+[-]*[a-z0-9A-Z]+$/],
+>>>>>>> origin/master
         ['validate-special-char', function (v,elm,args,metadata) {
             var pattern = new RegExp("[']");
             if (pattern.test(v))

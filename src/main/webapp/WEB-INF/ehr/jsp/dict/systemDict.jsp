@@ -78,7 +78,7 @@
             <div class="m-form-group">
                 <label>序号:</label>
                 <div class="l-text-wrapper m-form-control">
-                    <input type="text" id="inp_systemDictEntity_sort" class="max-length-11 validate-digits" />
+                    <input type="text" id="inp_systemDictEntity_sort" class="max-length-11" />
                 </div>
             </div>
             <div class="m-form-group">

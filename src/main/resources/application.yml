@@ -51,22 +51,4 @@ service-gateway:
 fast-dfs:
   tracker-server: 172.19.103.13:22122
 
----
-spring:
-  profiles: prod
-service-gateway:
-  username: user
-  password: eureka
-  url: http://11.1.2.21:10000/api/v1.0/admin
-  stdurl: http://11.1.2.21:10000/api/v1.0/admin/std
-  versionurl: http://11.1.2.21:10000/api/v1.0/admin/version
-  cdatypeurl: http://11.1.2.21:10000/api/v1.0/admin/cda_type
-  stdsourceurl: http://11.1.2.21:10000/api/v1.0/admin/standard_source
-  adaption: http://11.1.2.21:10000/api/v1.0/adapter
-  template: http://11.1.2.21:10000/api/v1.0/template
-  standard: http://11.1.2.21:10000/api/v1.0/std
-
-fast-dfs:
-  tracker-server: 11.1.2.9:22122
-
 
