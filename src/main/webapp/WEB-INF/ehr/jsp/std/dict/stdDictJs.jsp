@@ -27,7 +27,7 @@
 
             function getStagedByValue()
             {
-                debugger;
+                //debugger;
                 var _value = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                 if (!_value && _value == "") return false;
                 var data = $("#stdDictVersion").ligerComboBox().data;
