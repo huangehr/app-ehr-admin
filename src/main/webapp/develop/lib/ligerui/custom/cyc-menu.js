@@ -1,5 +1,12 @@
+/*
+*cyc-menu.js 1.21
+*20160505
+*cyc
+*修复弹窗关闭BUG
+* */
 $(function(){
 	/*总支撑左侧导航*/
+
 	var MenuId=sessionStorage.getItem("MenuId");//获取MenuId
 	setTimeout(function(){
 		if(MenuId){
@@ -27,8 +34,8 @@ $(function(){
 				var iClass='';
 				var url='';
 				switch(DataDO.data[i]['level']){
-					case 1:AClass="menu-tit1";IClass="a"+DataDO.data[i]['id'];break;//判断是否第一级菜单
-					case 2:AClass="";IClass="me two";break;
+					case 1:AClass="menu-tit1 one";IClass="a"+DataDO.data[i]['id'];break;//判断是否第一级菜单
+					case 2:AClass="two";IClass="me two";break;
 					case 3:AClass="three";IClass="me ";break;
 					default:AClass="rignav";IClass="me";break;
 				}
@@ -36,7 +43,6 @@ $(function(){
 					url=DataDO.data[i]["url"];
 				}
 				if(typeof(DataDO.data[i]['pid'])=='undefined'){
-
 					ObjHtml+='<li class="li" data-id="'+DataDO.data[i]["id"]+'"><a href="javascript:void(0);" class="'+AClass+'" data-url="'+url+'" title="'+DataDO.data[i]["text"]+'" data-find="'+DataDO.data[i]["id"]+'"><i class="'+IClass+'"></i>'+DataDO.data[i]["text"]+'</a><ul></ul></li>'
 				}else{
 					var size=10*(DataDO.data[i]['level']-1);
@@ -107,6 +113,9 @@ $(function(){
 				if($(this).hasClass("rignav") &&$(this).attr("data-url")!="") {
 					$(".rignav").closest("ul").slideUp()
 				}
+				if($(this).hasClass("one")||$(this).hasClass("two")){
+					$(".rignav").closest("ul").slideUp()
+				}
 			})
 
 		}
@@ -142,31 +151,5 @@ $(function(){
 			});
 
 		});
-	$("body").delegate(".menucyc> li","click",function(){
-		//$(this).siblings().find("ul").slideUp()
-	})
-	//火狐banding
-	//var scrollFunc=function(e){
-	//	$(".three").next("ul").hide();
-	//	$("#mCSB_1_container").css("overflow","hidden");
-	//	$("#mCSB_1").css("overflow","hidden");
-	//}
-	///*注册事件*/
-	//if(navigator.userAgent.indexOf('Firefox') >= 0){
-	//	if($("#form_login").length==0){
-	//		document.getElementsByClassName("l-layout")[0].addEventListener('DOMMouseScroll',scrollFunc,false);
-	//	}//W3C
-	//}
-	if($("#form_login").length==0){
-		//$(".l-layout")[0].onmousewheel = function(event) {
-		//	$(".three").next("ul").hide();
-		//	$("#mCSB_1_container").css("overflow","hidden");
-		//	$("#mCSB_1").css("overflow","hidden");
-		//};
-		// jquery 兼容的滚轮事件
-
-	}
-
-
 
 })
