@@ -185,6 +185,7 @@
 					text: '健康问题字典',
 					url: '${contextRoot}/specialdict/hp/initial'
 				},
+
                 {
                     id: 25,
                     pid: 2,

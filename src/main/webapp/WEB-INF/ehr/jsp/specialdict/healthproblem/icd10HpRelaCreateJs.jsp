@@ -63,8 +63,8 @@
 						},
 						columns: [
 							{display:'id',name:'id',hide:true},
-							{display: '指标编码', name: 'code', width: '35%', align: 'left',checkbox:false},
-							{display: '指标名称', name: 'name', width: '35%',align:'left'},
+							{display: '疾病编码', name: 'code', width: '35%', align: 'left',checkbox:false},
+							{display: '疾病名称', name: 'name', width: '35%',align:'left'},
 							{display: '操作', name: 'operator', width: '30%', align: 'center',render: function(row){
 								html ='<a class="label_a" name="" style="margin-left:15px;" title="关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hp:icd10:create", row.id) + '">关联</a>';
 								return html;

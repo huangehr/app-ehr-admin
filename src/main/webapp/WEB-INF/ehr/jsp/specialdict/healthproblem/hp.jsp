@@ -19,7 +19,7 @@
 			</div>
 			<div class="m-form-control">
 				<!--输入框-->
-				<input type="text" id="inp_searchNm" class="f-ml30" placeholder="请输入疾病编码或名称" data-attr-scan="searchNm"/>
+				<input type="text" id="inp_searchNm" class="f-ml30" placeholder="请输入编码或名称" data-attr-scan="searchNm"/>
 			</div>
 			<!--按钮:新增&批量删除-->
 			<div class="m-form-control f-ml20">

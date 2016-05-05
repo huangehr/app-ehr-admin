@@ -70,8 +70,8 @@
 						},
 						columns: [
 							{display:'id',name:'id',hide:true},
-							{display: '指标编码', name: 'code', width: '35%', align: 'left',checkbox:false},
-							{display: '指标名称', name: 'name', width: '35%',align:'left'},
+							{display: '疾病编码', name: 'code', width: '35%', align: 'left',checkbox:false},
+							{display: '疾病名称', name: 'name', width: '35%',align:'left'},
 							{display: '操作', name: 'operator', width: '30%', align: 'center',render: function(row){
 								html ='<a class="label_a" name="" style="margin-left:15px;" title="取消关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hp:icd10:delete", row.id) + '">取消关联</a>';
 								return html;
@@ -151,9 +151,16 @@
 
 						});
 					});
+					//新增关联窗口右上角的关闭按钮的关闭事件
+					if($('.l-dialog-close')){
+						$('.l-dialog-close').click(function(){
+							win.reloadHpInfoGrid();
+						});
+					};
 
 					//确认按钮点击事件关闭关联字典会话框
 					$('#btn_confirm').click(function(){
+						win.reloadHpInfoGrid();
 						win.closeHpRelationInfoDialog();
 					});
 

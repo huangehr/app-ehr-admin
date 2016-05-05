@@ -62,7 +62,7 @@
 							{display:'id',name:'id',hide:true},
 							{display: '健康问题编码', name: 'code', width: '30%', align: 'left'},
 							{display: '健康问题名称', name: 'name', width: '30%',align:'left'},
-							{display: '关联ICD10', name: 'type', width: '20%',align:'left'},
+							{display: '关联ICD10', name: 'icd10Name', width: '20%',align:'left'},
 							{
 								display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
 								var html = '';

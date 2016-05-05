@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.HealthProblemDictModel;
 import com.yihu.ehr.agModel.specialdict.HpIcd10RelationModel;
 import com.yihu.ehr.agModel.specialdict.Icd10IndicatorRelationModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.specialdict.MHpIcd10Relation;
@@ -21,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -123,8 +125,9 @@ public class HealthProblemDictController extends BaseUIController {
 
     @RequestMapping("/update")
     @ResponseBody
-    public Object updateIcd10Dict(String dictJson,String mode){
+    public Object updateIcd10Dict(String dictJson,String mode,HttpServletRequest request){
         Envelop envelop = new Envelop();
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         envelop.setSuccessFlg(false);
         String url = "/dict/hp";
         try{
@@ -138,8 +141,9 @@ public class HealthProblemDictController extends BaseUIController {
                 return envelop;
             }
             if("new".equals(mode)){
+                model.setCreateUser(userDetailModel.getId());
                 Map<String,Object> args = new HashMap<>();
-                args.put("dictionary",dictJson);
+                args.put("dictionary",objectMapper.writeValueAsString(model));
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
@@ -150,6 +154,7 @@ public class HealthProblemDictController extends BaseUIController {
                     envelop.setErrorMsg("原字典项信息获取失败！");
                 }
                 HealthProblemDictModel updateModel = getEnvelopModel(envelopGet.getObj(),HealthProblemDictModel.class);
+                updateModel.setUpdateUser(userDetailModel.getId());
                 updateModel.setCode(model.getCode());
                 updateModel.setName(model.getName());
                 updateModel.setDescription(model.getDescription());
@@ -337,14 +342,15 @@ public class HealthProblemDictController extends BaseUIController {
     @RequestMapping("/hpIcd10Relation/creates")
     @ResponseBody
     //"为健康问题增加ICD10疾病关联。
-    public Object createHpIcd10Relations(String hpId,String icd10Ids){
+    public Object createHpIcd10Relations(String hpId,String icd10Ids,HttpServletRequest request){
         Envelop envelop = new Envelop();
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/hp/icd10s";
-        if(org.apache.commons.lang.StringUtils.isEmpty(icd10Ids)){
+        if(StringUtils.isEmpty(icd10Ids)){
             envelop.setErrorMsg("icd10字典id不能为空！");
             return envelop;
         }
-        if (org.apache.commons.lang.StringUtils.isEmpty(hpId)){
+        if (StringUtils.isEmpty(hpId)){
             envelop.setErrorMsg("指标字典id不能为空！");
             return envelop;
         }
@@ -354,6 +360,7 @@ public class HealthProblemDictController extends BaseUIController {
             if(ids.length == 1){
                 url = "/dict/hp/icd10";
                 HpIcd10RelationModel model = new HpIcd10RelationModel();
+                model.setCreateUser(userDetailModel.getId());
                 model.setIcd10Id(icd10Ids);
                 model.setHpId(hpId);
                 String modelJson = objectMapper.writeValueAsString(model);
@@ -366,6 +373,7 @@ public class HealthProblemDictController extends BaseUIController {
             Map<String,Object> params = new HashMap<>();
             params.put("hp_id",hpId);
             params.put("icd10_ids",icd10Ids);
+            params.put("create_user",userDetailModel.getId());
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){

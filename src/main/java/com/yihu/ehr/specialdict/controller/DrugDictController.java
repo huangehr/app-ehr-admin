@@ -2,6 +2,7 @@ package com.yihu.ehr.specialdict.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.DrugDictModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.Envelop;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -118,16 +120,18 @@ public class DrugDictController extends BaseUIController {
 
     @RequestMapping("/update")
     @ResponseBody
-    public Object updateDrugDict(String dictJson,String mode) {
+    public Object updateDrugDict(String dictJson,String mode,HttpServletRequest request) {
         //新增、修改
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/drug";
         try{
             DrugDictModel model = objectMapper.readValue(dictJson,DrugDictModel.class);
             if("new".equals(mode)){
+                model.setCreateUser(userDetailModel.getId());
                 Map<String,Object> args = new HashMap<>();
-                args.put("dictionary",dictJson);
+                args.put("dictionary",objectMapper.writeValueAsString(model));
                 String envelopStrNew = HttpClientUtil.doPost(comUrl+url,args,username,password);
                 return envelopStrNew;
             }
@@ -140,6 +144,7 @@ public class DrugDictController extends BaseUIController {
                 return envelop;
             }
             DrugDictModel modelUpdate = getEnvelopModel(envelopget.getObj(),DrugDictModel.class);
+            modelUpdate.setUpdateUser(userDetailModel.getId());
             modelUpdate.setCode(model.getCode());
             modelUpdate.setName(model.getName());
             modelUpdate.setType(model.getType());

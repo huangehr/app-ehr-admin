@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.Icd10DictModel;
 import com.yihu.ehr.agModel.specialdict.Icd10DrugRelationModel;
 import com.yihu.ehr.agModel.specialdict.Icd10IndicatorRelationModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.specialdict.MIcd10Dict;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,9 +124,10 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/update")
     @ResponseBody
-    public Object updateIcd10Dict(String icd10JsonData,String mode){
+    public Object updateIcd10Dict(String icd10JsonData,String mode,HttpServletRequest request){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/icd10";
         try{
             Icd10DictModel model = objectMapper.readValue(icd10JsonData, Icd10DictModel.class);
@@ -137,8 +140,9 @@ public class Icd10Controller extends BaseUIController {
                 return envelop;
             }
             if("new".equals(mode)){
+                model.setCreateUser(userDetailModel.getId());
                 Map<String,Object> args = new HashMap<>();
-                args.put("dictionary",icd10JsonData);
+                args.put("dictionary",objectMapper.writeValueAsString(model));
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
@@ -149,6 +153,7 @@ public class Icd10Controller extends BaseUIController {
                     envelop.setErrorMsg("原字典项信息获取失败！");
                 }
                 Icd10DictModel updateModel = getEnvelopModel(envelopGet.getObj(),Icd10DictModel.class);
+                updateModel.setUpdateUser(userDetailModel.getId());
                 updateModel.setCode(model.getCode());
                 updateModel.setName(model.getName());
                 updateModel.setChronicFlag(model.getChronicFlag());
@@ -317,8 +322,9 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/drug/creates")
     @ResponseBody
-    public Object createIcd10DrugRelations(String icd10Id,String drugIds){
+    public Object createIcd10DrugRelations(String icd10Id,String drugIds,HttpServletRequest request){
         Envelop envelop = new Envelop();
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/icd10/drugs";
         if(StringUtils.isEmpty(icd10Id)){
             envelop.setErrorMsg("icd10字典id不能为空！");
@@ -334,6 +340,7 @@ public class Icd10Controller extends BaseUIController {
             if(ids.length == 1){
                 url = "/dict/icd10/drug";
                 Icd10DrugRelationModel model = new Icd10DrugRelationModel();
+                model.setCreateUser(userDetailModel.getId());
                 model.setIcd10Id(icd10Id);
                 model.setDrugId(drugIds);
                 String modelJson = objectMapper.writeValueAsString(model);
@@ -346,6 +353,7 @@ public class Icd10Controller extends BaseUIController {
             Map<String,Object> params = new HashMap<>();
             params.put("icd10_id",icd10Id);
             params.put("drug_ids",drugIds);
+            params.put("create_user",userDetailModel.getId());
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
@@ -551,8 +559,9 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/indicator/creates")
     @ResponseBody
-    public Object createIcd10IndicatorRelations(String icd10Id,String indicatorIds){
+    public Object createIcd10IndicatorRelations(String icd10Id,String indicatorIds,HttpServletRequest request){
         Envelop envelop = new Envelop();
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/icd10/indicators";
         if(StringUtils.isEmpty(icd10Id)){
             envelop.setErrorMsg("icd10字典id不能为空！");
@@ -568,6 +577,7 @@ public class Icd10Controller extends BaseUIController {
             if(ids.length == 1){
                 url = "/dict/icd10/indicator";
                 Icd10IndicatorRelationModel model = new Icd10IndicatorRelationModel();
+                model.setCreateUser(userDetailModel.getId());
                 model.setIcd10Id(icd10Id);
                 model.setIndicatorId(indicatorIds);
                 String modelJson = objectMapper.writeValueAsString(model);
@@ -580,6 +590,7 @@ public class Icd10Controller extends BaseUIController {
             Map<String,Object> params = new HashMap<>();
             params.put("icd10_id",icd10Id);
             params.put("indicator_ids",indicatorIds);
+            params.put("create_user",userDetailModel.getId());
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){

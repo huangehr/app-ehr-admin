@@ -69,6 +69,7 @@
 							{display:'id',name:'id',hide:true},
 							{display: '药品编码', name: 'code', width: '30%', align: 'left',checkbox:false},
 							{display: '药品名称', name: 'name', width: '30%',align:'left'},
+							{display: '药品类别', name: 'typeName', width: '20%',align:'left'},
 							{display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
 								html ='<a class="label_a" name="" style="margin-left:15px;" title="取消关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "icd10:drug:delete", row.id) + '">取消关联</a>';
 								return html;

@@ -86,7 +86,7 @@ cda.list = {
         $("#div_left_tree").mCustomScrollbar({theme: "minimal-dark", axis: "yx"});
     },
     getStagedByValue: function () {
-        debugger;
+        //debugger;
         var _value = $("#cdaVersion").ligerGetComboBoxManager().getValue();
         if (!_value && _value == "") return false;
         var data = $("#cdaVersion").ligerComboBox().data;

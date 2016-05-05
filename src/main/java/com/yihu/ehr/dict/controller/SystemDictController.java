@@ -212,7 +212,7 @@ public class SystemDictController extends BaseUIController {
         params.put("entry",toJson(dictEntryModel));
 
         try {
-            String urlCheck = "/dictionaries/existence/" + dictId + "/" + code;
+            String urlCheck = "/dictionaries/existence/" + dictId ;
             Map<String, Object> paramsCheck = new HashMap<>();
             paramsCheck.put("dict_id",dictId);
             paramsCheck.put("code",code);

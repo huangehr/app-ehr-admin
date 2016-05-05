@@ -2,6 +2,7 @@ package com.yihu.ehr.specialdict.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.IndicatorsDictModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.Envelop;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -135,9 +137,10 @@ public class IndicatorDictController extends BaseUIController {
 
     @RequestMapping("/update")
     @ResponseBody
-    public Object updateIndicatorDict(String dictJson,String mode){
+    public Object updateIndicatorDict(String dictJson,String mode,HttpServletRequest request){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/indicator";
         try{
             IndicatorsDictModel model = objectMapper.readValue(dictJson, IndicatorsDictModel.class);
@@ -150,8 +153,9 @@ public class IndicatorDictController extends BaseUIController {
                 return envelop;
             }
             if("new".equals(mode)){
+                model.setCreateUser(userDetailModel.getId());
                 Map<String,Object> args = new HashMap<>();
-                args.put("dictionary",dictJson);
+                args.put("dictionary",objectMapper.writeValueAsString(model));
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
@@ -162,6 +166,7 @@ public class IndicatorDictController extends BaseUIController {
                     envelop.setErrorMsg("原字典项信息获取失败！");
                 }
                 IndicatorsDictModel updateModel = getEnvelopModel(envelopGet.getObj(),IndicatorsDictModel.class);
+                updateModel.setUpdateUser(userDetailModel.getId());
                 updateModel.setCode(model.getCode());
                 updateModel.setName(model.getName());
                 updateModel.setType(model.getType());
