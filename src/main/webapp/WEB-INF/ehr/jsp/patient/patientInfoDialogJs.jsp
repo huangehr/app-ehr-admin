@@ -25,9 +25,9 @@
         if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
             patientModel =${patientModel}.obj;
             idCardNo = patientModel.idCardNo;
-            //todo:暂不发布
-            $("#btn_archive").hide();
-            $("#btn_home_relation").hide();
+//            //todo:暂不发布
+//            $("#btn_archive").hide();
+//            $("#btn_home_relation").hide();
         }else{
             $(".pop_tab").hide();
         }

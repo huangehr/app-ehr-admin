@@ -94,7 +94,7 @@ set.list = {
     },
     getStagedByValue:function()
     {
-        debugger;
+        //debugger;
         var _value = $("#cdaVersion").ligerGetComboBoxManager().getValue();
         if (!_value && _value == "") return false;
         var data = $("#cdaVersion").ligerComboBox().data;

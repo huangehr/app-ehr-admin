@@ -295,7 +295,7 @@
         ['validate-money','请输入正确的数值,最高保留2位小数'],
         ['validate-contact-way','请输入有效的电话号码或手机号码'],
         ['validate-org-length','请选择到医院一级！'],
-        ['validate-org-code','请输入正确的组织代码格式'],
+        ['validate-org-code','请输入正确的组织代码格式，如:46650460-X'],
         ['validate-special-char','不允许输入 \' 符号']
 
     ];
@@ -1029,7 +1029,13 @@
         ['validate-contact-way',/^((0[1-9]{3})?(0[12][0-9])?[-])?\d{6,8}|0?(13[0-9]|15[012356789]|18[012356789]|14[57])[0-9]{8}$/],
         ['validate-org-length', function (v,elm,args,metadata) {
             v = eval("("+v+")");
-            if(v.keys[0]!="" && (v.keys.length<3 || v.keys[2]==""))
+            var  len;
+            if (Util.isStrEquals(elm.id,"location"))
+                len = 1;
+            else
+                len = 2;
+            
+            if(v.keys[0]!="" && (v.keys.length<3 || v.keys[len]==""))
                 return false;
             return true;
         }],
