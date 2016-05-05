@@ -285,7 +285,11 @@
             bindEvents: function () {
                 //查看档案信息
                 $.subscribe('card:archive:view',function(event,id,cardType){
+<<<<<<< HEAD
+                    //todo:先查看卡信息,后面调整查看档案
+=======
                     //todo:档案赞不发布，先查看卡信息
+>>>>>>> origin/master
                     $.ligerDialog.open({ width:450, height:500,target: cardFormInit.$cardBasicMsg});
                     var self = this;
                     var dataModel = $.DataModel.init();
