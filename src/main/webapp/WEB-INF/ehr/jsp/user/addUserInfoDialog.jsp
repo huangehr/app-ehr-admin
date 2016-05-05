@@ -7,7 +7,7 @@
 		<div id="div_file_list" class="uploader-list"></div>
 		<div id="div_file_picker" class="f-mt10"><spring:message code="btn.file.choose"/></div>
 	</div>
-	<div class="m-form-group ">
+	<div class="m-form-group">
 		<label><spring:message code="lbl.loginCode"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" type="text" id="inp_loginCode" class="required  ajax useTitle max-length-50" placeholder="输入账号"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="loginCode"/>
