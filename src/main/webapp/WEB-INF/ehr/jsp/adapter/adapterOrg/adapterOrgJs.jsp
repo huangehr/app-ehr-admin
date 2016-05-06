@@ -33,14 +33,39 @@
         $searchBtn: $('#btn_search'),
         $addBtn: $('#btn_add'),
         $multiDelBtn: $('#btn_multiDel'),
-
+        $org: $('#sel_org'),
+        validator: undefined,
         init: function () {
           this.initDDL(21, this.$type);
+          this.initOrgSel();
           this.$searchNm.ligerTextBox({width: 240 });
           this.bindEvents();
           this.$element.show();
           this.$element.attrScan();
           window.form = this.$element;
+          this.validator = new $.jValidation.Validation(retrieve.$element, {
+            immediate: true, onSubmit: false
+          });
+
+        },
+        initOrgSel: function () {
+          this.$org.addressDropdown({
+            placehoder: '请选择机构',
+            tabsData: [
+              {name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
+              {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+              {name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',
+                beforeAjaxSend: function (ds, $options) {
+                  var province = $options.eq(0).attr('title'),
+                          city = $options.eq(1).attr('title');
+                  ds.params = $.extend({}, ds.params, {
+                    province: province,
+                    city: city
+                  });
+                }
+              }
+            ]
+          });
         },
         initDDL: function (dictId, target) {
           var target = $(target);
@@ -86,7 +111,8 @@
           });
 
           retrieve.$searchBtn.click(function () {
-            master.reloadGrid();
+            if(retrieve.validator.validate())
+              master.reloadGrid();
           });
         }
       };
@@ -136,7 +162,12 @@
           this.grid.adjustToWidth();
         },
         reloadGrid: function () {
+          debugger
           var values = retrieve.$element.Fields.getValues();
+          if(values.org.keys.length > 1)
+            values.org = values.org.keys[2];
+          else
+            values.org = '';
           this.grid.options.newPage =  1;
           this.grid.setOptions({parms: $.extend({},values)});
           this.grid.loadData(true);

@@ -10,6 +10,7 @@
 .u-select-tab .current { background: #fff; border-bottom: 1px solid #fff; color: #f60 }
 .u-select-title { margin-right: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ccc }
 .u-select-title { position: absolute; height: 30px; line-height: 30px; color: #333; padding-left: 5px; }
+.u-select-title.placehoder {color: #AAA}
 
 .m-select-panel { border: 1px solid #ccc; border-top: none;border-bottom: none; min-height:200px ;padding: 5px; width: 240px; background: #fff; font-size: 12px }
 .m-select-panel dl { line-height: 2; clear: both; padding: 3px 0; margin: 0 }
