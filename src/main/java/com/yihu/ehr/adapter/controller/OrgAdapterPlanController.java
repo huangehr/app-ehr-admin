@@ -95,15 +95,17 @@ public class OrgAdapterPlanController extends ExtendController<OrgAdapterPlanSer
 
     @RequestMapping("/versions")
     @ResponseBody
-    public Object searchVersions(String searchNm){
+    public Object searchVersions(String searchNm, String isPublic){
 
         try {
             String url = "/version/versions";
-            String filters = "";
-            if(!StringUtils.isEmpty(searchNm)){
-                filters = "version?"+searchNm+" g1;versionName?"+searchNm+" g1;";
-            }
-            String envelopStr = service.search(url, new PageParms(filters));
+            PageParms pageParms = new PageParms()
+                    .addGroupNotNull("version", PageParms.LIKE, searchNm, "g1")
+                    .addGroupNotNull("versionName", PageParms.LIKE, searchNm, "g1");
+            if(!StringUtils.isEmpty(isPublic))
+                pageParms.addEqual("inStage", false);
+
+            String envelopStr = service.search(url, pageParms);
             return envelopStr;
         } catch (Exception ex) {
             return systemError();

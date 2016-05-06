@@ -200,7 +200,6 @@
        $(this).removeClass("validation-failed")
     })
     $("#inp_captcha_code").hover(function(){
-      debugger;
       $(this).addClass("required");
       if($(this).val()==''){
         $(".SD-tipbox .cntBox").each(function(i){

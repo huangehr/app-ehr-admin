@@ -16,6 +16,8 @@
 
             // 页面主模块，对应于用户信息表区域
             var patientMaster = null;
+
+            var patientDialog=null;
             /* ************************** 变量定义结束 ******************************** */
 
             /* *************************** 函数定义 ******************************* */
@@ -27,8 +29,8 @@
             function reloadGrid (url, params) {
                 grid.set({
                     url: url,
-                    parms: params,
-                    newPage:1
+                    parms: params
+//                    newPage:1
                 });
                 grid.reload();
             }
@@ -52,9 +54,11 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    self.$searchBtn.click(function () {
-                        patientMaster.reloadGrid();
-                    });
+//                    self.$searchBtn.click(function () {
+//                        debugger
+//                        patientMaster.grid.options.newPage = 1;
+//                        patientMaster.reloadGrid();
+//                    });
                 }
             };
 
@@ -71,12 +75,14 @@
                             city:'',
                             district:''
                         },
+                       allowHideColumn:false,
                         columns: [
                             {display: '姓名', name: 'name', width: '15%',align: 'left'},
-                            {display: '身份证号', name: 'idCardNo', width: '20%', align: 'left'},
-                            {display: '性别', name: 'gender', width: '10%'},
+                            {display: '身份证号', name: 'idCardNo', width: '10%', align: 'left'},
+                            {display: '性别', name: 'gender', width: '5%'},
                             {display: '联系方式', name: 'telephoneNo', width: '15%', resizable: true,align: 'left'},
                             {display: '家庭地址', name: 'homeAddress', width: '30%', minColumnWidth: 20,align: 'left'},
+                            {display: '注册时间', name: 'registerTime', width: '15%', minColumnWidth: 20,align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
 //									var html ='<div class="grid_edit" title="修改" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:open", row.idCardNo) + '"></div>'
@@ -84,28 +90,32 @@
 //										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:delete", row.idCardNo) + '"></div>';
                                 var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:open", row.idCardNo) + '"></a> ';
                                 html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:delete", row.idCardNo) + '"></a>';
-									return html;
-								}
+                                return html;
+                            }
                             }
                         ],
                         onDblClickRow: function (row) {
-                            $.ligerDialog.open({
-                                title:'',
-                                height: 600,
+                            var wait=null;
+                            wait = $.Notice.waitting('正在加载中...');
+                            var dialog = $.ligerDialog.open({
+                                title:'人口基本属性',
+                                height: 625,
                                 width: 570,
                                 url: '${contextRoot}/patient/patientDialogType',
                                 load: true,
                                 isDrag:true,
+                                show:false,
                                 urlParms: {
                                     idCardNo: row.idCardNo,
                                     patientDialogType: 'patientInfoMessage'
                                 },
-                                isHidden: false
+                                isHidden: false,
+                                onLoaded:function() {
+                                    wait.close();
+                                    dialog.show();
+                                }
                             });
-                            var buttonsWrap = '<span style="position:relative; z-index:10;"><button class="f-ib f-tac f-w100 f-click-down" id="div_patientBasicMsgDialog">病人基本信息</button><button class="f-ib f-ml10 f-tac f-w100 f-click-up"  id="div_cardManagerDialog">卡管理</button></span>';
-                            $('.l-dialog .l-dialog-tc-inner').eq(0).append( $(buttonsWrap));
-                            $('.l-dialog .l-dialog-title').eq(0).css({position:'absolute',left:-40,width:'100%',height:40,'z-index': 2});
-
+                            dialog.hide();
                         }
                     }));
                     grid.adjustToWidth();
@@ -128,13 +138,21 @@
                 },
                 bindEvents: function () {
 
+                    patientRetrieve.$searchBtn.click(function () {
+                        grid.options.newPage = 1;
+                        patientMaster.reloadGrid();
+                    });
+
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){
-                        $.ligerDialog.open({
-                            isHidden:true,
+                        patientDialog = $.ligerDialog.open({
+                            isHidden:false,
                             title:'新增人口信息',
                             width:600,
                             height:600,
+                            load: true,
+                            isDrag:true,
+                            show:false,
                             url:'${contextRoot}/patient/patientDialogType',
                             urlParms:{
                                 patientDialogType:'addPatient'
@@ -143,11 +161,14 @@
                     });
                     //修改人口信息
                   $.subscribe('patient:patientInfoModifyDialog:open',function(event,idCardNo){
-                        $.ligerDialog.open({
-                            isHidden:true,
+                      patientDialog = $.ligerDialog.open({
+                            isHidden:false,
                             title:'修改人口信息',
                             width:600,
-                            height:700,
+                            height:720,
+                            load: true,
+                            isDrag:true,
+                            show:false,
                             url:'${contextRoot}/patient/patientDialogType',
                             urlParms:{
                                 idCardNo:idCardNo,
@@ -181,6 +202,9 @@
             /* ************************* Dialog页面回调接口 ************************** */
             win.patientDialogRefresh = function () {
                 patientMaster.reloadGrid();
+            };
+            win.patientDialogClose = function () {
+                patientDialog.close();
             };
             /* ************************* Dialog页面回调接口结束 ************************** */
             /* *************************** 页面初始化 **************************** */

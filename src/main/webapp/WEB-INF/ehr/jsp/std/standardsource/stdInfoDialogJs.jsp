@@ -43,8 +43,8 @@
                 this.$form.attrScan();
 				var std = '';
 				if(mode == 'modify'){
-					var envelop = JSON.parse('${envelop}');
-					var std = envelop.obj;
+					<%--var envelop = JSON.parse('${envelop}');--%>
+					var std = ${envelop}.obj;
 				}
                 this.$form.Fields.fillValues({
                     name: std.name,
@@ -76,13 +76,13 @@
                 });
 
                 this.$btnSave.click(function () {
-
+					if(!validator.validate()){
+						return;
+					}
                     var dialog = $.ligerDialog.waitting("正在保存数据...");
 
                     var values = self.$form.Fields.getValues();
-                    if(!validator.validate()){
-                        return;
-                    }
+
                     self.$btnSave.attr('disabled','disabled');
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/standardsource/updateStdSource",{data: $.extend({}, values),

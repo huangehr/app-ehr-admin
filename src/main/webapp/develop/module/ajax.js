@@ -15,6 +15,57 @@
  * @copyright:   2015 www.yihu.com
  */
 (function ($, win) {
+
+    function isTimeOut(XMLHttpRequest){
+        return XMLHttpRequest.getResponseHeader("sessionStatus") == "timeOut";
+    }
+
+    function gotoIndex(){
+        $.ligerDialog.alert("您太久没操作，请重新登录！", "提示", "warn", function(){
+            top.location.href = $.Context.PATH + "/login";
+        }, null);
+        throw new error("time out！");
+    }
+
+    var _ajax = $.ajax;
+    $.ajax = function(opt){
+        var fn = {
+            complete: function(XMLHttpRequest, textStatus, errorThrown){},
+            success: function(data, textStatus, XMLHttpRequest){},
+            error: function(XMLHttpRequest, textStatus, errorThrown){}
+        }
+        if(opt.complete){
+            fn.complete = opt.complete;
+        }
+        if(opt.success){
+            fn.success = opt.success;
+        }
+        if(opt.error){
+            fn.error = opt.error;
+        }
+        var _opt = $.extend(opt,{
+            complete:function(XMLHttpRequest, textStatus, errorThrown){
+                if(isTimeOut(XMLHttpRequest)){
+                    gotoIndex();
+                }else
+                    fn.complete(XMLHttpRequest, textStatus, errorThrown);
+            },
+            success: function(data, textStatus, XMLHttpRequest){
+                if(isTimeOut(XMLHttpRequest)){
+                    gotoIndex();
+                }else
+                    fn.success(data, textStatus, XMLHttpRequest);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                if(isTimeOut(XMLHttpRequest)){
+                    gotoIndex();
+                }else
+                    fn.error(XMLHttpRequest, textStatus, errorThrown);
+            },
+        });
+        return _ajax(_opt);
+    };
+
     $.AjaxUtil = {
         ajax: function(url,options){
 

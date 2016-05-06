@@ -14,6 +14,7 @@
             var entryMater = null;
 
             var versionStage = null;
+            var selectRowObj=null;
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
 
@@ -26,7 +27,7 @@
 
             function getStagedByValue()
             {
-                debugger;
+                //debugger;
                 var _value = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                 if (!_value && _value == "") return false;
                 var data = $("#stdDictVersion").ligerComboBox().data;
@@ -142,9 +143,16 @@
                                 }
                             },
                             onAfterShowData: function () {
-                                this.select(0);
+                                if(selectRowObj!=null)
+                                {
+                                    this.select(selectRowObj);
+                                }
+                                else {
+                                    this.select(0);
+                                }
                             },
                             onSelectRow: function (row) {
+                                selectRowObj = row;
                                 entryMater.init();
                                 entryMater.reloadGrid();
                             }
@@ -171,6 +179,12 @@
                             title = '修改标准字典';
                         }
                         else {
+
+                            if(!versionStage)
+                            {
+                                $.Notice.error("已发布版本不可新增，请确认!");
+                                return;
+                            }
                             title = '新增标准字典';
                         }
                         var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
@@ -192,7 +206,7 @@
                     });
 
                     $.subscribe('stddict:dictInfoGrid:delete', function (event, id) {
-                        console.log(versionStage);
+
                         if(!versionStage)
                         {
                             $.Notice.error("已发布版本不可删除，请确认!");
@@ -299,6 +313,12 @@
                             title = '修改字典项';
                         }
                         else {
+
+                            if(!versionStage)
+                            {
+                                $.Notice.error("已发布版本不可新增，请确认!");
+                                return;
+                            }
                             dictId = dictMaster.grid.getSelectedRow().id;
                             title = '新增字典项';
                         }

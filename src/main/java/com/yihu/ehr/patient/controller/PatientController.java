@@ -1,32 +1,32 @@
 package com.yihu.ehr.patient.controller;
+
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.RestTemplates;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.encode.Base64;
 import com.yihu.ehr.util.log.LogService;
-import org.apache.catalina.connector.CoyoteInputStream;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.ResizableByteArrayOutputStream;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import javax.servlet.http.HttpSession;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,7 +52,7 @@ public class PatientController extends BaseUIController {
     }
 
     @RequestMapping("patientDialogType")
-    public Object patientDialogType(String idCardNo, String patientDialogType, Model model) throws IOException {
+    public Object patientDialogType(String idCardNo, String patientDialogType, Model model,HttpSession session) throws IOException {
         String url = "";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -64,18 +64,22 @@ public class PatientController extends BaseUIController {
                 model.addAttribute("patientModel", toJson(result));
                 model.addAttribute("patientDialogType", patientDialogType);
                 model.addAttribute("contentPage", "patient/patientInfoDialog");
-                return "generalView";
+//                return "generalView";
+                return "simpleView";
             } else {
                 url = "/populations/";
                 //todo 该controller的download方法放后台处理
                 resultStr = templates.doGet(comUrl + url + idCardNo);
                 Envelop envelop = getEnvelop(resultStr);
+                PatientDetailModel patientDetailModel = toModel(toJson(envelop.getObj()),PatientDetailModel.class);
+                session.setAttribute("patientImageStream",patientDetailModel.getLocalPath());
                 model.addAttribute("patientDialogType", patientDialogType);
                 if (envelop.isSuccessFlg()) {
                     model.addAttribute("patientModel", resultStr);
                     if (patientDialogType.equals("updatePatient")) {
                         model.addAttribute("contentPage", "patient/patientInfoDialog");
-                        return "generalView";
+                        //return "generalView";
+                        return "simpleView";
                     } else if (patientDialogType.equals("patientInfoMessage")) {
                         model.addAttribute("contentPage", "patient/patientBasicInfoDialog");
                         return "simpleView";
@@ -191,7 +195,7 @@ public class PatientController extends BaseUIController {
             }
             inputStream.close();
 
-            String restStream = Base64.encode(fileBuffer);
+            String restStream = Base64.getEncoder().encodeToString(fileBuffer);
             String imageStream = URLEncoder.encode(restStream, "UTF-8");
 
             params.add("inputStream", imageStream);
@@ -214,6 +218,7 @@ public class PatientController extends BaseUIController {
                     updatePatient.setHomeAddressInfo(patientDetailModel.getHomeAddressInfo());
                     updatePatient.setWorkAddressInfo(patientDetailModel.getWorkAddressInfo());
                     updatePatient.setResidenceType(patientDetailModel.getResidenceType());
+                    updatePatient.setLocalPath("");
                     //联系电话
                     Map<String, String> telphoneNo = null;
                     String tag = "联系电话";
@@ -289,36 +294,43 @@ public class PatientController extends BaseUIController {
      * 注：因直接访问文件路径，无法显示文件信息
      * 将文件路径解析成字节流，通过字节流的方式读取文件
      *
-     * @param request
+     * @param session
      * @param response
      * @param localImgPath 文件路径
      * @throws Exception
      */
     @RequestMapping("showImage")
     @ResponseBody
-    public void showImage(HttpServletRequest request, HttpServletResponse response, String localImgPath) throws Exception {
+    public void showImage(String timestamp,HttpSession session, HttpServletResponse response, String localImgPath) throws Exception {
         response.setContentType("text/html; charset=UTF-8");
         response.setContentType("image/jpeg");
         FileInputStream fis = null;
-        OutputStream os = null;
+        OutputStream outputStream = null;
+        String fileStream = (String) session.getAttribute("patientImageStream");
+        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
+
         try {
-            File file = new File(localImgPath);
-            if (!file.exists()) {
-                LogService.getLogger(PatientController.class).error("人口头像不存在：" + localImgPath);
-                return;
-            }
-            fis = new FileInputStream(localImgPath);
-            os = response.getOutputStream();
-            int count = 0;
-            byte[] buffer = new byte[1024 * 1024];
-            while ((count = fis.read(buffer)) != -1)
-                os.write(buffer, 0, count);
-            os.flush();
+            outputStream = response.getOutputStream();
+//            File file = new File(localImgPath);
+//            if (!file.exists()) {
+//                LogService.getLogger(PatientController.class).error("人口头像不存在：" + localImgPath);
+//                return;
+//            }
+//            fis = new FileInputStream(localImgPath);
+//            int count = 0;
+//            byte[] buffer = new byte[1024 * 1024];
+//            while ((count = fis.read(buffer)) != -1)
+//                outputStream.write(buffer, 0, count);
+//            outputStream.flush();
+
+            byte[] bytes = Base64.getDecoder().decode(imageStream);
+            outputStream.write(bytes);
+            outputStream.flush();
         } catch (IOException e) {
             LogService.getLogger(PatientController.class).error(e.getMessage());
         } finally {
-            if (os != null)
-                os.close();
+            if (outputStream != null)
+                outputStream.close();
             if (fis != null)
                 fis.close();
         }

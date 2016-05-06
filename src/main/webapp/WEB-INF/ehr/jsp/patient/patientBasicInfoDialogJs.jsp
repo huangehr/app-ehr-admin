@@ -11,8 +11,10 @@
         var patientInfo = null;
 
         var cardInfoGrid = null;
+        var archiveInfoGrid = null;
 
         var cardFormInit = null;
+        var archiveFormInit = null;
         var patientModel =${patientModel}.obj;
         var idCardNo =patientModel.idCardNo;
         /* ************************** 变量定义结束 ******************************** */
@@ -20,11 +22,63 @@
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             patientInfo.init();
+//            //todo:暂不发布
+//            $("#btn_archive").hide();
+//            $("#btn_home_relation").hide();
+            tab_click();
+        }
+        function tab_click(){
+            $("#btn_basic").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_patient_info_form").show();
+                $("#div_card_info").hide();
+                $("#div_home_relation").hide();
+                $("#div_archive_info").hide();
+                $(window).resize();
+            });
+            $("#btn_card").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_card_info").show();
+                $("#div_patient_info_form").hide();
+                $("#div_home_relation").hide();
+                $("#div_archive_info").hide();
+                $(window).resize();
+            });
+            $("#btn_archive").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_archive_info").show();
+                $("#div_patient_info_form").hide();
+                $("#div_card_info").hide();
+                $("#div_home_relation").hide();
+                $(window).resize();
+            });
+            $("#btn_home_relation").click(function(){
+                $("li").removeClass('cur');
+                $(this).addClass('cur');
+                $("#div_home_relation").show();
+                $("#div_patient_info_form").hide();
+                $("#div_card_info").hide();
+                $("#div_archive_info").hide();
+                $.get("${contextRoot}/home_relation/home_relationship",function(data){
+                    $("#div_home_relation").html(data);
+                    home.list.event();
+                });
+                $(window).resize();
+            });
         }
         function cardInfoRefresh(){
-            var searchNm = patientInfo.$cardSearch.val();
+            var searchNm = cardFormInit.$cardSearch.val();
             var cardType = cardFormInit.$selectCardType.ligerComboBox().getValue();
             cardFormInit.searchCard(searchNm,cardType);
+        }
+        function archiveInfoRefresh(){
+            var start = archiveFormInit.$selectStart.val();
+            var end = archiveFormInit.$selectEnd.val();
+            var org = archiveFormInit.$selectArchiveOrg.ligerComboBox().getValue();
+            archiveFormInit.searchCard(start,end,org);
         }
 
         /* *************************** 函数定义结束******************************* */
@@ -33,8 +87,7 @@
         patientInfo = {
             $form: $("#div_patient_info_form"),
             $cardInfo:$("#div_card_info"),
-            $cardForm: $("#div_card_info_form"),
-            $recordForm: $("#div_record_info_form"),
+            $archiveInfo:$("#div_archive_info"),
 
             $realName: $("#inp_realName"),
             $idCardNo: $("#inp_idCardNo"),
@@ -44,32 +97,24 @@
             $patientMartialStatus: $("#inp_select_patientMartialStatus"),
             $patientBirthday: $("#inp_patientBirthday"),
             $birthPlace: $("#inp_birthPlace"),
+            $birthPlaceTitle: $("#div_birthPlaceTitle"),
             $homeAddress: $("#inp_homeAddress"),
+            $homeAddressTitle: $("#div_homeAddressTitle"),
             $workAddress: $("#inp_workAddress"),
+            $workAddressTitle: $("#div_workAddressTitle"),
             $residenceType: $('input[name="residenceType"]', this.$form),
             $patientTel: $("#inp_patientTel"),
             $patientEmail: $("#inp_patientEmail"),
-            $patientBasicMsgDialog: $("#div_patientBasicMsgDialog"),
-            $cardManagerDialog: $("#div_cardManagerDialog"),
-            $recordManagerDialog: $("#div_recordManagerDialog"),
-            $cardSearch: $("#inp_card_search"),
-            $cardBasicMsg: $("#div_card_basicMsg"),
-            $addCard: $("#div_addCard"),
-
-            $cardType:$("#inp_cardType"),
-            $cardNo:$("#inp_cardNo"),
-            $holderName:$("#inp_HolderName"),
-            $issueAddress:$("#inp_issueAddress"),
-            $issueOrg:$("#inp_issueOrg"),
-            $addDate:$("#inp_addDate"),
-            $cardStatus:$("#inp_cardStatus"),
-            $cardExplain:$("#inp_cardExplain"),
             picPath:$('#div_file_list'),
 
             init: function () {
                 this.initForm();
-                cardFormInit.bindEvents();
+                this.bindEvents();
                 cardFormInit.init();
+                archiveFormInit.init();
+                $("#div_card_info").hide();
+                $("#div_home_relation").hide();
+                $("#div_archive_info").hide();
             },
             initForm: function () {
                 this.$realName.ligerTextBox({width: 240});
@@ -106,23 +151,6 @@
                             }
                         });
 
-                this.$cardSearch.ligerTextBox({
-                    width: 240, isSearch: true, search: function () {
-                        cardInfoRefresh();
-//                        var searchNm = patientInfo.$cardSearch.val();
-//                        var cardType = patientInfo.$selectCardType.ligerComboBox().getValue();
-//                        cardFormInit.searchCard(searchNm,cardType);
-                    }
-                });
-                this.$cardType.ligerTextBox({width: 240});
-                this.$cardNo.ligerTextBox({width: 240});
-                this.$holderName.ligerTextBox({width: 240});
-                this.$issueAddress.ligerTextBox({width: 240});
-                this.$issueOrg.ligerTextBox({width: 240});
-                this.$addDate.ligerTextBox({width: 240});
-                this.$cardStatus.ligerTextBox({width: 240});
-                this.$cardExplain.ligerTextBox({width: 240});
-
                 this.$form.attrScan();
                 this.$form.Fields.fillValues({
                     name: patientModel.name,
@@ -139,16 +167,44 @@
                     telephoneNo: patientModel.telephoneNo,
                     email: patientModel.email
                 });
-                this.$cardForm.attrScan();
-                var pic = patientModel.localPath;
+                this.$birthPlaceTitle.attr("title",patientModel.birthPlaceFull);
+                this.$homeAddressTitle.attr("title",patientModel.homeAddressFull);
+                this.$workAddressTitle.attr("title",patientModel.workAddressFull);
+                var pic = patientModel.picPath;
                 if(!(Util.isStrEquals(pic,null)||Util.isStrEquals(pic,""))){
-                    this.picPath.html('<img src="${contextRoot}/patient/showImage?localImgPath='+pic+'" class="f-w88 f-h110" ></img>');
+                    this.picPath.html('<img src="${contextRoot}/patient/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110" ></img>');
                 }
+            },
+            bindEvents: function () {
             }
         };
         cardFormInit = {
             $selectCardType:$('#inp_select_cardType'),
+            $search: $("#div_search"),
+            $cardSearch: $("#inp_card_search"),
+            $cardBasicMsg: $("#div_card_basicMsg"),
+
+            $cardForm: $("#div_card_info_form"),
+
+            $cardType:$("#inp_cardType"),
+            $cardNo:$("#inp_cardNo"),
+            $holderName:$("#inp_HolderName"),
+            $issueAddress:$("#inp_issueAddress"),
+            $issueOrg:$("#inp_issueOrg"),
+            $addDate:$("#inp_addDate"),
+            $cardStatus:$("#inp_cardStatus"),
+            $cardExplain:$("#inp_cardExplain"),
+
             init: function () {
+                this.$cardForm.attrScan();
+                this.$cardType.ligerTextBox({width: 240});
+                this.$cardNo.ligerTextBox({width: 240});
+                this.$holderName.ligerTextBox({width: 240});
+                this.$issueAddress.ligerTextBox({width: 240});
+                this.$issueOrg.ligerTextBox({width: 240});
+                this.$addDate.ligerTextBox({width: 240});
+                this.$cardStatus.ligerTextBox({width: 240});
+                this.$cardExplain.ligerTextBox({width: 240});
                 this.$selectCardType.ligerComboBox(
                         {
                             url: '${contextRoot}/dict/searchDictEntryList',
@@ -161,11 +217,15 @@
                             width:120,
                             autocomplete: true,
                             onSelected: function (v, t) {
-                                cardFormInit.searchCard(patientInfo.$cardSearch.val(), v);
+                                cardFormInit.searchCard(cardFormInit.$cardSearch.val(), v);
                             }
                         });
-
-                cardInfoGrid = $("#div_card_info_form").ligerGrid($.LigerGridEx.config({
+                this.$cardSearch.ligerTextBox({
+                    width: 240, isSearch: true, search: function () {
+                        cardInfoRefresh();
+                    }
+                });
+                cardInfoGrid = cardFormInit.$cardForm.ligerGrid($.LigerGridEx.config({
                     url: '${contextRoot}/card/searchCard',
                     parms: {
                         idCardNo: idCardNo,
@@ -182,36 +242,40 @@
                         {display: '状态', name: 'statusName', width: '8%'},
                         {
                             display: '操作', name: 'operator', width: '14%', render: function (row) {
-                            var html = '<a href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:cardInfoModifyDialog:open", row.id,row.cardType) + '">解除关联</a>  ';
+                            var html = '<a href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "card:archive:view", row.id,row.cardType) + '">查看</a>  ';
                             return html;
                         }
                         }
                     ],
+                    allowHideColumn:false,
                     inWindow: false,
                     height:400,
                     onDblClickRow: function (row) {
                         //查看卡信息
-                        $.ligerDialog.open({ width:450, height:500,target: patientInfo.$cardBasicMsg});
+                        $.ligerDialog.open({ width:450, height:500,target: cardFormInit.$cardBasicMsg});
                         var self = this;
                         var dataModel = $.DataModel.init();
                         dataModel.createRemote('${contextRoot}/card/getCard', {
                             data: {id: row.id,cardType:row.cardType},
                             success: function (data) {
-                                patientInfo.$cardForm.Fields.fillValues({
-                                    cardType:data.obj.typeName,
-                                    number:data.obj.number,
-                                    ownerName:data.obj.ownerName,
-                                    local:data.obj.local,
-                                    releaseOrgName:data.obj.releaseOrgName,
-                                    createDate:data.obj.createDate,
-                                    statusName:data.obj.statusName,
-                                    description:data.obj.description
-                                })
+                                if (data.successFlg) {
+                                    cardFormInit.$cardForm.Fields.fillValues({
+                                        cardType: data.obj.typeName,
+                                        number: data.obj.number,
+                                        ownerName: data.obj.ownerName,
+                                        local: data.obj.local,
+                                        releaseOrgName: data.obj.releaseOrgName,
+                                        createDate: data.obj.createDate,
+                                        statusName: data.obj.statusName,
+                                        description: data.obj.description
+                                    });
+                                }
                             }
                         });
                     }
                 }));
                 cardInfoGrid.adjustToWidth();
+                this.bindEvents();
             },
 
             searchCard: function (searchNm, cardType) {
@@ -219,69 +283,116 @@
                 cardInfoGrid.loadData(true);
             },
             bindEvents: function () {
-                var self = patientInfo;
-                self.$recordForm.hide();
-
-                self.$patientBasicMsgDialog.click(function () {
-                    self.$patientBasicMsgDialog.addClass("f-click-down").removeClass("f-click-up");
-                    self.$cardManagerDialog.removeClass("f-click-down").addClass("f-click-up");
-                    self.$form.show();
-                    self.$cardInfo.css('visibility','hidden');
-                    self.$recordForm.hide();
-                    console.log('coming');
-                    return false;
-                });
-                self.$cardManagerDialog.click(function () {
-                    self.$cardManagerDialog.addClass("f-click-down").removeClass("f-click-up");
-                    self.$patientBasicMsgDialog.removeClass("f-click-down").addClass("f-click-up");
-                    self.$cardInfo.css('visibility','visible');
-                    self.$recordForm.hide();
-                    self.$form.hide();
-                    console.log('coming');
-                    return false;
-                });
-
-                self.$recordManagerDialog.click(function () {
-                    self.$recordForm.show();
-                    self.$cardInfo.css('visibility','hidden');
-                    self.$form.hide();
-                });
-
-                //解绑卡信息
-                $.subscribe('patient:cardInfoModifyDialog:open',function(event,id,cardType){
-                    $.ligerDialog.confirm('确认解除关联该卡信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
-                        if (yes) {
-                            var dataModel = $.DataModel.init();
-                            dataModel.updateRemote('${contextRoot}/card/detachCard', {
-                                data: {id: id,cardType:cardType},
-                                success: function (data) {
-                                    if (data.successFlg) {
-                                        $.ligerDialog.alert('解除关联成功');
-                                        cardFormInit.searchCard();
-                                    } else {
-                                        $.Notice.error('解除关联失败');
-                                    }
-                                }
-                            });
+                //查看档案信息
+                $.subscribe('card:archive:view',function(event,id,cardType){
+                    //todo:先查看卡信息,后面调整查看档案
+                    $.ligerDialog.open({ width:450, height:500,target: cardFormInit.$cardBasicMsg});
+                    var self = this;
+                    var dataModel = $.DataModel.init();
+                    dataModel.createRemote('${contextRoot}/card/getCard', {
+                        data: {id: id,cardType:cardType},
+                        success: function (data) {
+                            if (data.successFlg) {
+                                cardFormInit.$cardForm.Fields.fillValues({
+                                    cardType: data.obj.typeName,
+                                    number: data.obj.number,
+                                    ownerName: data.obj.ownerName,
+                                    local: data.obj.local,
+                                    releaseOrgName: data.obj.releaseOrgName,
+                                    createDate: data.obj.createDate,
+                                    statusName: data.obj.statusName,
+                                    description: data.obj.description
+                                });
+                            }
                         }
-                    })
+                    });
                 });
-                //添加卡
-                patientInfo.$addCard.click(function(){
-                    var idCardNo = patientInfo.$form.Fields.idCardNo.getValue();
-                    $.ligerDialog.open({
-                        height: 640,
-                        width: 600,
-                        title: '新增卡',
-                        url: '${contextRoot}/card/addCardInfoDialog',
-                        urlParms: {
-                            idCardNo: idCardNo
-                        },
-                        onClosed: function () {
-                            cardInfoRefresh();
-                        }
-                    })
+                //搜索
+                cardFormInit.$search.click(function(){
+                    cardInfoRefresh();
                 })
+            }
+
+        };
+        //档案信息
+        archiveFormInit = {
+            $selectStart:$('#inp_select_start'),
+            $selectEnd:$('#inp_select_end'),
+            $selectArchiveOrg:$('#inp_select_archiveOrg'),
+            $searchArchive:$('#div_search_archive'),
+            $archiveForm: $("#div_archive_info_form"),
+            init: function () {
+                this.$selectStart.ligerDateEditor({format: "yyyy-MM-dd"});
+                this.$selectEnd.ligerDateEditor({format: "yyyy-MM-dd"});
+                this.$selectArchiveOrg.addressDropdown({
+                    tabsData: [
+                        {
+                            name: '省份',
+                            code: 'id',
+                            value: 'name',
+                            url: '${contextRoot}/address/getParent',
+                            params: {level: '1'}
+                        },
+                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                        {
+                            name: '医院',
+                            code: 'orgCode',
+                            value: 'fullName',
+                            url: '${contextRoot}/address/getOrgs',
+                            beforeAjaxSend: function (ds, $options) {
+                                var province = $options.eq(0).attr('title'),
+                                        city = $options.eq(1).attr('title');
+                                ds.params = $.extend({}, ds.params, {
+
+                                    province: province,
+                                    city: city
+                                });
+                            }
+                        }
+                    ]
+                });
+
+                archiveInfoGrid = this.$archiveForm.ligerGrid($.LigerGridEx.config({
+                    <%--url: '${contextRoot}/archive/searchArchive',--%>
+                    url: '${contextRoot}/card/searchCard',
+                    parms: {
+                        start: '',
+                        end: '',
+                        org: ''
+                    },
+                    columns: [
+                        { name: 'id',hide: true},
+                        {display: '就诊时间', name: 'archiveTime', width: '28%'},
+                        {display: '就诊机构', name: 'archiveOrg', width: '30%'},
+                        {display: '关联时间', name: 'archiveRelateTime', width: '28%'},
+                        {
+                            display: '操作', name: 'operator', width: '14%', render: function (row) {
+                            var html = '<a href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:archiveView:open", row.id) + '">查看</a>  ';
+                            return html;
+                        }
+                        }
+                    ],
+                    allowHideColumn:false,
+                    inWindow: false,
+                    height:400
+                }));
+                archiveInfoGrid.adjustToWidth();
+                this.bindEvents();
+            },
+
+            searchArchive: function (start,end, org) {
+                archiveInfoGrid.setOptions({parms: {start: start, end: end, org: org},newPage:1});
+                archiveInfoGrid.loadData(true);
+            },
+            bindEvents: function () {
+                //查看档案
+                $.subscribe('patient:archiveView:open',function(event,id,cardType){
+
+                });
+                //档案搜索
+                archiveFormInit.$searchArchive.click(function(){
+
+                });
             }
 
         };

@@ -36,6 +36,7 @@
                     isChecked: base.isChecked,
                     onCheckRow: base.onChecked,
                     onCheckAllRow: base.onCheckAllRows,
+                    onAfterShowData: base.onAfterShowData,
                     root: 'Rows'
                 };
             // init grid
@@ -113,6 +114,12 @@
             }
             return false;
         },
+        onAfterShowData: function(currentData){
+
+            if(currentData.Rows.length==base.p.storage.length){
+                $('#pane-list').find('.l-grid-header1').find('.l-grid-hd-row').addClass('l-checked');
+            }
+        },
         onChecked: function (checked, data, rowid, rowdata) {
             $("#pane-list-selected").addClass("changed");//取消是否提示
             // 非多选内容
@@ -130,21 +137,22 @@
             if (checked) {
                 base.addItem(data);
                 base.pushData(data);
+                //执行Controller方法获取XML信息,并赋值给浏览器
+                var strSetId = "";
+                for(var i=0;i<base.p.storage.length;i++)
+                {
+                    //添加
+                    strSetId+=base.p.storage[i].id+",";
+                }
+                strSetId=strSetId.substring(0,strSetId.length-1);
+                if (typeof (base.p.callback) == "function") {
+                    base.p.get_relation_xml(strSetId,base.p.versionCode);
+                }
             }
             else {
                 base.deleteItem(data);
             }
-           //执行Controller方法获取XML信息,并赋值给浏览器
-            var strSetId = "";
-            for(var i=0;i<base.p.storage.length;i++)
-            {
-                //添加
-                strSetId+=base.p.storage[i].id+",";
-            }
-            strSetId=strSetId.substring(0,strSetId.length-1);
-            if (typeof (base.p.callback) == "function") {
-                base.p.get_relation_xml(strSetId,base.p.versionCode);
-            }
+
         },
         onCheckAllRows: function (checked) {
             $("#pane-list-selected").empty();

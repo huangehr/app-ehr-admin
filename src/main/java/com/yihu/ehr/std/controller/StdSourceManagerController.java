@@ -2,15 +2,19 @@ package com.yihu.ehr.std.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.standard.standardsource.StdSourceDetailModel;
+import com.yihu.ehr.agModel.standard.standardsource.StdSourceModel;
+import com.yihu.ehr.agModel.standard.standardversion.StdVersionModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.model.standard.MCDAVersion;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -19,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +56,7 @@ public class StdSourceManagerController extends BaseUIController {
 
     @RequestMapping("template/stdInfo")
     public String stdInfoTemplate(Model model, String id, String mode) {
+        Envelop envelop = new Envelop();
         String url = "/source/"+id;
         String envelopStr = "";
         try{
@@ -57,7 +64,7 @@ public class StdSourceManagerController extends BaseUIController {
         }catch(Exception ex){
             LogService.getLogger(StdSourceManagerController.class).error(ex.getMessage());
         }
-        model.addAttribute("envelop", envelopStr);
+        model.addAttribute("envelop", StringUtils.isEmpty(envelopStr)?toJson(envelop):envelopStr);
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","/std/standardsource/stdInfoDialog");
         return "simpleView";
@@ -188,6 +195,7 @@ public class StdSourceManagerController extends BaseUIController {
     @ResponseBody
     public Object delStdSource(String id) {
         Envelop envelop = new Envelop();
+        String envelopStr = "";
         if (StringUtils.isEmpty(id)){
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("标准来源id号不能为空！");
@@ -197,13 +205,14 @@ public class StdSourceManagerController extends BaseUIController {
         try{
             Map<String,Object> params = new HashMap<>();
             params.put("ids",id);
-            String _msg = HttpClientUtil.doDelete(comUrl+url,params,username,password);
-            if(Boolean.parseBoolean(_msg)){
-                envelop.setSuccessFlg(true);
-            }else{
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("标准来源删除失败");
-            }
+            envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            return envelopStr;
+//            envelop = toModel(envelopStr,Envelop.class);
+//            if(envelop.isSuccessFlg()){
+//                envelop.setSuccessFlg(true);
+//            }else{
+//                envelop.setSuccessFlg(false);
+//            }
         }catch(Exception ex){
             LogService.getLogger(StdSourceManagerController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
@@ -211,6 +220,47 @@ public class StdSourceManagerController extends BaseUIController {
         }
         return envelop;
     }
+
+//    public Envelop isDeleteStdSource(String id){
+//
+//        String resultStr = "";
+//        String filters = "sourceId="+id;
+//        Envelop envelop = new Envelop();
+//        Map<String, Object> params = new HashMap<>();
+//
+//        params.put("fields", "");
+//        params.put("filters","");
+//        params.put("sorts","");
+//        params.put("page",1);
+//        params.put("size",9999);
+//
+//        try {
+////            String url = "/dicts";
+//            String url = "/versions";
+//            //查询所有版本
+//            ResponseEntity<Collection<MCDAVersion>> responseEntity = cdaVersionClient.searchCDAVersions(fields, filters, sorts, size, page);
+//            Collection<MCDAVersion> mCdaVersions = responseEntity.getBody();
+//
+//            envelop = toModel(envelopStr,Envelop.class);
+//            List<StdVersionModel> stdSourceModels = envelop.getDetailModelList();
+//            for (StdVersionModel stdVersionModel:stdSourceModels){
+//                params.put("filters",filters);
+//                params.put("size",id.split(",").length);
+//                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+//                envelop = toModel(resultStr,Envelop.class);
+//                if (envelop.getDetailModelList().size() > 0){
+//
+//                }else {
+////                    resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+//                }
+//            }
+//
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     @RequestMapping("isSourceCodeExit")
     @ResponseBody
@@ -257,4 +307,6 @@ public class StdSourceManagerController extends BaseUIController {
         }
         return envelop;
     }
+
+
 }

@@ -42,7 +42,8 @@
                 this.$desc.ligerTextBox({width:240,height:100 });
 
                 this.$form.attrScan();
-				var info = $.parseJSON('${info}');
+				<%--var info = $.parseJSON('${info}');--%>
+				var info = ${info};
                 this.$form.Fields.fillValues({
                     value: info.value,
                     code: info.code,

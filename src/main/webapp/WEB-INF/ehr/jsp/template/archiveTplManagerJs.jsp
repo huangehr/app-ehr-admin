@@ -5,11 +5,24 @@
 <script>
     (function ($, win) {
         $(function () {
-
             /* ************************** 全局变量定义 **************************** */
+
+            var urls = {
+                list: "${contextRoot}/template/list",
+                gotoModify: "${contextRoot}/template/gotoModify",
+                delete: "${contextRoot}/template/lsit",
+                uploadTplFile: "${contextRoot}/template/update_tpl_content"
+            }
+
             var Util = $.Util;
             var retrieve = null;
             var master = null;
+            var dataModel = '${dataModel}';
+            try{
+                dataModel = eval('(' + dataModel + ')');
+            }catch(e){
+                dataModel = {};
+            }
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
@@ -23,7 +36,7 @@
                     parms: params,
                     newPage:1
                 });
-                this.grid.reload();
+//                this.grid.reload();
             }
 
             /* *************************** 模块初始化 ***************************** */
@@ -34,6 +47,14 @@
                 $addBtn: $('#btn_add'),
 
                 init: function () {
+                    if(dataModel.orgCode){
+                        $('#headerArea').css('height', '80px');
+                        $('#conditionArea').show();
+                        $('#h_org_type').val(dataModel.orgType);
+                        $('#h_org_code').val(dataModel.orgCode);
+                        $('#h_org_name').val(dataModel.orgName);
+                        this.$searchOrgName.attr('placeholder', '请输入模版名称');
+                    }
                     this.initVersionDDL(this.$searchVersionDDL);
                     this.$searchOrgName.ligerTextBox({width: 240,isSearch:true,search: function() {
                         master.reloadGrid();
@@ -42,22 +63,13 @@
                     this.$element.attrScan();
                 },
                 initVersionDDL: function (target) {
-                    /*target.ligerComboBox({
-                        url: "${contextRoot}/standardsource/getVersionList",
-                        dataParmName: 'obj',
-                        //urlParms: {dictId: dictId},
-                        valueField: 'version',
-                        textField: 'versionName'
-                    });*/
                     var dataModel = $.DataModel.init();
-                    dataModel.fetchRemote("${contextRoot}/standardsource/getVersionList",{
+                    dataModel.fetchRemote("${contextRoot}/adapter/versions",{
                         success: function(data) {
                             target.ligerComboBox({
-                                valueField: 'code',
-                                textField: 'value',
+                                valueField: 'version',
+                                textField: 'versionName',
                                 data: [].concat(data.detailModelList),
-                                //initValue: '000000000000',
-                                //allowBlank: false,
                                 onSelected:function(){
                                     master.reloadGrid();
                                 }
@@ -73,81 +85,90 @@
             };
 
             master = {
+                archiveTplInfoDialog:null,
                 grid: null,
                 $filePickerBtn: $('#div_file_picker'),
                 init: function () {
                     retrieve.$element.attrScan();
                     var values = retrieve.$element.Fields.getValues();
-                    var orgName = values.orgName;
-                    var version = values.version;
-                    //var version = '000000000000';
 
                     this.grid = $("#div_tpl_info_grid").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/template/searchTemplate',
-                        parms: {
-                            version: version,
-                            orgName: orgName
-                        },
+                        url: urls.list,
+                        parms: this.formatParms(values),
                         columns: [
                             {display: 'id', name: 'id', hide: true, isAllowHide: false},
                             {display: '模板', name: 'title', width: '15%', isAllowHide: false,align:'left'},
-                            {display: '医疗机构', name: 'orgName', width: '30%', isAllowHide: false,align:'left'},
-                            {display: 'CDA文档ID', name: 'cdaDocId', hide: true, isAllowHide: false},
-                            {display: 'CDA文档', name: 'cdaDocName', width: '25%', minColumnWidth: 60,align:'left'},
-                            {display: 'CDA版本ID', name: 'cdaVersionId', hide: true, isAllowHide: false},
-                            {display: 'HTML模版', name: 'checkStatus', width: '15%', minColumnWidth: 20, render: function (row) {
-                                    var html = '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'modify') + '">修改</a> / ' +
-                                            '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplUpload:open", row.id, 'modify') + '">导入</a>';
-                                    return html;
-                                }
+                            {display: '医疗机构', name: 'organizationName', width: '30%', isAllowHide: false,align:'left'},
+                            {display: 'CDA文档ID', name: 'cdaDocumentId', hide: true, isAllowHide: false},
+                            {display: 'CDA文档', name: 'cdaDocumentName', width: '25%', minColumnWidth: 60,align:'left'},
+                            {display: 'CDA版本ID', name: 'cdaVersion', hide: true, isAllowHide: false},
+                            {display: '导入模版', name: 'checkStatus', width: '10%', minColumnWidth: 20, render: function (row) {
+                                var html = '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplUpload:open", row.id, 'pc') + '">PC</a> / ' +
+                                        '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplUpload:open", row.id, 'mobile') + '">移动</a>';
+                                return html;
+                            }
                             },
                             {
-                                display: '复制模版', name: 'operator', width: '15%', render: function (row) {
+                                display: '复制模版', name: 'operator', width: '10%', render: function (row) {
                                 var html = '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'copy') + '">复制</a>';
                                 return html;
                             }
+                            },
+                            {display: '操作', name: 'checkStatus', width: '10%', minColumnWidth: 20, render: function (row) {
+                                    var html = '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'modify') + '">修改</a>';
+                                    return html;
+                                }
                             }
                         ],
                         enabledEdit: true,
                         validate : true,
                         unSetValidateAttr:false,
+                        delayLoad: true,
                         onDblClickRow : function (row){
-//                            alert("view");
-                            /*var mode = 'view';
-                            this.appInfoDialog = $.ligerDialog.open({
-                                height:640,
-                                width: 600,
-                                title : '用户基本信息',
-                                url: '${contextRoot}/app/template/appInfo',
-                                urlParms: {
-                                    appId: row.id,
-                                    mode:mode
-                                },
-                                isHidden: false
-                            });*/
+
                         }
                     }));
 
                     this.$filePickerBtn.instance = this.$filePickerBtn.webupload({
                         auto: true,
-                        server: "${contextRoot}/template/update_tpl_content"
+                        server: urls.uploadTplFile,
+                        accept: {
+                            title: 'Html',
+                            extensions: 'html',
+                            mimeTypes: 'text/html'
+                        }
                     });
 
                     this.bindEvents();
                     // 自适应宽度
                     this.grid.adjustToWidth();
                 },
+                formatParms: function (values) {
+                    var ext = {
+                        searchName: values.orgName
+                    }
+                    if(dataModel.orgCode){
+                        ext.orgCode = dataModel.orgCode;
+                    }
+                    return {
+                        filters: "cdaVersion="+values.version,
+                        extParms: JSON.stringify(ext)
+                    }
+                },
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
-                    reloadGrid.call(this, '${contextRoot}/template/searchTemplate', values);
+                    reloadGrid.call(this, urls.list, this.formatParms(values));
                 },
                 bindEvents: function () {
                     var self = this;
                     $.subscribe('tpl:tplInfo:open',function(event,id,mode){
                         var urlParms = {};
-                        if(!Util.isStrEmpty(id)){
-                        urlParms['idNo'] = id;
-                        }
+                        if(!Util.isStrEmpty(id))
+                            urlParms['id'] = id;
+
+                        if(dataModel.orgCode)
+                            urlParms['extParms'] = JSON.stringify({orgCode: dataModel.orgCode});
+
                         urlParms['mode'] = mode;
 						var title = '新增模板';
 						if(mode=='copy'){
@@ -155,31 +176,42 @@
 						}else if(mode=='modify'){
 							title='修改模板';
 						}
-                        this.archiveTplInfoDialog = $.ligerDialog.open({
+                        self.archiveTplInfoDialog = $.ligerDialog.open({
                             height:370,
                             width: 450,
                             title : title,
-                            url: '${contextRoot}/template/template/tplInfo',
+                            url: urls.gotoModify,
                             urlParms: urlParms,
                             isHidden: false,
-                            opener: true
+                            opener: true,
+                            load: true
                         });
                     });
 
-					var uploader = self.$filePickerBtn.instance;
-					var templateId = '';
-					uploader.on('beforeSend',function( file, data ) {
-						debugger;
-						data.templateId = templateId;
-					});
-					uploader.on('success',function( ) {
-						$.Notice.success('导入成功');
-					});
-					uploader.on('error',function( file, data ) {
-						$.Notice.error('导入失败');
-					});
+                    var uploader = self.$filePickerBtn.instance;
+                    var templateId = '';
+                    var tplMode = '';
+                    uploader.on('beforeSend',function( file, data ) {
+                        data.templateId = templateId;
+                        data.mode = tplMode;
+                    });
+                    uploader.on('success',function( file , data, b) {
+                        if(data.successFlg)
+                            $.Notice.success('导入成功');
+                        else if(data.errorMsg)
+                            $.Notice.error(data.errorMsg);
+                        else
+                            $.Notice.error('导入失败');
+                    });
+                    uploader.on('error',function( file, data ) {
+                        if(file=='Q_TYPE_DENIED')
+                            $.Notice.error('请上传html文件，并且文件大小不能为空！');
+                        else
+                            $.Notice.error('导入失败');
+                    });
                     $.subscribe('tpl:tplUpload:open',function(event,id,mode){
-						templateId = id;
+                        templateId = id;
+                        tplMode = mode;
                         uploader.reset();
                         $(".webuploader-element-invisible",self.$filePickerBtn).trigger("click");
                     });
@@ -187,11 +219,21 @@
             };
 
             /* *************************** 页面功能 **************************** */
-
+            win.getVersion =  function(){
+                var mgr = retrieve.$searchVersionDDL.ligerGetComboBoxManager();
+                return {
+                    v : mgr.getValue(),
+                    n : mgr.getText()
+                };
+            }
             win.reloadGrids =  function (){
                 master.reloadGrid();
             };
-
+            win.closeDialog = function (msg) {
+                master.archiveTplInfoDialog.close();
+                if(msg)
+                    $.Notice.success(msg);
+            };
             pageInit();
         });
     })(jQuery, window);

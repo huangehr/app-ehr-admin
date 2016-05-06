@@ -103,9 +103,10 @@
         });
 
         // 文件上传成功，给item添加成功class, 用样式标记上传成功。
-        uploader.on( 'uploadSuccess', function( file ) {
+        // 添加返回信息 add by lincl  2016-4-19
+        uploader.on( 'uploadSuccess', function( file , ret, hds) {
             $( '#'+file.id ).addClass('upload-state-done');
-            uploader.trigger('success',file);
+            uploader.trigger('success', file, ret, hds);
         });
 
         // 文件上传失败，现实上传出错。

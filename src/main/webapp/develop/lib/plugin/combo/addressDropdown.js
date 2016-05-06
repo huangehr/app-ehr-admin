@@ -48,7 +48,8 @@
       categories: {},
       dataRoot: 'obj',
       filterFields: ['name','abbrPY','fullPY'],
-      content: ''
+      content: '',
+      lazyLoad: false
     };
 
     function init (opts) {
@@ -65,7 +66,10 @@
         createWrapper.call(this);
         renderTabs.call(this);
         bindEvents.call(this);
-        activeTab.call(this, 0);
+        if(this.opt.lazyLoad)
+            changeStatus.call(this,0);
+        else
+            activeTab.call(this, 0);
     }
 
     function createWrapper() {
@@ -253,6 +257,9 @@
             var name = data[key][ds.value];
             var abbrChars = $.Pinyin.getAbbrChars(name);
             var fullChars = $.Pinyin.getFullChars(name);
+            if(!$.trim(abbrChars) && name.length) {
+                abbrChars = name.charAt(0).toLocaleUpperCase();
+            }
             dataTemp.push(Util.format("{0}||{1}||{2}||{3}",abbrChars,fullChars,id,name));
         }
         dataTemp.sort();

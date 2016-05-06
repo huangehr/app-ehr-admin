@@ -28,6 +28,8 @@
 
         var treeId = sessionStorage.getItem("treeId");
 
+        var bo = false
+
         /* ************************** 变量定义结束 **************************** */
 
         /* *************************** 函数定义 ******************************* */
@@ -57,8 +59,9 @@
             init: function () {
 
                 //判断用户是否初始密码
-                var bo = Util.getUrlQueryString("defaultPassWord");
-                if(Util.isStrEquals(bo,'true'))
+                bo = Util.isStrEmpty(${defaultPassWord})?false:true;
+
+                if(bo)
                     window.location.href = "${contextRoot}/user/initialChangePassword";
 
                 this.$mainContent.ligerLayout({
@@ -148,6 +151,41 @@
                     text: '标准版本管理',
                     url: '${contextRoot}/cdaVersion/initial'
                 },
+				{
+					id: 29,
+					pid: 61,
+					level:3,
+					text: '特殊字典'
+				},
+				{
+					id: 101,
+					pid: 29,
+					level:4,
+					text: 'ICD10',
+					url: '${contextRoot}/specialdict/icd10/initial'
+				},
+				{
+					id: 102,
+					pid: 29,
+					level:4,
+					text: '指标字典',
+					url: '${contextRoot}/specialdict/indicator/initial'
+				},
+				{
+					id: 103,
+					pid: 29,
+					level:4,
+					text: '药品字典',
+					url: '${contextRoot}/specialdict/drug/initial'
+				},
+				{
+					id: 104,
+					pid: 29,
+					level:4,
+					text: '健康问题字典',
+					url: '${contextRoot}/specialdict/hp/initial'
+				},
+
                 {
                     id: 25,
                     pid: 2,

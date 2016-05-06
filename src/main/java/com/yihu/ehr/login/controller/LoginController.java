@@ -46,7 +46,7 @@ public class LoginController extends BaseUIController {
 
     @RequestMapping(value = "")
     public String login(Model model) {
-        model.addAttribute("contentPage","login/login");
+        model.addAttribute("contentPage", "login/login");
         return "generalView";
     }
 
@@ -61,63 +61,69 @@ public class LoginController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
             Envelop envelop = getEnvelop(resultStr);
-            UserDetailModel userDetailModel =getEnvelopModel(envelop.getObj(),UserDetailModel.class);
+            UserDetailModel userDetailModel = getEnvelopModel(envelop.getObj(), UserDetailModel.class);
 
 //            判断用户是否登入成功
-            if (envelop.isSuccessFlg()){
+            if (envelop.isSuccessFlg()) {
                 String lastLoginTime = null;
 
-//                判断用户密码是否初始密码
-                if (password.equals("123456"))
-                    model.addAttribute("defaultPassWord",true);
-
 //                判断用户是否失效
-                if(!userDetailModel.getActivated()){
+                if (!userDetailModel.getActivated()) {
                     model.addAttribute("userName", userName);
                     model.addAttribute("successFlg", false);
                     model.addAttribute("failMsg", "该用户已失效，请联系系统管理员重新生效。");
-                    model.addAttribute("contentPage","login/login");
+                    model.addAttribute("contentPage", "login/login");
 
                     return "generalView";
                 }
 
-                SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
-                String now = sdf.format(new Date());
-                if(userDetailModel.getLastLoginTime()!= null){
-                   lastLoginTime = userDetailModel.getLastLoginTime();
-                }else{
-                    lastLoginTime = now;
+//                判断用户密码是否初始密码
+                model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                if (password.equals("123456")) {
+                    request.getSession().setAttribute("defaultPassWord", true);
+                    model.addAttribute("contentPage", "user/changePassword");
+                    return "generalView";
+                } else {
+                    request.getSession().removeAttribute("defaultPassWord");
+                    SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
+                    String now = sdf.format(new Date());
+                    if (userDetailModel.getLastLoginTime() != null) {
+                        lastLoginTime = userDetailModel.getLastLoginTime();
+                    } else {
+                        lastLoginTime = now;
+                    }
+
+//                    model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                    request.getSession().setAttribute("last_login_time", lastLoginTime);
+                    //update lastLoginTime
+                    userDetailModel.setLastLoginTime(now);
+                    url = "/user";
+                    MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
+                    conditionMap.add("user_json_datas", toJson(userDetailModel));
+                    conditionMap.add("inputStream", "");
+                    conditionMap.add("imageName", "");
+                    RestTemplates templates = new RestTemplates();
+                    resultStr = templates.doPost(comUrl + url, conditionMap);
+                    return "redirect:/index";
                 }
 
-
-                model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
-                request.getSession().setAttribute("last_login_time", lastLoginTime);
-                //update lastLoginTime
-                userDetailModel.setLastLoginTime(now);
-                url="/user";
-                MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
-                conditionMap.add("user_json_datas", toJson(userDetailModel));
-                conditionMap.add("inputStream", "");
-                conditionMap.add("imageName", "");
-                RestTemplates templates = new RestTemplates();
-                resultStr = templates.doPost(comUrl + url,conditionMap);
-                return "redirect:/index";
-            }else{
+            } else {
 
                 model.addAttribute("userName", userName);
                 model.addAttribute("successFlg", false);
                 model.addAttribute("failMsg", "用户名或密码错误，请重新输入。");
-                model.addAttribute("contentPage","login/login");
+                model.addAttribute("contentPage", "login/login");
                 return "generalView";
             }
         } catch (Exception e) {
             model.addAttribute("userName", userName);
             model.addAttribute("successFlg", false);
             model.addAttribute("failMsg", e.getMessage());
-            model.addAttribute("contentPage","login/login");
+            model.addAttribute("contentPage", "login/login");
             return "generalView";
         }
     }
+
 
     //todo:暂时没用到
 //    @RequestMapping(value = "activeValidateCode")
@@ -219,7 +225,6 @@ public class LoginController extends BaseUIController {
 //        }
 //        return address;
 //    }
-
     public String getAddress(String citys) {
 
         String[] st = citys.split(",");
@@ -303,11 +308,11 @@ public class LoginController extends BaseUIController {
         try {
 
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
-            envelop = mapper.readValue(resultStr,Envelop.class);
-            if(!envelop.isSuccessFlg()){
+            envelop = mapper.readValue(resultStr, Envelop.class);
+            if (!envelop.isSuccessFlg()) {
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg("密码错误，请重新输入！");
-            }else {
+            } else {
                 envelop.setSuccessFlg(true);
             }
         } catch (Exception e) {

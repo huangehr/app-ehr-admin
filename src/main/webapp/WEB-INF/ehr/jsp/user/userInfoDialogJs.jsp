@@ -46,6 +46,7 @@
             $tel: $('#inp_userTel'),
             $org: $('#inp_org'),
             $major: $('#inp_major'),
+//            $source:$('#inp_source'),
             $userSex: $('input[name="gender"]', this.$form),
             $marriage: $("#inp_select_marriage"),
             $userType: $("#inp_select_userType"),
@@ -82,7 +83,16 @@
                         extensions: 'gif,jpg,jpeg,bmp,png',
                         mimeTypes: 'image/*'
                     },
-                    auto: false
+                    auto: false,
+                    async:false
+                });
+                self.$uploader.instance.on( 'uploadSuccess', function( file, resp ) {
+                    if(!resp.successFlg)
+                        $.Notice.error(resp.errorMsg);
+                    else
+                        $.Notice.success('修改成功');
+                    win.closeUserInfoDialog();
+                    win.reloadMasterUpdateGrid();
                 });
             },
             initForm: function () {
@@ -95,19 +105,9 @@
                 this.$tel.ligerTextBox({width: 240});
                 this.$org.addressDropdown({
                     tabsData: [
-                        {
-                            name: '省份',
-                            code: 'id',
-                            value: 'name',
-                            url: '${contextRoot}/address/getParent',
-                            params: {level: '1'}
-                        },
+                        {name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
                         {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {
-                            name: '医院',
-                            code: 'organizationCode',
-                            value: 'fullName',
-                            url: '${contextRoot}/address/getOrgs',
+                        {name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',
                             beforeAjaxSend: function (ds, $options) {
                                 var province = $options.eq(0).attr('title'),
                                         city = $options.eq(1).attr('title');
@@ -120,6 +120,7 @@
                     ]
                 });
                 this.$major.ligerTextBox({width: 240});
+//                this.$source.ligerTextBox({width: 240});
                 this.$userSex.ligerRadio();
                 this.$marriage.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
@@ -143,7 +144,6 @@
                         dictId: 15
                     },
                     onSuccess: function () {
-                        debugger
                         self.$form.Fields.fillValues({userType: user.userType});
                         self.$userType.parent().removeClass('l-text-focus')
 //                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
@@ -155,6 +155,21 @@
                             $('#inp_major_div').hide();
                     }
                 });
+
+
+                <%--this.$source.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 26--%>
+                    <%--},--%>
+                    <%--onSuccess: function () {--%>
+                        <%--self.$form.Fields.fillValues({sourceName:user.sourceName,});--%>
+                    <%--},--%>
+
+                <%--});--%>
                 this.$form.attrScan();
                 this.$form.Fields.fillValues({
                     id: user.id,
@@ -168,7 +183,8 @@
                     major: user.major,
                     publicKey: user.publicKey,
                     validTime: user.validTime,
-                    startTime: user.startTime
+                    startTime: user.startTime,
+                    sourceName:user.sourceName,
                 });
                 self.$publicKeyMessage.val(user.publicKey);
                 self.$publicKeyValidTime.html(user.validTime);
@@ -177,12 +193,10 @@
                 self.$idCardCopy.val(user.idCardNo);
                 self.$emailCopy.val(user.email);
 
-                debugger
-                var pic = user.imgLocalPath;
+                var pic = user.imgRemotePath;
                 if (!Util.isStrEmpty(pic)) {
-                    self.$imageShow.html('<img src="${contextRoot}/user/showImage?localImgPath=' + pic + '" class="f-w88 f-h110"></img>');
+                    self.$imageShow.html('<img src="${contextRoot}/user/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
                 }
-
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");
                     this.$resetPassword.hide();
@@ -245,6 +259,7 @@
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
+                        debugger
                         var organizationKeys = userModel.organization['keys'];
 
                         userModel.organization = organizationKeys[2];

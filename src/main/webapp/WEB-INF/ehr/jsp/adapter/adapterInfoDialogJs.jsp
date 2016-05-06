@@ -17,7 +17,8 @@
         var orgData;
         var versions;
         var types;
-        var adapterPlan = $.parseJSON('${model}');
+        <%--var adapterPlan = $.parseJSON('${model}');--%>
+        var adapterPlan = ${model};
         var firstInit = true;
         /* ************************** 变量定义结束 **************************** */
 
@@ -90,7 +91,8 @@
                             urlParms: {
                                 page: 1,
                                 rows: 1000,
-                                dictId: 4
+                                dictId: 4,
+                                isPublic: "false"
                             },
                             onSelected: function (value) {
                                 var typeValue = types.getValue();
@@ -168,6 +170,8 @@
                                 }
                             });
                 }
+                if(mode!='new')
+                    this.$code.focus();
             },
             bindEvents: function () {
                 var self = this;

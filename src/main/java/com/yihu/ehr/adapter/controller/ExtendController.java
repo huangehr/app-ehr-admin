@@ -55,22 +55,23 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
     public Object gotoModify(Model model, String id, String mode, String extParms){
         try {
             Envelop envelop = new Envelop();
-            if (!StringUtils.isEmpty(id)){
-                Map<String, Object> params = new HashMap<>();
-                params.put("id",id);
 
-                params = putAll(extParms, params);
-                params = beforeGotoModify(params);
+            Map<String, Object> params = new HashMap<>();
+            params.put("id",id);
+            params.put("mode",mode);
+            params = putAll(extParms, params);
+            params = beforeGotoModify(params);
 
+            if (!StringUtils.isEmpty(id))
                 envelop = getEnvelop(service.getModel(params));
-            }
+
             Object plan;
             if(envelop.getObj()==null)
                 plan = service.newModel();
             else
                 plan = envelop.getObj();
 
-            plan = afterGotoModify(plan);
+            plan = afterGotoModify(plan, params);
 
             model.addAttribute("model",toJson(plan));
             model.addAttribute("mode",mode);
@@ -197,7 +198,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
             params = beforeUpdate(params);
             String resultStr = "";
-            if(StringUtils.isEmpty(id))
+            if(StringUtils.isEmpty(id) || "0".equals(id))
                 resultStr = service.add(params);
             else
                 resultStr = service.update(params);
@@ -219,7 +220,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
         return rs;
     }
 
-    public Object afterGotoModify(Object rs){
+    public Object afterGotoModify(Object rs, Map params){
 
         return rs;
     }

@@ -16,6 +16,8 @@
 
         var dialog = frameElement.dialog;
 
+        var source;
+
 
         /* ************************** 变量定义结束 **************************** */
 
@@ -42,13 +44,15 @@
             $userTel: $('#inp_userTel'),
             $org: $('#inp_org'),
             $major: $('#inp_major'),
+//            $source: $('#inp_source'),
             $sex: $('input[name="gender"]', this.$form),
             $uploader: $("#div_user_img_upload"),
             $inp_select_marriage: $("#inp_select_marriage"),
             $inp_select_userType: $("#inp_select_userType"),
             $addUserBtn: $("#div_btn_add"),
             $cancelBtn: $("#div_cancel_btn"),
-            $imageShow:$("#div_file_list"),
+            $imageShow: $("#div_file_list"),
+
             init: function () {
                 var self = this;
                 self.$sex.eq(0).attr("checked", 'true');
@@ -56,7 +60,7 @@
                 self.bindEvents();
                 self.$uploader.instance = self.$uploader.webupload({
                     server: "${contextRoot}/user/updateUser",
-                    pick: {id:'#div_file_picker'},
+                    pick: {id: '#div_file_picker'},
                     accept: {
                         title: 'Images',
                         extensions: 'gif,jpg,jpeg,bmp,png',
@@ -64,12 +68,13 @@
                     },
                     auto: false
                 });
-                self.$uploader.instance.on( 'uploadSuccess', function( file, resp ) {
-                    $.ligerDialog.alert("保存成功",function () {
+                self.$uploader.instance.on('uploadSuccess', function (file, resp) {
+                    if(!resp.successFlg)
+                        win.parent.$.Notice.error(resp.errorMsg);
+                    else
+                        win.parent.$.Notice.success('修改成功');
                         win.parent.closeAddUserInfoDialog(function () {
-                            win.parent.$.Notice.success('用户新增成功');
                         });
-                    });
                 });
             },
             initForm: function () {
@@ -82,18 +87,28 @@
                 this.$sex.ligerRadio();
                 this.$org.addressDropdown({
                     tabsData: [
-                        {name: '省份', code:'id',value:'name',url: '${contextRoot}/address/getParent', params: {level: '1'}},
-                        {name: '城市', code:'id',value:'name',url: '${contextRoot}/address/getChildByParent'},
                         {
-                            name: '医院', code:'organizationCode',value:'fullName',url: '${contextRoot}/address/getOrgs', beforeAjaxSend: function (ds, $options) {
-                            var province = $options.eq(0).attr('title'),
-                                    city = $options.eq(1).attr('title');
-                            ds.params = $.extend({}, ds.params, {
+                            name: '省份',
+                            code: 'id',
+                            value: 'name',
+                            url: '${contextRoot}/address/getParent',
+                            params: {level: '1'}
+                        },
+                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                        {
+                            name: '医院',
+                            code: 'orgCode',
+                            value: 'fullName',
+                            url: '${contextRoot}/address/getOrgs',
+                            beforeAjaxSend: function (ds, $options) {
+                                var province = $options.eq(0).attr('title'),
+                                        city = $options.eq(1).attr('title');
+                                ds.params = $.extend({}, ds.params, {
 
-                                province: province,
-                                city: city
-                            });
-                        }
+                                    province: province,
+                                    city: city
+                                });
+                            }
                         }
                     ]
                 });
@@ -121,7 +136,7 @@
                         dictId: 15
                     },
                     onSelected: function (value) {
-                        if(value=='Doctor')
+                        if (value == 'Doctor')
                             $('#inp_major_div').show();
                         else
                             $('#inp_major_div').hide();
@@ -134,34 +149,50 @@
                     }
                 });
 
+                <%--source = this.$source.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 26--%>
+                    <%--},--%>
+                    <%--onSuccess: function () {--%>
+                        <%--self.$form.Fields.fillValues({sourceName: user.sourceName,});--%>
+                    <%--},--%>
+
+                <%--});--%>
+
+
                 this.$form.attrScan();
             },
 
             bindEvents: function () {
                 var self = this;
-                var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
-                   onElementValidateForAjax:function(elm){
-                        if(Util.isStrEquals($(elm).attr("id"),'inp_loginCode')){
+                var validator = new jValidation.Validation(this.$form, {
+                    immediate: true, onSubmit: false,
+                    onElementValidateForAjax: function (elm) {
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_loginCode')) {
                             var loginCode = $("#inp_loginCode").val();
-                            return checkDataSourceName('login_code',loginCode,"该账号已存在");
+                            return checkDataSourceName('login_code', loginCode, "该账号已存在");
                         }
-                        if(Util.isStrEquals($(elm).attr("id"),'inp_idCard')){
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
-                            return checkDataSourceName('id_card_no',idCard,"该身份证号已被注册，请确认。");
+                            return checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
                         }
-                       if(Util.isStrEquals($(elm).attr("id"),'inp_userEmail')){
-                           var email = $("#inp_userEmail").val();
-                           return checkDataSourceName('email',email,"该邮箱已存在");
-                       }
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
+                            var email = $("#inp_userEmail").val();
+                            return checkDataSourceName('email', email, "该邮箱已存在");
+                        }
 
-                   }
+                    }
                 });
                 //唯一性验证--账号/身份证号(字段名、输入值、提示信息）
-                function checkDataSourceName(type,inputValue,errorMsg){
+                function checkDataSourceName(type, inputValue, errorMsg) {
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
                     dataModel.fetchRemote("${contextRoot}/user/existence", {
-                        data: {existenceType:type,existenceNm:inputValue},
+                        data: {existenceType: type, existenceNm: inputValue},
                         async: false,
                         success: function (data) {
                             if (data.successFlg) {
@@ -179,27 +210,27 @@
                 this.$addUserBtn.click(function () {
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
-                   if(validator.validate()){
+                    if (validator.validate()) {
                         var organizationKeys = addUser.organization['keys'];
-//                        addUser.organizationCode = organizationKeys[2];
-//                        addUser.orgName = addUser.organization['names'][2];
-                    addUser.organization = organizationKeys[2];
-                    if (userImgHtml == 0) {
-                        updateUser(addUser);
-                    } else {
-                        var upload = self.$uploader.instance;
-                        var image = upload.getFiles().length;
-                        if (image) {
-                            upload.options.formData.userModelJsonData = encodeURIComponent(JSON.stringify(addUser));
-                            upload.upload();
-                        } else {
-                            updateUser(addUser);
-                        }
-                    }
 
-                    }else{
-                   return;
-                   }
+                        addUser.organization = organizationKeys[2];
+//                        addUser.source = source.getValue();
+                        if (userImgHtml == 0) {
+                            updateUser(addUser);
+                        } else {
+                            var upload = self.$uploader.instance;
+                            var image = upload.getFiles().length;
+                            if (image) {
+                                upload.options.formData.userModelJsonData = encodeURIComponent(JSON.stringify(addUser));
+                                upload.upload();
+                            } else {
+                                updateUser(addUser);
+                            }
+                        }
+
+                    } else {
+                        return;
+                    }
 
 
                 });
@@ -208,7 +239,7 @@
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUser", {
-                        data: {userModelJsonData:userModelJsonData},
+                        data: {userModelJsonData: userModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
                                 win.parent.closeAddUserInfoDialog(function () {

@@ -94,7 +94,7 @@ set.list = {
     },
     getStagedByValue:function()
     {
-        debugger;
+        //debugger;
         var _value = $("#cdaVersion").ligerGetComboBoxManager().getValue();
         if (!_value && _value == "") return false;
         var data = $("#cdaVersion").ligerComboBox().data;
@@ -231,13 +231,13 @@ set.list = {
                     u.getElementList(versionCode, rowdata.id);
                 },
                 onAfterShowData: function (currentData) {
-                    u.grid.select(0);
-                    //if (set.list.selectObj != null) {
-                    //    u.grid.select(set.list.selectObj);
-                    //}
-                    //else {
-                    //    u.grid.select(0);
-                    //}
+                    //u.grid.select(0);
+                    if (set.list.selectObj != null) {
+                        u.grid.select(set.list.selectObj);
+                    }
+                    else {
+                        u.grid.select(0);
+                    }
                 },
                 onError: function (a, b) {
                 }
@@ -426,9 +426,19 @@ set.list = {
     },
     event: function () {
         $("#btn_create").click(function () {
+            if(!set.list.versionStage)
+            {
+                $.Notice.error("已发布版本不可新增，请确认!");
+                return;
+            }
             set.list.addSet();
         });
         $("#btn_add_element").click(function () {
+            if(!set.list.versionStage)
+            {
+                $.Notice.error("已发布版本不可新增，请确认!");
+                return;
+            }
             set.list.addElement();
         });
         $("#btn_Delete_relation").click(function () {
@@ -628,18 +638,18 @@ set.elementAttr = {
         var url = set.list._url + "/std/dataset/getMetaDataDict?version=" + version;
         set.elementAttr.dict_select = $("#criterionDict").ligerComboBox({
             condition: { inputWidth: 90 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: 'param', label:''}] },
-            url: url,
+            //url: url,
             grid: getGridOptions(true),
             valueField: 'id',
             textField: 'name',
-            width : 240,
+            width : 230,
             selectBoxHeight : 260,
             //selectBoxWidth: 400,
-            autocomplete: true,
-            keySupport: true,
+            //autocomplete: true,
             //width: 400,
             onSelected: function(id,name){
                 $("#criterionDict").val(name);
+                //$("#criterionDict").blur();
             },
             conditionSearchClick: function (g) {
                 var param = g.rules.length>0? g.rules[0].value : '';
@@ -652,9 +662,9 @@ set.elementAttr = {
             },
             onSuccess: function () {
                 //set.elementAttr.dict_select.setValue(initValue);
-                $("#criterionDict").css({"width": 213, "height": 28});
-                $(".l-text-combobox").css({"width": 229});
-                $(".l-box-select-absolute").css({"width": 229});
+                //$("#criterionDict").css({"width": 213, "height": 27});
+                //$(".l-text-combobox").css({"width": 229});
+                //$(".l-box-select-absolute").css({"width": 229});
             },
             onAfterSetData: function () {
 

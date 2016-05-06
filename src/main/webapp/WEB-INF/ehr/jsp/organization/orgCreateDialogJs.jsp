@@ -35,10 +35,34 @@
             $keyReadBtn:$("#keyReadBtn"),
             $updateOrgBtn: $("#div_update_btn"),
             $cancelBtn: $("#btn_cancel"),
+            $uploader:$("#div_aptitude_img_upload"),
+            $orgImageShow:$("#div_file_list"),
 
             init: function () {
+
                 this.initForm();
                 this.bindEvents();
+
+                this.$uploader.instance = this.$uploader.webupload({
+                    server: "${contextRoot}/organization/updateOrg",
+                    pick: {id: '#div_file_picker'},
+                    accept: {
+                        title: 'Images',
+                        extensions: 'gif,jpg,jpeg,bmp,png',
+                        mimeTypes: 'image/*'
+                    },
+                    auto: false,
+
+                });
+                this.$uploader.instance.on('uploadSuccess', function (file, resp) {
+                    debugger;
+                    $.ligerDialog.alert("保存成功", function () {
+                        win.parent.closeAddOrgInfoDialog(function () {
+
+                        });
+                    });
+                });
+
             },
             initForm: function () {
                 this.$orgCode.ligerTextBox({width: 240});
@@ -83,6 +107,10 @@
                     if(Util.isStrEquals($(elm).attr('id'),'org_code')){
                         var result = new jValidation.ajax.Result();
                         var orgCode = self.$orgCode.val();
+                        if(!/^[a-z0-9A-Z]+[-]*[a-z0-9A-Z]+$/.test(orgCode)){
+                            result.setResult(true);
+                            return result;
+                        }
                         var dataModel = $.DataModel.init();
                         dataModel.fetchRemote("${contextRoot}/organization/validationOrg", {
                             data: {orgCode:orgCode},
@@ -101,6 +129,7 @@
                     }
                 }});
                 this.$updateOrgBtn.click(function () {
+                    var orgImgHtml = self.$orgImageShow.children().length;
                     if(validator.validate()){
                     	var dataModel = $.DataModel.init();
                     	self.$form.attrScan();
@@ -120,18 +149,31 @@
 							street: orgAddress.names[3]
 						};
 
-						dataModel.createRemote("${contextRoot}/organization/updateOrg", {
-							data: {orgModel:JSON.stringify(orgModel),addressModel:JSON.stringify(addressModel),mode:"new"},
-							success: function (data) {
-								if(data.successFlg){
-									win.parent.closeAddOrgInfoDialog(function (){
-										win.parent.$.Notice.success('机构新增成功');
-									});
-								}else{
-									window.top.$.Notice.error(data.errorMsg);
-								}
-							}
-						})
+                        if (Util.isStrEmpty(orgImgHtml)) {
+                            updateOrg(orgModel,addressModel,'new');
+                        } else {
+                            var upload = self.$uploader.instance;
+                            var image = upload.getFiles().length;
+                            if (image) {
+                                upload.options.formData.orgModel = encodeURIComponent(JSON.stringify(orgModel)+";"+JSON.stringify(addressModel)+";new");
+                                upload.upload();
+                            } else {
+                                updateOrg(orgModel,addressModel,'new');
+                            }
+                        }
+
+						<%--dataModel.createRemote("${contextRoot}/organization/updateOrg", {--%>
+							<%--data: {orgModel:JSON.stringify(orgModel),addressModel:JSON.stringify(addressModel),mode:"new"},--%>
+							<%--success: function (data) {--%>
+								<%--if(data.successFlg){--%>
+									<%--win.parent.closeAddOrgInfoDialog(function (){--%>
+										<%--win.parent.$.Notice.success('机构新增成功');--%>
+									<%--});--%>
+								<%--}else{--%>
+									<%--window.top.$.Notice.error(data.errorMsg);--%>
+								<%--}--%>
+							<%--}--%>
+						<%--})--%>
                     }else{
                         return;
                     }
@@ -139,6 +181,25 @@
                 self.$cancelBtn.click(function(){
                     dialog.close();
                 })
+
+                function updateOrg(orgModel,addressModel,msg) {
+                    var orgModel = JSON.stringify(orgModel);
+                    var addressModel = JSON.stringify(addressModel);
+                    var dataModel = $.DataModel.init();
+                    dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
+                        data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
+                        success: function (data) {
+                            if (data.successFlg) {
+                                win.parent.closeAddOrgInfoDialog(function () {
+                                    win.parent.$.Notice.success('机构新增成功');
+                                });
+                            } else {
+                                window.top.$.Notice.error(data.errorMsg);
+                            }
+                        }
+                    })
+                }
+
             }
         };
 

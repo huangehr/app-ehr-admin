@@ -4,7 +4,8 @@ import com.yihu.ehr.constants.SessionAttributeKeys;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String path = httpServletRequest.getRequestURI();
         if (path.indexOf("/login") != -1
+                || path.indexOf("/time_out") != -1
                 || path.indexOf(httpServletRequest.getContextPath() + "/static-dev") != -1
                 || path.indexOf(httpServletRequest.getContextPath() + "/develop") != -1
                 || path.indexOf(httpServletRequest.getContextPath() + "/rest") != -1
@@ -32,19 +34,18 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (httpServletRequest.getSession(false) == null) {
-            httpServletResponse.getWriter().print("<script>top.location.href='"
-                    + httpServletRequest.getContextPath() + "/login'</script>");
+        if (httpServletRequest.getSession(false) == null
+                || httpServletRequest.getSession().getAttribute(SessionAttributeKeys.CurrentUser)==null) {
+
+            // AJAX REQUEST PROCESS
+            if ("XMLHttpRequest".equalsIgnoreCase(httpServletRequest.getHeader("X-Requested-With"))) {
+                httpServletResponse.setHeader("sessionStatus", "timeOut");
+                httpServletResponse.getWriter().print("{}");
+                return;
+            }
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/time_out");
             return;
         }
-
-        Object obj = httpServletRequest.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        if (obj == null) {
-            httpServletResponse.getWriter().print("<script>top.location.href='"
-                    + httpServletRequest.getContextPath() + "/login'</script>");
-            return;
-        }
-
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 

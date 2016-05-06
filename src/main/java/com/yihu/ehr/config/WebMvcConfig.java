@@ -32,7 +32,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter{
     @Bean
     public InternalResourceViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("WEB-INF/ehr/jsp/");
+        resolver.setPrefix("/WEB-INF/ehr/jsp/");
         resolver.setSuffix(".jsp");
         resolver.setOrder(1);
         return resolver;

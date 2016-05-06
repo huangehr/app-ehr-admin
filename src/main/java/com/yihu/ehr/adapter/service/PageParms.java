@@ -270,6 +270,12 @@ public class PageParms extends HashMap<String, Object> {
         return this;
     }
 
+    public PageParms setFields(String fields){
+        this.fields = fields;
+        put("fields", fields);
+        return this;
+    }
+
     private PageParms putFilters(String filters) {
 
         put("filters", filters);

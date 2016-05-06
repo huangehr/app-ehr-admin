@@ -19,7 +19,15 @@
 		/*border-top: 1px solid #ccc;*/
 		text-align: left;
 	}
-	.save-toolbar{
-		margin-left: 360px;
-	}
+	.save-toolbar{ margin-left: 360px; }
+	.u-border{ border-top:1px dashed #cccccc;margin-top: 10px; margin-bottom: 16px;}
+	.u-bd{ border: 1px solid #c8c8c8;height: 100px;margin-left: 10px;margin-right: 10px; }
+	.f-wtl{ width:40px;top: -10px;left: 10px;background: #fff;text-align: center; }
+	.div-aptitude-manager{ margin-top: 40px;width: 70px; }
+	.u-upload{ margin-top: -40px; margin-left: 80px;}
+	.u-upload .uploader-list { width: 70px;  height: 70px; background:url("");border:1px solid #c8c8c8; }
+	.u-image-btn{ bottom: 55px; margin-top: 6px; }
+	.webuploader-pick-hover{ background: url(${staticRoot}/images/app/add_hui.png)}
+	.webuploader-pick{ background: url(${staticRoot}/images/app/add_hui.png);width: 22px;height: 22px;  padding-top: 0;  padding-bottom: 0;  padding-right: 0;  padding-left: 0;}
+
 </style>

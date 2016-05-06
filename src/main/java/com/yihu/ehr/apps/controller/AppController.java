@@ -48,6 +48,7 @@ public class AppController extends BaseUIController {
             if (mode.equals("new")){
                 app = new AppDetailModel();
                 ((AppDetailModel)app).setStatus("WaitingForApprove");
+                app = toJson(app);
             }else{
                 String url = "/apps/"+appId;
                 RestTemplates template = new RestTemplates();
@@ -206,12 +207,14 @@ public class AppController extends BaseUIController {
                     result.setSuccessFlg(true);
                 }else{
                     result.setSuccessFlg(false);
+                    result.setErrorMsg("修改失败！");
                 }
             }
         }
         catch (Exception ex)
         {
             LogService.getLogger(AppController.class).error(ex.getMessage());
+            result.setErrorMsg(ErrorCode.SystemError.toString());
         }
 
         return result;

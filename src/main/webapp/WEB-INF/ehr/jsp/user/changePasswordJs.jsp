@@ -14,7 +14,6 @@
             var changePassWordInfo = null;
 
             var errorPassWords = sessionStorage.getItem("errorPassWord");
-
             var userId = '${current_user.id}';
             /* *************************** 函数定义 ******************************* */
 
@@ -94,9 +93,12 @@
 
                         var value = self.$newPassWord.val();
                         var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
-                        var mediumRegex = new RegExp("^(?=.{9,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[a-z])(?=.*\\W))|((?=.*[0-9])(?=.*\\W))).*$");
+                        var mediumRegex = new RegExp("^(?=.{9,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[a-z])(?=.*\\W))|((?=.*[A-Z])(?=.*\\W))|((?=.*[0-9])(?=.*\\W))).*$");
                         var enoughRegex = new RegExp("(?=.{8,}).*");
 
+                        if(value.split(' ').length > 1){
+                            return;
+                        }
                         if(Util.isStrEmpty(value)){
                             self.$intensionMiddle.removeClass('s-bc4');
                             self.$intensionPowerful.removeClass('s-bc12');
@@ -175,9 +177,6 @@
                             if (newPassWord.length < 8 || newPassWord.length > 16) {
                                 return ValidationErrorMsg(false, "输入值的长度应该在8 至 16之间，当前长度" + newPassWord.length + "！");
                             }
-//                            if(newPassWord.split(" ").length>1){
-//                                return ValidationErrorMsg(false, "不能输入空格！");
-//                            }
                             if (Util.isStrEquals(userName, newPassWord)) {
                                 return ValidationErrorMsg(false, "新密码与用户名不能一样！");
                             }
