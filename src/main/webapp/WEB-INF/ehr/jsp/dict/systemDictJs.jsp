@@ -59,6 +59,14 @@
                             master.searchSystemDict(searchNm);
                         }
                     });
+                    /*********add by linz 2016-5-9 14:32:56 begin  content:新增keyUp查询事件***********/
+                    this.$searchBox.keyup(function (e) {
+                        if (e.keyCode == 13) {
+                            var searchNm = $("#inp_search").val();
+                            master.searchSystemDict(searchNm);
+                        }
+                    });
+                    /*******************add end*******************/
                 }
             };
             master = {
