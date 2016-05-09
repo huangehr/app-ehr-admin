@@ -1,5 +1,8 @@
 package com.yihu.ehr.adapter.service;
 
+import com.yihu.ehr.common.utils.EnvelopExt;
+import com.yihu.ehr.common.utils.ExtTypeReference;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -39,6 +42,14 @@ public class ExtendService<T> {
     public String deleteUrl = "";
     public String searchUrl = "";
 
+    private final Class modelType;
+    private final ExtTypeReference typeReference;
+
+    public ExtendService() {
+
+        this.modelType = initModelClass();
+        this.typeReference = initExtTypeReference();
+    }
 
     public void init(String searchUrl, String modelUrl, String addUrl, String modifyUrl, String deleteUrl ){
         this.addUrl = addUrl;
@@ -232,10 +243,15 @@ public class ExtendService<T> {
         return strResponse;
     }
 
-    protected Class getModelClass() {
+    private Class initModelClass() {
         Type genType = this.getClass().getGenericSuperclass();
         Type[] parameters = ((ParameterizedType) genType).getActualTypeArguments();
         return (Class) parameters[0];
+    }
+
+    public Class getModelClass() {
+
+        return this.modelType;
     }
 
     public T newModel() {
@@ -245,5 +261,17 @@ public class ExtendService<T> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private ExtTypeReference initExtTypeReference(){
+        ExtTypeReference typeReference = new ExtTypeReference();
+        ParameterizedType p = TypeUtils.parameterize(EnvelopExt.class, modelType);
+        typeReference.setType(p);
+        return typeReference;
+    }
+
+    public ExtTypeReference getExtTypeReference(){
+
+        return typeReference;
     }
 }

@@ -86,7 +86,7 @@ public class AdapterOrgController extends BaseUIController {
     //检索第三方标准列表
     @RequestMapping("searchAdapterOrg")
     @ResponseBody
-    public Object searchAdapterOrg(String searchNm, int page, int rows, String type) {
+    public Object searchAdapterOrg(String searchNm, String type, String org, int page, int rows) {
         String url = "/adapterOrg/orgs";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -97,7 +97,10 @@ public class AdapterOrgController extends BaseUIController {
             filters+="name?"+searchNm+" g1;";
         }
         if(!StringUtils.isEmpty(type)){
-            filters+= "type="+type+" g2";
+            filters+= "type="+type+" g2;";
+        }
+        if(!StringUtils.isEmpty(org)){
+            filters+= "org="+org+" g3;";
         }
 
         params.put("sorts","");

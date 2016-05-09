@@ -13,7 +13,7 @@
     var Util  = $.Util;
     var comboWrap = '<div class="m-combo-dropdown">' +
                         '<div class="m-input-box l-text-combobox j-text-wrapper f-h30">' +
-                            '<div class="u-select-title f-w200">{{placehoder}}</div>' +
+                            '<div class="u-select-title placehoder f-w200">{{placehoder}}</div>' +
                             '<div class="l-trigger l-trigger-cancel j-select-clear f-dn">' +
                                 '<div class="l-trigger-icon"></div>' +
                             '</div>' +
@@ -44,7 +44,7 @@
       placehoder: '',
       width: 240,
       tabData:[],
-      groups: ['A-G', 'H-K', 'L-S', 'T-Z'],
+      groups: ['A-G', 'H-K', 'L-S', 'T-Z','其他'],
       categories: {},
       dataRoot: 'obj',
       filterFields: ['name','abbrPY','fullPY'],
@@ -86,12 +86,17 @@
         var p = this.opt;
         var groups = p.groups;
         var g = "";
-        for(var i=0; i< groups.length; i++) {
+        var isOther = true;//校验是否在字母之外的编号
+        for(var i=0; i< groups.length-1; i++) {
             var arr = groups[i].split('-');
             if(arr[0].toUpperCase()<=c && c<= arr[1].toUpperCase()) {
                 g = groups[i];
+                isOther = false;
                 break;
             }
+        }
+        if(isOther){
+            g =groups[groups.length-1];
         }
         return g;
     }
@@ -212,6 +217,7 @@
         }
     }
     function updateTitle() {
+        debugger
         var $options = $('.j-select-option.current', this.$c);
         var titles = [];
         $options.each(function (i) {
@@ -220,8 +226,17 @@
                 titles.push(text);
             }
         });
-        var textAreaText = $('.j-select-input', this.$c).length?$('.j-select-input', this.$c).val(): '';
-        $('.u-select-title', this.$c).text(titles.join('') + textAreaText);
+
+        var uTitle = $('.u-select-title', this.$c);
+        if(titles.length==0){
+            uTitle.addClass('placehoder');
+            uTitle.text(this.opt.placehoder);
+        }
+        else{
+            var textAreaText = $('.j-select-input', this.$c).length?$('.j-select-input', this.$c).val(): '';
+            uTitle.removeClass('placehoder');
+            uTitle.text(titles.join('') + textAreaText);
+        }
     }
     function close() {
         var $inputBox = $('.m-input-box',this.$c),
