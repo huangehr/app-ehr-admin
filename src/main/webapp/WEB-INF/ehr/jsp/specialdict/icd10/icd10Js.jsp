@@ -123,7 +123,7 @@
 							title = '新增ICD10字典'
 						};
 						self.infoDialog = $.ligerDialog.open({
-							height:600,
+							height:400,
 							width:500,
 							title:title,
 							url:'${contextRoot}/specialdict/icd10/dialog/icd10Info',
@@ -204,16 +204,15 @@
 						});
 					});
 
-					//TODO 关联诊断题事件
 					$.subscribe('diagnoseIcd10:grid:open',function(event,id){
-						var title = '已关联诊断字典';
+						var title = '诊断';
 						self.icd10RelationInfoDialog = $.ligerDialog.open({
 							height:500,
 							width:700,
 							title:title,
-							url:'${contextRoot}/specialdict/icd10/diagnoseRelaInfo/initial',
+							url:'${contextRoot}/specialdict/icd10/diagnoseIcd10Relas/initial',
 							urlParms:{
-								id:id
+								icd10Id:id
 							},
 							isHidden: false,
 							opener: true,
