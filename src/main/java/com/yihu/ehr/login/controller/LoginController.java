@@ -3,6 +3,7 @@ package com.yihu.ehr.login.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.AgAdminConstants;
+import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -47,6 +48,7 @@ public class LoginController extends BaseUIController {
     @RequestMapping(value = "")
     public String login(Model model) {
         model.addAttribute("contentPage", "login/login");
+        model.addAttribute("successFlg", true);
         return "generalView";
     }
 
@@ -67,6 +69,7 @@ public class LoginController extends BaseUIController {
             if (envelop.isSuccessFlg()) {
                 String lastLoginTime = null;
 
+                model.addAttribute("successFlg", true);
 //                判断用户是否失效
                 if (!userDetailModel.getActivated()) {
                     model.addAttribute("userName", userName);
@@ -108,7 +111,6 @@ public class LoginController extends BaseUIController {
                 }
 
             } else {
-
                 model.addAttribute("userName", userName);
                 model.addAttribute("successFlg", false);
                 model.addAttribute("failMsg", "用户名或密码错误，请重新输入。");
@@ -301,13 +303,21 @@ public class LoginController extends BaseUIController {
         ObjectMapper mapper = new ObjectMapper();
         Envelop envelop = new Envelop();
 
-        String url = "/users/verification/" + userName;
+        String url = "";
         String resultStr = "";
 
-        params.put("psw", password);
         try {
-
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+            if(StringUtils.isEmpty(password)){
+                url = "/users";
+                params.put("filters", "loginCode=" +userName);
+                params.put("page", 1);
+                params.put("size", 15);
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+            }else {
+                url = "/users/verification/" + userName;
+                params.put("psw", password);
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+            }
             envelop = mapper.readValue(resultStr, Envelop.class);
             if (!envelop.isSuccessFlg()) {
                 envelop.setSuccessFlg(false);
@@ -322,5 +332,80 @@ public class LoginController extends BaseUIController {
         }
         return envelop;
     }
+
+
+
+    @RequestMapping("activityUser")
+    @ResponseBody
+    public Object activityUser(String userId, boolean activated) {
+        String url = "/users/admin/"+userId;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("activity", activated);
+        try {
+            resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+
+            if (Boolean.parseBoolean(resultStr)) {
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+            }
+            return result;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+//    @RequestMapping("searchUsers")
+//    @ResponseBody
+//    public Object searchUsers(String searchNm, String searchType, int page, int rows) {
+//
+//        String url = "/users";
+//        String resultStr = "";
+//        Envelop envelop = new Envelop();
+//        Map<String, Object> params = new HashMap<>();
+//
+//        StringBuffer stringBuffer = new StringBuffer();
+//        if (!StringUtils.isEmpty(searchNm)) {
+//            stringBuffer.append("realName?" + searchNm + " g1;organization?" + searchNm + " g1;loginCode?" +searchNm + " g1");
+//        }
+//        if (!StringUtils.isEmpty(searchType)) {
+//            stringBuffer.append("userType=" + searchType);
+//        }
+//
+//        params.put("filters", "");
+//        String filters = stringBuffer.toString();
+//        if (!StringUtils.isEmpty(filters)) {
+//            params.put("filters", filters);
+//        }
+//
+//        params.put("page", page);
+//        params.put("size", rows);
+//        try {
+//            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+//            return resultStr;
+//        } catch (Exception e) {
+//            envelop.setSuccessFlg(false);
+//            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+//            return envelop;
+//        }
+//
+//    }
 
 }

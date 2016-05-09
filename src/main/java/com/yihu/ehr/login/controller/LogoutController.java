@@ -17,6 +17,7 @@ public class LogoutController{
     public String login(Model model,HttpServletRequest request) {
         request.getSession().removeAttribute(SessionAttributeKeys.CurrentUser);
         model.addAttribute("contentPage","login/login");
+        model.addAttribute("successFlg", true);
         return "generalView";
     }
 }
