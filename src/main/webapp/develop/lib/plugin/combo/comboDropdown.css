@@ -15,7 +15,7 @@
 .m-select-panel { border: 1px solid #ccc; border-top: none;border-bottom: none; min-height:200px ;padding: 5px; width: 240px; background: #fff; font-size: 12px }
 .m-select-panel dl { line-height: 2; clear: both; padding: 3px 0; margin: 0 }
 .m-select-panel dl:after { display: block; clear: both; content: " ";  font-size: 0; height: 0; visibility: hidden }
-.m-select-panel dt { display: inline-block; width: 35px; float: left; line-height: 25px; padding-right: 10px; font-weight: 700; text-align: right }
+.m-select-panel dt { display: inline-block; width: 35px; float: left; line-height: 25px; padding-right: 4px; font-weight: 700; text-align: right }
 .m-select-panel dd { display: inline; float: left; width: 190px; line-height: 25px; margin-left: 0 }
 .m-select-panel a { display: inline-block; color: #4D4D4D; padding: 0 6px; outline: 0; text-decoration: none; white-space: nowrap; margin-right: 2px }
 .m-select-panel a:focus,.m-select-panel a:hover { background-color: #fff8f3; border-radius: 2px; color: #f60 }

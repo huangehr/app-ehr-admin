@@ -44,7 +44,7 @@
       placehoder: '',
       width: 240,
       tabData:[],
-      groups: ['A-G', 'H-K', 'L-S', 'T-Z'],
+      groups: ['A-G', 'H-K', 'L-S', 'T-Z','其他'],
       categories: {},
       dataRoot: 'obj',
       filterFields: ['name','abbrPY','fullPY'],
@@ -86,12 +86,17 @@
         var p = this.opt;
         var groups = p.groups;
         var g = "";
-        for(var i=0; i< groups.length; i++) {
+        var isOther = true;//校验是否在字母之外的编号
+        for(var i=0; i< groups.length-1; i++) {
             var arr = groups[i].split('-');
             if(arr[0].toUpperCase()<=c && c<= arr[1].toUpperCase()) {
                 g = groups[i];
+                isOther = false;
                 break;
             }
+        }
+        if(isOther){
+            g =groups[groups.length-1];
         }
         return g;
     }
