@@ -22,6 +22,7 @@
 
         //登入成功后，将输入次数过多的错误密码清除
         sessionStorage.removeItem("errorPassWord");
+        localStorage.removeItem('${current_user.loginCode}');
 
         //Pid 和Id 用于浏览器刷新之后，菜单导航不改变
         var treePid = sessionStorage.getItem("treePid");
