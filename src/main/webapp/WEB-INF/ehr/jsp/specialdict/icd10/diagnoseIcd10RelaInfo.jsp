@@ -8,17 +8,17 @@
 		<div class="m-form-group f-m10" style="padding-bottom: 0px;">
 			<div class="m-form-control">
 				<!--输入框-->
-				<input type="text" id="ipt_include_search" placeholder="请输入编码或名称" class="f-ml10" data-attr-scan="searchNm"/>
+				<input type="text" id="ipt_include_search" placeholder="请输入诊断名称" class="f-ml10" data-attr-scan="searchNm"/>
 			</div>
 			<!--批量关联-->
 			<div class="m-form-control m-form-control-fr">
 				<div  id="btn_relation_new" class="f-w120 l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
-					<span>新增关联</span>
+					<span>新增</span>
 				</div>
 			</div>
 			<div class="m-form-control m-form-control-fr f-mr10">
 				<div  id="btn_relation_deletes" class="f-w120 l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
-					<span>批量解除关联</span>
+					<span>批量解除</span>
 				</div>
 			</div>
 
