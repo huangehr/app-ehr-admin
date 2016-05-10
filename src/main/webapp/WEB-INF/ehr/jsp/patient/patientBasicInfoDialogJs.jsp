@@ -62,7 +62,7 @@
                 $("#div_patient_info_form").hide();
                 $("#div_card_info").hide();
                 $("#div_archive_info").hide();
-                $.get("${contextRoot}/home_relation/home_relationship",function(data){
+                $.get("${contextRoot}/home_relation/home_relationship?id="+$("#inp_idCardNo").val(),function(data){
                     $("#div_home_relation").html(data);
                     home.list.event();
                 });
