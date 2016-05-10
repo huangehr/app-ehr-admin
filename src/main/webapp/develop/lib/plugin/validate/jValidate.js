@@ -1034,12 +1034,12 @@
                 len = 1;
             else
                 len = 2;
-            
+
             if(v.keys[0]!="" && (v.keys.length<3 || v.keys[len]==""))
                 return false;
             return true;
         }],
-        ['validate-org-code', /^[a-z0-9A-Z]+[-]*[a-z0-9A-Z]+$/],
+        ['validate-org-code', /^[0-9A-Z]{8}[-][0-9A-Z]{1}$/],
         ['validate-special-char', function (v,elm,args,metadata) {
             var pattern = new RegExp("[']");
             if (pattern.test(v))
