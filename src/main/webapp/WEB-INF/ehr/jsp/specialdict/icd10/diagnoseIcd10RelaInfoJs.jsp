@@ -58,7 +58,7 @@
 				infoDialog:null,
 				init:function(){
 					infoGrid = $('#div_diagnose_include_grid').ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/specialdict/icd10/drugs/include',
+						url: '${contextRoot}/specialdict/icd10/diagnoses/no_paging',
 						parms: {
 							searchNm: '',
 							icd10Id:icd10Id,
@@ -67,9 +67,11 @@
 						},
 						columns: [
 							{display:'id',name:'id',hide:true},
-							{display: '诊断名称', name: 'code', width: '80%', align: 'left',checkbox:false},
-							{display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
-								html ='<a class="label_a" name="" style="margin-left:15px;" title="取消关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "icd10:drug:delete", row.id) + '">取消关联</a>';
+							{display: '诊断名称', name: 'name', width: '70%', align: 'left',checkbox:false},
+							{display: '操作', name: 'operator', width: '30%', align: 'center',render: function(row){
+								html ='<a class="label_a" name="" style="margin-left:15px;" title="解除关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "icd10:diagnoses:delete", row.id) + '">解除关联</a>'
+									 +'<a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "icd10:diagnose:update", row.id,'modify') + '"></a>';
+
 								return html;
 							}},
 						],
@@ -79,6 +81,10 @@
 						checkbox:true,
 						height:330,
 						rownumbers:false,
+						onDblClickRow : function (row){
+							var mode = 'view';
+							$.publish('icd10:diagnose:update',[row.id,mode])
+						}
 					}));
 					infoGrid.adjustToWidth();
 					masters.bindEvents();
@@ -99,10 +105,10 @@
 				bindEvents: function(){
 					//单个、批量删除事件(单个情况有传id号，批量自动扫描Grid表）
 					$('#btn_relation_deletes').click(function(){
-						$.publish("icd10:drug:delete",[''])
+						$.publish("icd10:diagnoses:delete",[''])
 					});
 
-					$.subscribe("icd10:drug:delete",function(event,ids){
+					$.subscribe("icd10:diagnoses:delete",function(event,ids){
 						if(!ids){
 							var rows = infoGrid.getSelectedRows();
 							if(rows.length==0){
@@ -115,8 +121,8 @@
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids;
 						}
 						var dataModel = $.DataModel.init();
-						dataModel.createRemote("${contextRoot}/specialdict/icd10/drug/deletes",{
-							data:{drugIds:ids,icd10Id:icd10Id},
+						dataModel.createRemote("${contextRoot}/specialdict/icd10/diagnoses/delete",{
+							data:{ids:ids,icd10Id:icd10Id},
 							success: function(data){
 								if(data.successFlg){
 									masters.reloadGrid();
@@ -128,16 +134,24 @@
 						});
 					});
 
-					//新增关联对话框
+					//新增、修改、查看对话框
 					$('#btn_relation_new').click(function(){
-						var title = '新增指标字典关联';
+						$.publish("icd10:diagnose:update",['','new']);
+					});
+					$.subscribe("icd10:diagnose:update",function(event,id,mode){
+						var title = '';
+						if(Util.isStrEquals('new',mode)){title = '新增关联诊断'}
+						if(Util.isStrEquals('modify',mode)){title = '修改关联诊断';}
+						if(Util.isStrEquals('view',mode)){title = '诊断信息';}
 						masters.createRelationDialog = $.ligerDialog.open({
-							height:500,
-							width:700,
+							height:350,
+							width:500,
 							title:title,
-							url:'${contextRoot}/specialdict/icd10/diagnoseRelaCreate/initial',
+							url:'${contextRoot}/specialdict/icd10/diagnoseInfo/initial',
 							urlParms:{
-								id:icd10Id
+								icd10Id:icd10Id,
+								id:id,
+								mode:mode
 							},
 							isHidden: false,
 							opener: true,
@@ -145,7 +159,7 @@
 						});
 					});
 
-					//确认按钮点击事件关闭关联字典会话框
+					//关闭按钮点击事件关闭关联的诊断列表会话框
 					$('#btn_include_close').click(function(){
 						win.closeIcd10RelationInfoDialog();
 					});
