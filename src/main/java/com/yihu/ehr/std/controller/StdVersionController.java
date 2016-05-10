@@ -85,7 +85,7 @@ public class StdVersionController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             params.put("fields", "");
             params.put("filters", "");
-            params.put("sorts", "");
+            params.put("sorts", "-commitTime");
             params.put("page", 1);
             params.put("size", 999);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);

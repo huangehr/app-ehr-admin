@@ -4,20 +4,13 @@ package com.yihu.ehr.adapter.controller;
 import com.yihu.ehr.adapter.service.AdapterDataSetService;
 import com.yihu.ehr.adapter.service.OrgAdapterPlanService;
 import com.yihu.ehr.adapter.service.PageParms;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
-import com.yihu.ehr.util.HttpClientUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -102,6 +95,7 @@ public class AdapterDataSetController extends ExtendController<AdapterDataSetSer
                             .addExt("mode", mode)
                             .addExt("search_name", nullToSpace(searchParm)));
         } catch (Exception e) {
+            e.printStackTrace();
             return systemError();
         }
     }
@@ -134,6 +128,7 @@ public class AdapterDataSetController extends ExtendController<AdapterDataSetSer
 
             return formatComboData(resultStr, "sequence", "name");
         } catch (Exception e) {
+            e.printStackTrace();
             return systemError();
         }
     }
@@ -171,6 +166,7 @@ public class AdapterDataSetController extends ExtendController<AdapterDataSetSer
 
             return formatComboData(resultStr, "sequence", "name");
         } catch (Exception e) {
+            e.printStackTrace();
             return systemError();
         }
     }
