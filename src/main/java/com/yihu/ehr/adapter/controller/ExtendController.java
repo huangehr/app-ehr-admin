@@ -253,7 +253,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
     public Envelop systemError(){
 
-        return faild(ErrorCode.SystemError.toString());
+        return faild("系统错误！");
     }
 
     public Envelop pramsError(){
