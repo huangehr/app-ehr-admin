@@ -109,7 +109,7 @@
             <div class="m-form-group">
                 <label>序号:</label>
                 <div class="l-text-wrapper m-form-control">
-                    <input type="text" id="inp_update_systemDictEntity_sort" data-attr-scan="sort"  />
+                    <input type="text" id="inp_update_systemDictEntity_sort validate-digits" data-attr-scan="sort"  />
                 </div>
             </div>
             <div class="m-form-group">
