@@ -4,6 +4,7 @@
 <style>
 	.m-form-inline .m-form-group .m-form-control.m-form-control-fr {
 		float: right;
+		margin-right: 10px;
 	}
 
 	.m-form-inline .m-form-group .m-form-control.m-form-control-fr-10 {
