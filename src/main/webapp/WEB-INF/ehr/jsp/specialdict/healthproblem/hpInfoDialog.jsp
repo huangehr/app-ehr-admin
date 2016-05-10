@@ -5,13 +5,13 @@
 <div id="div_drug_info_form" data-role-form class="m-form-inline f-mt20" data-role-form>
 	<input type="hidden" id="id" data-attr-scan="id"/>
 	<div class="m-form-group">
-		<label >健康问题编码:</label>
+		<label >疾病编码:</label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_hp_code" class="required useTitle ajax f-w240 max-length-50"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code">
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label >健康问题名称:</label>
+		<label >疾病名称:</label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_hp_name" class="required useTitle ajax f-w240 max-length-200"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name">
 		</div>

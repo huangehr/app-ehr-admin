@@ -63,12 +63,8 @@
 						},
 						columns: [
 							{display:'id',name:'id',hide:true},
-							{display: '疾病编码', name: 'code', width: '35%', align: 'left',checkbox:false},
-							{display: '疾病名称', name: 'name', width: '35%',align:'left'},
-							{display: '操作', name: 'operator', width: '30%', align: 'center',render: function(row){
-								html ='<a class="label_a" name="" style="margin-left:15px;" title="关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hp:icd10:create", row.id) + '">关联</a>';
-								return html;
-							}},
+							{display: '疾病编码', name: 'code', width: '50%', align: 'left',checkbox:false},
+							{display: '疾病名称', name: 'name', width: '50%',align:'left'},
 
 						],
 						validate: true,
@@ -76,7 +72,7 @@
 						usePager:true,
 						checkbox:true,
 						height:330,
-						rownumbers:false,
+						rownumbers:true,
 					}));
 					icd10HpRelaExcludeinfoGrid.adjustToWidth();
 					masters.bindEvents();
@@ -125,9 +121,9 @@
 					});
 
 					//新增关联窗口的确认按钮点击事件
-					$('#btn_create_confirm').click(function(){
-						win.closeCreateRelationDialog();
-					});
+//					$('#btn_create_confirm').click(function(){
+//						win.closeCreateRelationDialog();
+//					});
 
 					//新增关联窗口右上角的关闭按钮的关闭事件
 					if($('.l-dialog-close')){

@@ -10,12 +10,6 @@
 				<!--输入框-->
 				<input type="text" id="ipt_create_search" data-type="select" placeholder="请输入编码或名称" class="f-h28 f-w240" data-attr-scan="searchNm"/>
 			</div>
-			<!--批量关联-->
-			<div class="m-form-control m-form-control-fr">
-				<div id="btn_relation_create"  class="f-w120 l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
-					<span>批量关联</span>
-				</div>
-			</div>
 		</div>
 	</div>
 	<!-- ####### 数据表格 ####### -->
@@ -26,7 +20,7 @@
 	<!-- ####### 确认、取消按钮 ####### -->
 	<div class="m-form-group pane-attribute-toolbar f-mr10">
 		<div class="m-form-control f-mr10">
-			<input type="button" value="关闭" id="btn_create_close" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />
+			<input type="button" value="关联" id="btn_relation_create" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />
 		</div>
 	</div>
 </div>

@@ -13,12 +13,12 @@
 			<!--批量关联-->
 			<div class="m-form-control m-form-control-fr">
 				<div  id="btn_relation_new" class="f-w120 l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
-					<span>新增关联</span>
+					<span>添加</span>
 				</div>
 			</div>
 			<div class="m-form-control m-form-control-fr f-mr10">
 				<div  id="btn_relation_deletes" class="f-w120 l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
-					<span>批量解除关联</span>
+					<span>批量解除</span>
 				</div>
 			</div>
 
@@ -27,13 +27,6 @@
 	<!-- ####### 数据表格 ####### -->
 
 	<div id="div_drug_include_grid" class="f-m10" >
-	</div>
-
-	<!-- ####### 确认、取消按钮 ####### -->
-	<div class="m-form-group pane-attribute-toolbar f-mr10">
-		<div class="m-form-control f-mr10">
-			<input type="button" value="关闭" id="btn_include_close" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />
-		</div>
 	</div>
 </div>
 

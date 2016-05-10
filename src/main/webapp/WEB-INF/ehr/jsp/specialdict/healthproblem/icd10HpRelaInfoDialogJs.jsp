@@ -44,7 +44,6 @@
 				init:function(){
 					hpId = $('#ipt_info_hpId').val();
 					this.$searchNm.ligerTextBox({width:240,isSearch:true,search: function(){
-						debugger
 						var searchNm = $('#ipt_info_search').val();
 						var params = {
 							searchNm:searchNm,
@@ -70,10 +69,10 @@
 						},
 						columns: [
 							{display:'id',name:'id',hide:true},
-							{display: '疾病编码', name: 'code', width: '35%', align: 'left',checkbox:false},
-							{display: '疾病名称', name: 'name', width: '35%',align:'left'},
+							{display: '诊断编码', name: 'code', width: '35%', align: 'left',checkbox:false},
+							{display: '诊断名称', name: 'name', width: '35%',align:'left'},
 							{display: '操作', name: 'operator', width: '30%', align: 'center',render: function(row){
-								html ='<a class="label_a" name="" style="margin-left:15px;" title="取消关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hp:icd10:delete", row.id) + '">取消关联</a>';
+								html ='<a class="label_a" name="" style="margin-left:15px;" title="解除关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hp:icd10:delete", row.id) + '">解除关联</a>';
 								return html;
 							}},
 						],
@@ -82,7 +81,7 @@
 						usePager:false,
 						checkbox:true,
 						height:330,
-						rownumbers:false,
+						rownumbers:true,
 					}));
 					icd10HpRelaIncludeInfoGrid.adjustToWidth();
 					masters.bindEvents();
@@ -136,7 +135,7 @@
 
 					//弹出新增关联窗口
 					$("#btn_relation_new").click(function(){
-						var title = '关联ICD10字典';
+						var title = '诊断字典';
 						masters.createRelationDialog = $.ligerDialog.open({
 							height:500,
 							width:700,
@@ -159,10 +158,10 @@
 					};
 
 					//确认按钮点击事件关闭关联字典会话框
-					$('#btn_confirm').click(function(){
-						win.reloadHpInfoGrid();
-						win.closeHpRelationInfoDialog();
-					});
+//					$('#btn_confirm').click(function(){
+//						win.reloadHpInfoGrid();
+//						win.closeHpRelationInfoDialog();
+//					});
 
 				}
 			};

@@ -60,13 +60,13 @@
 						},
 						columns: [
 							{display:'id',name:'id',hide:true},
-							{display: '健康问题编码', name: 'code', width: '30%', align: 'left'},
-							{display: '健康问题名称', name: 'name', width: '30%',align:'left'},
-							{display: '关联ICD10', name: 'icd10Name', width: '20%',align:'left'},
+							{display: '疾病编码', name: 'code', width: '20%', align: 'left'},
+							{display: '疾病名称', name: 'name', width: '25%',align:'left'},
+							{display: '关联诊断', name: 'icd10Name', width: '35%',align:'left'},
 							{
 								display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
 								var html = '';
-								html += '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hpIcd10:relation:info:open", row.id) + '">关联ICD10</a>';
+								html += '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hpIcd10:relation:info:open", row.id) + '">关联诊断</a>';
 								html += '<a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "hp:info:open", row.id,'modify') + '"></a>';
 								html += '<a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hp:info:delete", row.id) + '"></a>';
 								return html;
@@ -76,7 +76,7 @@
 						validate: true,
 						unSetValidateAttr: false,
 						usePager:true,
-						checkbox:true
+						checkbox:true,
 					}));
 					infoGrid.adjustToWidth();
 					masters.bindEvents();
@@ -103,9 +103,9 @@
 					$.subscribe('hp:info:open',function(event,id,mode){
 						var title = '';
 						if(mode == 'modify'){
-							title = '修改健康问题字典项';
+							title = '修改字典项';
 						}else{
-							title = '新增健康问题字典项'
+							title = '新增字典项'
 						};
 						self.infoDialog = $.ligerDialog.open({
 							height:400,
@@ -158,7 +158,7 @@
 
 					//管理ICD10事件
 					$.subscribe('hpIcd10:relation:info:open',function(event,id){
-						var title = '已关联ICD10';
+						var title = '关联诊断';
 						self.relationInfoDialog = $.ligerDialog.open({
 							height:500,
 							width:700,

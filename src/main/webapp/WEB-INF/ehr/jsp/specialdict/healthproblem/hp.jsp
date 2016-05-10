@@ -9,7 +9,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!--#####Title设置#####-->
-<div class="f-dn" data-head-title="true">健康问题字典</div>
+<div class="f-dn" data-head-title="true">疾病字典</div>
 <div id="div_wrapper" >
 	<!--#########查询部分##&ndash-->
 	<div class="m-retrieve-area f-h50 f-pr m-form-inline" data-role-form>
