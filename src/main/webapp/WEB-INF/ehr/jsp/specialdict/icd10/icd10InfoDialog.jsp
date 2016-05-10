@@ -5,22 +5,23 @@
 <div id="div_icd_info_form" data-role-form class="m-form-inline f-mt20">
 	<input type="hidden" id="id" data-attr-scan="id"/>
 	<div class="m-form-group">
-		<label >疾病编码:</label>
+		<label >诊断编码:</label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_icd10_code" class="required useTitle ajax f-w240 max-length-50"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code" />
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label >疾病名称:</label>
+		<label >诊断名称:</label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_icd10_name" class="required useTitle ajax f-w240 max-length-200"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name" />
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label >疾病标志:</label>
+		<label >标志:</label>
 		<div class="u-checkbox-wrap m-form-control">
-			<input id="inp_chronicFlag" style="height: 20px;width: 20px;" type="checkbox" value="1" name="chronicFlag" data-attr-scan /> 传染病
-			<input id="inp_infectiousFlag" style="height: 20px;width: 20px;margin-left: 30px;" type="checkbox" value="1" name="infectiousFlag" data-attr-scan /> 慢病
+			<input id="inp_infectiousFlag" style="height: 20px;width: 20px;margin-left: 30px;" type="checkbox" value="1" name="infectiousFlag" data-attr-scan /> 传染病
+			<input id="inp_chronicFlag" style="height: 20px;width: 20px;" type="checkbox" value="1" name="chronicFlag" data-attr-scan /> 慢病
+
 		</div>
 	</div>
 	<%--<div>--%>
