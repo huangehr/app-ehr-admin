@@ -156,13 +156,6 @@
 							win.reloadHpInfoGrid();
 						});
 					};
-
-					//确认按钮点击事件关闭关联字典会话框
-//					$('#btn_confirm').click(function(){
-//						win.reloadHpInfoGrid();
-//						win.closeHpRelationInfoDialog();
-//					});
-
 				}
 			};
 			/* ***************************页面回调接口************************ */

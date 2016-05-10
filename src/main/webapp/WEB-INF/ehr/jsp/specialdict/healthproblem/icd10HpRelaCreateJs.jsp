@@ -119,12 +119,6 @@
 							}
 						});
 					});
-
-					//新增关联窗口的确认按钮点击事件
-//					$('#btn_create_confirm').click(function(){
-//						win.closeCreateRelationDialog();
-//					});
-
 					//新增关联窗口右上角的关闭按钮的关闭事件
 					if($('.l-dialog-close')){
 						$('.l-dialog-close').click(function(){

@@ -28,13 +28,6 @@
 
 	<div id="div_icd10_include_info_grid" class="f-m10" >
 	</div>
-
-	<%--<!-- ####### 确认、取消按钮 ####### -->--%>
-	<%--<div class="m-form-group pane-attribute-toolbar f-mr10">--%>
-		<%--<div class="m-form-control f-mr10">--%>
-			<%--<input type="button" value="关闭" id="btn_confirm" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />--%>
-		<%--</div>--%>
-	<%--</div>--%>
 </div>
 
 
