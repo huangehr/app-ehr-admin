@@ -23,26 +23,26 @@
 			<input id="inp_infectiousFlag" style="height: 20px;width: 20px;margin-left: 30px;" type="checkbox" value="1" name="infectiousFlag" data-attr-scan /> 慢病
 		</div>
 	</div>
-	<div>
-		<div class="f-pr u-bd" id="icd10_flag">
-			<div class="f-pa f-wtl" style="">
-				数据来源
-			</div>
-			<div class="m-form-group f-mt20">
-				<label style="width: 140px;">数据集: </label>
-				<div class="l-text-wrapper m-form-control">
-					<input type="text" id="inp_data_set" class="f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code" />
-				</div>
-			</div>
-			<div class="m-form-group">
-				<label style="width: 140px;">数据元:</label>
-				<div class="l-text-wrapper m-form-control">
-					<input type="text" id="inp_meta_data" class="f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code" />
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="m-form-group f-mt20">
+	<%--<div>--%>
+		<%--<div class="f-pr u-bd" id="icd10_flag">--%>
+			<%--<div class="f-pa f-wtl" style="">--%>
+				<%--数据来源--%>
+			<%--</div>--%>
+			<%--<div class="m-form-group f-mt20">--%>
+				<%--<label style="width: 140px;">数据集: </label>--%>
+				<%--<div class="l-text-wrapper m-form-control">--%>
+					<%--<input type="text" id="inp_data_set" class="f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code" />--%>
+				<%--</div>--%>
+			<%--</div>--%>
+			<%--<div class="m-form-group">--%>
+				<%--<label style="width: 140px;">数据元:</label>--%>
+				<%--<div class="l-text-wrapper m-form-control">--%>
+					<%--<input type="text" id="inp_meta_data" class="f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code" />--%>
+				<%--</div>--%>
+			<%--</div>--%>
+		<%--</div>--%>
+	<%--</div>--%>
+	<div class="m-form-group">
 		<label >说明:</label>
 		<div class="m-form-control">
 			<textarea id="inp_icd10_description" class="f-w240 validate-special-char max-length-200" data-attr-scan="description"></textarea>

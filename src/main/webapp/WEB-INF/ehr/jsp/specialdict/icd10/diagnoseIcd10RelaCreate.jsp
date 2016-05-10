@@ -1,34 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<input type="text" id="ipt_create_icd10Id" hidden="hidden" value="${icd10Id}"/>
-<div id="div_wrapper" >
-	<!-- ####### 查询条件部分 ####### -->
-	<div class="m-retrieve-area f-pr m-form-inline" data-role-form>
-		<div class="m-form-group f-m10" style="padding-bottom: 0px;">
-			<div class="m-form-control">
-				<!--输入框-->
-				<input type="text" id="ipt_create_search" data-type="select" placeholder="请输入编码或名称" class="f-h28 f-w240" data-attr-scan="searchNm"/>
-			</div>
-			<!--批量关联-->
-			<div class="m-form-control m-form-control-fr">
-				<div id="btn_relation_create"  class="f-w120 l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
-					<span>批量关联</span>
-				</div>
-			</div>
+
+<div id="div_diagnose_info_form" data-role-form class="m-form-inline f-mt20" data-role-form>
+	<input type="hidden" icd10Id="${icd10Id}" data-attr-scan="icd10Id"/>
+	<input type="hidden" id="id" data-attr-scan="id"/>
+	<div class="m-form-group">
+		<label >诊断名称:</label>
+		<div class="l-text-wrapper m-form-control essential">
+			<input type="text" id="inp_diagnose_name" class="required useTitle ajax f-w240 max-length-200"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name">
 		</div>
 	</div>
-	<!-- ####### 数据表格 ####### -->
-
-	<div id="div_indicator_create_grid" class="f-m10" >
+	<div class="m-form-group">
+		<label >说明:</label>
+		<div class="m-form-control">
+			<textarea id="inp_diagnose_description" class="f-w240  validate-special-char max-length-200" data-attr-scan="description"></textarea>
+		</div>
 	</div>
-
-	<!-- ####### 确认、取消按钮 ####### -->
-	<div class="m-form-group pane-attribute-toolbar f-mr10">
-		<div class="m-form-control f-mr10">
-			<input type="button" value="关闭" id="btn_create_close" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />
+	<div class="m-form-group f-pa my-footer" style="bottom: 0;right: 10px;" hidden="hidden">
+		<div class="m-form-control">
+			<input type="button" value="关联" id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />
+			<div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
+				<span>关闭</span>
+			</div>
 		</div>
 	</div>
 </div>
-
-

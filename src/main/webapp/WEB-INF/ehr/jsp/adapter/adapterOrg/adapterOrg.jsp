@@ -24,6 +24,10 @@
       <div class="m-form-control f-ml20">
         <input type="text" id="inp_type" placeholder="请选择标准类别" data-type="select" class="f-ml20" data-attr-scan="type"/>
       </div>
+      <div class="l-text-wrapper m-form-control  f-w240 f-ml20">
+        <input type="text" id="sel_org"  placeholder="请选择机构" data-type="comboSelect" class="validate-org-length f-w240"
+               data-attr-scan="org"/>
+      </div>
       <div class="m-form-control f-ml20">
         <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
           <span><spring:message code="btn.search"/></span>

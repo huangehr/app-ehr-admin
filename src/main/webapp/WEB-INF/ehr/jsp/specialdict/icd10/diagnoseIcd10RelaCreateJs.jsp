@@ -1,145 +1,115 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: yww
-  Date: 2016/4/20
-  Time: 13:45
-  To change this template use File | Settings | File Templates.
---%>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<script>
-	(function($,win){
-		$(function(){
-			/* ***************************变量定义************************ */
-			//通用工具
-			var Util = $.Util;
-			//检索模块对象
-			var retrieve = null;
-			//控制模块
-			var masters = null;
-			//列表对象
-			var infoGrid = null;
 
-			var icd10Id = '';
+<script type="text/javascript">
+	(function ($, win) {
+		/* ************************** 变量定义 ******************************** */
+		var Util = $.Util;
+		var diagnoseInfo = null;
+		// 表单校验工具类
+		var jValidation = $.jValidation;
+		var mode = '${mode}';
+		var icd10Id = '${icd10Id}'
+		var nameCopy = '';
 
-			/* ***************************函数定义************************ */
-			function pageInit(){
-				retrieve.init();
-				masters.init();
-			}
-			function reloadGrid(params){
-				infoGrid.set({
-					parms:params
-				});
-				infoGrid.reload();
-			}
 
-			/* ***************************模块初始化************************ */
-			retrieve = {
-				$element:$('.m-retrieve-area'),
-				$searchNm: $('#ipt_create_search'),
-				init:function(){
-					icd10Id = $('#ipt_create_icd10Id').val();
-					this.$element.attrScan();
-					this.$searchNm.ligerTextBox({width:240,isSearch:true,search: function(){
-						var searchNm = retrieve.$searchNm.val();
-						var params = {
-							searchNm:searchNm,
-							icd10Id:icd10Id
-						};
-						reloadGrid(params);
-					}});
-				},
-			};
+		/* *************************** 函数定义 ******************************* */
+		function pageInit() {
+			diagnoseInfo.init();
+		}
 
-			masters = {
-				init:function(){
-					infoGrid = $('#div_indicator_create_grid').ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/specialdict/icd10/drug/exclude',
-						parms: {
-							searchNm: '',
-							icd10Id:icd10Id
-						},
-						columns: [
-							{display:'id',name:'id',hide:true},
-							{display: '指标编码', name: 'code', width: '30%', align: 'left',checkbox:false},
-							{display: '指标名称', name: 'name', width: '30%',align:'left'},
-							{display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
-								html ='<a class="label_a" name="" style="margin-left:15px;" title="关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "icd10:drug:create", row.id) + '">关联</a>';
-								return html;
-							}},
+		/* *************************** 模块初始化 ***************************** */
+		diagnoseInfo = {
+			$form: $("#div_diagnose_info_form"),
+			$diagnoseName: $('#inp_diagnose_name'),
+			$description: $('#inp_diagnose_description'),
+			$updateBtn: $("#btn_save"),
+			$cancelBtn: $("#btn_cancel"),
 
-						],
-						validate: true,
-						unSetValidateAttr: false,
-						usePager:true,
-						checkbox:true,
-						height:330,
-						rownumbers:false,
-					}));
-					infoGrid.adjustToWidth();
-					masters.bindEvents();
-
-				},
-
-				reloadGrid: function(){
-					var searchNm = $('#ipt_create_search').val();
-					var params = {
-						searchNm:searchNm,
-						icd10Id:icd10Id
-					};
-					reloadGrid(params);
-				},
-
-				bindEvents: function(){
-					//单个、批量删除事件(单个情况有传id号，批量自动扫描Grid表）
-					$('#btn_relation_create').click(function(){
-						$.publish("icd10:drug:create",[''])
+			init: function () {
+				this.initForm();
+				this.bindEvents();
+			},
+			initForm: function () {
+				this.$diagnoseName.ligerTextBox({width:240});
+				this.$description.ligerTextBox({width: 240,height:120});
+				if(mode != 'view'){
+					$(".my-footer").show();
+				}
+				if(mode == 'view'){
+					diagnoseInfo.$form.addClass('m-form-readonly')
+				}
+				if(mode != 'new'){
+					var info = ${envelop}.obj;
+					nameCopy = info.name;
+					this.$form.attrScan();
+					this.$form.Fields.fillValues({
+						id: info.id,
+						icd10Id:info.icd10Id,
+						name: info.name,
+						description: info.description,
 					});
-
-					$.subscribe("icd10:drug:create",function(event,ids){
-						if(!ids){
-							var rows = infoGrid.getSelectedRows();
-							if(rows.length==0){
-								$.Notice.warn('请选择要删除的数据行！');
-								return;
+				}
+			},
+			bindEvents: function () {
+				var self = this;
+				var validator =  new jValidation.Validation(self.$form, {immediate: true, onSubmit: false,
+					onElementValidateForAjax: function (elm) {
+						if (Util.isStrEquals($(elm).attr("id"), 'inp_diagnose_name')) {
+							var name = $("#inp_diagnose_name").val();
+							if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
+								var result = new jValidation.ajax.Result();
+								var dataModel = $.DataModel.init();
+								dataModel.fetchRemote("${contextRoot}/specialdict/icd10/diagnose/isNameExist", {
+									data: {name:name,icd10Id:icd10Id},
+									async: false,
+									success: function (data) {
+										if (data.successFlg) {
+											result.setResult(false);
+											result.setErrorMsg("同个icd10关联的诊断名称不能重复！");
+										} else {
+											result.setResult(true);
+										}
+									}
+								});
+								return result;
 							}
-							for(var i=0;i<rows.length;i++){
-								ids += ',' + rows[i].id;
-							}
-							ids = ids.length>0 ? ids.substring(1, ids.length) : ids;
 						}
+					}
+				});
+				//新增、修改
+				self.$updateBtn.click(function () {
+					if(validator.validate()){
 						var dataModel = $.DataModel.init();
-						dataModel.createRemote("${contextRoot}/specialdict/icd10/drug/creates",{
-							data:{drugIds:ids,icd10Id:icd10Id},
-							success: function(data){
+						self.$form.attrScan();
+						var diagnoseModel = self.$form.Fields.getValues();
+						if(Util.isStrEquals('new',mode)){
+							diagnoseModel.icd10Id = icd10Id;
+						}
+						dataModel.createRemote("${contextRoot}/specialdict/icd10/diagnose/update", {
+							data:  {dataJson:JSON.stringify(diagnoseModel),mode:mode},
+							success: function (data) {
 								if(data.successFlg){
-									masters.reloadGrid();
 									$.Notice.success('操作成功');
+									parent.reloadRelationInfoDialog();
+									win.closeCreateRelationDialog();
 								}else{
 									$.Notice.error(data.errorMsg);
 								}
 							}
-						});
-					});
+						})
+					}else{
+						return;
+					}
+				});
+				self.$cancelBtn.click(function(){
+					win.closeCreateRelationDialog();
+				});
+			}
+		};
 
-					//新增关联窗口的确认按钮点击事件
-					$('#btn_create_close').click(function(){
-						win.closeCreateRelationDialog();
-					});
+		/* *************************** 页面初始化 **************************** */
+		pageInit();
 
-					//新增关联窗口右上角的关闭按钮的关闭事件
-					if($('.l-dialog-close')){
-						$('.l-dialog-close').click(function(){
-							win.reloadRelationInfoDialog();
-						});
-					};
-				}
-			};
-			/* ***************************页面回调接口************************ */
-			/* ***************************页面初始化************************ */
-			pageInit();
-		})
-	})(jQuery,window);
+	})(jQuery, window);
 </script>
