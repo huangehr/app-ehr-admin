@@ -15,6 +15,7 @@
 <script src="${staticRoot}/module/util.js"></script>
 <script src="${staticRoot}/module/juicer.js"></script>
 <script src="${staticRoot}/module/pubsub.js"></script>
+<script src="${staticRoot}/module/sessionOut.js"></script>
 <script src="${staticRoot}/module/ajax.js"></script>
 <script src="${staticRoot}/module/baseObject.js"></script>
 <script src="${staticRoot}/module/dataModel.js"></script>
