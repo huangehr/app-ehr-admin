@@ -13,10 +13,18 @@
     <div id="conditionArea" class="f-mb10 f-mr10" align="right">
         <input type="text" data-type="select" id="cdaVersion" data-attr-scan="version">
     </div>
+    <div id="div_upload" class="f-mr10" data-alone-file=true align="right">
+        <!--用来存放item-->
+        <div id="div_file_list" class="uploader-list f-mr100 f-h30"></div>
+        <div id="div_file_picker" class="f-mt10" style="margin-top: -30px;">选择导入</div>
+    </div>
+    <div>
+        <div id="div_file_export" class="f-mt10" style="margin-top: -30px;">选择导出</div>
+    </div>
     <div style="width: 100%" id="grid_content">
         <!--######CDA信息表######-->
         <div id="div_left" style=" width:400px;float: left;">
-            <div class="m-retrieve-area f-h50 f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0px;">
+            <div class="m-retrieve-area f-h50 f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0;">
                 <ul>
                     <li class=" f-mt15">
                         <span class="f-mt10 f-fs14 f-ml10" style="width: 70px;">
@@ -34,7 +42,7 @@
             </div>
         </div>
         <div id="div_right" style="float: left;">
-            <div class="m-retrieve-area f-h50 f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0px;">
+            <div class="m-retrieve-area f-h50 f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0;">
                 <ul>
                     <li class=" f-mt15">
                         <span class="f-mt10 f-fs14 f-ml10">
