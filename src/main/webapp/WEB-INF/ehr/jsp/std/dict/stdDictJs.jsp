@@ -14,7 +14,8 @@
             var entryMater = null;
 
             var versionStage = null;
-            var selectRowObj=null;
+            var selectRowObj = null;
+            var isSaveSelectStatus = false;
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
 
@@ -45,11 +46,6 @@
                 var contentW = $('#grid_content').width();
                 var leftW = $('#div_left').width();
                 $('#div_right').width(contentW - leftW - 20);
-            }
-
-            function reloadGrid(url, params) {
-                this.grid.setOptions({parms: params, newPage: 1});
-                this.grid.loadData(true);
             }
 
             /* *************************** 标准字典模块初始化 ***************************** */
@@ -126,8 +122,7 @@
 
                     this.$searchNm.ligerTextBox({
                         width: 240, isSearch: true, search: function () {
-                            dictMaster.grid.options.newPage = 1;
-                            dictMaster.reloadGrid();
+                            dictMaster.reloadGrid(1);
                         }
                     });
                     this.$element.show();
@@ -140,7 +135,7 @@
                 grid: null,
                 init: function () {
                     if (this.grid) {
-                        this.reloadGrid();
+                        this.reloadGrid(1);
                     }
                     else {
                         var searchNm = $("#searchNm").val();
@@ -172,22 +167,20 @@
                             allowHideColumn: false,
                             onBeforeShowData: function (data) {
                                 if (data.totalCount == 0) {
-                                    entryMater.reloadGrid('');
+                                    entryMater.reloadGrid(1, '');
                                 }
                             },
-                            onAfterShowData: function () {
-                                if(selectRowObj!=null)
-                                {
-                                    this.select(selectRowObj);
-                                }
-                                else {
+                            onAfterShowData: function (data) {
+                                if (selectRowObj != null && isSaveSelectStatus) {
+                                    isSaveSelectStatus = false;
+                                    dictMaster.grid.select(selectRowObj);
+                                }else
                                     this.select(0);
-                                }
                             },
                             onSelectRow: function (row) {
                                 selectRowObj = row;
                                 entryMater.init();
-                                entryMater.reloadGrid();
+                                entryMater.reloadGrid(1);
                             }
                         }));
                         this.bindEvents();
@@ -195,14 +188,14 @@
                         this.grid.adjustToWidth();
                     }
                 },
-                reloadGrid: function () {
+                reloadGrid: function (curPage) {
                     var searchNm = $("#searchNm").val();
                     var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                     var values = {
                         searchNm: searchNm,
                         strVersionCode: stdDictVersion
                     };
-                    reloadGrid.call(this, '${contextRoot}/cdadict/getCdaDictList', values);
+                    Util.reloadGrid.call(this.grid, '${contextRoot}/cdadict/getCdaDictList', values, curPage);
                 },
                 bindEvents: function () {
                     $.subscribe('stddict:dictInfo:open', function (event, id, mode) {
@@ -220,6 +213,7 @@
                             }
                             title = '新增标准字典';
                         }
+                        isSaveSelectStatus = true;
                         var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                         dictMaster.dictInfoDialog = $.ligerDialog.open({
                             height: 462,
@@ -254,7 +248,7 @@
                                     data: {dictId: id, cdaVersion: stdDictVersion},
                                     success: function (data) {
                                         $.Notice.success('操作成功！');
-                                        dictMaster.reloadGrid();
+                                        dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
                                     }
                                 });
                             }
@@ -270,8 +264,7 @@
                 init: function () {
                     this.$searchNm.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
-                            entryMater.grid.options.newPage = 1;
-                            entryMater.reloadGrid();
+                            entryMater.reloadGrid(1);
                         }
                     });
                     this.$element.show();
@@ -318,7 +311,7 @@
                     // 自适应宽度
                     this.grid.adjustToWidth();
                 },
-                reloadGrid: function (dictId) {
+                reloadGrid: function (curPage, dictId) {
                     var searchNmEntry = $("#searchNmEntry").val();
                     var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                     var dictId = dictId == '' ? -1 : dictMaster.grid.getSelectedRow().id;
@@ -327,7 +320,7 @@
                         strVersionCode: stdDictVersion,
                         dictId: dictId
                     };
-                    reloadGrid.call(this, '${contextRoot}/cdadict/searchDictEntryList', values);
+                    Util.reloadGrid.call(this.grid, '${contextRoot}/cdadict/searchDictEntryList', values, curPage);
                 },
                 bindEvents: function () {
                     //窗体改变大小事件
@@ -381,13 +374,14 @@
                             $.Notice.error("已发布版本不可删除，请确认!");
                             return;
                         }
-
+                        var delLen = 1;
                         if (!ids) {
                             var rows = entryMater.grid.getSelectedRows();
                             if (rows.length == 0) {
                                 $.Notice.warn('请选择要删除的数据行！');
                                 return;
                             }
+                            delLen = rows.length;
                             for (var i = 0; i < rows.length; i++) {
                                 ids += ',' + rows[i].id;
                             }
@@ -402,7 +396,7 @@
                                     data: {id: ids, cdaVersion: stdDictVersion},
                                     success: function (data) {
                                         $.Notice.success('操作成功！');
-                                        entryMater.reloadGrid();
+                                        entryMater.reloadGrid(Util.checkCurPage.call(entryMater.grid, delLen));
                                     }
                                 });
                             }

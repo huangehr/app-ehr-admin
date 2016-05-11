@@ -13,19 +13,12 @@
 
             var catalogDictId = 1;
             var statusDictId = 2;
-
+            var selectRow = null;
+            var isSaveSelectStatus = false;
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 retrieve.init();
                 master.init();
-            }
-
-            function reloadGrid (url, params) {
-                this.grid.set({
-                    url: url,
-                    parms: params
-                });
-                this.grid.reload();
             }
 
             /* *************************** 模块初始化 ***************************** */
@@ -64,7 +57,7 @@
                 },
                 bindEvents: function () {
                     this.$searchBtn.click(function () {
-                        master.reloadGrid();
+                        master.reloadGrid(1);
                     })
                 }
             };
@@ -132,6 +125,15 @@
                                 },
                                 isHidden: false
                             });
+                        },
+                        onSelectRow: function (data, rowindex, rowobj) {
+                            selectRow = data;
+                        },
+                        onAfterShowData: function () {
+                            if(selectRow!=null && isSaveSelectStatus){
+                                isSaveSelectStatus = false;
+                                master.grid.select(selectRow);
+                            }
                         }
                     }));
                     this.bindEvents();
@@ -142,21 +144,22 @@
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/app/check",{data:{appId:id,status:status},
                         success: function(data) {
+                            isSaveSelectStatus = true;
                             master.reloadGrid();
                         }});
                 },
-                reloadGrid: function () {
+                reloadGrid: function (curPage) {
                     var values = retrieve.$element.Fields.getValues();
-                    reloadGrid.call(this, '${contextRoot}/app/searchApps', values);
+                    Util.reloadGrid.call(this.grid, '', values, curPage);
                 },
                 bindEvents: function () {
                     $.subscribe('app:appInfo:open',function(event,appId,mode){
-
                         var title = '';
 
                         //只有new 跟 modify两种模式会到这个函数
                         if(mode == 'modify'){
                             title = '修改应用信息';
+                            isSaveSelectStatus = true;
                         }
                         else{
                             title = '新增应用信息';
