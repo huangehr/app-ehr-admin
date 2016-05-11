@@ -69,7 +69,7 @@ public class LoginController extends BaseUIController {
             if (envelop.isSuccessFlg()) {
                 String lastLoginTime = null;
 
-                model.addAttribute("successFlg", true);
+//                model.addAttribute("successFlg", false);
 //                判断用户是否失效
                 if (!userDetailModel.getActivated()) {
                     model.addAttribute("userName", userName);

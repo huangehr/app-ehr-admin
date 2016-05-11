@@ -220,8 +220,15 @@
                                 dataModel.updateRemote('${contextRoot}/cdadict/deleteDict', {
                                     data: {dictId: id, cdaVersion: stdDictVersion},
                                     success: function (data) {
-                                        $.Notice.success('操作成功！');
-                                        dictMaster.reloadGrid();
+                                        debugger
+                                        if(data.successFlg){
+                                            $.Notice.success('删除成功！');
+                                            dictMaster.reloadGrid();
+                                        }else{
+                                            $.Notice.error(data.errorMsg);
+                                        }
+
+
                                     }
                                 });
                             }
