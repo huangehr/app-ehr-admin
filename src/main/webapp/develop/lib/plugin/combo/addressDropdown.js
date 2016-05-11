@@ -89,7 +89,7 @@
         var isOther = true;//校验是否在字母之外的编号
         for(var i=0; i< groups.length-1; i++) {
             var arr = groups[i].split('-');
-            if(arr[0].toUpperCase()<=c && c<= arr[1].toUpperCase()) {
+            if(arr[0].toUpperCase()<=c.toUpperCase() && c.toUpperCase()<= arr[1].toUpperCase()) {
                 g = groups[i];
                 isOther = false;
                 break;
@@ -217,7 +217,6 @@
         }
     }
     function updateTitle() {
-        debugger
         var $options = $('.j-select-option.current', this.$c);
         var titles = [];
         $options.each(function (i) {
@@ -270,12 +269,8 @@
         for(var key in data) {
             var id = data[key][ds.code];
             var name = data[key][ds.value];
-            var abbrChars = $.Pinyin.getAbbrChars(name);
             var fullChars = $.Pinyin.getFullChars(name);
-            if(!$.trim(abbrChars) && name.length) {
-                abbrChars = name.charAt(0).toLocaleUpperCase();
-            }
-            dataTemp.push(Util.format("{0}||{1}||{2}||{3}",abbrChars,fullChars,id,name));
+            dataTemp.push(Util.format("{0}||{1}||{2}||{3}",$.trim(fullChars),fullChars,id,name));
         }
         dataTemp.sort();
 

@@ -11,6 +11,12 @@ import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import javafx.util.Pair;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.format.CellFormat;
+import jxl.format.UnderlineStyle;
+import jxl.write.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,9 +25,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.Boolean;
+import java.util.*;
 
 
 /**
@@ -40,6 +49,8 @@ public class DataSetsController extends BaseUIController {
     private String comUrl;
     @Value("${service-gateway.url}")
     private String adminUrl;
+    @Value("${service-gateway.stdsourceurl}")
+    private String stdSrcUrl;
 
     //    @RequestMapping("/initial")
 //    public String dataSetInitial() {
@@ -231,7 +242,7 @@ public class DataSetsController extends BaseUIController {
         Envelop result = new Envelop();
         if (StringUtils.isEmpty(id) || id.equals(0) || StringUtils.isEmpty(version)|| version.equals(0)) {
             result.setSuccessFlg(false);
-            result.setErrorMsg("数据元id、标准版本不能为空!");
+            result.setErrorMsg("数据集id、标准版本不能为空!");
             return result;
         }
         String url = "/meta_datas";
@@ -580,18 +591,418 @@ public class DataSetsController extends BaseUIController {
         }
     }
 
-//    public void exportToExcel(){
-//        //todo：test 导出测试
-//        List<String> ids = new ArrayList<>();
-//        ids.add("1");
-//        ids.add("2");
-//        ids.add("3");
-//        XDataSet[] dataSets = dataSetManager.getDataSetByIds(ids, xcdaVersionManager.getLatestVersion().getVersion());
-//        dataSetManager.exportToExcel("E:/workspaces/excel/testExport.xls",dataSets);
-//    }
-//
-//    public void importFromExcel(){
-//        //todo：test导入测试
-//        dataSetManager.importFromExcel("E:/workspaces/excel/����excel����.xls", xcdaVersionManager.getLatestVersion());
-//    }
+    @RequestMapping("/importFromExcel")
+    @ResponseBody
+    public Object importFromExcel(HttpServletRequest request,String versionCode){
+        Envelop envelop = new Envelop();
+        String resultStr="";
+        Envelop envelopTemp;
+        try {
+            request.setCharacterEncoding("UTF-8");
+            InputStream inputStream = request.getInputStream();
+            Workbook rwb = Workbook.getWorkbook(inputStream);
+            Sheet[] sheets = rwb.getSheets();
+            String strErrorMsg="";
+            int rows;
+            int row;
+            //批量入库
+            List<Pair<DataSetModel,List<MetaDataModel>>> allData = new ArrayList<>();
+            Pair<DataSetModel,List<MetaDataModel>> pair=null;
+            List<Envelop> saveDatas = new ArrayList<>();
+            Envelop saveData;   //obj对应DataSetModel,detailModelList对应List<MetaDataModel>
+            //数据集信息
+            DataSetModel dataSet;
+            String sheetName; //sheet名字
+            String dataSetName;//名称
+            String dataSetCode;//标识
+            String reference;//参考
+            String summary;
+            //数据元信息
+            List<DictModel> dictModelList;
+            Set<String> set;
+            String dictUrl = "/dicts";
+            Map<String,Object> dictParams ;
+            String dictFilters ;
+            List<MetaDataModel> metaDataList;
+            MetaDataModel metaData;
+            String innerCode;//内部标识
+            String code ;//数据元编码
+            String name;//数据元名称
+            String definition;//数据元定义
+            String type ;//数据类型
+            String format ;//表示形式
+            String dictCode ;//术语范围值
+            String columnName ;//列名
+            String columnType ;//列类型
+            String columnLength;//列长度
+            String primaryKey;//主键
+            String nullable ;//可为空
+            boolean pk;
+            boolean nullAble;
+            long dictId = 0;
+            for (Sheet sheet : sheets) {
+                dataSet = new DataSetModel();
+                dataSet.setStdVersion(versionCode);
+                //获取数据集信息
+                sheetName = sheet.getName(); //sheet名字
+                dataSetName = sheet.getCell(1, 0).getContents();//名称
+                dataSetCode = sheet.getCell(1, 1).getContents();//标识
+                reference = sheet.getCell(1, 2).getContents();//参考
+                summary = sheet.getCell(1, 3).getContents();//备注
+
+                //todo：test--测试时备注做区别，方便删除测试，summary变量区别
+                //summary="测试excel导入";
+                //todo：test--测试时code区别，否则测试不成功，因为code唯一
+                //dataSetCode = dataSetCode+"excel";
+
+                //数据集校验
+                if (isExistDataSetCode(dataSetCode, versionCode)){
+                    strErrorMsg = sheetName+"数据集标识已存在，请检查！";
+                }
+                if (dataSetName==null || dataSetName.equals("")){
+                    strErrorMsg = sheetName+"数据集名称不能为空，请检查！";
+                }
+                if (dataSetCode==null || dataSetCode.equals("")){
+                    strErrorMsg = sheetName +"数据集标识不能为空，请检查！";
+                }
+                if (!StringUtils.isEmpty(strErrorMsg)) {
+                    //数据集校验
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg(strErrorMsg);
+                    return envelop;
+                }
+                //插入数据集信息
+                dataSet.setCode(dataSetCode);//code唯一
+                dataSet.setName(dataSetName);
+                dataSet.setReference(reference);//标准来源
+                dataSet.setStdVersion(versionCode);
+                dataSet.setSummary(summary);
+
+                //获取数据元信息
+                set = new HashSet<String>();
+                metaDataList = new ArrayList<>();
+                rows = sheet.getRows();
+                for (int j = 0; j < rows - 5; j++) {
+                    metaData = new MetaDataModel();
+                    row = j + 5;
+                    innerCode = sheet.getCell(1, row).getContents();//内部标识
+                    code = sheet.getCell(2, row).getContents();//数据元编码
+                    name = sheet.getCell(3, row).getContents();//数据元名称
+                    definition = sheet.getCell(4, row).getContents();//数据元定义
+                    type = sheet.getCell(5, row).getContents();//数据类型
+                    format = sheet.getCell(6, row).getContents();//表示形式
+                    dictCode = sheet.getCell(7, row).getContents();//术语范围值
+                    columnName = sheet.getCell(8, row).getContents();//列名
+                    columnType = sheet.getCell(9, row).getContents();//列类型
+                    columnLength = sheet.getCell(10, row).getContents();//列长度
+                    primaryKey = sheet.getCell(11, row).getContents();//主键
+                    nullable = sheet.getCell(12, row).getContents();//可为空
+                    pk=primaryKey.equals("1");
+                    nullAble=nullable.equals("1");
+
+                    //todo：test--测试时备注做区别，方便删除测试，definition变量区别
+                    //definition="测试excel导入";
+
+                    //数据元的校验，一个不通过则全部不保存
+                    if (innerCode==null || innerCode.equals("")){
+                        strErrorMsg = sheetName+"第"+(row+1)+"行内部标识不能为空，请检查！";
+                    }else{
+                        //innerCode要唯一
+                        set.add(innerCode);
+                        if (set.toArray(new String[set.size()]).length != j+1){
+                            //innerCode重复
+                            strErrorMsg = sheetName+"第"+(row+1)+"行内部标识已存在，请检查！";
+                        }
+                    }
+                    if (code==null || code.equals("")){
+                        strErrorMsg = sheetName+"第"+(row+1)+"行数据元编码不能为空，请检查！";
+                    }
+                    if (name==null || name.equals("")){
+                        strErrorMsg = sheetName+"第"+(row+1)+"行数据元名称不能为空，请检查！";
+                    }
+                    if (columnName==null || columnName.equals("")){
+                        strErrorMsg = sheetName+"第"+(row+1)+"行列名不能为空，请检查！";
+                    }
+                    if (pk && nullAble){
+                        strErrorMsg = sheetName+"第"+(row+1)+"行主键不能为空，请检查！";
+                    }
+                    //数据类型与列类型一致 S、L、N、D、DT、T、BY
+                    if ((type.contains("S") && !columnType.contains("VARCHAR")) || (type.equals("D") && !columnType.equals("DATE"))  || (type.equals("DT") && !columnType.equals("DATETIME"))) {
+                        strErrorMsg = sheetName+"第"+(row+1)+"行数据类型与列类型不匹配，请检查！";
+                    }
+                    //关联字典是否已经导入
+                    if (!StringUtils.isEmpty(dictCode)){
+                        dictParams = new HashMap<>();
+                        dictFilters = "code?" + dictCode;
+                        dictParams.put("filters", dictFilters);
+                        dictParams.put("version",versionCode);
+                        dictParams.put("page", 1);
+                        dictParams.put("size", 1);
+                        resultStr = HttpClientUtil.doGet(comUrl + dictUrl, dictParams, username, password);
+                        envelopTemp = getEnvelop(resultStr);
+                        if (envelopTemp.isSuccessFlg()){
+                            dictModelList = (List<DictModel>)getEnvelopList(envelopTemp.getDetailModelList(),new ArrayList<DictModel>(),DictModel.class) ;
+                            dictId = dictModelList.get(0).getId();
+                        }else{
+                            strErrorMsg = sheetName+"第"+(row+1)+"行术语范围值查找不到，请先导入标准字典！";
+                        }
+                    }
+                    if (!StringUtils.isEmpty(strErrorMsg)) {
+                        //数据元校验
+                        envelop.setSuccessFlg(false);
+                        envelop.setErrorMsg(strErrorMsg);
+                        return envelop;
+                    }
+                    //插入数据元信息
+                    metaData.setId(0);//为0内部自增
+                    metaData.setDataSetId(dataSet.getId());
+                    metaData.setCode(code);
+                    metaData.setName(name);
+                    metaData.setInnerCode(innerCode);
+                    metaData.setType(type);
+                    metaData.setDictId(dictId);
+                    metaData.setFormat(format);
+                    metaData.setDefinition(definition);
+                    metaData.setColumnName(columnName);
+                    metaData.setColumnLength(columnLength);
+                    metaData.setColumnType(columnType);
+                    metaData.setPrimaryKey(pk);
+                    metaData.setNullable(nullAble);
+                    metaDataList.add(metaData);
+                }
+                //缓存，后面数据集、数据元批量入库
+                pair = new Pair<>(dataSet,metaDataList);
+                allData.add(pair);
+            }
+            //批量入库
+            for(Pair<DataSetModel,List<MetaDataModel>> pairTemp:allData){
+                saveData = saveData(pair.getKey(),pair.getValue(),versionCode);//保存数据集、数据元信息
+                saveDatas.add(saveData);
+            }
+
+            //关闭
+            rwb.close();
+            inputStream.close();
+            //todo：汇总返回前台展示,saveDatas处理
+            envelop.setObj(saveDatas);
+            envelop.setSuccessFlg(true);
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
+    @RequestMapping("/exportToExcel")
+    //@ResponseBody
+    public void exportToExcel(HttpServletResponse response,String versionCode,String versionName){
+        Envelop envelop = new Envelop();
+        try {
+            String fileName = "标准数据集";
+            String url="";
+            String envelopStr = "";
+            //设置下载
+            response.setContentType("octets/stream");
+            response.setHeader("Content-Disposition", "attachment; filename="
+                    + new String( fileName.getBytes("gb2312"), "ISO8859-1" )+versionName+".xls");
+            OutputStream os = response.getOutputStream();
+            //获取导出数据集
+            Map<String,Object> params = new HashMap<>();
+            url = "/data_sets";
+            params.put("fields","");
+            params.put("filters","");
+            params.put("sorts","+id");
+            params.put("page",1);
+            params.put("size",999);
+            params.put("version",versionCode);
+            envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop dataSetEnvelop = getEnvelop(envelopStr);
+            List<DataSetModel> dataSetModelList = (List<DataSetModel>)getEnvelopList(dataSetEnvelop.getDetailModelList(),new ArrayList<DataSetModel>(),DataSetModel.class) ;
+            //获取导出数据元
+            params = new HashMap<>();
+            url = "/meta_datas";
+            params.put("fields","");
+            String ids="";
+            DataSetModel dataSetModel;
+            for(int i=0;i<dataSetModelList.size();i++){
+                dataSetModel = dataSetModelList.get(i);
+                if(i!=0){
+                    ids+=",";
+                }
+                ids +=dataSetModel.getId();
+            }
+            params.put("filters","dataSetId="+ids);
+            params.put("sorts","+dataSetId");
+            params.put("page",1);
+            params.put("size",9999);
+            params.put("version",versionCode);
+            envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop metaDataEnvelop = getEnvelop(envelopStr);
+            List<MetaDataModel> metaDataList = (List<MetaDataModel>)getEnvelopList(metaDataEnvelop.getDetailModelList(), new ArrayList<MetaDataModel>(), MetaDataModel.class) ;
+
+            //写excel
+            WritableWorkbook wwb = Workbook.createWorkbook(os);
+            int k=0;
+            DataSetModel dataSet=null;
+            MetaDataModel metaData=null;
+            int row=0;
+            for(int i=0;i<dataSetModelList.size();i++){
+                dataSet=dataSetModelList.get(i);
+                //创建Excel工作表 指定名称和位置
+                WritableSheet ws = wwb.createSheet(dataSet.getName(),i);
+                addStaticCell(ws);//添加固定信息，题头等
+                //添加数据集信息
+                addCell(ws,1,0,dataSet.getName());//名称
+                addCell(ws,1,1,dataSet.getCode());//标识
+                addCell(ws,1,2,dataSet.getReferenceCode());//参考
+                addCell(ws,1,3,dataSet.getSummary());//备注
+
+                //添加数据元信息
+                WritableCellFormat wc = new WritableCellFormat();
+                wc.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, Colour.SKY_BLUE);//边框
+                for(int j=0;k<metaDataList.size(); j++,k++){
+                    metaData = (MetaDataModel)metaDataList.get(k);
+                    if (dataSet.getId()!=metaData.getDataSetId()){
+                        break;
+                    }
+                    row=j+5;
+                    addCell(ws,0,row,j+1+"",wc);//序号
+                    addCell(ws,1,row,metaData.getInnerCode(),wc);//内部标识
+                    addCell(ws,2,row,metaData.getCode(),wc);//数据元编码
+                    addCell(ws,3,row,metaData.getName(),wc);//数据元名称
+                    addCell(ws,4,row,metaData.getDefinition(),wc);//数据元定义
+                    addCell(ws,5,row,metaData.getType(),wc);//数据类型
+                    addCell(ws,6,row,metaData.getFormat(),wc);//表示形式
+                    addCell(ws,7,row,metaData.getDictCode(),wc);//术语范围值
+                    addCell(ws,8,row,metaData.getColumnName(),wc);//列名
+                    addCell(ws,9,row,metaData.getColumnType(),wc);//列类型
+                    addCell(ws,10,row,metaData.getColumnLength(),wc);//列长度
+                    addCell(ws,11,row,metaData.isPrimaryKey()?"1":"0",wc);//主键
+                    addCell(ws,12,row,metaData.isNullable()?"1":"0",wc);//可为空
+                }
+            }
+            //写入工作表
+            wwb.write();
+            wwb.close();
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //判断数据集code是否已存在
+    private boolean isExistDataSetCode(String dataSetCode,String versionCode){
+        String url ="/data_set/is_exist/code";
+        Map<String,Object> params = new HashMap<>();
+        params.put("version_code",versionCode);
+        params.put("code",dataSetCode);
+        String _msg = null;
+        try {
+            _msg = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return Boolean.parseBoolean(_msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    //数据集数据元整体入库
+    private Envelop saveData(DataSetModel dataSet,List<MetaDataModel> metaDataList,String versionCode){
+        Envelop ret = new Envelop();
+        String url = "/data_set";
+        Map<String,Object> params = new HashMap<>();
+        params.put("version_code",versionCode);
+        long dataSetId;
+        DataSetModel dataSetModel=null;
+        List<MetaDataModel> metaDataModels = new ArrayList<>();
+        try {
+            //数据集入库
+            String jsonDataNew = toJson(dataSet);
+            params.put("json_data",jsonDataNew);
+            String envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            Envelop envelop = getEnvelop(envelopStrNew);
+            if (envelop.isSuccessFlg()){
+                dataSetModel = getEnvelopModel(envelop.getObj(),DataSetModel.class);
+                dataSetId = dataSetModel.getId();
+                //数据元入库
+                url = "/meta_data";
+                params.remove("version_code");
+                params.put("version",versionCode);
+                if (metaDataList.size()>0){
+                    for (MetaDataModel metaData : metaDataList) {
+                        metaData.setDataSetId(dataSetId);
+                        params.remove("json_data");
+                        params.put("json_data",toJson(metaData));
+                        envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
+                        envelop = getEnvelop(envelopStrNew);
+                        //新增成功后的数据元集合
+                        if (envelop.isSuccessFlg()) {
+                            MetaDataModel metaDataModel = getEnvelopModel(envelop.getObj(),MetaDataModel.class);
+                            metaDataModels.add(metaDataModel);
+                        }
+                    }
+                }
+
+            }
+            //返回信息
+            ret.setSuccessFlg(true);
+            ret.setObj(dataSetModel);
+            ret.setDetailModelList(metaDataModels);
+            return ret;
+        } catch (Exception e) {
+            e.printStackTrace();
+            ret.setSuccessFlg(false);
+            return ret;
+        }
+    }
+    //excel中添加固定内容
+    private void addStaticCell(WritableSheet ws){
+        try {
+            addCell(ws,0,0,"名称");
+            addCell(ws,0,1,"标识");
+            addCell(ws,0,2,"参考");
+            addCell(ws,0,3,"备注");
+            //--------------------
+            WritableFont wfc = new WritableFont(WritableFont.ARIAL,12,WritableFont.NO_BOLD,false,
+                    UnderlineStyle.NO_UNDERLINE,jxl.format.Colour.WHITE);//字体：大小，加粗，颜色
+            WritableCellFormat wcfFC = new WritableCellFormat(wfc);
+            wcfFC.setBackground(jxl.format.Colour.LIGHT_BLUE);//北京色
+            addCell(ws,0,4,"序号",wcfFC);
+            addCell(ws,1,4,"内部标识",wcfFC);
+            addCell(ws,2,4,"数据元编码",wcfFC);
+            addCell(ws,3,4,"数据元名称",wcfFC);
+            addCell(ws,4,4,"数据元定义",wcfFC);
+            addCell(ws,5,4,"数据类型",wcfFC);
+            addCell(ws,6,4,"表示形式",wcfFC);
+            addCell(ws,7,4,"术语范围值",wcfFC);
+            addCell(ws,8,4,"列名",wcfFC);
+            addCell(ws,9,4,"列类型",wcfFC);
+            addCell(ws,10,4,"列长度",wcfFC);
+            addCell(ws,11,4,"主键",wcfFC);
+            addCell(ws,12,4,"可为空",wcfFC);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //添加单元格内容
+    private void addCell(WritableSheet ws,int column,int row,String data){
+        try {
+            Label label = new Label(column,row,data);
+            ws.addCell(label);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //添加单元格内容带样式
+    private void addCell(WritableSheet ws,int column,int row,String data,CellFormat cellFormat){
+        try {
+            Label label = new Label(column,row,data,cellFormat);
+            ws.addCell(label);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

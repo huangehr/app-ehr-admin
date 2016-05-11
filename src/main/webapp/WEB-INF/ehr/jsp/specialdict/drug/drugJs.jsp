@@ -104,9 +104,9 @@
 					$.subscribe('drug:info:open',function(event,id,mode){
 						var title = '';
 						if(mode == 'modify'){
-							title = '修改药品字典项';
+							title = '修改字典项';
 						}else{
-							title = '新增药品字典项'
+							title = '新增字典项'
 						};
 						self.infoDialog = $.ligerDialog.open({
 							height:600,
