@@ -1,6 +1,5 @@
 package com.yihu.ehr.Filter;
 
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -34,18 +33,18 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (httpServletRequest.getSession(false) == null
-                || httpServletRequest.getSession().getAttribute(SessionAttributeKeys.CurrentUser)==null) {
-
-            // AJAX REQUEST PROCESS
-            if ("XMLHttpRequest".equalsIgnoreCase(httpServletRequest.getHeader("X-Requested-With"))) {
-                httpServletResponse.setHeader("sessionStatus", "timeOut");
-                httpServletResponse.getWriter().print("{}");
-                return;
-            }
-            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/time_out");
-            return;
-        }
+//        if (httpServletRequest.getSession(false) == null
+//                || httpServletRequest.getSession().getAttribute(SessionAttributeKeys.CurrentUser)==null) {
+//
+//            // AJAX REQUEST PROCESS
+//            if ("XMLHttpRequest".equalsIgnoreCase(httpServletRequest.getHeader("X-Requested-With"))) {
+//                httpServletResponse.setHeader("sessionStatus", "timeOut");
+//                httpServletResponse.getWriter().print("{}");
+//                return;
+//            }
+//            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/time_out");
+//            return;
+//        }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 

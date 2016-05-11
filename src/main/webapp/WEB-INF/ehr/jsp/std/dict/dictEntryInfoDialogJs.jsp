@@ -27,14 +27,18 @@
 
             init: function () {
                 var staged = '${staged}';
-
+                this.initForm();
+                this.bindEvents();
                 if(staged=='false')
                 {
                     $("#btn_entry_save").hide();
+                    $("#div_dictentry_info_form input").attr("disabled","disabled");
+                    $("#div_dictentry_info_form select").attr("disabled","disabled");
+                    $("#inp_dictentry_desc").attr("disabled","disabled");
+                    $("#div_dictentry_info_form .l-trigger-cancel").remove();
+                    $("#div_dictentry_info_form .l-text-trigger-cancel").remove();
+                    $("#div_dictentry_info_form .l-trigger").css("display","none");
                 }
-
-                this.initForm();
-                this.bindEvents();
             },
             initForm: function () {
                 this.$value.ligerTextBox({width:240,validate:{required:true }});

@@ -1,6 +1,7 @@
 package com.yihu.ehr.adapter.controller;
 
 import com.yihu.ehr.adapter.service.ExtendService;
+import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -252,7 +253,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
     public Envelop systemError(){
 
-        return faild(ErrorCode.SystemError.toString());
+        return faild("系统错误！");
     }
 
     public Envelop pramsError(){
@@ -309,5 +310,14 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
         }
         rs.setDetailModelList(ls);
         return rs;
+    }
+
+    public EnvelopExt getEnvelopExt(String json){
+        try {
+            return objectMapper.readValue(json, service.getExtTypeReference());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

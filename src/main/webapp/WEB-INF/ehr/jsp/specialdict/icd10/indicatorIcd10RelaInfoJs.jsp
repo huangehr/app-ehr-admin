@@ -132,7 +132,7 @@
 
 					//新增关联对话框
 					$('#btn_relation_new').click(function(){
-						var title = '新增指标字典关联';
+						var title = '指标字典';
 						masters.createRelationDialog = $.ligerDialog.open({
 							height:500,
 							width:700,
@@ -145,11 +145,6 @@
 							opener: true,
 							load:true
 						});
-					});
-
-					//确认按钮点击事件关闭关联字典会话框
-					$('#btn_include_close').click(function(){
-						win.closeIcd10RelationInfoDialog();
 					});
 				}
 			};

@@ -101,7 +101,8 @@ public class OrgAdapterPlanController extends ExtendController<OrgAdapterPlanSer
             String url = "/version/versions";
             PageParms pageParms = new PageParms()
                     .addGroupNotNull("version", PageParms.LIKE, searchNm, "g1")
-                    .addGroupNotNull("versionName", PageParms.LIKE, searchNm, "g1");
+                    .addGroupNotNull("versionName", PageParms.LIKE, searchNm, "g1")
+                    .setSorts("-commitTime");
             if(!StringUtils.isEmpty(isPublic))
                 pageParms.addEqual("inStage", false);
 

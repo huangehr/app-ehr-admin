@@ -20,10 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yww on 2016/4/15.
@@ -54,15 +51,15 @@ public class Icd10Controller extends BaseUIController {
         model.addAttribute("contentPage","specialdict/icd10/icd10InfoDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
-            try{
-                if (!StringUtils.isEmpty(id)) {
-                    String url = "/dict/icd10/" + id;
-                    envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
-                }
-                model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
-            }catch (Exception ex){
-                LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
+        try{
+            if (!StringUtils.isEmpty(id)) {
+                String url = "/dict/icd10/" + id;
+                envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
             }
+            model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
+        }catch (Exception ex){
+            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
+        }
         return "simpleView";
     }
 
@@ -109,6 +106,7 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/deletes")
     @ResponseBody
+    //根据ids删除icd10疾病字典(含与药品及指标的关联关系，同时删除关联的诊断)
     public Object deleteIcd10Dicts(String ids){
         String url = "/dict/icd10s";
         String envelopStr = "";

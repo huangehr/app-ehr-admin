@@ -62,9 +62,9 @@
 							{display:'id',name:'id',hide:true},
 							{display:'传染病',name:'infectiousFlag',hide:true},
 							{display:'慢病',name:'chronicFlag',hide:true},
-							{display: '疾病编码', name: 'code', width: '30%', align: 'left'},
-							{display: '疾病名称', name: 'name', width: '30%',align:'left'},
-							{display: '标志', name: '', width: '10%', align: 'center',render:function(row){
+							{display: '诊断编码', name: 'code', width: '30%', align: 'left'},
+							{display: '诊断名称', name: 'name', width: '30%',align:'left'},
+							{display: '标志', name: '', width: '15%', align: 'center',render:function(row){
 								var text1 = '';
 								var text2 = '';
 								if(row.infectiousFlag == '1'){text1 = '传染病';}
@@ -74,11 +74,10 @@
 								}
 								return text1+text2;
 							}},
-							{display: '数据关联', name: '', width: '20%', align: 'center',
+							{display: '数据关联', name: '', width: '15%', align: 'center',
 								render:function(row){
 									var html = '<a class="label_a" style="margin-left:0px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "indicatorIcd10:grid:open", row.id) + '">指标</a>' +
-											' / <a class="label_a" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "drugIcd10:grid:open", row.id) + '">药品</a>'+
-											' / <a class="label_a" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "diagnoseIcd10:grid:open", row.id) + '">诊断</a>';
+											' / <a class="label_a" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "drugIcd10:grid:open", row.id) + '">药品</a>';
 									return html;
 								}
 							},
@@ -118,12 +117,12 @@
 					$.subscribe('icd10:info:open',function(event,id,mode){
 						var title = '';
 						if(mode == 'modify'){
-							title = '修改ICD10字典';
+							title = '修改字典项';
 						}else{
-							title = '新增ICD10字典'
+							title = '新增字典项'
 						};
 						self.infoDialog = $.ligerDialog.open({
-							height:600,
+							height:400,
 							width:500,
 							title:title,
 							url:'${contextRoot}/specialdict/icd10/dialog/icd10Info',
@@ -172,7 +171,7 @@
 
 					//关联指标字典事件
 					$.subscribe('indicatorIcd10:grid:open',function(event,id){
-						var title = '已关联指标字典';
+						var title = '关联指标';
 						self.icd10RelationInfoDialog = $.ligerDialog.open({
 							height:500,
 							width:700,
@@ -189,7 +188,7 @@
 
 					//关联药品字典事件
 					$.subscribe('drugIcd10:grid:open',function(event,id){
-						var title = '已关联药品字典';
+						var title = '关联药品';
 						self.icd10RelationInfoDialog = $.ligerDialog.open({
 							height:500,
 							width:700,
@@ -197,23 +196,6 @@
 							url:'${contextRoot}/specialdict/icd10/drugRelaInfo/initial',
 							urlParms:{
 								id:id,
-							},
-							isHidden: false,
-							opener: true,
-							load:true
-						});
-					});
-
-					//TODO 关联诊断题事件
-					$.subscribe('diagnoseIcd10:grid:open',function(event,id){
-						var title = '已关联诊断字典';
-						self.icd10RelationInfoDialog = $.ligerDialog.open({
-							height:500,
-							width:700,
-							title:title,
-							url:'${contextRoot}/specialdict/icd10/diagnoseRelaInfo/initial',
-							urlParms:{
-								id:id
 							},
 							isHidden: false,
 							opener: true,
