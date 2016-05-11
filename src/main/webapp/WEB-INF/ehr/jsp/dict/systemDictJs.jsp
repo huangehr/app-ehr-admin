@@ -25,7 +25,8 @@
             var updateSystemDictEntityDialog = null;
 
             var code = null;
-
+            var selectRow = null, selectEntityRow=null;
+            var isSaveSelectStatus = false, isSaveEntitySelectStatus = false;
             /* ************************** 变量定义结束 **************************** */
 
             /* *************************** 函数定义 ******************************* */
@@ -33,6 +34,7 @@
                 resizeContent();
                 retrieve.init();
                 master.initSystemDict();
+                master.initSystemDictEntity(-1);
                 master.initSystemDictForm();
             }
             function resizeContent(){
@@ -56,7 +58,7 @@
                     this.$searchBox.ligerTextBox({
                         width: 240, isSearch: true, search: function () {
                             var searchNm = $("#inp_search").val();
-                            master.searchSystemDict(searchNm);
+                            master.searchSystemDict(searchNm, 1);
                         }
                     });
                 }
@@ -126,11 +128,16 @@
                         validate: true,
                         unSetValidateAttr: false,
                         onSelectRow: function (data, rowindex, rowobj) {
-                            master.initSystemDictEntity(data.id);
+                            selectRow = data;
+                            master.searchSystemDictEntity(data.id, 1);
                             master.$systemDictId.val(data.id);
                         },
                         onAfterShowData: function () {
-                            systemDictInfoGrid.select(0);
+                            if(selectRow!=null && isSaveSelectStatus){
+                                isSaveSelectStatus = false;
+                                systemDictInfoGrid.select(selectRow);
+                            }else
+                                systemDictInfoGrid.select(0);
                         }
 
                     }));
@@ -139,15 +146,19 @@
                     this.bindEvents();
                 },
                 // 重新查询
-                searchSystemDict: function (searchNm) {
-                    if (systemDictEntryInfoGrid!=null){
-                        //debugger;//todo 清空字典项
+                searchSystemDict: function (searchNm, curPage) {
+                    if (systemDictEntryInfoGrid==null)
                         master.initSystemDictEntity(-1);
-                    }
-                    systemDictInfoGrid.setOptions({parms: {searchNm: searchNm},newPage:1});
-                    systemDictInfoGrid.loadData(true);
+
+                    Util.reloadGrid.call(systemDictInfoGrid, "", {searchNm: searchNm}, curPage);
                 },
 
+                searchSystemDictEntity: function (dictId, curPage) {
+                    if (systemDictEntryInfoGrid==null)
+                        master.initSystemDictEntity(dictId);
+
+                    Util.reloadGrid.call(systemDictEntryInfoGrid, "",  {dictId: dictId}, curPage);
+                },
                 initSystemDictEntity: function (dictId) {
                     systemDictEntryInfoGrid = $("#div_systemEntity_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/dict/searchDictEntryList',
@@ -170,6 +181,15 @@
                             }
                             }
                         ],
+                        onSelectRow: function (data, rowindex, rowobj) {
+                            selectEntityRow = data;
+                        },
+                        onAfterShowData: function () {
+                            if(selectEntityRow!=null && isSaveEntitySelectStatus){
+                                isSaveEntitySelectStatus = false;
+                                systemDictEntryInfoGrid.select(selectEntityRow);
+                            }
+                        },
                         allowHideColumn:false,
                         validate: true
                     }));
@@ -201,6 +221,7 @@
 
                     //修改系统字典弹出窗口点击事件
                     $.subscribe('systemDict:systemInfoModifyDialog:update', function (event, systemDictId, systemDictName) {
+                        isSaveSelectStatus = true;
                         self.$systemDictName.val(systemDictName);
                         self.$systemDictId.val(systemDictId);
                         self.$systemNameCopy.val(systemDictName);
@@ -218,6 +239,7 @@
 
                     //修改系统字典 详情 弹出窗口点击事件
                     $.subscribe('systemDictEntity:systemDictEntityInfoModifyDialog:update', function (event, code, value, sort, catalog) {
+                        isSaveEntitySelectStatus = true;
                         self.$updateSystemDictEntityCode.val(code);
                         self.$updateSystemDictEntityValue.val(value);
                         self.$updateSystemDictEntitySort.val(sort);
@@ -324,8 +346,7 @@
                                 success: function (data) {
                                     if (data.successFlg) {
                                         $.Notice.success('保存成功');
-                                        //self.searchSystemDict();
-                                        master.initSystemDictEntity(master.$systemDictId.val());
+                                        master.searchSystemDictEntity(master.$systemDictId.val());
                                     } else {
                                         $.Notice.error(data.errorMsg);
                                     }
@@ -361,8 +382,7 @@
                                 success: function (data) {
                                     if (data.successFlg) {
                                         $.Notice.success('更新成功');
-                                        //self.searchSystemDict();
-                                        master.initSystemDictEntity(master.$systemDictId.val());
+                                        master.searchSystemDictEntity(master.$systemDictId.val());
                                     } else {
                                         $.Notice.error('更新失败');
                                     }
@@ -390,9 +410,9 @@
                                     if (data.successFlg) {
                                         $.Notice.success('删除成功');
                                         if (type=='Dict') {
-                                            self.searchSystemDict();
+                                            self.searchSystemDict("", Util.checkCurPage.call(systemDictInfoGrid, 1));
                                         }else if (type=='DictEntry') {
-                                            master.initSystemDictEntity(master.$systemDictId.val());
+                                            master.searchSystemDictEntity(master.$systemDictId.val(), Util.checkCurPage.call(systemDictEntryInfoGrid, 1));
                                         }
 
                                     } else {

@@ -1,7 +1,8 @@
 /**
  * Created by AndyCai on 2015/11/19.
- */ var cda = {};
-
+ */
+var cda = {};
+var Util = $.Util;
 cda.list = {
     _url: $("#hd_url").val(),
     _dialog: null,
@@ -51,14 +52,14 @@ cda.list = {
         this.cdaSearch = $("#searchNm").ligerTextBox({
             width: 240, isSearch: true, search: function () {
                 // var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-                cda.list.getCDAList();
+                cda.list.getCDAList(1);
             }
         });
         $("#searchNm").keyup(function (e) {
 
             if (e.keyCode == 13) {
                 //var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-                cda.list.getCDAList();
+                cda.list.getCDAList(1);
             }
         });
 
@@ -86,7 +87,6 @@ cda.list = {
         $("#div_left_tree").mCustomScrollbar({theme: "minimal-dark", axis: "yx"});
     },
     getStagedByValue: function () {
-        //debugger;
         var _value = $("#cdaVersion").ligerGetComboBoxManager().getValue();
         if (!_value && _value == "") return false;
         var data = $("#cdaVersion").ligerComboBox().data;
@@ -142,7 +142,7 @@ cda.list = {
                         u.versionStage = u.getStagedByValue();
                         var typeid = $("#hdType").val();
                         if (!$.Util.isStrEmpty(typeid)) {
-                            cda.list.getCDAList();
+                            cda.list.getCDAList(1);
                         }
                         cda.list.getTypeTree();
                     }
@@ -155,7 +155,7 @@ cda.list = {
             }
         });
     },
-    getCDAList: function () {
+    getCDAList: function (curPage) {
         var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
 
         var typeid = $("#hdType").val();
@@ -191,7 +191,7 @@ cda.list = {
         }
         else {
             u.grid.set({
-                url: u._url + "/cda/GetCdaListByKey",
+                //url: u._url + "/cda/GetCdaListByKey",
                 // 传给服务器的ajax 参数
                 parms: {
                     strKey: u.cdaSearch.getValue(),
@@ -199,8 +199,9 @@ cda.list = {
                     strType: typeid
                 }
             });
-            u.grid.options.newPage = 1;
-            // u.grid.options.pageSize = 15;
+            if(curPage)
+                u.grid.options.newPage = curPage;
+
             u.grid.reload();
         }
     },
@@ -227,7 +228,7 @@ cda.list = {
                 var id = data.data.id;
                 $("#hdType").val(id);
                 $("#hdTypeName").val(data.data.name);
-                cda.list.getCDAList();
+                cda.list.getCDAList(1);
             },
             onSuccess: function (data) {
                 var cdaTypes = data
@@ -236,7 +237,7 @@ cda.list = {
                     $("#div_typeTree").css({});
                     var id = data[0].id;
                     $("#hdType").val(id);
-                    cda.list.getCDAList();
+                    cda.list.getCDAList(1);
                     //$(".l-body").removeClass("l-selected");
                     $("#" + id + " div:first").addClass("l-selected");
                 }
@@ -344,8 +345,7 @@ cda.list = {
                             var _res = eval(data);
                             if (_res.successFlg) {
                                 $.Notice.success("删除成功!");
-
-                                cda.list.getCDAList();
+                                cda.list.getCDAList(Util.checkCurPage.call(cda.list.grid, ids.split(',').length));
                             }
                             else {
                                 $.Notice.error(_res.errorMsg);
@@ -564,8 +564,6 @@ cda.attr = {
         var dataJson = eval("[" + cda.attr.cda_form.Fields.toJsonString() + "]");
         dataJson[0]["versionCode"] = versionCode;
         dataJson[0]["id"] = id;
-        debugger
-        //dataJson[0]["user"] = user_id;
 
         $.ajax({
             url: cda.list._url + "/cda/SaveCdaInfo",
@@ -597,7 +595,6 @@ cda.attr = {
         u.relationIds = "";
         for (var i = 0; i < u.top.list_dataset_storage.length; i++) {
             var datasets = u.top.list_dataset_storage[i];
-            debugger
             if (i == 0) {
                 u.relationIds += datasets.id;
             } else {

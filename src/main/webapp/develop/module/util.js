@@ -411,7 +411,24 @@
                     }
                     outTimes++;
                 }
+            },
+            //add by lincl start, 2016-5-10
+            checkCurPage: function (delRowLen) {
+                var opts = this.options;
+                if(opts.page != 1 && opts.page == opts.pageCount
+                    && (((opts.total-1) % opts.pageSize) + 1 - delRowLen) <= 0){
+                    return opts.pageCount - 1;
+                }
+                return undefined;
+            },
+            reloadGrid: function(url, params, curPage){
+                if(curPage)
+                    this.options.newPage = curPage;
+
+                this.setOptions({parms: params});
+                this.loadData(true);
             }
+            //add by lincl end, 2016-5-10
         }
     });
 })(jQuery, window);
