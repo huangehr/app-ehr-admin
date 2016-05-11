@@ -162,7 +162,7 @@
 					id: 101,
 					pid: 29,
 					level:4,
-					text: 'ICD10',
+					text: '诊断字典',
 					url: '${contextRoot}/specialdict/icd10/initial'
 				},
 				{
@@ -183,7 +183,7 @@
 					id: 104,
 					pid: 29,
 					level:4,
-					text: '健康问题字典',
+					text: '疾病字典',
 					url: '${contextRoot}/specialdict/hp/initial'
 				},
 

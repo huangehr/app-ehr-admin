@@ -102,9 +102,9 @@
 					$.subscribe('indicator:info:open',function(event,id,mode){
 						var title = '';
 						if(mode == 'modify'){
-							title = '修改指标字典项';
+							title = '修改字典项';
 						}else{
-							title = '新增指标字典项'
+							title = '新增字典项'
 						};
 						self.infoDialog = $.ligerDialog.open({
 							height:600,

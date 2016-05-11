@@ -131,6 +131,7 @@ set.list = {
             //调通测试暂时使用
             url: u._url + "/cdaVersion/getVersionList",
             type: "post",
+            async:false,
             dataType: "json",
             data: {page: "1", rows: "100"},
             success: function (data) {
@@ -504,13 +505,13 @@ set.attr = {
         var setId = $.Util.getUrlQueryString('id');
         $("#hdId").val(setId);
         var staged = $.Util.getUrlQueryString('staged');
+        this.getStandardSource();
+        this.event();
         if(staged=='false')
         {
             console.log(staged);
             $("#btn_save").hide();
         }
-        this.getStandardSource();
-        this.event();
     },
     //加载标准来源下拉框
     getStandardSource: function () {
@@ -525,6 +526,7 @@ set.attr = {
             url: u._url + "/standardsource/getStdSourceList",
             type: "post",
             dataType: "json",
+            async:false,
            // data: {strVersionCode: cdaVersion},
             //data: {version: cdaVersion},
             success: function (data) {
@@ -640,7 +642,9 @@ set.attr = {
         $("#btn_close").click(function () {
             parent.set.list.top.dialog_set_detail.close();
         });
-    }
+    },
+    set_form_input: $("#div_set_info_form input"),
+    set_form_select: $("#div_set_info_form select")
 };
 
 set.elementAttr = {
@@ -671,6 +675,7 @@ set.elementAttr = {
             grid: getGridOptions(true),
             valueField: 'id',
             textField: 'name',
+            async:false,
             width : 230,
             selectBoxHeight : 260,
             //selectBoxWidth: 400,
@@ -749,6 +754,7 @@ set.elementAttr = {
             url: set.list._url + "/std/dataset/getMetaData",
             type: "post",
             dataType: "json",
+            async:false,
             data: {dataSetId: dataSetId, metaDataId: metaDataId, version: version},
             async: true,
             success: function (data) {
@@ -907,7 +913,9 @@ set.elementAttr = {
             }
         });
         return result;
-    }
+    },
+    element_form_input: $("#div_element_info_form input"),
+    element_form_select: $("#div_element_info_form select")
 };
 
 //todo:待完善

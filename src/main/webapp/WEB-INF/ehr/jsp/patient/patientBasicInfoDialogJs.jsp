@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script type="text/javascript" src="${staticRoot}/Scripts/homeRelationship.js"></script>
 <script>
     (function ($, win) {
 
@@ -62,7 +63,7 @@
                 $("#div_patient_info_form").hide();
                 $("#div_card_info").hide();
                 $("#div_archive_info").hide();
-                $.get("${contextRoot}/home_relation/home_relationship",function(data){
+                $.get("${contextRoot}/home_relation/home_relationship?id="+$("#inp_idCardNo").val(),function(data){
                     $("#div_home_relation").html(data);
                     home.list.event();
                 });
