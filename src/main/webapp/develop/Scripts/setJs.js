@@ -465,6 +465,35 @@ set.list = {
                 set.list.deleteElement(ids);
             }
         });
+        var uploader = $("#div_upload").webupload({
+            server: set.list._url+"/std/dataset/importFromExcel",
+            pick: {id: '#div_file_picker'},
+            accept: {
+                title: 'Excel',
+                extensions: 'xls,xlsx',
+                mimeTypes: '.xls,.xlsx'
+            },
+            auto: true
+        });
+        uploader.on('beforeSend',function( file, data ) {
+            var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
+            data.versionCode = versionCode;
+        });
+        uploader.on('uploadSuccess', function (file, resp) {
+            debugger;
+            if (!resp.successFlg) {
+
+                $.Notice.error(resp.errorMsg);
+            }else{
+                //导入成功，展示
+                //resp.obj;
+            }
+        });
+        $("#div_file_export").click(function(){
+            var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
+            var versionName = $("#cdaVersion").ligerGetComboBoxManager().getText();
+            window.open(set.list._url + "/std/dataset/exportToExcel?versionCode="+versionCode+"&versionName="+versionName,"标准数据集导出");
+        });
     }
 };
 
@@ -887,4 +916,80 @@ set.elementAttr = {
     },
     element_form_input: $("#div_element_info_form input"),
     element_form_select: $("#div_element_info_form select")
+};
+
+//todo:待完善
+set.excel = {
+    excelForm : $("#div_excel_form"),
+    saveBtn:$("#div_save_btn"),
+    cancelBtn:$("#div_cancel_btn"),
+    init:function(){
+        var model = $("#model").val();
+        var version = $("#version").val();
+        var url=u._url+"/std/dataset/";
+        var columns;
+        if (model=="import"){
+            url+="importData";
+            columns = [
+                {display: '内部标识符', name: 'innerCode', align: 'left', width: '15%'},
+                {display: '数据元编码', name: 'code', align: 'left', width: '15%'},
+                {display: '数据元名称', name: 'name', align: 'left', width: '25%'},
+                {display: '列类型', name: 'columnType', align: 'left', width: '10%'},
+                {display: '检验字典', name: 'dictName', align: 'left', width: '20%'},
+                {
+                    display: '操作', width: '15%', isSort: false, render: function (rowdata, rowindex, value) {
+                    //var html = "<div class='grid_edit' style='' title='' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></div> " +
+                    //    "<div class='grid_delete' style='' title='' onclick='set.list.deleteElement(\"" + rowdata.id + "\")'></div>";
+                    var html = "<a class='grid_edit' href='#' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></a>" +
+                        "<a class='grid_delete' href='#' onclick='set.list.deleteElement(\"" + rowdata.id + "\")'></a>";
+                    return html;
+                }
+                }
+            ];
+        }else if(model=="export"){
+            url+="exportData";
+            columns = [
+                {display: '内部标识符', name: 'innerCode', align: 'left', width: '15%'},
+                {display: '数据元编码', name: 'code', align: 'left', width: '15%'},
+                {display: '数据元名称', name: 'name', align: 'left', width: '25%'},
+                {display: '列类型', name: 'columnType', align: 'left', width: '10%'},
+                {display: '检验字典', name: 'dictName', align: 'left', width: '20%'},
+                {
+                    display: '操作', width: '15%', isSort: false, render: function (rowdata, rowindex, value) {
+                    //var html = "<div class='grid_edit' style='' title='' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></div> " +
+                    //    "<div class='grid_delete' style='' title='' onclick='set.list.deleteElement(\"" + rowdata.id + "\")'></div>";
+                    var html = "<a class='grid_edit' href='#' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></a>" +
+                        "<a class='grid_delete' href='#' onclick='set.list.deleteElement(\"" + rowdata.id + "\")'></a>";
+                    return html;
+                }
+                }
+            ];
+        }
+        var excelGrid = this.excelForm.ligerGrid($.LigerGridEx.config({
+            url: url,
+            // 传给服务器的ajax 参数
+            parms: {version: version},
+            columns: columns,
+            //pageSizeOptions: [10, 15, 20, 30, 40, 50],
+            //pageSize: 20,
+            //rownumbers: true,
+            selectRowButtonOnly: false,
+            unSetValidateAttr: false,
+            allowHideColumn: false,
+            checkbox: true,
+            usePager: true
+        }));
+        // 自适应宽度
+        excelGrid.adjustToWidth();
+
+        this.event();
+    },
+    event: function () {
+        this.saveBtn.click(function(){
+
+        });
+        this.cancelBtn.click(function(){
+
+        });
+    }
 };
