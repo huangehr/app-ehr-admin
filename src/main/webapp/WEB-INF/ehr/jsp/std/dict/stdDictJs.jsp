@@ -60,6 +60,7 @@
                 init: function () {
                     this.initDDL(this.$stdDictVersion);
                     this.$element.show();
+                    this.event();
                 },
                 initDDL: function (target) {
                     var dataModel = $.DataModel.init();
@@ -80,6 +81,38 @@
                             manager.selectItemByIndex(0);
 
                         }
+                    });
+                },
+                event:function(){
+                    var uploader = $("#div_upload").webupload({
+                        server: "${contextRoot}/cdadict/importFromExcel",
+                        pick: {id: '#div_file_picker'},
+                        accept: {
+                            title: 'Excel',
+                            extensions: 'xls,xlsx',
+                            mimeTypes: '.xls,.xlsx'
+                        },
+                        auto: true
+                    });
+                    uploader.on('beforeSend',function( file, data ) {
+                        debugger;
+                        var versionCode = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
+                        data.versionCode = versionCode;
+                    });
+                    uploader.on('uploadSuccess', function (file, resp) {
+                        debugger;
+                        if (!resp.successFlg) {
+
+                            $.Notice.error(resp.errorMsg);
+                        }else{
+                            //导入成功，展示
+                            //resp.obj;
+                        }
+                    });
+                    $("#div_file_export").click(function(){
+                        var versionCode = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
+                        var versionName = $("#stdDictVersion").ligerGetComboBoxManager().getText();
+                        window.open("${contextRoot}/cdadict/exportToExcel?versionCode="+versionCode+"&versionName="+versionName,"标准字典导出");
                     });
                 }
             };
