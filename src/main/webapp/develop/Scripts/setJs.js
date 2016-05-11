@@ -479,11 +479,19 @@ set.list = {
             data.versionCode = versionCode;
         });
         uploader.on('uploadSuccess', function (file, resp) {
+            debugger;
             if (!resp.successFlg) {
+
+                $.Notice.error(resp.errorMsg);
             }else{
                 //导入成功，展示
-                resp.obj;
+                //resp.obj;
             }
+        });
+        $("#div_file_export").click(function(){
+            var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
+            var versionName = $("#cdaVersion").ligerGetComboBoxManager().getText();
+            window.open(set.list._url + "/std/dataset/exportToExcel?versionCode="+versionCode+"&versionName="+versionName,"标准数据集导出");
         });
     }
 };
