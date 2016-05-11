@@ -36,7 +36,7 @@ home.list={
             columns: [
                 {display: '姓名', name: 'name', align: 'left'},
                 {display: '年龄', name: 'age', align: 'left'},
-                {display: '关系', name: 'relationshipName', align: 'left'},
+                {display: '关系', name: 'relationShipName', align: 'left'},
                 {display: '关联时间', name: 'relationTime', align: 'left'}
             ],
             pageSizeOptions: [10, 15, 20, 30, 40, 50],
@@ -71,7 +71,7 @@ home.list={
             async: true,
             columns: [
                 {display: '户主', name: 'name', align: 'left'},
-                {display: '关系', name: 'relationshipName', align: 'left'},
+                {display: '关系', name: 'relationShipName', align: 'left'},
                 {display: '关联时间', name: 'createTime', align: 'left'}
             ],
             pageSizeOptions: [10, 15, 20, 30, 40, 50],
