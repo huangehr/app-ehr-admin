@@ -18,6 +18,7 @@
             var retrieve = null;
             var master = null;
             var dataModel = '${dataModel}';
+            var staged;
             try{
                 dataModel = eval('(' + dataModel + ')');
             }catch(e){
@@ -70,7 +71,15 @@
                                 valueField: 'version',
                                 textField: 'versionName',
                                 data: [].concat(data.detailModelList),
-                                onSelected:function(){
+                                onSelected:function(data){
+                                    var versionDatas = $("#inp_searchVersion").ligerComboBox().data
+                                    for(var i = 0;i<versionDatas.length;i++){
+                                        if(Util.isStrEquals(versionDatas[i].version,data)){
+
+                                            staged = versionDatas[i].inStage;
+                                            debugger
+                                        }
+                                    }
                                     master.reloadGrid();
                                 }
                             });
@@ -180,7 +189,7 @@
                             height:370,
                             width: 450,
                             title : title,
-                            url: urls.gotoModify,
+                            url: urls.gotoModify+"?staged="+staged,
                             urlParms: urlParms,
                             isHidden: false,
                             opener: true,
