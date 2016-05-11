@@ -52,7 +52,7 @@
                         if (data.successFlg) {
                             $.Notice.success('操作成功！');
                             //重新刷新Grid
-                            master.reloadGrid();
+                            master.reloadGrid(Util.checkCurPage.call(adapterGrid, id.split(',').length));
                         } else {
                             $.Notice.error(data.errorMsg);
                         }
@@ -208,12 +208,9 @@
                     // 自适应宽度
                     adapterGrid.adjustToWidth();
                 },
-                reloadGrid: function () {
+                reloadGrid: function (curPage) {
                     var values = this.formatParms(retrieve.$element.Fields.getValues());
-//                    adapterGrid.options.newPage = 1;
-                    adapterGrid.setOptions({parms: $.extend({}, values)});
-                    //重新查询
-                    adapterGrid.loadData(true);
+                    Util.reloadGrid.call(adapterGrid, "", values, curPage);
                 },
                 formatParms: function (values) {
                     var filters = "";
@@ -240,8 +237,7 @@
                     var self = this;
                     //搜索适配方案
                     retrieve.$searchBtn.click(function () {
-                        adapterGrid.options.newPage = 1;
-                        self.reloadGrid();
+                        self.reloadGrid(1);
                     });
                     //新增适配方案
                     retrieve.$addBtn.click(function () {

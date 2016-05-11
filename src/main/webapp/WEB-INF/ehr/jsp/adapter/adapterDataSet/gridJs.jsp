@@ -101,6 +101,7 @@
             changeFlag=true;
 			  conditionArea.$btn_switch_dataSet.addClass('btn-primary');
 			  conditionArea.$btn_switch_dict.removeClass('btn-primary');
+            master.grid.options.newPage = 1;
             master.reloadGrid();
           });
 
@@ -113,6 +114,7 @@
             changeFlag=true;
 			  conditionArea.$btn_switch_dataSet.removeClass('btn-primary');
 			  conditionArea.$btn_switch_dict.addClass('btn-primary');
+            master.grid.options.newPage = 1;
             master.reloadGrid();
           })
         }
@@ -159,6 +161,7 @@
               this.select(0);
             },
             onSelectRow: function(row){
+              entryMater.grid.options.newPage = 1;
               entryMater.reloadGrid();
             }
           }));

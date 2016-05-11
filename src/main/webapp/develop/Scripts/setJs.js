@@ -1,9 +1,13 @@
 /**
  * Created by AndyCai on 2015/11/25.
  */
+
+var Util = $.Util;
 var set = {};
 set.list = {
     _url: $("#hd_url").val(),
+
+    isReload: false,
     top: null,
     grid: null,
     elementGrid: null,
@@ -12,6 +16,7 @@ set.list = {
     setSearch: null,
     elementSearch: null,
     selectObj: null,
+    isSaveSelectStatus: false,
     versionStage:null,
     init: function () {
         this.top = $.Util.getTopWindowDOM();
@@ -48,18 +53,14 @@ set.list = {
 
         this.setSearch = $("#searchNm").ligerTextBox({
             width: 240, isSearch: true, search: function () {
-                set.list.selectObj = null;
                 var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-                set.list.grid.options.newPage = 1;
-                set.list.getSetList(versionCode);
+                set.list.getSetList(versionCode, 1);
             }
         });
         $("#searchNm").keyup(function (e) {
             if (e.keyCode == 13) {
-                set.list.selectObj = null;
                 var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-                set.list.grid.options.newPage = 1;
-                set.list.getSetList(versionCode);
+                set.list.getSetList(versionCode, 1);
             }
         });
 
@@ -67,16 +68,14 @@ set.list = {
             width: 240, isSearch: true, search: function () {
                 var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
                 var setid = $("#hdId").val();
-                set.list.elementGrid.options.newPage = 1;
-                set.list.getElementList(versionCode, setid);
+                set.list.getElementList(versionCode, setid, 1);
             }
         });
         $("#searchNmEntry").keyup(function (e) {
             if (e.keyCode == 13) {
                 var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
                 var setid = $("#hdId").val();
-                set.list.elementGrid.options.newPage = 1;
-                set.list.getElementList(versionCode, setid);
+                set.list.getElementList(versionCode, setid, 1);
             }
         });
 
@@ -94,7 +93,6 @@ set.list = {
     },
     getStagedByValue:function()
     {
-        //debugger;
         var _value = $("#cdaVersion").ligerGetComboBoxManager().getValue();
         if (!_value && _value == "") return false;
         var data = $("#cdaVersion").ligerComboBox().data;
@@ -137,14 +135,9 @@ set.list = {
             success: function (data) {
                 var envelop = eval(data);
                 var result = envelop.detailModelList;
-                //var result = eval(data.result);
                 var option = [];
                 for (var i = 0; i < result.length; i++) {
-                    //var version = result[i].version;
-                    //var versionArr = version.split(",");
                     option.push({
-                        //text: versionArr[1],
-                        //id: versionArr[0]
                         text: result[i].versionName,
                         id: result[i].version,
                         inStage:result[i].inStage
@@ -154,7 +147,7 @@ set.list = {
                     data: option,
                     onSelected: function (value, text) {
                         u.versionStage = u.getStagedByValue();
-                        set.list.getSetList(value);
+                        set.list.getSetList(value, 1);
                     }
                 });
                 var manager = $("#cdaVersion").ligerGetComboBoxManager();
@@ -163,7 +156,7 @@ set.list = {
         });
     },
     //获取列表
-    getSetList: function (versionCode) {
+    getSetList: function (versionCode, curPage) {
         var u = set.list;
         $.ajax({
             type: "get",
@@ -180,16 +173,15 @@ set.list = {
                 var resultData = eval(data);
                 //if (data != null) {
                 if (resultData.successFlg) {
-
-                        var _result = data.detailModelList;
+                    var _result = data.detailModelList;
                     for (var i = 0; i < _result.length; i++) {
                         u.enableData.push(_result[i]);
                     }
                     if (u.elementGrid != null && u.enableData.length == 0) {
-                        u.getElementList(versionCode, "");
+                        u.getElementList(versionCode, "", 1);
                     }
                 }
-                u.setUserList();
+                u.setUserList(curPage);
 
             },
             complete: function () {
@@ -197,7 +189,7 @@ set.list = {
         });
     },
     //获取数据
-    setUserList: function () {
+    setUserList: function (curPage) {
         var u = set.list;
         var dataJson = [];
         //根据下拉框加载相应的数据
@@ -209,15 +201,8 @@ set.list = {
         u.rows = dataJson;
         if (u.grid == null) {
             u.grid = $("#div_set_grid").ligerGrid($.LigerGridEx.config({
-                //usePager: false,
-                //scrollToPage: true,
                 columns: u.columns,
-                //pageSizeOptions: [10, 15, 20, 30, 40, 50],
-                //pageSize: 20,
                 data: [],
-                //height: "100%",
-                //rownumbers: false,
-                //enabledEdit: true,
                 validate: true,
                 unSetValidateAttr: false,
                 allowHideColumn: false,
@@ -225,16 +210,15 @@ set.list = {
                 onDblClickRow: function (data, rowindex, rowobj) {
                 },
                 onSelectRow: function (rowdata, rowid, rowobj) {
-
-                    set.list.selectObj = rowdata;
+                    u.selectObj = rowdata;
                     $("#hdId").val(rowdata.id);
                     versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-                    u.getElementList(versionCode, rowdata.id);
+                    u.getElementList(versionCode, rowdata.id, 1);
                 },
                 onAfterShowData: function (currentData) {
-                    //u.grid.select(0);
-                    if (set.list.selectObj != null) {
-                        u.grid.select(set.list.selectObj);
+                    if (u.selectObj != null && u.isSaveSelectStatus) {
+                        u.isSaveSelectStatus = false;
+                        u.grid.select(u.selectObj);
                     }
                     else {
                         u.grid.select(0);
@@ -248,28 +232,23 @@ set.list = {
             u.grid.loadData(gridData); //刷新数据
         }
         else {
-            u.grid.options.newPage = 1; //将页数设置为1
+            if(curPage)
+                u.grid.options.newPage = curPage;
             u.grid.loadData(gridData); //刷新数据
         }
         window.grid = u.grid;
 
     },
 
-    getElementList: function (versionCode, setid) {
+    getElementList: function (versionCode, setid, curPage) {
         var u = set.list;
 
         var strkey = u.elementSearch.getValue();
-        // {cdaId: cdaid, strVersionCode: versionCode, strkey: strkey},
         if (u.elementGrid == null) {
             u.elementGrid = $("#div_element_grid").ligerGrid($.LigerGridEx.config({
                 url: u._url + "/std/dataset/searchMetaData",
-                // 传给服务器的ajax 参数
                 parms: {id: setid, version: versionCode, metaDataCode: strkey},
-
                 columns: u.elementColumns,
-                //pageSizeOptions: [10, 15, 20, 30, 40, 50],
-                //pageSize: 20,
-                //rownumbers: true,
                 selectRowButtonOnly: false,
                 unSetValidateAttr: false,
                 allowHideColumn: false,
@@ -280,12 +259,9 @@ set.list = {
             u.elementGrid.adjustToWidth();
         }
         else {
-            u.elementGrid.set({
-                url: u._url + "/std/dataset/searchMetaData",
-                // 传给服务器的ajax 参数
-                parms: {id: setid, version: versionCode, metaDataCode: strkey},
-                newPage:1
-            });
+            if(curPage)
+                u.elementGrid.set({newPage: curPage});
+            u.elementGrid.set({parms: {id: setid, version: versionCode, metaDataCode: strkey}});
             u.elementGrid.reload();
         }
     },
@@ -307,17 +283,24 @@ set.list = {
         var _tital = "新增数据集";
         var _url = set.list._url + "/std/dataset/setupdate?id=&versioncode=" + versionCode+"&staged="+set.list.versionStage;
         var callback = function () {
-            set.list.getSetList(versionCode);
+            if(set.list.isReload){
+                set.list.isReload = false;
+                set.list.getSetList(versionCode);
+            }
         };
         set.list.showDialog(_tital, _url, 360, 430, callback);
     },
     //修改数据集 窗口
     updateSet: function (id) {
+        set.list.isSaveSelectStatus = true;
         var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
         var _tital = "修改数据集";
         var _url = set.list._url + "/std/dataset/setupdate?id=" + id + "&versioncode=" + versionCode+"&staged="+set.list.versionStage;
         var callback = function () {
-            set.list.getSetList(versionCode);
+            if(set.list.isReload){
+                set.list.isReload = false;
+                set.list.getSetList(versionCode);
+            }
         };
         set.list.showDialog(_tital, _url, 360, 400, callback);
     },
@@ -348,8 +331,7 @@ set.list = {
                             var _res = eval(data);
                             if (_res.successFlg) {
                                 $.Notice.success("删除成功!");
-
-                                set.list.getSetList(strVersionCode);
+                                set.list.getSetList(strVersionCode, Util.checkCurPage.call(set.list.grid, 1));
                             }
                             else {
                                 $.Notice.error(_res.errorMsg);
@@ -370,7 +352,10 @@ set.list = {
 
         var _url = set.list._url + "/std/dataset/elementupdate?id=&versioncode=" + versionCode + "&setid=" + setid+"&staged="+set.list.versionStage;
         var callback = function () {
-            set.list.getElementList(versionCode, setid);
+            if(set.list.isReload){
+                set.list.isReload = false;
+                set.list.getElementList(versionCode, setid);
+            }
         };
         set.list.showDialog(_tital, _url, 560, 730, callback);
     },
@@ -380,7 +365,10 @@ set.list = {
         var _tital = "修改数据元";
         var _url = set.list._url + "/std/dataset/elementupdate?id=" + id + "&versioncode=" + versionCode + "&setid=" + setid+"&staged="+set.list.versionStage;
         var callback = function () {
-            set.list.getElementList(versionCode, setid);
+            if(set.list.isReload){
+                set.list.isReload = false;
+                set.list.getElementList(versionCode, setid);
+            }
         };
         set.list.showDialog(_tital, _url, 560, 730, callback);
     },
@@ -411,7 +399,7 @@ set.list = {
                             if (_res.successFlg) {
                                 $.Notice.success("删除成功!");
                                 var setid = $("#hdId").val();
-                                set.list.getElementList(strVersionCode, setid);
+                                set.list.getElementList(strVersionCode, setid, Util.checkCurPage.call(set.list.elementGrid, ids.split(',').length));
                             }
                             else {
                                 $.Notice.error(_res.errorMsg);
@@ -617,6 +605,7 @@ set.attr = {
                     if (_res.successFlg) {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
+                            parent.set.list.isReload = true;
                             parent.set.list.top.dialog_set_detail.close();
                         }, null);
                     }
@@ -831,6 +820,7 @@ set.elementAttr = {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         $.ligerDialog.alert("保存成功!", "提示", "success", function () {
+                            parent.set.list.isReload = true;
                             parent.set.list.top.dialog_set_detail.close();
                         }, null);
                     }
@@ -918,78 +908,3 @@ set.elementAttr = {
     element_form_select: $("#div_element_info_form select")
 };
 
-//todo:待完善
-set.excel = {
-    excelForm : $("#div_excel_form"),
-    saveBtn:$("#div_save_btn"),
-    cancelBtn:$("#div_cancel_btn"),
-    init:function(){
-        var model = $("#model").val();
-        var version = $("#version").val();
-        var url=u._url+"/std/dataset/";
-        var columns;
-        if (model=="import"){
-            url+="importData";
-            columns = [
-                {display: '内部标识符', name: 'innerCode', align: 'left', width: '15%'},
-                {display: '数据元编码', name: 'code', align: 'left', width: '15%'},
-                {display: '数据元名称', name: 'name', align: 'left', width: '25%'},
-                {display: '列类型', name: 'columnType', align: 'left', width: '10%'},
-                {display: '检验字典', name: 'dictName', align: 'left', width: '20%'},
-                {
-                    display: '操作', width: '15%', isSort: false, render: function (rowdata, rowindex, value) {
-                    //var html = "<div class='grid_edit' style='' title='' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></div> " +
-                    //    "<div class='grid_delete' style='' title='' onclick='set.list.deleteElement(\"" + rowdata.id + "\")'></div>";
-                    var html = "<a class='grid_edit' href='#' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></a>" +
-                        "<a class='grid_delete' href='#' onclick='set.list.deleteElement(\"" + rowdata.id + "\")'></a>";
-                    return html;
-                }
-                }
-            ];
-        }else if(model=="export"){
-            url+="exportData";
-            columns = [
-                {display: '内部标识符', name: 'innerCode', align: 'left', width: '15%'},
-                {display: '数据元编码', name: 'code', align: 'left', width: '15%'},
-                {display: '数据元名称', name: 'name', align: 'left', width: '25%'},
-                {display: '列类型', name: 'columnType', align: 'left', width: '10%'},
-                {display: '检验字典', name: 'dictName', align: 'left', width: '20%'},
-                {
-                    display: '操作', width: '15%', isSort: false, render: function (rowdata, rowindex, value) {
-                    //var html = "<div class='grid_edit' style='' title='' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></div> " +
-                    //    "<div class='grid_delete' style='' title='' onclick='set.list.deleteElement(\"" + rowdata.id + "\")'></div>";
-                    var html = "<a class='grid_edit' href='#' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></a>" +
-                        "<a class='grid_delete' href='#' onclick='set.list.deleteElement(\"" + rowdata.id + "\")'></a>";
-                    return html;
-                }
-                }
-            ];
-        }
-        var excelGrid = this.excelForm.ligerGrid($.LigerGridEx.config({
-            url: url,
-            // 传给服务器的ajax 参数
-            parms: {version: version},
-            columns: columns,
-            //pageSizeOptions: [10, 15, 20, 30, 40, 50],
-            //pageSize: 20,
-            //rownumbers: true,
-            selectRowButtonOnly: false,
-            unSetValidateAttr: false,
-            allowHideColumn: false,
-            checkbox: true,
-            usePager: true
-        }));
-        // 自适应宽度
-        excelGrid.adjustToWidth();
-
-        this.event();
-    },
-    event: function () {
-        this.saveBtn.click(function(){
-
-        });
-        this.cancelBtn.click(function(){
-
-        });
-    }
-};

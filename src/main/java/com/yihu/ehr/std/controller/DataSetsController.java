@@ -776,7 +776,7 @@ public class DataSetsController extends BaseUIController {
             }
             //批量入库
             for(Pair<DataSetModel,List<MetaDataModel>> pairTemp:allData){
-                saveData = saveData(pair.getKey(),pair.getValue(),versionCode);//保存数据集、数据元信息
+                saveData = saveData(pairTemp.getKey(),pairTemp.getValue(),versionCode);//保存数据集、数据元信息
                 saveDatas.add(saveData);
             }
 

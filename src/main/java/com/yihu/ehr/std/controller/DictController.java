@@ -9,6 +9,11 @@ import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import javafx.util.Pair;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.format.CellFormat;
+import jxl.write.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +23,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.*;
 
 /**
  * Created by Administrator on 2015/8/12.
@@ -894,15 +901,285 @@ public class DictController  extends BaseUIController {
         return result.toJson();*/
     }
 
-//    public void exportToExcel(){
-//        //todo：test 导出测试
-//        XDict[] dicts = dictManager.getDictList(0, 0,cdaVersionManager.getLatestVersion());
-//        dictManager.exportToExcel("E:/workspaces/excel/testExport.xls", dicts);
-//    }
-//
-//    public void importFromExcel(){
-//        //todo：test导入测试
-//        dictManager.importFromExcel("E:/workspaces/excel/测试excel导入.xls", cdaVersionManager.getLatestVersion());
-//
-//    }
+
+    @RequestMapping("/importFromExcel")
+    @ResponseBody
+    public Object importFromExcel(HttpServletRequest request,String versionCode){
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        String userId = userDetailModel.getId().toString();
+        Envelop envelop = new Envelop();
+        try {
+            request.setCharacterEncoding("UTF-8");
+            InputStream inputStream = request.getInputStream();
+            Workbook rwb = Workbook.getWorkbook(inputStream);
+            Sheet[] sheets = rwb.getSheets();
+            String strErrorMsg="";
+            int rows;
+            //批量入库
+            List<Pair<DictModel,List<DictEntryModel>>> allData = new ArrayList<>();
+            Pair<DictModel,List<DictEntryModel>> pair=null;
+            List<Envelop> saveDatas = new ArrayList<>();
+            Envelop saveData;   //obj对应DictModel,detailModelList对应List<DictEntryModel>
+            //字典信息
+            DictModel dictModel;
+            String sheetName; //sheet名字
+            String dictName;//名称
+            String dictCode;//代码
+            //字典项信息
+            List<DictEntryModel> dictEntryModelList;
+            Set<String> set;
+            DictEntryModel dictEntryModel;
+            String code;//字典项编码
+            String name;//字典项名称
+
+            for (Sheet sheet : sheets) {
+                dictModel = new DictModel();
+                dictModel.setStdVersion(versionCode);
+                //获取字典信息
+                sheetName = sheet.getName(); //sheet名字
+                dictCode = sheet.getCell(1, 0).getContents();//代码
+                dictName = sheet.getCell(1, 1).getContents();//名称
+
+                //字典校验
+                if (dictCode==null || dictCode.equals("")){
+                    strErrorMsg = sheetName +"字典代码不能为空，请检查！";
+                }
+                if (dictName==null || dictName.equals("")){
+                    strErrorMsg = sheetName +"字典名称不能为空，请检查！";
+                }
+                if (!StringUtils.isEmpty(strErrorMsg)) {
+                    //字典校验
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg(strErrorMsg);
+                    return envelop;
+                }
+                //插入字典信息
+                dictModel.setCode(dictCode);//
+                dictModel.setName(dictName);
+                dictModel.setId(0);//内部自增长
+                dictModel.setStdVersion(versionCode);
+                dictModel.setAuthor(userId);
+
+                //todo：test--测试时备注做区别，方便删除测试
+                //dictModel.setDescription("测试excel导入");
+
+                //获取字典项信息
+                set = new HashSet<String>();
+                dictEntryModelList = new ArrayList<>();
+                rows = sheet.getRows();
+                for (int j = 0; j < rows - 5; j++) {
+                    dictEntryModel = new DictEntryModel();
+                    code = sheet.getCell(3, j).getContents();//字典项编码
+                    name = sheet.getCell(4, j).getContents();//字典项名称
+
+                    //字典项校验
+                    if (code==null || code.equals("")){
+                        strErrorMsg = sheetName+"第"+(j+1)+"行字典项编码不能为空，请检查！";
+                    }else{
+                        set.add(code);
+                        if (set.toArray(new String[set.size()]).length != j+1){
+                            //code重复
+                            strErrorMsg = sheetName+"第"+(j+1)+"行字典项编码已存在，请检查！";
+                        }
+                    }
+                    if (name==null || name.equals("")){
+                        strErrorMsg = sheetName+"第"+(j+1)+"行字典项名称不能为空，请检查！";
+                    }
+
+                    if (!StringUtils.isEmpty(strErrorMsg)) {
+                        //字典项校验
+                        envelop.setSuccessFlg(false);
+                        envelop.setErrorMsg(strErrorMsg);
+                        return envelop;
+                    }
+                    //插入字典项信息
+                    dictEntryModel.setId(0);//为0内部自增
+                    dictEntryModel.setCode(code);
+                    dictEntryModel.setValue(name);
+                    dictEntryModelList.add(dictEntryModel);
+                    //todo：test--测试时备注做区别，方便删除测试
+                    //dictEntryModel.setDesc("测试excel导入");
+                }
+                //缓存，后面字典、字典项批量入库
+                pair = new Pair<>(dictModel,dictEntryModelList);
+                allData.add(pair);
+            }
+            //批量入库
+            for(Pair<DictModel,List<DictEntryModel>> pairTemp:allData){
+                saveData = saveData(pairTemp.getKey(),pairTemp.getValue(),versionCode);//保存字典、字典项信息
+                saveDatas.add(saveData);
+            }
+
+            //关闭
+            rwb.close();
+            inputStream.close();
+            //todo：汇总返回前台展示,saveDatas处理
+            envelop.setObj(saveDatas);
+            envelop.setSuccessFlg(true);
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
+    @RequestMapping("/exportToExcel")
+    //@ResponseBody
+    public void exportToExcel(HttpServletResponse response,String versionCode,String versionName){
+        Envelop envelop = new Envelop();
+        try {
+            String fileName = "标准字典";
+            String url="";
+            String envelopStr = "";
+            //设置下载
+            response.setContentType("octets/stream");
+            response.setHeader("Content-Disposition", "attachment; filename="
+                    + new String( fileName.getBytes("gb2312"), "ISO8859-1" )+versionName+".xls");
+            OutputStream os = response.getOutputStream();
+            //获取导出字典
+            Map<String,Object> params = new HashMap<>();
+            url = "/dicts";
+            params.put("fields","");
+            params.put("filters","");
+            params.put("sorts","+id");
+            params.put("page",1);
+            params.put("size",999);
+            params.put("version",versionCode);
+            envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop dictEnvelop = getEnvelop(envelopStr);
+            List<DictModel> dictModelList = (List<DictModel>)getEnvelopList(dictEnvelop.getDetailModelList(),new ArrayList<DictModel>(),DictModel.class) ;
+            //获取导出字典项
+            params = new HashMap<>();
+            url = "/dict_entrys";
+            params.put("fields","");
+            String ids="";
+            DictModel dictModel;
+            for(int i=0;i<dictModelList.size();i++){
+                dictModel = dictModelList.get(i);
+                if(i!=0){
+                    ids+=",";
+                }
+                ids +=dictModel.getId();
+            }
+            params.put("filters","dictId="+ids);
+            params.put("sorts","+dictId");
+            params.put("page",1);
+            params.put("size",9999);
+            params.put("version",versionCode);
+            envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop dictEntryEnvelop = getEnvelop(envelopStr);
+            List<DictEntryModel> dictEntryModelList = (List<DictEntryModel>)getEnvelopList(dictEntryEnvelop.getDetailModelList(), new ArrayList<DictEntryModel>(), DictEntryModel.class) ;
+
+            //写excel
+            WritableWorkbook wwb = Workbook.createWorkbook(os);
+            int k=0;
+            DictModel dict=null;
+            DictEntryModel dictEntry=null;
+            for(int i=0;i<dictModelList.size();i++){
+                dict=dictModelList.get(i);
+                //创建Excel工作表 指定名称和位置
+                WritableSheet ws = wwb.createSheet(dict.getName(),i);
+                addStaticCell(ws);//添加固定信息，题头等
+                //添加字典信息
+                addCell(ws,1,0,dict.getCode());//代码
+                addCell(ws,1,1,dict.getName());//名称
+
+                //添加字典项信息
+                WritableCellFormat wc = new WritableCellFormat();
+                wc.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, Colour.SKY_BLUE);//边框
+                for(int j=0;k<dictEntryModelList.size(); j++,k++){
+                    dictEntry = (DictEntryModel)dictEntryModelList.get(k);
+                    if (dict.getId()!=dictEntry.getDictId()){
+                        break;
+                    }
+                    addCell(ws,3,j,dictEntry.getCode(),wc);//代码
+                    addCell(ws,4,j,dictEntry.getValue(),wc);//名称
+                }
+            }
+            //写入工作表
+            wwb.write();
+            wwb.close();
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //字典字典项整体入库
+    private Envelop saveData(DictModel dict,List<DictEntryModel> dictEntryModelList,String versionCode){
+        Envelop ret = new Envelop();
+        String url = "/save_dict";
+        Map<String,Object> params = new HashMap<>();
+        params.put("version_code",versionCode);
+        long dictId;
+        DictModel dictModel=null;
+        List<DictEntryModel> dictEntryModels = new ArrayList<>();
+        try {
+            //字典入库
+            params.put("json_data",toJson(dict));
+            String envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            Envelop envelop = getEnvelop(envelopStrNew);
+            if (envelop.isSuccessFlg()){
+                dictModel = getEnvelopModel(envelop.getObj(),DictModel.class);
+                dictId = dictModel.getId();
+                //字典项入库
+                url = "/dict_entry";
+                if (dictEntryModelList.size()>0){
+                    for (DictEntryModel dictEntry : dictEntryModelList) {
+                        dictEntry.setDictId(dictId);
+                        params.remove("json_data");
+                        params.put("json_data",toJson(dictEntry));
+                        envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
+                        envelop = getEnvelop(envelopStrNew);
+                        //新增成功后的字典项集合
+                        if (envelop.isSuccessFlg()) {
+                            DictEntryModel dictEntryModel = getEnvelopModel(envelop.getObj(),DictEntryModel.class);
+                            dictEntryModels.add(dictEntryModel);
+                        }
+                    }
+                }
+
+            }
+            //返回信息
+            ret.setSuccessFlg(true);
+            ret.setObj(dictModel);
+            ret.setDetailModelList(dictEntryModels);
+            return ret;
+        } catch (Exception e) {
+            e.printStackTrace();
+            ret.setSuccessFlg(false);
+            return ret;
+        }
+    }
+    //excel中添加固定内容
+    private void addStaticCell(WritableSheet ws){
+        try {
+            addCell(ws,0,0,"代码");
+            addCell(ws,0,1,"名称");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //添加单元格内容
+    private void addCell(WritableSheet ws,int column,int row,String data){
+        try {
+            Label label = new Label(column,row,data);
+            ws.addCell(label);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //添加单元格内容带样式
+    private void addCell(WritableSheet ws,int column,int row,String data,CellFormat cellFormat){
+        try {
+            Label label = new Label(column,row,data,cellFormat);
+            ws.addCell(label);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
