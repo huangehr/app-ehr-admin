@@ -12,12 +12,5 @@
 <script >
   $(function(){
     set.attr.init();
-    var staged = $.Util.getUrlQueryString('staged');
-    if(staged=='false'){
-        set.attr.set_form_input.attr("disabled","disabled").css("background-color","#ffffff");
-        set.attr.set_form_select.attr("disabled","disabled").css("background-color","#ffffff");
-        $("#txt_description").attr("disabled","disabled").css("background-color","#ffffff");
-        set.attr.set_form.find(".l-trigger").remove();
-    }
   });
 </script>

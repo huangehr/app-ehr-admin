@@ -32,12 +32,7 @@
                 if(staged=='false')
                 {
                     $("#btn_entry_save").hide();
-                    $("#div_dictentry_info_form input").attr("disabled","disabled");
-                    $("#div_dictentry_info_form select").attr("disabled","disabled");
-                    $("#inp_dictentry_desc").attr("disabled","disabled");
-                    $("#div_dictentry_info_form .l-trigger-cancel").remove();
-                    $("#div_dictentry_info_form .l-text-trigger-cancel").remove();
-                    $("#div_dictentry_info_form .l-trigger").css("display","none");
+                    $("#div_dictentry_info_form").addClass("m-form-readonly");
                 }
             },
             initForm: function () {
