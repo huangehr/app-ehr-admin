@@ -1,3 +1,4 @@
+<%@ page import="java.util.Date" %>
 <%--
   Created by IntelliJ IDEA.
   User: AndyCai
@@ -13,11 +14,22 @@
 
 <script type="text/javascript" charset="utf-8" src="${contextRoot}/develop/lib/editor/kindeditor.js"></script>
 <script src="${contextRoot}/develop/Scripts/cdaRelationship.js"></script>
-<script src="${contextRoot}/develop/Scripts/cdaJs.js"></script>
+<script src="${contextRoot}/develop/Scripts/cdaJs.js?tim=<%=new Date()%>"></script>
 <script >
   $(function(){
 
     $("#hd_user").val('${User.id}');
     cda.attr.init();
+    var staged = $.Util.getUrlQueryString('staged');
+    if(staged=='false'){
+      setTimeout(function(){
+        cda.attr.cda_form.find("input").attr("disabled","disabled").css("background-color","#ffffff").unbind("hover").removeAttr("data-type");
+        cda.attr.cda_form.find("select").attr("disabled","disabled").css("background-color","#ffffff").unbind("hover").removeAttr("data-type");
+        $("#txt_description").attr("disabled","disabled").css("background-color","#ffffff");
+        cda.attr.cda_form.find(".l-trigger").remove();
+        cda.attr.cda_form.find(".l-trigger-cancel").remove();
+        cda.attr.cda_form.find(".l-text-trigger-cancel").remove();
+      },200);
+    }
   });
 </script>

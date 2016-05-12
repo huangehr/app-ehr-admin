@@ -1,3 +1,4 @@
+<%@ page import="java.util.Date" %>
 <%--
   Created by IntelliJ IDEA.
   User: AndyCai
@@ -13,7 +14,7 @@
 
 <script type="text/javascript" charset="utf-8" src="${contextRoot}/develop/lib/editor/kindeditor.js"></script>
 <script src="${contextRoot}/develop/Scripts/cdaRelationship.js"></script>
-<script src="${contextRoot}/develop/Scripts/cdaJs.js"></script>
+<script src="${contextRoot}/develop/Scripts/cdaJs.js?tim=<%=new Date()%>"></script>
 <script >
   $(function(){
 

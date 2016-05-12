@@ -1,3 +1,4 @@
+<%@ page import="java.util.Date" %>
 <%--
   Created by IntelliJ IDEA.
   User: AndyCai
@@ -7,7 +8,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<script src="${contextRoot}/develop/Scripts/cdaJs.js"></script>
+<script src="${contextRoot}/develop/Scripts/cdaJs.js?tim=<%=new Date()%>"></script>
 <script >
   $(function(){
     cda.list.init();

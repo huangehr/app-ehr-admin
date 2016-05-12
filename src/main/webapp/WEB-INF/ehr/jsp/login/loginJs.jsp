@@ -44,7 +44,7 @@
             function pageInit() {
 
                 login.init();
-                userInNum();
+                passwordInNum();
             }
 
             /* ************************** 函数定义结束 **************************** */
@@ -163,7 +163,7 @@
                     }
                 }
             };
-            function userInNum() {
+            function passwordInNum() {
                 if (!${successFlg}) {
                     var userName = $("#inp_user_name").val();
                     var inNum;

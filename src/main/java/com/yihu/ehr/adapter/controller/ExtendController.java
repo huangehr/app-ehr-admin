@@ -77,6 +77,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
             model.addAttribute("model",toJson(plan));
             model.addAttribute("mode",mode);
             model.addAttribute("contentPage", getModeUrl(mode));
+            model.addAttribute("staged", params.get("staged"));
             return "simpleView";
         } catch (Exception e) {
             e.printStackTrace();

@@ -13,11 +13,13 @@
                 delete: "${contextRoot}/template/lsit",
                 uploadTplFile: "${contextRoot}/template/update_tpl_content"
             }
-
+            var selectRow = null;
+            var isSaveSelectStatus = false;
             var Util = $.Util;
             var retrieve = null;
             var master = null;
             var dataModel = '${dataModel}';
+            var staged;
             try{
                 dataModel = eval('(' + dataModel + ')');
             }catch(e){
@@ -28,15 +30,6 @@
             function pageInit() {
                 retrieve.init();
 
-            }
-
-            function reloadGrid (url, params) {
-                this.grid.set({
-                    url: url,
-                    parms: params,
-                    newPage:1
-                });
-//                this.grid.reload();
             }
 
             /* *************************** 模块初始化 ***************************** */
@@ -57,7 +50,7 @@
                     }
                     this.initVersionDDL(this.$searchVersionDDL);
                     this.$searchOrgName.ligerTextBox({width: 240,isSearch:true,search: function() {
-                        master.reloadGrid();
+                        master.reloadGrid(1);
                     }});
                     this.$element.show();
                     this.$element.attrScan();
@@ -70,8 +63,15 @@
                                 valueField: 'version',
                                 textField: 'versionName',
                                 data: [].concat(data.detailModelList),
-                                onSelected:function(){
-                                    master.reloadGrid();
+                                onSelected:function(data){
+                                    var versionDatas = $("#inp_searchVersion").ligerComboBox().data
+                                    for(var i = 0;i<versionDatas.length;i++){
+                                        if(Util.isStrEquals(versionDatas[i].version,data)){
+
+                                            staged = versionDatas[i].inStage;
+                                        }
+                                    }
+                                    master.reloadGrid(1);
                                 }
                             });
 
@@ -124,8 +124,14 @@
                         validate : true,
                         unSetValidateAttr:false,
                         delayLoad: true,
-                        onDblClickRow : function (row){
-
+                        onSelectRow: function (data, rowindex, rowobj) {
+                            selectRow = data;
+                        },
+                        onAfterShowData: function () {
+                            if(selectRow!=null && isSaveSelectStatus){
+                                isSaveSelectStatus = false;
+                                master.grid.select(selectRow);
+                            }
                         }
                     }));
 
@@ -155,9 +161,9 @@
                         extParms: JSON.stringify(ext)
                     }
                 },
-                reloadGrid: function () {
+                reloadGrid: function (curPage) {
                     var values = retrieve.$element.Fields.getValues();
-                    reloadGrid.call(this, urls.list, this.formatParms(values));
+                    Util.reloadGrid.call(this.grid, '', this.formatParms(values), curPage);
                 },
                 bindEvents: function () {
                     var self = this;
@@ -166,14 +172,19 @@
                         if(!Util.isStrEmpty(id))
                             urlParms['id'] = id;
 
+                        var extParms = {staged:staged};
+
                         if(dataModel.orgCode)
-                            urlParms['extParms'] = JSON.stringify({orgCode: dataModel.orgCode});
+                            extParms.orgCode = dataModel.orgCode;
+
+                        urlParms['extParms'] = JSON.stringify(extParms);
 
                         urlParms['mode'] = mode;
 						var title = '新增模板';
 						if(mode=='copy'){
 							title='复制模板';
 						}else if(mode=='modify'){
+                            isSaveSelectStatus = true;
 							title='修改模板';
 						}
                         self.archiveTplInfoDialog = $.ligerDialog.open({
@@ -210,6 +221,9 @@
                             $.Notice.error('导入失败');
                     });
                     $.subscribe('tpl:tplUpload:open',function(event,id,mode){
+                        if (!staged){
+                           return $.Notice.error("已发布版本不可导入");
+                        }
                         templateId = id;
                         tplMode = mode;
                         uploader.reset();

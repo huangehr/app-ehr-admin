@@ -116,6 +116,10 @@
 
                     $('#oldTitle').val(model.title);
                     $('#inp_versionNo').focus();
+
+                    if (!${staged}){
+                        this.$addBtn.hide();
+                    }
                 },
                 initCombo : function (target, url, parms, value, text, parentValue){
                     this.cda = target.customCombo(url, parms);

@@ -16,6 +16,8 @@
       var changeFlag=false;
       var dialogOpener = null;
       var isFirstPage = true;
+      var selectRow = null, isSaveSelectStatus = false;
+      var selectEntityRow = null, isSaveEntitySelectStatus = false;
       var cfg = [
         {
           left:{title:'数据集', cls:'', search:'/orgdataset/searchOrgDataSets', goAdd:'/orgdataset/template/orgDataInfo', del:'/orgdataset/deleteOrgDataSet'},
@@ -85,7 +87,7 @@
             changeFlag=true;
 			  conditionArea.$btn_switch_dataSet.addClass('btn-primary');
 			  conditionArea.$btn_switch_dict.removeClass('btn-primary');
-            master.reloadGrid();
+            master.reloadGrid(1);
           });
 
           this.$btn_switch_dict.click(function () {
@@ -97,7 +99,7 @@
             changeFlag=true;
 			  conditionArea.$btn_switch_dataSet.removeClass('btn-primary');
 			  conditionArea.$btn_switch_dict.addClass('btn-primary');
-            master.reloadGrid();
+            master.reloadGrid(1);
           })
         }
       };
@@ -110,7 +112,7 @@
         $title :$('#left_title'),
         init: function () {
           this.$searchNm.ligerTextBox({width: 240, isSearch: true, search: function () {
-            master.reloadGrid();
+            master.reloadGrid(1);
           }});
           this.$element.show();
         },
@@ -144,24 +146,28 @@
             unSetValidateAttr:false,
             onBeforeShowData: function (data) {
               if(data.totalCount==0){
-                entryMater.reloadGrid('');
+                entryMater.reloadGrid(1, '');
               }
             },
             onAfterShowData: function () {
-              this.select(0);
+              if(selectRow!=null && isSaveSelectStatus){
+                isSaveSelectStatus= false;
+                this.select(selectRow);
+              }
+              else
+                this.select(0);
             },
             onSelectRow: function(row){
-              entryMater.reloadGrid();
+              selectRow = row;
+              entryMater.reloadGrid(1);
             }
           }));
           this.bindEvents();
           // 自适应宽度
           this.grid.adjustToWidth();
         },
-        reloadGrid: function () {
-          if(isFirstPage){
-            this.grid.options.newPage = 1;
-          }
+        reloadGrid: function (curPage) {
+
           var searchNm = $("#searchNm").val();
           var values = {
             codeOrName: searchNm,
@@ -169,8 +175,11 @@
           };
           if (changeFlag){
             var url = '${contextRoot}' + cfg[cfgModel].left.search;
-            this.grid.setOptions({url:url,parms: $.extend({},values)});
+            this.grid.setOptions({url:url,parms: $.extend({},values), newPage: 1});
           }else{
+            if(curPage){
+              this.grid.options.newPage = curPage;
+            }
             this.grid.setOptions({parms: $.extend({},values)});
             //重新查询
             this.grid.loadData(true);
@@ -180,6 +189,9 @@
         bindEvents: function () {
           $.subscribe('grid:left:open',function(event,id,mode){
             var title = mode == 'modify'?'修改' : '新增';
+            if(mode=='modify'){
+              isSaveSelectStatus = true;
+            }
             title += cfg[cfgModel].left.title;
             dialogOpener = cfgModel==0?0:2;
             master.infoDialog = $.ligerDialog.open({
@@ -207,7 +219,7 @@
                     if(data.successFlg){
                       $.Notice.success( '操作成功！');
                       isFirstPage = false;
-                      master.reloadGrid();
+                      master.reloadGrid(Util.checkCurPage.call(master.grid, 1));
                     }else{
                       $.Notice.success( '操作失败！');
                     }
@@ -227,7 +239,7 @@
         $title: $('#right_title'),
         init: function () {
           this.$searchNm.ligerTextBox({width: 240, isSearch: true, search: function () {
-            entryMater.reloadGrid();
+            entryMater.reloadGrid(1);
           }});
           this.$element.show();
         },
@@ -251,7 +263,7 @@
               { display: '名称',name: 'name', width: '33%',isAllowHide: false  ,align:'left'},
               { display: '操作', name: 'operator', width: '34%', render: function (row) {
 				  var html = '<div class="grid_edit" title="编辑" name="edit_click" style="margin-left:85px;cursor:pointer;" title="修改" onclick="javascript:'+Util.format("$.publish('{0}',['{1}','{2}','{3}'])","grid:right:open", row.id,'modify')+'"></div> '
-						  +'<div class="grid_delete" title="删除" name="delete_click" style="margin-left:20px;margin-top:10px;cursor:pointer;" title ="删除" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","grid:right:delete", row.id)+'"></div>';
+						  +'<div class="grid_delete" title="删除" name="delete_click" style="margin-left:20px;cursor:pointer;" title ="删除" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","grid:right:delete", row.id)+'"></div>';
 
 //                var html = '<a href="#" onclick="javascript:'+Util.format("$.publish('{0}',['{1}','{2}','{3}'])","grid:right:open", row.id,'modify')+'">修改</a>' +
 //                        ' / <a href="#" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","grid:right:delete", row.id)+'">删除</a>';
@@ -267,13 +279,22 @@
             pageSize:15,
             onDblClickRow : function (row){
               //$.publish('grid:right:open',[row.id, 'modify']);
+            },
+            onAfterShowData: function () {
+              if(selectEntityRow!=null && isSaveEntitySelectStatus){
+                isSaveEntitySelectStatus= false;
+                this.select(selectEntityRow);
+              }
+            },
+            onSelectRow: function(row){
+              selectEntityRow = row;
             }
           }));
           this.bindEvents();
           // 自适应宽度
           this.grid.adjustToWidth();
         },
-        reloadGrid: function (seq) {
+        reloadGrid: function (curPage, seq) {
           var searchNmEntry = $("#searchNmEntry").val();
           if(seq!=''){
             var row = master.grid.getSelectedRow();
@@ -290,7 +311,9 @@
             var url = '${contextRoot}'+cfg[cfgModel].right.search;
             this.grid.setOptions({url:url,parms: $.extend({},values), newPage:1});
           }else{
-            this.grid.setOptions({parms: $.extend({},values), newPage:1});
+            if(curPage)
+              this.grid.options.newPage = curPage;
+            this.grid.setOptions({parms: $.extend({},values)});
             //重新查询
             this.grid.loadData(true);
           }
@@ -312,6 +335,8 @@
               return;
             }
             var title = mode == 'modify'?'修改' :'新增';
+            if(mode=='modify')
+              isSaveEntitySelectStatus = true;
             title += cfg[cfgModel].right.title;
             dialogOpener = cfgModel==0?1:3;
             entryMater.entryInfoDialog = $.ligerDialog.open({
@@ -351,7 +376,7 @@
                   data:{ids:ids},
                   success:function(data){
                     $.Notice.success( '操作成功！');
-                    entryMater.reloadGrid();
+                    entryMater.reloadGrid(Util.checkCurPage.call(entryMater.grid, ids.split(',').length));
                   }
                 });
               }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,15 +86,17 @@ public class StdVersionController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             params.put("fields", "");
             params.put("filters", "");
-            params.put("sorts", "-commitTime");
+            params.put("sorts", "");
             params.put("page", 1);
             params.put("size", 999);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return envelopStr;
+            envelop = getEnvelop(envelopStr) ;
+            Collections.reverse(envelop.getDetailModelList());
+            return envelop;
         } catch (Exception ex) {
             LogService.getLogger(StdVersionController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg("系统错误！");
             return envelop;
         }
     }

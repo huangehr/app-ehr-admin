@@ -9,16 +9,10 @@
             var Util = $.Util;
             var retrieve = null;
             var master = null;
-
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 retrieve.init();
                 master.init();
-            }
-
-            function reloadGrid (url, params) {
-                this.grid.setOptions({parms: params,newPage:1});
-                this.grid.loadData(true);
             }
 
             /* *************************** 模块初始化 ***************************** */
@@ -46,12 +40,14 @@
                 },
                 bindEvents: function () {
                     $.subscribe('stdInfo:stdInfoGrid:delete',function(event,ids) {
+                        var delRowLen = 1;
                         if(!ids){
                             var rows = master.grid.getSelectedRows();
                             if(rows.length==0){
                                 $.Notice.warn('请选择要删除的数据行！');
                                 return;
                             }
+                            delRowLen = rows.length;
                             for(var i=0;i<rows.length;i++){
                                 ids += ',' + rows[i].id;
                             }
@@ -66,7 +62,7 @@
                                     success:function(data){
 										if(data.successFlg){
 											$.Notice.success( '操作成功！');
-											master.reloadGrid();
+											master.reloadGrid(Util.checkCurPage.call(master.grid, delRowLen));
 										}else{
 											$.Notice.error(data.errorMsg);
 										}
@@ -130,15 +126,14 @@
                     // 自适应宽度
                     this.grid.adjustToWidth();
                 },
-                reloadGrid: function () {
+                reloadGrid: function (curPage) {
                     var values = retrieve.$element.Fields.getValues();
-                    reloadGrid.call(this, '${contextRoot}/standardsource/searchStdSource', values);
+                    Util.reloadGrid.call(this.grid, '', values, curPage);
                 },
                 bindEvents: function () {
                     var self = this;
                     retrieve.$searchBtn.click(function () {
-                        self.grid.options.newPage =  1;
-                        self.reloadGrid();
+                        self.reloadGrid(1);
                     });
 
                     $.subscribe('std:stdInfo:open',function(event,id,mode){

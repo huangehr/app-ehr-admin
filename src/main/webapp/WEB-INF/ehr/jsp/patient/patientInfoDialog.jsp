@@ -259,5 +259,5 @@
 </div>
 
 <div id="div_home_relation" data-role-form class="m-form-inline" >
-        这是家庭关系网
+
 </div>
