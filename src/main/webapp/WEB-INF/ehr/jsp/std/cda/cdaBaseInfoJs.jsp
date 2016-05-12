@@ -21,10 +21,9 @@
     $("#hd_user").val('${User.id}');
     cda.attr.init();
     var staged = $.Util.getUrlQueryString('staged');
-    if(staged=='false'){
-      setTimeout(function(){
+    if(staged!='false'){
         cda.attr.cda_form.addClass("m-form-readonly");
-      },200);
+        cda.attr.cda_form.find("input").addClass("l-text-field").parent().find(".essential").addClass("l-text");
     }
   });
 </script>
