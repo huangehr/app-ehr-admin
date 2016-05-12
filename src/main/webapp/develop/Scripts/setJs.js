@@ -652,7 +652,11 @@ set.elementAttr = {
             console.log(staged);
             $("#btn_save").hide();
              set.elementAttr.element_form.addClass("m-form-readonly");
-            set.elementAttr.element_form.find("input").css("border","#D0D0D0 1px solid");
+             set.elementAttr.element_form.find("input").each(function(){
+                 if($(this).attr("data-type")!="select"){
+                     $(this).css("border","#D0D0D0 1px solid");
+                 }
+             });
         }
         //this.getDictList();
         this.getElementInfo();

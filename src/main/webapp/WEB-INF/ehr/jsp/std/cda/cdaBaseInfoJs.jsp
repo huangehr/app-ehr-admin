@@ -21,7 +21,7 @@
     $("#hd_user").val('${User.id}');
     cda.attr.init();
     var staged = $.Util.getUrlQueryString('staged');
-    if(staged!='false'){
+    if(staged=='false'){
         cda.attr.cda_form.addClass("m-form-readonly");
         cda.attr.cda_form.find("input").addClass("l-text-field").parent().find(".essential").addClass("l-text");
     }
