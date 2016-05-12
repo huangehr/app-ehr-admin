@@ -15,7 +15,6 @@
     var staged = $.Util.getUrlQueryString('staged');
     if(staged=='false'){
         set.attr.set_form.addClass("m-form-readonly");
-        set.attr.set_form.find("input").addClass("l-text-field");
     }
   });
 </script>
