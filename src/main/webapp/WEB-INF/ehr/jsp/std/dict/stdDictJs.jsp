@@ -247,8 +247,15 @@
                                 dataModel.updateRemote('${contextRoot}/cdadict/deleteDict', {
                                     data: {dictId: id, cdaVersion: stdDictVersion},
                                     success: function (data) {
-                                        $.Notice.success('操作成功！');
-                                        dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
+                                        debugger
+                                        if(data.successFlg){
+                                            $.Notice.success('删除成功！');
+                                            dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
+                                        }else{
+                                            $.Notice.error(data.errorMsg);
+                                        }
+
+
                                     }
                                 });
                             }

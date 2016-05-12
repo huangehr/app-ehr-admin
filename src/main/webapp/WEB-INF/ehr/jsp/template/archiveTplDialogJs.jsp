@@ -116,6 +116,12 @@
 
                     $('#oldTitle').val(model.title);
                     $('#inp_versionNo').focus();
+
+                    var staged = $.Util.getUrlQueryString('staged');
+                    debugger
+                    if (Boolean.valueOf(staged)){
+                        this.$addBtn.hide();
+                    }
                 },
                 initCombo : function (target, url, parms, value, text, parentValue){
                     this.cda = target.customCombo(url, parms);
