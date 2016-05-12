@@ -631,9 +631,7 @@ set.attr = {
         $("#btn_close").click(function () {
             parent.set.list.top.dialog_set_detail.close();
         });
-    },
-    set_form_input: $("#div_set_info_form input"),
-    set_form_select: $("#div_set_info_form select")
+    }
 };
 
 set.elementAttr = {

@@ -23,12 +23,7 @@
     var staged = $.Util.getUrlQueryString('staged');
     if(staged=='false'){
       setTimeout(function(){
-        cda.attr.cda_form.find("input").attr("disabled","disabled").css("background-color","#ffffff").unbind("hover").removeAttr("data-type");
-        cda.attr.cda_form.find("select").attr("disabled","disabled").css("background-color","#ffffff").unbind("hover").removeAttr("data-type");
-        $("#txt_description").attr("disabled","disabled").css("background-color","#ffffff");
-        cda.attr.cda_form.find(".l-trigger").remove();
-        cda.attr.cda_form.find(".l-trigger-cancel").remove();
-        cda.attr.cda_form.find(".l-text-trigger-cancel").remove();
+        cda.attr.cda_form.addClass("m-form-readonly");
       },200);
     }
   });
