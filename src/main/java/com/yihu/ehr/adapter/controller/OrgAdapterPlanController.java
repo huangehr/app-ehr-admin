@@ -14,6 +14,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,13 +102,14 @@ public class OrgAdapterPlanController extends ExtendController<OrgAdapterPlanSer
             String url = "/version/versions";
             PageParms pageParms = new PageParms()
                     .addGroupNotNull("version", PageParms.LIKE, searchNm, "g1")
-                    .addGroupNotNull("versionName", PageParms.LIKE, searchNm, "g1")
-                    .setSorts("-commitTime");
+                    .addGroupNotNull("versionName", PageParms.LIKE, searchNm, "g1");
             if(!StringUtils.isEmpty(isPublic))
                 pageParms.addEqual("inStage", false);
 
             String envelopStr = service.search(url, pageParms);
-            return envelopStr;
+            Envelop envelop = getEnvelop(envelopStr) ;
+            Collections.reverse(envelop.getDetailModelList());
+            return envelop;
         } catch (Exception ex) {
             return systemError();
         }
