@@ -161,7 +161,7 @@
 											$.Notice.success( '删除成功！');
 											masters.reloadGrid();
 										}else{
-											$.Notice.error('删除失败！');
+											$.Notice.error(data.errorMsg);
 										}
 									}
 								});
