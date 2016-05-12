@@ -117,9 +117,7 @@
                     $('#oldTitle').val(model.title);
                     $('#inp_versionNo').focus();
 
-                    var staged = $.Util.getUrlQueryString('staged');
-                    debugger
-                    if (Boolean.valueOf(staged)){
+                    if (!${staged}){
                         this.$addBtn.hide();
                     }
                 },
