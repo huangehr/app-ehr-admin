@@ -499,6 +499,8 @@ set.attr = {
         {
             console.log(staged);
             $("#btn_save").hide();
+            set.attr.set_form.addClass("m-form-readonly");
+            set.attr.set_form.find("input").addClass("l-text-field").parent().find(".essential").addClass("l-text");
         }
     },
     //加载标准来源下拉框
@@ -649,6 +651,8 @@ set.elementAttr = {
         {
             console.log(staged);
             $("#btn_save").hide();
+             set.elementAttr.element_form.addClass("m-form-readonly");
+            set.elementAttr.element_form.find("input").css("border","#D0D0D0 1px solid");
         }
         //this.getDictList();
         this.getElementInfo();
