@@ -179,6 +179,7 @@
                             if (data.successFlg) {
                                 inNum = util.isStrEmpty(localStorage.getItem(userName)) ? 0: localStorage.getItem(userName);
                                 localStorage.setItem(userName, parseInt(inNum)+1);
+                                $("<div class='f-tac s-c13' id='div_error_msg'>密码或用户名错误，您还有"+parseInt(5-localStorage.getItem(userName))+"次登入机会</div>").replaceAll($(".div-inp-num-msg"));
                                 if(localStorage.getItem(userName) >= 5){
                                     dataModel.updateRemote("${contextRoot}/login/activityUser", {
                                         data: {userId: data.detailModelList[0].id, activated: 0},
