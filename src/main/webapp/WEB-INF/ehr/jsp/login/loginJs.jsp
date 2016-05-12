@@ -216,7 +216,7 @@
             $.TipBox();
         })
         $("#inp_captcha_code").focus(function () {
-            $("#div_error_msg").html("")
+//            $("#div_error_msg").html("")
             $(this).removeClass("required");
             $(".SD-tipbox").remove();
             $(this).removeClass("validation-failed")
