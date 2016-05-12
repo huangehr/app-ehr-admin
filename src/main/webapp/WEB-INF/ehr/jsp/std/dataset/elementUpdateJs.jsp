@@ -12,12 +12,5 @@
 <script >
   $(function(){
     set.elementAttr.init();
-    var staged = $.Util.getUrlQueryString('staged');
-    if(staged=='false'){
-      setTimeout(function(){
-        set.elementAttr.element_form.addClass("m-form-readonly");
-        //set.elementAttr.element_form.find("input").addClass("l-text-field");
-      },200);
-    }
   });
 </script>

@@ -12,9 +12,5 @@
 <script >
   $(function(){
     set.attr.init();
-    var staged = $.Util.getUrlQueryString('staged');
-    if(staged=='false'){
-        set.attr.set_form.addClass("m-form-readonly");
-    }
   });
 </script>
