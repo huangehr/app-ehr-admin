@@ -69,7 +69,6 @@
                                         if(Util.isStrEquals(versionDatas[i].version,data)){
 
                                             staged = versionDatas[i].inStage;
-                                            debugger
                                         }
                                     }
                                     master.reloadGrid(1);
@@ -173,8 +172,12 @@
                         if(!Util.isStrEmpty(id))
                             urlParms['id'] = id;
 
+                        var extParms = {staged:staged};
+
                         if(dataModel.orgCode)
-                            urlParms['extParms'] = JSON.stringify({orgCode: dataModel.orgCode});
+                            extParms.orgCode = dataModel.orgCode;
+
+                        urlParms['extParms'] = JSON.stringify(extParms);
 
                         urlParms['mode'] = mode;
 						var title = '新增模板';
@@ -188,7 +191,7 @@
                             height:370,
                             width: 450,
                             title : title,
-                            url: urls.gotoModify+"?staged="+staged,
+                            url: urls.gotoModify,
                             urlParms: urlParms,
                             isHidden: false,
                             opener: true,
@@ -218,6 +221,9 @@
                             $.Notice.error('导入失败');
                     });
                     $.subscribe('tpl:tplUpload:open',function(event,id,mode){
+                        if (!staged){
+                           return $.Notice.error("已发布版本不可导入");
+                        }
                         templateId = id;
                         tplMode = mode;
                         uploader.reset();
