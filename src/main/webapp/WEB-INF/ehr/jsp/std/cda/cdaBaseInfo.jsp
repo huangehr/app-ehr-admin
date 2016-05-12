@@ -35,7 +35,7 @@
         <div class="m-form-group">
             <label>标准来源：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control ">
                 <input type="text" id="ipt_select" data-type="select" class="required useTitle" required-title=<spring:message code="lbl.must.input"/>
                        data-attr-scan="sourceId">
             </div>
@@ -43,7 +43,7 @@
         <div class="m-form-group">
             <label>类别：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control">
                 <input type="text" id="ipt_type" data-type="select" class="required useTitle" required-title=<spring:message code="lbl.must.input"/>
                        data-attr-scan="type">
             </div>
