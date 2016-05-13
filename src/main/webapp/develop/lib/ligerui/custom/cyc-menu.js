@@ -63,6 +63,7 @@ $(function(){
                     $(".three").next("ul").hide();
                     $("#mCSB_1_container").css("overflow","hidden");
                     $("#mCSB_1").css("overflow","hidden");
+
                 });
             }
 
@@ -107,8 +108,15 @@ $(function(){
                 if($(this).hasClass("three")){//第三级
                     $(this).closest("li").siblings("li").find("ul").hide();
                     $(this).addClass("on").next("ul").fadeIn();
-                    $("#mCSB_1_container").css("overflow","inherit");
-                    $("#mCSB_1").css("overflow","inherit");
+                    $(this).closest("#mCSB_1_container").css("overflow","initial");
+                    $(this).closest("#mCSB_1").css("overflow","initial");
+                    var mscbTop=$(this).closest("#mCSB_1_container").css("top");
+                    $(this).closest("#mCSB_1_container").css("top","mscbTop")
+                    $(this).closest("#mCSB_1_container").attr("id","xmCSB_1_container");
+                    setTimeout(function(){
+                        $("#xmCSB_1_container").attr("id","mCSB_1_container");
+
+                    },200)
                 }
                 if($(this).hasClass("rignav") &&$(this).attr("data-url")!="") {
                     $(".rignav").closest("ul").slideUp()
