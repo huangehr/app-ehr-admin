@@ -171,7 +171,10 @@
                     dataModel.updateRemote("${contextRoot}/login/userVerification", {
                         data: {userName: userName},
                         success: function (data) {
-
+                            if (data.detailModelList.length<1){
+                                $("<div class='f-tac s-c13'>用户名或密码错误</div>").replaceAll($("#div_error_msg"));
+                                return;
+                            }
                             if(!data.detailModelList[0].activated){
                                 $("<div class='f-tac s-c13'>该账户已被锁定，请联系系统管理员重新生效！</div>").replaceAll($("#div_error_msg"));
                                 return;
