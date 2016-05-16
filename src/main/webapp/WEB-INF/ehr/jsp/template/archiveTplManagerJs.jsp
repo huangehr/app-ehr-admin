@@ -78,8 +78,8 @@
                                     var versionDatas = $("#inp_searchVersion").ligerComboBox().data
                                     for (var i = 0; i < versionDatas.length; i++) {
                                         if (Util.isStrEquals(versionDatas[i].version, data)) {
-
-                                            staged = versionDatas[i].inStage;
+//                                            staged = versionDatas[i].inStage;
+                                            staged = true;
                                         }
                                     }
                                     master.reloadGrid(1);
