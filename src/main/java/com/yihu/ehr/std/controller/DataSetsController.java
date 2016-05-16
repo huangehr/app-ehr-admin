@@ -651,9 +651,9 @@ public class DataSetsController extends BaseUIController {
                 summary = sheet.getCell(1, 3).getContents();//备注
 
                 //todo：test--测试时备注做区别，方便删除测试，summary变量区别
-                summary="测试excel导入";
+                //summary="测试excel导入";
                 //todo：test--测试时code区别，否则测试不成功，因为code唯一
-                dataSetCode = dataSetCode+"excel";
+                //dataSetCode = dataSetCode+"excel";
 
                 //数据集校验
                 if (isExistDataSetCode(dataSetCode, versionCode)){
@@ -701,7 +701,7 @@ public class DataSetsController extends BaseUIController {
                     nullAble=nullable.equals("1");
 
                     //todo：test--测试时备注做区别，方便删除测试，definition变量区别
-                    definition="测试excel导入";
+                    //definition="测试excel导入";
 
                     //数据元的校验，一个不通过则全部不保存
                     if (innerCode==null || innerCode.equals("")){

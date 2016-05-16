@@ -464,11 +464,19 @@ set.list = {
             auto: true
         });
         uploader.on('beforeSend',function( file, data ) {
-            var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-            data.versionCode = versionCode;
+            if(!set.list.versionStage) {
+                $.Notice.error("已发布版本不可导入，请确认!");
+                return;
+            }else{
+                var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
+                data.versionCode = versionCode;
+            }
+
         });
         uploader.on('uploadSuccess', function (file, resp) {
-            debugger;
+            if(!set.list.versionStage) {
+                return;
+            }
             if (!resp.successFlg) {
 
                 $.Notice.error(resp.errorMsg);
