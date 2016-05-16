@@ -102,11 +102,9 @@ public class LoginController extends BaseUIController {
                     userDetailModel.setLastLoginTime(now);
                     url = "/user";
                     MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
-                    conditionMap.add("user_json_datas", toJson(userDetailModel));
-                    conditionMap.add("inputStream", "");
-                    conditionMap.add("imageName", "");
+                    conditionMap.add("user_json_data", toJson(userDetailModel));
                     RestTemplates templates = new RestTemplates();
-                    resultStr = templates.doPost(comUrl + url, conditionMap);
+                    resultStr = templates.doPut(comUrl + url, conditionMap);
                     return "redirect:/index";
                 }
 

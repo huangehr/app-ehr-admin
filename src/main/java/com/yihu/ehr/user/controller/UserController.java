@@ -1,6 +1,7 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -168,7 +169,7 @@ public class UserController extends BaseUIController {
     @ResponseBody
     public Object updateUser(String userModelJsonData,HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String url = "/users/";
+        String url = "/user/";
         String resultStr = "";
         Envelop envelop = new Envelop();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -191,11 +192,8 @@ public class UserController extends BaseUIController {
         inputStream.close();
 
         String restStream = Base64.getEncoder().encodeToString(fileBuffer);
-        String imageStream = URLEncoder.encode(restStream,"UTF-8");
 
-        params.add("inputStream",imageStream);
-        params.add("imageName",imageName);
-        params.add("user_json_data", userJsonDataModel);
+
 
         try {
             if (!StringUtils.isEmpty(userDetailModel.getId())) {
@@ -218,11 +216,33 @@ public class UserController extends BaseUIController {
                     userModel.setMajor(userDetailModel.getMajor());
                 }
 
-                userJsonDataModel = mapper.writeValueAsString(userModel);
-                params.add("user_json_datas", userJsonDataModel);
+                String imageId = null;
+                if (!StringUtils.isEmpty(restStream)) {
 
-                resultStr = templates.doPost(comUrl + "/user", params);
+                    FileResourceModel fileResourceModel = new FileResourceModel(userModel.getId(),"user","");
+                    String fileResourceModelJsonData = objectMapper.writeValueAsString(fileResourceModel);
+
+                    MultiValueMap<String, String> params1 = new LinkedMultiValueMap<>();
+                    params1.add("file_str",restStream);
+                    params1.add("file_name",imageName);
+                    params1.add("json_data",fileResourceModelJsonData);
+
+                    imageId = templates.doPost(comUrl + "/files",params1);
+
+                }
+
+                if (!StringUtils.isEmpty(imageId)){
+                    userModel.setImgRemotePath(imageId);
+                }
+
+                userJsonDataModel = mapper.writeValueAsString(userModel);
+                params.add("user_json_data", userJsonDataModel);
+
+                resultStr = templates.doPut(comUrl + url, params);
             }else{
+
+                params.add("user_json_data", userJsonDataModel);
+
                 resultStr = templates.doPost(comUrl + url, params);
             }
         } catch (Exception e) {
@@ -272,8 +292,18 @@ public class UserController extends BaseUIController {
 
             Envelop ep = getEnvelop(resultStr);
             UserDetailModel userDetailModel = toModel(toJson(ep.getObj()),UserDetailModel.class);
+
+            String imageOutStream = "";
+            if (!StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
+
+                params.put("object_id",userDetailModel.getId());
+                imageOutStream = HttpClientUtil.doGet(comUrl + "/files",params,username, password);
+                envelop = toModel(imageOutStream,Envelop.class);
+
+            }
+
             session.removeAttribute("userImageStream");
-            session.setAttribute("userImageStream",userDetailModel.getImgLocalPath() == null ? "" :userDetailModel.getImgLocalPath());
+            session.setAttribute("userImageStream",imageOutStream == null ? "" :envelop.getDetailModelList().get(0));
 
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
@@ -367,12 +397,12 @@ public class UserController extends BaseUIController {
         response.setContentType("image/jpeg");
         OutputStream outputStream = null;
         String fileStream = (String) session.getAttribute("userImageStream");
-        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
+//        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
 
         try {
             outputStream = response.getOutputStream();
 
-            byte[] bytes = Base64.getDecoder().decode(imageStream);
+            byte[] bytes = Base64.getDecoder().decode(fileStream);
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {
