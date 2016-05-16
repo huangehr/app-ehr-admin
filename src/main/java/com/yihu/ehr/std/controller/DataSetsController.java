@@ -651,9 +651,9 @@ public class DataSetsController extends BaseUIController {
                 summary = sheet.getCell(1, 3).getContents();//备注
 
                 //todo：test--测试时备注做区别，方便删除测试，summary变量区别
-                //summary="测试excel导入";
+                summary="测试excel导入";
                 //todo：test--测试时code区别，否则测试不成功，因为code唯一
-                //dataSetCode = dataSetCode+"excel";
+                dataSetCode = dataSetCode+"excel";
 
                 //数据集校验
                 if (isExistDataSetCode(dataSetCode, versionCode)){
@@ -692,16 +692,16 @@ public class DataSetsController extends BaseUIController {
                     type = sheet.getCell(5, row).getContents();//数据类型
                     format = sheet.getCell(6, row).getContents();//表示形式
                     dictCode = sheet.getCell(7, row).getContents();//术语范围值
-                    columnName = sheet.getCell(8, row).getContents();//列名
-                    columnType = sheet.getCell(9, row).getContents();//列类型
-                    columnLength = sheet.getCell(10, row).getContents();//列长度
+                    columnName = innerCode;//列名取内部标识
+                    columnType = getColumnType(type);//根据数据类型获取列类型
+                    columnLength = getColumnLength(type,format);//根据数据类型和标识格式获取列长度
                     primaryKey = sheet.getCell(11, row).getContents();//主键
                     nullable = sheet.getCell(12, row).getContents();//可为空
                     pk=primaryKey.equals("1");
                     nullAble=nullable.equals("1");
 
                     //todo：test--测试时备注做区别，方便删除测试，definition变量区别
-                    //definition="测试excel导入";
+                    definition="测试excel导入";
 
                     //数据元的校验，一个不通过则全部不保存
                     if (innerCode==null || innerCode.equals("")){
@@ -720,15 +720,8 @@ public class DataSetsController extends BaseUIController {
                     if (name==null || name.equals("")){
                         strErrorMsg = sheetName+"第"+(row+1)+"行数据元名称不能为空，请检查！";
                     }
-                    if (columnName==null || columnName.equals("")){
-                        strErrorMsg = sheetName+"第"+(row+1)+"行列名不能为空，请检查！";
-                    }
                     if (pk && nullAble){
                         strErrorMsg = sheetName+"第"+(row+1)+"行主键不能为空，请检查！";
-                    }
-                    //数据类型与列类型一致 S、L、N、D、DT、T、BY
-                    if ((type.contains("S") && !columnType.contains("VARCHAR")) || (type.equals("D") && !columnType.equals("DATE"))  || (type.equals("DT") && !columnType.equals("DATETIME"))) {
-                        strErrorMsg = sheetName+"第"+(row+1)+"行数据类型与列类型不匹配，请检查！";
                     }
                     //关联字典是否已经导入
                     if (!StringUtils.isEmpty(dictCode)){
@@ -791,6 +784,50 @@ public class DataSetsController extends BaseUIController {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
+    }
+
+    //根据数据类型获取列类型
+    private String getColumnType(String type) {
+        //数据类型S（字符型）、L（布尔型）、N（数值型）、D（日期型）、DT（日期时间型）、T（时间型）、BY（二进制）
+        String columnType = "VARCHAR";
+        switch (type){
+            case "L":
+                columnType = "VARCHAR";
+                break;
+            case "N":
+                columnType = "NUMERIC";
+                break;
+            case "D":
+                columnType = "DATE";
+                break;
+            case "DT":
+                columnType = "DATETIME";
+                break;
+            case "T":
+                columnType = "DATETIME";
+                break;
+            case "BY":
+                columnType = "BLOB";
+                break;
+        }
+        return columnType;
+    }
+    //根据标识格式获取列长度
+    private String getColumnLength(String type,String format) {
+        //只取后面的数字
+        String columnLength = "";
+        if (!type.equals("D") && !type.equals("DT") && !type.equals("T") && !type.equals("BY")){
+            if (type.equals("L")){
+                columnLength="1";
+            }else{
+                if (format.contains(",")){
+                    format = format.replace(format.substring(format.indexOf(",")),"");
+                }
+                columnLength=format.replaceAll(".*[^\\d](?=(\\d+))","");
+            }
+
+        }
+        return columnLength;
     }
 
     @RequestMapping("/exportToExcel")
