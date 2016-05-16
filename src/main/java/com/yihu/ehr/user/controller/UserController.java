@@ -193,8 +193,6 @@ public class UserController extends BaseUIController {
 
         String restStream = Base64.getEncoder().encodeToString(fileBuffer);
 
-
-
         try {
             if (!StringUtils.isEmpty(userDetailModel.getId())) {
                 //修改
@@ -216,26 +214,27 @@ public class UserController extends BaseUIController {
                     userModel.setMajor(userDetailModel.getMajor());
                 }
 
-                String imageId = null;
-                if (!StringUtils.isEmpty(restStream)) {
-
-                    FileResourceModel fileResourceModel = new FileResourceModel(userModel.getId(),"user","");
-                    String fileResourceModelJsonData = objectMapper.writeValueAsString(fileResourceModel);
-
-                    MultiValueMap<String, String> params1 = new LinkedMultiValueMap<>();
-                    params1.add("file_str",restStream);
-                    params1.add("file_name",imageName);
-                    params1.add("json_data",fileResourceModelJsonData);
-
-                    imageId = templates.doPost(comUrl + "/files",params1);
-
-                }
+                String imageId = fileUpload(userModel.getId(),restStream,imageName);
+//                String imageId = null;
+//                if (!StringUtils.isEmpty(restStream)) {
+//
+//                    FileResourceModel fileResourceModel = new FileResourceModel(userModel.getId(),"user","");
+//                    String fileResourceModelJsonData = objectMapper.writeValueAsString(fileResourceModel);
+//
+//                    MultiValueMap<String, String> params1 = new LinkedMultiValueMap<>();
+//                    params1.add("file_str",restStream);
+//                    params1.add("file_name",imageName);
+//                    params1.add("json_data",fileResourceModelJsonData);
+//
+//                    imageId = templates.doPost(comUrl + "/files",params1);
+//
+//                }
 
                 if (!StringUtils.isEmpty(imageId)){
                     userModel.setImgRemotePath(imageId);
                 }
 
-                userJsonDataModel = mapper.writeValueAsString(userModel);
+                userJsonDataModel = toJson(userModel);
                 params.add("user_json_data", userJsonDataModel);
 
                 resultStr = templates.doPut(comUrl + url, params);
@@ -244,12 +243,57 @@ public class UserController extends BaseUIController {
                 params.add("user_json_data", userJsonDataModel);
 
                 resultStr = templates.doPost(comUrl + url, params);
+
+                envelop = toModel(resultStr,Envelop.class);
+                UserDetailModel addUserModel = toModel(toJson(envelop.getObj()),UserDetailModel.class);
+
+                String imageId = fileUpload(addUserModel.getId(),restStream,imageName);
+
+                if (!StringUtils.isEmpty(imageId)){
+                    addUserModel.setImgRemotePath(imageId);
+
+                    String userData = templates.doGet(comUrl + "/users/admin/"+addUserModel.getId());
+                    envelop = mapper.readValue(userData,Envelop.class);
+                    String userJsonModel = mapper.writeValueAsString(envelop.getObj());
+                    UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                    userModel.setImgRemotePath(imageId);
+
+                    params.remove("user_json_data");
+                    params.add("user_json_data",toJson(userModel));
+//                    params.add("user_json_data",toJson(addUserModel));
+                    resultStr = templates.doPut(comUrl + url, params);
+
+                }
+
             }
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return resultStr;
+
+    }
+
+    public String fileUpload(String userId,String inputStream,String fileName){
+
+        RestTemplates templates = new RestTemplates();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
+        String fileId = null;
+        if (!StringUtils.isEmpty(inputStream)) {
+
+            FileResourceModel fileResourceModel = new FileResourceModel(userId,"user","");
+            String fileResourceModelJsonData = toJson(fileResourceModel);
+
+            params.add("file_str",inputStream);
+            params.add("file_name",fileName);
+            params.add("json_data",fileResourceModelJsonData);
+
+            fileId = templates.doPost(comUrl + "/files",params);
+
+        }
+
+        return fileId;
 
     }
 
@@ -300,10 +344,14 @@ public class UserController extends BaseUIController {
                 imageOutStream = HttpClientUtil.doGet(comUrl + "/files",params,username, password);
                 envelop = toModel(imageOutStream,Envelop.class);
 
+                if (envelop.getDetailModelList().size()>0){
+                    session.removeAttribute("userImageStream");
+                    session.setAttribute("userImageStream",imageOutStream == null ? "" :envelop.getDetailModelList().get(envelop.getDetailModelList().size()-1));
+                }
             }
 
-            session.removeAttribute("userImageStream");
-            session.setAttribute("userImageStream",imageOutStream == null ? "" :envelop.getDetailModelList().get(0));
+
+
 
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
@@ -397,6 +445,7 @@ public class UserController extends BaseUIController {
         response.setContentType("image/jpeg");
         OutputStream outputStream = null;
         String fileStream = (String) session.getAttribute("userImageStream");
+
 //        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
 
         try {
