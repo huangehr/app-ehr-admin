@@ -91,12 +91,19 @@
                         auto: true
                     });
                     uploader.on('beforeSend',function( file, data ) {
-                        debugger;
-                        var versionCode = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                        data.versionCode = versionCode;
+                        if(!versionStage)
+                        {
+                            $.Notice.error("已发布版本不可新增，请确认!");
+                            return;
+                        }else{
+                            var versionCode = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
+                            data.versionCode = versionCode;
+                        }
                     });
                     uploader.on('uploadSuccess', function (file, resp) {
-                        debugger;
+                        if(!versionStage) {
+                            return;
+                        }
                         if (!resp.successFlg) {
 
                             $.Notice.error(resp.errorMsg);

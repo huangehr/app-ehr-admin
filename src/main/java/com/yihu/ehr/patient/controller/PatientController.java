@@ -1,5 +1,6 @@
 package com.yihu.ehr.patient.controller;
 
+import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -57,6 +59,7 @@ public class PatientController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         RestTemplates templates = new RestTemplates();
+        Map<String,Object> params = new HashMap<>();
         try {
             if (patientDialogType.equals("addPatient")) {
                 PatientDetailModel patientDetailModel = new PatientDetailModel();
@@ -71,8 +74,21 @@ public class PatientController extends BaseUIController {
                 //todo 该controller的download方法放后台处理
                 resultStr = templates.doGet(comUrl + url + idCardNo);
                 Envelop envelop = getEnvelop(resultStr);
+
                 PatientDetailModel patientDetailModel = toModel(toJson(envelop.getObj()),PatientDetailModel.class);
-                session.setAttribute("patientImageStream",patientDetailModel.getLocalPath());
+
+                String imageOutStream = "";
+                if (!StringUtils.isEmpty(patientDetailModel.getIdCardNo())) {
+
+                    params.put("object_id",patientDetailModel.getIdCardNo());
+                    imageOutStream = HttpClientUtil.doGet(comUrl + "/files",params,username, password);
+                    result = toModel(imageOutStream,Envelop.class);
+
+                    if (result.getDetailModelList().size()>0){
+                        session.setAttribute("patientImageStream",result.getDetailModelList().get(result.getDetailModelList().size()-1));
+                    }
+                }
+
                 model.addAttribute("patientDialogType", patientDialogType);
                 if (envelop.isSuccessFlg()) {
                     model.addAttribute("patientModel", resultStr);
@@ -175,6 +191,7 @@ public class PatientController extends BaseUIController {
 
             String url = "/populations";
             String resultStr = "";
+            String imageId = "";
             Envelop result = new Envelop();
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             String[] strings = URLDecoder.decode(patientJsonData, "UTF-8").split(";");
@@ -198,8 +215,8 @@ public class PatientController extends BaseUIController {
             String restStream = Base64.getEncoder().encodeToString(fileBuffer);
             String imageStream = URLEncoder.encode(restStream, "UTF-8");
 
-            params.add("inputStream", imageStream);
-            params.add("imageName", imageName);
+//            params.add("inputStream", imageStream);
+//            params.add("imageName", imageName);
             if (strings[1].equals("updatePatient")) {
                 String idCardNo = patientDetailModel.getIdCardNo();
                 resultStr = templates.doGet(comUrl + url + '/' + idCardNo);
@@ -219,6 +236,11 @@ public class PatientController extends BaseUIController {
                     updatePatient.setWorkAddressInfo(patientDetailModel.getWorkAddressInfo());
                     updatePatient.setResidenceType(patientDetailModel.getResidenceType());
                     updatePatient.setLocalPath("");
+
+                    imageId = fileUpload(updatePatient.getIdCardNo(),restStream,imageName);
+                    if (!StringUtils.isEmpty(imageId))
+                        updatePatient.setPicPath(imageId);
+
                     //联系电话
                     Map<String, String> telphoneNo = null;
                     String tag = "联系电话";
@@ -246,14 +268,24 @@ public class PatientController extends BaseUIController {
                 String tag = "联系电话";
                 telphoneNo.put(tag, patientDetailModel.getTelephoneNo());
                 patientDetailModel.setTelephoneNo(toJson(telphoneNo));
+
+                imageId = fileUpload(patientDetailModel.getIdCardNo(),restStream,imageName);
+                if (!StringUtils.isEmpty(imageId)) {
+                    patientDetailModel.setPicPath(imageId);
+                }
+
                 params.add("patientModelJsonData", toJson(patientDetailModel));
             }
             try {
 
                 if (strings[1].equals("updatePatient")) {
+
                     resultStr = templates.doPost(comUrl + "/population", params);
+
                 } else if (strings[1].equals("addPatient")) {
+
                     resultStr = templates.doPost(comUrl + url, params);
+
                 }
                 result.setSuccessFlg(getEnvelop(resultStr).isSuccessFlg());
                 return result;
@@ -266,6 +298,30 @@ public class PatientController extends BaseUIController {
             e.printStackTrace();
             return "";
         }
+    }
+
+
+    public String fileUpload(String patientId,String inputStream,String fileName){
+
+        RestTemplates templates = new RestTemplates();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+
+        String fileId = null;
+        if (!StringUtils.isEmpty(inputStream)) {
+
+            FileResourceModel fileResourceModel = new FileResourceModel(patientId,"patient","");
+            String fileResourceModelJsonData = toJson(fileResourceModel);
+
+            params.add("file_str",inputStream);
+            params.add("file_name",fileName);
+            params.add("json_data",fileResourceModelJsonData);
+
+            fileId = templates.doPost(comUrl + "/files",params);
+
+        }
+
+        return fileId;
+
     }
 
     @RequestMapping("resetPass")
@@ -307,7 +363,7 @@ public class PatientController extends BaseUIController {
         FileInputStream fis = null;
         OutputStream outputStream = null;
         String fileStream = (String) session.getAttribute("patientImageStream");
-        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
+//        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
 
         try {
             outputStream = response.getOutputStream();
@@ -323,7 +379,7 @@ public class PatientController extends BaseUIController {
 //                outputStream.write(buffer, 0, count);
 //            outputStream.flush();
 
-            byte[] bytes = Base64.getDecoder().decode(imageStream);
+            byte[] bytes = Base64.getDecoder().decode(fileStream);
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {
