@@ -121,12 +121,12 @@ public class HosEsbMiniReleaseController extends BaseUIController {
     @ResponseBody
     public Object deleteReleaseInfo(String releaseInfoId) {
         Envelop result = new Envelop();
-        String resultStr = "";
         Map<String, Object> params = new HashMap<String, Object>();
         String url = "/esb/deleteHosEsbMiniRelease/"+releaseInfoId;
         try{
-            resultStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
-            return resultStr;
+            HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            result.setSuccessFlg(true);
+            return result;
         }catch(Exception ex){
             LogService.getLogger(HosEsbMiniReleaseController.class).error(ex.getMessage());
             result.setSuccessFlg(false);

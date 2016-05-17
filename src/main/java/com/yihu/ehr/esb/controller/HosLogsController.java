@@ -101,7 +101,6 @@ public class HosLogsController extends BaseUIController {
     @RequestMapping("clearHosLogs")
     @ResponseBody
     public Object clearHosLogs(String beginTime, String endTime,String  organization){
-        String resultStr="";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<String, Object>();
         StringBuffer stringBuffer = new StringBuffer();
@@ -124,8 +123,9 @@ public class HosLogsController extends BaseUIController {
         }
         String url = "/esb/deleteHosLogs";
         try{
-         resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
-            return resultStr;
+            HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            envelop.setSuccessFlg(true);
+            return envelop;
         }catch (Exception e){
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
