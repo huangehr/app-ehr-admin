@@ -66,14 +66,12 @@ public class HosLogsController extends BaseUIController {
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");
-
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(beginTime)) {
-            stringBuffer.append("uploadTime>=" + beginTime + ";");
+            stringBuffer.append("uploadTime%ge%" + beginTime.replace(" ","%t%") + ";");
         }
         if (!StringUtils.isEmpty(endTime)) {
-            stringBuffer.append("uploadTime<=" + endTime + ";");
+            stringBuffer.append("uploadTime%le%" + endTime.replace(" ","%t%") + ";");
         }
         if (!StringUtils.isEmpty(organization)) {
             stringBuffer.append("orgCode=" + organization);
