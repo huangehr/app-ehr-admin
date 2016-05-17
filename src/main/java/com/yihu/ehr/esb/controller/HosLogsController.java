@@ -101,27 +101,35 @@ public class HosLogsController extends BaseUIController {
     @RequestMapping("clearHosLogs")
     @ResponseBody
     public Object clearHosLogs(String beginTime, String endTime,String  organization){
-        Object  dataStr =  this.searchHosLogs(beginTime,endTime,organization,1,Integer.MAX_VALUE);
         String resultStr="";
-        Envelop envelopLog = getEnvelop(dataStr.toString());
-        Map<String, Object> params = new HashMap<String, Object>();
         Envelop envelop = new Envelop();
-        if (envelopLog.isSuccessFlg()) {
-            List<MHosLog> mHosLogs = (List<MHosLog>) getEnvelopList(envelopLog.getDetailModelList(), new ArrayList<MHosLog>(), MHosLog.class);
-            try {
-                for(MHosLog mHosLog :  mHosLogs){
-                    String url = "/esb/deleteHosLogs/"+mHosLog.getId();
-                    resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
-                }
-                return resultStr;
-            }catch (Exception e) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            }
-            return envelop;
-        }else{
-            return resultStr;
+        Map<String, Object> params = new HashMap<String, Object>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(beginTime)) {
+            stringBuffer.append("uploadTime%ge%" + beginTime.replace(" ","%t%") + ";");
         }
-
+        if (!StringUtils.isEmpty(endTime)) {
+            stringBuffer.append("uploadTime%le%" + endTime.replace(" ","%t%") + ";");
+        }
+        if (!StringUtils.isEmpty(organization)) {
+            stringBuffer.append("orgCode=" + organization);
+        }
+        params.put("filters", "");
+        String filters = stringBuffer.toString();
+        if(filters.lastIndexOf(";")>0){
+            filters = filters.substring(0,filters.lastIndexOf(";"));
+        }
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        String url = "/esb/deleteHosLogs";
+        try{
+         resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            return resultStr;
+        }catch (Exception e){
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
     }
 }
