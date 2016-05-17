@@ -53,7 +53,7 @@ public class HosLogsController extends BaseUIController {
 
     @RequestMapping("initial")
     public String userInitial(Model model) {
-        model.addAttribute("contentPage", "esb/log/uploadLog");
+        model.addAttribute("contentPage", "esb/log/hosLogs");
         return "pageView";
     }
 
