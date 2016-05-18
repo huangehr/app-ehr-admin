@@ -68,7 +68,7 @@
                             },
                             columns: [
                                 {display: 'id', name: 'id', hide: true},
-                                {display: '程序包代码', name: 'systemCode', width: '20%', isAllowHide: false, align: 'left'},
+                                {display: '系统代码', name: 'systemCode', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '文件路径', name: 'file', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '版本名称', name: 'versionName', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '发布时间', name: 'releaseDate', width: '20%', isAllowHide: false, align: 'left'},
@@ -126,7 +126,7 @@
                         }
                         isSaveSelectStatus = true;
                         hosReleaseMaster.releaseInfoDialog = $.ligerDialog.open({
-                            height: 462,
+                            height: 320,
                             width: 460,
                             title: title,
                             url: '${contextRoot}/esb/hosRelease/releaseInfo',
@@ -213,16 +213,11 @@
             win.reloadMasterGrid = function () {
                 hosReleaseMaster.reloadGrid();
             };
-            win.reloadEntryMasterGrid = function () {
-                installLogMater.reloadGrid();
-            };
-            win.closeDialog = function (type, msg) {
-                if (type == 'right')
-                    installLogMater.closeDl();
-                else
-                    hosReleaseMaster.dictInfoDialog.close();
-                if (msg)
+            win.closeDialog = function (msg) {
+                hosReleaseMaster.releaseInfoDialog.close();
+                if (msg){
                     $.Notice.success(msg);
+                }
             };
             /* *************************** 页面功能 **************************** */
             pageInit();
