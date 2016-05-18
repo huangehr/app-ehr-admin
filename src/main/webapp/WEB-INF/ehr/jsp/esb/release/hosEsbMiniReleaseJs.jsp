@@ -68,7 +68,7 @@
                             },
                             columns: [
                                 {display: 'id', name: 'id', hide: true},
-                                {display: '程序包代码', name: 'systemCode', width: '20%', isAllowHide: false, align: 'left'},
+                                {display: '系统代码', name: 'systemCode', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '文件路径', name: 'file', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '版本名称', name: 'versionName', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '发布时间', name: 'releaseDate', width: '20%', isAllowHide: false, align: 'left'},

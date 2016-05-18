@@ -32,6 +32,13 @@
         </div>
     </div>
 
+    <div class="m-form-group">
+        <label class="label_title"><spring:message code="lbl.hosRelease.releaseTime"/><spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control essential">
+            <input type="text" id="inp_release_time" class="required useTitle f-w240 max-length-19 min-length-19 validate-time"  placeholder=<spring:message code="lbl.hosRelease.releaseTime"/> data-attr-scan="releaseTime" />
+        </div>
+    </div>
+
     <div class="m-form-group f-pa" style="right: 10px;bottom:0;">
         <div class="m-form-control" >
             <input type="button" value="<spring:message code="btn.save"/>" id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />

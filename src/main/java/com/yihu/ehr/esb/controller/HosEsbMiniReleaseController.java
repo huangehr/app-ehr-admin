@@ -90,7 +90,7 @@ public class HosEsbMiniReleaseController extends BaseUIController {
      */
     @RequestMapping("saveReleaseInfo")
     @ResponseBody
-    public Object saveReleaseInfo(String systemCode, String file, String versionName, String versionCode, String releaseId,HttpServletRequest request) {
+    public Object saveReleaseInfo(String systemCode, String file, String versionName, String versionCode, String releaseId,String releaseTime, HttpServletRequest request) {
         Envelop result = new Envelop();
         String resultStr = "";
 
@@ -114,6 +114,11 @@ public class HosEsbMiniReleaseController extends BaseUIController {
             result.setErrorMsg("版本编号不能为空！");
             return result;
         }
+        if (StringUtils.isEmpty(releaseTime)) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg("发布时间不能为空！");
+            return result;
+        }
 
         Map<String, Object> params = new HashMap<>();
         MHosEsbMiniRelease mHosEsbMiniRelease = new MHosEsbMiniRelease();
@@ -122,9 +127,10 @@ public class HosEsbMiniReleaseController extends BaseUIController {
         mHosEsbMiniRelease.setFile(file);
         mHosEsbMiniRelease.setVersionCode(Integer.parseInt(versionCode));
         mHosEsbMiniRelease.setVersionName(versionName);
-        mHosEsbMiniRelease.setReleaseTime(new Date());
-        params.put("json_data",toJson(mHosEsbMiniRelease));
+        SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try{
+            mHosEsbMiniRelease.setReleaseTime(sm.parse(releaseTime));
+            params.put("json_data",toJson(mHosEsbMiniRelease));
             String url = "/esb/saveReleaseInfo";
             resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return resultStr;

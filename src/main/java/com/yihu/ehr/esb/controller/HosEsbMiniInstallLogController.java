@@ -8,6 +8,7 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,7 +31,11 @@ public class HosEsbMiniInstallLogController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
 
-
+    @RequestMapping("initial")
+    public String dictInitial(Model model) {
+        model.addAttribute("contentPage","/esb/release/HosEsbMiniInstallLog");
+        return "pageView";
+    }
     /**
      * 查询安装记录列表根据安装包systemCode
      *
@@ -38,14 +43,16 @@ public class HosEsbMiniInstallLogController extends BaseUIController {
      */
     @RequestMapping("searchInstallLogList")
     @ResponseBody
-    public Object getReleaseInfoList(String systemCode ,Integer page, Integer rows) {
+    public Object getReleaseInfoList(String systemCode,String orgCode,Integer page, Integer rows) {
         Envelop result = new Envelop();
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
-
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(systemCode)) {
             stringBuffer.append("systemCode=" + systemCode + ";");
+        }
+        if (!StringUtils.isEmpty(orgCode)) {
+            stringBuffer.append("orgCode=" + orgCode);
         }
         String filters = stringBuffer.toString();
         if(filters.lastIndexOf(";")>0){

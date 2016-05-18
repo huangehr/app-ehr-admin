@@ -19,6 +19,7 @@
             $file: $("#inp_file"),
             $versionName: $("#inp_version_name"),
             $versionCode: $("#inp_version_code"),
+            $releaseTime: $("#inp_release_time"),
             $id: $("#id"),
 
             $btnSave: $("#btn_save"),
@@ -29,6 +30,7 @@
                 this.bindEvents();
             },
             initForm: function () {
+                this.initDDL(this.$releaseTime);
                 this.$systemCode.ligerTextBox({width:240,validate:{required:true }});
                 this.$file.ligerTextBox({width:240,validate:{required:true }});
                 this.$versionName.ligerTextBox({width:240,validate:{required:true }});
@@ -40,12 +42,23 @@
                     file: info.file,
                     versionName : info.versionName,
                     versionCode : info.versionCode,
-                    id: info.id
+                    id: info.id,
+                    releaseTime:info.releaseDate
                 });
 
                 this.$form.show();
             },
+            initDDL: function (mode) {
+                mode.ligerDateEditor({
+                    format: "yyyy-MM-dd hh:mm:ss",
+                    showTime: true,
+                    labelWidth: 100,
+                    labelAlign: 'center',
+                    cancelable : true,
+                    validate:{required:true}
+                });
 
+            },
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,
@@ -62,7 +75,8 @@
                         releaseId:values.id,
                         file:values.file,
                         versionName:values.versionName,
-                        versionCode:values.versionCode
+                        versionCode:values.versionCode,
+                        releaseTime:values.releaseTime
                     };
                     if(!validator.validate()){
                         self.$btnSave.removeAttr('disabled');
