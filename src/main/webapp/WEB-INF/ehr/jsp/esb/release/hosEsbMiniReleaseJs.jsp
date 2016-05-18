@@ -126,7 +126,7 @@
                         }
                         isSaveSelectStatus = true;
                         hosReleaseMaster.releaseInfoDialog = $.ligerDialog.open({
-                            height: 462,
+                            height: 320,
                             width: 460,
                             title: title,
                             url: '${contextRoot}/esb/hosRelease/releaseInfo',
@@ -213,16 +213,11 @@
             win.reloadMasterGrid = function () {
                 hosReleaseMaster.reloadGrid();
             };
-            win.reloadEntryMasterGrid = function () {
-                installLogMater.reloadGrid();
-            };
-            win.closeDialog = function (type, msg) {
-                if (type == 'right')
-                    installLogMater.closeDl();
-                else
-                    hosReleaseMaster.dictInfoDialog.close();
-                if (msg)
+            win.closeDialog = function (msg) {
+                hosReleaseMaster.releaseInfoDialog.close();
+                if (msg){
                     $.Notice.success(msg);
+                }
             };
             /* *************************** 页面功能 **************************** */
             pageInit();
