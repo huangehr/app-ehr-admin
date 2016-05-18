@@ -86,7 +86,7 @@
                             allowHideColumn: false,
                             onBeforeShowData: function (data) {
                                 if (data.totalCount == 0) {
-                                    installLogMater.reloadGrid(1, '','');
+                                    installLogMater.reloadGrid(1, '');
                                 }
                             },
                             onAfterShowData: function (data) {
@@ -98,8 +98,8 @@
                             },
                             onSelectRow: function (row) {
                                 selectRowObj = row;
-                                installLogMater.init();
-                                installLogMater.reloadGrid(1,row.systemCode,row.versionCode);
+                                installLogMater.init("-1");
+                                installLogMater.reloadGrid(1,row.systemCode);
                             }
                         }));
                         this.bindEvents();
@@ -153,8 +153,6 @@
                                         }else{
                                             $.Notice.error(data.errorMsg);
                                         }
-
-
                                     }
                                 });
                             }
@@ -176,6 +174,9 @@
                         return;
                     this.grid = $("#div_install_log_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/esb/installLog/searchInstallLogList',
+                        parms: {
+                            systemCode: systemCode
+                        },
                         columns: [
                             {display: 'id', name: 'id', hide: true},
                             {display: 'systemCode', name: 'systemCode', hide: true},
@@ -193,12 +194,10 @@
                     // 自适应宽度
                     this.grid.adjustToWidth();
                 },
-                reloadGrid: function (curPage, systemCode,currentVersionCode) {
+                reloadGrid: function (curPage, systemCode) {
                      systemCode = systemCode == '' ? -1 : hosReleaseMaster.grid.getSelectedRow().systemCode;
-                     currentVersionCode = currentVersionCode==''?-1:hosReleaseMaster.grid.getSelectedRow().versionCode;
                     var values = {
-                        systemCode: systemCode,
-                        currentVersionCode:currentVersionCode
+                        systemCode: systemCode
                     };
                     Util.reloadGrid.call(this.grid, '${contextRoot}/esb/installLog/searchInstallLogList', values, curPage);
                 },

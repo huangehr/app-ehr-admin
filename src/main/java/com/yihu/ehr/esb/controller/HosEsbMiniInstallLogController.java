@@ -38,7 +38,7 @@ public class HosEsbMiniInstallLogController extends BaseUIController {
      */
     @RequestMapping("searchInstallLogList")
     @ResponseBody
-    public Object getReleaseInfoList(String systemCode,String currentVersionCode,Integer page, Integer rows) {
+    public Object getReleaseInfoList(String systemCode ,Integer page, Integer rows) {
         Envelop result = new Envelop();
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
@@ -46,9 +46,6 @@ public class HosEsbMiniInstallLogController extends BaseUIController {
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(systemCode)) {
             stringBuffer.append("systemCode=" + systemCode + ";");
-        }
-        if (!StringUtils.isEmpty(currentVersionCode)) {
-            stringBuffer.append("currentVersionCode=" + currentVersionCode + ";");
         }
         String filters = stringBuffer.toString();
         if(filters.lastIndexOf(";")>0){

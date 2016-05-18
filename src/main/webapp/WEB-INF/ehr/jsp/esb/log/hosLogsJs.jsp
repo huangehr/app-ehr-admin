@@ -169,7 +169,7 @@
                                 dataModel.updateRemote("${contextRoot}/hosLogs/clearHosLogs", {
                                     data: {beginTime: values.beginTime,endTime:values.endTime,organization:values.organization},
                                     success: function (data) {
-                                        if (data==true||data=='true') {
+                                        if (data.successFlg) {
                                              win.parent.$.Notice.success('日记清空成功！');
                                              master.reloadGrid();
                                         } else {
