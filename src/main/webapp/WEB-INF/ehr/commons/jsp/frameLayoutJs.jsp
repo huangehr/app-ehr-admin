@@ -203,7 +203,7 @@
                 },
 
                 //3 - 资源管理中心
-                {id: 3, text: '<spring:message code="title.resource.manage.center"/>'},
+                {id: 3, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
                 {
                     id: 31,
                     level:2,
@@ -264,7 +264,7 @@
                 //{id: 4, text: '<spring:message code="title.security.manage.center"/>'},
 
                 //4 - 运营中心
-                {id: 5, text: '<spring:message code="title.operating.center"/>'},
+                {id: 5, level:1, text: '<spring:message code="title.operating.center"/>'},
                 {
                     id: 51,
                     level:2,
