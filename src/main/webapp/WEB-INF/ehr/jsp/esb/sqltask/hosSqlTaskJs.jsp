@@ -21,12 +21,11 @@
 				master.init();
 			}
 			//多条件查询参数设置
-			function reloadGrid (url, params) {
+			function reloadGrid (params) {
 				if (isFirstPage){
 					hisInfoGrid.options.newPage = 1;
 				}
 				hisInfoGrid.set({
-					url: url,
 					parms: params
 				});
 				hisInfoGrid.reload();
@@ -94,7 +93,7 @@
 				},
 				reloadGrid: function () {
 					var values = retrieve.$element.Fields.getValues();
-					reloadGrid.call(this, '${contextRoot}/esb/sqlTask/hosSqlTasks', values);
+					reloadGrid.call(this, values);
 				},
 				bindEvents: function () {
 					var self = this;
