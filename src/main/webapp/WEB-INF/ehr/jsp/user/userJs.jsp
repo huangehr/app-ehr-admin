@@ -31,12 +31,16 @@
                 if (isFirstPage){
                     userInfoGrid.options.newPage = 1;
                 }
-                userInfoGrid.set({
-                    url: url,
-                    parms: params
-                });
+//                userInfoGrid.set({
+//                    url: url,
+//                    parms: params
+//                });
+//
+//                userInfoGrid.reload();
 
-                userInfoGrid.reload();
+                userInfoGrid.setOptions({parms: params});
+                userInfoGrid.loadData(true);
+
                 isFirstPage = true;
             }
 

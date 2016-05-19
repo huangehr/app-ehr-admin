@@ -20,11 +20,15 @@
 			};
 			// 数据重载函数
 			function reloadGrid(url,params){
-				cdaVersionInfoGrid.set({
-					url:url,
-					parms:params,
-				});
-				cdaVersionInfoGrid.reload();
+//				cdaVersionInfoGrid.set({
+//					url:url,
+//					parms:params,
+//				});
+//				cdaVersionInfoGrid.reload();
+
+				cdaVersionInfoGrid.setOptions({parms: params});
+				cdaVersionInfoGrid.loadData(true);
+
 			};
 
 			/* *************************模块初始化*********************** */

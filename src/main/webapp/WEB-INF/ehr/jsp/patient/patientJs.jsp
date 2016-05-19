@@ -27,12 +27,14 @@
             }
 
             function reloadGrid (url, params) {
-                grid.set({
-                    url: url,
-                    parms: params
-//                    newPage:1
-                });
-                grid.reload();
+//                grid.set({
+//                    url: url,
+//                    parms: params
+////                    newPage:1
+//                });
+//                grid.reload();
+                grid.setOptions({parms: params});
+                grid.loadData(true);
             }
             /* *************************** 函数定义结束******************************* */
 
