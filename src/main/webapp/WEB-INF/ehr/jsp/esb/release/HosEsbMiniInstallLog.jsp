@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <!--######LOG上传接口Title设置######-->
-<div class="f-dn" data-head-title="true"><spring:message code="tille.esb.log.uploadLog"/></div>
+<div class="f-dn" data-head-title="true"><spring:message code="title.esb.source.org.update"/></div>
 <div id="div_wrapper" >
     <!-- ####### 查询条件部分 ####### -->
     <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
