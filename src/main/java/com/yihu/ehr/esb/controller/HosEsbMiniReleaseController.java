@@ -51,18 +51,36 @@ public class HosEsbMiniReleaseController extends BaseUIController {
     }
 
     @RequestMapping("/releaseInfo")
-    public String releaseInfo(Model model, String releaseId,String mode) {
+    public Object releaseInfo(Model model, String releaseInfoId,String mode) {
         Map<String, Object> params = new HashMap<>();
         MHosEsbMiniRelease mHosEsbMiniRelease = new MHosEsbMiniRelease();
         Envelop result = new Envelop();
         String resultStr = "";
         //mode定义：new modify view三种模式，新增，修改，查看
+        //保留view这个页面暂时没用
         if(mode.equals("view") || mode.equals("modify")){
-
+            params.put("filters", "id="+releaseInfoId);
+            params.put("page", 1);
+            params.put("size", 1);
+            params.put("fields", "");
+            params.put("sorts", "");
+            String url = "/esb/searchHosEsbMiniReleases";
+            try{
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                result = getEnvelop(resultStr);
+                if(result.getDetailModelList()!=null&&result.getDetailModelList().size()==1){
+                    Object list =  result.getDetailModelList().get(0);
+                    model.addAttribute("info",toJson(list));
+                }
+            } catch (Exception e){
+                LogService.getLogger(HosEsbMiniReleaseController.class).error(e.getMessage());
+                model.addAttribute("rs", "error");
+            }
+        }else{
+            model.addAttribute("info",toJson(mHosEsbMiniRelease));
         }
-        model.addAttribute("info",toJson(mHosEsbMiniRelease));
         model.addAttribute("mode",mode);
-        model.addAttribute("contentPage","/esb/release/hosEsbMiniReleaseInfoDialog");
+        model.addAttribute("contentPage","/esb/release/hosEsbMiniReleaseDialog");
         return "simpleView";
     }
     /**
@@ -72,7 +90,7 @@ public class HosEsbMiniReleaseController extends BaseUIController {
      */
     @RequestMapping("saveReleaseInfo")
     @ResponseBody
-    public Object saveReleaseInfo(String systemCode, String file, String versionName, String versionCode, String releaseId,HttpServletRequest request) {
+    public Object saveReleaseInfo(String systemCode, String file, String versionName, String versionCode, String releaseId,String releaseTime, HttpServletRequest request) {
         Envelop result = new Envelop();
         String resultStr = "";
 
@@ -96,6 +114,11 @@ public class HosEsbMiniReleaseController extends BaseUIController {
             result.setErrorMsg("版本编号不能为空！");
             return result;
         }
+        if (StringUtils.isEmpty(releaseTime)) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg("发布时间不能为空！");
+            return result;
+        }
 
         Map<String, Object> params = new HashMap<>();
         MHosEsbMiniRelease mHosEsbMiniRelease = new MHosEsbMiniRelease();
@@ -104,9 +127,11 @@ public class HosEsbMiniReleaseController extends BaseUIController {
         mHosEsbMiniRelease.setFile(file);
         mHosEsbMiniRelease.setVersionCode(Integer.parseInt(versionCode));
         mHosEsbMiniRelease.setVersionName(versionName);
-        mHosEsbMiniRelease.setReleaseTime(new Date());
+        SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try{
-            String url = "/esb/createHosEsbMiniRelease";
+            mHosEsbMiniRelease.setReleaseTime(sm.parse(releaseTime));
+            params.put("json_data",toJson(mHosEsbMiniRelease));
+            String url = "/esb/saveReleaseInfo";
             resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return resultStr;
         }catch(Exception ex){
