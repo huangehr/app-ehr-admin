@@ -251,7 +251,7 @@
                     level:2,
                     pid: 3,
                     text: '<spring:message code="title.resource.view"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/resourceBrowse/initial'
                 },
                 {
                     id: 35,
