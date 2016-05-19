@@ -404,13 +404,14 @@ div.l-disabled a.l-radio-checked
 .l-box-dateeditor-body{border:1px solid #A3C0E8; border-left:none; border-right:none; text-align:center; position:relative; }
 .l-box-dateeditor-body table{ margin:0 auto;}
 
-.l-box-dateeditor-monthselector,.l-box-dateeditor-yearselector,.l-box-dateeditor-hourselector,.l-box-dateeditor-minuteselector{ background:white; list-style:none; margin:0 auto; padding:0; position:absolute;top:0px;left:0px; width:100%; display:none; height:100%;  overflow:hidden;}
-.l-box-dateeditor-minuteselector{ overflow:auto;}
+.l-box-dateeditor-monthselector,.l-box-dateeditor-yearselector,.l-box-dateeditor-hourselector,.l-box-dateeditor-minuteselector,.l-box-dateeditor-secondselector{ background:white; list-style:none; margin:0 auto; padding:0; position:absolute;top:0px;left:0px; width:100%; display:none; height:100%;  overflow:hidden;}
+.l-box-dateeditor-minuteselector,.l-box-dateeditor-secondselector{ overflow:auto;}
 .l-box-dateeditor-monthselector li{ float:left; width:50px; line-height:20px; height:20px; margin:5px; margin-top:5px;border:1px solid #d3d3d3; cursor:pointer;}
 .l-box-dateeditor-yearselector li{ float:left; width:50px; line-height:20px; height:20px; margin:5px; margin-top:5px;border:1px solid #d3d3d3; cursor:pointer;}
 .l-box-dateeditor-hourselector li{ float:left; width:36px; line-height:17px; height:17px; margin-left:8px; margin-top:2px;margin-bottom:2px; border:1px solid #d3d3d3; cursor:pointer;}
 .l-box-dateeditor-minuteselector li{ float:left; width:21px; line-height:18px; height:18px; margin-left:6px; margin-bottom:3px;margin-top:3px; border:1px solid #d3d3d3; cursor:pointer;}
-.l-box-dateeditor-monthselector li:hover,.l-box-dateeditor-monthselector li.l-selected,.l-box-dateeditor-monthselector li.l-over,.l-box-dateeditor-yearselector li:hover,.l-box-dateeditor-yearselector li.l-selected,.l-box-dateeditor-yearselector li.l-over,.l-box-dateeditor-hourselector li:hover,.l-box-dateeditor-hourselector li.l-selected,.l-box-dateeditor-hourselector li.l-over,.l-box-dateeditor-minuteselector li:hover,.l-box-dateeditor-minuteselector li.l-selected,.l-box-dateeditor-minuteselector li.l-over
+.l-box-dateeditor-secondselector li{ float:left; width:21px; line-height:18px; height:18px; margin-left:6px; margin-bottom:3px;margin-top:3px; border:1px solid #d3d3d3; cursor:pointer;}
+.l-box-dateeditor-monthselector li:hover,.l-box-dateeditor-monthselector li.l-selected,.l-box-dateeditor-monthselector li.l-over,.l-box-dateeditor-yearselector li:hover,.l-box-dateeditor-yearselector li.l-selected,.l-box-dateeditor-yearselector li.l-over,.l-box-dateeditor-hourselector li:hover,.l-box-dateeditor-hourselector li.l-selected,.l-box-dateeditor-hourselector li.l-over,.l-box-dateeditor-minuteselector li:hover,.l-box-dateeditor-minuteselector li.l-selected,.l-box-dateeditor-minuteselector li.l-over,.l-box-dateeditor-secondselector li:hover,.l-box-dateeditor-secondselector li.l-selected,.l-box-dateeditor-secondselector li.l-over
 {background-color: #FFE7A2;border: solid 1px #FFBD69;}
 
 .l-box-dateeditor-body thead td{ border-bottom:1px solid #d3d3d3;}

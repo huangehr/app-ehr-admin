@@ -55,8 +55,8 @@
         _render: function ()
         {
             var g = this, p = this.options;
-            if (!p.showTime && p.format.indexOf(" hh:mm") > -1)
-                p.format = p.format.replace(" hh:mm", "");
+            if (!p.showTime && p.format.indexOf(" hh:mm:ss") > -1)
+                p.format = p.format.replace(" hh:mm:ss", "");
             if (this.element.tagName.toLowerCase() != "input" || this.element.type != "text")
                 return;
             g.inputText = $(this.element);
@@ -91,7 +91,9 @@
             dateeditorHTML += "        </table>";
             dateeditorHTML += "        <ul class='l-box-dateeditor-monthselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
             dateeditorHTML += "        <select class='l-box-dateeditor-yearselector' size=10 style='overflow-y: auto;'></select>";
+            dateeditorHTML += "        <ul class='l-box-dateeditor-hourselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
             dateeditorHTML += "        <ul class='l-box-dateeditor-minuteselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
+            dateeditorHTML += "        <ul class='l-box-dateeditor-secondselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
             dateeditorHTML += "    </div>";
             dateeditorHTML += "    <div class='l-box-dateeditor-toolbar'>";
             dateeditorHTML += "        <div class='l-box-dateeditor-time'></div>";
@@ -115,10 +117,12 @@
             g.body.yearselector = $(".l-box-dateeditor-yearselector", g.body);
             g.body.hourselector = $(".l-box-dateeditor-hourselector", g.body);
             g.body.minuteselector = $(".l-box-dateeditor-minuteselector", g.body);
+            g.body.secondselector = $(".l-box-dateeditor-secondselector", g.body);
 
             g.toolbar.time = $(".l-box-dateeditor-time", g.toolbar);
             g.toolbar.time.hour = $("<a></a>");
             g.toolbar.time.minute = $("<a></a>");
+            g.toolbar.time.second = $("<a></a>");
             g.buttons = {
                 btnPrevYear: $(".l-box-dateeditor-header-prevyear", g.header),
                 btnNextYear: $(".l-box-dateeditor-header-nextyear", g.header),
@@ -136,7 +140,8 @@
                 day: nowDate.getDay(),
                 date: nowDate.getDate(),
                 hour: nowDate.getHours(),
-                minute: nowDate.getMinutes()
+                minute: nowDate.getMinutes(),
+                second: nowDate.getSeconds()
             };
             //当前的时间
             g.currentDate = {
@@ -145,7 +150,8 @@
                 day: nowDate.getDay(),
                 date: nowDate.getDate(),
                 hour: nowDate.getHours(),
-                minute: nowDate.getMinutes()
+                minute: nowDate.getMinutes(),
+                second: nowDate.getSeconds()
             };
             //选择的时间
             g.selectedDate = null;
@@ -172,7 +178,7 @@
             if (p.showTime)
             {
                 g.toolbar.time.show();
-                g.toolbar.time.append(g.toolbar.time.hour).append(":").append(g.toolbar.time.minute);
+                g.toolbar.time.append(g.toolbar.time.hour).append(":").append(g.toolbar.time.minute).append(":").append(g.toolbar.time.second);
                 $("li", g.body.hourselector).each(function (i, item)
                 {
                     var str = i;
@@ -180,6 +186,12 @@
                     $(this).html(str);
                 });
                 $("li", g.body.minuteselector).each(function (i, item)
+                {
+                    var str = i;
+                    if (i < 10) str = "0" + i.toString();
+                    $(this).html(str);
+                });
+                $("li", g.body.secondselector).each(function (i, item)
                 {
                     var str = i;
                     if (i < 10) str = "0" + i.toString();
@@ -434,6 +446,38 @@
                 g.showDate();
             });
 
+            g.toolbar.time.second.click(function ()
+            {
+                $("li", g.body.secondselector).each(function (i, item)
+                {
+                    if (g.currentDate.second == i)
+                        $(this).addClass("l-selected");
+                    else
+                        $(this).removeClass("l-selected");
+                });
+                g.body.secondselector.slideToggle("fast", function ()
+                {
+                    var index = $("li", this).index($('li.l-selected', this));
+                    if (index > 29)
+                    {
+                        var offSet = ($('li.l-selected', this).offset().top - $(this).offset().top);
+                        $(this).animate({ scrollTop: offSet });
+                    }
+                });
+            });
+            g.body.secondselector.hover(function () { }, function ()
+            {
+                $(this).slideUp("fast");
+            });
+            $("li", g.body.secondselector).click(function ()
+            {
+                var index = $("li", g.body.secondselector).index(this);
+                g.currentDate.second = index;
+                g.body.secondselector.slideToggle("fast");
+                g.bulidContent();
+                g.showDate();
+            });
+
             //上个月
             g.buttons.btnPrevMonth.click(function ()
             {
@@ -559,15 +603,18 @@
             var monthDayNum = new Date(nextYear, nextMonth - 1, 0).getDate();
             //当前上个月天数
             var prevMonthDayNum = new Date(g.currentDate.year, g.currentDate.month - 1, 0).getDate();
-
+            var date = new Date();
             g.buttons.btnMonth.html(p.monthMessage[g.currentDate.month - 1]);
             g.buttons.btnYear.html(g.currentDate.year);
             g.toolbar.time.hour.html(g.currentDate.hour);
             g.toolbar.time.minute.html(g.currentDate.minute);
+            g.toolbar.time.second.html(g.currentDate.second);
             if (g.toolbar.time.hour.html().length == 1)
                 g.toolbar.time.hour.html("0" + g.toolbar.time.hour.html());
             if (g.toolbar.time.minute.html().length == 1)
                 g.toolbar.time.minute.html("0" + g.toolbar.time.minute.html());
+            if (g.toolbar.time.second.html().length == 1)
+                g.toolbar.time.second.html("0" + g.toolbar.time.second.html());
             $("td", this.body.tbody).each(function () { this.className = "" });
             $("tr", this.body.tbody).each(function (i, tr)
             {
@@ -576,7 +623,7 @@
                     var id = i * 7 + (j - thismonthFirstDay);
                     var showDay = id + 1;
                     if (g.selectedDate && g.currentDate.year == g.selectedDate.year &&
-                        g.currentDate.month == g.selectedDate.month &&
+                        g.currentDate.month == g.selectedDate.month && g.currentDate.second == g.selectedDate.second &&
                         id + 1 == g.selectedDate.date)
                     {
                         if (j == 0 || j == 6)
@@ -697,7 +744,8 @@
             if (!this.currentDate) return;
             this.currentDate.hour = parseInt(g.toolbar.time.hour.html(), 10);
             this.currentDate.minute = parseInt(g.toolbar.time.minute.html(), 10);
-            var dateStr = this.currentDate.year + '/' + this.currentDate.month + '/' + this.currentDate.date + ' ' + this.currentDate.hour + ':' + this.currentDate.minute;
+            this.currentDate.second= parseInt(g.toolbar.time.second.html(), 10);
+            var dateStr = this.currentDate.year + '/' + this.currentDate.month + '/' + this.currentDate.date + ' ' + this.currentDate.hour + ':' + this.currentDate.minute+ ':' + this.currentDate.second;
             var myDate = new Date(dateStr);
             dateStr = g.getFormatDate(myDate);
             this.inputText.val(dateStr);
@@ -718,12 +766,12 @@
         isLongDateTime: function (dateStr)
         {
             var g = this, p = this.options;
-            var reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2})$/;
+            var reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
             var r = dateStr.match(reg);
             if (r == null) return false;
-            var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6]);
+            var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6],r[7]);
             if (d == "NaN") return false;
-            return (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6]);
+            return (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6]&& d.getSeconds() == r[7]);
         },
         getFormatDate: function (date)
         {
@@ -904,7 +952,8 @@
                 day: g.usedDate.getDay(),
                 date: g.usedDate.getDate(),
                 hour: g.usedDate.getHours(),
-                minute: g.usedDate.getMinutes()
+                minute: g.usedDate.getMinutes(),
+                second: g.usedDate.getSeconds()
             };
             g.currentDate = {
                 year: g.usedDate.getFullYear(),
@@ -912,7 +961,8 @@
                 day: g.usedDate.getDay(),
                 date: g.usedDate.getDate(),
                 hour: g.usedDate.getHours(),
-                minute: g.usedDate.getMinutes()
+                minute: g.usedDate.getMinutes(),
+                second: g.usedDate.getSeconds()
             };
             var formatVal = g.getFormatDate(newDate);
             // 手动输入日期格式正确则隐藏提示窗cyc

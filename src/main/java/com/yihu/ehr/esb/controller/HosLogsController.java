@@ -53,7 +53,7 @@ public class HosLogsController extends BaseUIController {
 
     @RequestMapping("initial")
     public String userInitial(Model model) {
-        model.addAttribute("contentPage", "esb/log/hosLogs");
+        model.addAttribute("contentPage", "/esb/log/hosLogs");
         return "pageView";
     }
 
@@ -68,10 +68,10 @@ public class HosLogsController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(beginTime)) {
-            stringBuffer.append("uploadTime%ge%" + beginTime.replace(" ","%t%") + ";");
+            stringBuffer.append("uploadTime>=" + beginTime+ ";");
         }
         if (!StringUtils.isEmpty(endTime)) {
-            stringBuffer.append("uploadTime%le%" + endTime.replace(" ","%t%") + ";");
+            stringBuffer.append("uploadTime<=" + endTime+ ";");
         }
         if (!StringUtils.isEmpty(organization)) {
             stringBuffer.append("orgCode=" + organization);
@@ -105,10 +105,10 @@ public class HosLogsController extends BaseUIController {
         Map<String, Object> params = new HashMap<String, Object>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(beginTime)) {
-            stringBuffer.append("uploadTime%ge%" + beginTime.replace(" ","%t%") + ";");
+            stringBuffer.append("uploadTime>=" + beginTime + ";");
         }
         if (!StringUtils.isEmpty(endTime)) {
-            stringBuffer.append("uploadTime%le%" + endTime.replace(" ","%t%") + ";");
+            stringBuffer.append("uploadTime<=" + endTime + ";");
         }
         if (!StringUtils.isEmpty(organization)) {
             stringBuffer.append("orgCode=" + organization);
