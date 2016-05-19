@@ -26,7 +26,7 @@
 	<div class="m-form-group">
 		<label >查询SQL:</label>
 		<div class="m-form-control">
-			<textarea id="inp_query_sql" class="f-h100 f-w240  validate-special-char max-length-200" data-attr-scan="sqlscript"></textarea>
+			<textarea id="inp_query_sql" class="f-h100 f-w240  validate-special-char" data-attr-scan="sqlscript"></textarea>
 		</div>
 	</div>
 	<div class="m-form-group f-pa" style="bottom: 0;right: 10px;">

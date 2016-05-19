@@ -42,10 +42,13 @@
 			},
 			bindEvents: function () {
 				var self = this;
+				var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
+					onElementValidateForAjax:function(elm){
+					}
+				});
 				//新增、修改
 				self.$updateBtn.click(function () {
-					var validate = true;
-					if(validate){
+					if(validator.validate){
 						var dataModel = $.DataModel.init();
 						self.$form.attrScan();
 						var hisModel = self.$form.Fields.getValues();

@@ -25,14 +25,14 @@
 	</div>
 	<div class="m-form-group">
 		<label >开始时间:</label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_start_time" class="required useTitle f-h28 f-w240" data-type="select"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="startTime">
+		<div class="l-text-wrapper m-form-control ">
+			<input type="text" id="inp_start_time" class="f-h28 f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="startTime">
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label >结束时间:</label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_end_time" class="required useTitle f-h28 f-w240" data-type="select"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="endTime">
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_end_time" class="f-h28 f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="endTime">
 		</div>
 	</div>
 	<div class="m-form-group f-pa" style="bottom: 0;right: 10px;">

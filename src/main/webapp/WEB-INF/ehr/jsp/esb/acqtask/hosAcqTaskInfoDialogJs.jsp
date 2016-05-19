@@ -58,13 +58,17 @@
 
 				bindEvents: function () {
 					var self = this;
+					var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
+						onElementValidateForAjax:function(elm){
+						}
+					});
 					//新增、修改
 					self.$updateBtn.click(function () {
-						var t = true;
-						if(t){
+						if(validator.validate()){
 							var dataModel = $.DataModel.init();
 							self.$form.attrScan();
 							var acqModel = self.$form.Fields.getValues();
+
 							dataModel.createRemote("${contextRoot}/esb/acqTask/update", {
 								data:  {dataJson:JSON.stringify(acqModel),mode:mode},
 								success: function (data) {

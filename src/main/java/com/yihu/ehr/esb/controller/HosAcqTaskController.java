@@ -130,7 +130,6 @@ public class HosAcqTaskController extends BaseUIController {
         envelop.setSuccessFlg(false);
         try{
             HosAcqTaskModel model = objectMapper.readValue(dataJson,HosAcqTaskModel.class);
-            model = changeTimeFormat(model);
             if(StringUtils.isEmpty(model.getOrgCode())){
                 envelop.setErrorMsg("机构代码不能为空！");
                 return envelop;
@@ -189,32 +188,6 @@ public class HosAcqTaskController extends BaseUIController {
             return envelop;
         }
     }
-
-    /**
-     * model的时间格式转换（UTC时间格式转换）
-     */
-    public HosAcqTaskModel changeTimeFormat(HosAcqTaskModel model) throws Exception{
-        String startTime = model.getStartTime();
-        String endTime = model.getEndTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if(!StringUtils.isEmpty(startTime)&&startTime.endsWith("Z")){
-            startTime = startTime.replace("Z"," UTC");
-            Date date = sdf.parse(startTime);
-            startTime = format.format(date);
-            model.setStartTime(startTime);
-        }
-        if(!StringUtils.isEmpty(endTime)&&(startTime.endsWith("z")||endTime.endsWith("Z"))){
-            endTime = endTime.replace("Z"," UTC");
-            endTime = endTime.replace("z"," UTC");
-            Date date = sdf.parse(endTime);
-            endTime = format.format(date);
-            model.setEndTime(endTime);
-        }
-        return model;
-    }
-
-
 
     /**
      * 获取机构代码下拉框(根据输入机构代码/名称近似查询）

@@ -99,7 +99,7 @@
 				},
 				reloadGrid: function () {
 					var values = retrieve.$element.Fields.getValues();
-					debugger;
+					;
 					reloadGrid.call(this, '${contextRoot}/esb/acqTask/hosAcqTasks', values);
 				},
 				bindEvents: function () {
@@ -129,7 +129,7 @@
 							},
 							url: '${contextRoot}/esb/acqTask/acqInfoDialog',
 							isHidden: false,
-							opener: true
+							opener: true,
 						})
 					});
 
