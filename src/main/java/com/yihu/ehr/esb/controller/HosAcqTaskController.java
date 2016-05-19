@@ -75,11 +75,11 @@ public class HosAcqTaskController extends BaseUIController {
             }
             //按时间过滤
             if(!(StringUtils.isEmpty(startTimeLow)&&StringUtils.isEmpty(startTimeUp))){
-                filters += "startTime>="+startTimeLow+";";
+                filters += "startTime>="+startTimeLow+";startTime<="+startTimeUp+";";
 //                filters += formatTimeFilters("startTime","g1",startTimeLow,startTimeUp);
             }
             if(!(StringUtils.isEmpty(endTimeLow)&&StringUtils.isEmpty(endTimeUp))){
-                filters += "endTime>="+endTimeLow+";";
+                filters += "endTime>="+endTimeLow+";endTime<="+endTimeUp+";";
                 //filters += formatTimeFilters("endTime","g2",endTimeLow,endTimeUp);
             }
             String url = "/esb/searchHosAcqTasks";
