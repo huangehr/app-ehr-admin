@@ -78,7 +78,7 @@
         navMenu = {
             // 导航菜单数据源
             data: [
-                // 基础数据中心
+                // 1 - 基础数据中心
                 {id: 1,level:1, text: '<spring:message code="title.register.manage.center"/>'},
                 {
                     id: 11,
@@ -103,150 +103,246 @@
                 },
                 //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
 
-                //标准规范中心
+                //2 - 标准规范中心
                 {id: 2,level:1, text: '<spring:message code="title.data.manage.center"/>'},
                 {
-                    id: 61,
+                    id: 21,
                     pid: 2,
                     level:2,
                     text: '平台标准'
-                },{
-                    id: 21,
-                    pid: 61,
+                },
+                {
+                    id: 211,
+                    pid: 21,
                     level:3,
                     text: '<spring:message code="title.std.source"/>',
                     url: '${contextRoot}/standardsource/initial'
                 },
                 {
-                    id: 22,
-                    pid: 61,
+                    id: 212,
+                    pid: 21,
                     level:3,
                     text: '<spring:message code="title.dict.manage"/>',
                     url: '${contextRoot}/cdadict/initial'
                 },
                 {
-                    id: 23,
-                    pid: 61,
+                    id: 213,
+                    pid: 21,
                     level:3,
                     text: '<spring:message code="title.standard.dataSet"/>',
                     url: '${contextRoot}/std/dataset/initial'
                 },
                 {
-                    id: 24,
-                    pid: 61,
+                    id: 214,
+                    pid: 21,
                     level:3,
                     text: '<spring:message code="title.CDA.manage"/>',
                     url: '${contextRoot}/cda/initial'
                 },
                 {
-                    id: 27,
-                    pid: 61,
+                    id: 215,
+                    pid: 21,
                     level:3,
                     text: 'CDA类别',
                     url: '${contextRoot}/cdatype/index'
                 },
                 {
-                    id: 28,
-                    pid: 61,
+                    id: 216,
+                    pid: 21,
                     level:3,
                     text: '标准版本管理',
                     url: '${contextRoot}/cdaVersion/initial'
                 },
-				{
-					id: 29,
-					pid: 61,
-					level:3,
-					text: '特殊字典'
-				},
-				{
-					id: 101,
-					pid: 29,
-					level:4,
-					text: '诊断字典',
-					url: '${contextRoot}/specialdict/icd10/initial'
-				},
-				{
-					id: 102,
-					pid: 29,
-					level:4,
-					text: '指标字典',
-					url: '${contextRoot}/specialdict/indicator/initial'
-				},
-				{
-					id: 103,
-					pid: 29,
-					level:4,
-					text: '药品字典',
-					url: '${contextRoot}/specialdict/drug/initial'
-				},
-				{
-					id: 104,
-					pid: 29,
-					level:4,
-					text: '疾病字典',
-					url: '${contextRoot}/specialdict/hp/initial'
-				},
-
                 {
-                    id: 25,
+                    id: 217,
+                    pid: 21,
+                    level:3,
+                    text: '特殊字典'
+                },
+                {
+                    id: 2171,
+                    pid:217,
+                    level:4,
+                    text: '诊断字典',
+                    url: '${contextRoot}/specialdict/icd10/initial'
+                },
+                {
+                    id: 2172,
+                    pid: 217,
+                    level:4,
+                    text: '指标字典',
+                    url: '${contextRoot}/specialdict/indicator/initial'
+                },
+                {
+                    id: 2173,
+                    pid: 217,
+                    level:4,
+                    text: '药品字典',
+                    url: '${contextRoot}/specialdict/drug/initial'
+                },
+                {
+                    id: 2174,
+                    pid: 217,
+                    level:4,
+                    text: '疾病字典',
+                    url: '${contextRoot}/specialdict/hp/initial'
+                },
+                {
+                    id: 22,
                     pid: 2,
                     level:2,
                     text: '<spring:message code="title.org.std.collection.manage"/>',
                     url: '${contextRoot}/adapterorg/initial'
                 },
                 {
-                    id: 26,
+                    id: 23,
                     pid: 2,
                     level:2,
                     text: '<spring:message code="title.adapter.manager"/>',
                     url: '${contextRoot}/adapter/initial'
                 },
-                //资源管理中心
-                //{id: 3, text: '<spring:message code="title.resource.manage.center"/>'},
 
-                //安全管理中心
+                //3 - 资源管理中心
+                {id: 3, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
+                {
+                    id: 31,
+                    level:2,
+                    pid: 3,
+                    text: '<spring:message code="title.resource.standard"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 311,
+                    level:3,
+                    pid: 31,
+                    text: '<spring:message code="title.resource.standard.metaData"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 312,
+                    level:3,
+                    pid: 31,
+                    text: '<spring:message code="title.resource.standard.dict"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 313,
+                    level:3,
+                    pid: 31,
+                    text: '<spring:message code="title.resource.standard.adapter"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 32,
+                    level:2,
+                    pid: 3,
+                    text: '<spring:message code="title.resource.catalog"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 33,
+                    level:2,
+                    pid: 3,
+                    text: '<spring:message code="title.resource.register"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 34,
+                    level:2,
+                    pid: 3,
+                    text: '<spring:message code="title.resource.view"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 35,
+                    level:2,
+                    pid: 3,
+                    text: '<spring:message code="title.resource.interface"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                //4 - 安全管理中心
                 //{id: 4, text: '<spring:message code="title.security.manage.center"/>'},
 
-                //运营中心
-                //{id: 5, text: '<spring:message code="title.operating.center"/>'},
+                //4 - 运营中心
+                {id: 5, level:1, text: '<spring:message code="title.operating.center"/>'},
+                {
+                    id: 51,
+                    level:2,
+                    pid: 5,
+                    text: '<spring:message code="title.esb.manage"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 511,
+                    level:3,
+                    pid: 51,
+                    text: '<spring:message code="title.esb.log.upload"/>',
+                    url: '${contextRoot}/hosLogs/initial'
+                },
+                {
+                    id: 512,
+                    level:3,
+                    pid: 51,
+                    text: '<spring:message code="title.esb.source.list"/>',
+                    url: '${contextRoot}/esb/hosRelease/initial'
+                },
+                {
+                    id: 513,
+                    level:3,
+                    pid: 51,
+                    text: '<spring:message code="title.esb.source.org.update"/>',
+                    url: '${contextRoot}/esb/installLog/initial'
+                },
+                {
+                    id: 514,
+                    level:3,
+                    pid: 51,
+                    text: '<spring:message code="title.esb.his.search"/>',
+                    url: '${contextRoot}/esb/sqlTask/initial'
+                },
+                {
+                    id: 515,
+                    level:3,
+                    pid: 51,
+                    text: '<spring:message code="title.esb.task.recollect"/>',
+                    url: '${contextRoot}/esb/acqTask/initial'
+                },
 
-                //服务管理中心
+                //6 - 服务管理中心
                 //{id: 6, text: '<spring:message code="title.server.manage.center"/>'},
 
-                //开放中心
-                {id: 3,level:1, text: '<spring:message code="title.open.hub.manage.center"/>'},
-                {id: 31,level:2, pid: 3, text: '<spring:message code="title.app.manage"/>', url: '${contextRoot}/app/initial'},
-
-                //配置管理中心
-                {id: 4,level:1,text: '<spring:message code="title.setting.manage.center"/>'},
+                //7 - 开放中心
+                {id: 7,level:1, text: '<spring:message code="title.open.hub.manage.center"/>'},
                 {
-                    id: 41,
-                    pid: 4,
+                    id: 71,
+                    level:2,
+                    pid: 7,
+                    text: '<spring:message code="title.app.manage"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                //8 - 配置管理中心
+                {id: 8,level:1,text: '<spring:message code="title.setting.manage.center"/>'},
+                {
+                    id: 81,
+                    pid: 8,
                     level:2,
                     text: '<spring:message code="title.sysDict.manage"/>',
                     url: '${contextRoot}/dict/initial'
                 },
-                /*{
-                 id: 42,
-                 pid: 4,
-                 text: '<spring:message code="title.monitor.manage"/>',
-                 url: '${contextRoot}/monitor/initial'
-                 },*/
 
-                //健康档案浏览器
-                {id: 5,level:1, text: '<spring:message code="title.health.archive.browser"/>'},
+                //9 - 健康档案浏览器
+                {id: 9,level:1, text: '<spring:message code="title.health.archive.browser"/>'},
                 {
-                    id: 51,
-                    pid: 5,
+                    id: 91,
+                    pid: 9,
                     level:2,
                     text: '<spring:message code="title.template.manage"/>',
                     url: '${contextRoot}/template/initial'
                 }
-
             ],
 
             // 一级菜单图标
-            level1Icons: ["icon_Reg.png", "icon_adm.png", "icon_adm.png", "icon_adm.png", "icon_adm.png"],
+            level1Icons: ["icon_Reg.png", "icon_adm.png", "icon_adm.png", "icon_adm.png", "icon_adm.png", "icon_adm.png", "icon_adm.png"],
             $tree: $('#ul_tree'),
             treeMenu: null,
             // 树形导航菜单一级子节点集
