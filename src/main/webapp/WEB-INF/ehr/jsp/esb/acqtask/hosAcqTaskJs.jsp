@@ -25,10 +25,8 @@
 				if (isFirstPage){
 					acqInfoGrid.options.newPage = 1;
 				}
-				acqInfoGrid.set({
-					parms: params
-				});
-				acqInfoGrid.reload();
+				acqInfoGrid.setOptions({parms:params});
+				acqInfoGrid.loadData(true);
 				isFirstPage = true;
 			}
 
@@ -126,7 +124,8 @@
 								mode:mode,
 							},
 							url: '${contextRoot}/esb/acqTask/acqInfoDialog',
-							isHidden: false
+							isHidden: false,
+							load:true
 						})
 					});
 

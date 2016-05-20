@@ -11,7 +11,6 @@
 			// 页面主模块
 			var master = null;
 			// 画面信息表对象
-			var hisInfoGrid = null;
 			var isFirstPage = true;
 
 			/* *************************** 函数定义 ******************************* */
@@ -25,10 +24,8 @@
 				if (isFirstPage){
 					hisInfoGrid.options.newPage = 1;
 				}
-				hisInfoGrid.set({
-					parms: params
-				});
-				hisInfoGrid.reload();
+				this.grid.setOptions({parms:params});
+				this.grid.loadData(true);
 				isFirstPage = true;
 			}
 
@@ -54,8 +51,9 @@
 			master = {
 				hisInfoDialog: null,
 				resultInfoDialog:null,
+				grid:null,
 				init: function () {
-					hisInfoGrid = $("#div_his_info_grid").ligerGrid($.LigerGridEx.config({
+					this.grid = $("#div_his_info_grid").ligerGrid($.LigerGridEx.config({
 						url: '${contextRoot}/esb/sqlTask/hosSqlTasks',
 						parms: {
 							orgSysCode: '',
@@ -88,7 +86,7 @@
 						validate: true,
 						unSetValidateAttr: false,
 					}));
-					hisInfoGrid.adjustToWidth();
+					this.grid.adjustToWidth();
 					this.bindEvents();
 				},
 				reloadGrid: function () {
@@ -103,11 +101,15 @@
 					});
 					//新增用户
 					retrieve.$newRecordBtn.click(function () {
-						master.hisInfoDialog = $.ligerDialog.open({
+						$.publish("his:hisInfo:open",['']);
+					});
+					$.subscribe("his:hisInfo:open",function(){
+						self.hisInfoDialog = $.ligerDialog.open({
 							height: 400,
 							width: 500,
 							title: '新增his查询',
 							url: '${contextRoot}/esb/sqlTask/hosSqlTaskInfoDialog',
+							load:true
 						})
 					});
 
@@ -121,6 +123,7 @@
 								width: 600,
 								title: '查询结果明细',
 								url: '${contextRoot}/esb/sqlTask/result?id='+id,
+								load:true
 							})
 						}
 					});
