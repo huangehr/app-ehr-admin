@@ -11,6 +11,10 @@
             // 页面主模块，对应于用户信息表区域
             var master = null;
 
+            var resourceInfoGrid = null;
+
+            var columns = null;
+
             var dataModel = $.DataModel.init();
 
 
@@ -22,6 +26,30 @@
             function pageInit() {
                 retrieve.init();
                 master.init();
+
+                //获取列名
+                dataModel.fetchRemote("${contextRoot}/user/searchUsers", {
+                    data: {
+                        searchNm: '',
+                        searchType: '',
+                        page: 1,
+                        rows: 15,
+                    },
+                    success: function (data) {
+                        var columnModel;
+                        for (var i = 0;i<data.detailModelList.length;i++){
+//                            columnModel.
+                        }
+                    }
+                });
+
+            }
+
+            function reloadGrid(url, params) {
+
+                resourceInfoGrid.setOptions({parms: params});
+                resourceInfoGrid.loadData(true);
+
             }
 
 
@@ -33,6 +61,7 @@
                 $logicalRelationship: $("#inp_logical_relationship"),
                 $defualtParam: $("#inp_defualt_param"),
                 $searchModel: $(".div_search_model"),
+                $resourceInfoGrid: $("#div_resource_info_grid"),
 
 
                 $search: $("#inp_search"),
@@ -81,23 +110,24 @@
 //                            return data.type == "employee";
                         },
                         delay: function (e) {
-
                             var data = e.data;
                             return {url: '${contextRoot}/cdatype/getCDATypeListByParentId?ids=' + data.id}
                         },
                         checkbox: false,
                         idFieldName: 'id',
                         textFieldName: 'name',
-                        slide: false,
-                        onSelect: function (data) {
+                        isExpand: true,
 
+                        onSelect: function (data) {
+                            master.init();
                         },
                         onSuccess: function (data) {
                             $("#div_resource_browse_tree li div span").css({
                                 "line-height": "22px",
                                 "height": "22px"
                             });
-                        }
+                        },
+
 
                     });
                 },
@@ -105,12 +135,31 @@
             };
             master = {
 
-                init:function () {
+                init: function () {
+
+                    var self = retrieve;
+
+
+                    resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
+                        url: '${contextRoot}/user/searchUsers',
+                        columns: [
+                            {name: 'id', hide: true, isAllowHide: false},
+                            {display: '用户类型', name: 'userTypeName', width: '10%', align: 'left'},
+
+                        ],
+
+                    }));
 
                     this.bindEvents();
 
                 },
-                bindEvents:function () {
+                reloadResourcesGrid: function () {
+
+                    reloadGrid.call(this, '${contextRoot}/user/searchUsers', "");
+                    master.init();
+
+                },
+                bindEvents: function () {
 
                     var self = retrieve;
 
@@ -119,51 +168,41 @@
                         self.$newSearch.append(model);
 
                         var modelLength = model.find("input");
-                        var paramDatas = [1,2,3,4];
-                        var dictId = [10,11,12,13];
+                        var paramDatas = [0, 1, 2, 3];
+                        var dictId = [10, 11, 12, 13];
                         var cls = '.inp-model';
 
-                        for (var i = 0;i< modelLength.length ; i++){
-                            model.find(cls+i).attr('data-attr-scan',paramDatas[i]);
-                            self.initDDL(dictId[i], model.find(cls+i));
+                        for (var i = 0; i < modelLength.length; i++) {
+                            model.find(cls + i).attr('data-attr-scan', paramDatas[i]);
+                            self.initDDL(dictId[i], model.find(cls + i));
                         }
 
-
-//                        model.find(".inp-model1").attr("data-attr-scan",(new Date()).valueOf());
-//                        model.find(".inp-model2").attr("data-attr-scan",(new Date()).valueOf());
-//                        model.find(".inp-model3").attr("data-attr-scan",(new Date()).valueOf());
-//                        model.find(".inp-model4").attr("data-attr-scan",(new Date()).valueOf());
-////                        self.$newSearch.append(model);
-//                        self.initDDL(37, model.find(".inp-model1"));
-//                        self.initDDL(37, model.find(".inp-model2"));
-//                        self.initDDL(37, model.find(".inp-model3"));
-//                        self.initDDL(37, model.find(".inp-model4"));
                         model.show();
-//                        model.children('span').attr('id',(new Date()).valueOf());
-//                        for (var i = 0;i<model.find('input').length;i++){
-//                            model.find('input')[i].id = (new Date().valueOf());
-//                            debugger
-//
-//                        }
-//                        self.$newSearch.append(model);
-//                        self.initDDL(37, $("#"+model.find('input')[i].id));
+
                     });
                     self.$delBtn.click(function () {
                         $(this).parent().remove();
                     });
 
                     self.$SearchBtn.click(function () {
+
+                        var defaultCondition = self.$defaultCondition;
+                        var logicalRelationship = self.$logicalRelationship;
+                        var defualtParam = self.$defualtParam;
                         var pModel = $(self.$newSearch).find('.div_search_model');
-                        var jsonData = "";
-                        for (var i = 0;i<pModel.length;i++){
+
+                        var jsonData = defaultCondition.attr('data-attr-scan')+logicalRelationship.val()+defualtParam.val();
+
+                        for (var i = 0; i < pModel.length; i++) {
                             var cModel = pModel.find('.inp-find-search');
-                            for (var j = 0;j<cModel.length;j++){
+                            for (var j = 0; j < cModel.length; j++) {
                                 var params = $((cModel)[j]);
-                                jsonData += params.attr('data-attr-scan')+params.ligerGetComboBoxManager().getValue();
+                                jsonData += params.attr('data-attr-scan') + params.ligerGetComboBoxManager().getValue();
                             }
-                            debugger
+
                         }
-//                        $(self.$newSearch.find('.inp-find-search')[0]).ligerGetComboBoxManager().getValue()
+
+                        master.reloadResourcesGrid();
 
                     })
                 },

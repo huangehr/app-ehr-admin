@@ -39,27 +39,31 @@
                     <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
                 </div>
             </div>
-            <div class="f-fr f-mr279 f-mt10">
+            <div class="f-fr f-mr20 f-mt10">
                 <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_search_btn">
                     <span>搜索</span>
                 </div>
                 <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_cancel_btn">
                     <span>重置</span>
                 </div>
-            </div>
-
-            <div class="div-result-msg f-mt10">
-
-                <div class="f-fr f-mr279 f-mt10">
+                <%--<div class="f-fr f-mr279 f-mt10">--%>
                     <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="1">
                         <span>导出选中结果</span>
                     </div>
                     <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="2">
                         <span>导出查询结果</span>
                     </div>
-                </div>
+                <%--</div>--%>
+            </div>
 
-                qq</div>
+            <div class="div-result-msg f-mt10">
+
+
+
+                <div id="div_resource_info_grid">
+
+                </div>
+            </div>
 
         </div>
         <div class="f-fl f-w90 f-mt10 f-ml60 dis-none div_search_model" >
