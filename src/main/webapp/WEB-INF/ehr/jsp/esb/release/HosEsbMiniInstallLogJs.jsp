@@ -25,12 +25,11 @@
                 master.init();
             }
             //多条件查询参数设置
-            function reloadGrid (url, params) {
+            function reloadGrid (params) {
                 if (isFirstPage){
                     installLogGrid.options.newPage = 1;
                 }
                 installLogGrid.set({
-                    url: url,
                     parms: params
                 });
 
@@ -119,7 +118,7 @@
                     else{
                         values.orgCode = '';
                     }
-                    reloadGrid.call(this, '${contextRoot}/esb/installLog/searchInstallLogList', values);
+                    reloadGrid.call(this, values);
                 },
                 bindEvents: function () {
                     //事件绑定

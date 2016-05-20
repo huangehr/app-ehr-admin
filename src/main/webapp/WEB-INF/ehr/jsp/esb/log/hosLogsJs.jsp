@@ -30,10 +30,8 @@
                     uploadLogGrid.options.newPage = 1;
                 }
                 uploadLogGrid.set({
-                    url: url,
                     parms: params
                 });
-
                 uploadLogGrid.reload();
                 isFirstPage = true;
             }
@@ -142,7 +140,7 @@
                     else{
                         values.organization = '';
                     }
-                    reloadGrid.call(this, '${contextRoot}/hosLogs/searchHosLogs', values);
+                    reloadGrid.call(this, values);
                 },
                 bindEvents: function () {
                     //事件绑定
@@ -150,7 +148,6 @@
                         master.reloadGrid();
                     });
                     retrieve.$clearBtn.click(function(){
-                        debugger;
                         var values =  retrieve.$element.Fields.getValues();
                         if (values.organization.keys.length > 1){
                             values.organization = values.organization.keys[2];

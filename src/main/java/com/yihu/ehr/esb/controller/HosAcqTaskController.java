@@ -58,7 +58,7 @@ public class HosAcqTaskController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(HosAcqTaskController.class).error(ex.getMessage());
         }
-        return "generalView";
+        return "simpleView";
     }
 
     @RequestMapping("/hosAcqTasks")

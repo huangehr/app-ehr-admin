@@ -21,15 +21,12 @@
 				master.init();
 			}
 			//多条件查询参数设置
-			function reloadGrid (url, params) {
+			function reloadGrid (params) {
 				if (isFirstPage){
 					acqInfoGrid.options.newPage = 1;
 				}
-				acqInfoGrid.set({
-					url: url,
-					parms: params
-				});
-				acqInfoGrid.reload();
+				acqInfoGrid.setOptions({parms:params});
+				acqInfoGrid.loadData(true);
 				isFirstPage = true;
 			}
 
@@ -99,8 +96,7 @@
 				},
 				reloadGrid: function () {
 					var values = retrieve.$element.Fields.getValues();
-					;
-					reloadGrid.call(this, '${contextRoot}/esb/acqTask/hosAcqTasks', values);
+					reloadGrid.call(this, values);
 				},
 				bindEvents: function () {
 					var self = this;
@@ -129,7 +125,7 @@
 							},
 							url: '${contextRoot}/esb/acqTask/acqInfoDialog',
 							isHidden: false,
-							opener: true,
+							load:true
 						})
 					});
 
