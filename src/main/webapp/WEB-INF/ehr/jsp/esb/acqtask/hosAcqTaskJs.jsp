@@ -124,7 +124,8 @@
 								mode:mode,
 							},
 							url: '${contextRoot}/esb/acqTask/acqInfoDialog',
-							isHidden: false
+							isHidden: false,
+							load:true
 						})
 					});
 

@@ -46,7 +46,7 @@ public class HosSqlTaskController extends BaseUIController {
     @RequestMapping("/hosSqlTaskInfoDialog")
     public String hisInfoDialogInitial(Model model){
         model.addAttribute("contentPage","/esb/sqltask/hosSqlTaskInfoDialog");
-        return "generalView";
+        return "simpleView";
     }
 
     @RequestMapping("/result")
@@ -65,7 +65,7 @@ public class HosSqlTaskController extends BaseUIController {
         }catch(Exception ex){
             LogService.getLogger(HosSqlTaskController.class).error(ex.getMessage());
         }
-        return "generalView";
+        return "simpleView";
     }
 
     @RequestMapping("/create")
