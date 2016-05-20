@@ -25,10 +25,8 @@
 				if (isFirstPage){
 					hisInfoGrid.options.newPage = 1;
 				}
-				hisInfoGrid.set({
-					parms: params
-				});
-				hisInfoGrid.reload();
+				hisInfoGrid.setOptions({parms:params});
+				hisInfoGrid.loadData(true);
 				isFirstPage = true;
 			}
 
