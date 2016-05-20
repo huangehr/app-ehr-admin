@@ -72,7 +72,9 @@ public class HosLogsController extends BaseUIController {
             try{
                 stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeParse(beginTime)+ ";");
             }catch (Exception e){
-
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg(ErrorCode.SystemError.toString());
+                return envelop;
             }
 
         }
@@ -80,7 +82,9 @@ public class HosLogsController extends BaseUIController {
             try{
                 stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeParse(endTime)+ ";");
             }catch (Exception e){
-
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg(ErrorCode.SystemError.toString());
+                return envelop;
             }
         }
         if (!StringUtils.isEmpty(organization)) {
