@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.esb.MHosLog;
 import com.yihu.ehr.patient.controller.PatientController;
+import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.RestTemplates;
@@ -68,10 +69,19 @@ public class HosLogsController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(beginTime)) {
-            stringBuffer.append("uploadTime>=" + beginTime+ ";");
+            try{
+                stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeParse(beginTime)+ ";");
+            }catch (Exception e){
+
+            }
+
         }
         if (!StringUtils.isEmpty(endTime)) {
-            stringBuffer.append("uploadTime<=" + endTime+ ";");
+            try{
+                stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeParse(endTime)+ ";");
+            }catch (Exception e){
+
+            }
         }
         if (!StringUtils.isEmpty(organization)) {
             stringBuffer.append("orgCode=" + organization);
