@@ -25,7 +25,7 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/initial")
     public String resourceBrowseInitial(Model model){
-        model.addAttribute("contentPage","/resource/resourceview/resourceBrowse");
+        model.addAttribute("contentPage","/resource/resourcebrowse/resourceBrowse");
         return "pageView";
     }
 
