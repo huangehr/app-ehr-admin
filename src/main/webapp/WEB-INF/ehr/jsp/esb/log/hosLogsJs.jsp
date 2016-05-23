@@ -25,7 +25,7 @@
                 master.init();
             }
             //多条件查询参数设置
-            function reloadGrid (url, params) {
+            function reloadGrid (params) {
                 if (isFirstPage){
                     uploadLogGrid.options.newPage = 1;
                 }
