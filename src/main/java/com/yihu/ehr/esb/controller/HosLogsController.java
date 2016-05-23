@@ -83,7 +83,7 @@ public class HosLogsController extends BaseUIController {
         if (!StringUtils.isEmpty(endTime)) {
             try{
                 Date endTimeTemp  =  DateTimeUtils.simpleDateTimeParse(endTime);
-                stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
+                stringBuffer.append("uploadTime<=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
             }catch (Exception e){
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg(ErrorCode.SystemError.toString());
@@ -134,7 +134,7 @@ public class HosLogsController extends BaseUIController {
         if (!StringUtils.isEmpty(endTime)) {
             try{
                 Date endTimeTemp  =  DateTimeUtils.simpleDateTimeParse(endTime);
-                stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
+                stringBuffer.append("uploadTime<=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
             }catch (Exception e){
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg(ErrorCode.SystemError.toString());
