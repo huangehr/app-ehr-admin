@@ -112,7 +112,7 @@
                     var values = {
                         systemCode: systemCode
                     };
-                    Util.reloadGrid.call(this.grid, '${contextRoot}/esb/hosRelease/getReleaseInfoList', values, curPage);
+                    this.grid.reload();
                 },
                 bindEvents: function () {
                     $.subscribe('hosRelease:releaseInfo:open', function (event, id, mode) {
@@ -126,7 +126,7 @@
                         }
                         isSaveSelectStatus = true;
                         hosReleaseMaster.releaseInfoDialog = $.ligerDialog.open({
-                            height: 320,
+                            height: 380,
                             width: 460,
                             title: title,
                             url: '${contextRoot}/esb/hosRelease/releaseInfo',
