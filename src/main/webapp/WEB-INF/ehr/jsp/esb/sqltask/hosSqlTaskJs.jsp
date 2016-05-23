@@ -22,7 +22,7 @@
 			//多条件查询参数设置
 			function reloadGrid (params) {
 				if (isFirstPage){
-					hisInfoGrid.options.newPage = 1;
+					this.grid.options.newPage = 1;
 				}
 				this.grid.setOptions({parms:params});
 				this.grid.loadData(true);
@@ -105,7 +105,7 @@
 					});
 					$.subscribe("his:hisInfo:open",function(){
 						self.hisInfoDialog = $.ligerDialog.open({
-							height: 400,
+							height: 550,
 							width: 500,
 							title: '新增his查询',
 							url: '${contextRoot}/esb/sqlTask/hosSqlTaskInfoDialog',
@@ -119,7 +119,7 @@
 						//根据查询状态、查询消息先判断
 						if (yes) {
 							master.resultInfoDialog = $.ligerDialog.open({
-								height: 500,
+								height: 550,
 								width: 600,
 								title: '查询结果明细',
 								url: '${contextRoot}/esb/sqlTask/result?id='+id,
