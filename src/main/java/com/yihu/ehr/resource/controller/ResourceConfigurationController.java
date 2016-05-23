@@ -5,16 +5,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Created by wq on 2016/5/17.
+ * Created by wq on 2016/5/23.
  */
 
 @Controller
-@RequestMapping("/resourceBrowse")
-public class ResourceBrowseController extends BaseUIController {
-
+@RequestMapping("/resourceConfiguration")
+public class ResourceConfigurationController extends BaseUIController{
 
     @Value("${service-gateway.username}")
     private String username;
@@ -24,15 +22,8 @@ public class ResourceBrowseController extends BaseUIController {
     private String comUrl;
 
     @RequestMapping("/initial")
-    public String resourceBrowseInitial(Model model){
-        model.addAttribute("contentPage","/resource/resourcebrowse/resourceBrowse");
+    public String resourceConfigurationInitial(Model model){
+        model.addAttribute("contentPage","/resource/resourceconfiguration/resourceConfiguration");
         return "pageView";
-    }
-
-    @RequestMapping("/searchResource")
-    @ResponseBody
-    public Object searchResource(String searchNm, String searchType, int page, int rows){
-
-        return null;
     }
 }
