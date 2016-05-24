@@ -13,6 +13,7 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.RestTemplates;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import freemarker.template.SimpleDate;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -70,7 +71,8 @@ public class HosLogsController extends BaseUIController {
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(beginTime)) {
             try{
-                stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeParse(beginTime)+ ";");
+                Date beginTimeTemp  =  DateTimeUtils.simpleDateTimeParse(beginTime);
+                stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeFormat(beginTimeTemp)+ ";");
             }catch (Exception e){
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg(ErrorCode.SystemError.toString());
@@ -80,7 +82,8 @@ public class HosLogsController extends BaseUIController {
         }
         if (!StringUtils.isEmpty(endTime)) {
             try{
-                stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeParse(endTime)+ ";");
+                Date endTimeTemp  =  DateTimeUtils.simpleDateTimeParse(endTime);
+                stringBuffer.append("uploadTime<=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
             }catch (Exception e){
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg(ErrorCode.SystemError.toString());
@@ -119,10 +122,24 @@ public class HosLogsController extends BaseUIController {
         Map<String, Object> params = new HashMap<String, Object>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(beginTime)) {
-            stringBuffer.append("uploadTime>=" + beginTime + ";");
+            try{
+                Date beginTimeTemp  =  DateTimeUtils.simpleDateTimeParse(beginTime);
+                stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeFormat(beginTimeTemp)+ ";");
+            }catch (Exception e){
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg(ErrorCode.SystemError.toString());
+                return envelop;
+            }
         }
         if (!StringUtils.isEmpty(endTime)) {
-            stringBuffer.append("uploadTime<=" + endTime + ";");
+            try{
+                Date endTimeTemp  =  DateTimeUtils.simpleDateTimeParse(endTime);
+                stringBuffer.append("uploadTime<=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
+            }catch (Exception e){
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg(ErrorCode.SystemError.toString());
+                return envelop;
+            }
         }
         if (!StringUtils.isEmpty(organization)) {
             stringBuffer.append("orgCode=" + organization);

@@ -38,7 +38,7 @@
 			initForm: function () {
 				this.$orgCode.customCombo('${contextRoot}/esb/acqTask/orgCodes',{})
 				this.$systemName.ligerTextBox({width:240});
-				this.$querySql.ligerTextBox({width: 240,height:150});
+				this.$querySql.ligerTextBox({width: 240,height:300});
 			},
 			bindEvents: function () {
 				var self = this;
