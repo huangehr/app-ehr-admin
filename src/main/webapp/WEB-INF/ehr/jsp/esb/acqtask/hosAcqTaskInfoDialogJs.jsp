@@ -39,8 +39,8 @@
 				initForm: function () {
 					this.$orgCode.customCombo('${contextRoot}/esb/acqTask/orgCodes',{})
 					this.$systemCode.ligerTextBox({width:240});
-					this.$startTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime: true,labelWidth: 100, labelAlign: 'left',absolute:false});
-					this.$endTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime: true,labelWidth: 100, labelAlign: 'left',absolute:false });
+					this.$startTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime: true,labelWidth: 100, labelAlign: 'left',absolute:true});
+					this.$endTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime: true,labelWidth: 100, labelAlign: 'left',absolute:true });
 					if(mode != 'new'){
 						var info = ${envelop}.obj;
 						this.$form.attrScan();

@@ -116,7 +116,7 @@
 							title = '新增补采任务'
 						};
 						master.acqInfoDialog = $.ligerDialog.open({
-							height: 450,
+							height: 400,
 							width: 500,
 							title: title,
 							urlParms:{
@@ -125,7 +125,7 @@
 							},
 							url: '${contextRoot}/esb/acqTask/acqInfoDialog',
 							isHidden: false,
-							//load:true
+							load: true,
 						})
 					});
 
