@@ -9,7 +9,7 @@
             // 页面表格条件部模块
             var retrieve = null;
             // 页面主模块，对应于用户信息表区域
-            var master = null;
+            var resourceBrowseMaster = null;
 
             var resourceInfoGrid = null;
 
@@ -25,7 +25,7 @@
              */
             function pageInit() {
                 retrieve.init();
-                master.init();
+                resourceBrowseMaster.init();
 
                 //获取列名
                 dataModel.fetchRemote("${contextRoot}/user/searchUsers", {
@@ -63,14 +63,15 @@
                 $searchModel: $(".div_search_model"),
                 $resourceInfoGrid: $("#div_resource_info_grid"),
 
-
                 $search: $("#inp_search"),
                 $newSearch: $("#div_new_search"),
-
 
                 $newSearchBtn: $("#sp_new_search_btn"),
                 $SearchBtn: $("#div_search_btn"),
                 $delBtn: $(".sp-del-btn"),
+                $resetBtn: $("#div_reset_btn"),
+                $outSelExcelBtn: $("#div_out_sel_excel_btn"),
+                $outAllExcelBtn: $("#div_out_all_excel_btn"),
 
                 init: function () {
 
@@ -87,7 +88,6 @@
 
                 //下拉框列表项初始化
                 initDDL: function (dictId, target) {
-//                    var target = $(target);
                     dataModel.fetchRemote("${contextRoot}/dict/searchDictEntryList", {
                         data: {dictId: dictId},
                         success: function (data) {
@@ -103,11 +103,8 @@
                 getResourceBrowseTree: function () {
                     var typeTree = this.$resourceBrowseTree.ligerTree({
                         nodeWidth: 260,
-                        url: '${contextRoot}/cdatype/getCDATypeListByParentId?ids=',//参数ids值为测试值
+                        url: '${contextRoot}/cdatype/getCDATypeListByParentId?ids=',
                         isLeaf: function (data) {
-//                            debugger
-//                            if (!data) return false;
-//                            return data.type == "employee";
                         },
                         delay: function (e) {
                             var data = e.data;
@@ -116,10 +113,9 @@
                         checkbox: false,
                         idFieldName: 'id',
                         textFieldName: 'name',
-                        isExpand: true,
 
                         onSelect: function (data) {
-                            master.init();
+                            resourceBrowseMaster.init(data.data.id);
                         },
                         onSuccess: function (data) {
                             $("#div_resource_browse_tree li div span").css({
@@ -127,42 +123,39 @@
                                 "height": "22px"
                             });
                         },
-
-
                     });
                 },
 
             };
-            master = {
-
-                init: function () {
-
+            resourceBrowseMaster = {
+                init: function (objectId) {
                     var self = retrieve;
 
-
                     resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/user/searchUsers',
+                        url: '${contextRoot}/resourceBrowse/searchResource',
+                        parms:{
+                            searchNm: objectId,
+                        },
                         columns: [
                             {name: 'id', hide: true, isAllowHide: false},
                             {display: '用户类型', name: 'userTypeName', width: '10%', align: 'left'},
 
                         ],
-
                     }));
 
                     this.bindEvents();
 
                 },
                 reloadResourcesGrid: function () {
-
-                    reloadGrid.call(this, '${contextRoot}/user/searchUsers', "");
-                    master.init();
-
+                    reloadGrid.call(this, '${contextRoot}/resourceBrowse/searchResource', "");
+//                    resourceBrowseMaster.init();
                 },
+
                 bindEvents: function () {
 
                     var self = retrieve;
 
+                    //新增一行查询条件
                     self.$newSearchBtn.click(function () {
                         var model = self.$searchModel.clone(true);
                         self.$newSearch.append(model);
@@ -180,10 +173,12 @@
                         model.show();
 
                     });
+                    //删除一行查询条件
                     self.$delBtn.click(function () {
                         $(this).parent().remove();
                     });
 
+                    //检索
                     self.$SearchBtn.click(function () {
 
                         var defaultCondition = self.$defaultCondition;
@@ -202,8 +197,13 @@
 
                         }
 
-                        master.reloadResourcesGrid();
+                        resourceBrowseMaster.reloadResourcesGrid();
 
+                    })
+
+                    //重置
+                    self.$resetBtn.click(function () {
+                        $(".inp-reset").val('');
                     })
                 },
             };
