@@ -672,6 +672,7 @@
         updateSelectBoxPosition: function ()
         {
             var g = this, p = this.options;
+            var textHeight = g.text.height();//TODO textHeight 官方源码未声明
             if (p.absolute)
             {
                 var contentHeight = $(document).height();

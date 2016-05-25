@@ -5,10 +5,12 @@ import com.yihu.ehr.agModel.esb.HosAcqTaskModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.operator.DateUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,12 +77,10 @@ public class HosAcqTaskController extends BaseUIController {
             }
             //按时间过滤
             if(!(StringUtils.isEmpty(startTimeLow)&&StringUtils.isEmpty(startTimeUp))){
-                filters += "startTime>="+startTimeLow+";startTime<="+startTimeUp+";";
-//                filters += formatTimeFilters("startTime","g1",startTimeLow,startTimeUp);
+                filters += formatTimeFilters("startTime",startTimeLow,startTimeUp);
             }
             if(!(StringUtils.isEmpty(endTimeLow)&&StringUtils.isEmpty(endTimeUp))){
-                filters += "endTime>="+endTimeLow+";endTime<="+endTimeUp+";";
-                //filters += formatTimeFilters("endTime","g2",endTimeLow,endTimeUp);
+                filters += formatTimeFilters("endTime",endTimeLow,endTimeUp);
             }
             String url = "/esb/searchHosAcqTasks";
             Map<String,Object> params = new HashMap<>();
@@ -106,21 +106,29 @@ public class HosAcqTaskController extends BaseUIController {
      * @param timeUp
      * @return
      */
-    public String formatTimeFilters(String fieldName,String group,String timeLow,String timeUp) throws Exception{
-        String timeStr = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public String formatTimeFilters(String fieldName,String timeLow,String timeUp) throws Exception{
+        StringBuffer buffer = new StringBuffer();
         if(StringUtils.isEmpty(timeLow)){
-            timeLow = sdf.format(new Date()).replace(" ","/t");
-            timeUp = timeUp.replace(" ","/t");
+            Date dateUp = DateTimeUtils.simpleDateTimeParse(timeUp);
+            buffer.append(fieldName+">=");
+            buffer.append(DateTimeUtils.utcDateTimeFormat(new Date())+";");
+            buffer.append(fieldName+"<=");
+            buffer.append(DateTimeUtils.utcDateTimeFormat(dateUp)+";");
         }else if(StringUtils.isEmpty(timeUp)){
-            timeLow = timeLow.replace(" ","/t");
-            timeUp = sdf.format(new Date()).replace(" ","/t");
+            Date dateLow = DateTimeUtils.simpleDateTimeParse(timeLow);
+            buffer.append(fieldName+">=");
+            buffer.append(DateTimeUtils.utcDateTimeFormat(dateLow)+";");
+            buffer.append(fieldName+"<=");
+            buffer.append(DateTimeUtils.utcDateTimeFormat(new Date())+";");
         }else {
-            timeUp = timeUp.replace(" ","/t");
-            timeLow = timeLow.replace(" ","/t");
+            Date dateLow = DateTimeUtils.simpleDateTimeParse(timeLow);
+            Date dateUp = DateTimeUtils.simpleDateTimeParse(timeUp);
+            buffer.append(fieldName+">=");
+            buffer.append(DateTimeUtils.utcDateTimeFormat(dateLow)+";");
+            buffer.append(fieldName+"<=");
+            buffer.append(DateTimeUtils.utcDateTimeFormat(dateUp)+";");
         }
-        timeStr = fieldName+">="+timeLow+" "+group+";"+fieldName+"<="+timeUp+" "+group+";";
-        return timeStr;
+        return buffer.toString();
     }
 
     @RequestMapping("/update")
@@ -130,6 +138,13 @@ public class HosAcqTaskController extends BaseUIController {
         envelop.setSuccessFlg(false);
         try{
             HosAcqTaskModel model = objectMapper.readValue(dataJson,HosAcqTaskModel.class);
+            try {
+                model.setStartTime(changeToUtc(model.getStartTime()));
+                model.setEndTime(changeToUtc(model.getEndTime()));
+            }catch (Exception ex){
+                envelop.setErrorMsg("时间格式有误！");
+                return envelop;
+            }
             if(StringUtils.isEmpty(model.getOrgCode())){
                 envelop.setErrorMsg("机构代码不能为空！");
                 return envelop;
@@ -138,13 +153,16 @@ public class HosAcqTaskController extends BaseUIController {
                 envelop.setErrorMsg("系统编码不能为空！");
                 return envelop;
             }
+            if(DateUtil.compareDate("yyyy-MM-dd HH:mm:ss",model.getStartTime(),model.getEndTime()) >= 0){
+                envelop.setErrorMsg("结束时间不能小于开始时间！");
+                return envelop;
+            }
             //(重复判断？--机构code+系统code）
             Map<String,Object> params = new HashMap<>();
             if("new".equals(mode)){
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                model.setCreateTime(sdf.format(new Date()));
-                model.setStatus("0");
                 String urlCreate = "/esb/createHosAcqTask";
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                model.setCreateTime(changeToUtc(sdf.format(new Date())));
                 params.put("json_data",objectMapper.writeValueAsString(model));
                 String envelopStr = HttpClientUtil.doPost(comUrl+urlCreate,params,username,password);
                 return envelopStr;
@@ -155,6 +173,7 @@ public class HosAcqTaskController extends BaseUIController {
             if(envelopGet.isSuccessFlg()){
                 String urlUpdate = "/esb/updateHosAcqTask";
                 HosAcqTaskModel updateModel = getEnvelopModel(envelopGet.getObj(),HosAcqTaskModel.class);
+                updateModel.setCreateTime(changeToUtc(updateModel.getCreateTime()));
                 updateModel.setOrgCode(model.getOrgCode());
                 updateModel.setSystemCode(model.getSystemCode());
                 updateModel.setStartTime(model.getStartTime());
@@ -169,6 +188,16 @@ public class HosAcqTaskController extends BaseUIController {
         }
         return envelop;
 
+    }
+    /**
+     * yyyy-MM-dd HH:mm:ss 转化为utc时间
+     */
+    public String changeToUtc(String timeStr) throws Exception{
+        if(!StringUtils.isEmpty(timeStr)){
+            Date date = DateTimeUtils.simpleDateTimeParse(timeStr);
+            timeStr = DateTimeUtils.utcDateTimeFormat(date);
+        }
+        return timeStr;
     }
 
     @RequestMapping("delete")

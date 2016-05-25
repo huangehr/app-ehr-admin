@@ -18,7 +18,7 @@
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label >程序包代码:</label>
+		<label >系统代码:</label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_system_code" class="required useTitle f-h28 f-w240 max-length-200"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="systemCode">
 		</div>

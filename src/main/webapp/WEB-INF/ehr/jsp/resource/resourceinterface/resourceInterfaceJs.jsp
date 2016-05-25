@@ -1,5 +1,13 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%--
+  Created by IntelliJ IDEA.
+  User: yww
+  Date: 2016/5/24
+  Time: 9:50
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -10,9 +18,7 @@
 			var retrieve = null;
 			// 页面主模块
 			var master = null;
-			// 画面信息表对象
 			var isFirstPage = true;
-
 			/* *************************** 函数定义 ******************************* */
 			//页面初始化
 			function pageInit() {
@@ -28,63 +34,45 @@
 				this.grid.loadData(true);
 				isFirstPage = true;
 			}
-
 			/* *************************** 模块初始化 ***************************** */
 			retrieve = {
 				$element: $('.m-retrieve-area'),
-				$orgSysCode: $('#inp_code'),
-				$status:$('#inp_status'),
+				$searchNm: $('#inp_searchNm'),
 				$newRecordBtn: $('#div_new_record'),
 				$searchBtn: $('#btn_search'),
 				init: function () {
 					this.$element.attrScan();
 					window.form = this.$element;
-					this.$orgSysCode.ligerTextBox({width:240});
-					this.$status.ligerComboBox({
-						data:[["0","0"],["1","1"]],
-						valueField : 0,
-						textField: 1,
-						width: 120
-					});
+					this.$searchNm.ligerTextBox({width:240});
 				},
 			};
 			master = {
-				hisInfoDialog: null,
-				resultInfoDialog:null,
-				grid:null,
+				grid: null,
 				init: function () {
-					this.grid = $("#div_his_info_grid").ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/esb/sqlTask/hosSqlTasks',
+					this.grid = $("#div_data_info_grid").ligerGrid($.LigerGridEx.config({
+						url: '${contextRoot}/resource/resourceInterface/searchInterfaces',
 						parms: {
-							orgSysCode: '',
-							status:''
+							searchNm: '',
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
-							{display: '机构代码',name: 'orgCode', width:'10%', isAllowHide: false,align:'left'},
-							{display: '系统代码', name: 'systemCode', width: '10%',align:'left'},
-							{display: '查询SQL', name: 'sqlscript',width: '30%',align:'left'},
-							{display: '查询结果', name: 'rusult', width: '6%', resizable: true,align:'center',
-								render: function (row) {
-									var html = "";
-									if(row.status == '1'){
-										html = '<a title="明细" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "his:queryResultDialog:open", row.id) + '">明细</a>';
-									}
-									return html;
-								}
-							},
-							{display: '创建时间', name: 'createTime', width: '14%', resizable: true,align:'left'},
-							{display: '状态', name: 'status', width: '10%', minColumnWidth: 20},
-							{display: '查询消息', name: 'message', width: '10%', resizable: true,align:'left'},
+							{display: '接口名称',name: 'orgCode', width:'15%', isAllowHide: false,align:'left'},
+							{display: '接口编码', name: 'systemCode', width: '25%',align:'left'},
+							{display: '请求参数', name: 'startTime', width: '25%', resizable: true,align:'left'},
+							{display: '响应结果格式', name: 'endTime', width: '25%', resizable: true,align:'left'},
 							{
 								display: '操作', name: 'operator', width: '10%', render: function (row) {
-								var html = '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "his:hisInfoDialog:del", row.id) + '"></a>';
+								var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:infoDialog:open", row.id, 'modify') + '"></a>';
+								html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:confirmDialog:del", row.id) + '"></a>';
 								return html;
 							}}
 						],
 						enabledEdit: true,
 						validate: true,
 						unSetValidateAttr: false,
+						onDblClickRow : function (row){
+							$.publish("interface:infoDialog:open",[row.id,'view']);
+						}
 					}));
 					this.grid.adjustToWidth();
 					this.bindEvents();
@@ -99,40 +87,38 @@
 					retrieve.$searchBtn.click(function(){
 						master.reloadGrid();
 					});
-					//新增用户
+					//新增、修改、查看事件
 					retrieve.$newRecordBtn.click(function () {
-						$.publish("his:hisInfo:open",['']);
+						$.publish("interface:infoDialog:open",['','new']);
 					});
-					$.subscribe("his:hisInfo:open",function(){
-						self.hisInfoDialog = $.ligerDialog.open({
-							height: 550,
-							width: 500,
-							title: '新增his查询',
-							url: '${contextRoot}/esb/sqlTask/hosSqlTaskInfoDialog',
-							load:true
+					$.subscribe("interface:infoDialog:open",function(events,id,mode){
+						var title = '';
+						if(mode == 'modify'){
+							title = '修改资源接口';
+						}else if(mode == 'new'){
+							title = '新增资源接口'
+						}else{
+							title = '查看资源接口';
+						};
+						master.infoDialog = $.ligerDialog.open({
+							height: 660,
+							width: 600,
+							title: title,
+							urlParms:{
+								id:id,
+								mode:mode,
+							},
+							url: '${contextRoot}/resource/resourceInterface/infoInitial',
+							isHidden: false,
+							load: true,
 						})
 					});
 
-					//查看查询结果明细
-					$.subscribe('his:queryResultDialog:open', function (event, id) {
-						var yes = true;
-						//根据查询状态、查询消息先判断
-						if (yes) {
-							master.resultInfoDialog = $.ligerDialog.open({
-								height: 550,
-								width: 600,
-								title: '查询结果明细',
-								url: '${contextRoot}/esb/sqlTask/result?id='+id,
-								load:true
-							})
-						}
-					});
-					//删除用户
-					$.subscribe('his:hisInfoDialog:del', function (event, id) {
+					$.subscribe('interface:confirmDialog:del', function (event, id) {
 						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
 							if(yes){
 								var dataModel = $.DataModel.init();
-								dataModel.updateRemote("${contextRoot}/esb/sqlTask/delete",{
+								dataModel.updateRemote("${contextRoot}/resource/resourceInterface/delete",{
 									data:{id:id},
 									async:true,
 									success: function(data) {
@@ -150,29 +136,17 @@
 					})
 				}
 			};
-
 			/* ************************* 模块初始化结束 ************************** */
-
 			/* ************************* Dialog页面回调接口 ************************** */
 			win.reloadMasterUpdateGrid = function () {
 				master.reloadGrid();
 			};
-			win.closeHisInfoDialog = function (tag) {
-				isFirstPage = false;
-				if(tag == '1'){
-					$.Notice.success('操作成功');
-				}
-				master.hisInfoDialog.close();
-			};
-			win.closeResultInfoDialog = function () {
-				master.resultInfoDialog.close();
+			win.closeInterfaceInfoDialog = function () {
+				master.infoDialog.close();
 			};
 			/* ************************* Dialog页面回调接口结束 ************************** */
-
 			/* *************************** 页面初始化 **************************** */
-
 			pageInit();
-
 			/* ************************* 页面初始化结束 ************************** */
 		});
 	})(jQuery, window);

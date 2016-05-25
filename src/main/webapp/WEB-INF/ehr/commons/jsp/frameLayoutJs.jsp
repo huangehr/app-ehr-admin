@@ -258,7 +258,7 @@
                     level:2,
                     pid: 3,
                     text: '<spring:message code="title.resource.interface"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/resource/resourceInterface/initial'
                 },
                 //4 - 安全管理中心
                 //{id: 4, text: '<spring:message code="title.security.manage.center"/>'},
