@@ -8,6 +8,8 @@
     (function ($, win) {
         $(function () {
             var selectRowObj, isSaveSelectStatus = false;
+
+            var curOprator = undefined;
             var master = {
                 grid: undefined,
                 dialog: undefined,
@@ -42,7 +44,6 @@
                 rendGrid : function(){
                     var m = master;
                     var columns = [
-                        {display: 'ID', name: 'id', hide: true},
                         {display: '字典编码', name: 'code', width: '30%', align: 'left'},
                         {display: '字典名称', name: 'name', width: '40%', align: 'left'},
                         {display: '操作', name: 'operator', width: '30%', render: m.opratorRender}];
@@ -62,8 +63,9 @@
                     function onAfterShowData(data) {
                         if (selectRowObj != null && isSaveSelectStatus) {
                             isSaveSelectStatus = false;
-                            this.grid.select(selectRowObj);
-                            selectRowObj = undefined;
+                            master.grid.select(selectRowObj);
+                            if(!master.grid.isSelected(selectRowObj))
+                                master.select(0);
                         }else
                             this.select(0);
                     }
@@ -71,12 +73,13 @@
                     m.grid = initGrid(
                             $('#leftGrid'), m.urls.list, {}, columns,
                                 {checkbox: false, onSelectRow: onSelectRow, onAfterShowData: onAfterShowData, onBeforeShowData: onBeforeShowData});
+                    m.grid.resizeColumns();
                 },
                 //操作栏渲染器
                 opratorRender: function (row){
                     var vo = [
                         {type: 'edit', clkFun: "$.publish('dict:modify',['"+ row['code'] +"', 'modify'])"},
-                        {type: 'del', clkFun: "$.publish('dict:del',['"+ row['code'] +"'])"},
+                        {type: 'del', clkFun: "$.publish('dict:del',['"+ row['code'] +"'])"}
                     ];
                     return initGridOperator(vo);
                 },
@@ -90,6 +93,7 @@
                     id = id || '';
                     isSaveSelectStatus = true;
                     master.dialog = openDialog(master.urls.gotoModify, mode=='new'?'新增':'修改', 440, 400, {id: id, mode: mode});
+                    curOprator = master;
                 },
                 //删除事件
                 del : function (event, id) {
@@ -115,7 +119,7 @@
                 dialog: undefined,
                 urls: {
                     list: '${contextRoot}/resource/dict/entry/list',
-                    del: '${contextRoot}/resource/dict/entry/del',
+                    del: '${contextRoot}/resource/dict/entry/delete',
                     gotoModify: '${contextRoot}/resource/dict/entry/gotoModify'
                 },
                 //初始化
@@ -149,7 +153,7 @@
                         {display: '值域名称', name: 'name', width: '30%', align: 'left'},
                         {display: '操作', name: 'operator', width: '30%', render: m.opratorRender}];
 
-                    m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true});
+                    m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, checkbox: false});
                 },
                 //操作栏渲染器
                 opratorRender: function (row){
@@ -161,14 +165,19 @@
                 },
                 //修改、新增点击事件
                 gotoModify : function (event, id, mode) {
+                    if(!getSelectDictId()){
+                        $.Notice.warn("请先添加字典！");
+                        return;
+                    }
                     mode = mode || 'new';
                     id = id || '';
                     em.dialog = openDialog(em.urls.gotoModify, mode=='new'?'新增':'修改', 440, 400, {id: id, mode: mode});
+                    curOprator = em;
                 },
                 //删除事件
                 del : function (event, id) {
                     var m = em;
-                    batchDel(m.grid, m.find, m.urls.del, id);
+                    uniqDel(m.grid, m.find, m.urls.del, id, undefined, "id");
                 },
                 //查询点击事件
                 searchFun : function () {
@@ -202,20 +211,19 @@
             em.init();
             master.init();
 
+            win.getSelectDictId = function () {
+                var row = master.grid.getSelectedRow();
+                return row['code'];
+            }
+
             win.closeDialog = function(msg){
-                master.dialog.close();
+                curOprator.dialog.close();
                 if(msg){
                     $.Notice.success(msg);
-                    master.find();
+                    curOprator.find();
                 }
             }
-            win.closeEbDialog = function(msg){
-                em.dialog.close();
-                if(msg){
-                    $.Notice.success(msg);
-                    em.find();
-                }
-            }
+
         });
     })(jQuery, window);
 

@@ -133,7 +133,7 @@ function uniqDel(gtGrid, findFunc, url, ids, code, idField) {
     }
     ids = ids || getSelectId(gtGrid, code);
     if (ids.length > 0) {
-        $.ligerDialog.confirm('确定删除这些数据?', function (yes) {
+        $.ligerDialog.confirm('确定删除'+ (ids.length==1? '该' : '这些') +'数据?', function (yes) {
             if (yes)
                 remoteDel(ids, findFunc, gtGrid, url, idField, 'uniq');
         });
@@ -148,7 +148,7 @@ function batchDel(gtGrid, findFunc, url, ids, code, idField) {
     }
     ids = ids || getSelectId(gtGrid, code);
     if (ids.length > 0) {
-        $.ligerDialog.confirm('确定删除这些数据?', function (yes) {
+        $.ligerDialog.confirm('确定删除'+ (ids.length==1? '该' : '这些') +'数据?', function (yes) {
             if (yes)
                 remoteDel(ids, findFunc, gtGrid, url, idField);
         });

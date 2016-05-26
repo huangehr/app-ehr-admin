@@ -39,7 +39,7 @@
             function opratorRender(row){
                 var vo = [
                     {type: 'edit', clkFun: "$.publish('meta:modify',['"+ row['id'] +"', 'modify'])"},
-                    {type: 'del', clkFun: "$.publish('meta:del',['"+ row['id'] +"'])"},
+                    {type: 'lock', clkFun: "$.publish('meta:del',['"+ row['id'] +"'])"},
                 ];
                 return initGridOperator(vo);
             }
