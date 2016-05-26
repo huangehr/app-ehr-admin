@@ -9,6 +9,16 @@ function addEditBtn(clkFun){
 }
 
 /**
+ * 操作栏添加失效按钮
+ * @param clkFun 点击事件
+ * @returns {string}
+ */
+function addLockBtn(clkFun){
+
+    return '<a class="grid_lock" title="失效" href="#" onclick="javascript:' + clkFun + '"></a>'
+}
+
+/**
  * 操作栏添加删除按钮
  * @param clkFun 点击事件
  * @returns {string}
@@ -44,6 +54,8 @@ function initGridOperator(vo, spiltFlag){
                 html = addEditBtn(v.clkFun);
             else if(v.type == 'del')
                 html = addDelBtn(v.clkFun);
+            else if(v.type == 'lock')
+                html = addLockBtn(v.clkFun);
             else
                 html = addTextBtn(v.type, v.clkFun);
             oprs.push(html);
@@ -63,19 +75,20 @@ function initGridOperator(vo, spiltFlag){
  * @returns {ligerGrid}
  */
 function initGrid(el, url, params, columns, opts){
+
     opts = $.extend(
         {},
-        $.LigerGridEx.config({
+        {
             url: url,
             parms: params,
             columns: columns,
             selectRowButtonOnly: false,
             checkbox: true,
             allowHideColumn: false
-        }),
+        },
         opts
-    )
-    var grid = $(el).ligerGrid(opts);
+    );
+    var grid = $(el).ligerGrid($.LigerGridEx.config(opts));
     //grid.adjustToWidth();
     return grid;
 }

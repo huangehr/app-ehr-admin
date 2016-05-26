@@ -31,10 +31,10 @@
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
                 if(field=='ipt_meta_code' && val!=model.id){
-                    return uniqValid(urls.existence, "id="+val+";valid=1", "数据元编码已存在！");
+                    return uniqValid(urls.existence, "id="+val, "该数据元编码已存在（包含已失效数据）！");
                 }
                 else if(field=='ipt_std_code' && val!=model.stdCode){
-                    return uniqValid(urls.existence, "stdCode="+val+";valid=1", "资源标准编码已存在！");
+                    return uniqValid(urls.existence, "stdCode="+val+";valid=1", "该资源标准编码已存在！");
                 }
             });
 
