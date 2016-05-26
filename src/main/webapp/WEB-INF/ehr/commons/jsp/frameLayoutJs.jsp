@@ -204,6 +204,7 @@
 
                 //3 - 资源管理中心
                 {id: 3, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
+                //3-1 资源标准
                 {
                     id: 31,
                     level:2,
@@ -211,6 +212,7 @@
                     text: '<spring:message code="title.resource.standard"/>',
                     url: '${contextRoot}/app/initial'
                 },
+                //3-1-1 数据元
                 {
                     id: 311,
                     level:3,
