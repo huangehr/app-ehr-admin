@@ -216,21 +216,21 @@
                     level:3,
                     pid: 31,
                     text: '<spring:message code="title.resource.standard.metaData"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/resource/meta/initial'
                 },
                 {
                     id: 312,
                     level:3,
                     pid: 31,
                     text: '<spring:message code="title.resource.standard.dict"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/resource/dict/initial'
                 },
                 {
                     id: 313,
                     level:3,
                     pid: 31,
                     text: '<spring:message code="title.resource.standard.adapter"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/schemeAdapt/initial'
                 },
                 {
                     id: 32,
@@ -244,7 +244,7 @@
                     level:2,
                     pid: 3,
                     text: '<spring:message code="title.resource.register"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/resourceConfiguration/initial'
                 },
                 {
                     id: 34,
