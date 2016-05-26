@@ -128,3 +128,26 @@ function fillForm(model, $form){
     $form.Fields.fillValues(model);
 }
 
+
+function uniqValid(url, filters, errorMsg) {
+    var result = new $.jValidation.ajax.Result();
+    var dataModel = $.DataModel.init();
+    dataModel.fetchRemote(url, {
+        data: {filters: filters},
+        async: false,
+        success: function (data) {
+            if(data.successFlg){
+                if (data.obj) {
+                    result.setResult(false);
+                    result.setErrorMsg(errorMsg);
+                } else {
+                    result.setResult(true);
+                }
+            } else {
+                result.setResult(false);
+                result.setErrorMsg("验证出错，请刷新页面或联系管理员！");
+            }
+        }
+    });
+    return result;
+}

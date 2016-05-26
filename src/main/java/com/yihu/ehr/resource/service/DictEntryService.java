@@ -21,5 +21,6 @@ public class DictEntryService extends ExtendService<RsDictionaryEntryModel> {
                 "",                            //deleteUrl
                 "/resources/dictentries/{id}"       //deleteUniqUrl
         );
+        existenceUrl = "/resources/dictentries/existence"; //存在
     }
 }

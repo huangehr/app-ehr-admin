@@ -8,7 +8,7 @@
   <div class="m-form-group">
     <label>资源标准编码<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_std_code" class="required ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="stdCode">
+      <input type="text" id="ipt_std_code" class="required validate-code-char ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="stdCode">
     </div>
   </div>
 
@@ -20,9 +20,9 @@
   </div>
 
   <div class="m-form-group">
-    <label>数据元编码<spring:message code="spe.colon"/></label>
+    <label>内部标识符<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_meta_code" class="required ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="id">
+      <input type="text" id="ipt_meta_code" class="required validate-code-char ajax " required-title=<spring:message code="lbl.must.input"/> data-attr-scan="id">
     </div>
   </div>
 
@@ -43,12 +43,12 @@
   <div class="m-form-group">
     <label>关联字典代码<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_dict_code" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dictCode">
+      <input type="text" id="ipt_dict_code" class="required validate-code-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dictCode">
     </div>
   </div>
 
   <div class="m-form-group">
-    <label>是否为空<spring:message code="spe.colon"/></label>
+    <label>是否允空<spring:message code="spe.colon"/></label>
     <div class="u-checkbox-wrap m-form-control">
       <input type="radio" value="1" name="gender" data-attr-scan="nullAble" checked>是
       <input type="radio" value="0" name="gender" data-attr-scan="nullAble">否

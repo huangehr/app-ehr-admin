@@ -296,7 +296,8 @@
         ['validate-contact-way','请输入有效的电话号码或手机号码'],
         ['validate-org-length','请选择到医院一级！'],
         ['validate-org-code','请输入正确的组织代码格式，如:46650460-X'],
-        ['validate-special-char','不允许输入 \' 符号']
+        ['validate-special-char','不允许输入 \' 符号'],
+        ['validate-code-char','只允许输入数字、英文、小数点与下划线']
 
     ];
 
@@ -1045,7 +1046,9 @@
             if (pattern.test(v))
                 return false;
             return true;
-        }]
+        }],
+        ['validate-code-char', /^[0-9A-Za-z_.]+$/]
+
     ]);
 
 })(jQuery.jValidation.Validation,jQuery);

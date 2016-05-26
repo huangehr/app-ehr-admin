@@ -12,7 +12,7 @@
     <div class="m-retrieve-inner m-form-group f-mt10">
 
       <div class="m-form-control">
-        <input type="text" id="ipt_search" placeholder="请输入资源标准编码或名称" class="f-ml10" data-attr-scan="stdCode"/>
+        <input type="text" id="ipt_search" placeholder="请输入资源标准编码或数据元名称" class="f-ml10" data-attr-scan="stdCode"/>
       </div>
 
       <div class="m-form-control f-ml10">
@@ -20,7 +20,7 @@
       </div>
 
       <div class="m-form-control f-ml10">
-        <input type="text" id="ipt_search_null_able"  placeholder="是否为空" data-type="select" data-attr-scan="nullAble">
+        <input type="text" id="ipt_search_null_able"  placeholder="是否允空" data-type="select" data-attr-scan="nullAble">
       </div>
 
     </div>
