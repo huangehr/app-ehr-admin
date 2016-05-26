@@ -23,7 +23,7 @@
 
 
             var del = function (event, id) {
-                batchDel(grid, find, urls.del, id);
+                batchDel(grid, find, urls.del, id, undefined, undefined, '失效', '确定进行失效操作？');
             }
 
 
