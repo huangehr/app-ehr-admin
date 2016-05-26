@@ -33,6 +33,11 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
     public Map<String, String> comboKv = null;
 
+    {
+        comboKv = new HashMap<>();
+        comboKv.put("code", "id");
+        comboKv.put("value", "name");
+    }
 
     public void init(String listUrl, String modifyUrl){
         this.init(listUrl, modifyUrl, modifyUrl);
@@ -120,8 +125,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
             putAll(extParms, params);
             String url = beforeSearch(service.searchUrl, params);
             String resultStr = service.search(url, params);
-            resultStr = afterSearch(resultStr);
-            return resultStr;
+            return afterSearch(resultStr);
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();
@@ -153,16 +157,18 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
     public String afterComboSearch(String resultStr) {
         Envelop envelop = getEnvelop(resultStr);
         List ls = envelop.getDetailModelList();
-        Map<String, String> map;
         List rs = new ArrayList<>();
-        for(int i=0; i<ls.size(); i++){
-            map = ((Map) ls.get(i));
-            if(comboKv!=null){
+        if(comboKv!=null){
+            Map<String, String> map;
+            Map<String, String> combo;
+            for(int i=0; i<ls.size(); i++){
+                map = ((Map) ls.get(i));
+                combo = new HashMap<>();
                 for(String key : comboKv.keySet()){
-                    map.put(key, map.get(comboKv.get(key)));
+                    combo.put(key, map.get(comboKv.get(key)));
                 }
+                rs.add(combo);
             }
-            rs.add(map);
         }
         envelop.setDetailModelList(rs);
         return toJson(envelop);
@@ -170,18 +176,27 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
     @RequestMapping("/delete")
     @ResponseBody
-    public Object delete(String ids, String extParms){
+    public Object delete(String ids, String idField, String extParms, String type){
 
         try {
             Map<String, Object> params = new HashMap<>();
-            params.put("ids", nullToSpace(ids));
+            if(StringUtils.isEmpty(idField))
+                params.put("ids", nullToSpace(ids));
+            else
+                params.put(idField, nullToSpace(ids));
+
             params = putAll(extParms, params);
 
             params = beforeDel(params);
-            String rs = service.delete(params);
-            rs = afterDel(rs);
-            return rs;
+            String rs;
+            if("uniq".equals(type))
+                rs = service.deleteUniq(params);
+            else
+                rs = service.delete(params);
+
+            return afterDel(rs);
         } catch (Exception e) {
+            e.printStackTrace();
             return systemError();
         }
     }
@@ -189,12 +204,15 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
     @RequestMapping("/update")
     @ResponseBody
-    public Object update(String id, String model, String extParms){
+    public Object update(String id, String model, String modelName, String extParms){
 
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("id",id);
-            params.put("model",model);
+            if(StringUtils.isEmpty(modelName))
+                params.put("model",model);
+            else
+                params.put(modelName,model);
 
             params =  putAll(extParms, params);
 
@@ -205,9 +223,9 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
             else
                 resultStr = service.update(params);
 
-            resultStr = afterUpdate(resultStr);
-            return resultStr;
+            return afterUpdate(resultStr);
         } catch (Exception e) {
+            e.printStackTrace();
             return systemError();
         }
     }
@@ -217,7 +235,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
         return searchUrl;
     }
 
-    public String afterSearch(String rs){
+    public Object afterSearch(String rs){
 
         return rs;
     }
@@ -232,7 +250,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
         return params;
     }
 
-    public String afterDel(String rs){
+    public Object afterDel(String rs){
 
         return rs;
     }
