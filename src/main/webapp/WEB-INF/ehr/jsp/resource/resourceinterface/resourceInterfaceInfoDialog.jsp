@@ -13,25 +13,25 @@
 	<div class="m-form-group">
 		<label>接口名称:</label>
 		<div class="m-form-control essential">
-			<input type="text" id="inp_name" class="required useTitle ajax f-w350 f-h28 max-length-50"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="orgCode">
+			<input type="text" id="inp_name" class="required useTitle ajax f-w350 f-h28 max-length-50"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="name">
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label >接口编码:</label>
 		<div class="m-form-control">
-			<textarea id="inp_code" class="f-w350  validate-special-char max-length-500" data-attr-scan="systemCode"></textarea>
+			<textarea id="inp_code" class="f-w350  validate-special-char max-length-500" data-attr-scan="resourceInterface"></textarea>
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label >请求参数:</label>
 		<div class="m-form-control">
-			<textarea id="inp_params" class="f-w350  validate-special-char max-length-500" data-attr-scan="startTime"></textarea>
+			<textarea id="inp_params" class="f-w350  validate-special-char max-length-500" data-attr-scan="paramDescription"></textarea>
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label >响应结果格式:</label>
 		<div class="m-form-control">
-			<textarea id="inp_result_format"  class="f-w350  validate-special-char max-length-1000" data-attr-scan="endTime"></textarea>
+			<textarea id="inp_result_format"  class="f-w350  validate-special-char max-length-1000" data-attr-scan="resultDescription"></textarea>
 		</div>
 	</div>
 	<div class="m-form-group">
