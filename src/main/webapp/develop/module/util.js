@@ -425,8 +425,12 @@
                 if(curPage)
                     this.options.newPage = curPage;
 
-                this.setOptions({parms: params});
-                this.loadData(true);
+                if(url && url!='')
+                    this.setOptions({parms: params, url: url});
+                else{
+                    this.setOptions({parms: params});
+                    this.loadData(true);
+                }
             }
             //add by lincl end, 2016-5-10
         }

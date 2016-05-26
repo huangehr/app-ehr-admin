@@ -41,6 +41,10 @@ public class ExtendService<T> {
     public String modifyUrl = "";
     public String deleteUrl = "";
     public String searchUrl = "";
+    public String deleteUniqUrl = "";
+    public String existenceUrl = "";
+
+    public String idField = "id";
 
     private final Class modelType;
     private final ExtTypeReference typeReference;
@@ -59,6 +63,20 @@ public class ExtendService<T> {
         this.searchUrl = searchUrl;
     }
 
+    public void init(String searchUrl, String modelUrl, String addUrl, String modifyUrl, String deleteUrl, String deleteUniqUrl ){
+        this.addUrl = addUrl;
+        this.deleteUrl = deleteUrl;
+        this.modelUrl = modelUrl;
+        this.modifyUrl = modifyUrl;
+        this.searchUrl = searchUrl;
+        this.deleteUniqUrl = deleteUniqUrl;
+    }
+
+    public String isExistence(Map parms) throws Exception{
+
+        return doGet(comUrl + existenceUrl, parms);
+    }
+
     public String search(Map parms) throws Exception{
 
         return doGet(comUrl + searchUrl, parms);
@@ -71,7 +89,7 @@ public class ExtendService<T> {
 
     public String getModel(Map parms) throws Exception{
 
-        return doGet(comUrl + modelUrl.replace("{id}", String.valueOf(parms.get("id"))), parms);
+        return doGet(comUrl + modelUrl.replace("{id}", String.valueOf(parms.get(idField))), parms);
     }
 
     public String delete(Map parms) throws Exception{
@@ -79,9 +97,14 @@ public class ExtendService<T> {
         return doDelete(comUrl + deleteUrl, parms);
     }
 
+    public String deleteUniq(Map parms) throws Exception{
+
+        return doDelete(comUrl + deleteUniqUrl.replace("{id}", String.valueOf(parms.get(idField))), parms);
+    }
+
     public String update(Map parms) throws Exception{
 
-        return doPut(comUrl + modifyUrl.replace("{id}", String.valueOf(parms.get("id"))), parms);
+        return doPut(comUrl + modifyUrl.replace("{id}", String.valueOf(parms.get(idField))), parms);
     }
 
     public String add(Map parms) throws Exception{
