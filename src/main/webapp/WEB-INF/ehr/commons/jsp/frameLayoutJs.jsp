@@ -216,14 +216,14 @@
                     level:3,
                     pid: 31,
                     text: '<spring:message code="title.resource.standard.metaData"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/resource/meta/initial'
                 },
                 {
                     id: 312,
                     level:3,
                     pid: 31,
                     text: '<spring:message code="title.resource.standard.dict"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/resource/dict/initial'
                 },
                 {
                     id: 313,
@@ -245,6 +245,13 @@
                     pid: 3,
                     text: '<spring:message code="title.resource.register"/>',
                     url: '${contextRoot}/app/initial'
+                },
+                {
+                    id: 331,
+                    level:3,
+                    pid: 33,
+                    text: '资源授权',
+                    url: '${contextRoot}/resource/grant/initial'
                 },
                 {
                     id: 34,

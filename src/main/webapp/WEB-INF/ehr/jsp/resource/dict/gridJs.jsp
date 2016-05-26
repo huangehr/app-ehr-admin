@@ -53,17 +53,24 @@
                         em.searchFun();
                     }
 
+                    function onBeforeShowData(data) {
+                        $('#s_dictCode').val(-1);
+                        if(data.detailModelList.length == 0)
+                            em.searchFun();
+                    }
+
                     function onAfterShowData(data) {
                         if (selectRowObj != null && isSaveSelectStatus) {
                             isSaveSelectStatus = false;
                             this.grid.select(selectRowObj);
+                            selectRowObj = undefined;
                         }else
                             this.select(0);
                     }
 
                     m.grid = initGrid(
                             $('#leftGrid'), m.urls.list, {}, columns,
-                                {checkbox: false, onSelectRow: onSelectRow, onAfterShowData: onAfterShowData});
+                                {checkbox: false, onSelectRow: onSelectRow, onAfterShowData: onAfterShowData, onBeforeShowData: onBeforeShowData});
                 },
                 //操作栏渲染器
                 opratorRender: function (row){
@@ -87,7 +94,7 @@
                 //删除事件
                 del : function (event, id) {
                     var m = master;
-                    uniqDel(m.grid, m.find, m.urls.del, id, undefined, 'id');
+                    uniqDel(m.grid, m.find, m.urls.del, id, undefined, 'code');
                 },
                 //查询列表方法
                 find : function (curPage) {
@@ -173,7 +180,7 @@
                         {name: 'code', logic: '?', fields: 'code,name'},
                         {name: 'dictCode', logic: '='}];
                     var params = {filters: covertFilters(vo, $('#entryRetrieve'))}
-                    reloadGrid(this.grid, curPage, params);
+                    reloadGrid(em.grid, curPage, params);
                 },
                 //公开方法
                 publishFunc : function (){

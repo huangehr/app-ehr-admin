@@ -30,7 +30,7 @@
             //初始化工具栏
             var barTools = function(){
                 var btn = [
-                    {type: 'batchDel', clkFun: del},
+//                    {type: 'batchDel', clkFun: del},
                     {type: 'edit', clkFun: gotoModify}
                 ];
                 initBarBtn($('.m-retrieve-inner'), btn)
@@ -53,12 +53,12 @@
                     {display: '数据元名称', name: 'name', width: '10%', align: 'left'},
                     {display: '类型', name: 'columnTypeName', width: '10%', align: 'left'},
                     {display: '关联字典代码', name: 'dictCode', width: '10%', align: 'left'},
-                    {display: '是否为空', name: 'nullAble', width: '10%', align: 'left', render: function (row) {
+                    {display: '是否允空', name: 'nullAble', width: '10%', align: 'left', render: function (row) {
                         return row.nullAble ==1 ? '是' : '否';
                     }},
                     {display: '操作', name: 'operator', width: '15%', render: opratorRender}];
 
-                grid = initGrid($('#gtGrid'), urls.list, {}, columns, {delayLoad: true});
+                grid = initGrid($('#gtGrid'), urls.list, {}, columns, {delayLoad: true, checkbox: false});
                 searchFun();
             };
 
@@ -70,7 +70,7 @@
             var filters = function(){
                 var vo = [
                     {type: 'text', id: 'ipt_search'},
-                    {type: 'select', id: 'ipt_search_type', opts:{width: 140}, dictId: 40},
+                    {type: 'select', id: 'ipt_search_type', opts:{width: 140}, dictId: 30},
                     {type: 'select', id: 'ipt_search_null_able', opts:{width: 140}, dictId: 18},
                     {type: 'searchBtn', id: 'search_btn', searchFun: searchFun}
                 ];
