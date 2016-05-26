@@ -8,6 +8,8 @@
     .f-bd-configuration{ border: 1px solid #c8c8c8; }
     .f-ml200{ margin-left: 200px; }
     .f-mt600{ margin-top: 675px; }
+    .f-s14{ font-size: 14 }
+    .sp-mateData-serch{ float: right;margin-right: 190px;margin-top: -7px; }
     /*.f-mr200{ margin-right: 200px; }*/
 
 </style>
