@@ -15,6 +15,9 @@
                  <input type="text" id="beginTime" class="useTitle u-f-mt5"  placeholder=<spring:message code="lbl.hosLog.beginTime"/> data-attr-scan="beginTime" />
             </div>
             <div class="m-form-control">
+               <div style="margin-top: 10px;font-weight:bold;font-size:35px;"> ~</div>
+            </div>
+            <div class="m-form-control">
                 <input type="text" id="endTime" class="useTitle u-f-mt5"   placeholder=<spring:message code="lbl.hosLog.endTime"/> data-attr-scan="endTime" />
             </div>
             <div class="m-form-control f-ml20">
