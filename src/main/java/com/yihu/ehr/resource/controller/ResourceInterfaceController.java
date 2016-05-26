@@ -50,7 +50,8 @@ public class ResourceInterfaceController extends BaseUIController {
         String envelopStr = "";
         try{
             if (!StringUtils.isEmpty(id)) {
-                envelopStr = getRsInterface("id="+id);
+                String url = "/resources/interfaces/"+id;
+                envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             }
             model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
         }catch (Exception ex){
@@ -92,9 +93,8 @@ public class ResourceInterfaceController extends BaseUIController {
     public Object getResourceInterface(String id){
         Envelop envelop = new Envelop();
         try{
-            String envelopStr = getRsInterface(id);
-//            String url = ""+id;
-//            String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
+            String url = "/resources/interfaces/{id}"+id;
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
@@ -122,9 +122,8 @@ public class ResourceInterfaceController extends BaseUIController {
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
-//                String urlGet = ""+model.getId();
-//                String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
-                String envelopGetStr = getRsInterface("id="+model.getId());
+                String urlGet = "/resources/interfaces/"+model.getId();
+                String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
                 if (!envelopGet.isSuccessFlg()){
                     envelop.setErrorMsg("原资源接口信息获取失败！");
@@ -170,47 +169,16 @@ public class ResourceInterfaceController extends BaseUIController {
     public Object isNameExist(String name){
         Envelop envelop = new Envelop();
         try{
-            String envelopStr = getRsInterface("name="+name);
-            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
-            if(envelopGet.isSuccessFlg()){
-                envelop.setSuccessFlg(true);
-                envelop.setErrorMsg("资源接口名称已存在！");
-            }else {
-                envelop.setSuccessFlg(false);
-            }
+            String url = "/resources/existence/name";
+            Map<String,Object> args = new HashMap<>();
+            args.put("name",name);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
+            return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
             envelop.setSuccessFlg(true);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
-    }
-
-    /**
-     * 根据过滤条件获取单个对象，封装成Envelop的json格式
-     * @param filters
-     * @return
-     * @throws Exception
-     */
-    public String getRsInterface(String filters) throws Exception{
-        Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        String envelopStr = "";
-        Map<String,Object> params = new HashMap<>();
-        params.put("fields","");
-        params.put("filters",filters);
-        params.put("sorts","");
-        params.put("page",1);
-        params.put("size",1);
-        String url = "/resources/interfaces";
-        envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-        Envelop en = objectMapper.readValue(envelopStr,Envelop.class);
-        if (en.isSuccessFlg()&&en.getDetailModelList().size()!=0){
-            List<RsInterfaceModel> models  = (List<RsInterfaceModel>)getEnvelopList(en.getDetailModelList(),new ArrayList<RsInterfaceModel>(),RsInterfaceModel.class);
-            RsInterfaceModel model = models.get(0);
-            envelop.setSuccessFlg(true);
-            envelop.setObj(model);
-        }
-        return objectMapper.writeValueAsString(envelop);
     }
 }
