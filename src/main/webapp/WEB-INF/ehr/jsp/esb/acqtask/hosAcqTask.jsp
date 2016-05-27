@@ -17,7 +17,7 @@
 				<!--下拉框-->
 				<input type="text" id="inp_code" class="f-h28 f-w1240" placeholder="请输入机构代码或系统代码" data-type="select" data-attr-scan="orgSysCode">
 			</div>
-			<div class="m-form-control f-ml20">
+			<div class="m-form-control f-ml10">
 				<!--下拉框-->
 				<input type="text" id="inp_status" class="f-h28 f-w160" placeholder="请选择状态" data-type="select" data-attr-scan="status">
 			</div>
@@ -38,16 +38,16 @@
 				<!--下拉框-->
 				<input type="text" id="inp_start_time_low" class="f-h28 f-w160" placeholder="开始时间下限"  data-attr-scan="startTimeLow">
 			</div>
-			<div class="m-form-control f-ml20">
-				<!--下拉框-->
+			<div class="m-form-control" style="margin-top: 10px;font-weight:bold;font-size:35px;"> ~</div>
+			<div class="m-form-control">
 				<input type="text" id="inp_start_time_up" class="f-h28 f-w160" placeholder="开始时间上限"  data-attr-scan="startTimeUp">
 			</div>
-			<div class="m-form-control f-ml20">
+			<div class="m-form-control f-ml10">
 				<!--下拉框-->
 				<input type="text" id="inp_end_time_low" class="f-h28 f-w160" placeholder="结束时间下限" data-attr-scan="endTimeLow">
 			</div>
-			<div class="m-form-control f-ml20">
-				<!--下拉框-->
+			<div class="m-form-control" style="margin-top: 10px;font-weight:bold;font-size:35px;"> ~</div>
+			<div class="m-form-control">
 				<input type="text" id="inp_end_time_up" class="f-h28 f-w160" placeholder="结束时间上限" data-attr-scan="endTimeUp">
 			</div>
 		</div>
