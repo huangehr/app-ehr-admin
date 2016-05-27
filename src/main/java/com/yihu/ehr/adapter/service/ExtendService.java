@@ -42,6 +42,7 @@ public class ExtendService<T> {
     public String deleteUrl = "";
     public String searchUrl = "";
     public String deleteUniqUrl = "";
+    public String existenceUrl = "";
 
     public String idField = "id";
 
@@ -69,6 +70,11 @@ public class ExtendService<T> {
         this.modifyUrl = modifyUrl;
         this.searchUrl = searchUrl;
         this.deleteUniqUrl = deleteUniqUrl;
+    }
+
+    public String isExistence(Map parms) throws Exception{
+
+        return doGet(comUrl + existenceUrl, parms);
     }
 
     public String search(Map parms) throws Exception{
@@ -238,9 +244,6 @@ public class ExtendService<T> {
         }
         out.write(bufferOut);
         dis.close();
-        contentBody.append("------------" + BOUNDARY);
-        out.write(contentBody.toString().getBytes("utf-8"));
-        out.write(("------------" + BOUNDARY + "--\r\n").getBytes("UTF-8"));
 
         // 3. 写结尾
         String endBoundary = "\r\n--" + BOUNDARY + "--\r\n";

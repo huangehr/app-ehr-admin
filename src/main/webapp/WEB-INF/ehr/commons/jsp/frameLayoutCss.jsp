@@ -63,6 +63,18 @@
 		background: url(${staticRoot}/images/app/shanchu_btn_pre.png) center no-repeat;
 	}
 
+	.grid_lock{
+		display:inline-block;
+		width: 40px;
+		height: 40px;
+		cursor:pointer;
+		background: url(${staticRoot}/images/app/suo01_btn.png) center no-repeat;
+	}
+
+	.grid_lock:hover{
+		background: url(${staticRoot}/images/app/suo_btn_pre.png) center no-repeat;
+	}
+
 	.grid_on{
 		display: inline-block;
 		width: 60px;

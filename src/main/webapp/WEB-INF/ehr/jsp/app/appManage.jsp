@@ -15,14 +15,14 @@
                 <!--输入框-->
                 <input type="text" id="inp_search" placeholder="请输入名称或APP ID" class="f-ml10" data-attr-scan="searchNm"/>
             </div>
-            <div class="m-form-control f-ml20">
+            <div class="m-form-control f-ml10">
                 <!--下拉框-->
                 <input type="text" id="ipt_catalog" data-type="select" placeholder="请选择应用类型" data-attr-scan="catalog">
             </div>
-            <div class="m-form-control f-ml20">
+            <div class="m-form-control f-ml10">
                 <input type="text" data-type="select" id="ipt_status" placeholder="请选择应用状态" data-attr-scan="status">
             </div>
-            <div class="m-form-control f-ml20">
+            <div class="m-form-control f-ml10">
                 <!--按钮:查询 & 新增-->
                 <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
                     <span><spring:message code="btn.search"/></span>

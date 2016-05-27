@@ -5,9 +5,12 @@
 
     (function ($, win) {
         var urls = {
-            update: "${contextRoot}/resource/dict/entry/update"
+            update: "${contextRoot}/resource/dict/entry/update",
+            existence: "${contextRoot}/resource/dict/entry/existence"
         }
+
         var model = ${model};
+        model.dictCode = parent.getSelectDictId();
         var mode = '${mode}';
 
         var initForm = function () {
@@ -21,13 +24,21 @@
         };
 
         var initBtn = function () {
+            var $form = $("#infoForm");
+            var validator = initValidate($form, function (elm) {
+                var field = $(elm).attr('id');
+                var val = $('#' + field).val();
+                if(field=='ipt_code' && val!=model.code){
+                    return uniqValid(urls.existence, "code="+val+";dictCode="+ model.dictCode, "值域编码已存在！");
+                }
+            });
 
             $('#btn_save').click(function () {
-                saveForm({url: urls.update, $form: $("#infoForm")});
+                saveForm({url: urls.update, $form: $form, validator: validator});
             });
 
             $('#btn_cancel').click(function () {
-                parent.closeEbDialog();
+                parent.closeDialog();
             });
         };
 

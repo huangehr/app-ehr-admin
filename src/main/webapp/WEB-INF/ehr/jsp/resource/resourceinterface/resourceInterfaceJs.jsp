@@ -50,22 +50,22 @@
 				grid: null,
 				init: function () {
 					this.grid = $("#div_data_info_grid").ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/resource/resourceInterface/searchInterfaces',
+						url: '${contextRoot}/resource/resourceInterface/searchRsInterfaces',
 						parms: {
 							searchNm: '',
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
-							{display: '接口名称',name: 'orgCode', width:'15%', isAllowHide: false,align:'left'},
-							{display: '接口编码', name: 'systemCode', width: '25%',align:'left'},
-							{display: '请求参数', name: 'startTime', width: '25%', resizable: true,align:'left'},
-							{display: '响应结果格式', name: 'endTime', width: '25%', resizable: true,align:'left'},
+							{display: '接口名称',name: 'name', width:'35%', isAllowHide: false,align:'left'},
+							{display: '接口编码', name: 'resourceInterface', width: '55%',align:'left'},
+							{display: '请求参数', name: 'paramDescription', width: '25%', resizable: true,align:'left',hide:true},
+							{display: '响应结果格式', name: 'resultDescription', width: '25%', resizable: true,align:'left',hide:true},
 							{
 								display: '操作', name: 'operator', width: '10%', render: function (row) {
 								var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:infoDialog:open", row.id, 'modify') + '"></a>';
 								html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:confirmDialog:del", row.id) + '"></a>';
 								return html;
-							}}
+							}},
 						],
 						enabledEdit: true,
 						validate: true,

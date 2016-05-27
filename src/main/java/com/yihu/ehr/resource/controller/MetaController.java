@@ -6,7 +6,9 @@ import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.resource.service.MetaService;
 import com.yihu.ehr.util.Envelop;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,5 +35,6 @@ public class MetaController extends ExtendController<MetaService> {
         comboKv.put("domainName", "domainName");
         comboKv.put("domain", "domain");
     }
+
 
 }
