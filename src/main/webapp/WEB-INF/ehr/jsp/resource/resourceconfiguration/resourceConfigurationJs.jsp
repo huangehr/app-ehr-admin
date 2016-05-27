@@ -15,10 +15,11 @@
             var delRowDatas = new Array();
 
             var comUrl = '${contextRoot}/resourceConfiguration';
-            var resourceConfigurationUrl = [comUrl+'/searchResourceconfiguration', comUrl+'/searchSelResourceconfiguration']
-            var elmParams = ['resourceConfigurationInfoGrid', 'resourceConfigurationInfoGridTrue'];
+            var resourceConfigurationUrl = [comUrl + '/searchSelResourceconfiguration?resourcesId=testId', comUrl + '/searchResourceconfiguration']
+            var elmParams = ['resourceConfigurationInfoGridTrue', 'resourceConfigurationInfoGrid'];
 
             var dataModel = $.DataModel.init();
+            var rowDataId = new Array();
 
             /* *************************** 函数定义 ******************************* */
             /**
@@ -37,6 +38,7 @@
                 else
                     grif = elmParams[1];
 
+                grif.options.newPage = 1;
                 grif.setOptions({parms: params});
                 grif.loadData(true);
 
@@ -74,26 +76,32 @@
                 init: function () {
                     var self = retrieve;
 
+
                     var columnDatas = [
                         {name: 'id', hide: true, isAllowHide: false},
-                        {display: '数据元编码', name: 'userTypeName', width: '25%', align: 'left'},
-                        {display: '数据元名称', name: 'userTypeName', width: '25%', align: 'left'},
-                        {display: '类型', name: 'userTypeName', width: '25%', align: 'left'},
-                        {display: '说明', name: 'userTypeName', width: '25%', align: 'left'},  //test_name
+                        {display: '数据元编码', name: 'stdCode', width: '25%', align: 'left'},
+                        {display: '数据元名称', name: 'name', width: '25%', align: 'left'},
+                        {display: '类型', name: 'columnType', width: '25%', align: 'left'},
+                        {display: '说明', name: 'description', width: '25%', align: 'left'},
                     ];
 
                     var elm = [self.$resourceConfigurationInfoGrid, self.$resourceConfigurationInfoGridTrue];
-
+                    var count = 0;
                     for (var i = 0; i < resourceConfigurationUrl.length; i++) {
+
                         elmParams[i] = elm[i].ligerGrid($.LigerGridEx.config({
                             url: resourceConfigurationUrl[i],
                             columns: columnDatas,
                             checkbox: true,
+                            height: 600,
+                            isChecked: function (row) {
+                                debugger
+//                                return true;
+                            },
                             parms: {
                                 searchNm: '',
                             },
-                            onSelectRow: function (rowdata, rowid, rowobj) {
-                                debugger
+                            onSelectRow: function (rowdata) {
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
                                     addRows(rowdata);
                                 }
@@ -104,17 +112,45 @@
                                 } else {
                                     deleteRows(rowdata);//test
                                 }
+                            },
+                            onLoaded: function (grid) {
+                                debugger
+                                $("#ajaxIndex").val(count+"");
+                                if (!Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
+                                    var dataList = grid.data.detailModelList;
+                                    for (var i = 0; i < dataList.length; i++) {
+                                        rowDataId.push(dataList[i].id)
+                                    }
+                                    debugger
+                                    count++;
+                                }
+
+                            },
+                            onAfterShowData: function (currentData, grid) {
+                                debugger;
                             }
                         }));
+
+
                     }
 
                     function addRows(rowdata) {
-                        addRowDatas.push(
-                                {id: 12, userTypeName: '1'},
-                                {id: 13, userTypeName: '2'},
-                                {userTypeName: '3'}  //test_data
-                        );
-                        elmParams[1].addRow(addRowDatas);
+                        debugger
+                        var metaData_rowData = {
+                            resourcesId: "testId",
+                            metadataId: rowdata.id,
+                            groupType: "testType",
+                            groupData: "testdata",
+                            description: rowdata.description
+                        };
+                        addRowDatas.push(metaData_rowData);
+                        elmParams[1].addRow({
+                            id: rowdata.id,
+                            stdCode: rowdata.stdCode,
+                            name: rowdata.name,
+                            columnType: rowdata.columnType,
+                            description: rowdata.description
+                        });
                     }
 
                     function deleteRows(rowdata) {
@@ -131,22 +167,24 @@
 
                 },
                 reloadResourceConfigurationGrid: function (url, value, searchType) {
-                    reloadGrid.call(this, url, {searchNm:value}, searchType);
+                    reloadGrid.call(this, url, {searchNm: value}, searchType);
                 },
                 bindEvents: function () {
 
-                    if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
-                        return;
-                    }
-
                     retrieve.$saveBtn.click(function () {
-                        dataModel.updateRemote(comUrl+"/saveResourceconfiguration", {
-                            data: {addRowDatas: JSON.stringify(addRowDatas),delRowDatas:JSON.stringify(delRowDatas)},
+                        if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
+                            return;
+                        }
+                        dataModel.updateRemote(comUrl + "/saveResourceconfiguration", {
+                            data: {addRowDatas: JSON.stringify(addRowDatas), delRowDatas: JSON.stringify(delRowDatas)},
                             async: true,
                             success: function (data) {
-                                if (data.successFlg)
+                                if (data.successFlg) {
                                     $.Notice.success('保存成功');
-                                else
+                                    debugger
+                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], "", "mateData");
+
+                                } else
                                     $.Notice.error("保存失败");
                             }
                         })

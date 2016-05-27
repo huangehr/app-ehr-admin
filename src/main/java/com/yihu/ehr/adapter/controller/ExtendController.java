@@ -154,6 +154,19 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
         }
     }
 
+    @RequestMapping("/existence")
+    @ResponseBody
+    public Object isExistence(String filters){
+        try {
+            Map map = new HashMap<>();
+            map.put("filters", filters);
+            return service.isExistence(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return systemError();
+        }
+    }
+
     public String afterComboSearch(String resultStr) {
         Envelop envelop = getEnvelop(resultStr);
         List ls = envelop.getDetailModelList();

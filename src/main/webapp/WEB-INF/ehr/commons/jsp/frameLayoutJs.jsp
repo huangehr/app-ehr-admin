@@ -249,6 +249,13 @@
                     url: '${contextRoot}/resourceConfiguration/initial'
                 },
                 {
+                    id: 331,
+                    level:3,
+                    pid: 33,
+                    text: '资源授权',
+                    url: '${contextRoot}/resource/grant/initial'
+                },
+                {
                     id: 34,
                     level:2,
                     pid: 3,

@@ -127,44 +127,49 @@ function getSelectId(grid, code){
     return ids;
 }
 
-function uniqDel(gtGrid, findFunc, url, ids, code, idField) {
+function uniqDel(gtGrid, findFunc, url, ids, code, idField, opration, warnMsg) {
+    opration = opration || '删除';
     if(ids && !$.isArray(ids)){
         ids = [ids];
     }
     ids = ids || getSelectId(gtGrid, code);
     if (ids.length > 0) {
-        $.ligerDialog.confirm('确定删除这些数据?', function (yes) {
+        warnMsg = warnMsg || ('确定删除'+ (ids.length==1? '该' : '这些') +'数据?');
+        $.ligerDialog.confirm(warnMsg, function (yes) {
             if (yes)
-                remoteDel(ids, findFunc, gtGrid, url, idField, 'uniq');
+                remoteDel(ids, findFunc, gtGrid, url, idField, 'uniq', opration);
         });
     }else{
         $.ligerDialog.warn("请选择要删除的数据");
     }
 }
 
-function batchDel(gtGrid, findFunc, url, ids, code, idField) {
+function batchDel(gtGrid, findFunc, url, ids, code, idField, opration, warnMsg) {
+    opration = opration || '删除';
     if(ids && !$.isArray(ids)){
         ids = [ids];
     }
     ids = ids || getSelectId(gtGrid, code);
     if (ids.length > 0) {
-        $.ligerDialog.confirm('确定删除这些数据?', function (yes) {
+        warnMsg = warnMsg || ('确定删除'+ (ids.length==1? '该' : '这些') +'数据?');
+        $.ligerDialog.confirm(warnMsg, function (yes) {
             if (yes)
-                remoteDel(ids, findFunc, gtGrid, url, idField);
+                remoteDel(ids, findFunc, gtGrid, url, idField, '', opration);
         });
     }else{
-        $.ligerDialog.warn("请选择要删除的数据");
+        $.ligerDialog.warn("请选择要"+ opration +"的数据");
     }
 }
 
-function remoteDel(ids, findFunc, gtGrid, url, idField, type){
-    var dialog = $.ligerDialog.waitting('正在删除中,请稍候...');
+function remoteDel(ids, findFunc, gtGrid, url, idField, type, opration){
+    opration = opration || '删除';
+    var dialog = $.ligerDialog.waitting('正在处理中,请稍候...');
     var dataModel = $.DataModel.init();
     dataModel.updateRemote(url, {
         data: {ids: ids.join(','), idField: idField, type: type},
         success: function (data) {
             if (data.successFlg) {
-                $.Notice.success('删除成功！');
+                $.Notice.success(opration + '成功！');
                 if(findFunc)
                     findFunc($.Util.checkCurPage.call(gtGrid, ids.length))
             } else {

@@ -44,23 +44,22 @@
 
 				if(mode != 'new'){
 					var info = ${envelop}.obj;
-					nameCopy = info.orgCode;
+					nameCopy = info.name;
 					this.$form.attrScan();
 					this.$form.Fields.fillValues({
 						id: info.id,
-						orgCode: info.orgCode,
-						systemCode: info.systemCode,
-						startTime:info.startTime,
-						endTime:info.endTime,
-						//description: info.description,
+						name: info.name,
+						resourceInterface: info.resourceInterface,
+						paramDescription:info.paramDescription,
+						resultDescription:info.resultDescription,
+						description: info.description,
 					});
 				}
 				if(mode == 'view'){
-					this.$form.addClass("m-form-readonly");
 					$("#btn_save").hide();
 					$("#btn_cancel").hide();
-//					$('#div_data_info_form input,textarea').attr("disabled","disabled")
-//					$('#div_data_info_form input,textarea').css("background-color","#C0C0C0")
+					$('#div_data_info_form input,textarea').attr("disabled","disabled")
+					$('#div_data_info_form input,textarea').css("background-color","#EDF6FA")
 				}
 			},
 			bindEvents: function () {
@@ -99,9 +98,9 @@
 					if(validator.validate()){
 						var dataModel = $.DataModel.init();
 						self.$form.attrScan();
-						var hpgModel = self.$form.Fields.getValues();
+						var model = self.$form.Fields.getValues();
 						dataModel.createRemote("${contextRoot}/resource/resourceInterface/update", {
-							data:  {dictJson:JSON.stringify(hpgModel),mode:mode},
+							data:  {dataJson:JSON.stringify(model),mode:mode},
 							success: function (data) {
 								if(data.successFlg){
 									parent.reloadMasterUpdateGrid();

@@ -15,7 +15,7 @@
   <div class="m-form-group">
     <label>字典编码<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_code" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code">
+      <input type="text" id="ipt_code" class="required validate-code-char ajax " required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code">
     </div>
   </div>
 

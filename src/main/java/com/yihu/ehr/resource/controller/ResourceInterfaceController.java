@@ -1,7 +1,7 @@
 package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.agModel.esb.HosAcqTaskModel;
+import com.yihu.ehr.agModel.resource.RsInterfaceModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -50,58 +50,40 @@ public class ResourceInterfaceController extends BaseUIController {
         String envelopStr = "";
         try{
             if (!StringUtils.isEmpty(id)) {
-                envelopStr = getmodel(id);
+                String url = "/resources/interfaces/"+id;
+                envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             }
             model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
         }catch (Exception ex){
+            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
         }
         return "simpleView";
     }
 
-    @RequestMapping("/searchInterfaces")
+    @RequestMapping("/searchRsInterfaces")
     @ResponseBody
-    public Object searchResource(String searchNm, int page, int rows) {
+    public Object searchRsInterfaces(String searchNm, int page, int rows) {
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(true);
-        List<HosAcqTaskModel> list = new ArrayList<>();
-        for(int i=0;i<20;i++){
-            HosAcqTaskModel model = new HosAcqTaskModel();
-            //模拟数据
-
-            model.setId("10000000"+i);
-            model.setOrgCode("wwcs"+i);
-            model.setSystemCode("yyww0"+i);
-            model.setStartTime("<Req>\n<TransactionCode></TransactionCode>\n<Data>\n<BeginDate>开始时间（格式YYYY-MM-DD HH:mm:ss ）</BeginDate>\n<EndDate>结束时间（格式YYYY-MM-DD HH:mm:ss ）</EndDate>\n</Data>\n</Req>"+i);
-            model.setEndTime("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-                    "<Resp>\n" +
-                    "<TransactionCode></TransactionCode>\n" +
-                    "<RespCode>10000</RespCode>\n" +
-                    "<RespMessage>成功</RespMessage>\n" +
-                    "<Data>\n" +
-                    "<OrgCode>组织机构代码</OrgCode>\n" +
-                    "<PatientId>病人ID</PatientId>\n" +
-                    "<EventNo>事件号</EventNo>\n" +
-                    "<EventType>就诊类型</EventType>\n" +
-                    "<EventTime>就诊时间</EventTime>\n" +
-                    "<LocalCardNo>就诊卡</LocalCardNo>\n" +
-                    "<IdCardId>身份证</IdCardIdNo>\n" +
-                    "</Data>\n" +
-                    "<Data>\n" +
-                    "……\n" +
-                    "</Data>\n" +
-                    "……\n" +
-                    "</Resp>"+i);
-            model.setCreateTime("说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明"+i);
-            list.add(model);
-        }
-        envelop.setTotalPage(20);
-        envelop.setCurrPage(page);
-        envelop.setPageSize(rows);
-        envelop.setDetailModelList(list);
         String envelopStr = "";
+        String filters = "";
         try{
-            envelopStr = objectMapper.writeValueAsString(envelop);
+            if(!StringUtils.isEmpty(searchNm)){
+                filters += "name?"+searchNm+" g1;resourceInterface?"+searchNm+" g1;";
+            }
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters",filters);
+            params.put("sorts","");
+            params.put("page",page);
+            params.put("size",rows);
+            String url = "/resources/interfaces";
+            envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
         }catch (Exception ex){
+            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setSuccessFlg(false);
+            return envelop;
         }
         return envelopStr;
     }
@@ -111,10 +93,70 @@ public class ResourceInterfaceController extends BaseUIController {
     public Object getResourceInterface(String id){
         Envelop envelop = new Envelop();
         try{
-            String url = ""+id;
+            String url = "/resources/interfaces/{id}"+id;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
+            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+    //新增、修改
+    @RequestMapping("/update")
+    @ResponseBody
+    public Object updateResourceInterface(String dataJson,String mode){
+        Envelop envelop = new Envelop();
+        envelop.setSuccessFlg(false);
+        String url = "/resources/interfaces";
+        try{
+            RsInterfaceModel model = objectMapper.readValue(dataJson,RsInterfaceModel.class);
+            if(StringUtils.isEmpty(model.getName())){
+                envelop.setErrorMsg("资源接口名称不能为空！");
+                return envelop;
+            }
+            if("new".equals(mode)){
+                Map<String,Object> args = new HashMap<>();
+                args.put("json_data",dataJson);
+                String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
+                return envelopStr;
+            } else if("modify".equals(mode)){
+                String urlGet = "/resources/interfaces/"+model.getId();
+                String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
+                Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+                if (!envelopGet.isSuccessFlg()){
+                    envelop.setErrorMsg("原资源接口信息获取失败！");
+                }
+                RsInterfaceModel updateModel = getEnvelopModel(envelopGet.getObj(),RsInterfaceModel.class);
+                updateModel.setName(model.getName());
+                updateModel.setResourceInterface(model.getResourceInterface());
+                updateModel.setParamDescription(model.getParamDescription());
+                updateModel.setResultDescription(model.getResultDescription());
+                updateModel.setDescription(model.getDescription());
+                String updateModelJson = objectMapper.writeValueAsString(updateModel);
+                Map<String,Object> params = new HashMap<>();
+                params.put("json_data",updateModelJson);
+                String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
+                return envelopStr;
+            }
+        }catch(Exception ex){
+            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
+    //删除
+    @RequestMapping("/delete")
+    @ResponseBody
+    public Object deleteRsInterface(String id){
+        Envelop envelop = new Envelop();
+        try{
+            String url = "/resources/interfaces/"+id;
+            String envelopStr = HttpClientUtil.doDelete(comUrl+url,new HashMap<>(),username,password);
+            return envelopStr;
+        }catch(Exception ex){
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
@@ -127,56 +169,16 @@ public class ResourceInterfaceController extends BaseUIController {
     public Object isNameExist(String name){
         Envelop envelop = new Envelop();
         try{
-            String url = "";
-            Map<String,Object> params = new HashMap<>();
-            params.put("",name);
+            String url = "/resources/existence/name";
+            Map<String,Object> args = new HashMap<>();
+            args.put("name",name);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
+            return envelopStr;
         }catch (Exception ex){
-
+            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(true);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
-        return null;
+        return envelop;
     }
-
-
-    public String getmodel(String id) {
-        Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(true);
-        HosAcqTaskModel model = new HosAcqTaskModel();
-        //模拟数据
-        model.setId("10000000");
-        model.setOrgCode("wwcs");
-        model.setSystemCode("yyww0");
-        model.setStartTime("<Req>\n<TransactionCode></TransactionCode>\n<Data>\n<BeginDate>开始时间（格式YYYY-MM-DD HH:mm:ss ）</BeginDate>\n<EndDate>结束时间（格式YYYY-MM-DD HH:mm:ss ）</EndDate>\n</Data>\n</Req>");
-        model.setEndTime(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n" +
-                "<Resp>\n" +
-                "<TransactionCode></TransactionCode>\n" +
-                "<RespCode>10000</RespCode>\n" +
-                "<RespMessage>成功</RespMessage>\n" +
-                "<Data>\n" +
-                "<OrgCode>组织机构代码</OrgCode>\n" +
-                "<PatientId>病人ID</PatientId>\n" +
-                "<EventNo>事件号</EventNo>\n" +
-                "<EventType>就诊类型</EventType>\n" +
-                "<EventTime>就诊时间</EventTime>\n" +
-                "<LocalCardNo>就诊卡</LocalCardNo>\n" +
-                "<IdCardId>身份证</IdCardIdNo>\n" +
-                "</Data>\n" +
-                "<Data>\n" +
-                "……\n" +
-                "</Data>\n" +
-                "……\n" +
-                "</Resp>");
-        model.setCreateTime("说明说明说明说明说明说明说明说明说明说明说明说明说明说明说明");
-        envelop.setObj(model);
-        String envelopStr = "";
-        try{
-            envelopStr = objectMapper.writeValueAsString(envelop);
-        }catch (Exception ex){
-        }
-        return envelopStr;
-    }
-
-
-
-
 }

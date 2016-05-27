@@ -20,5 +20,6 @@ public class MetaService extends ExtendService<RsMetadataModel> {
                 "/resources/metadatas",        //modifyUrl
                 "/resources/metadatas"        //deleteUrl
         );
+        existenceUrl = "/resources/metadatas/existence"; //存在
     }
 }
