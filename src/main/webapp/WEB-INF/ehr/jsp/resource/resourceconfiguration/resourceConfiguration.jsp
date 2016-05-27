@@ -16,7 +16,7 @@
         <span class="sp-resource-configuration-name">患者就诊用药信息_资源配置</span>
     </div>
     <hr>
-    <input type="hidden" id="ajaxIndex">
+    <input type="hidden" id="infoMsg" value="false">
 
     <div class="div-resource-configuration">
 
