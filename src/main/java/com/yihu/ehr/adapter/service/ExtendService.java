@@ -244,9 +244,6 @@ public class ExtendService<T> {
         }
         out.write(bufferOut);
         dis.close();
-        contentBody.append("------------" + BOUNDARY);
-        out.write(contentBody.toString().getBytes("utf-8"));
-        out.write(("------------" + BOUNDARY + "--\r\n").getBytes("UTF-8"));
 
         // 3. 写结尾
         String endBoundary = "\r\n--" + BOUNDARY + "--\r\n";
