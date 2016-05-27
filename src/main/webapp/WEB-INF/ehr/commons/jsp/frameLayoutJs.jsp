@@ -209,8 +209,7 @@
                     id: 31,
                     level:2,
                     pid: 3,
-                    text: '<spring:message code="title.resource.standard"/>',
-                    url: '${contextRoot}/app/initial'
+                    text: '<spring:message code="title.resource.standard"/>'
                 },
                 //3-1-1 数据元
                 {
@@ -252,8 +251,22 @@
                     id: 331,
                     level:3,
                     pid: 33,
+                    text: '资源配置',
+                    url: '${contextRoot}/resourceConfiguration/initial'
+                },
+                {
+                    id: 332,
+                    level:3,
+                    pid: 33,
                     text: '资源授权',
                     url: '${contextRoot}/resource/grant/initial'
+                },
+                {
+                    id: 333,
+                    level:3,
+                    pid: 33,
+                    text: '资源浏览',
+                    url: '${contextRoot}/resourceBrowse/initial'
                 },
                 {
                     id: 34,
@@ -278,8 +291,7 @@
                     id: 51,
                     level:2,
                     pid: 5,
-                    text: '<spring:message code="title.esb.manage"/>',
-                    url: '${contextRoot}/app/initial'
+                    text: '<spring:message code="title.esb.manage"/>'
                 },
                 {
                     id: 511,
