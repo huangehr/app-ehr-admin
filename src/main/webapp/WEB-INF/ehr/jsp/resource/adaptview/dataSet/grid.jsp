@@ -5,7 +5,7 @@
 <div id="div_wrapper" >
   <div id="conditionArea" class="f-mb10 f-mr10" align="right">
     <div class="body-head f-h50" align="left">
-      <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/schemeAdapt/initial');"  class="f-fwb">返回上一层 </a>
+      <a href="#" id="gohis" class="f-fwb">返回上一层 </a>
       <input id="adapter_plan_id" value='${adapterPlanId}' hidden="none" />
       <span class="f-ml20">方案类别：</span><input class="f-fwb f-mt10" readonly id="adapter_scheme_type"/>
       <span class="f-ml20">方案名称：</span><input class="f-mt10" readonly id="adapter_scheme_name"/>
