@@ -17,11 +17,11 @@
 				<!--下拉框-->
 				<input type="text" id="inp_code" class="f-h28 f-w240" placeholder="请输入机构代码或系统代码" data-type="select" data-attr-scan="orgSysCode">
 			</div>
-			<div class="m-form-control f-ml20">
+			<div class="m-form-control f-ml10">
 				<!--下拉框-->
 				<input type="text" id="inp_status" class="f-h28" placeholder="请选择状态" data-type="select" data-attr-scan="status">
 			</div>
-			<div class="m-form-control f-ml20">
+			<div class="m-form-control f-ml10">
 				<!--按钮:查询 & 新增-->
 				<div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
 					<span><spring:message code="btn.search"/></span>

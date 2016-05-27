@@ -204,13 +204,14 @@
 
                 //3 - 资源管理中心
                 {id: 3, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
+                //3-1 资源标准
                 {
                     id: 31,
                     level:2,
                     pid: 3,
-                    text: '<spring:message code="title.resource.standard"/>',
-                    url: '${contextRoot}/app/initial'
+                    text: '<spring:message code="title.resource.standard"/>'
                 },
+                //3-1-1 数据元
                 {
                     id: 311,
                     level:3,
@@ -230,7 +231,7 @@
                     level:3,
                     pid: 31,
                     text: '<spring:message code="title.resource.standard.adapter"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/schemeAdapt/initial'
                 },
                 {
                     id: 32,
@@ -244,14 +245,28 @@
                     level:2,
                     pid: 3,
                     text: '<spring:message code="title.resource.register"/>',
-                    url: '${contextRoot}/app/initial'
+                    url: '${contextRoot}/resourceConfiguration/initial'
                 },
                 {
                     id: 331,
                     level:3,
                     pid: 33,
+                    text: '资源配置',
+                    url: '${contextRoot}/resourceConfiguration/initial'
+                },
+                {
+                    id: 332,
+                    level:3,
+                    pid: 33,
                     text: '资源授权',
                     url: '${contextRoot}/resource/grant/initial'
+                },
+                {
+                    id: 333,
+                    level:3,
+                    pid: 33,
+                    text: '资源浏览',
+                    url: '${contextRoot}/resourceBrowse/initial'
                 },
                 {
                     id: 34,
@@ -276,8 +291,7 @@
                     id: 51,
                     level:2,
                     pid: 5,
-                    text: '<spring:message code="title.esb.manage"/>',
-                    url: '${contextRoot}/app/initial'
+                    text: '<spring:message code="title.esb.manage"/>'
                 },
                 {
                     id: 511,

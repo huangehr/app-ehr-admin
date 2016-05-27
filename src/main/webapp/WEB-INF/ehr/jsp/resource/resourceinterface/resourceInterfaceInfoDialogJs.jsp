@@ -84,7 +84,7 @@
 						success: function (data) {
 							if (data.successFlg) {
 								result.setResult(false);
-								result.setErrorMsg(data.errorMsg);
+								result.setErrorMsg(errorMsg);
 							} else {
 								result.setResult(true);
 							}

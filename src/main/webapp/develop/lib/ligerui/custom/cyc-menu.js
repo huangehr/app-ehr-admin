@@ -61,9 +61,11 @@ $(function(){
             if($("#form_login").length==0){
                 $('.menucyc').bind('mousewheel', function(event, delta, deltaX, deltaY) {
                     $(".three").next("ul").hide();
-                    $("#mCSB_1_container").css("overflow","hidden");
-                    $("#mCSB_1").css("overflow","hidden");
-
+                    /*$("#mCSB_1_container").css("overflow","hidden");
+                     $("#mCSB_1").css("overflow","hidden");*/
+                    $(this).closest("#mCSB_1_container").attr("class","mCSB_container mCS_y_hidden mCS_no_scrollbar_y")
+                    $(this).closest("#mCSB_1").attr("class","mCustomScrollBox mCS-dark mCSB_vertical mCSB_inside")
+                    $("#div_main_content").find(">div:eq(0)").attr("class","l-layout-left mCustomScrollbar _mCS_1 mCS-autoHide mCS_no_scrollbar").css({"position":"relative","z-index":"0"})
                 });
             }
 
@@ -106,10 +108,13 @@ $(function(){
                 }
 
                 if($(this).hasClass("three")){//第三级
+
                     $(this).closest("li").siblings("li").find("ul").hide();
                     $(this).addClass("on").next("ul").fadeIn();
-                    $(this).closest("#mCSB_1_container").css("overflow","initial");
-                    $(this).closest("#mCSB_1").css("overflow","initial");
+
+                    $(this).closest("#mCSB_1_container").attr("class","")
+                    $(this).closest("#mCSB_1").attr("class","")
+                    $("#div_main_content").find(">div:eq(0)").attr("class","").css("position","absolute").css({"position":"relative","z-index":"100"})
                     var mscbTop=$(this).closest("#mCSB_1_container").css("top");
                     $(this).closest("#mCSB_1_container").css("top","mscbTop")
                     $(this).closest("#mCSB_1_container").attr("id","xmCSB_1_container");
