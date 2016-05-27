@@ -11,7 +11,7 @@
             var master = null;
             var adapterGrid = null;
             var adapterDataSet = null;
-            var adapterType = 32;
+            var adapterType = 39;
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 retrieve.init();
