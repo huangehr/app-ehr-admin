@@ -9,7 +9,7 @@
         <div class="m-form-group f-mt10 ">
             <div class="m-form-control">
                 <!--下拉框-->
-                <input type="text" id="inp_org"  data-type="comboSelect" class="validate-org-length f-w240" data-attr-scan="organization"/>
+                <input type="text" id="inp_org" style="width:240px;"  data-type="comboSelect" class="validate-org-length f-w240" data-attr-scan="organization"/>
             </div>
             <div class="m-form-control">
                  <input type="text" id="beginTime" class="useTitle u-f-mt5"  placeholder=<spring:message code="lbl.hosLog.beginTime"/> data-attr-scan="beginTime" />
