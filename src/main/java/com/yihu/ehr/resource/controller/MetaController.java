@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +27,11 @@ public class MetaController extends ExtendController<MetaService> {
                 "/resource/meta/grid",        //列表页面url
                 "/resource/meta/dialog"      //编辑页面url
         );
+        comboKv = new HashMap<>();
+        comboKv.put("code", "id");
+        comboKv.put("value", "name");
+        comboKv.put("domainName", "domainName");
+        comboKv.put("domain", "domain");
     }
 
 }

@@ -71,7 +71,7 @@
                                 {display: '系统代码', name: 'systemCode', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '文件路径', name: 'file', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '版本名称', name: 'versionName', width: '20%', isAllowHide: false, align: 'left'},
-                                {display: '发布时间', name: 'releaseTime', width: '20%', isAllowHide: false, align: 'left'},
+                                {display: '发布时间', name: 'releaseDate', width: '20%', isAllowHide: false, align: 'left'},
                                 {
                                     display: '操作', name: 'operator', width: '20%', render: function (row) {
                                     var html = '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "hosRelease:releaseInfo:open", row.id, 'modify') + '"></a>' +
