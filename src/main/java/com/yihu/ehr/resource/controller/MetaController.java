@@ -29,6 +29,11 @@ public class MetaController extends ExtendController<MetaService> {
                 "/resource/meta/grid",        //列表页面url
                 "/resource/meta/dialog"      //编辑页面url
         );
+        comboKv = new HashMap<>();
+        comboKv.put("code", "id");
+        comboKv.put("value", "name");
+        comboKv.put("domainName", "domainName");
+        comboKv.put("domain", "domain");
     }
 
 
