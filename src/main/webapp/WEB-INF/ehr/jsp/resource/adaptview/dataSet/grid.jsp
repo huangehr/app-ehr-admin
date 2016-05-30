@@ -39,10 +39,6 @@
         <ul>
           <li class=" f-mt15">
             <div style="margin-left: 340px;">
-              <a id="btn_save_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
-                 href="javascript:$.publish('grid:right:save',[''])" href="#">
-                <spring:message code="btn.save"/>
-              </a>
             </div>
           </li>
         </ul>
