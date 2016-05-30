@@ -15,8 +15,6 @@
       var cfgModel = 0;
       var changeFlag=false;
       var metaDataList = null;
-      var dictDataList = null;
-      var lastSelectRow = null;
       var cfg = [
         {
           left:{title:'平台数据集', cls:'', search:'/std/dataset/searchDataSets'},
@@ -37,28 +35,31 @@
         master.reloadGrid();
         entryMater.init();
       }
-
-      function isUpdate(oldDate,newDate){
-        var isUpdate = false;
-        for(var j in metaDataList){
-          var metadataId = $("#metadataId"+metaDataList[j].id).ligerGetComboBoxManager().getValue();
-            if(metadataId!=metaDataList[j].metadataId){
-              isUpdate = true;
-              break;
-            }
-        }
-        if(isUpdate){
-          $.ligerDialog.confirm('适配数据还未保存，是否刷新数据?', function (yes) {
-              if(yes){
-                lastSelectRow = newDate;
-                master.grid.select(newDate.__index);
-              }
-            })
-        }else{
-          lastSelectRow = newDate;
-          master.grid.select(newDate.__index);
-        }
+      //数据源页签点击
+      function dataSetClick(){
+        cfgModel = 0;
+        changeFlag=true;
+        conditionArea.$btn_switch_dataSet.addClass('btn-primary');
+        conditionArea.$btn_switch_dict.removeClass('btn-primary');
+        master.grid.options.newPage = 1;
+        master.reloadGrid();
       }
+      //字典页签点击
+      function dictClick(){
+        cfgModel = 1;
+        changeFlag=true;
+        conditionArea.$btn_switch_dataSet.removeClass('btn-primary');
+        conditionArea.$btn_switch_dict.addClass('btn-primary');
+        master.grid.options.newPage = 1;
+        master.reloadGrid();
+        entryMater.reloadGrid();
+      }
+      //返回上一页
+      function goHis(){
+        $('#contentPage').empty();
+        $('#contentPage').load('${contextRoot}/schemeAdapt/initial');
+      }
+
       function reloadGrid (url, params, columns) {
         if(columns){
           this.grid.set({
@@ -74,6 +75,7 @@
           });
         }
       }
+
 
       function resizeContent(){
         var contentW = $('#grid_content').width();
@@ -106,42 +108,34 @@
         },
         bindEvents : function () {
           this.$btn_switch_dataSet.click(function () {
-            if(cfgModel==0) {
-              return;
-            }
-            cfgModel = 0;
-            changeFlag=true;
-            conditionArea.$btn_switch_dataSet.addClass('btn-primary');
-            conditionArea.$btn_switch_dict.removeClass('btn-primary');
-            master.grid.options.newPage = 1;
-            master.reloadGrid();
+             dataSetClick();
           });
 
           this.$btn_switch_dict.click(function () {
-            if(cfgModel==1){
-                return;
-            }
-            cfgModel = 1;
-            changeFlag=true;
-            conditionArea.$btn_switch_dataSet.removeClass('btn-primary');
-            conditionArea.$btn_switch_dict.addClass('btn-primary');
-            master.grid.options.newPage = 1;
-            master.reloadGrid();
-            entryMater.reloadGrid();
+             dictClick();
           })
         }
       };
-
       /* *************************** left模块初始化 ***************************** */
       retrieve = {
         $element: $('#retrieve'),
         $searchNm: $('#searchNm'),
         $addBtn: $('#btn_create'),
+        $gohis:$('#gohis'),
         init: function () {
           this.$searchNm.ligerTextBox({width: 240, isSearch: true, search: function () {
             master.grid.options.newPage = 1;
             master.reloadGrid();
           }});
+          this.$searchNm.keydown(function(e){
+            if(e.keyCode==13){
+              master.grid.options.newPage = 1;
+              master.reloadGrid();
+            }
+          });
+          this.$gohis.bind("click",function(){
+            goHis();
+          })
           this.$element.show();
         }
       };
@@ -158,17 +152,6 @@
             allowHideColumn:false,
             validate : true,
             unSetValidateAttr:false,
-            onBeforeSelectRow:function(selectDate){
-              if(lastSelectRow==null){
-                return true;
-              }
-              if(lastSelectRow.id != selectDate.id){
-                  isUpdate(lastSelectRow,selectDate);
-              }else{
-                return true;
-              }
-              return false;
-            },
             onBeforeShowData: function (data) {
               if(data.detailModelList.length==0){
                 entryMater.reloadGrid('');
@@ -178,7 +161,6 @@
               this.select(0);
             },
             onSelectRow: function(row){
-                lastSelectRow = row;
                 entryMater.grid.options.newPage = 1;
                 entryMater.reloadGrid(row.code);
             }
@@ -256,12 +238,11 @@
             unSetValidateAttr:false,
             checkbox:false,
             onAfterShowData: function (currentData) {
-              entryMater.initMetadataId();
-            },onBeforeShowData:function(currentData){
               metaDataList = currentData.detailModelList;
+              entryMater.initMetadataId();
             },
             reloadGrid:function(){
-
+              entryMater.reloadGrid();
             }
           }));
           this.bindEvents();
@@ -269,7 +250,6 @@
           this.grid.adjustToWidth();
         },
         reloadGrid: function (code) {
-            var searchNmEntry = $("#searchNmEntry").val();
             if(code!=''){
               var row = master.grid.getSelectedRow();
               if(row){
@@ -278,7 +258,7 @@
             }
             var values = {
               adapterSchemeId :adapterSchemeId,
-              code:code,
+              code:code
             };
             if (changeFlag){
               reloadGrid.call(this, '${contextRoot}'+cfg[cfgModel].right.search, values, this.getColumn());
@@ -294,41 +274,6 @@
           $(window).bind('resize', function() {
             resizeContent();
           });
-          $.subscribe('grid:right:save',function(event,id,mode){
-              var allRowList = metaDataList;
-              var saveRows = new Array();
-              for(var j in  allRowList){
-                var rowData = allRowList[j];
-                var metadataId = $("#metadataId"+rowData.id).ligerGetComboBoxManager().getValue();
-                //未做变更
-                var saveRowData={};
-                if(rowData.metadataId!=metadataId){
-                  saveRowData.metadataId = metadataId;
-                  saveRowData.metadataDomain = $("#metadataDomain"+rowData.id).html();
-                  saveRowData.id =rowData.id;
-                  saveRowData.srcDatasetCode =rowData.srcDatasetCode;
-                  saveRowData.srcMetadataName =rowData.srcMetadataName;
-                  saveRowData.srcMetadataCode =rowData.srcMetadataCode;
-                  saveRowData.schemaId = rowData.schemaId;
-                  saveRows.push(saveRowData);
-                }
-              }
-              if(saveRows.length==0){
-                $.Notice.error('数据未变更，无需保存！');
-                return false;
-              }else{
-                var dataModel = $.DataModel.init();
-                dataModel.updateRemote('${contextRoot}/schemeAdaptDataSet/updates', {
-                  data: {dataJson: JSON.stringify(saveRows)},
-                  success: function (data) {
-
-                  }
-                })
-              }
-
-          })
-
-
         },
         getColumn: function () {
           var columnCfg =[];
@@ -353,7 +298,7 @@
                 return html;
               }},
               { display: '数据元名称', name: 'metadataName',width: '21%', isAllowHide: false  ,align:'left',render: function (row) {
-                var html="<span id='metadataName"+row.id+"'>"+((row.metadataName==undefined)?"":row.metadataDomainName)+"</span>"
+                var html="<span id='metadataName"+row.id+"'>"+((row.metadataName==undefined)?"":row.metadataName)+"</span>"
                 return html;
               }}
             ]
@@ -370,7 +315,37 @@
             ]
           }
           return columnCfg;
-        },initMetadataId:function(){
+        },getSaveUrl:function(){
+          var saveUrl="";
+          //数据集
+          if(cfgModel==0){
+            saveUrl ="schemeAdaptDataSet/save";
+          }else{
+            $.Notice.error('字典保存数据URL！');
+          }
+          return saveUrl;
+        },save:function(saveData){
+          if(cfgModel==0){
+            var dataModel = $.DataModel.init();
+            //保存
+            dataModel.updateRemote('${contextRoot}/'+entryMater.getSaveUrl(), {
+              data: {dataJson: JSON.stringify(saveData)},
+              success: function (data) {
+                if((data.successFlag)==false){
+                  if(data.errorMsg){
+                    $.Notice.error(data.errorMsg);
+                  }else{
+                    $.Notice.error('保存失败！');
+                  }
+                }
+              }
+            })
+          }else{
+            $.Notice.error('字典保存数据收集！');
+          }
+        },
+        initMetadataId:function(){
+          if(cfgModel==0){
             url = "${contextRoot}/resource/meta/combo";
             $("input[name=metadataId]").ligerComboBox({
             condition: { inputWidth: 240 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "value", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
@@ -381,12 +356,22 @@
             selectBoxHeight : 260,
             selectBoxWidth:751,
             onSelected: function(id,name){//name为选择的值
-              if(this.grid ==undefined) return;
+              if(this.grid==undefined) return;
               var rowData  = this.grid.getSelected();
               var selected = entryMater.grid.getSelected();
+              var saveData={};
               $("#metadataDomain"+selected.id).html(rowData.domain);
               $("#metadataDomainName"+selected.id).html(rowData.domainName);
               $("#metadataName"+selected.id).html(rowData.value);
+              //赋值
+              saveData.metadataDomain =$("#metadataDomain"+selected.id).html();
+              saveData.metadataId = id;
+              saveData.id = selected.id;
+              saveData.schemaId= selected.schemaId;
+              saveData.srcDatasetCode = selected.srcDatasetCode;
+              saveData.srcMetadataCode = selected.srcMetadataCode;
+              saveData.srcMetadataName = selected.srcMetadataName;
+              entryMater.save(saveData);
             },
             conditionSearchClick: function (g) {
               var param = g.rules.length>0? "id="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
@@ -398,6 +383,7 @@
               g.grid.reload();
             }
           });
+          $("#div_relation_grid .l-trigger-cancel").remove();
           for(var j in metaDataList){
             var metadataId = metaDataList[j].metadataId;
             if(metadataId!=""&&metadataId!=null){
@@ -406,17 +392,21 @@
             }
           }
         }
-      };
+        else{
+          console.log("字典适配初始化！");
+        }
+      }};
       /* *************************** 页面功能 **************************** */
       function getGridOptions(checkbox) {
+        if(cfgModel==0){
         var options = {
           columns: [
-
             {display : '资源标准编码', name :'code',width :243},
             {display : '业务领域', name :'domainName',width : 243},
             {display : '数据元名称', name :'value',width : 243}
           ],
           allowAdjustColWidth : true,
+          allowUnSelectRow:false,
           editorTopDiff : 41,
           headerRowHeight : 30,
           height : '100%',
@@ -432,11 +422,11 @@
           url : url
         };
         return options;
+        }else{
+          console.log("字典适下拉选择初始化！");
+        }
       }
       pageInit();
-      /**$(window).bind('beforeunload',function(){
-
-      });**/
-    });
+      });
   })(jQuery, window);
 </script>

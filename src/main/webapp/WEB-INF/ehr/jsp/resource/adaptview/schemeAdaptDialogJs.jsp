@@ -11,7 +11,7 @@
         var jValidation = $.jValidation;
         //适配方案变量
         var adapterSchemeModel = null;
-        var adapterType = 32;
+        var adapterType = 29;
         var versions;
         var types;
         /* ************************** 变量定义结束 **************************** */
@@ -73,10 +73,15 @@
                                     self.$adapter_version_name_div.css("display","none");
                                     self.$adapter_version_div.css("display","");
                                 }else if(value=="2"){
+                                    return false;
                                     self.$adapter_version_name_div.css("display","");
                                     self.$adapter_version_div.css("display","none");
                                 }
-                            }
+                            },onBeforeSelect:function(value){
+                                if(value=="2"){
+                                    return false
+                                }
+                             }
                         });
                        versions = self.$adapterVersion.ligerComboBox(
                         {
