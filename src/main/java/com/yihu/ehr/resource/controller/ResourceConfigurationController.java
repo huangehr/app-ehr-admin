@@ -122,4 +122,24 @@ public class ResourceConfigurationController extends BaseUIController {
 
         return resultStr;
     }
+
+
+//    @RequestMapping("/getMetaDataByMetaDataId")
+//    @ResponseBody
+//    public String getMetaDataByMetaDataId(String MetaDataId) {
+//
+//        Map<String, Object> params = new HashMap<>();
+//        String resultStr = "";
+//        String addMetaDataUrl = "/resources/metadatas/";
+//
+//        try {
+//                resultStr = HttpClientUtil.doGet(comUrl + addMetaDataUrl + MetaDataId, params, username, password);
+//        } catch (Exception e) {
+//
+//        }
+//
+//        return resultStr;
+//    }
+
+
 }

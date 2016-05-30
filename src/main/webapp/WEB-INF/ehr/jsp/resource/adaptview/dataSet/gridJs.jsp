@@ -38,16 +38,45 @@
         entryMater.init();
       }
 
-      function isUpdate(oldDate,newDate){
-        var isUpdate = false;
+      function  isUpdate(){
+        var update = false;
         for(var j in metaDataList){
           var metadataId = $("#metadataId"+metaDataList[j].id).ligerGetComboBoxManager().getValue();
-            if(metadataId!=metaDataList[j].metadataId){
-              isUpdate = true;
-              break;
-            }
+          if(metadataId!=(metaDataList[j].metadataId==null?"":metaDataList[j].metadataId)){
+            update = true;
+            break;
+          }
         }
-        if(isUpdate){
+        return update;
+      }
+
+      function dataSetClick(){
+        cfgModel = 0;
+        changeFlag=true;
+        conditionArea.$btn_switch_dataSet.addClass('btn-primary');
+        conditionArea.$btn_switch_dict.removeClass('btn-primary');
+        master.grid.options.newPage = 1;
+        master.reloadGrid();
+      }
+
+      function dictClick(){
+        cfgModel = 1;
+        changeFlag=true;
+        conditionArea.$btn_switch_dataSet.removeClass('btn-primary');
+        conditionArea.$btn_switch_dict.addClass('btn-primary');
+        master.grid.options.newPage = 1;
+        master.reloadGrid();
+        entryMater.reloadGrid();
+      }
+
+      function goHis(){
+        $('#contentPage').empty();
+        $('#contentPage').load('${contextRoot}/schemeAdapt/initial');
+      }
+
+      function validateMasterSelect(oldDate,newDate){
+        var update = isUpdate();
+        if(update){
           $.ligerDialog.confirm('适配数据还未保存，是否刷新数据?', function (yes) {
               if(yes){
                 lastSelectRow = newDate;
@@ -59,6 +88,21 @@
           master.grid.select(newDate.__index);
         }
       }
+
+      function validateTabclick(callback){
+        var update = isUpdate();
+        if(update){
+          $.ligerDialog.confirm('适配数据还未保存，是否离开?', function (yes) {
+            if(yes){
+              callback();
+            }
+          })
+        }else{
+            callback();
+        }
+      }
+
+
       function reloadGrid (url, params, columns) {
         if(columns){
           this.grid.set({
@@ -73,6 +117,49 @@
             parms: params
           });
         }
+      }
+
+      function mastReload(){
+        master.grid.reload();
+      }
+      //first|prev|next|last|input
+      function masterfirst(){
+          metaDataList=null;
+          master.grid.changePage("first");
+      }
+      function masterprev(){
+          metaDataList=null;
+          master.grid.changePage("prev");
+      }
+      function masternext(){
+          metaDataList=null;
+          master.grid.changePage("next");
+      }
+      function masterlast(){
+          metaDataList=null;
+          master.grid.changePage("last");
+      }
+
+
+      function entryMaterReload(){
+        entryMater.grid.reload();
+      }
+      //first|prev|next|last|input
+      function entryMaterfirst(){
+        metaDataList=null;
+        entryMater.grid.changePage("first");
+      }
+      function entryMaterprev(){
+        metaDataList=null;
+        entryMater.grid.changePage("prev");
+      }
+      function entryMaternext(){
+        metaDataList=null;
+        entryMater.grid.changePage("next");
+      }
+      function entryMaterlast(){
+        metaDataList=null;
+        entryMater.grid.changePage("last");
       }
 
       function resizeContent(){
@@ -106,28 +193,11 @@
         },
         bindEvents : function () {
           this.$btn_switch_dataSet.click(function () {
-            if(cfgModel==0) {
-              return;
-            }
-            cfgModel = 0;
-            changeFlag=true;
-            conditionArea.$btn_switch_dataSet.addClass('btn-primary');
-            conditionArea.$btn_switch_dict.removeClass('btn-primary');
-            master.grid.options.newPage = 1;
-            master.reloadGrid();
+            validateTabclick(dataSetClick);
           });
 
           this.$btn_switch_dict.click(function () {
-            if(cfgModel==1){
-                return;
-            }
-            cfgModel = 1;
-            changeFlag=true;
-            conditionArea.$btn_switch_dataSet.removeClass('btn-primary');
-            conditionArea.$btn_switch_dict.addClass('btn-primary');
-            master.grid.options.newPage = 1;
-            master.reloadGrid();
-            entryMater.reloadGrid();
+            validateTabclick(dictClick);
           })
         }
       };
@@ -137,11 +207,15 @@
         $element: $('#retrieve'),
         $searchNm: $('#searchNm'),
         $addBtn: $('#btn_create'),
+        $gohis:$('#gohis'),
         init: function () {
           this.$searchNm.ligerTextBox({width: 240, isSearch: true, search: function () {
             master.grid.options.newPage = 1;
-            master.reloadGrid();
+            validateTabclick(mastReload);
           }});
+          this.$gohis.bind("click",function(){
+            validateTabclick(goHis);
+          })
           this.$element.show();
         }
       };
@@ -163,7 +237,7 @@
                 return true;
               }
               if(lastSelectRow.id != selectDate.id){
-                  isUpdate(lastSelectRow,selectDate);
+                validateMasterSelect(lastSelectRow,selectDate);
               }else{
                 return true;
               }
@@ -181,6 +255,21 @@
                 lastSelectRow = row;
                 entryMater.grid.options.newPage = 1;
                 entryMater.reloadGrid(row.code);
+            },onToFirst:function(){
+              validateTabclick(masterfirst);
+              return false;
+            },onReload:function(){
+              validateTabclick(mastReload);
+              return false;
+            },onToPrev:function(){
+              validateTabclick(masterprev);
+              return false;
+            },onToNext:function(){
+              validateTabclick(masternext);
+              return false;
+            },onToLast:function(){
+              validateTabclick(masterlast);
+              return false;
             }
           }));
           this.bindEvents();
@@ -261,7 +350,22 @@
               metaDataList = currentData.detailModelList;
             },
             reloadGrid:function(){
-
+              validateTabclick(entryMater.reloadGrid);
+            },onToFirst:function(){
+              validateTabclick(entryMaterfirst);
+              return false;
+            },onReload:function(){
+              validateTabclick(entryMaterReload);
+              return false;
+            },onToPrev:function(){
+              validateTabclick(entryMaterprev);
+              return false;
+            },onToNext:function(){
+              validateTabclick(entryMaternext);
+              return false;
+            },onToLast:function(){
+              validateTabclick(entryMaterlast);
+              return false;
             }
           }));
           this.bindEvents();
@@ -269,7 +373,6 @@
           this.grid.adjustToWidth();
         },
         reloadGrid: function (code) {
-            var searchNmEntry = $("#searchNmEntry").val();
             if(code!=''){
               var row = master.grid.getSelectedRow();
               if(row){
@@ -304,6 +407,8 @@
                 var saveRowData={};
                 if(rowData.metadataId!=metadataId){
                   saveRowData.metadataId = metadataId;
+                  rowData.metadataId = metadataId;
+                  rowData.metadataDomain = $("#metadataDomain"+rowData.id).html();
                   saveRowData.metadataDomain = $("#metadataDomain"+rowData.id).html();
                   saveRowData.id =rowData.id;
                   saveRowData.srcDatasetCode =rowData.srcDatasetCode;
@@ -321,13 +426,12 @@
                 dataModel.updateRemote('${contextRoot}/schemeAdaptDataSet/updates', {
                   data: {dataJson: JSON.stringify(saveRows)},
                   success: function (data) {
-
+                    metaDataList = allRowList;
                   }
                 })
               }
 
           })
-
 
         },
         getColumn: function () {
@@ -388,6 +492,15 @@
               $("#metadataDomainName"+selected.id).html(rowData.domainName);
               $("#metadataName"+selected.id).html(rowData.value);
             },
+            onBeforeSetData:function(value){
+              debugger;
+              var selected = entryMater.grid.getSelected();
+                if(value==null||value==""){
+                  $("#metadataDomain"+selected.id).html("");
+                  $("#metadataDomainName"+selected.id).html("");
+                  $("#metadataName"+selected.id).html("");
+                }
+            },
             conditionSearchClick: function (g) {
               var param = g.rules.length>0? "id="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
               param = {"filters":param}
@@ -434,9 +547,11 @@
         return options;
       }
       pageInit();
-      /**$(window).bind('beforeunload',function(){
-
-      });**/
-    });
+      $(window).bind('beforeunload',function(){
+        if(isUpdate()){
+          return "适配数据还未保存，是否刷新数据?";
+        }
+      });
+      });
   })(jQuery, window);
 </script>

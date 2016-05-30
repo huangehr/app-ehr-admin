@@ -15,11 +15,10 @@
             var delRowDatas = new Array();
 
             var comUrl = '${contextRoot}/resourceConfiguration';
-            var resourceConfigurationUrl = [comUrl + '/searchSelResourceconfiguration?resourcesId=testId', comUrl + '/searchResourceconfiguration']
-            var elmParams = ['resourceConfigurationInfoGridTrue', 'resourceConfigurationInfoGrid'];
+            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration',comUrl + '/searchSelResourceconfiguration?resourcesId=testId']
+            var elmParams = ['resourceConfigurationInfoGrid','resourceConfigurationInfoGridTrue'];
 
             var dataModel = $.DataModel.init();
-            var rowDataId = new Array();
 
             /* *************************** 函数定义 ******************************* */
             /**
@@ -27,10 +26,24 @@
              * @type {Function}
              */
             function pageInit() {
+
                 retrieve.init();
                 master.init();
             }
 
+            function getResource(page,size) {
+                dataModel.fetchRemote(resourceConfigurationUrl[1], {
+                    data: {searchNm: "",page:page,rows:size},
+//                    async: true,
+                    success: function (data) {
+                        if(Util.isStrEquals(data.obj.id,row.id)){
+                            return true;
+                        }else {
+                            return false;
+                        }
+                    }
+                })
+            }
             function reloadGrid(url, params, searchType) {
                 var grif = null;
                 if (Util.isStrEquals(searchType, "mateData"))
@@ -49,8 +62,8 @@
 
                 $mateDataSearch: $("#inp_mateData_search"),
                 $mateDataSearchTrue: $("#inp_mateData_search_true"),
-                $resourceConfigurationInfoGrid: $("#div_resource_configuration_info_grid"),
                 $resourceConfigurationInfoGridTrue: $("#div_resource_configuration_info_grid_true"),
+                $resourceConfigurationInfoGrid: $("#div_resource_configuration_info_grid"),
 
                 $saveBtn: $("#div_save_btn"),
 
@@ -76,7 +89,6 @@
                 init: function () {
                     var self = retrieve;
 
-
                     var columnDatas = [
                         {name: 'id', hide: true, isAllowHide: false},
                         {display: '数据元编码', name: 'stdCode', width: '25%', align: 'left'},
@@ -85,57 +97,58 @@
                         {display: '说明', name: 'description', width: '25%', align: 'left'},
                     ];
 
-                    var elm = [self.$resourceConfigurationInfoGrid, self.$resourceConfigurationInfoGridTrue];
+                    var elm = [self.$resourceConfigurationInfoGrid,self.$resourceConfigurationInfoGridTrue];
                     var count = 0;
                     for (var i = 0; i < resourceConfigurationUrl.length; i++) {
-
                         elmParams[i] = elm[i].ligerGrid($.LigerGridEx.config({
                             url: resourceConfigurationUrl[i],
                             columns: columnDatas,
                             checkbox: true,
                             height: 600,
+                            async:true,
                             isChecked: function (row) {
-                                debugger
-//                                return true;
+                                var bo = false;
+                                if (Util.isStrEquals(this.url.split("resourcesId").length,1)){
+                                    dataModel.fetchRemote(resourceConfigurationUrl[1], {
+                                        data: {searchNm: "",page:1,rows:15},
+                                        async: false,
+                                        success: function (data) {
+                                            var resourceDatas = data.detailModelList;
+                                            for (var i = 0;i<resourceDatas.length;i++){
+                                                if(Util.isStrEquals(resourceDatas[i].metadataId,row.id)){
+                                                    bo = true;
+                                                    return;
+                                                }else {
+                                                    bo = false;
+                                                }
+                                            }
+                                        }
+                                    })
+                                }
+                                return bo
                             },
                             parms: {
                                 searchNm: '',
                             },
                             onSelectRow: function (rowdata) {
-                                if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
+                                debugger
+                                var infoMsg = $("#infoMsg").val();
+                                if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')&&Util.isStrEquals(infoMsg,true)) {
                                     addRows(rowdata);
                                 }
                             },
                             onUnSelectRow: function (rowdata, rowid, rowobj) {
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
-                                    deleteRows(rowdata);//test
-                                } else {
-                                    deleteRows(rowdata);//test
+                                    deleteRows(rowdata);
                                 }
                             },
-                            onLoaded: function (grid) {
-                                debugger
-                                $("#ajaxIndex").val(count+"");
-                                if (!Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
-                                    var dataList = grid.data.detailModelList;
-                                    for (var i = 0; i < dataList.length; i++) {
-                                        rowDataId.push(dataList[i].id)
-                                    }
-                                    debugger
-                                    count++;
-                                }
-
-                            },
-                            onAfterShowData: function (currentData, grid) {
-                                debugger;
+                            onAfterShowData:function () {
+                                $("#infoMsg").val(true);
                             }
                         }));
-
-
                     }
 
                     function addRows(rowdata) {
-                        debugger
                         var metaData_rowData = {
                             resourcesId: "testId",
                             metadataId: rowdata.id,
@@ -155,16 +168,27 @@
 
                     function deleteRows(rowdata) {
                         debugger
-                        for (var i = 0; i < addRowDatas.length; i++) {
+                        var metaData_rowData = {
+                            metadataId: rowdata.id,
+                        };
+                        elmParams[1].deleteRow({
+                            id: rowdata.id,
+                            stdCode: rowdata.stdCode,
+                            name: rowdata.name,
+                            columnType: rowdata.columnType,
+                            description: rowdata.description
+                        });
+                        delRowDatas.push(metaData_rowData);
 
-                            if (Util.isStrEquals(addRowDatas[i].id, rowdata.id)) {
-                                addRowDatas.splice(i, 1);
-                            }
-                        }
+//                        for (var i = 0; i < addRowDatas.length; i++) {
+//
+//                            if (Util.isStrEquals(addRowDatas[i].id, rowdata.id)) {
+//                                addRowDatas.splice(i, 1);
+//                            }
+//                        }
                     }
 
                     this.bindEvents();
-
                 },
                 reloadResourceConfigurationGrid: function (url, value, searchType) {
                     reloadGrid.call(this, url, {searchNm: value}, searchType);
@@ -189,6 +213,8 @@
                             }
                         })
                     })
+
+
                 },
             };
 
