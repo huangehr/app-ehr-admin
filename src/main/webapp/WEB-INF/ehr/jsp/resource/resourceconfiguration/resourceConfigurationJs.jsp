@@ -109,7 +109,7 @@
                             isChecked: function (row) {
                                 var bo = false;
                                 if (Util.isStrEquals(this.url.split("resourcesId").length,1)){
-                                    dataModel.fetchRemote(resourceConfigurationUrl[1], {
+                                    dataModel.fetchRemote(resourceConfigurationUrl[1], {  // todo ：url需要换成查询所有的数据元接口，（目前接口未建）
                                         data: {searchNm: "",page:1,rows:15},
                                         async: false,
                                         success: function (data) {
@@ -131,9 +131,8 @@
                                 searchNm: '',
                             },
                             onSelectRow: function (rowdata) {
-                                debugger
                                 var infoMsg = $("#infoMsg").val();
-                                if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')&&Util.isStrEquals(infoMsg,true)) {
+                                if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')&&Util.isStrEquals(infoMsg,'true')) {
                                     addRows(rowdata);
                                 }
                             },
@@ -167,25 +166,17 @@
                     }
 
                     function deleteRows(rowdata) {
-                        debugger
-                        var metaData_rowData = {
-                            metadataId: rowdata.id,
-                        };
-                        elmParams[1].deleteRow({
-                            id: rowdata.id,
-                            stdCode: rowdata.stdCode,
-                            name: rowdata.name,
-                            columnType: rowdata.columnType,
-                            description: rowdata.description
-                        });
-                        delRowDatas.push(metaData_rowData);
 
-//                        for (var i = 0; i < addRowDatas.length; i++) {
-//
-//                            if (Util.isStrEquals(addRowDatas[i].id, rowdata.id)) {
-//                                addRowDatas.splice(i, 1);
-//                            }
-//                        }
+                        delRowDatas.push(rowdata.id);
+
+                        var rowParm = rowdata.stdCode;
+                        var rows = elmParams[1].data.detailModelList;
+                        for (var i =0;i<rows.length;i++){
+                            var rowData = rows[i].stdCode
+                            if (Util.isStrEquals(rowData,rowParm)){
+                                elmParams[1].deleteRow(rows[i].__id);
+                            }
+                        }
                     }
 
                     this.bindEvents();

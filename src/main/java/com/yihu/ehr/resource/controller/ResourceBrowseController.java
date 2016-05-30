@@ -1,5 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
+import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by wq on 2016/5/17.
@@ -42,28 +45,58 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/searchResource")
     @ResponseBody
-    public Object searchResource(String searchNm, int page, int rows){
+    public Object searchResource(String ids){
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-
+        String CategoriesUrl = ServiceApi.Resources.Categories;
+        String ResourcesUrl = ServiceApi.Resources.Resources;
         String resultStr = "";
 
-        params.put("filters","");
-        if (!StringUtils.isEmpty(searchNm))
-            params.put("filters","code?"+searchNm);//test_code
-
-        params.put("page", page);
-        params.put("size", rows);
+//        params.put("filters","");
+//        if (!StringUtils.isEmpty(ids))
+//            params.put("filters","pid="+ids);//test_code
+//
+//        params.put("page", 1);
+//        params.put("size", 999);
+//        params.put("fields","");
+//        params.put("sorts","");
+        params.put("id",ids);
 
         try{
 
-            resultStr = HttpClientUtil.doGet(comUrl + "search",params,username,password);
+            resultStr = HttpClientUtil.doGet(comUrl + "/resources/ResourceBrowses/categories",params,username,password);
+
+            envelop = toModel(resultStr,Envelop.class);
+        }catch (Exception e){
+
+        }
+        return envelop.getDetailModelList();
+    }
+
+    /**
+     * 动态获取GRID的列名
+     * @param resourceCategoryId
+     * @return
+     */
+    @RequestMapping("/getGridCloumnNames")
+    @ResponseBody
+    public Object getGridCloumnNames(String resourceCategoryId){
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "/resources/ResourceBrowses";
+        String resultStr = "";
+        params.put("category_id",resourceCategoryId);
+
+        try{
+
+            resultStr = HttpClientUtil.doGet(comUrl + url,params,username,password);
 
         }catch (Exception e){
 
         }
         return resultStr;
     }
+
 
     //数据导出方法  test
     @RequestMapping("testexcel")

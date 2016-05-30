@@ -27,22 +27,6 @@
                 retrieve.init();
                 resourceBrowseMaster.init();
 
-                //获取列名
-                dataModel.fetchRemote("${contextRoot}/user/searchUsers", {
-                    data: {
-                        searchNm: '',
-                        searchType: '',
-                        page: 1,
-                        rows: 15,
-                    },
-                    success: function (data) {
-                        var columnModel;
-                        for (var i = 0;i<data.detailModelList.length;i++){
-//                            columnModel.
-                        }
-                    }
-                });
-
             }
 
             function reloadGrid(url, params) {
@@ -77,7 +61,11 @@
 
                     var self = this;
 
-                    self.$search.ligerTextBox({width: 240, isSearch: true,});
+                    self.$search.ligerTextBox({
+                        width: 240, isSearch: true, search: function (data) {
+                            self.getResourceBrowseTree();
+                        }
+                    });
 
                     self.initDDL(37, self.$defaultCondition);
                     self.initDDL(38, self.$logicalRelationship);
@@ -100,17 +88,21 @@
                     });
                 },
 
-                getResourceBrowseTree: function () {
+                getResourceBrowseTree: function (data) {
                     var typeTree = this.$resourceBrowseTree.ligerTree({
                         nodeWidth: 260,
-                        url: '${contextRoot}/cdatype/getCDATypeListByParentId?ids=',
+                        url: '${contextRoot}/resourceBrowse/searchResource?ids=',
                         isLeaf: function (data) {
                         },
                         delay: function (e) {
+                            debugger
                             var data = e.data;
-                            return {url: '${contextRoot}/cdatype/getCDATypeListByParentId?ids=' + data.id}
+                            return {url: '${contextRoot}/resourceBrowse/searchResource?ids=' + data.id}
                         },
                         checkbox: false,
+                        isExpand: function (e) {
+                            debugger
+                        },
                         idFieldName: 'id',
                         textFieldName: 'name',
 
@@ -131,16 +123,27 @@
                 init: function (objectId) {
                     var self = retrieve;
 
+                    var columnModel = new Array();
+
+                    //获取列名
+                    dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {
+                        async:false,
+                        data: {
+                            resourceCategoryId: objectId,
+                        },
+                        success: function (data) {
+                            var dataList = data.detailModelList;
+
+                            for (var i = 0; i < dataList.length; i++) {
+                                columnModel.push({display:dataList[i].name,name:'name',width:'10%'});
+                            }
+                        }
+                    });
+
                     resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/resourceBrowse/searchResource',
-                        parms:{
-                            searchNm: objectId,
-                        },
-                        columns: [
-                            {name: 'id', hide: true, isAllowHide: false},
-                            {display: '用户类型', name: 'userTypeName', width: '10%', align: 'left'},
-
-                        ],
+                        parms: {ids: objectId},
+                        columns: columnModel,
                     }));
 
                     this.bindEvents();
@@ -186,7 +189,7 @@
                         var defualtParam = self.$defualtParam;
                         var pModel = $(self.$newSearch).find('.div_search_model');
 
-                        var jsonData = defaultCondition.attr('data-attr-scan')+logicalRelationship.val()+defualtParam.val();
+                        var jsonData = defaultCondition.attr('data-attr-scan') + logicalRelationship.val() + defualtParam.val();
 
                         for (var i = 0; i < pModel.length; i++) {
                             var cModel = pModel.find('.inp-find-search');
