@@ -73,10 +73,15 @@
                                     self.$adapter_version_name_div.css("display","none");
                                     self.$adapter_version_div.css("display","");
                                 }else if(value=="2"){
+                                    return false;
                                     self.$adapter_version_name_div.css("display","");
                                     self.$adapter_version_div.css("display","none");
                                 }
-                            }
+                            },onBeforeSelect:function(value){
+                                if(value=="2"){
+                                    return false
+                                }
+                             }
                         });
                        versions = self.$adapterVersion.ligerComboBox(
                         {
