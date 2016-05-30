@@ -127,6 +127,12 @@
             master.grid.options.newPage = 1;
             master.reloadGrid();
           }});
+          this.$searchNm.keydown(function(e){
+            if(e.keyCode==13){
+              master.grid.options.newPage = 1;
+              master.reloadGrid();
+            }
+          });
           this.$gohis.bind("click",function(){
             goHis();
           })
@@ -392,6 +398,7 @@
       }};
       /* *************************** 页面功能 **************************** */
       function getGridOptions(checkbox) {
+        if(cfgModel==0){
         var options = {
           columns: [
             {display : '资源标准编码', name :'code',width :243},
@@ -415,6 +422,9 @@
           url : url
         };
         return options;
+        }else{
+          console.log("字典适下拉选择初始化！");
+        }
       }
       pageInit();
       });
