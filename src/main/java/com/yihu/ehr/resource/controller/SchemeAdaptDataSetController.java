@@ -119,14 +119,16 @@ public class SchemeAdaptDataSetController extends BaseUIController {
      * @param dataJson
      * @return
      */
-    @RequestMapping("updates")
+    @RequestMapping("save")
     @ResponseBody
     public Object updatesSchemeAdpatDataset(Model model,String dataJson) {
         Envelop result = new Envelop();
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         try{
-
+            params.put("adapterMetadata",dataJson);
+            String url = ServiceApi.Adaptions.SchemaMetadatas;
+            resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return resultStr;
         }catch(Exception ex){
             LogService.getLogger(SchemeAdaptController.class).error(ex.getMessage());
