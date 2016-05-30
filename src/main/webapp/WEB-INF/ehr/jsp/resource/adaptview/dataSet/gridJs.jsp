@@ -318,9 +318,22 @@
             $.Notice.error('字典保存数据URL！');
           }
           return saveUrl;
-        },getSaveData:function(){
+        },save:function(saveData){
           if(cfgModel==0){
-
+            var dataModel = $.DataModel.init();
+            //保存
+            dataModel.updateRemote('${contextRoot}/'+entryMater.getSaveUrl(), {
+              data: {dataJson: JSON.stringify(saveData)},
+              success: function (data) {
+                if((data.successFlag)==false){
+                  if(data.errorMsg){
+                    $.Notice.error(data.errorMsg);
+                  }else{
+                    $.Notice.error('保存失败！');
+                  }
+                }
+              }
+            })
           }else{
             $.Notice.error('字典保存数据收集！');
           }
@@ -336,15 +349,16 @@
             width : 240,
             selectBoxHeight : 260,
             selectBoxWidth:751,
+            onBeforeSelectRow:function(){
+
+            },
             onSelected: function(id,name){//name为选择的值
-              if(this.grid ==undefined) return;
+              if(this.grid==undefined) return;
               var rowData  = this.grid.getSelected();
               var selected = entryMater.grid.getSelected();
               var saveData={};
               if(id==""){
-                $("#metadataDomain"+selected.id).html("");
-                $("#metadataDomainName"+selected.id).html("");
-                $("#metadataName"+selected.id).html("");
+                return false;
               }
               else{
                 $("#metadataDomain"+selected.id).html(rowData.domain);
@@ -359,20 +373,7 @@
               saveData.srcDatasetCode = selected.srcDatasetCode;
               saveData.srcMetadataCode = selected.srcMetadataCode;
               saveData.srcMetadataName = selected.srcMetadataName;
-              var dataModel = $.DataModel.init();
-              //保存
-              dataModel.updateRemote('${contextRoot}/'+entryMater.getSaveUrl(), {
-                  data: {dataJson: JSON.stringify(saveData)},
-                  success: function (data) {
-                    if((data.successFlag)==false){
-                      if(data.errorMsg){
-                        $.Notice.error(data.errorMsg);
-                      }else{
-                        $.Notice.error('保存失败！');
-                      }
-                    }
-                  }
-                })
+              entryMater.save(saveData);
             },
             conditionSearchClick: function (g) {
               var param = g.rules.length>0? "id="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
@@ -401,12 +402,12 @@
       function getGridOptions(checkbox) {
         var options = {
           columns: [
-
             {display : '资源标准编码', name :'code',width :243},
             {display : '业务领域', name :'domainName',width : 243},
             {display : '数据元名称', name :'value',width : 243}
           ],
           allowAdjustColWidth : true,
+          allowUnSelectRow:false,
           editorTopDiff : 41,
           headerRowHeight : 30,
           height : '100%',
