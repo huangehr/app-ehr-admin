@@ -349,22 +349,14 @@
             width : 240,
             selectBoxHeight : 260,
             selectBoxWidth:751,
-            onBeforeSelectRow:function(){
-
-            },
             onSelected: function(id,name){//name为选择的值
               if(this.grid==undefined) return;
               var rowData  = this.grid.getSelected();
               var selected = entryMater.grid.getSelected();
               var saveData={};
-              if(id==""){
-                return false;
-              }
-              else{
-                $("#metadataDomain"+selected.id).html(rowData.domain);
-                $("#metadataDomainName"+selected.id).html(rowData.domainName);
-                $("#metadataName"+selected.id).html(rowData.value);
-              }
+              $("#metadataDomain"+selected.id).html(rowData.domain);
+              $("#metadataDomainName"+selected.id).html(rowData.domainName);
+              $("#metadataName"+selected.id).html(rowData.value);
               //赋值
               saveData.metadataDomain =$("#metadataDomain"+selected.id).html();
               saveData.metadataId = id;
