@@ -57,15 +57,26 @@ public class ResourceController extends BaseUIController {
     }
     //配置授权浏览页面跳转
     @RequestMapping("/switch")
-    public String switchToPage(Model model,String PageName){
-        if("config".equals(PageName)){
-            model.addAttribute("contentPage","/resource/resourcemanage/resource");
+    public String switchToPage(Model model,String pageName,String resourceId){
+        if("config".equals(pageName)){
+            model.addAttribute("contentPage","/resource/resourceconfiguration/resourceconfiguration");
         }
-        if("grant".equals(PageName)){
-            model.addAttribute("contentPage","/resource/resourcemanage/resource");
+        if("grant".equals(pageName)){
+            model.addAttribute("contentPage","/resource/grant/grant");
         }
-        if("browse".equals(PageName)){
-            model.addAttribute("contentPage","/resource/resourcemanage/resource");
+        if("browse".equals(pageName)){
+            model.addAttribute("contentPage","/resource/resourcebrowse/resourceBrowse");
+        }
+        Envelop envelop = new Envelop();
+        String envelopStr = "";
+        try{
+            if (!StringUtils.isEmpty(resourceId)) {
+                String url = "/resources/"+resourceId;
+                envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
+            }
+            model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
+        }catch (Exception ex){
+            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
         }
         return "pageView";
     }

@@ -90,9 +90,9 @@
 							{display: '资源说明', name: 'description', width: '23%', align: 'left'},
 							{display: '操作', name: 'operator', width: '22%', render: function (row) {
 								var html = '';
-								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:switch:open",'','config') + '">配置</a>';
-								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:switch:open",'','grant') + '">授权</a>';
-								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:switch:open",'','browse') + '">浏览</a>';
+								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'config') + '">配置</a>';
+								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'grant') + '">授权</a>';
+								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'browse') + '">浏览</a>';
 								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:info:open", row.id, 'modify') + '"></a>';
 								html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a>';
 								return html;
@@ -157,8 +157,8 @@
 						})
 					});
 					//配置、授权、浏览页面跳转
-					$.subscribe("rs:switch:open",function(event,name){
-						var url = '${contextRoot}/resource/resourceManage/switch?name='+name;
+					$.subscribe("rs:switch:open",function(event,resourceId,pageName){
+						var url = '${contextRoot}/resource/resourceManage/switch?pageName='+pageName+'&resourceId='+resourceId;
 						$("#contentPage").empty();
 						$("#contentPage").load(url);
 					});
