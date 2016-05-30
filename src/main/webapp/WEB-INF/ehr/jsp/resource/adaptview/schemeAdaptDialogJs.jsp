@@ -11,7 +11,7 @@
         var jValidation = $.jValidation;
         //适配方案变量
         var adapterSchemeModel = null;
-        var adapterType = 39;
+        var adapterType = 29;
         var versions;
         var types;
         /* ************************** 变量定义结束 **************************** */
