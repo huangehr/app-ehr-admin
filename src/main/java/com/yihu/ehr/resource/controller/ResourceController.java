@@ -1,6 +1,7 @@
 package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.Envelop;
@@ -15,7 +16,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,12 +42,23 @@ public class ResourceController extends BaseUIController {
         return "pageView";
     }
     @RequestMapping("/infoInitial")
-    public String resourceInterfaceInfoInitial(Model model,String id,String mode){
+    public String resourceInterfaceInfoInitial(Model model,String id,String mode,String categoryId){
         model.addAttribute("mode",mode);
+        model.addAttribute("categoryId",categoryId);
         model.addAttribute("contentPage","/resource/resourcemanage/resourceInfoDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
+        String categoryName = "";
         try{
+            if(!StringUtils.isEmpty(categoryId)) {
+                String url = "/resources/categories/"+categoryId;
+                String envelopStrGet = HttpClientUtil.doGet(comUrl + url, username, password);
+                Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
+                if(envelopGet.isSuccessFlg()){
+                    categoryName = getEnvelopModel(envelopGet.getObj(),RsCategoryModel.class).getName();
+                }
+            }
+            model.addAttribute("categoryName",categoryName);
             if (!StringUtils.isEmpty(id)) {
                 String url = "/resources/"+id;
                 envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
@@ -59,7 +73,7 @@ public class ResourceController extends BaseUIController {
     @RequestMapping("/switch")
     public String switchToPage(Model model,String pageName,String resourceId){
         if("config".equals(pageName)){
-            model.addAttribute("contentPage","/resource/resourceconfiguration/resourceconfiguration");
+            model.addAttribute("contentPage","/resource/resourceconfiguration/resourceConfiguration");
         }
         if("grant".equals(pageName)){
             model.addAttribute("contentPage","/resource/grant/grant");
@@ -84,7 +98,7 @@ public class ResourceController extends BaseUIController {
     //分页查询
     @RequestMapping("/resources")
     @ResponseBody
-    public Object searchResources(String searchNm,int page,int rows){
+    public Object searchResources(String searchNm,String categoryId,int page,int rows){
         String url = "/resources";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -92,6 +106,9 @@ public class ResourceController extends BaseUIController {
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("code?" + searchNm + " g1;name?" + searchNm + " g1;");
+        }
+        if(!StringUtils.isEmpty(categoryId)){
+            stringBuffer.append("categoryId="+categoryId);
         }
         params.put("filters", "");
         String filters = stringBuffer.toString();
@@ -203,6 +220,46 @@ public class ResourceController extends BaseUIController {
         return envelop;
     }
 
-
-
+    //带检索分页的查找资源分类方法
+    @RequestMapping("/rsCategory")
+    @ResponseBody
+    public Object searchRsCategory(String searchParm,int page,int rows){
+        String url = "/resources/categories/no_paging";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(searchParm)) {
+            stringBuffer.append("name?" + searchParm +";");
+        }
+        params.put("filters", "");
+        String filters = stringBuffer.toString();
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            String envelopStrGet = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
+            List<RsCategoryModel> rsCategoryModels = new ArrayList<>();
+            List<Map> list = new ArrayList<>();
+            if(envelopGet.isSuccessFlg()){
+                rsCategoryModels = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<RsCategoryModel>(),RsCategoryModel.class);
+                for (RsCategoryModel m:rsCategoryModels){
+                    Map map = new HashMap<>();
+                    map.put("id",m.getId());
+                    map.put("name",m.getName());
+                    list.add(map);
+                }
+                envelopGet.setDetailModelList(list);
+                return envelopGet;
+            }
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 }

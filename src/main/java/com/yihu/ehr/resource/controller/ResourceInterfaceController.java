@@ -88,13 +88,31 @@ public class ResourceInterfaceController extends BaseUIController {
         return envelopStr;
     }
 
-    @RequestMapping("getResourceInterface")
+    @RequestMapping("/getResourceInterface")
     @ResponseBody
     public Object getResourceInterface(String id){
         Envelop envelop = new Envelop();
         try{
             String url = "/resources/interfaces/{id}"+id;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    @RequestMapping("/findByResourceInterface")
+    @ResponseBody
+    public Object findByResourceInterface(String resourceInterface){
+        Envelop envelop = new Envelop();
+        try{
+            String url = "/resources/interface";
+            Map<String,Object> params = new HashMap<>();
+            params.put("resource_interface",resourceInterface);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
