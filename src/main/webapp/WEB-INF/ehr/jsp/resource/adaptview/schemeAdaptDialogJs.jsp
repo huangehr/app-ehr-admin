@@ -50,7 +50,49 @@
                 self.$form.removeClass("m-form-readonly");
                 this.$code.ligerTextBox({width:240,validate:{required:true }});
                 this.$name.ligerTextBox({width:240,validate:{required:true }});
-                this.$adapterVersionName.ligerTextBox({width:240});
+                this.$adapterVersionName.ligerComboBox({
+                    condition: { inputWidth: 120 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
+                    grid: getGridOptions(),
+                    valueField: "code",
+                    textField: "name",
+                    width : 240,
+                    selectBoxHeight : 300,
+                    selectBoxWidth:300,
+                    conditionSearchClick: function (g) {
+                        var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
+                        param = {"filters":param}
+                        g.grid.set({
+                            parms: param,
+                            newPage: 1
+                        });
+                        g.grid.reload();
+                    }
+                });
+                function getGridOptions() {
+                        var options = {
+                            columns: [
+                                {display : '标准编码', name :'code',width :'31%'},
+                                {display : '标准名称', name :'name',width : '31%'},
+                                {display : '发布机构', name :'orgValue',width : '32%'}
+                            ],
+                            allowAdjustColWidth : true,
+                            allowUnSelectRow:false,
+                            editorTopDiff : 41,
+                            headerRowHeight : 30,
+                            height : '100%',
+                            heightDiff : 0,
+                            pageSize: 15,
+                            pagesizeParmName : 'rows',
+                            record : "totalCount",
+                            root : "detailModelList",
+                            rowHeight : 28,
+                            rownumbers :false,
+                            switchPageSizeApplyComboBox: false,
+                            width :250,
+                            url : '${contextRoot}/adapterorg/searchAdapterOrg'
+                        };
+                        return options;
+                };
                 types = self.$type.ligerComboBox(
                         {
                             cancelable: false,
@@ -73,15 +115,10 @@
                                     self.$adapter_version_name_div.css("display","none");
                                     self.$adapter_version_div.css("display","");
                                 }else if(value=="2"){
-                                    return false;
                                     self.$adapter_version_name_div.css("display","");
                                     self.$adapter_version_div.css("display","none");
                                 }
-                            },onBeforeSelect:function(value){
-                                if(value=="2"){
-                                    return false
-                                }
-                             }
+                            }
                         });
                        versions = self.$adapterVersion.ligerComboBox(
                         {
@@ -148,10 +185,12 @@
                             if (data.successFlg) {
                                 win.closeSchemeDialog("保存成功！")
                             } else {
-                                if (data.errorMsg)
+                                if (data.errorMsg){
                                     $.Notice.error(data.errorMsg);
-                                else
+                                }
+                                else {
                                     $.Notice.error('保存失败！');
+                                }
                             }
                         },
                         error: function () {
