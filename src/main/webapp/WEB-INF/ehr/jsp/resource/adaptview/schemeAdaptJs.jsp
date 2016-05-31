@@ -17,7 +17,6 @@
                 retrieve.init();
                 master.init();
             }
-
             function getSchemeAdapt(target, id, mode) {
                 var title = '';
                 //只有new 跟 modify两种模式会到这个函数
@@ -111,10 +110,11 @@
                         },
                         columns: [
                             {display: 'ID', name: 'id', hide: true},
+                            {display: 'adapterVersion', name: 'adapterVersion', hide: true},
                             {display: '方案类别', name: 'typeName', width: '15%', align: 'left'},
-                            {display: '方案名称', name: 'name',  width: '15%'},
+                            {display: '方案名称', name: 'name',  width: '15%', align: 'left'},
                             {display: '方案编码', name: 'code', width: '15%', minColumnWidth: 60, align: 'left'},
-                            {display: '标准名称/版本号', name: 'adapterVersion', width: '15%', align: 'left'},
+                            {display: '标准名称/版本号', name: 'adapterVersionName', width: '15%', align: 'left'},
                             {display: '说明', name: 'description', width: '25%', align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '15%', render: function (row) {
