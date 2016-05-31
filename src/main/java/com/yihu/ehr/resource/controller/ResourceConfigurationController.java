@@ -106,13 +106,13 @@ public class ResourceConfigurationController extends BaseUIController {
 
         try {
             if (!StringUtils.isEmpty(delRowDatas)) {
-                //执行删除操作
+//                执行删除操作
 //                params.put("delRowDatas", delRowDatas);
 //                resultStr = HttpClientUtil.doDelete(comUrl + delMetaDataUrl, params, username, password);
             }
 
             if (!StringUtils.isEmpty(addRowDatas)) {
-                //执行新增操作
+//                执行新增操作
                 params.put("metadatas", addRowDatas);
                 resultStr = HttpClientUtil.doPost(comUrl + addMetaDataUrl, params, username, password);
             }
