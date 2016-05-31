@@ -14,15 +14,15 @@
       var entryMater = null;
       var cfgModel = 0;
       var changeFlag=false;
-      var metaDataList = null;
+      var entryDataList = null;
       var cfg = [
         {
-          left:{title:'平台数据集', cls:'', search:'/std/dataset/searchDataSets'},
-          right:{title:'数据元映射', cls:'', search:'/schemeAdaptDataSet/metaDataList', goSave:'/schemeAdaptDataSet/saveMetaDate'}
+          left:{title:'平台数据集', cls:'', search1:'/std/dataset/searchDataSets',search2:'/orgdataset/searchOrgDataSets'},
+          right:{title:'数据元映射', cls:'', search:'/schemeAdaptDataSet/metaDataList'}
         },
         {
-          left:{title:'平台字典', cls:'', search:'/cdadict/getCdaDictList'},
-          right:{title:'字典项映射', cls:'', search:'/schemeAdaptDataSet/searchAdapterDictEntry', goSave:'/schemeAdaptDataSet/saveAdaptDict'}
+          left:{title:'平台字典', cls:'', search1:'/cdadict/getCdaDictList',search2:'/orgdict/searchOrgDicts'},
+          right:{title:'字典项映射', cls:'', search:'/schemeAdaptDict/dictlist'}
         }
       ];
       /* *************************** 函数定义 ******************************* */
@@ -52,7 +52,6 @@
         conditionArea.$btn_switch_dict.addClass('btn-primary');
         master.grid.options.newPage = 1;
         master.reloadGrid();
-        entryMater.reloadGrid();
       }
       //返回上一页
       function goHis(){
@@ -145,7 +144,7 @@
           if(this.grid)
             return;
           this.grid = $("#div_left_grid").ligerGrid($.LigerGridEx.config({
-            url: '${contextRoot}'+cfg[cfgModel].left.search,
+            url: '${contextRoot}'+this.getSearchUrl(),
             columns: this.getColumn(),
             delayLoad:true,
             selectRowButtonOnly: true,
@@ -174,21 +173,9 @@
 
         },
         reloadGrid: function () {
-          var searchNm = $("#searchNm").val();
-          var values =null;
-          if(cfgModel==0){
-            values={
-              "codename":searchNm,
-              "version":version
-            }
-          }else{
-            values={
-              "searchNm":searchNm,
-              "strVersionCode":version
-            }
-          }
+          var values =this.getParam();
           if (changeFlag){
-            var url = '${contextRoot}' + cfg[cfgModel].left.search;
+            var url = '${contextRoot}' + this.getSearchUrl();
             reloadGrid.call(this, url, values, this.getColumn());
           }else{
             this.grid.setOptions({parms: $.extend({},values)});
@@ -210,6 +197,42 @@
                         { display: '字典名称',name: name, width: '50%',isAllowHide: false ,align:'left' }];
           }
           return columnCfg;
+        },getSearchUrl:function(){
+          if(cfgModel==0&&adapterScheme.obj.type==1){
+            return  cfg[cfgModel].left.search1;
+          }else if(cfgModel==0&&adapterScheme.obj.type==2){
+            return  cfg[cfgModel].left.search2;
+          }else if(cfgModel==1&&adapterScheme.obj.type==1){
+            return  cfg[cfgModel].left.search1
+          }else if(cfgModel==1&&adapterScheme.obj.type==2){
+            return  cfg[cfgModel].left.search2
+          }
+        },getParam:function(){
+          var searchNm = $("#searchNm").val();
+          var values=null;
+          if(cfgModel==0&&adapterScheme.obj.type==1){
+            values={
+              "codename":searchNm,
+              "version":version
+            }
+          }else if(cfgModel==0&&adapterScheme.obj.type==2){
+            values={
+              "codeOrName":searchNm,
+              "organizationCode":version
+            }
+          }else if(cfgModel==1&&adapterScheme.obj.type==1){
+            values={
+              "searchNm":searchNm,
+              "strVersionCode":version
+            }
+          }
+          else if(cfgModel==1&&adapterScheme.obj.type==2){
+            values={
+              "codeOrName":searchNm,
+              "organizationCode":version
+            }
+          }
+          return values;
         }
       };
       /* *************************** right模块初始化 ***************************** */
@@ -238,7 +261,7 @@
             unSetValidateAttr:false,
             checkbox:false,
             onAfterShowData: function (currentData) {
-              metaDataList = currentData.detailModelList;
+              entryDataList = currentData.detailModelList;
               entryMater.initMetadataId();
             },
             reloadGrid:function(){
@@ -297,7 +320,7 @@
                 var html="<span id='metadataDomainName"+row.id+"'>"+((row.metadataDomainName==undefined)?"":row.metadataDomainName)+"</span>"
                 return html;
               }},
-              { display: '数据元名称', name: 'metadataName',width: '21%', isAllowHide: false  ,align:'left',render: function (row) {
+              { display: '资源数据元名称', name: 'metadataName',width: '21%', isAllowHide: false  ,align:'left',render: function (row) {
                 var html="<span id='metadataName"+row.id+"'>"+((row.metadataName==undefined)?"":row.metadataName)+"</span>"
                 return html;
               }}
@@ -306,12 +329,26 @@
           else{
             columnCfg = [
               { display: 'id', name: 'id', hide:true },
-              { display: 'dictEntryId', name: 'dictEntryId', hide:true },
-              { display: '值域编码', name: 'dictEntryCode',width: '10%', isAllowHide: false ,align:'left' },
-              { display: '值域名称',name: 'dictEntryName', width: '10%',isAllowHide: false  ,align:'left'},
-              { display: '资源标准编码', name: 'orgDictCode',width: '30%', isAllowHide: false ,align:'left' },
-              { display: '业务领域',name: 'orgDictName', width: '25%',isAllowHide: false  ,align:'left'},
-              { display: '值域名称', name: 'orgDictEntryCode',width: '25%', isAllowHide: false  ,align:'left'}
+              { display: 'schemeId', name: 'schemeId', hide:true },
+              { display: 'srcDictCode', name: 'srcDictCode', hide:true },
+              { display: '值域编码', name: 'srcDictEntryCode',width: '25%', isAllowHide: false ,align:'left' },
+              { display: '值域名称',name: 'srcDictEntryName', width: '25%',isAllowHide: false  ,align:'left'},
+              { display: '资源字典', name: 'dictName',width: '25%', isAllowHide: false ,align:'left',render: function (row) {
+                var html= "<input type=\"text\" id='dictName"+row.id+"' name=\"dictName\"  data-type=\"select\" class=\"useTitle\" >";
+                return html;
+              }},
+              { display: 'dictCode', name: 'dictCode', hide:true ,render: function (row) {
+                var html="<span id='dictCode"+row.id+"'>"+((row.dictCode==undefined)?"":row.dictCode)+"</span>"
+                return html;
+              }},
+              { display: '资源字典项编码', name: 'dictEntryCode',width: '25%', isAllowHide: false ,align:'left',render: function (row) {
+                var html= "<input type=\"text\" id='dictEntryCode"+row.id+"' name=\"dictEntryCode\"  data-type=\"select\" class=\"useTitle\" >";
+                return html;
+               }},
+              { display: '资源字典项名称', name: 'dictEntryName',width: '25%', isAllowHide: false  ,align:'left',render: function (row) {
+                var html="<span id='dictEntryName"+row.id+"'>"+((row.dictEntryName==undefined)?"":row.dictEntryName)+"</span>"
+                return html;
+              }}
             ]
           }
           return columnCfg;
@@ -321,11 +358,10 @@
           if(cfgModel==0){
             saveUrl ="schemeAdaptDataSet/save";
           }else{
-            $.Notice.error('字典保存数据URL！');
+            saveUrl ="schemeAdaptDict/save";
           }
           return saveUrl;
         },save:function(saveData){
-          if(cfgModel==0){
             var dataModel = $.DataModel.init();
             //保存
             dataModel.updateRemote('${contextRoot}/'+entryMater.getSaveUrl(), {
@@ -340,16 +376,13 @@
                 }
               }
             })
-          }else{
-            $.Notice.error('字典保存数据收集！');
-          }
         },
         initMetadataId:function(){
           if(cfgModel==0){
-            url = "${contextRoot}/resource/meta/combo";
+            var url = "${contextRoot}/resource/meta/combo";
             $("input[name=metadataId]").ligerComboBox({
             condition: { inputWidth: 240 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "value", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-            grid: getGridOptions(true),
+            grid: getGridOptions(false,755,url),
             valueField: "code",
             textField: "code",
             width : 240,
@@ -384,27 +417,109 @@
             }
           });
           $("#div_relation_grid .l-trigger-cancel").remove();
-          for(var j in metaDataList){
-            var metadataId = metaDataList[j].metadataId;
+          for(var j in entryDataList){
+            var metadataId = entryDataList[j].metadataId;
             if(metadataId!=""&&metadataId!=null){
-              $("#metadataId"+metaDataList[j].id).ligerGetComboBoxManager().setValue(metadataId);
-              $("#metadataId"+metaDataList[j].id).ligerGetComboBoxManager().setText(metadataId);
+              //由于下拉框还未加载无法初始化
+              $("#metadataId"+entryDataList[j].id).ligerGetComboBoxManager().setValue(metadataId);
+              $("#metadataId"+entryDataList[j].id).ligerGetComboBoxManager().setText(metadataId);
             }
           }
         }
         else{
-          console.log("字典适配初始化！");
-        }
+            //初始化字典下拉框
+            var url = "${contextRoot}/resource/dict/list";
+            $("input[name=dictName]").ligerComboBox({
+              condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
+              grid: getGridOptions(true,240,url),
+              valueField: "name",
+              textField: "name",
+              width : 240,
+              selectBoxHeight : 260,
+              selectBoxWidth:240,
+              onSelected: function(id,name){//name为选择的值
+                if(this.grid==undefined) return;
+                var rowData  = this.grid.getSelected();
+                var selected = entryMater.grid.getSelected();
+                $("#dictCode"+selected.id).html(rowData.code);
+              },conditionSearchClick: function (g) {
+                var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
+                param = {"filters":param}
+                g.grid.set({
+                  parms: param,
+                  newPage: 1
+                });
+                g.grid.reload();
+              }
+            });
+            $("#div_relation_grid .l-trigger-cancel").remove();
+            for(var j in entryDataList){
+              var dictName = entryDataList[j].dictName;
+              if(dictName!=""&&dictName!=null){
+                $("#dictName"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictName);
+              }
+            }
+            //初始化字典项下拉框
+             url = "${contextRoot}/resource/dict/entry/list";
+            $("input[name=dictEntryCode]").ligerComboBox({
+              condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
+              grid: getGridOptions(true,240,url),
+              valueField: "code",
+              textField: "code",
+              width : 240,
+              selectBoxHeight : 260,
+              selectBoxWidth:240,
+              onSelected: function(id,name){//name为选择的值
+                if(this.grid==undefined) return;
+                var rowData  = this.grid.getSelected();
+                var selected = entryMater.grid.getSelected();
+                $("#dictEntryName"+selected.id).html(rowData.name);
+                var saveData={};
+                saveData.id = selected.id;
+                saveData.schemeId = selected.schemeId;
+                saveData.dictEntryCode=id;
+                saveData.dictCode = $("#dictCode"+selected.id).html();
+                saveData.srcDictCode = selected.srcDictCode;
+                saveData.srcEntryDictName = selected.srcEntryDictName;
+                saveData.srcEntryDictCode = selected.srcEntryDictCode;
+                debugger;
+                entryMater.save(saveData);
+              },
+              conditionSearchClick: function (g) {
+                var selected = entryMater.grid.getSelected();
+                var dictCode = $("#dictCode"+selected.id).html();
+                var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1;dictCode="+dictCode: '';
+                param = {"filters":param}
+                g.grid.set({
+                  parms: param,
+                  newPage: 1
+                });
+                g.grid.reload();
+              },onButtonClick:function(){
+                var selected = entryMater.grid.getSelected();
+                var dictCode = $("#dictCode"+selected.id).html();
+                if(dictCode==null||dictCode==""){
+                  $.Notice.error('请先选择资源字典！');
+                  return false;
+                }else{
+                  return true;
+                }
+              }
+            });
+            $("#div_relation_grid .l-trigger-cancel").remove();
+            for(var j in entryDataList){
+              var dictEntryCode = entryDataList[j].dictEntryCode;
+              if(dictEntryCode!=""&&dictEntryCode!=null){
+                $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictEntryCode);
+                $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setValue(dictEntryCode);
+              }
+            }
+          }
       }};
       /* *************************** 页面功能 **************************** */
-      function getGridOptions(checkbox) {
-        if(cfgModel==0){
+      function getGridOptions(isDict,width,url) {
         var options = {
-          columns: [
-            {display : '资源标准编码', name :'code',width :243},
-            {display : '业务领域', name :'domainName',width : 243},
-            {display : '数据元名称', name :'value',width : 243}
-          ],
+          columns:getComboxGrid(isDict),
           allowAdjustColWidth : true,
           allowUnSelectRow:false,
           editorTopDiff : 41,
@@ -418,13 +533,26 @@
           rowHeight : 28,
           rownumbers :false,
           switchPageSizeApplyComboBox: false,
-          width :755,
+          width :width,
           url : url
         };
         return options;
-        }else{
-          console.log("字典适下拉选择初始化！");
+      }
+      function getComboxGrid(isDict){
+        var columnCfg =[];
+        if(!isDict){
+          columnCfg=[
+            {display : '资源标准编码', name :'code',width :243},
+            {display : '业务领域', name :'domainName',width : 243},
+            {display : '数据元名称', name :'value',width : 243}
+          ]
+        }else if(isDict){
+          columnCfg=[
+            {display : '资源字典编码', name :'code',width :243},
+            {display : '资源字典名称', name :'name',width : 243}
+          ]
         }
+        return columnCfg;
       }
       pageInit();
       });

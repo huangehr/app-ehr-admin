@@ -17,7 +17,7 @@
 				<!--下拉框-->
 				<input type="text" id="inp_searchNm" class="f-h28 f-w1240" placeholder="请输入接口名称或编码" data-attr-scan="searchNm">
 			</div>
-			<div class="m-form-control f-ml20">
+			<div class="m-form-control f-ml10">
 				<!--按钮:查询 & 新增-->
 				<div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
 					<span><spring:message code="btn.search"/></span>
