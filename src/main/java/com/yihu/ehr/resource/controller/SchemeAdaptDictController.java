@@ -3,8 +3,6 @@ package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.model.resource.MRsAdapterMetadata;
-import com.yihu.ehr.model.resource.MRsAdapterSchema;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -24,9 +22,9 @@ import java.util.Map;
  * Created by linz on 2015/11/1.
  */
 
-@RequestMapping("/schemeAdaptDataSet")
+@RequestMapping("/schemeAdaptDict")
 @Controller
-public class SchemeAdaptDataSetController extends BaseUIController {
+public class SchemeAdaptDictController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -34,26 +32,8 @@ public class SchemeAdaptDataSetController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
 
-    @RequestMapping("/initial")
-    public String gotoList(Model model,String dataModel,String version){
-        model.addAttribute("dataModel",dataModel);
-        model.addAttribute("version",version);
-        String url = "/adaptions/schemas/"+dataModel;
-        String resultStr = "";
-        Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-        }catch (Exception e){
-            LogService.getLogger(SchemeAdaptDataSetController.class).error(e.getMessage());
-            model.addAttribute("rs", "error");
-        }
-        model.addAttribute("adapterScheme",resultStr);
-        model.addAttribute("contentPage","/resource/adaptview/dataSet/grid");
-        return "pageView";
-    }
 
-    @RequestMapping("/metaDataList")
+    @RequestMapping("/dictlist")
     @ResponseBody
     public Object searchmetaData(String adapterSchemeId, String code, int page, int rows) {
         Envelop envelop = new Envelop();
@@ -64,9 +44,10 @@ public class SchemeAdaptDataSetController extends BaseUIController {
         }else{
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("请选择资源适配方案");
+            return envelop;
         }
         if(StringUtils.isNotBlank(code)){
-            stringBuffer.append("srcDatasetCode=").append(code).append(";");
+            stringBuffer.append("srcDictCode=").append(code).append(";");
         }
         params.put("filters", "");
         params.put("page", page);
@@ -90,7 +71,6 @@ public class SchemeAdaptDataSetController extends BaseUIController {
         return envelop;
     }
 
-
     /**
      * 资源适配：新增、修改窗口
      * @param model
@@ -99,13 +79,13 @@ public class SchemeAdaptDataSetController extends BaseUIController {
      */
     @RequestMapping("save")
     @ResponseBody
-    public Object updatesSchemeAdpatDataset(Model model,String dataJson) {
+    public Object updatesSchemeAdpatDict(Model model,String dataJson) {
         Envelop result = new Envelop();
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         try{
-            params.put("adapterMetadata",dataJson);
-            String url = ServiceApi.Adaptions.SchemaMetadatas;
+            params.put("",dataJson);
+            String url = "";
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return resultStr;
         }catch(Exception ex){
