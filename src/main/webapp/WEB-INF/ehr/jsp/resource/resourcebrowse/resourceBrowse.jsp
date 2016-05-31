@@ -19,10 +19,10 @@
         <div id="div_resource_browse_msg" class="div-resource-browse">
             <!--添加动态查询-->
             <div id="div_new_search" class="f-mt10 f-ml10">
-                <span class="f-fl f-mt10">查询条件：</span>
-                <div class="f-fl f-w90">
+                <span class="f-fl f-mt10 f-ml10">查询条件：</span>
+                <div class="f-fl f-w90 f-ml50">
                     <div class="f-fl f-ml10 f-mr10">
-                        <input type="text" id="inp_default_condition" data-attr-scan="1" class="f-ml10 inp-reset"/>
+                        <input type="text" id="inp_default_condition" style="width: 238px" data-attr-scan="1" class="f-pr0 f-ml10 inp-reset"/>
                     </div>
                     <div class="f-fl f-ml10 f-mr10">
                         <input type="text" id="inp_logical_relationship" data-sttr-scan="2" class="f-ml10 inp-reset"/>
