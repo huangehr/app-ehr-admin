@@ -81,7 +81,6 @@ public class ResourceBrowseController extends BaseUIController {
     @RequestMapping("/getGridCloumnNames")
     @ResponseBody
     public Object getGridCloumnNames(String resourceCategoryId){
-        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/ResourceBrowses";
         String resultStr = "";

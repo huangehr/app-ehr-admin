@@ -15,7 +15,7 @@
             var delRowDatas = new Array();
 
             var comUrl = '${contextRoot}/resourceConfiguration';
-            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration',comUrl + '/searchSelResourceconfiguration?resourcesId=testId']
+            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration',comUrl + '/searchSelResourceconfiguration?resourcesId=0dae0015574c004c308b3c141c72e31f']
             var elmParams = ['resourceConfigurationInfoGrid','resourceConfigurationInfoGridTrue'];
 
             var dataModel = $.DataModel.init();
@@ -110,9 +110,10 @@
                                 var bo = false;
                                 if (Util.isStrEquals(this.url.split("resourcesId").length,1)){
                                     dataModel.fetchRemote(resourceConfigurationUrl[1], {  // todo ：url需要换成查询所有的数据元接口，（目前接口未建）
-                                        data: {searchNm: "",page:1,rows:15},
+                                        data: {searchNm: "selAll",page:1,rows:15},
                                         async: false,
                                         success: function (data) {
+                                            debugger
                                             var resourceDatas = data.detailModelList;
                                             for (var i = 0;i<resourceDatas.length;i++){
                                                 if(Util.isStrEquals(resourceDatas[i].metadataId,row.id)){
@@ -168,7 +169,6 @@
                     function deleteRows(rowdata) {
 
                         delRowDatas.push(rowdata.id);
-
                         var rowParm = rowdata.stdCode;
                         var rows = elmParams[1].data.detailModelList;
                         for (var i =0;i<rows.length;i++){
@@ -187,11 +187,13 @@
                 bindEvents: function () {
 
                     retrieve.$saveBtn.click(function () {
+
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
                             return;
                         }
+debugger
                         dataModel.updateRemote(comUrl + "/saveResourceconfiguration", {
-                            data: {addRowDatas: JSON.stringify(addRowDatas), delRowDatas: JSON.stringify(delRowDatas)},
+                            data: {addRowDatas: JSON.stringify(addRowDatas), delRowDatas: delRowDatas.toString()},
                             async: true,
                             success: function (data) {
                                 if (data.successFlg) {

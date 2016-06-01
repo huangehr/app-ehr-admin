@@ -38,25 +38,25 @@ public class ResourceConfigurationController extends BaseUIController {
 
     @RequestMapping("searchResourceconfiguration")
     @ResponseBody
-    public Object searchResourceconfiguration(String searchNm, int page, int rows){
+    public Object searchResourceconfiguration(String searchNm, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         String metaDataUrl = ServiceApi.Resources.Metadatas;
         String resultStr = "";
 
-        params.put("filters","");
+        params.put("filters", "");
         if (!StringUtils.isEmpty(searchNm))
-            params.put("filters","name?" + searchNm + " g1;stdCode?" + searchNm +" g1");
+            params.put("filters", "name?" + searchNm + " g1;stdCode?" + searchNm + " g1");
 
         params.put("page", page);
         params.put("size", rows);
-        params.put("fields","");
-        params.put("sorts","");
+        params.put("fields", "");
+        params.put("sorts", "");
 
-        try{
+        try {
 
-            resultStr = HttpClientUtil.doGet(comUrl + metaDataUrl,params,username,password);
+            resultStr = HttpClientUtil.doGet(comUrl + metaDataUrl, params, username, password);
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         return resultStr;
@@ -65,30 +65,37 @@ public class ResourceConfigurationController extends BaseUIController {
 
     @RequestMapping("searchSelResourceconfiguration")
     @ResponseBody
-    public Object searchSelResourceconfiguration(String searchNm,String resourcesId, int page, int rows){
+    public Object searchSelResourceconfiguration(String searchNm, String resourcesId, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         String ResourceMetadataUrl = ServiceApi.Resources.ResourceMetadatas;
+        String selResourceMetadataListUrl = "/resources/" + resourcesId + "/metadata_list";
 
         String resultStr = "";
 
-        params.put("filters","");
-        if (!StringUtils.isEmpty(searchNm))
-            params.put("filters","name?" + searchNm + " g1;stdCode?" + searchNm +" g1");
+        try {
 
-        params.put("resources_id","");
-        if (!StringUtils.isEmpty(resourcesId))
-            params.put("resources_id",resourcesId);
+            if (searchNm.equals("selAll")) {
+                resultStr = HttpClientUtil.doGet(comUrl + selResourceMetadataListUrl, params, username, password);
 
-        params.put("page", page);
-        params.put("size", rows);
-        params.put("fields","");
-        params.put("sorts","");
+            } else {
 
-        try{
+                params.put("filters", "");
+                if (!StringUtils.isEmpty(searchNm))
+                    params.put("filters", "name?" + searchNm + " g1;stdCode?" + searchNm + " g1");
 
-            resultStr = HttpClientUtil.doGet(comUrl + ResourceMetadataUrl,params,username,password);
+                params.put("resources_id", "");
+                if (!StringUtils.isEmpty(resourcesId))
+                    params.put("resources_id", resourcesId);
 
-        }catch (Exception e){
+                params.put("page", page);
+                params.put("size", rows);
+                params.put("fields", "");
+                params.put("sorts", "");
+
+                resultStr = HttpClientUtil.doGet(comUrl + ResourceMetadataUrl, params, username, password);
+
+            }
+        } catch (Exception e) {
 
         }
         return resultStr;
@@ -101,20 +108,19 @@ public class ResourceConfigurationController extends BaseUIController {
 
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String delMetaDataUrl = ServiceApi.Resources.ResourceMetadatas;
-        String addMetaDataUrl = ServiceApi.Resources.ResourceMetadatasBatch;
+        String metaDataUrl = ServiceApi.Resources.ResourceMetadatasBatch;
 
         try {
             if (!StringUtils.isEmpty(delRowDatas)) {
 //                执行删除操作
-//                params.put("delRowDatas", delRowDatas);
-//                resultStr = HttpClientUtil.doDelete(comUrl + delMetaDataUrl, params, username, password);
+                params.put("ids", delRowDatas);
+                resultStr = HttpClientUtil.doDelete(comUrl + metaDataUrl, params, username, password);
             }
 
             if (!StringUtils.isEmpty(addRowDatas)) {
 //                执行新增操作
-                params.put("metadatas", addRowDatas);
-                resultStr = HttpClientUtil.doPost(comUrl + addMetaDataUrl, params, username, password);
+//                params.put("metadatas", addRowDatas);
+//                resultStr = HttpClientUtil.doPost(comUrl + metaDataUrl, params, username, password);
             }
         } catch (Exception e) {
 
