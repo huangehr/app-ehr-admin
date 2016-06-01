@@ -61,7 +61,7 @@ public class SchemeAdaptDictController extends BaseUIController {
         }
         try {
             String resultStr ="";
-            String url = ServiceApi.Adaptions.SchemaMetadatas;
+            String url = ServiceApi.Adaptions.SchemaMetadata;
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
