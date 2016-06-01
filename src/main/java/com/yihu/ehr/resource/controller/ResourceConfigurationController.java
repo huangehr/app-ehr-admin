@@ -40,7 +40,7 @@ public class ResourceConfigurationController extends BaseUIController {
     @ResponseBody
     public Object searchResourceconfiguration(String searchNm, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
-        String metaDataUrl = ServiceApi.Resources.Metadatas;
+        String metaDataUrl = "/resources/metadata";
         String resultStr = "";
 
         params.put("filters", "");
@@ -67,7 +67,7 @@ public class ResourceConfigurationController extends BaseUIController {
     @ResponseBody
     public Object searchSelResourceconfiguration(String searchNm, String resourcesId, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
-        String ResourceMetadataUrl = ServiceApi.Resources.ResourceMetadatas;
+        String ResourceMetadataUrl = "/resources/rs_metadata";
         String selResourceMetadataListUrl = "/resources/" + resourcesId + "/metadata_list";
 
         String resultStr = "";
@@ -108,7 +108,7 @@ public class ResourceConfigurationController extends BaseUIController {
 
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String metaDataUrl = ServiceApi.Resources.ResourceMetadatasBatch;
+        String metaDataUrl = "/resources/rs_metadata/batch";
 
         try {
             if (!StringUtils.isEmpty(delRowDatas)) {

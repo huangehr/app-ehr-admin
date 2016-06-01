@@ -14,12 +14,12 @@ public class MetaService extends ExtendService<RsMetadataModel> {
 
     public MetaService() {
         init(
-                "/resources/metadatas",        //searchUrl
-                "/resources/metadatas/{id}",   //modelUrl
-                "/resources/metadatas",        //addUrl
-                "/resources/metadatas",        //modifyUrl
-                "/resources/metadatas"        //deleteUrl
+                "/resources/metadata",        //searchUrl
+                "/resources/metadata/{id}",   //modelUrl
+                "/resources/metadata",        //addUrl
+                "/resources/metadata",        //modifyUrl
+                "/resources/metadata"        //deleteUrl
         );
-        existenceUrl = "/resources/metadatas/existence"; //存在
+        existenceUrl = "/resources/metadata/existence"; //存在
     }
 }

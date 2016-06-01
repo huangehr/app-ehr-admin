@@ -80,7 +80,7 @@ public class SchemeAdaptDataSetController extends BaseUIController {
         }
         try {
             String resultStr ="";
-            String url = ServiceApi.Adaptions.SchemaMetadatas;
+            String url = ServiceApi.Adaptions.SchemaMetadataList;
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
@@ -105,7 +105,7 @@ public class SchemeAdaptDataSetController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         try{
             params.put("adapterMetadata",dataJson);
-            String url = ServiceApi.Adaptions.SchemaMetadatas;
+            String url = ServiceApi.Adaptions.SchemaMetadataList;
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return resultStr;
         }catch(Exception ex){
