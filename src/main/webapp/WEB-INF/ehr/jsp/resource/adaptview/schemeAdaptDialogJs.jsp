@@ -178,7 +178,7 @@
                 function save(parms) {
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var dataModel = $.DataModel.init();
-                    dataModel.createRemote("${contextRoot}/schemeAdapt/update", {
+                    dataModel.createRemote("${contextRoot}/schemeAdapt/save", {
                         data: {"dataJson":parms},
                         success: function (data) {
                             waittingDialog.close();
