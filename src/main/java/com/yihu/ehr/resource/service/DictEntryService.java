@@ -14,13 +14,13 @@ public class DictEntryService extends ExtendService<RsDictionaryEntryModel> {
 
     public DictEntryService() {
         init(
-                "/resources/dictentries",        //searchUrl
-                "/resources/dictentries/{id}",   //modelUrl
-                "/resources/dictentries",        //addUrl
-                "/resources/dictentries",   //modifyUrl
+                "/resources/dict_entries",        //searchUrl
+                "/resources/dict_entries/{id}",   //modelUrl
+                "/resources/dict_entries",        //addUrl
+                "/resources/dict_entries",   //modifyUrl
                 "",                            //deleteUrl
-                "/resources/dictentries/{id}"       //deleteUniqUrl
+                "/resources/dict_entries/{id}"       //deleteUniqUrl
         );
-        existenceUrl = "/resources/dictentries/existence"; //存在
+        existenceUrl = "/resources/dict_entries/existence"; //存在
     }
 }

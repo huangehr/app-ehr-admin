@@ -87,6 +87,21 @@ function initFormFields(vo, area){
             else if(v.type == 'radio'){
                 $('input[name="'+ v.id +'"]').ligerRadio();
             }
+            else if(v.type == 'datetime'){
+                var opts = {
+                    format: 'yyyy-MM-dd hh:mm:ss',
+                    showTime: true
+                };
+                opts = $.extend({}, opts, v.opts);
+                initDateDom(ipt_el, v.width,opts);
+            }
+            else if(v.type == 'date'){
+                var opts = {
+                    format: 'yyyy-MM-dd'
+                };
+                opts = $.extend({}, opts, v.opts);
+                initDateDom(ipt_el, v.width, opts);
+            }
         })
     }
 }
@@ -127,6 +142,17 @@ function getSelectId(grid, code){
     return ids;
 }
 
+/**
+ *
+ * @param gtGrid 表格对象
+ * @param findFunc reload方法对象
+ * @param url 请求路径
+ * @param ids 预删除的编号集
+ * @param code 在表格里的字段名
+ * @param idField 网关请求参数名
+ * @param opration 操作名称 默认： 删除
+ * @param warnMsg  提示信息 默认： 确定删除该数据
+ */
 function uniqDel(gtGrid, findFunc, url, ids, code, idField, opration, warnMsg) {
     opration = opration || '删除';
     if(ids && !$.isArray(ids)){
@@ -144,6 +170,17 @@ function uniqDel(gtGrid, findFunc, url, ids, code, idField, opration, warnMsg) {
     }
 }
 
+/**
+ *
+ * @param gtGrid 表格对象
+ * @param findFunc reload方法对象
+ * @param url 请求路径
+ * @param ids 预删除的编号集
+ * @param code 在表格里的字段名
+ * @param idField 网关请求参数名
+ * @param opration 操作名称 默认： 删除
+ * @param warnMsg  提示信息 默认： 确定删除该数据
+ */
 function batchDel(gtGrid, findFunc, url, ids, code, idField, opration, warnMsg) {
     opration = opration || '删除';
     if(ids && !$.isArray(ids)){
@@ -204,4 +241,26 @@ function covertFilters(vo, $form){
             f += v.name + v.logic + val + ';';
     }
     return f;
+}
+
+function fetchData(url, sucFun){
+    var dataModel = $.DataModel.init();
+    dataModel.createRemote(url, {
+        success: sucFun
+    });
+}
+
+
+function initTree($el, opts){
+    var defaultOpts = {
+        idFieldName :'id',
+        textFieldName: 'name',
+        parentIDFieldName :'pid',
+        checkbox: false,
+        parentIcon: '',
+        childIcon: '',
+        slide: false
+    };
+    opts = $.extend({}, defaultOpts, opts);
+    return $el.ligerSearchTree(opts);
 }

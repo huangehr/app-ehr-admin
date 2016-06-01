@@ -13,14 +13,14 @@ import org.springframework.stereotype.Service;
 public class DictService extends ExtendService<RsDictionaryModel> {
     public DictService() {
         init(
-                "/resources/dicts",        //searchUrl
-                "/resources/dicts/{id}",   //modelUrl
-                "/resources/dicts",        //addUrl
-                "/resources/dicts/{id}",   //modifyUrl
+                "/resources/dict",        //searchUrl
+                "/resources/dict/{id}",   //modelUrl
+                "/resources/dict",        //addUrl
+                "/resources/dict/{id}",   //modifyUrl
                 "",                            //deleteUrl
-                "/resources/dicts/{id}"       //deleteUniqUrl
+                "/resources/dict/{id}"       //deleteUniqUrl
         );
-        existenceUrl = "/resources/dicts/existence"; //存在
+        existenceUrl = "/resources/dict/existence"; //存在
         this.idField = "code";
     }
 }

@@ -352,4 +352,13 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
             return null;
         }
     }
+
+    public EnvelopExt getEnvelopExt(String json, Class entity){
+        try {
+            return objectMapper.readValue(json, service.initExtTypeReference(entity));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
