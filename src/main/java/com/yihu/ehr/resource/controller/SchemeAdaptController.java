@@ -118,7 +118,7 @@ public class SchemeAdaptController extends BaseUIController {
      * @param dataJson
      * @return
      */
-    @RequestMapping("update")
+    @RequestMapping("save")
     @ResponseBody
     public Object updateSchemeAdpat(Model model,String dataJson) {
         Envelop result = new Envelop();
