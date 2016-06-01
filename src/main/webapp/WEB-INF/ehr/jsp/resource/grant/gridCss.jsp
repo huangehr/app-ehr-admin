@@ -27,7 +27,10 @@
         height: 22px;
         line-height: 22px;
     }
-
+    .l-tree span{
+        height: 22px;
+        line-height: 22px;
+    }
     .body-head input{
         border: 0;
         font-size: 12px;
