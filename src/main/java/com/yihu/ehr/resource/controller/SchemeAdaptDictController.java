@@ -40,7 +40,7 @@ public class SchemeAdaptDictController extends BaseUIController {
         Map<String, Object> params = new HashMap<String, Object>();
         StringBuffer stringBuffer = new StringBuffer();
         if(StringUtils.isNotBlank(adapterSchemeId)){
-            stringBuffer.append("schemaId=").append(adapterSchemeId).append(";");
+            stringBuffer.append("schemeId=").append(adapterSchemeId).append(";");
         }else{
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("请选择资源适配方案");
@@ -61,7 +61,7 @@ public class SchemeAdaptDictController extends BaseUIController {
         }
         try {
             String resultStr ="";
-            String url = ServiceApi.Adaptions.SchemaMetadata;
+            String url = ServiceApi.Adaptions.RsAdapterDictionaries;
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
@@ -84,8 +84,8 @@ public class SchemeAdaptDictController extends BaseUIController {
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         try{
-            params.put("",dataJson);
-            String url = "";
+            params.put("jsonData",dataJson);
+            String url = ServiceApi.Adaptions.RsAdapterDictionaries;
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return resultStr;
         }catch(Exception ex){
