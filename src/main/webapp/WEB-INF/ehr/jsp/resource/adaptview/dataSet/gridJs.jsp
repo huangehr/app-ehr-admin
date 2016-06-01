@@ -331,9 +331,9 @@
               { display: 'id', name: 'id', hide:true },
               { display: 'schemeId', name: 'schemeId', hide:true },
               { display: 'srcDictCode', name: 'srcDictCode', hide:true },
-              { display: '值域编码', name: 'srcDictEntryCode',width: '25%', isAllowHide: false ,align:'left' },
-              { display: '值域名称',name: 'srcDictEntryName', width: '25%',isAllowHide: false  ,align:'left'},
-              { display: '资源字典', name: 'dictName',width: '25%', isAllowHide: false ,align:'left',render: function (row) {
+              { display: '值域编码', name: 'srcDictEntryCode',width: '20%', isAllowHide: false ,align:'left' },
+              { display: '值域名称',name: 'srcDictEntryName', width: '20%',isAllowHide: false  ,align:'left'},
+              { display: '资源字典', name: 'dictName',width: '20%', isAllowHide: false ,align:'left',render: function (row) {
                 var html= "<input type=\"text\" id='dictName"+row.id+"' name=\"dictName\"  data-type=\"select\" class=\"useTitle\" >";
                 return html;
               }},
@@ -341,11 +341,11 @@
                 var html="<span id='dictCode"+row.id+"'>"+((row.dictCode==undefined)?"":row.dictCode)+"</span>"
                 return html;
               }},
-              { display: '资源字典项编码', name: 'dictEntryCode',width: '25%', isAllowHide: false ,align:'left',render: function (row) {
+              { display: '资源字典项编码', name: 'dictEntryCode',width: '20%', isAllowHide: false ,align:'left',render: function (row) {
                 var html= "<input type=\"text\" id='dictEntryCode"+row.id+"' name=\"dictEntryCode\"  data-type=\"select\" class=\"useTitle\" >";
                 return html;
                }},
-              { display: '资源字典项名称', name: 'dictEntryName',width: '25%', isAllowHide: false  ,align:'left',render: function (row) {
+              { display: '资源字典项名称', name: 'dictEntryName',width: '20%', isAllowHide: false  ,align:'left',render: function (row) {
                 var html="<span id='dictEntryName"+row.id+"'>"+((row.dictEntryName==undefined)?"":row.dictEntryName)+"</span>"
                 return html;
               }}
