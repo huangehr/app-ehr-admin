@@ -15,6 +15,7 @@
 		var jValidation = $.jValidation;
 		var mode = '${mode}';
 		var nameCopy = '';
+		var codeCopy = '';
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
 			dataInfo.init();
@@ -45,6 +46,7 @@
 				if(mode != 'new'){
 					var info = ${envelop}.obj;
 					nameCopy = info.name;
+					codeCopy = info.resourceInterface
 					this.$form.attrScan();
 					this.$form.Fields.fillValues({
 						id: info.id,
@@ -72,6 +74,12 @@
 								return checkUnique("${contextRoot}/resource/resourceInterface/isNameExist",name,"资源接口名称不能重复！");
 							}
 						}
+						if (Util.isStrEquals($(elm).attr("id"), 'inp_code')) {
+							var code = $("#inp_code").val();
+							if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){
+								return checkUnique("${contextRoot}/resource/resourceInterface/findByResourceInterface",code,"资源接口编码不能重复！");
+							}
+						}
 					}
 				});
 				//验证编码、名字不可重复
@@ -79,9 +87,10 @@
 					var result = new jValidation.ajax.Result();
 					var dataModel = $.DataModel.init();
 					dataModel.fetchRemote(url, {
-						data: {name:value},
+						data: {name:value,resourceInterface:value},
 						async: false,
 						success: function (data) {
+							debugger
 							if (data.successFlg) {
 								result.setResult(false);
 								result.setErrorMsg(errorMsg);

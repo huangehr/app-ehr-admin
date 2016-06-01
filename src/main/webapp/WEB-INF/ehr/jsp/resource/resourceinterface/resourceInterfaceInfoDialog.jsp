@@ -18,8 +18,8 @@
 	</div>
 	<div class="m-form-group">
 		<label >接口编码:</label>
-		<div class="m-form-control">
-			<textarea id="inp_code" class="f-w350  validate-special-char max-length-500" data-attr-scan="resourceInterface"></textarea>
+		<div class="m-form-control essential">
+			<textarea id="inp_code" class=" required useTitle ajax f-w350  validate-special-char max-length-500"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="resourceInterface"></textarea>
 		</div>
 	</div>
 	<div class="m-form-group">
