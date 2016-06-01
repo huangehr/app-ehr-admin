@@ -284,8 +284,13 @@ public class ExtendService<T> {
     }
 
     private ExtTypeReference initExtTypeReference(){
+
+        return initExtTypeReference(modelType);
+    }
+
+    public ExtTypeReference initExtTypeReference(Class clz){
         ExtTypeReference typeReference = new ExtTypeReference();
-        ParameterizedType p = TypeUtils.parameterize(EnvelopExt.class, modelType);
+        ParameterizedType p = TypeUtils.parameterize(EnvelopExt.class, clz);
         typeReference.setType(p);
         return typeReference;
     }
