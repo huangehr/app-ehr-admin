@@ -72,7 +72,7 @@ public class SchemeAdaptController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
-        String url = ServiceApi.Adaptions.Schemas;
+        String url = ServiceApi.Adaptions.Schemes;
         String result="";
         try{
             result = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -152,7 +152,7 @@ public class SchemeAdaptController extends BaseUIController {
             return result;
         }
         params.put("adapterSchema",toJson(mRsAdapterSchema));
-        String url = ServiceApi.Adaptions.Schemas;
+        String url = ServiceApi.Adaptions.Schemes;
         if(StringUtils.isNotBlank(mRsAdapterSchema.getId())){
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
         }else{
