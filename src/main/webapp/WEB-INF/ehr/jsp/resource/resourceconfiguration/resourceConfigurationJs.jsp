@@ -113,7 +113,6 @@
                                         data: {searchNm: "selAll",page:1,rows:15},
                                         async: false,
                                         success: function (data) {
-                                            debugger
                                             var resourceDatas = data.detailModelList;
                                             for (var i = 0;i<resourceDatas.length;i++){
                                                 if(Util.isStrEquals(resourceDatas[i].metadataId,row.id)){
@@ -167,13 +166,13 @@
                     }
 
                     function deleteRows(rowdata) {
-
-                        delRowDatas.push(rowdata.id);
+//                        delRowDatas.push(rowdata.id);
                         var rowParm = rowdata.stdCode;
                         var rows = elmParams[1].data.detailModelList;
                         for (var i =0;i<rows.length;i++){
                             var rowData = rows[i].stdCode
                             if (Util.isStrEquals(rowData,rowParm)){
+                                delRowDatas.push(rows[i].id);
                                 elmParams[1].deleteRow(rows[i].__id);
                             }
                         }
@@ -187,11 +186,10 @@
                 bindEvents: function () {
 
                     retrieve.$saveBtn.click(function () {
-
+                        debugger
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
                             return;
                         }
-debugger
                         dataModel.updateRemote(comUrl + "/saveResourceconfiguration", {
                             data: {addRowDatas: JSON.stringify(addRowDatas), delRowDatas: delRowDatas.toString()},
                             async: true,

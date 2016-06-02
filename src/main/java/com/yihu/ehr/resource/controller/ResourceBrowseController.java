@@ -96,6 +96,70 @@ public class ResourceBrowseController extends BaseUIController {
         return resultStr;
     }
 
+    @RequestMapping("/getRsDictEntryList")
+    @ResponseBody
+    public Object getRsDictEntryList(String dictId) {
+
+        Envelop envelop = new Envelop();
+
+        Map<String, Object> params = new HashMap<>();
+        String resultStr = "";
+        String dictEntryUrl = ServiceApi.Resources.DictEntries;
+
+        params.put("filters", "dictCode="+dictId);
+        params.put("page", 1);
+        params.put("size", 500);// TODO: 2016/6/1   字典项没有不分页的接口
+        params.put("fields", "");
+        params.put("sorts", "");
+
+        try {
+            if (!StringUtils.isEmpty(dictId)) {
+
+                resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
+                envelop = toModel(resultStr,Envelop.class);
+
+            }
+        } catch (Exception e) {
+
+        }
+
+        return envelop.getDetailModelList();
+    }
+
+    @RequestMapping("/searchDictEntryList")
+    @ResponseBody
+    public Object getDictEntryList(String dictId) {
+
+        Envelop envelop = new Envelop();
+
+        Map<String, Object> params = new HashMap<>();
+        String resultStr = "";
+
+        params.put("filters", "dictId=" + dictId);
+        params.put("page", 1);
+        params.put("size", 500);
+        params.put("fields", "");
+        params.put("sorts", "");
+
+            String url ="/dictionaries/entries";
+
+        try {
+            if (!StringUtils.isEmpty(dictId)) {
+
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                envelop = toModel(resultStr,Envelop.class);
+
+            }
+        } catch (Exception e) {
+
+        }
+
+        return envelop.getDetailModelList();
+    }
+
+
+
+
 
     //数据导出方法  test
     @RequestMapping("testexcel")
