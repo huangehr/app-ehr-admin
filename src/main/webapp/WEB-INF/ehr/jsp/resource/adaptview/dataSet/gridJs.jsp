@@ -342,7 +342,7 @@
                 return html;
               }},
               { display: '资源字典项编码', name: 'dictEntryCode',width: '20%', isAllowHide: false ,align:'left',render: function (row) {
-                var html= "<input type=\"text\" id='dictEntryCode"+row.id+"' name=\"dictEntryCode\"  data-type=\"select\" class=\"useTitle\" >";
+                var html= "<input type=\"text\" disabled=\"disabled\"  id='dictEntryCode"+row.id+"' name=\"dictEntryCode\"  data-type=\"select\" class=\"useTitle\" >";
                 return html;
                }},
               { display: '资源字典项名称', name: 'dictEntryName',width: '20%', isAllowHide: false  ,align:'left',render: function (row) {
@@ -380,9 +380,10 @@
         initMetadataId:function(){
           if(cfgModel==0){
             var url = "${contextRoot}/resource/meta/combo";
+            var parms={};
             $("input[name=metadataId]").ligerComboBox({
             condition: { inputWidth: 240 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "value", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-            grid: getGridOptions(false,755,url),
+            grid: getGridOptions(false,755,url,parms),
             valueField: "code",
             textField: "code",
             width : 240,
@@ -429,9 +430,10 @@
         else{
             //初始化字典下拉框
             var url = "${contextRoot}/resource/dict/list";
+            var parms={};
             $("input[name=dictName]").ligerComboBox({
               condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-              grid: getGridOptions(true,240,url),
+              grid: getGridOptions(true,240,url,parms),
               valueField: "name",
               textField: "name",
               width : 240,
@@ -442,6 +444,7 @@
                 var rowData  = this.grid.getSelected();
                 var selected = entryMater.grid.getSelected();
                 $("#dictCode"+selected.id).html(rowData.code);
+                $("#dictEntryCode"+selected.id).removeAttr("disabled");
               },conditionSearchClick: function (g) {
                 var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
                 param = {"filters":param}
@@ -457,10 +460,11 @@
               var dictName = entryDataList[j].dictName;
               if(dictName!=""&&dictName!=null){
                 $("#dictName"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictName);
+                $("#dictEntryCode"+entryDataList[j].id).removeAttr("disabled");
               }
             }
             //初始化字典项下拉框
-             url = "${contextRoot}/resource/dict/entry/list";
+            url = "${contextRoot}/resource/dict/entry/list";
             $("input[name=dictEntryCode]").ligerComboBox({
               condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
               grid: getGridOptions(true,240,url),
@@ -480,9 +484,8 @@
                 saveData.dictEntryCode=id;
                 saveData.dictCode = $("#dictCode"+selected.id).html();
                 saveData.srcDictCode = selected.srcDictCode;
-                saveData.srcEntryDictName = selected.srcEntryDictName;
-                saveData.srcEntryDictCode = selected.srcEntryDictCode;
-                debugger;
+                saveData.srcDictEntryName = selected.srcDictEntryName;
+                saveData.srcDictEntryCode = selected.srcDictEntryCode;
                 entryMater.save(saveData);
               },
               conditionSearchClick: function (g) {
@@ -495,29 +498,31 @@
                   newPage: 1
                 });
                 g.grid.reload();
-              },onButtonClick:function(){
-                var selected = entryMater.grid.getSelected();
-                var dictCode = $("#dictCode"+selected.id).html();
-                if(dictCode==null||dictCode==""){
-                  $.Notice.error('请先选择资源字典！');
-                  return false;
-                }else{
-                  return true;
-                }
+              },onButtonClick:function() {
+                  var selected = entryMater.grid.getSelected();
+                  var dictCode = $("#dictCode" + selected.id).html();
+                  if (dictCode == null || dictCode == "") {
+                    $.Notice.error('请先选择资源字典！');
+                    return false;
+                  } else {
+                    this.setParm("filters", "dictCode=" + dictCode);
+                    this.getGrid().reload();
+                    return true;
+                  }
               }
             });
             $("#div_relation_grid .l-trigger-cancel").remove();
             for(var j in entryDataList){
               var dictEntryCode = entryDataList[j].dictEntryCode;
               if(dictEntryCode!=""&&dictEntryCode!=null){
-                $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictEntryCode);
                 $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setValue(dictEntryCode);
+                $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictEntryCode);
               }
             }
           }
       }};
       /* *************************** 页面功能 **************************** */
-      function getGridOptions(isDict,width,url) {
+      function getGridOptions(isDict,width,url,parms) {
         var options = {
           columns:getComboxGrid(isDict),
           allowAdjustColWidth : true,
@@ -548,8 +553,8 @@
           ]
         }else if(isDict){
           columnCfg=[
-            {display : '资源字典编码', name :'code',width :243},
-            {display : '资源字典名称', name :'name',width : 243}
+            {display : '资源字典编码', name :'code',width :100},
+            {display : '资源字典名称', name :'name',width : 100}
           ]
         }
         return columnCfg;
