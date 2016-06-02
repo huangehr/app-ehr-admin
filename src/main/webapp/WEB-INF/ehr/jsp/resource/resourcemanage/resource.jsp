@@ -8,19 +8,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <div class="f-dn" data-head-title="true">资源注册</div>
-<div id="div_wrapper" class="f-ww" style="height: 100%;">
+<div id="div_wrapper">
 	<!-- ####### 查询条件部分 ####### -->
-	<div class="f-ww" >
-		<div class="f-w240 f-bd f-of-hd" style="float: left;height: 440px">
+	<div id="div_content" class="f-ww" >
+		<div id="div_left" class="f-w240 f-bd f-of-hd" style=" width:240px;float: left;height: 780px">
 			<div class="f-mt10 f-mb10 f-ml10 f-w240">
 				<input type="text" id="inp_search" class="f-ml10 f-h28"/>
 			</div>
 			<!--资源浏览树-->
-			<div id="div_resource_browse_tree"></div>
+			<div id="div_resource_browse_tree" style=""></div>
 		</div>
 		<!--资源浏览详情-->
-		<div id="div_resource_browse_msg" class="div-resource-browse" style="height: 440px;">
-			<div class="">
+		<div id="div_right" class="div-resource-browse" style="float: left;width: 700px;margin-left: 10px">
+			<div class="right-retrieve">
 				<div class="f-db f-pt10 f-pb10">
 					<!--输入框-->
 					<input type="text" id="inp_searchNm" placeholder="请输入资源代码或名称" class="f-ml10 f-h28 f-w240" data-attr-scan="searchNm"/>

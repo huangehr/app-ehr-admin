@@ -177,6 +177,28 @@
                 return condition;
             }
         },
+        isDateTime : function(v, dateFormat, elm) {
+            var MONTH = "MM", DAY = "dd", YEAR = "yyyy", HOURS= "hh", MINU= "mm", SECONDS= "ss";
+            var regex = '^'+dateFormat.replace(YEAR,'\\d{4}').replace(MONTH,'\\d{2}').replace(DAY,'\\d{2}').replace(HOURS,'\\d{2}').replace(MINU,'\\d{2}').replace(SECONDS,'\\d{2}')+'$';
+
+            if(!new RegExp(regex).test(v)) return false;
+
+            var year = v.substr(dateFormat.indexOf(YEAR),4);
+            var month = v.substr(dateFormat.indexOf(MONTH),2);
+            var day = v.substr(dateFormat.indexOf(DAY),2),
+                hours = v.substr(dateFormat.indexOf(HOURS),2),
+                minutes = v.substr(dateFormat.indexOf(MINU),2),
+                seconds = v.substr(dateFormat.indexOf(SECONDS),2);
+
+            var d = new Date(jValidation.util.format('%s/%s/%s %s:%s:%s',[year,month,day,hours, minutes, seconds]));
+
+            return ( parseInt(month, 10) == (1+d.getMonth()) ) &&
+                (parseInt(day, 10) == d.getDate()) &&
+                (parseInt(year, 10) == d.getFullYear() ) &&
+                (parseInt(hours, 10) == d.getHours() ) &&
+                (parseInt(minutes, 10) == d.getMinutes() ) &&
+                (parseInt(seconds, 10) == d.getSeconds() );
+        },
 
         isDate : function(v,dateFormat,elm,isdateinput) {
             //TODO CYC 201604158 isdateinput是否日期控件验证
@@ -263,6 +285,7 @@
         ['validate-one-required' , '在前面选项至少选择一个.'],
         ['validate-integer' , '请输入正确的整数'],
         ['validate-pattern' , '输入的值不匹配'],
+        ['validate-only' , '只允许输入%s'],
         ['validate-ip','请输入正确的IP地址'],
         ['min-value' , '最小值为%s'],
         ['max-value' , '最大值为%s'],
@@ -276,7 +299,7 @@
         ['less-than-equal','请输入小于或等于前面的值'],
         ['great-than','请输入大于前面的值'],
         ['great-than-equal','请输入大于或等于前面的值'],
-        //['validate-date' , '请输入有效的日期,格式为 %s. 例如:%s.'],
+        ['validate-date-custom' , '请输入有效的日期,格式为 %s. 例如:%s.'],
         /*TODO 20160415 cyc 格式省略*/
         ['validate-date' , '请输入有效的日期,例如:2006-03-12'],
         ['validate-selection' , '请选择.'],
@@ -920,6 +943,10 @@
         ['validate-pattern',function(v,elm,args,metadata) {
             return eval('('+args.singleArgument+'.test(v))');
         }],
+        ['validate-only',function(v,elm,args,metadata) {
+            metadata._error = jValidation.util.format(jValidation.util.getI18nMsg(metadata.className),[args.join("或")]);
+            return eval('(/^['+args.singleArgument+']$/.test(v))');
+        }],
         /*
          * Usage: validate-ajax-$url
          * Example: <input id='email' class='validate-ajax-http://localhost:8080/validate-email.jsp'>
@@ -971,6 +998,17 @@
             var dateFormat = args.singleArgument || 'yyyy-MM-dd';
             metadata._error = jValidation.util.format(jValidation.util.getI18nMsg(metadata.className),[dateFormat,dateFormat.replace('yyyy','2006').replace('MM','03').replace('dd','12')]);
             return jValidation.util.isDate(v,dateFormat,elm,"1");
+        }],
+        /*
+         * Usage: validate-date-$dateFormat or validate-date($dateFormat default is yyyy-MM-dd)
+         * Example: validate-date-yyyy/MM/dd
+         */
+        ['validate-date-custom', function(v,elm,args,metadata) {
+            var dateFormat = args.singleArgument || 'yyyy-MM-dd hh:mm:ss';
+            dateFormat = dateFormat.replace("_", " ");
+
+            metadata._error = jValidation.util.format(jValidation.util.getI18nMsg(metadata.className),[dateFormat,dateFormat.replace('yyyy','2006').replace('MM','03').replace('dd','12').replace("hh", "12").replace("mm", "50").replace("ss", "11")]);
+            return jValidation.util.isDateTime(v,dateFormat,elm);
         }],
         ['validate-selection', function(v,elm,args,metadata) {
             return elm.options ? elm.selectedIndex > 0 : !((v == null) || (v.length == 0));

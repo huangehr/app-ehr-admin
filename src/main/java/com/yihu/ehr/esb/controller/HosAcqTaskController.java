@@ -110,16 +110,12 @@ public class HosAcqTaskController extends BaseUIController {
         StringBuffer buffer = new StringBuffer();
         if(StringUtils.isEmpty(timeLow)){
             Date dateUp = DateTimeUtils.simpleDateTimeParse(timeUp);
-            buffer.append(fieldName+">=");
-            buffer.append(DateTimeUtils.utcDateTimeFormat(new Date())+";");
             buffer.append(fieldName+"<=");
             buffer.append(DateTimeUtils.utcDateTimeFormat(dateUp)+";");
         }else if(StringUtils.isEmpty(timeUp)){
             Date dateLow = DateTimeUtils.simpleDateTimeParse(timeLow);
             buffer.append(fieldName+">=");
             buffer.append(DateTimeUtils.utcDateTimeFormat(dateLow)+";");
-            buffer.append(fieldName+"<=");
-            buffer.append(DateTimeUtils.utcDateTimeFormat(new Date())+";");
         }else {
             Date dateLow = DateTimeUtils.simpleDateTimeParse(timeLow);
             Date dateUp = DateTimeUtils.simpleDateTimeParse(timeUp);
@@ -227,7 +223,7 @@ public class HosAcqTaskController extends BaseUIController {
      */
     @RequestMapping("/orgCodes")
     @ResponseBody
-    public Object searchHosAcqTasks(String searchParm,int page,int rows){
+    public Object searchOrgCodes(String searchParm,int page,int rows){
         Envelop envelop = new Envelop();
         String filters = "";
         try{

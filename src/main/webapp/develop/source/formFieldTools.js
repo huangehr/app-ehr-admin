@@ -10,6 +10,17 @@ function initTextDom(el, width, opts){
 }
 
 /**
+ * 初始化日期框
+ * @param el dom节点
+ * @returns {ligerTextBox}
+ */
+function initDateDom(el, width, opts){
+    var defaultOpts = {width: width || 240};
+    opts = $.extend({}, defaultOpts, opts);
+    return $(el).ligerDateEditor(opts);
+}
+
+/**
  * 初始化搜索文本框
  * @param el dom节点
  * @param searchFun 搜索方法
@@ -83,7 +94,7 @@ function saveForm(opts){
     var validator = opts.validator;
 
     if(!validator){
-        validator = initDefaultValidate($form);
+        validator = initValidate($form);
     }
     if(!validator.validate())
         return;
@@ -108,7 +119,7 @@ function saveForm(opts){
         success: function (data) {
             waittingDialog.close();
             if (data.successFlg) {
-                parent.closeDialog("保存成功")
+                parent.closeDialog("保存成功!")
             } else {
                 if (data.errorMsg)
                     $.Notice.error(data.errorMsg);

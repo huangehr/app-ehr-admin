@@ -3,19 +3,27 @@
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script>
 
     (function ($, win) {
         $(function () {
-            var selectRowObj, isSaveSelectStatus = false;
 
+            var openedDialog, curOprator;
+            var dataModel = ${dataModel};
+            var resourceId = dataModel.resourceId;
+
+            var initSub = function (){
+                $('#resource_name').val(dataModel.resourceName);
+                $('#resource_sub').val(dataModel.resourceSub);
+                $('#resource_title').html(dataModel.resourceName + "_资源授权");
+            }();
             var master = {
                 tree: undefined,
+                dialog: undefined,
                 urls: {
-                    list: '${contextRoot}/resource/dict/list_test',
-                    del: '${contextRoot}/resource/dict/del_test',
-                    gotoModify: '${contextRoot}/resource/dict/gotoModify',
-                    gotoAppGrant: '${contextRoot}/resource/grant/gotoAppGrant'
+                    gotoAppGrant: '${contextRoot}/resource/grant/gotoAppGrant',
+                    tree: '${contextRoot}/resource/grant/tree'
                 },
                 //初始化
                 init: function(){
@@ -31,52 +39,49 @@
                     ];
                     initFormFields(vo, $('#retrieve_inner'));
                 },
+                searchFun: function(){
+                    var p = $('#ipt_search').val();
+                    master.tree.s_search(p);
+                },
                 //初始化表格
                 rendTree : function(){
+
                     var m = master;
-
-                    var data = [];
-
-                    data.push({ id: 1, pid: 0, text: '1' });
-                    data.push({ id: 2, pid: 1, text: '1.1' });
-                    data.push({ id: 4, pid: 2, text: '1.1.2' });
-                    data.push({ id: 5, pid: 2, text: '1.1.2' });
-
-                    data.push({ id: 10, pid: 8, text: 'wefwfwfe' });
-                    data.push({ id: 11, pid: 8, text: 'wgegwgwg' });
-                    data.push({ id: 12, pid: 8, text: 'gwegwg' });
-
-                    data.push({ id: 6, pid: 2, text: '1.1.3', ischecked: true });
-                    data.push({ id: 7, pid: 2, text: '1.1.4' });
-                    data.push({ id: 8, pid: 7, text: '1.1.5' });
-                    data.push({ id: 9, pid: 7, text: '1.1.6' });
-
-                    m.tree = $("#treeMenu").ligerTree({
-                            idFieldName :'id',
-                            parentIDFieldName :'pid',
-                            data: data,
-                            checkbox: false,
-                            parentIcon: '',
-                            childIcon: ''
-                    });
-                    $('#treeMenu').find('span').addClass('l-tree-text-height');
+                    m.tree = initTree($("#treeMenu"),
+                            {
+                                url:  m.urls.tree + "?resourceId="+resourceId,
+                                delay: true,
+                                needCancel: false,
+                                btnClickToToggleOnly: false,
+                                selectable: function (data) {
+                                    return this.isLeaf(data);
+                                },
+                                isLeaf : function(data) {
+                                    return !data.children || data.children.length==0;
+                                },
+                                onSelect: function (e) {
+                                    em.find(e.data.id, e.data.otherPro.appResourceId);
+                                }
+                            });
                     $("#treeMenuWrap").mCustomScrollbar({theme: "minimal-dark", axis: "yx"});
                 },
                 //查询列表方法
                 find : function () {
-
+                    var m = master;
+                    m.tree.reload();
                 },
                 gotoGrant: function () {
-                    openDialog(master.urls.gotoAppGrant, "应用授权", 500, 660, {}, {});
+                    curOprator = master;
+                    this.dialog = openedDialog = openDialog(master.urls.gotoAppGrant, "应用授权", 500, 660, {resourceId: resourceId}, {});
                 }
             }
 
             var em = {
-                grid: undefined,
+                grid: undefined, dialog: undefined, params: {},
                 urls: {
-                    list: '${contextRoot}/resource/dict/entry/list_test',
-                    del: '${contextRoot}/resource/dict/entry/del_test',
-                    gotoModify: '${contextRoot}/resource/dict/entry/gotoModify'
+                    list: '${contextRoot}/resource/grant/list',
+                    gotoModify: '${contextRoot}/resource/grant/gotoModify',
+                    lock: '${contextRoot}/resource/grant/lock'
                 },
                 //初始化
                 init: function(){
@@ -87,60 +92,111 @@
                 },
                 //初始化工具栏
                 rendBarTools : function(){
+                    function lock(type, isLock){
+                        var m = em, g = em.grid;
+                        var ids = [];
+                        if(type==1){
+                            var rows = g.getSelectedRows();
+                            if(rows.length==0){
+                                $.Notice.warn("请选择数据！");
+                                return;
+                            }
+                            $.each(rows, function (i, v) {
+                                ids.push(v.id);
+                            })
+                        }else{
+                            if(g.getData().length==0){
+                                $.Notice.warn("没有数据！");
+                                return;
+                            }
+                        }
+
+                        var dialog = $.ligerDialog.waitting('正在处理中,请稍候...');
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote(m.urls.lock, {
+                            data: {ids: ids.join(","), valid: isLock, type: type},
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    $.Notice.success('操作成功！');
+                                    m.find();
+                                } else {
+                                    $.Notice.error(data.errorMsg);
+                                }
+                            },
+                            complete: function () {
+                                dialog.close();
+                            },
+                            error: function(){
+                                $.Notice.error('请求错误！');
+                            }
+                        });
+                    }
                     var btn = [
-                        {type: '选中允许', id: 'allowChecked', clkFun: this.gotoModify},
-                        {type: '选中禁止', id: 'forbidChecked', clkFun: this.gotoModify},
-                        {type: '全部允许', id: 'allowAll', clkFun: this.gotoModify},
-                        {type: '全部禁止', id: 'forbidAll', clkFun: this.gotoModify}
+                        {type: '选中允许', id: 'allowChecked', clkFun: function(){
+                            lock(1, 1);
+                        }},
+                        {type: '选中禁止', id: 'forbidChecked', clkFun: function () {
+                            lock(1, 0);
+                        }},
+                        {type: '全部允许', id: 'allowAll', clkFun: function () {
+                            lock(2, 1);
+                        }},
+                        {type: '全部禁止', id: 'forbidAll', clkFun: function () {
+                            lock(2, 0);
+                        }}
                     ];
                     initBarBtn($('#entry_retrieve_inner'), btn)
                 },
                 //初始化表格
                 rendGrid : function(){
+                    function dimensionRender(row){
+                        try{
+                            var val = "";
+                            var dimensionValue = eval('('+ row.dimensionValue +')');
+                            if(dimensionValue.length>1)
+                                val = dimensionValue[0].conditionName || dimensionValue[1].conditionName;
+                            else
+                                val = dimensionValue[0].conditionName;
+                            return val;
+                        }catch(e){
+                            return "";
+                        }
+                    }
                     var m = em;
                     var columns = [
                         {display: 'ID', name: 'id', hide: true},
-                        {display: '序号', name: 'sort', width: '10%', align: 'left'},
-                        {display: '字段名称', name: 'name', width: '20%', align: 'left'},
-                        {display: '维度授权', name: 'name', width: '60%', align: 'left'},
+                        {display: '字段名称', name: 'resourceMetadataName', width: '30%', align: 'left'},
+                        {display: '维度授权', name: 'dimensionValue', width: '50%', align: 'left', render: dimensionRender},
+                        {display: '是否有效', name: 'valid', width: '10%', align: 'left', render: function (row) {
+                            return row.valid==1? '是': '否';
+                        }},
                         {display: '操作', name: 'operator', width: '10%', render: m.opratorRender}];
 
-                    m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true});
+                    m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, rownumbers: true, usePager: false, heightDiff: 20});
                 },
                 //操作栏渲染器
                 opratorRender: function (row){
                     var vo = [
-                        {type: 'edit', clkFun: "$.publish('dict:entry:modify',['"+ row['id'] +"', 'modify'])"},
-                        {type: 'del', clkFun: "$.publish('dict:entry:del',['"+ row['id'] +"'])"},
+                        {type: 'edit', clkFun: "$.publish('grant:meta:modify',['"+ row['id'] +"', 'modify'])"}
                     ];
                     return initGridOperator(vo);
                 },
-                //查询点击事件
-                searchFun : function () {
-                    em.find(1);
-                },
                 //修改、新增点击事件
                 gotoModify : function (event, id, mode) {
-                    mode = mode || 'new';
                     id = id || '';
-                    openDialog(em.urls.gotoModify, mode=='new'?'新增':'修改', 440, 400, {id: id, mode: mode});
-                },
-                //删除事件
-                del : function (event, id) {
-                    var m = em;
-                    batchDel(m.grid, m.find, m.urls.del, id);
-//                    batchDel.apply(m, id);
+                    curOprator = em;
+                    var params = {id: id, mode: mode};
+                    em.dialog = openedDialog = openDialog(em.urls.gotoModify, '维度授权', 500, 250, params);
                 },
                 //查询列表方法
-                find : function (curPage) {
-                    var params = {};
-                    reloadGrid(this.grid, curPage, params);
+                find : function (appId, appResourceId) {
+                    var params = !appId? em.params: (em.params = {filters: "appId="+ appId +";appResourceId="+ appResourceId, page:1, rows: 999});
+                    reloadGrid(this.grid, 1, params);
                 },
                 //公开方法
                 publishFunc : function (){
                     var m = em;
-                    $.subscribe('dict:entry:modify', m.gotoModify);
-                    $.subscribe('dict:entry:del', m.del);
+                    $.subscribe('grant:meta:modify', m.gotoModify);
                 }
             }
 
@@ -161,6 +217,28 @@
             em.init();
             master.init();
 
+            win.closeDialog = function (msg) {
+                openedDialog.close();
+                if(msg){
+                    $.Notice.success(msg);
+                    curOprator.find();
+                }
+            }
+
+            win.getTreeData = function () {
+
+                return cloneData(master.tree.getData()) || [];
+            }
+
+            function cloneData(data){
+                if(!data || data.length==0)
+                    return undefined;
+                var newData = [];
+                $.each(data, function (i, v) {
+                    newData.push({id: v.id, name: v.name, children: cloneData(v.children)})
+                })
+                return newData;
+            }
         });
     })(jQuery, window);
 

@@ -132,9 +132,6 @@ public class ResourceConfigurationController extends BaseUIController {
     }
 
 
-
-
-
 //    @RequestMapping("/getMetaDataByMetaDataId")
 //    @ResponseBody
 //    public String getMetaDataByMetaDataId(String MetaDataId) {

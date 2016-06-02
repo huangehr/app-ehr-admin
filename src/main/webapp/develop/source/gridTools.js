@@ -89,7 +89,7 @@ function initGrid(el, url, params, columns, opts){
         opts
     );
     var grid = $(el).ligerGrid($.LigerGridEx.config(opts));
-    //grid.adjustToWidth();
+    grid.adjustToWidth();
     return grid;
 }
 

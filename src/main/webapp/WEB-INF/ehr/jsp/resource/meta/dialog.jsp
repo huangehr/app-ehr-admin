@@ -42,8 +42,8 @@
 
   <div class="m-form-group">
     <label>关联字典代码<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_dict_code" class="required validate-code-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dictCode">
+    <div class="l-text-wrapper m-form-control">
+      <input type="text" id="ipt_dict_code" data-type="select" class="" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dictCode">
     </div>
   </div>
 

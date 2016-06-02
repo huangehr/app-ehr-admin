@@ -9,10 +9,10 @@
 			var master = null;
 			var dataModel = $.DataModel.init();
 			var isFirstPage = true;
+			var categoryId = '';
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
 				retrieve.init();
-				master.init();
 			}
 			function reloadGrid(params) {
 				if (isFirstPage){
@@ -33,38 +33,39 @@
 				init: function () {
 					var self = this;
 					this.$search.ligerTextBox({width:220,isSearch: true, search: function () {
-						var searchNm = $('#inp_searchNm').val();
-						var parms = {'searchNm':searchNm};
-						reloadGrid(parms);
+						self.getResourceBrowseTree();
 					}});
 					this.$searchNm.ligerTextBox({width:240,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
-						var parms = {'searchNm':searchNm};
+						var parms = {
+							'searchNm':searchNm,
+							'categoryId':categoryId
+						};
 						reloadGrid(parms);
 					}});
 					self.getResourceBrowseTree();
 				},
 				getResourceBrowseTree: function () {
 					var typeTree = this.$resourceBrowseTree.ligerTree({
-						nodeWidth: 260,
-						url: '${contextRoot}/cdatype/getCDATypeListByParentId?ids=',//参数ids值为测试值
+						nodeWidth: 240,
+						url: '${contextRoot}/resourceBrowse/searchResource?ids=',//参数ids值为测试值
 						isLeaf: function (data) {
-//                            debugger
-//                            if (!data) return false;
-//                            return data.type == "employee";
 						},
 						delay: function (e) {
 							var data = e.data;
-							return {url: '${contextRoot}/cdatype/getCDATypeListByParentId?ids=' + data.id}
+							return {url: '${contextRoot}/resourceBrowse/searchResource?ids=' + data.id}
 						},
 						checkbox: false,
 						idFieldName: 'id',
 						textFieldName: 'name',
 						isExpand: true,
-						onSelect: function (data) {
-							master.init();
+						onSelect: function (e) {
+							categoryId = e.data.id;
+							master.reloadGrid();
 						},
 						onSuccess: function (data) {
+							categoryId =  data[0].id;
+							master.init();
 							$("#div_resource_browse_tree li div span").css({
 								"line-height": "22px",
 								"height": "22px"
@@ -80,6 +81,7 @@
 						url: '${contextRoot}/resource/resourceManage/resources',
 						parms: {
 							searchNm: '',
+							categoryId: categoryId
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
@@ -87,13 +89,14 @@
 							{display: '资源编码', name: 'code', width: '15%', align: 'left'},
 							{display: '资源接口', name: 'rsInterfaceName', width: '15%', align: 'left'},
 							{display: '资源分类', name: 'categoryName', width: '10%', align: 'left'},
+							{display: '资源分类Id', name: 'categoryId',hide:true},
 							{display: '资源说明', name: 'description', width: '23%', align: 'left'},
 							{display: '操作', name: 'operator', width: '22%', render: function (row) {
 								var html = '';
 								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'config') + '">配置</a>';
 								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'grant') + '">授权</a>';
 								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'browse') + '">浏览</a>';
-								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:info:open", row.id, 'modify') + '"></a>';
+								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a>';
 								html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a>';
 								return html;
 							}}
@@ -111,14 +114,14 @@
 				},
 				reloadGrid: function () {
 					var searchNm = $('#inp_searchNm').val();
-					reloadGrid.call(this,{'searchNm':searchNm});
+					reloadGrid.call(this,{'searchNm':searchNm,'categoryId': categoryId});
 				},
 				bindEvents: function () {
 					//新增修改
 					$('#btn_add').click(function(){
-						$.publish("rs:info:open",['','new']);
+						$.publish("rs:info:open",['','new',categoryId]);
 					});
-					$.subscribe("rs:info:open",function(event,resourceId,mode){
+					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
 						var title = "";
 						if(mode == "modify"){title = "修改资源";}
 						if(mode == "view"){title = "查看资源";}
@@ -130,7 +133,8 @@
 							url:'${contextRoot}/resource/resourceManage/infoInitial',
 							urlParms:{
 								id:resourceId,
-								mode:mode
+								mode:mode,
+								categoryId:categoryId
 							},
 							load:true
 						});
@@ -162,6 +166,7 @@
 						$("#contentPage").empty();
 						$("#contentPage").load(url);
 					});
+
 
 
 					//---------------------------------------------------------
@@ -201,6 +206,14 @@
 			};
 			/* ************************* 模块初始化结束 ************************** */
 			/* ************************* dialog回调函数 ************************** */
+			var resizeContent = function(){
+				var contentW = $('#div_content').width();
+				var leftW = $('#div_left').width();
+				$('#div_right').width(contentW-leftW-20);
+			}();
+			$(window).bind('resize', function() {
+				resizeContent();
+			});
 			win.reloadMasterUpdateGrid = function () {
 				master.reloadGrid();
 			};

@@ -42,6 +42,10 @@
 					$("#btn_cancel").hide();
 				}
 				this.$form.attrScan();
+				if(mode == 'new'){
+					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
+					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
+				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
 					this.$form.Fields.fillValues({
@@ -53,23 +57,13 @@
 						grantType:info.grantType,
 						description:info.description
 					});
+					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
+					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
 				}
 				this.$form.show();
 			},
 			initDDL: function () {
-				this.$catalog.ligerComboBox({
-					url:"${contextRoot}/resource/resourceInterface/searchRsInterfaces",
-					dataParmName: 'detailModelList',
-					urlParms: {
-						searchNm: '',
-						page:1,
-						rows:15
-					},
-					valueField: 'resourceInterface',
-					textField: 'name',
-					width:240
-				});
-
+				this.$catalog.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
 					dataParmName: 'detailModelList',
@@ -83,16 +77,6 @@
 					width:240
 				});
 			},
-
-			<%--initDDL: function (dictId, target) {--%>
-				<%--target.ligerComboBox({--%>
-					<%--url: "${contextRoot}/dict/searchDictEntryList",--%>
-					<%--dataParmName: 'detailModelList',--%>
-					<%--urlParms: {dictId: dictId},--%>
-					<%--valueField: 'code',--%>
-					<%--textField: 'value'--%>
-				<%--});--%>
-			<%--},--%>
 
 			bindEvents: function () {
 				var self = this;
@@ -120,7 +104,6 @@
 						});
 					}
 				});
-
 				this.$btnCancel.click(function () {
 					win.closeRsInfoDialog();
 				});
