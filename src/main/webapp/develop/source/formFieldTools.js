@@ -94,7 +94,7 @@ function saveForm(opts){
     var validator = opts.validator;
 
     if(!validator){
-        validator = initDefaultValidate($form);
+        validator = initValidate($form);
     }
     if(!validator.validate())
         return;
@@ -119,7 +119,7 @@ function saveForm(opts){
         success: function (data) {
             waittingDialog.close();
             if (data.successFlg) {
-                parent.closeDialog("保存成功")
+                parent.closeDialog("保存成功!")
             } else {
                 if (data.errorMsg)
                     $.Notice.error(data.errorMsg);

@@ -12,10 +12,10 @@
 
         <div id="conditionArea" class="f-mb10 f-mr10" align="right">
             <div class="body-head f-h30" align="left">
-                <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/adapter/initial');"  class="f-fwb">返回上一层 </a>
+                <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/resource/resourceManage/initial');"  class="f-fwb">返回上一层 </a>
                 <input id="adapter_plan_id" value='${adapterPlanId}' hidden="none" />
-                <span class="f-ml20">资源名称：</span><input class="f-fwb f-mt10" readonly id="adapter_plan_name"/>
-                <span class="f-ml20">资源主题：</span><input class="f-mt10" readonly id="adapter_plan_type"/>
+                <span class="f-ml20">资源名称：</span><input class="f-fwb f-mt10" readonly id="resource_name"/>
+                <span class="f-ml20">资源主题：</span><input class="f-mt10" readonly id="resource_sub"/>
             </div>
         </div>
 
@@ -45,7 +45,7 @@
             <div id="div_right" style="float: left;width: 700px;margin-left: 10px">
 
                 <div id="entryRetrieve" class="m-retrieve-area f-pr m-form-inline condition retrieve-border" data-role-form>
-                    <div style="font-size: 20px; height: 40px; text-align: center; padding-top: 14px; font-weight: bold">患者就诊用药信息_资源授权</div>
+                    <div id="resource_title" style="font-size: 20px; height: 40px; text-align: center; padding-top: 14px; font-weight: bold"></div>
                     <div id="entry_retrieve_inner" class="m-retrieve-inner m-form-group f-mt10">
 
 

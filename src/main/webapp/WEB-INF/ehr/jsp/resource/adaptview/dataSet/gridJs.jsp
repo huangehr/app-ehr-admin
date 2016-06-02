@@ -263,6 +263,7 @@
             onAfterShowData: function (currentData) {
               entryDataList = currentData.detailModelList;
               entryMater.initMetadataId();
+              this.select(0);
             },
             reloadGrid:function(){
               entryMater.reloadGrid();
@@ -342,7 +343,7 @@
                 return html;
               }},
               { display: '资源字典项编码', name: 'dictEntryCode',width: '20%', isAllowHide: false ,align:'left',render: function (row) {
-                var html= "<input type=\"text\" id='dictEntryCode"+row.id+"' name=\"dictEntryCode\"  data-type=\"select\" class=\"useTitle\" >";
+                var html= "<div  id='dictEntryCodeDiv"+row.id+"'><input type=\"text\"  id='dictEntryCode"+row.id+"' name=\"dictEntryCode\"  data-type=\"select\" class=\"useTitle\" ></div>";
                 return html;
                }},
               { display: '资源字典项名称', name: 'dictEntryName',width: '20%', isAllowHide: false  ,align:'left',render: function (row) {
@@ -380,9 +381,10 @@
         initMetadataId:function(){
           if(cfgModel==0){
             var url = "${contextRoot}/resource/meta/combo";
+            var parms={};
             $("input[name=metadataId]").ligerComboBox({
             condition: { inputWidth: 240 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "value", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-            grid: getGridOptions(false,755,url),
+            grid: getGridOptions(false,755,url,parms),
             valueField: "code",
             textField: "code",
             width : 240,
@@ -407,7 +409,7 @@
               entryMater.save(saveData);
             },
             conditionSearchClick: function (g) {
-              var param = g.rules.length>0? "id="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
+              var param = g.rules.length>0? "id?"+g.rules[0].value +" g1;name?"+g.rules[0].value+" g1": '';
               param = {"filters":param}
               g.grid.set({
                 parms: param,
@@ -429,9 +431,10 @@
         else{
             //初始化字典下拉框
             var url = "${contextRoot}/resource/dict/list";
+            var parms={};
             $("input[name=dictName]").ligerComboBox({
               condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-              grid: getGridOptions(true,240,url),
+              grid: getGridOptions(true,240,url,parms),
               valueField: "name",
               textField: "name",
               width : 240,
@@ -442,8 +445,13 @@
                 var rowData  = this.grid.getSelected();
                 var selected = entryMater.grid.getSelected();
                 $("#dictCode"+selected.id).html(rowData.code);
+                $("#dictEntryCodeDiv"+selected.id).css("display","block");
+                var dictEntryManager =  $("#dictEntryCode"+selected.id).ligerGetComboBoxManager();
+                dictEntryManager.setValue("");
+                dictEntryManager.setText("");
+                $("#dictEntryName"+selected.id).html("");
               },conditionSearchClick: function (g) {
-                var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
+                var param = g.rules.length>0? "code?"+g.rules[0].value +" g1;name?"+g.rules[0].value+" g1": '';
                 param = {"filters":param}
                 g.grid.set({
                   parms: param,
@@ -460,17 +468,17 @@
               }
             }
             //初始化字典项下拉框
-             url = "${contextRoot}/resource/dict/entry/list";
+            url = "${contextRoot}/resource/dict/entry/list";
             $("input[name=dictEntryCode]").ligerComboBox({
               condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-              grid: getGridOptions(true,240,url),
+              grid: getGridOptionsByDictEntry(true,240,url),
               valueField: "code",
               textField: "code",
               width : 240,
               selectBoxHeight : 260,
               selectBoxWidth:240,
               onSelected: function(id,name){//name为选择的值
-                if(this.grid==undefined) return;
+                if(this.grid==undefined||name=="") return;
                 var rowData  = this.grid.getSelected();
                 var selected = entryMater.grid.getSelected();
                 $("#dictEntryName"+selected.id).html(rowData.name);
@@ -480,44 +488,42 @@
                 saveData.dictEntryCode=id;
                 saveData.dictCode = $("#dictCode"+selected.id).html();
                 saveData.srcDictCode = selected.srcDictCode;
-                saveData.srcEntryDictName = selected.srcEntryDictName;
-                saveData.srcEntryDictCode = selected.srcEntryDictCode;
-                debugger;
+                saveData.srcDictEntryName = selected.srcDictEntryName;
+                saveData.srcDictEntryCode = selected.srcDictEntryCode;
                 entryMater.save(saveData);
               },
               conditionSearchClick: function (g) {
                 var selected = entryMater.grid.getSelected();
                 var dictCode = $("#dictCode"+selected.id).html();
-                var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1;dictCode="+dictCode: '';
+                var param = g.rules.length>0? ("code?"+g.rules[0].value +" g1;name?"+g.rules[0].value+" g1;dictCode="+dictCode):"dictCode="+dictCode;
                 param = {"filters":param}
                 g.grid.set({
                   parms: param,
                   newPage: 1
                 });
                 g.grid.reload();
-              },onButtonClick:function(){
-                var selected = entryMater.grid.getSelected();
-                var dictCode = $("#dictCode"+selected.id).html();
-                if(dictCode==null||dictCode==""){
-                  $.Notice.error('请先选择资源字典！');
-                  return false;
-                }else{
-                  return true;
-                }
+              },onBeforeOpen:function(){
+                var dictEntryCodeId = this.id;
+                var dictCode = $("#dictCode" + dictEntryCodeId.replace("dictEntryCode","")).html();
+                var dictEntryManager =  $("#"+dictEntryCodeId).ligerGetComboBoxManager();
+                dictEntryManager.setParm("filters","dictCode=" + dictCode);
+                dictEntryManager.reload();
               }
             });
             $("#div_relation_grid .l-trigger-cancel").remove();
             for(var j in entryDataList){
               var dictEntryCode = entryDataList[j].dictEntryCode;
               if(dictEntryCode!=""&&dictEntryCode!=null){
-                $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictEntryCode);
                 $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setValue(dictEntryCode);
+                $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictEntryCode);
+              }else{
+                $("#dictEntryCodeDiv"+entryDataList[j].id).css("display","none");
               }
             }
           }
       }};
       /* *************************** 页面功能 **************************** */
-      function getGridOptions(isDict,width,url) {
+      function getGridOptionsByDictEntry(isDict,width,url,parms) {
         var options = {
           columns:getComboxGrid(isDict),
           allowAdjustColWidth : true,
@@ -538,6 +544,29 @@
         };
         return options;
       }
+
+      function getGridOptions(isDict,width,url,parms) {
+        var options = {
+          columns:getComboxGrid(isDict),
+          allowAdjustColWidth : true,
+          allowUnSelectRow:false,
+          editorTopDiff : 41,
+          headerRowHeight : 30,
+          height : '100%',
+          heightDiff : 0,
+          pageSize: 15,
+          pagesizeParmName : 'rows',
+          record : "totalCount",
+          root : "detailModelList",
+          rowHeight : 28,
+          rownumbers :false,
+          switchPageSizeApplyComboBox: false,
+          width :width,
+          url : url
+        };
+        return options;
+      }
+
       function getComboxGrid(isDict){
         var columnCfg =[];
         if(!isDict){
@@ -548,8 +577,8 @@
           ]
         }else if(isDict){
           columnCfg=[
-            {display : '资源字典编码', name :'code',width :243},
-            {display : '资源字典名称', name :'name',width : 243}
+            {display : '编码', name :'code',width :100},
+            {display : '名称', name :'name',width : 100}
           ]
         }
         return columnCfg;

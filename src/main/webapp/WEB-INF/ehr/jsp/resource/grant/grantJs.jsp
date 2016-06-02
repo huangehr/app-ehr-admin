@@ -103,19 +103,16 @@
                             v.children = [];
                             v.id = v.code;
                             v.name = v.value;
+                            v.level = 1;
                         });
                         orgTree = initTree(orgTreeDom,
                                 {
                                     btnClickToToggleOnly: false,
                                     needCancel: false,
                                     data: data,
-                                    delay: function (e) {return {url: '${contextRoot}/resource/grant/getOrgList?orgType=' + e.data.code};},
-                                    onSelect: function (e) {
-                                        if($(e.target).attr('outlinelevel') == 2){
-                                            selectedOrg = e.data;
-                                            initAppTree(e.data.id.substring(4));
-                                        }
-                                    }
+                                    selectable: function (e) { return e.level != 1;},
+                                    delay: function (e) { return {url: '${contextRoot}/resource/grant/getOrgList?orgType=' + e.data.code};},
+                                    onSelect: function (e) { selectedOrg = e.data; initAppTree(e.data.id.substring(4));}
                                 });
                         $("#org_tree_wrap").mCustomScrollbar({theme: "minimal-dark", axis: "yx"});
             });
@@ -138,12 +135,21 @@
                         return false;
                     });
                     if(model != 'cancelSelect'){
-                        cancelSelete(selectedOrg, 2);
+                        if($(appTreeDom).find('.l-box.l-checkbox:hidden').length==0)
+                            cancelSelete(selectedOrg, 2);
+                        else{
+                            var doms = $(appTreeDom).find('li:visible');
+                            var treedata = appTree.getData();
+                            $.each(doms, function (i, v) {
+                                cancelSelete(appTree._getDataNodeByTreeDataIndex(treedata, $(v).attr('treedataindex')), 3);
+                            })
+                        }
                     }
                 }else{
                     $(this).removeClass('l-checkbox-incomplete l-checkbox-unchecked').addClass('l-checkbox-checked');
                     appTree.selectNode(function (e) {
-                        return true;
+                        var node = $(appTree.getNodeDom (e));
+                        return !node.is(':hidden');
                     })
                     refreshCheckedTree(true, appTree.getCheckedData(), 3, true);
                 }
@@ -160,6 +166,16 @@
             }
             else{
                 appTree = initTree(appTreeDom, {checkbox: true, url: url,
+                    selectable: function () {return false;},
+                    onUnSelect: function (e) {
+                        var checkbox;
+                        if((checkbox=$(e.dom).prev()).hasClass('l-checkbox')){
+                            checkbox.trigger("click");
+                        }
+                    },
+                    onAfterSSearch: function (e) {
+                        refreshAllCheckedDomStatus(true);
+                    },
                     onSuccess: function (data) {
                         var data = data.detailModelList;
                         var chkLen = 0;
@@ -187,12 +203,9 @@
             checkedTree =initTree(checkedTreeDom, {
                 data: treeData,
                 checkbox: true,
-                selectable: function (e) {
-//                    debugger
-                    return false;
-                },
+                btnClickToToggleOnly: false,
+                selectable: function (e) {return false;},
                 onCheck: function (res, checked) {
-                    debugger
                     if(!checked){
                         var dom = $(res.target);
                         var outlinelevel = dom.attr('outlinelevel');
@@ -247,12 +260,12 @@
                     else
                         newData = copyData([selectedOrg, newData]) ;
                 }
-                else
-                    newData = copyData([newData]);
-
-                if(allChecked)
-                    checkedTree.clear(tmp[0]);
-
+                else{
+                    function isCopy(id){
+                        return !checkedTree.isExist(tmp[0], id, 3);
+                    }
+                    newData = copyData([newData], isCopy);
+                }
                 checkedTree.append(tmp[0], newData);
             }
             else if(!checked) {
@@ -278,7 +291,7 @@
         }
 
 
-        function copyData(data){
+        function copyData(data, isCopy){
             var newData, tmp =[];
             for(var i=data.length-1; i>=0; i--){
                 if($.isArray((tmp = data[i]))){
@@ -286,7 +299,9 @@
                         throw new error("param error！");
                     newData = [];
                     $.each(tmp, function (i, v) {
-                        newData.push({id: v.id, name: v.name, ischecked: true});
+                        if(!isCopy || isCopy(v.id)) {
+                            newData.push({id: v.id, name: v.name, ischecked: true});
+                        }
                     })
                 } else {
                     if(newData)

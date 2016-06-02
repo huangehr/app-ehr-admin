@@ -61,7 +61,7 @@ public class SchemeAdaptDictController extends BaseUIController {
         }
         try {
             String resultStr ="";
-            String url = ServiceApi.Adaptions.RsAdapterDictionaries;
+            String url = "/adaptions/adapter/dictionaries";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class SchemeAdaptDictController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         try{
             params.put("jsonData",dataJson);
-            String url = ServiceApi.Adaptions.RsAdapterDictionaries;
+            String url = "/adaptions/adapter/dictionaries";
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return resultStr;
         }catch(Exception ex){

@@ -10,9 +10,14 @@
         $(function () {
 
             var openedDialog, curOprator;
-            var selectRowObj, isSaveSelectStatus = false;
-            var resourceId = '${dataModel}';
-            
+            var dataModel = ${dataModel};
+            var resourceId = dataModel.resourceId;
+
+            var initSub = function (){
+                $('#resource_name').val(dataModel.resourceName);
+                $('#resource_sub').val(dataModel.resourceSub);
+                $('#resource_title').html(dataModel.resourceName + "_资源授权");
+            }();
             var master = {
                 tree: undefined,
                 dialog: undefined,
@@ -72,9 +77,7 @@
             }
 
             var em = {
-                grid: undefined,
-                dialog: undefined,
-                params: {},
+                grid: undefined, dialog: undefined, params: {},
                 urls: {
                     list: '${contextRoot}/resource/grant/list',
                     gotoModify: '${contextRoot}/resource/grant/gotoModify',
@@ -146,18 +149,30 @@
                 },
                 //初始化表格
                 rendGrid : function(){
+                    function dimensionRender(row){
+                        try{
+                            var val = "";
+                            var dimensionValue = eval('('+ row.dimensionValue +')');
+                            if(dimensionValue.length>1)
+                                val = dimensionValue[0].conditionName || dimensionValue[1].conditionName;
+                            else
+                                val = dimensionValue[0].conditionName;
+                            return val;
+                        }catch(e){
+                            return "";
+                        }
+                    }
                     var m = em;
                     var columns = [
                         {display: 'ID', name: 'id', hide: true},
-//                        {display: '序号', name: 'sort', width: '10%', align: 'left'},
                         {display: '字段名称', name: 'resourceMetadataName', width: '30%', align: 'left'},
-                        {display: '维度授权', name: 'dimensionValue', width: '50%', align: 'left'},
+                        {display: '维度授权', name: 'dimensionValue', width: '50%', align: 'left', render: dimensionRender},
                         {display: '是否有效', name: 'valid', width: '10%', align: 'left', render: function (row) {
                             return row.valid==1? '是': '否';
                         }},
                         {display: '操作', name: 'operator', width: '10%', render: m.opratorRender}];
 
-                    m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, rownumbers: true, usePager: false});
+                    m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, rownumbers: true, usePager: false, heightDiff: 20});
                 },
                 //操作栏渲染器
                 opratorRender: function (row){
