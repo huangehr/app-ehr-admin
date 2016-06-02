@@ -6,7 +6,8 @@
     (function ($, win) {
         var urls = {
             update: "${contextRoot}/resource/meta/update",
-            existence: "${contextRoot}/resource/meta/existence"
+            existence: "${contextRoot}/resource/meta/existence",
+            dictCombo: "${contextRoot}/resource/dict/combo"
         }
         var model = ${model};
         var mode = '${mode}';
@@ -17,7 +18,7 @@
                 {type: 'text', id: 'ipt_meta_code', opts: {readonly: mode=='modify'}},
                 {type: 'text', id: 'ipt_meta_name'},
                 {type: 'select', id: 'ipt_column_type', dictId: 30},
-                {type: 'text', id: 'ipt_dict_code'},
+                {type: 'select', id: 'ipt_dict_code', url: urls.dictCombo, params: {page: 1, rows: 500}},
                 {type: 'radio', id: 'gender'},
                 {type: 'text', id: 'ipt_description', opts:{height:100}}
             ];

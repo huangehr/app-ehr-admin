@@ -102,42 +102,26 @@
             var $form = $("#infoForm");
 
             $('#btn_save').click(function () {
-                debugger
                 if(!validator.validate()) return;
                 $form.attrScan();
+                var logicName = $('#ipt_logic').val(), conditionName = "", dimension = [];
                 var model = $form.Fields.getValues();
-                var dimension = [];
                 if(model['content1']){
-                    if(mode.logic == '<>'){
-                        dimension.push({"andOr":" AND ","field":model.metaId,"condition":" > ","value":model['content1']});
+                    conditionName = logicName + " " + $('#content1').val() +" 与 "+ $('#content2').val();
+                    if(model.logic == '<>'){
+                        dimension.push({"andOr":" AND ","field":model.metaId,"condition":" > ","value":model['content1'], "conditionName": conditionName});
                         dimension.push({"andOr":" AND ","field":model.metaId,"condition":" < ","value":model['content2']});
-                    }else if(mode.logic == '><'){
-                        dimension.push({"andOr":" OR ","field":model.metaId,"condition":" < ","value":model['content1']});
+                    }else if(model.logic == '><'){
+                        dimension.push({"andOr":" OR ","field":model.metaId,"condition":" < ","value":model['content1'], "conditionName": conditionName});
                         dimension.push({"andOr":" OR ","field":model.metaId,"condition":" > ","value":model['content2']});
                     }
-                } else
-                    dimension.push({"andOr":" AND ","field":model.metaId,"condition":" "+ model.logic +" ","value":model['content']});
+                } else{
+                    conditionName = logicName + " " + $('#content').val();
+                    dimension.push({"andOr":" AND ","field":model.metaId,"condition":" "+ model.logic +" ","value":model['content'], "conditionName": conditionName});
+                }
 
                 var params = {dimension: JSON.stringify(dimension), id: model.id};
-                var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
-                var dataModel = $.DataModel.init();
-                dataModel.createRemote(urls.update, {
-                    data: params,
-                    success: function (data) {
-                        waittingDialog.close();
-                        if (data.successFlg) {
-                            parent.closeDialog("保存成功")
-                        } else {
-                            if (data.errorMsg)
-                                $.Notice.error(data.errorMsg);
-                            else
-                                $.Notice.error('出错了！');
-                        }
-                    },
-                    error: function () {
-                        waittingDialog.close();
-                    }
-                });
+                saveForm({url: urls.update, parms: params, $form: $form, validator: validator});
             });
 
             $('#btn_cancel').click(function () {
