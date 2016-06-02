@@ -263,6 +263,7 @@
             onAfterShowData: function (currentData) {
               entryDataList = currentData.detailModelList;
               entryMater.initMetadataId();
+              this.select(0);
             },
             reloadGrid:function(){
               entryMater.reloadGrid();
@@ -342,7 +343,7 @@
                 return html;
               }},
               { display: '资源字典项编码', name: 'dictEntryCode',width: '20%', isAllowHide: false ,align:'left',render: function (row) {
-                var html= "<input type=\"text\" disabled=\"disabled\"  id='dictEntryCode"+row.id+"' name=\"dictEntryCode\"  data-type=\"select\" class=\"useTitle\" >";
+                var html= "<div  id='dictEntryCodeDiv"+row.id+"'><input type=\"text\"  id='dictEntryCode"+row.id+"' name=\"dictEntryCode\"  data-type=\"select\" class=\"useTitle\" ></div>";
                 return html;
                }},
               { display: '资源字典项名称', name: 'dictEntryName',width: '20%', isAllowHide: false  ,align:'left',render: function (row) {
@@ -444,7 +445,10 @@
                 var rowData  = this.grid.getSelected();
                 var selected = entryMater.grid.getSelected();
                 $("#dictCode"+selected.id).html(rowData.code);
-                $("#dictEntryCode"+selected.id).removeAttr("disabled");
+                $("#dictEntryCodeDiv"+selected.id).css("display","block");
+                $("#dictEntryCode"+selected.id).ligerGetComboBoxManager().setValue("");
+                $("#dictEntryCode"+selected.id).ligerGetComboBoxManager().setText("");
+                $("#dictEntryName"+selected.id).html("");
               },conditionSearchClick: function (g) {
                 var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
                 param = {"filters":param}
@@ -460,7 +464,6 @@
               var dictName = entryDataList[j].dictName;
               if(dictName!=""&&dictName!=null){
                 $("#dictName"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictName);
-                $("#dictEntryCode"+entryDataList[j].id).removeAttr("disabled");
               }
             }
             //初始化字典项下拉框
@@ -491,7 +494,7 @@
               conditionSearchClick: function (g) {
                 var selected = entryMater.grid.getSelected();
                 var dictCode = $("#dictCode"+selected.id).html();
-                var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1;dictCode="+dictCode: '';
+                var param = g.rules.length>0? ("code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1;dictCode="+dictCode):"dictCode="+dictCode;
                 param = {"filters":param}
                 g.grid.set({
                   parms: param,
@@ -517,6 +520,8 @@
               if(dictEntryCode!=""&&dictEntryCode!=null){
                 $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setValue(dictEntryCode);
                 $("#dictEntryCode"+entryDataList[j].id).ligerGetComboBoxManager().setText(dictEntryCode);
+              }else{
+                $("#dictEntryCodeDiv"+entryDataList[j].id).css("display","none");
               }
             }
           }
