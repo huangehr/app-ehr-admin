@@ -135,12 +135,21 @@
                         return false;
                     });
                     if(model != 'cancelSelect'){
-                        cancelSelete(selectedOrg, 2);
+                        if($(appTreeDom).find('.l-box.l-checkbox:hidden').length==0)
+                            cancelSelete(selectedOrg, 2);
+                        else{
+                            var doms = $(appTreeDom).find('li:visible');
+                            var treedata = appTree.getData();
+                            $.each(doms, function (i, v) {
+                                cancelSelete(appTree._getDataNodeByTreeDataIndex(treedata, $(v).attr('treedataindex')), 3);
+                            })
+                        }
                     }
                 }else{
                     $(this).removeClass('l-checkbox-incomplete l-checkbox-unchecked').addClass('l-checkbox-checked');
                     appTree.selectNode(function (e) {
-                        return true;
+                        var node = $(appTree.getNodeDom (e));
+                        return !node.is(':hidden');
                     })
                     refreshCheckedTree(true, appTree.getCheckedData(), 3, true);
                 }
@@ -163,6 +172,9 @@
                         if((checkbox=$(e.dom).prev()).hasClass('l-checkbox')){
                             checkbox.trigger("click");
                         }
+                    },
+                    onAfterSSearch: function (e) {
+                        refreshAllCheckedDomStatus(true);
                     },
                     onSuccess: function (data) {
                         var data = data.detailModelList;
@@ -248,12 +260,12 @@
                     else
                         newData = copyData([selectedOrg, newData]) ;
                 }
-                else
-                    newData = copyData([newData]);
-
-                if(allChecked)
-                    checkedTree.clear(tmp[0]);
-
+                else{
+                    function isCopy(id){
+                        return !checkedTree.isExist(tmp[0], id, 3);
+                    }
+                    newData = copyData([newData], isCopy);
+                }
                 checkedTree.append(tmp[0], newData);
             }
             else if(!checked) {
@@ -279,7 +291,7 @@
         }
 
 
-        function copyData(data){
+        function copyData(data, isCopy){
             var newData, tmp =[];
             for(var i=data.length-1; i>=0; i--){
                 if($.isArray((tmp = data[i]))){
@@ -287,7 +299,9 @@
                         throw new error("param error！");
                     newData = [];
                     $.each(tmp, function (i, v) {
-                        newData.push({id: v.id, name: v.name, ischecked: true});
+                        if(!isCopy || isCopy(v.id)) {
+                            newData.push({id: v.id, name: v.name, ischecked: true});
+                        }
                     })
                 } else {
                     if(newData)
