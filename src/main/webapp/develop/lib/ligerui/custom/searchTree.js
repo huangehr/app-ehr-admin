@@ -16,6 +16,16 @@
         return source.slice(0, rmId).concat(source.slice(rmId+1, source.length));
     }
 
+    //判断字符串是否为空
+    function isStrEmpty(str) {
+        return str == null || !str || typeof str == undefined || str == '';
+    }
+
+    function isJson(obj){
+
+        return typeof(obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && !obj.length;
+    }
+
     $.fn.ligerSearchTree = function (options)
     {
         return $.ligerui.run.call(this, "ligerSearchTree", arguments);
@@ -51,15 +61,35 @@
         _searchData: {},
         _searchCache: {},
         allCheckDom: undefined,
-        onUnSelect: function () {}
+        onUnSelect: function () {},
+        onAfterSSearch: function() {}
     }
 
     $.ligerDefaults.SearchTree = $.extend({}, $.ligerDefaults.Tree, options);
 
     $.ligerui.controls.SearchTree.ligerExtend($.ligerui.controls.Tree, {
-        s_search: function (param) {
+        s_search: function (queryNm) {
             var g= this;
-            g.f_onSimQueryNode(g, param);
+
+            if (!isStrEmpty(queryNm)) {
+                g.hide($(g.element).find("li").not('.l-onlychild'));//除根节点外，先隐藏所有节点
+                var liArr = $('span[title*="' + queryNm + '"]').closest('li');//查询出符合条件的结果集
+                for (var i = 0; i < liArr.length; i++) {
+                    var outlinelevel = $(liArr[i]).attr("outlinelevel");
+                    if (outlinelevel == "3") {//查询结果集为三级节点，则二级节点也要显示
+                        $(liArr[i]).parent().parent().parent().parent().show();//显示一级节点
+                        $(liArr[i]).parent().parent().show();//显示二级节点
+                    } else if (outlinelevel == "2") {//查询结果集为二级节点，则子节点也要显示
+                        $(liArr[i]).find("li").show();//显示三级节点
+                        $(liArr[i]).parent().parent().show();//显示一级节点
+                    }
+                    $(liArr[i]).show();//显示自己
+                }
+            } else {//查询条件为空，则显示所有节点
+                g.show($(g.element).find("li"));
+            }
+            g.trigger("afterSSearch", [g, queryNm]);
+            //g.f_onSimQueryNode(g, param);
         },
         s_searchForLazy: function (seq) {
             var g= this, p= this.options;
@@ -96,19 +126,18 @@
         },
         isAllChecked: function () {
             var g= this;
-            return !g.isEmpty() && $('.l-box.l-checkbox.l-checkbox-unchecked', g.tree).length==0;
+            return !g.isEmpty() && $('.l-box.l-checkbox.l-checkbox-unchecked:visible', g.tree).length==0;
         },
         isNoChecked: function () {
             var g= this;
-            return $('.l-box.l-checkbox.l-checkbox-checked', g.tree).length==0;
+            return $('.l-box.l-checkbox.l-checkbox-checked:visible', g.tree).length==0;
         },
         isEmpty: function () {
-            debugger
             var g= this;
-            return $('.l-body', g.tree).length == 0;
+            return $('.l-body:visible', g.tree).length == 0;
         },
-        isExist: function (id, outlinelevel) {
-
+        isExist: function (parentDom, id, outlinelevel) {
+            return $(parentDom).find('li[id="'+ id +'"][outlinelevel='+ outlinelevel +']').length>0;
         },
         _removeCache: function (dataIndex) {
             var g= this, p= options;
@@ -180,7 +209,6 @@
             }
             return null;
         },
-
 
         _setTreeEven: function ()
         {

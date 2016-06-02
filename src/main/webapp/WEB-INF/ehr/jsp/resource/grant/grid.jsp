@@ -12,7 +12,7 @@
 
         <div id="conditionArea" class="f-mb10 f-mr10" align="right">
             <div class="body-head f-h30" align="left">
-                <a href="javascript:$('#contentPage').empty();$('#contentPage').load('/resource/resourceManage/initial');"  class="f-fwb">返回上一层 </a>
+                <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/resource/resourceManage/initial');"  class="f-fwb">返回上一层 </a>
                 <input id="adapter_plan_id" value='${adapterPlanId}' hidden="none" />
                 <span class="f-ml20">资源名称：</span><input class="f-fwb f-mt10" readonly id="resource_name"/>
                 <span class="f-ml20">资源主题：</span><input class="f-mt10" readonly id="resource_sub"/>
