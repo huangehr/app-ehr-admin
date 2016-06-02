@@ -477,7 +477,7 @@
               selectBoxHeight : 260,
               selectBoxWidth:240,
               onSelected: function(id,name){//name为选择的值
-                if(this.grid==undefined) return;
+                if(this.grid==undefined||name=="") return;
                 var rowData  = this.grid.getSelected();
                 var selected = entryMater.grid.getSelected();
                 $("#dictEntryName"+selected.id).html(rowData.name);
@@ -507,11 +507,10 @@
                   if (dictCode == null || dictCode == "") {
                     $.Notice.error('请先选择资源字典！');
                     return false;
-                  } else {
-                    this.setParm("filters", "dictCode=" + dictCode);
-                    this.getGrid().reload();
-                    return true;
                   }
+                 this.setParm("filters", "dictCode=" + dictCode);
+                 this.getGrid().reload();
+                 return true;
               }
             });
             $("#div_relation_grid .l-trigger-cancel").remove();
