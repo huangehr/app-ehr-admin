@@ -503,9 +503,9 @@
                 });
                 g.grid.reload();
               },onBeforeOpen:function(){
-                var selected = entryMater.grid.getSelected();
-                var dictCode = $("#dictCode" + selected.id).html();
-                var dictEntryManager =  $("#dictEntryCode"+selected.id).ligerGetComboBoxManager();
+                var dictEntryCodeId = this.id;
+                var dictCode = $("#dictCode" + dictEntryCodeId.replace("dictEntryCode","")).html();
+                var dictEntryManager =  $("#"+dictEntryCodeId).ligerGetComboBoxManager();
                 dictEntryManager.setParm("filters","dictCode=" + dictCode);
                 dictEntryManager.reload();
               }
