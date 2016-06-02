@@ -409,7 +409,7 @@
               entryMater.save(saveData);
             },
             conditionSearchClick: function (g) {
-              var param = g.rules.length>0? "id="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
+              var param = g.rules.length>0? "id?"+g.rules[0].value +" g1;name?"+g.rules[0].value+" g1": '';
               param = {"filters":param}
               g.grid.set({
                 parms: param,
@@ -451,7 +451,7 @@
                 dictEntryManager.setText("");
                 $("#dictEntryName"+selected.id).html("");
               },conditionSearchClick: function (g) {
-                var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
+                var param = g.rules.length>0? "code?"+g.rules[0].value +" g1;name?"+g.rules[0].value+" g1": '';
                 param = {"filters":param}
                 g.grid.set({
                   parms: param,
@@ -495,7 +495,7 @@
               conditionSearchClick: function (g) {
                 var selected = entryMater.grid.getSelected();
                 var dictCode = $("#dictCode"+selected.id).html();
-                var param = g.rules.length>0? ("code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1;dictCode="+dictCode):"dictCode="+dictCode;
+                var param = g.rules.length>0? ("code?"+g.rules[0].value +" g1;name?"+g.rules[0].value+" g1;dictCode="+dictCode):"dictCode="+dictCode;
                 param = {"filters":param}
                 g.grid.set({
                   parms: param,
@@ -503,9 +503,9 @@
                 });
                 g.grid.reload();
               },onBeforeOpen:function(){
-                var selected = entryMater.grid.getSelected();
-                var dictCode = $("#dictCode" + selected.id).html();
-                var dictEntryManager =  $("#dictEntryCode"+selected.id).ligerGetComboBoxManager();
+                var dictEntryCodeId = this.id;
+                var dictCode = $("#dictCode" + dictEntryCodeId.replace("dictEntryCode","")).html();
+                var dictEntryManager =  $("#"+dictEntryCodeId).ligerGetComboBoxManager();
                 dictEntryManager.setParm("filters","dictCode=" + dictCode);
                 dictEntryManager.reload();
               }
