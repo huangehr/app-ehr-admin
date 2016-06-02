@@ -51,7 +51,7 @@
 				getResourceBrowseTree: function (categoryName) {
 					var typeTree = this.$resourceBrowseTree.ligerTree({
 						nodeWidth: 240,
-						url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName,//参数ids值为测试值
+						url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=',//参数ids值为测试值
 						isLeaf: function (data) {
 						},
 						delay: function (e) {

@@ -136,18 +136,23 @@ public class ResourceController extends BaseUIController {
     public Object getCategories(String categoryName,String pid){
         List<RsCategoryModel> list = new ArrayList<>();
         try{
-            String url = "/resources/categories";
             String filters = "";
-            Map<String,Object> params = new HashMap<>();
+            String envelopStr = "";
             if(!StringUtils.isEmpty(categoryName)){
                 filters += "name?"+categoryName+";";
             }
-            //filters += "pid="+pid;
-            if(!StringUtils.isEmpty(pid)){
-                filters += "pid="+pid;
+            if(StringUtils.isEmpty(pid)){
+                String urlByPid = "/resources/categories/pid";
+                Map<String,Object> args = new HashMap<>();
+                args.put("pid","");
+                envelopStr = HttpClientUtil.doGet(comUrl+urlByPid,args,username,password);
+            }else {
+                filters += "pid="+pid+";";
+                String url = "/resources/categories";
+                Map<String,Object> params = new HashMap<>();
+                params.put("filters",filters);
+                envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             }
-            params.put("filters",filters);
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
             if(envelopGet.isSuccessFlg()){
                 list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
