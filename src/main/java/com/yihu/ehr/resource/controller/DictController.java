@@ -19,6 +19,7 @@ public class DictController extends ExtendController<DictService> {
                 "/resource/dict/grid",        //列表页面url
                 "/resource/dict/dialog"      //编辑页面url
         );
+        comboKv.put("code", "code");
     }
 
 }

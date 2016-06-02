@@ -52,7 +52,7 @@
                     {display: '内部标识符', name: 'id', width: '15%', align: 'left'},
                     {display: '数据元名称', name: 'name', width: '10%', align: 'left'},
                     {display: '类型', name: 'columnTypeName', width: '10%', align: 'left'},
-                    {display: '关联字典代码', name: 'dictCode', width: '10%', align: 'left'},
+                    {display: '关联字典', name: 'dictName', width: '10%', align: 'left'},
                     {display: '是否允空', name: 'nullAble', width: '10%', align: 'left', render: function (row) {
                         return row.nullAble ==1 ? '是' : '否';
                     }},

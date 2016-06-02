@@ -50,7 +50,8 @@
         _searching: false,
         _searchData: {},
         _searchCache: {},
-        allCheckDom: undefined
+        allCheckDom: undefined,
+        onUnSelect: function () {}
     }
 
     $.ligerDefaults.SearchTree = $.extend({}, $.ligerDefaults.Tree, options);
@@ -238,6 +239,9 @@
                             $(">div:first", treeitem).addClass("l-selected");
                             g.trigger('select', [{ data: treenodedata, target: treeitem[0] }])
                         }
+                    } else {
+                        //add by lincl
+                        g.trigger('unSelect', [{ data: treenodedata, target: treeitem[0], dom: obj }])
                     }
                 }
                 //chekcbox even

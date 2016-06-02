@@ -103,19 +103,16 @@
                             v.children = [];
                             v.id = v.code;
                             v.name = v.value;
+                            v.level = 1;
                         });
                         orgTree = initTree(orgTreeDom,
                                 {
                                     btnClickToToggleOnly: false,
                                     needCancel: false,
                                     data: data,
-                                    delay: function (e) {return {url: '${contextRoot}/resource/grant/getOrgList?orgType=' + e.data.code};},
-                                    onSelect: function (e) {
-                                        if($(e.target).attr('outlinelevel') == 2){
-                                            selectedOrg = e.data;
-                                            initAppTree(e.data.id.substring(4));
-                                        }
-                                    }
+                                    selectable: function (e) { return e.level != 1;},
+                                    delay: function (e) { return {url: '${contextRoot}/resource/grant/getOrgList?orgType=' + e.data.code};},
+                                    onSelect: function (e) { selectedOrg = e.data; initAppTree(e.data.id.substring(4));}
                                 });
                         $("#org_tree_wrap").mCustomScrollbar({theme: "minimal-dark", axis: "yx"});
             });
@@ -160,6 +157,13 @@
             }
             else{
                 appTree = initTree(appTreeDom, {checkbox: true, url: url,
+                    selectable: function () {return false;},
+                    onUnSelect: function (e) {
+                        var checkbox;
+                        if((checkbox=$(e.dom).prev()).hasClass('l-checkbox')){
+                            checkbox.trigger("click");
+                        }
+                    },
                     onSuccess: function (data) {
                         var data = data.detailModelList;
                         var chkLen = 0;
@@ -187,12 +191,9 @@
             checkedTree =initTree(checkedTreeDom, {
                 data: treeData,
                 checkbox: true,
-                selectable: function (e) {
-//                    debugger
-                    return false;
-                },
+                btnClickToToggleOnly: false,
+                selectable: function (e) {return false;},
                 onCheck: function (res, checked) {
-                    debugger
                     if(!checked){
                         var dom = $(res.target);
                         var outlinelevel = dom.attr('outlinelevel');
