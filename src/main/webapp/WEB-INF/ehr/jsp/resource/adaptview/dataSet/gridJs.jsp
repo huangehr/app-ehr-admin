@@ -450,13 +450,6 @@
                 dictEntryManager.setValue("");
                 dictEntryManager.setText("");
                 $("#dictEntryName"+selected.id).html("");
-                //重新加载子表
-                ligerGrid = dictEntryManager.getGrid();
-                ligerGrid.set({
-                  parms: {"filters":"dictCode=" + rowData.code},
-                  newPage: 1
-                })
-                ligerGrid.reload();
               },conditionSearchClick: function (g) {
                 var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
                 param = {"filters":param}
@@ -509,6 +502,12 @@
                   newPage: 1
                 });
                 g.grid.reload();
+              },onBeforeOpen:function(){
+                var selected = entryMater.grid.getSelected();
+                var dictCode = $("#dictCode" + selected.id).html();
+                var dictEntryManager =  $("#dictEntryCode"+selected.id).ligerGetComboBoxManager();
+                dictEntryManager.setParm("filters","dictCode=" + dictCode);
+                dictEntryManager.reload();
               }
             });
             $("#div_relation_grid .l-trigger-cancel").remove();
@@ -541,17 +540,7 @@
           rownumbers :false,
           switchPageSizeApplyComboBox: false,
           width :width,
-          url : url,
-          onLoadData:function(){
-            var selected = entryMater.grid.getSelected();
-            var dictCode = $("#dictCode" + selected.id).html();
-            if (dictCode == null || dictCode == "") {
-              $.Notice.error('请先选择资源字典！');
-              return false;
-            }
-            this.setParm("filters","dictCode=" + dictCode);
-            return true;
-          }
+          url : url
         };
         return options;
       }
