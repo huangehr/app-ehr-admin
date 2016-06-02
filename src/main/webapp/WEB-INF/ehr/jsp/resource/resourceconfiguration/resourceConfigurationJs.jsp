@@ -8,14 +8,16 @@
             var Util = $.Util;
             // 页面表格条件部模块
             var retrieve = null;
+            var h = $(window).height();
             // 页面主模块，对应于用户信息表区域
             var master = null;
-
+            var resourceModel = ${envelop}.obj;
+            $("#sp_resourceName").html(resourceModel.name);
             var addRowDatas = new Array();
             var delRowDatas = new Array();
 
             var comUrl = '${contextRoot}/resourceConfiguration';
-            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration',comUrl + '/searchSelResourceconfiguration?resourcesId=0dae0015574c004c308b3c141c72e31f']
+            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration',comUrl + '/searchSelResourceconfiguration?resourcesId='+resourceModel.id]
             var elmParams = ['resourceConfigurationInfoGrid','resourceConfigurationInfoGridTrue'];
 
             var dataModel = $.DataModel.init();
@@ -104,7 +106,8 @@
                             url: resourceConfigurationUrl[i],
                             columns: columnDatas,
                             checkbox: true,
-                            height: 600,
+                            height: h-315,
+//                            rowHeight:30,
                             async:true,
                             isChecked: function (row) {
                                 var bo = false;
@@ -206,11 +209,21 @@
                     })
 
 
+                    $("#a-back").click(function () {
+                        history.back();
+                    })
                 },
             };
 
             /* ************************* 模块初始化结束 ************************** */
-
+            var resizeContent = function(){
+                var contentW = $('.div-resource-configuration').width();
+                var leftW = $('.f-bd-configuration').width();
+                $('.f-bd-configurationtest').width(contentW-leftW-20);
+            }();
+            $(window).bind('resize', function() {
+                resizeContent();
+            });
 
             /* *************************** 页面初始化 **************************** */
             pageInit();
