@@ -109,6 +109,8 @@ public class ResourceController extends BaseUIController {
         }
         if(!StringUtils.isEmpty(categoryId)){
             stringBuffer.append("categoryId="+categoryId);
+        }else {
+            return envelop;
         }
         params.put("filters", "");
         String filters = stringBuffer.toString();
@@ -126,6 +128,34 @@ public class ResourceController extends BaseUIController {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
+    }
+
+    //资源分类树数据-获取所有分类的不不分页方法
+    @RequestMapping("/categories")
+    @ResponseBody
+    public Object getCategories(String categoryName,String pid){
+        List<RsCategoryModel> list = new ArrayList<>();
+        try{
+            String url = "/resources/categories";
+            String filters = "";
+            Map<String,Object> params = new HashMap<>();
+            if(!StringUtils.isEmpty(categoryName)){
+                filters += "name?"+categoryName+";";
+            }
+            //filters += "pid="+pid;
+            if(!StringUtils.isEmpty(pid)){
+                filters += "pid="+pid;
+            }
+            params.put("filters",filters);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
+            }
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+        }
+        return list;
     }
 
     //更新
@@ -262,4 +292,8 @@ public class ResourceController extends BaseUIController {
             return envelop;
         }
     }
+
+
+
+
 }
