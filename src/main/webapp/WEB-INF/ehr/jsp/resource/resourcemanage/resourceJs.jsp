@@ -13,6 +13,7 @@
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
 				retrieve.init();
+				master.init();
 			}
 			function reloadGrid(params) {
 				if (isFirstPage){
@@ -32,8 +33,10 @@
 				$searchNm: $('#inp_searchNm'),
 				init: function () {
 					var self = this;
+					var categoryName = '';
 					this.$search.ligerTextBox({width:220,isSearch: true, search: function () {
-						self.getResourceBrowseTree();
+						var categoryName = $("#inp_search").val();
+						self.getResourceBrowseTree(categoryName);
 					}});
 					this.$searchNm.ligerTextBox({width:240,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
@@ -43,33 +46,36 @@
 						};
 						reloadGrid(parms);
 					}});
-					self.getResourceBrowseTree();
+					self.getResourceBrowseTree(categoryName);
 				},
-				getResourceBrowseTree: function () {
+				getResourceBrowseTree: function (categoryName) {
 					var typeTree = this.$resourceBrowseTree.ligerTree({
 						nodeWidth: 240,
-						url: '${contextRoot}/resourceBrowse/searchResource?ids=',//参数ids值为测试值
+						url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=',//参数ids值为测试值
 						isLeaf: function (data) {
 						},
 						delay: function (e) {
 							var data = e.data;
-							return {url: '${contextRoot}/resourceBrowse/searchResource?ids=' + data.id}
+							return {url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=' + data.id}
 						},
 						checkbox: false,
 						idFieldName: 'id',
+						parentIDField:'pid',
 						textFieldName: 'name',
-						isExpand: true,
+						isExpand: false,
 						onSelect: function (e) {
 							categoryId = e.data.id;
 							master.reloadGrid();
 						},
 						onSuccess: function (data) {
-							categoryId =  data[0].id;
-							master.init();
-							$("#div_resource_browse_tree li div span").css({
-								"line-height": "22px",
-								"height": "22px"
-							});
+							if(data.length != 0){
+								categoryId =  data[0].id;
+								master.reloadGrid();
+								$("#div_resource_browse_tree li div span").css({
+									"line-height": "22px",
+									"height": "22px"
+								});
+							}
 						},
 					});
 				},
@@ -94,7 +100,7 @@
 							{display: '操作', name: 'operator', width: '22%', render: function (row) {
 								var html = '';
 								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'config') + '">配置</a>';
-								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'grant') + '">授权</a>';
+								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:grant:open",row.id,row.name,row.categoryName) + '">授权</a>';
 								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'browse') + '">浏览</a>';
 								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a>';
 								html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a>';
@@ -160,48 +166,24 @@
 							}
 						})
 					});
-					//配置、授权、浏览页面跳转
+					//配置、浏览页面跳转
 					$.subscribe("rs:switch:open",function(event,resourceId,pageName){
 						var url = '${contextRoot}/resource/resourceManage/switch?pageName='+pageName+'&resourceId='+resourceId;
 						$("#contentPage").empty();
 						$("#contentPage").load(url);
 					});
-
-
-
-					//---------------------------------------------------------
-//					var self = retrieve;
-//					self.$newSearchBtn.click(function () {
-//						var model = self.$searchModel.clone(true);
-//						self.$newSearch.append(model);
-//						var modelLength = model.find("input");
-//						var paramDatas = [0, 1, 2, 3];
-//						var dictId = [10, 11, 12, 13];
-//						var cls = '.inp-model';
-//						for (var i = 0; i < modelLength.length; i++) {
-//							model.find(cls + i).attr('data-attr-scan', paramDatas[i]);
-//							//self.initDDL(dictId[i], model.find(cls + i));
-//						}
-//						model.show();
-//					});
-////					self.$delBtn.click(function () {
-////						$(this).parent().remove();
-////					});
-//					self.$SearchBtn.click(function () {
-//						var defaultCondition = self.$defaultCondition;
-//						var logicalRelationship = self.$logicalRelationship;
-//						var defualtParam = self.$defualtParam;
-//						var pModel = $(self.$newSearch).find('.div_search_model');
-//						var jsonData = defaultCondition.attr('data-attr-scan')+logicalRelationship.val()+defualtParam.val();
-//						for (var i = 0; i < pModel.length; i++) {
-//							var cModel = pModel.find('.inp-find-search');
-//							for (var j = 0; j < cModel.length; j++) {
-//								var params = $((cModel)[j]);
-//								jsonData += params.attr('data-attr-scan') + params.ligerGetComboBoxManager().getValue();
-//							}
-//						}
-//						master.reloadResourcesGrid();
-//					})
+					//授权页面跳转
+					$.subscribe("rs:grant:open",function(event,resourceId,resourceName,categoryName){
+						var data = {
+							'resourceId':resourceId,
+							'resourceName':resourceName,
+							'resourceSub':categoryName
+						}
+						//var data="{resourceId:'"+resourceId+"',resourceName:'"+resourceName+"',resourceSub:'"+categoryName+"'}";
+						var url = '${contextRoot}/resource/grant/initial';
+						$("#contentPage").empty();
+						$("#contentPage").load(url,{dataModel:JSON.stringify(data)});
+					});
 				},
 			};
 			/* ************************* 模块初始化结束 ************************** */

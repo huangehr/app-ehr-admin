@@ -141,6 +141,8 @@
                 if(info.successFlg){
                     self.$adapterVersion.ligerTextBox({disabled: true});
                     self.$type.ligerTextBox({disabled: true});
+                    self.$adapterVersionName.ligerTextBox({disabled: true});
+
                     self.$form.Fields.fillValues({
                         type: info.obj.type,
                         adapterVersionName: info.obj.adapterVersion,
@@ -150,6 +152,8 @@
                         description : info.obj.description,
                         id: info.obj.id
                     });
+                    self.$adapterVersionName.ligerGetComboBoxManager().setValue(info.obj.adapterVersion);
+                    self.$adapterVersionName.ligerGetComboBoxManager().setText(info.obj.adapterVersionName);
                 }
             },
             bindEvents: function () {

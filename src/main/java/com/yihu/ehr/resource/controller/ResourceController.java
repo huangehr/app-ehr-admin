@@ -109,6 +109,8 @@ public class ResourceController extends BaseUIController {
         }
         if(!StringUtils.isEmpty(categoryId)){
             stringBuffer.append("categoryId="+categoryId);
+        }else {
+            return envelop;
         }
         params.put("filters", "");
         String filters = stringBuffer.toString();
@@ -126,6 +128,39 @@ public class ResourceController extends BaseUIController {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
+    }
+
+    //资源分类树数据-获取所有分类的不不分页方法
+    @RequestMapping("/categories")
+    @ResponseBody
+    public Object getCategories(String categoryName,String pid){
+        List<RsCategoryModel> list = new ArrayList<>();
+        try{
+            String filters = "";
+            String envelopStr = "";
+            if(!StringUtils.isEmpty(categoryName)){
+                filters += "name?"+categoryName+";";
+            }
+            if(StringUtils.isEmpty(pid)){
+                String urlByPid = "/resources/categories/pid";
+                Map<String,Object> args = new HashMap<>();
+                args.put("pid","");
+                envelopStr = HttpClientUtil.doGet(comUrl+urlByPid,args,username,password);
+            }else {
+                filters += "pid="+pid+";";
+                String url = "/resources/categories";
+                Map<String,Object> params = new HashMap<>();
+                params.put("filters",filters);
+                envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            }
+            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
+            }
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+        }
+        return list;
     }
 
     //更新
@@ -262,4 +297,8 @@ public class ResourceController extends BaseUIController {
             return envelop;
         }
     }
+
+
+
+
 }
