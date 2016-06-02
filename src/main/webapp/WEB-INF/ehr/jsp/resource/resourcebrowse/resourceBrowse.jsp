@@ -10,13 +10,13 @@
             <div class="f-mt10 f-ml10 f-w270">
                 <!--输入框-->
                 <input type="text" id="inp_search" class="f-ml10"/>
-                <hr>
             </div>
+            <hr>
             <!--资源浏览树-->
             <div id="div_resource_browse_tree"></div>
         </div>
         <!--资源浏览详情-->
-        <div id="div_resource_browse_msg" class="div-resource-browse">
+        <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">
             <!--添加动态查询-->
             <div id="div_new_search" class="f-mt10 f-ml10">
                 <span class="f-fl f-mt10 f-ml10">查询条件：</span>
@@ -27,7 +27,7 @@
                     <div class="f-fl f-ml10 f-mr10">
                         <input type="text" id="inp_logical_relationship" data-sttr-scan="2" class="f-ml10 inp-reset"/>
                     </div>
-                    <div class="f-fl f-ml10 f-mr10">
+                    <div class="f-fl f-ml10 f-mr10 div-change-search">
                         <input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>
                     </div>
                     <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
@@ -63,7 +63,7 @@
             <div class="f-fl f-ml10 f-mr10">
                 <input type="text" class="f-ml10 inp-reset inp-model2 inp-find-search"/>
             </div>
-            <div class="f-fl f-ml10 f-mr10">
+            <div class="f-fl f-ml10 f-mr10 div-new-change-search">
                 <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search"/>
             </div>
             <span class="sp-back-del-img f-mt10 sp-del-btn"></span>

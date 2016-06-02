@@ -40,7 +40,8 @@ public class ResourceConfigurationController extends BaseUIController {
     @ResponseBody
     public Object searchResourceconfiguration(String searchNm, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
-        String metaDataUrl = ServiceApi.Resources.Metadatas;
+        String metaDataUrl = ServiceApi.Resources.MetadataList;
+//        String metaDataUrl = ServiceApi.Resources.Metadatas;
         String resultStr = "";
 
         params.put("filters", "");
@@ -67,7 +68,8 @@ public class ResourceConfigurationController extends BaseUIController {
     @ResponseBody
     public Object searchSelResourceconfiguration(String searchNm, String resourcesId, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
-        String ResourceMetadataUrl = ServiceApi.Resources.ResourceMetadatas;
+//        String ResourceMetadataUrl = ServiceApi.Resources.ResourceMetadatas;
+        String ResourceMetadataUrl = ServiceApi.Resources.ResourceMetadataList;
         String selResourceMetadataListUrl = "/resources/" + resourcesId + "/metadata_list";
 
         String resultStr = "";
@@ -108,7 +110,7 @@ public class ResourceConfigurationController extends BaseUIController {
 
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String metaDataUrl = ServiceApi.Resources.ResourceMetadatasBatch;
+        String metaDataUrl = ServiceApi.Resources.ResourceMetadataBatch;
 
         try {
             if (!StringUtils.isEmpty(delRowDatas)) {
@@ -119,8 +121,8 @@ public class ResourceConfigurationController extends BaseUIController {
 
             if (!StringUtils.isEmpty(addRowDatas)) {
 //                执行新增操作
-//                params.put("metadatas", addRowDatas);
-//                resultStr = HttpClientUtil.doPost(comUrl + metaDataUrl, params, username, password);
+                params.put("metadatas", addRowDatas);
+                resultStr = HttpClientUtil.doPost(comUrl + metaDataUrl, params, username, password);
             }
         } catch (Exception e) {
 
@@ -128,6 +130,9 @@ public class ResourceConfigurationController extends BaseUIController {
 
         return resultStr;
     }
+
+
+
 
 
 //    @RequestMapping("/getMetaDataByMetaDataId")
