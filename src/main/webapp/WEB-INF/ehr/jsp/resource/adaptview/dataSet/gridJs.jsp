@@ -558,8 +558,8 @@
           ]
         }else if(isDict){
           columnCfg=[
-            {display : '资源字典编码', name :'code',width :100},
-            {display : '资源字典名称', name :'name',width : 100}
+            {display : '编码', name :'code',width :100},
+            {display : '名称', name :'name',width : 100}
           ]
         }
         return columnCfg;
