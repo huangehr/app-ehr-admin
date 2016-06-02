@@ -168,6 +168,7 @@
 					});
 
 
+
 					//---------------------------------------------------------
 //					var self = retrieve;
 //					self.$newSearchBtn.click(function () {
@@ -205,6 +206,14 @@
 			};
 			/* ************************* 模块初始化结束 ************************** */
 			/* ************************* dialog回调函数 ************************** */
+			var resizeContent = function(){
+				var contentW = $('#div_content').width();
+				var leftW = $('#div_left').width();
+				$('#div_right').width(contentW-leftW-20);
+			}();
+			$(window).bind('resize', function() {
+				resizeContent();
+			});
 			win.reloadMasterUpdateGrid = function () {
 				master.reloadGrid();
 			};
