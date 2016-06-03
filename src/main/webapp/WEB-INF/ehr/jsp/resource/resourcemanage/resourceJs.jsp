@@ -12,6 +12,7 @@
 			var categoryId = '';
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
+				resizeContent();
 				retrieve.init();
 				master.init();
 			}
@@ -34,9 +35,13 @@
 				init: function () {
 					var self = this;
 					var categoryName = '';
+					var flag = false;
 					this.$search.ligerTextBox({width:220,isSearch: true, search: function () {
-						var categoryName = $("#inp_search").val();
-						self.getResourceBrowseTree(categoryName);
+						categoryName = $("#inp_search").val();
+						if(!Util.isStrEmpty(categoryName)){
+							flag = true
+						}
+						self.getResourceBrowseTree(categoryName,flag);
 					}});
 					this.$searchNm.ligerTextBox({width:240,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
@@ -46,35 +51,44 @@
 						};
 						reloadGrid(parms);
 					}});
-					self.getResourceBrowseTree(categoryName);
+					self.getResourceBrowseTree(categoryName,flag);
 				},
-				getResourceBrowseTree: function (categoryName) {
+				getResourceBrowseTree: function (categoryName,flag) {
 					var typeTree = this.$resourceBrowseTree.ligerTree({
 						nodeWidth: 240,
-						url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=',//参数ids值为测试值
-						isLeaf: function (data) {
-						},
-						delay: function (e) {
-							var data = e.data;
-							return {url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=' + data.id}
-						},
+						url: '${contextRoot}/resource/resourceManage/tree?categoryName='+categoryName,//参数ids值为测试值
+						<%--url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=',//参数ids值为测试值--%>
+						<%--isLeaf: function (data) {--%>
+						<%--},--%>
+						<%--delay: function (e) {--%>
+							<%--var data = e.data;--%>
+							<%--return {url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=' + data.id}--%>
+						<%--},--%>
 						checkbox: false,
 						idFieldName: 'id',
-						parentIDField:'pid',
+						parentIDFieldName :'pid',
 						textFieldName: 'name',
-						isExpand: false,
+						isExpand: flag,
+						childIcon:'folder',
+						parentIcon:'folder',
 						onSelect: function (e) {
 							categoryId = e.data.id;
 							master.reloadGrid();
 						},
 						onSuccess: function (data) {
 							if(data.length != 0){
-								categoryId =  data[0].id;
-								master.reloadGrid();
 								$("#div_resource_browse_tree li div span").css({
 									"line-height": "22px",
 									"height": "22px"
 								});
+								for(var i=0;i<data.length;i++){
+									if(data[i].pid == null){
+										categoryId =  data[i].id;
+										typeTree.selectNode(categoryId)
+										master.reloadGrid();
+										return
+									}
+								}
 							}
 						},
 					});
@@ -192,7 +206,7 @@
 				var contentW = $('#div_content').width();
 				var leftW = $('#div_left').width();
 				$('#div_right').width(contentW-leftW-20);
-			}();
+			};
 			$(window).bind('resize', function() {
 				resizeContent();
 			});

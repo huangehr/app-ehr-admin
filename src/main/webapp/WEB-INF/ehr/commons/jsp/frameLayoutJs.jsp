@@ -247,27 +247,27 @@
                     text: '<spring:message code="title.resource.register"/>',
                     url: '${contextRoot}/resource/resourceManage/initial'
                 },
-                {
-                    id: 331,
-                    level:3,
-                    pid: 33,
-                    text: '资源配置',
-                    url: '${contextRoot}/resourceConfiguration/initial'
-                },
-                {
-                    id: 332,
-                    level:3,
-                    pid: 33,
-                    text: '资源授权',
-                    url: '${contextRoot}/resource/grant/initial'
-                },
-                {
-                    id: 333,
-                    level:3,
-                    pid: 33,
-                    text: '资源浏览',
-                    url: '${contextRoot}/resourceBrowse/initial'
-                },
+                <%--{--%>
+                    <%--id: 331,--%>
+                    <%--level:3,--%>
+                    <%--pid: 33,--%>
+                    <%--text: '资源配置',--%>
+                    <%--url: '${contextRoot}/resourceConfiguration/initial'--%>
+                <%--},--%>
+                <%--{--%>
+                    <%--id: 332,--%>
+                    <%--level:3,--%>
+                    <%--pid: 33,--%>
+                    <%--text: '资源授权',--%>
+                    <%--url: '${contextRoot}/resource/grant/initial'--%>
+                <%--},--%>
+                <%--{--%>
+                    <%--id: 333,--%>
+                    <%--level:3,--%>
+                    <%--pid: 33,--%>
+                    <%--text: '资源浏览',--%>
+                    <%--url: '${contextRoot}/resourceBrowse/initial'--%>
+                <%--},--%>
                 {
                     id: 34,
                     level:2,

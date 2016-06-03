@@ -9,7 +9,6 @@
 		var rsInfoForm = null;
 		// 表单校验工具类
 		var jValidation = $.jValidation;
-		var catalogDictId = 32;
 		var mode = '${mode}';
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
@@ -18,7 +17,8 @@
 		/* *************************** 模块初始化 ***************************** */
 		rsInfoForm = {
 			$form: $("#div_rs_info_form"),
-			$catalog: $("#inp_category"),
+			$catalogId: $("#inp_categoryId"),
+			$catalogName: $("#inp_categoryName"),
 			$name: $("#inp_name"),
 			$code: $("#inp_code"),
 			$interface: $("#inp_interface"),
@@ -43,8 +43,10 @@
 				}
 				this.$form.attrScan();
 				if(mode == 'new'){
-					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
-					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
+					$("#inp_categoryId").val('${categoryId}');
+					$("#inp_categoryName").val('${categoryName}');
+					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
+					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
 				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
@@ -57,13 +59,15 @@
 						grantType:info.grantType,
 						description:info.description
 					});
-					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
-					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
+					$("#inp_categoryId").val('${categoryId}');
+					$("#inp_categoryName").val('${categoryName}');
+					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
+					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
 				}
 				this.$form.show();
 			},
 			initDDL: function () {
-				this.$catalog.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
+				//this.$catalog.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
 					dataParmName: 'detailModelList',
