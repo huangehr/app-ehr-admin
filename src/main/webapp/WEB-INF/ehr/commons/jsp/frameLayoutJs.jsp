@@ -238,7 +238,7 @@
                     level:2,
                     pid: 3,
                     text: '<spring:message code="title.resource.catalog"/>',
-                    url: '${contextRoot}/resourcecategory/index'
+                    url: '${contextRoot}/rscategory/index'
                 },
                 {
                     id: 33,

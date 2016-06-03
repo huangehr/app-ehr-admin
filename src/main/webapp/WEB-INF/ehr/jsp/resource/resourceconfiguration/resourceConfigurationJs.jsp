@@ -8,15 +8,18 @@
             var Util = $.Util;
             // 页面表格条件部模块
             var retrieve = null;
+            var h = $(window).height();
             // 页面主模块，对应于用户信息表区域
             var master = null;
-
+            var resourceModel =${envelop}.obj;
+            $("#sp_resourceName").html(resourceModel.name);
+//            var elmDataModel_1 = null;
             var addRowDatas = new Array();
             var delRowDatas = new Array();
 
             var comUrl = '${contextRoot}/resourceConfiguration';
-            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration',comUrl + '/searchSelResourceconfiguration?resourcesId=0dae0015574c004c308b3c141c72e31f']
-            var elmParams = ['resourceConfigurationInfoGrid','resourceConfigurationInfoGridTrue'];
+            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration', comUrl + '/searchSelResourceconfiguration?resourcesId=' + resourceModel.id]
+            var elmParams = ['resourceConfigurationInfoGrid', 'resourceConfigurationInfoGridTrue'];
 
             var dataModel = $.DataModel.init();
 
@@ -31,20 +34,22 @@
                 master.init();
             }
 
-            function getResource(page,size) {
+            function getResource(page, size) {
                 dataModel.fetchRemote(resourceConfigurationUrl[1], {
-                    data: {searchNm: "",page:page,rows:size},
+                    data: {searchNm: "", page: page, rows: size},
 //                    async: true,
                     success: function (data) {
-                        if(Util.isStrEquals(data.obj.id,row.id)){
+                        if (Util.isStrEquals(data.obj.id, row.id)) {
                             return true;
-                        }else {
+                        } else {
                             return false;
                         }
                     }
                 })
             }
+
             function reloadGrid(url, params, searchType) {
+                $("#infoMsg").val(false);
                 var grif = null;
                 if (Util.isStrEquals(searchType, "mateData"))
                     grif = elmParams[0];
@@ -97,28 +102,28 @@
                         {display: '说明', name: 'description', width: '25%', align: 'left'},
                     ];
 
-                    var elm = [self.$resourceConfigurationInfoGrid,self.$resourceConfigurationInfoGridTrue];
+                    var elm = [self.$resourceConfigurationInfoGrid, self.$resourceConfigurationInfoGridTrue];
                     var count = 0;
                     for (var i = 0; i < resourceConfigurationUrl.length; i++) {
                         elmParams[i] = elm[i].ligerGrid($.LigerGridEx.config({
                             url: resourceConfigurationUrl[i],
                             columns: columnDatas,
                             checkbox: true,
-                            height: 600,
-                            async:true,
+                            height: h - 315,
+                            async: true,
                             isChecked: function (row) {
                                 var bo = false;
-                                if (Util.isStrEquals(this.url.split("resourcesId").length,1)){
-                                    dataModel.fetchRemote(resourceConfigurationUrl[1], {  // todo ：url需要换成查询所有的数据元接口，（目前接口未建）
-                                        data: {searchNm: "selAll",page:1,rows:15},
+                                if (Util.isStrEquals(this.url.split("resourcesId").length, 1)) {
+                                    dataModel.fetchRemote(resourceConfigurationUrl[1], {
+                                        data: {searchNm: "selAll", page: 1, rows: 15},
                                         async: false,
                                         success: function (data) {
                                             var resourceDatas = data.detailModelList;
-                                            for (var i = 0;i<resourceDatas.length;i++){
-                                                if(Util.isStrEquals(resourceDatas[i].metadataId,row.id)){
+                                            for (var i = 0; i < resourceDatas.length; i++) {
+                                                if (Util.isStrEquals(resourceDatas[i].metadataId, row.id)) {
                                                     bo = true;
                                                     return;
-                                                }else {
+                                                } else {
                                                     bo = false;
                                                 }
                                             }
@@ -130,26 +135,37 @@
                             parms: {
                                 searchNm: '',
                             },
+                            onBeforeCheckRow: function (checked, data, rowid, rowdata) {
+                                for (var i = 0; i < sessionStorage.length; i++) {
+                                    if (Util.isStrEquals(sessionStorage.getItem("elmParams_1" + i), data.stdCode)) {
+                                        $("#infoMsg").val(false);
+                                        return;
+                                    }
+                                    else
+                                        $("#infoMsg").val(true);
+                                }
+                            },
                             onSelectRow: function (rowdata) {
                                 var infoMsg = $("#infoMsg").val();
-                                if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')&&Util.isStrEquals(infoMsg,'true')) {
+                                if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid') && Util.isStrEquals(infoMsg, 'true')) {
                                     addRows(rowdata);
                                 }
+
                             },
                             onUnSelectRow: function (rowdata, rowid, rowobj) {
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
                                     deleteRows(rowdata);
                                 }
                             },
-                            onAfterShowData:function () {
-                                $("#infoMsg").val(true);
+                            onAfterShowData: function () {
+                                $("#infoMsg").val(false);
                             }
                         }));
                     }
 
                     function addRows(rowdata) {
                         var metaData_rowData = {
-                            resourcesId: "testId",
+                            resourcesId: resourceModel.id,
                             metadataId: rowdata.id,
                             groupType: "testType",
                             groupData: "testdata",
@@ -163,18 +179,23 @@
                             columnType: rowdata.columnType,
                             description: rowdata.description
                         });
+
+                        var elmParams_1 = elmParams[1].data.detailModelList
+                        for (var i = 0; i < elmParams_1.length; i++) {
+                            sessionStorage.setItem("elmParams_1" + i, elmParams_1[i].stdCode)
+                        }
                     }
 
                     function deleteRows(rowdata) {
-//                        delRowDatas.push(rowdata.id);
                         var rowParm = rowdata.stdCode;
                         var rows = elmParams[1].data.detailModelList;
-                        for (var i =0;i<rows.length;i++){
+                        for (var i = 0; i < rows.length; i++) {
                             var rowData = rows[i].stdCode
-                            if (Util.isStrEquals(rowData,rowParm)){
+                            if (Util.isStrEquals(rowData, rowParm)) {
                                 delRowDatas.push(rows[i].id);
                                 elmParams[1].deleteRow(rows[i].__id);
                             }
+                            sessionStorage.removeItem("elmParams_1" + i);
                         }
                     }
 
@@ -186,7 +207,6 @@
                 bindEvents: function () {
 
                     retrieve.$saveBtn.click(function () {
-                        debugger
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
                             return;
                         }
@@ -194,11 +214,11 @@
                             data: {addRowDatas: JSON.stringify(addRowDatas), delRowDatas: delRowDatas.toString()},
                             async: true,
                             success: function (data) {
+                                addRowDatas = new Array();
+                                delRowDatas = new Array();
                                 if (data.successFlg) {
                                     $.Notice.success('保存成功');
-                                    debugger
                                     master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], "", "mateData");
-
                                 } else
                                     $.Notice.error("保存失败");
                             }
@@ -206,11 +226,21 @@
                     })
 
 
+                    $("#a-back").click(function () {
+                        history.back();
+                    })
                 },
             };
 
             /* ************************* 模块初始化结束 ************************** */
-
+            var resizeContent = function () {
+                var contentW = $('.div-resource-configuration').width();
+                var leftW = $('.f-bd-configuration').width();
+                $('.f-bd-configurationtest').width(contentW - leftW - 20);
+            }();
+            $(window).bind('resize', function () {
+                resizeContent();
+            });
 
             /* *************************** 页面初始化 **************************** */
             pageInit();
