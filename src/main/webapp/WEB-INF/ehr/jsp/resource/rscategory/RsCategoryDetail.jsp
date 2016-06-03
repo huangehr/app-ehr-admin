@@ -8,7 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-<div id="div_cdatype_info_form" data-role-form class="m-form-inline f-mt20">
+<div id="div_catetype_info_form" data-role-form class="m-form-inline f-mt20">
   <div class="m-form-group">
     <label>名称：</label>
     <div class="l-text-wrapper m-form-control essential">
@@ -18,7 +18,7 @@
   <div class="m-form-group">
     <label>父级类别：</label>
     <div class="l-text-wrapper m-form-control">
-      <input type="text" id="ipt_select" data-type="select">
+      <input type="text" data-attr-scan="pid" id="ipt_select" data-type="select">
     </div>
   </div>
   <div class="m-form-group">
@@ -37,7 +37,6 @@
     </div>
   </div>
 
-  <input type="hidden" id="hdId" value=""/>
+  <input type="hidden" id="hdId" value="${id}"/>
   <input type="hidden" id="hd_url" value="${contextRoot}"/>
-  <input type="hidden" id="hd_user" value="${UserId}"/>
 </div>
