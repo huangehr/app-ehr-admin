@@ -66,6 +66,10 @@
             <div class="f-fl f-ml10 f-mr10 div-new-change-search">
                 <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search"/>
             </div>
+            <span class="f-fl f-mt10 f-ds">～</span>
+            <div class="f-fl f-ml10 f-mr10 div-new-time-search f-ds">
+                <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search f-fl"/>
+            </div>
             <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
         </div>
     </div>

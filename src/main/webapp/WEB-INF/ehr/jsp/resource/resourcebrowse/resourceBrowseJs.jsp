@@ -30,9 +30,8 @@
 
             }
 
-            function reloadGrid(url, params) {
-
-                resourceInfoGrid.setOptions({parms: params});
+            function reloadGrid(url, ps) {
+                resourceInfoGrid.setOptions({parms: ps});
                 resourceInfoGrid.loadData(true);
 
             }
@@ -42,9 +41,9 @@
             paramModel = {
                 <%--comUrl: '${contextRoot}/resourceBrowse/',--%>
 
-                url: ["",'${contextRoot}/resourceBrowse/getGridCloumnNames',"${contextRoot}/resourceBrowse/searchDictEntryList","${contextRoot}/resourceBrowse/getRsDictEntryList"],
-                dictId:[34,""],
-                paramDatas: ["",{resourceCategoryId: resourceCategoryId},"",""],
+                url: ["${contextRoot}/resourceBrowse/searchDictEntryList",'${contextRoot}/resourceBrowse/getGridCloumnNames',"${contextRoot}/resourceBrowse/searchDictEntryList","${contextRoot}/resourceBrowse/getRsDictEntryList"],
+                dictId:['andOr',resourceCategoryId,34,''],
+                paramDatas: ["",{dictId: resourceCategoryId},"",""],
                 field:[{code:'code',value:'value'},{code:'metadataId',value:'name'}],
                 andOrData: [{code: 'AND', value: '并且'}, {code: 'OR', value: '或者'}],
 
@@ -83,7 +82,7 @@
 
                     self.initDDL(1, 1,"",self.$defaultCondition, "");
                     self.initDDL(2, 2,"",self.$logicalRelationship, 100);
-                    self.initDDL(0, 0,"",self.$defualtParam, 240);
+                    self.initDDL('','',"",self.$defualtParam, 240);
 
                     self.getResourceBrowseTree();
                 },
@@ -97,7 +96,7 @@
                             valueField: 'code',
                             textField: 'value',
                             urlParms: {
-                                dictId: paramModel.dictId[0],
+                                dictId: paramModel.dictId[2],
                             },
                             width: width,
 //                            data: data,
@@ -108,16 +107,12 @@
                                     //判断这个对象的值存不存在字典和判断类型
                                     if (Util.isStrEquals(dataModels[i].metadataId,value)){
                                         if(!Util.isStrEquals(dataModels[i].dictId,0)){
-                                            debugger
-                                            changeHtml($(".div-change-search"),$("#inp_defualt_param"),'default','ligerComboBox',dataModels[i].dictId,data.detailModelList);
-
+                                            changeHtml($(".div-change-search"),'#inp_defualt_param','default','ligerComboBox',dataModels[i].dictId,"");
                                             <%--dataModel.fetchRemote("${contextRoot}/resourceBrowse/getRsDictEntryList", {--%>
 //                                                data: {dictId: dataModels[i].dictId},
 //                                                async:true,
 //                                                success: function (data) {
-//                                                    debugger
 //                                                    changeHtml($(".div-change-search"),$("#inp_defualt_param"),'default','ligerComboBox',dataModels[i].dictId,data.detailModelList);
-
 //                                                    $(".div-change-search").html("");
 //                                                    $(".div-change-search").html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
 //
@@ -134,40 +129,40 @@
 
                                             switch (dataModels[i].columnType){
                                                 case 'S':
-                                                    changeHtml($(".div-change-search"),$("#inp_defualt_param"),'default','ligerTextBox',"","");
+                                                    changeHtml($(".div-change-search"),'#inp_defualt_param','default','ligerTextBox',"","");
 
 //                                                    $(".div-change-search").html("");
 //                                                    $(".div-change-search").html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
 //                                                    $("#inp_defualt_param").ligerTextBox({width: 240})
                                                     break;
                                                 case 'L':
-                                                    changeHtml($(".div-change-search"),$("#inp_defualt_param"),'default','ligerComboBox','boolean',"");
+                                                    changeHtml($(".div-change-search"),'#inp_defualt_param','default','ligerComboBox','boolean',"");
 //                                                    $(".div-change-search").html("");
 //                                                    $(".div-change-search").html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
 //                                                    $("#inp_defualt_param").ligerTextBox({width: 240})
                                                     break;
                                                 case 'N':
-                                                    changeHtml($(".div-change-search"),$("#inp_defualt_param"),'default','ligerTextBox',"","");
+                                                    changeHtml($(".div-change-search"),'#inp_defualt_param','default','ligerTextBox',"","");
 //                                                    $(".div-change-search").html("");
 //                                                    $(".div-change-search").html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
 //                                                    $("#inp_defualt_param").ligerTextBox({width: 240})
                                                     break;
                                                 case 'D':
-                                                    changeHtml($(".div-change-search"),$("#inp_defualt_param"),'default','ligerDateEditor',"","");
+                                                    changeHtml($(".div-change-search"),'#inp_defualt_param','default','ligerDateEditor',"","");
 //                                                    $(".div-change-search").html("");
 //                                                    $(".div-change-search").html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
 //                                                    $("#inp_defualt_param").ligerTextBox({width: 240})
 //                                                    $("#inp_defualt_param").ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
                                                     break ;
                                                 case 'DT':
-                                                    changeHtml($(".div-change-search"),$("#inp_defualt_param"),'default','ligerDateEditor',"","");
+                                                    changeHtml($(".div-change-search"),'#inp_defualt_param','default','ligerDateEditor',"","");
 //                                                    $(".div-change-search").html("");
 //                                                    $(".div-change-search").html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
 //                                                    $("#inp_defualt_param").ligerTextBox({width: 240})
 //                                                    $("#inp_defualt_param").ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
                                                     break ;
                                                 default:
-                                                    changeHtml($(".div-change-search"),$("#inp_defualt_param"),'default','ligerTextBox',"","");
+                                                    changeHtml($(".div-change-search"),'#inp_defualt_param','default','ligerTextBox',"","");
 //                                                    $(".div-change-search").html("");
 //                                                    $(".div-change-search").html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
 //                                                    $("#inp_defualt_param").ligerTextBox({width: 240})
@@ -195,18 +190,20 @@
                         isExpand: function (e) {
                         },
                         idFieldName: 'id',
+                        childIcon:null,
                         textFieldName: 'name',
 
                         onSelect: function (data) {
                             resourceCategoryId = data.data.id
+                            paramModel.dictId[1] = resourceCategoryId;
                             dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {
-                                data: {resourceCategoryId: resourceCategoryId},
+                                data: {dictId: resourceCategoryId},
                                 success: function (data) {
                                     retrieve.$defaultCondition.ligerComboBox({
                                         valueField: 'metadataId',
                                         textField: 'name',
                                         width: 240,
-                                        data: data.detailModelList
+                                        data:data,
                                     });
                                 }
                             });
@@ -221,9 +218,7 @@
                         },
                     });
                 },
-
             };
-
             resourceBrowseMaster = {
                 init: function (objectId) {
                     var self = retrieve;
@@ -234,28 +229,26 @@
                         dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {
 //                            async: true,
                             data: {
-                                resourceCategoryId: objectId
+                                dictId: objectId
                             },
                             success: function (data) {
-                                var dataList = data.detailModelList;
+                                var dataList = data;
 
                                 for (var i = 0; i < dataList.length; i++) {
                                     columnModel.push({display: dataList[i].name, name: 'name', width: '10%'});
                                 }
                                 resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
-                                    url: '${contextRoot}/resourceBrowse/searchResource',
-                                    parms: {ids: objectId},
+                                    url: '${contextRoot}/resourceBrowse/searchResourceData',
+                                    parms: {searchParams: ''},
                                     columns: columnModel,
                                 }));
                             }
                         });
 //                        this.bindEvents();
                     }
-
-
                 },
-                reloadResourcesGrid: function () {
-                    reloadGrid.call(this, '${contextRoot}/resourceBrowse/searchResource', "");
+                reloadResourcesGrid: function (searchParams) {
+                    reloadGrid.call(this, '${contextRoot}/resourceBrowse/searchResourceData', searchParams);
                 },
 
                 bindEvents: function () {
@@ -277,106 +270,173 @@
                             model.find(cls + i).attr('data-attr-scan', paramDatas[i]);
 //                            self.initDDL(i,i,"", model.find(cls + i), width[i]);
 
-                            if (!Util.isStrEmpty(paramModel.url[i])) {
-                                dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {
-                                    data: {resourceCategoryId: resourceCategoryId},
-                                    async:false,
-                                    success: function (data) {
-                                        model.find(cls + i).ligerComboBox({
-                                            valueField: 'metadataId',
-                                            textField: 'name',
-                                            width: width[i],
-                                            data: data.detailModelList,
-                                            onSelected:function (value) {
+                            var code = 'code';
+                            var value = 'value';
+                            if (Util.isStrEquals(i,1)){
+                                 code = 'metadataId';
+                                 value = 'name';
+                            }
+                            model.find(cls + i).ligerComboBox({
+                                url:paramModel.url[i],
+                                valueField: code,
+                                textField: value,
+                                urlParms: {
+                                    dictId: paramModel.dictId[i],
+                                },
+                                width: width[i],
+                                onSelected:function (value) {
+                                    var dataModels = this.data;
+                                    for (var i = 0; i<dataModels.length;i++){
+                                        //判断这个对象的值存不存在字典和判断类型
+                                        if (Util.isStrEquals(dataModels[i].metadataId,value)) {
+                                            var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search')
+                                            if (!Util.isStrEquals(dataModels[i].dictId, 0)) {
 
-                                                var dataModels = this.data;
-                                                for (var i = 0; i<dataModels.length;i++){
+//                                                            var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search')
 
-                                                    //判断这个对象的值存不存在字典和判断类型
-                                                    if (Util.isStrEquals(dataModels[i].metadataId,value)){
-
-                                                        debugger
-                                                        var $inpSearchType =  $(this.element).parents('.div_search_model').find('.div-new-change-search')
-                                                        $inpSearchType.html("");
+                                                changeHtml($inpSearchType, '.inp-find-search', '', 'ligerComboBox', dataModels[i].dictId, "");
+//                                                        $inpSearchType.html("");
 //                                                        $(this.element).parents('.div_search_model').find('.div-new-change-search').html("");
 //                                                        var $inpSearchType = $($(".div-new-change-search")[0]);
-                                                        $inpSearchType.html('<input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search">')
-                                                        debugger
-                                                        if(!Util.isStrEquals(dataModels[i].dictId,0)){
+//                                                        $inpSearchType.html('<input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search">')
+//                                                        if(!Util.isStrEquals(dataModels[i].dictId,0)){
 
-                                                            dataModel.fetchRemote("${contextRoot}/resourceBrowse/getRsDictEntryList", {
-                                                                data: {dictId: dataModels[i].dictId},
-                                                                success: function (data) {
-                                                                    debugger
-                                                                    $inpSearchType.find('.inp-find-search').ligerComboBox({
-                                                                        valueField: 'code',
-                                                                        textField: 'name',
-                                                                        width: 240,
-                                                                        data: data.detailModelList
-                                                                    });
-                                                                }
-                                                            });
-                                                        }else{
-                                                            switch (dataModels[i].columnType){
-                                                                case 'S1':
-                                                                    $inpSearchType.html("");
-                                                                    $inpSearchType.html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
-                                                                    $inpSearchType.find('.inp-find-search').ligerTextBox({width: 240})
-                                                                    break;
-                                                                case 'L':
-                                                                    $inpSearchType.html("");
-                                                                    $inpSearchType.html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
-                                                                    $inpSearchType.find('.inp-find-search').ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
-                                                                    break ;
-                                                                case 'N':
-                                                                    $inpSearchType.html("");
-                                                                    $inpSearchType.html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
-                                                                    $inpSearchType.find('.inp-find-search').ligerTextBox({width: 240})
-                                                                    break;
-                                                                case 'D':
-                                                                    $inpSearchType.html("");
-                                                                    $inpSearchType.html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
-                                                                    $inpSearchType.find('.inp-find-search').ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
-                                                                    break ;
-                                                                case 'DT':
-                                                                    $inpSearchType.html("");
-                                                                    $inpSearchType.html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
-                                                                    $inpSearchType.find('.inp-find-search').ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
-                                                                    break ;
-                                                                default:
-                                                                    $inpSearchType.html("");
-                                                                    $inpSearchType.html('<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>');
-                                                                    $inpSearchType.find('.inp-find-search').ligerTextBox({width: 240})
-                                                                    break;
-                                                            }
-                                                        }
-                                                    }
+                                                <%--dataModel.fetchRemote("${contextRoot}/resourceBrowse/getRsDictEntryList", {--%>
+                                                <%--data: {dictId: dataModels[i].dictId},--%>
+                                                <%--success: function (data) {--%>
+                                                <%--debugger--%>
+                                                <%--$inpSearchType.find('.inp-find-search').ligerComboBox({--%>
+                                                <%--valueField: 'code',--%>
+                                                <%--textField: 'name',--%>
+                                                <%--width: 240,--%>
+                                                <%--data: data.detailModelList--%>
+                                                <%--});--%>
+                                                <%--}--%>
+                                                <%--});--%>
+//                                                        }else{
+//
+//                                                        }
+
+                                            } else {
+                                                switch (dataModels[i].columnType) {
+                                                    case 'S1':
+                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');
+                                                        break;
+                                                    case 'L':
+                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerComboBox', 'boolean', '');
+                                                        break;
+                                                    case 'N':
+                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');
+                                                        break;
+                                                    case 'D':
+                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', '');
+                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', '');
+                                                        break;
+                                                    case 'DT':
+                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', '');
+                                                        break;
+                                                    default:
+                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');
+                                                        break;
                                                 }
                                             }
-                                        });
+                                        }
                                     }
-                                });
-                            } else {
-                                var data = null;
-
-                                if (Util.isStrEquals(i,0)){
-                                    data = paramModel.andOrData;
                                 }
-                                if (Util.isStrEquals(i,2)){
-                                    data = paramModel.searchType;
-                                }
+                            });
+                            <%--if (!Util.isStrEmpty(paramModel.url[i])) {--%>
+                                <%--dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {--%>
+                                    <%--data: {resourceCategoryId: resourceCategoryId},--%>
+                                    <%--async:false,--%>
+                                    <%--success: function (data) {--%>
+                                        <%--model.find(cls + i).ligerComboBox({--%>
+                                            <%--valueField: 'metadataId',--%>
+                                            <%--textField: 'name',--%>
+                                            <%--width: width[i],--%>
+                                            <%--data: data.detailModelList,--%>
+                                            <%--onSelected:function (value) {--%>
 
-                                model.find(cls + i).ligerComboBox({
-                                    valueField: paramModel.field[0].code,
-                                    textField: paramModel.field[0].value,
-                                    width: width[i],
-                                    data: data
-                                });
-                            }
+                                                <%--var dataModels = this.data;--%>
+                                                <%--for (var i = 0; i<dataModels.length;i++){--%>
+
+                                                    <%--debugger--%>
+                                                    <%--//判断这个对象的值存不存在字典和判断类型--%>
+                                                    <%--if (Util.isStrEquals(dataModels[i].metadataId,value)) {--%>
+                                                        <%--var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search')--%>
+
+                                                        <%--if (!Util.isStrEquals(dataModels[i].dictId, 0)) {--%>
+
+<%--//                                                            var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search')--%>
+
+                                                            <%--changeHtml($inpSearchType, '.inp-find-search', '', 'ligerComboBox', dataModels[i].dictId, "");--%>
+<%--//                                                        $inpSearchType.html("");--%>
+<%--//                                                        $(this.element).parents('.div_search_model').find('.div-new-change-search').html("");--%>
+<%--//                                                        var $inpSearchType = $($(".div-new-change-search")[0]);--%>
+<%--//                                                        $inpSearchType.html('<input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search">')--%>
+<%--//                                                        if(!Util.isStrEquals(dataModels[i].dictId,0)){--%>
+
+                                                            <%--&lt;%&ndash;dataModel.fetchRemote("${contextRoot}/resourceBrowse/getRsDictEntryList", {&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;data: {dictId: dataModels[i].dictId},&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;success: function (data) {&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;debugger&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;$inpSearchType.find('.inp-find-search').ligerComboBox({&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;valueField: 'code',&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;textField: 'name',&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;width: 240,&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;data: data.detailModelList&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;});&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;}&ndash;%&gt;--%>
+                                                            <%--&lt;%&ndash;});&ndash;%&gt;--%>
+<%--//                                                        }else{--%>
+<%--//--%>
+<%--//                                                        }--%>
+
+                                                        <%--} else {--%>
+                                                            <%--switch (dataModels[i].columnType) {--%>
+                                                                <%--case 'S1':--%>
+                                                                    <%--changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');--%>
+                                                                    <%--break;--%>
+                                                                <%--case 'L':--%>
+                                                                    <%--changeHtml($inpSearchType, '.inp-find-search', '', 'ligerComboBox', 'boolean', '');--%>
+                                                                    <%--break;--%>
+                                                                <%--case 'N':--%>
+                                                                    <%--changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');--%>
+                                                                    <%--break;--%>
+                                                                <%--case 'D':--%>
+                                                                    <%--changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', '');--%>
+                                                                    <%--break;--%>
+                                                                <%--case 'DT':--%>
+                                                                    <%--changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', '');--%>
+                                                                    <%--break;--%>
+                                                                <%--default:--%>
+                                                                    <%--changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');--%>
+                                                                    <%--break;--%>
+                                                            <%--}--%>
+                                                        <%--}--%>
+                                                    <%--}--%>
+                                                <%--}--%>
+                                            <%--}--%>
+                                        <%--});--%>
+                                    <%--}--%>
+                                <%--});--%>
+                            <%--} else {--%>
+//                                var data = null;
+//
+//                                if (Util.isStrEquals(i,0)){
+//                                    data = paramModel.andOrData;
+//                                }
+//                                if (Util.isStrEquals(i,2)){
+//                                    data = paramModel.searchType;
+//                                }
+
+//                                model.find(cls + i).ligerComboBox({
+//                                    valueField: paramModel.field[0].code,
+//                                    textField: paramModel.field[0].value,
+//                                    width: width[i],
+//                                    data: data
+//                                });
+//                            }
                         }
-
-
-
                         model.show();
 
                     });
@@ -388,6 +448,7 @@
                     //检索
                     self.$SearchBtn.click(function () {
 
+                        debugger
                         var defaultCondition = self.$defaultCondition;
                         var logicalRelationship = self.$logicalRelationship;
                         var defualtParam = self.$defualtParam;
@@ -404,7 +465,7 @@
 
                         }
 
-                        resourceBrowseMaster.reloadResourcesGrid();
+                        resourceBrowseMaster.reloadResourcesGrid({searchParams:jsonData});
 
                     })
 
@@ -416,30 +477,42 @@
             };
 
             //divEle  input的父节点,（jquery对象）例如：$("#inp_defualt_param")
-            //inpEle  输入框input的id或class,（jquery对象）例如：$("#inp_defualt_param")
+            //inpEle  输入框input的id或class,例如：#inp_defualt_param
             //defHtml 是否默认搜索条件
-            //ligerType liger控件
+            //ligerType liger控件类型
             //dict  是否是字典
             function changeHtml(divEle,inpEle,defHtml,ligerType,dictId,data) {
 
-                debugger
-                var html = '';
+                var html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" /></div>';
                 if(Util.isStrEquals(defHtml,'default')){
                     html = '<input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>';
-                }else {
-                    html = '<input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search>';
+                }else if (Util.isStrEquals(ligerType,'ligerDateEditor')){
+                    html += '<div class="f-fr f-ml30"><span class="f-fl f-mt10 f-ml-20">～</span><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" /></div>';
                 }
                 divEle.html("");
                 divEle.html(html);
                 switch (ligerType){
                     case 'ligerComboBox':
-                        divEle.find("#inp_defualt_param").ligerComboBox({
+                        divEle.find(inpEle).ligerComboBox({
                             url:paramModel.url[3],
                             parms: {dictId: dictId},
                             valueField: 'code',
                             textField: 'name',
                             width: 240,
-//                            data:paramModel.andOrData,
+                        });
+                        break;
+                    case 'ligerTextBox':
+                        divEle.find(inpEle).ligerTextBox({
+                            valueField: 'code',
+                            textField: 'name',
+                            width: 240,
+                        });
+                        break;
+                    case 'ligerDateEditor':
+                        divEle.find(inpEle).ligerDateEditor({
+                            valueField: 'code',
+                            textField: 'name',
+                            width: 240,
                         });
                         break;
                 }
