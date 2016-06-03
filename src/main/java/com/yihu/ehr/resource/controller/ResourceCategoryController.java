@@ -5,15 +5,16 @@ import com.yihu.ehr.agModel.standard.cdatype.CdaTypeDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.model.resource.MRsCategory;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -33,10 +34,8 @@ public class ResourceCategoryController extends BaseUIController{
     private String username;
     @Value("${service-gateway.password}")
     private String password;
-    @Value("${service-gateway.cdatypeurl}")
-    private String comUrl;
     @Value("${service-gateway.url}")
-    private String rsurl;
+    private String comUrl;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -49,8 +48,7 @@ public class ResourceCategoryController extends BaseUIController{
 
     @RequestMapping("typeupdate")
     public String typeupdate(Model model,HttpServletRequest request) {
-        UserDetailModel user = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        model.addAttribute("UserId", user.getId());
+        model.addAttribute("id", request.getParameter("id"));
         model.addAttribute("contentPage", "resource/rscategory/RsCategoryDetail");
         return "generalView";
     }
@@ -58,17 +56,18 @@ public class ResourceCategoryController extends BaseUIController{
     @RequestMapping("getTreeGridData")
     @ResponseBody
     //获取TreeData 用于初始页面显示嵌套model
-    public Object getTreeGridData(String name) {
+    public Object getTreeGridData(String codeName) {
         Envelop envelop = new Envelop();
+        Map<String,Object> params = new HashMap<>();
         String url ="/resources/categories/tree";
         String strResult = "";
-        if (StringUtils.isEmpty(name)){
-            name = "";
+        if (StringUtils.isEmpty(codeName)){
+            codeName = "";
+        }else{
+            params.put("name",codeName);
         }
         try{
-            Map<String,Object> params = new HashMap<>();
-            params.put("name",name);
-            strResult = HttpClientUtil.doGet(rsurl+url,params,username,password);
+            strResult = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return strResult;
         }catch(Exception ex){
             LogService.getLogger(ResourceCategoryController.class).error(ex.getMessage());
@@ -78,7 +77,7 @@ public class ResourceCategoryController extends BaseUIController{
         }
     }
 
-    @RequestMapping("GetCdaTypeList")
+    @RequestMapping("getCdaTypeList")
     @ResponseBody
     public Object GetCdaTypeList(String strKey, Integer page, Integer rows) {
         Envelop envelop = new Envelop();
@@ -100,11 +99,11 @@ public class ResourceCategoryController extends BaseUIController{
         return envelop;
     }
 
-    @RequestMapping("getCdaTypeById")
+    @RequestMapping("getCateTypeById")
     @ResponseBody
     public Object getCdaTypeById(String strIds) {
         Envelop envelop = new Envelop();
-        String url = "/cda_types/id/"+strIds;
+        String url = "/resources/categories/"+strIds;
         try{
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
@@ -116,7 +115,7 @@ public class ResourceCategoryController extends BaseUIController{
         return envelop;
     }
 
-    @RequestMapping("delteCdaTypeInfo")
+    @RequestMapping("delteCateTypeInfo")
     @ResponseBody
     /**
      * 删除CDA类别，若该类别存在子类别，将一并删除子类别
@@ -124,24 +123,19 @@ public class ResourceCategoryController extends BaseUIController{
      * @param  ids  cdaType Id
      *  @return result 操作结果
      */
-    public Object delteCdaTypeInfo(String ids) {
+    public Object delteCdaTypeInfo(String id) {
         Envelop result = new Envelop();
-        String url = "/cda_types/"+ids;
-        if (StringUtils.isEmpty(ids)){
+        if (StringUtils.isEmpty(id)){
             result.setErrorMsg("请选择要删除的数据");
             result.setSuccessFlg(false);
             return result;
         }
         try{
+            String url = "/resources/categories/"+id;
             Map<String,Object> params = new HashMap<>();
-            params.put("typeId",ids);
+            params.put("id",id);
             String _msg = HttpClientUtil.doDelete(comUrl + url, params, username, password);
-            if(Boolean.parseBoolean(_msg)){
-                result.setSuccessFlg(true);
-            }else{
-                result.setSuccessFlg(false);
-                result.setErrorMsg("cda类别删除失败");
-            }
+            return _msg;
         }catch (Exception ex){
             LogService.getLogger(ResourceCategoryController.class).error(ex.getMessage());
             result.setSuccessFlg(false);
@@ -150,53 +144,27 @@ public class ResourceCategoryController extends BaseUIController{
         return result;
     }
 
-    @RequestMapping("SaveCdaType")
+    @RequestMapping("saveCateType")
     @ResponseBody
     //新增、修改的保存合二为一
     public Object SaveCdaType(String dataJson,HttpServletRequest request) {
         Envelop envelop = new Envelop();
+        Map<String,Object> params = new HashMap<>();
         envelop.setSuccessFlg(false);
-        String url = "/cda_types";
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String createUserId = userDetailModel.getId();
+        String url = "/resources/categories/no_paging";
         try {
-            CdaTypeDetailModel detailModel = objectMapper.readValue(dataJson,CdaTypeDetailModel.class);
-            if(StringUtils.isEmpty(detailModel.getCode())){
-                envelop.setErrorMsg("cda类别编码不能为空！");
-                return envelop;
-            }
+            MRsCategory detailModel = objectMapper.readValue(dataJson,MRsCategory.class);
             if(StringUtils.isEmpty(detailModel.getName())){
-                envelop.setErrorMsg("cda类别名称不能为空！");
+                envelop.setErrorMsg("类别名称不能为空！");
                 return envelop;
             }
-            Map<String,Object> params = new HashMap<>();
-            String cdaTypeId = detailModel.getId();
-            // 新增cda类别
-            String envelopStr = "";
-            if(StringUtils.isEmpty(cdaTypeId)){
-                detailModel.setCreateUser(createUserId);
-                String jsonData = objectMapper.writeValueAsString(detailModel);
-                params.put("jsonData",jsonData);
-                envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
-                return envelopStr;
+            params.put("resourceCategory",dataJson);
+            String envelopStrUpdate=null;
+            if(StringUtils.isNotBlank(detailModel.getId())) {
+                envelopStrUpdate = HttpClientUtil.doPut(comUrl + url, params, username, password);
+            }else{
+                envelopStrUpdate = HttpClientUtil.doPost(comUrl + url, params, username, password);
             }
-            // 修改cda类别（先获取，再赋值）
-            String urlGet = "/cda_types/id/"+cdaTypeId;
-            String envelopStrGet = HttpClientUtil.doGet(comUrl+urlGet,username,password);
-            Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
-            if (!envelopGet.isSuccessFlg()){
-                return envelopStrGet;
-            }
-            CdaTypeDetailModel modelForUpdate = getEnvelopModel(envelopGet.getObj(),CdaTypeDetailModel.class);
-            modelForUpdate.setCode(detailModel.getCode());
-            modelForUpdate.setDescription(detailModel.getDescription());
-            modelForUpdate.setName(detailModel.getName());
-            modelForUpdate.setParentId(detailModel.getParentId());
-            modelForUpdate.setUpdateUser(createUserId);
-            String typeJson = objectMapper.writeValueAsString(modelForUpdate);
-            params.put("jsonData", typeJson);
-
-            String envelopStrUpdate = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return envelopStrUpdate;
         } catch (Exception ex){
             LogService.getLogger(ResourceCategoryController.class).error(ex.getMessage());
@@ -207,82 +175,23 @@ public class ResourceCategoryController extends BaseUIController{
     }
 
     /**
-     * 获取可以作为父类别的cda类别列表
+     * 获取可以作为父类别的cate类别列表
      * @param strId
      * @param codeName
      * @return
      */
-    @RequestMapping("getCdaTypeExcludeSelfAndChildren")
+    @RequestMapping("getCateTypeExcludeSelfAndChildren")
     @ResponseBody
     public Object getCdaTypeExcludeSelfAndChildren(String strId, String codeName) {
         //页面新增修改访问的是同个接口
         Envelop envelop = new Envelop();
         try{
-            //新增cda类别是获取的是所有类别
-            if(StringUtils.isEmpty(strId)){
-                String urlGetAll = "/cda_types/no_paging";
-                String filters = "";
-                if(!StringUtils.isEmpty(codeName)){
-                    filters = "code?"+codeName+" g1;name?"+codeName+" g1;";
-                }
-                Map<String,Object> params = new HashMap<>();
-                params.put("filters",filters);
-                String envelopStr = HttpClientUtil.doGet(comUrl+urlGetAll,params,username,password);
-                return envelopStr;
-            }
-            //修改时获取自身及其子类。。以外的cda类别
-            String urlGetOthers = "/types/parent";
-            Map<String,Object> args = new HashMap<>();
-            args.put("id",strId);
-            String envelopStrOthers = HttpClientUtil.doGet(comUrl+urlGetOthers,args,username,password);
-            return envelopStrOthers;
-        }catch (Exception ex){
-            LogService.getLogger(ResourceCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
-        }
-
-    }
-
-    @RequestMapping("getCDATypeListByParentId")
-    @ResponseBody
-    //根据父级ID获取下一级cda类别（不含子类的子类。。）
-    public Object getCDATypeListByParentId(String ids) {
-        Envelop envelop = new Envelop();
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String,Object> params = new HashMap<>();
-        params.put("parent_id",ids);
-        String url = "/children_cda_types";
-
-        try {
-            String envelopStr = HttpClientUtil.doGet(comUrl + url,params,username, password);
-            envelop = mapper.readValue(envelopStr,Envelop.class);
-
-            return envelop.getDetailModelList();
-        } catch (Exception ex) {
-            LogService.getLogger(ResourceCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-        }
-        return envelop;
-    }
-
-
-    /**
-     * 删除cda类别前先判断是否有关联的cda文档
-     * @param ids
-     * @return
-     */
-    @RequestMapping("isExitRelativeCDA")
-    @ResponseBody
-    public Object isExitRelativeCDA(String ids){
-        Envelop envelop = new Envelop();
-        String url = "/isExitRelativeCDA";
-        try{
+            String urlGetAll = "/resources/categories";
             Map<String,Object> params = new HashMap<>();
-            params.put("ids",ids);
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            if(!StringUtils.isEmpty(strId)){
+                params.put("filters","id<>"+strId);
+            }
+            String envelopStr = HttpClientUtil.doGet(comUrl+urlGetAll,params,username,password);
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(ResourceCategoryController.class).error(ex.getMessage());
@@ -290,5 +199,26 @@ public class ResourceCategoryController extends BaseUIController{
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
+
+    }
+
+    @RequestMapping("getCateTypeByPid")
+    @ResponseBody
+    public Object getCateTypeByPid(String id) {
+        Envelop envelop = new Envelop();
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String,Object> params = new HashMap<>();
+        String url = "/resources/categories/pid/";
+        try {
+            params.put("pid",id);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params,username, password);
+            envelop = mapper.readValue(envelopStr,Envelop.class);
+            return envelop.getDetailModelList();
+        } catch (Exception ex) {
+            LogService.getLogger(ResourceCategoryController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
     }
 }

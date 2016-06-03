@@ -3,6 +3,6 @@
 <script src="${contextRoot}/develop/Scripts/rscategoryJs.js"></script>
 <script >
   $(function(){
-    cdaType.attr.init();
+    cateType.attr.init();
   })
 </script>
