@@ -162,6 +162,31 @@ public class ResourceController extends BaseUIController {
         }
         return list;
     }
+    //-----------------------------
+    //资源分类树数据-普通的RsCategoryModel集合
+    @RequestMapping("/tree")
+    @ResponseBody
+    public Object getCategoriesTree(String categoryName){
+        List<RsCategoryModel> list = new ArrayList<>();
+        try{
+            String url = "/resources/categories/list";
+            String filters = "";
+            Map<String,Object> params = new HashMap<>();
+            if(!StringUtils.isEmpty(categoryName)){
+                filters += "name?"+categoryName;
+            }
+            params.put("filters",filters);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
+            }
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+        }
+        return list;
+    }
+    //----------------------------------
 
     //更新
     @RequestMapping("/update")
