@@ -16,7 +16,7 @@
     </div>
     <hr>
     <span class="sp-resource-configuration-name"><h3>患者就诊用药信息_资源配置</h3></span>
-    <input type="hidden" id="infoMsg" value="false">
+
 
     <div class="div-resource-configuration">
 
@@ -55,3 +55,4 @@
         </div>
     </div>
 </div>
+<input type="hidden" id="infoMsg" value="false">
