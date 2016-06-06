@@ -25,10 +25,10 @@
                         <input type="text" id="inp_default_condition" style="width: 238px" data-attr-scan="1" class="f-pr0 f-ml10 inp-reset"/>
                     </div>
                     <div class="f-fl f-ml10 f-mr10">
-                        <input type="text" id="inp_logical_relationship" data-sttr-scan="2" class="f-ml10 inp-reset"/>
+                        <input type="text" id="inp_logical_relationship" data-attr-scan="2" class="f-ml10 inp-reset"/>
                     </div>
                     <div class="f-fl f-ml10 f-mr10 div-change-search">
-                        <input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>
+                        <input type="text"  data-attr-scan="3" class="f-ml10 inp-reset inp_defualt_param"/>
                     </div>
                     <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
                 </div>
@@ -66,10 +66,10 @@
             <div class="f-fl f-ml10 f-mr10 div-new-change-search">
                 <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search"/>
             </div>
-            <span class="f-fl f-mt10 f-ds">～</span>
-            <div class="f-fl f-ml10 f-mr10 div-new-time-search f-ds">
-                <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search f-fl"/>
-            </div>
+            <%--<span class="f-fl f-mt10 f-ds">～</span>--%>
+            <%--<div class="f-fl f-ml10 f-mr10 div-new-time-search f-ds">--%>
+                <%--<input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search f-fl"/>--%>
+            <%--</div>--%>
             <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
         </div>
     </div>
