@@ -221,10 +221,12 @@
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
                             return;
                         }
+                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                         dataModel.updateRemote(comUrl + "/saveResourceconfiguration", {
                             data: {addRowDatas: JSON.stringify(addRowDatas), delRowDatas: delRowDatas.toString()},
                             async: true,
                             success: function (data) {
+                                dialog.close();
                                 addRowDatas = new Array();
                                 delRowDatas = new Array();
                                 if (data.successFlg) {

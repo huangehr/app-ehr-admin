@@ -1,5 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
+import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,14 +41,14 @@ public class ResourceBrowseController extends BaseUIController {
     private String comUrl;
 
     @RequestMapping("/initial")
-    public String resourceBrowseInitial(Model model){
-        model.addAttribute("contentPage","/resource/resourcebrowse/resourceBrowse");
+    public String resourceBrowseInitial(Model model) {
+        model.addAttribute("contentPage", "/resource/resourcebrowse/resourceBrowse");
         return "pageView";
     }
 
     @RequestMapping("/searchResource")
     @ResponseBody
-    public Object searchResource(String ids){
+    public Object searchResource(String ids) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String CategoriesUrl = ServiceApi.Resources.Categories;
@@ -60,14 +63,34 @@ public class ResourceBrowseController extends BaseUIController {
 //        params.put("size", 999);
 //        params.put("fields","");
 //        params.put("sorts","");
-        params.put("id",ids);
+        params.put("id", ids);
 
-        try{
+        try {
 
-            resultStr = HttpClientUtil.doGet(comUrl + "/resources/ResourceBrowses/categories",params,username,password);
+            resultStr = HttpClientUtil.doGet(comUrl + "/resources/ResourceBrowses/categories", params, username, password);
 
-            envelop = toModel(resultStr,Envelop.class);
-        }catch (Exception e){
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+
+        }
+        return envelop.getDetailModelList();
+    }
+
+    @RequestMapping("/searchResourceData")
+    @ResponseBody
+    public Object searchResourceData(String searchParams) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String resultStr = "";
+
+        params.put("id", searchParams);
+
+        try {
+
+            resultStr = HttpClientUtil.doGet(comUrl + "/resources/ResourceBrowses/categories", params, username, password);
+
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
 
         }
         return envelop.getDetailModelList();
@@ -75,25 +98,27 @@ public class ResourceBrowseController extends BaseUIController {
 
     /**
      * 动态获取GRID的列名
-     * @param resourceCategoryId
+     *
+     * @param dictId
      * @return
      */
     @RequestMapping("/getGridCloumnNames")
     @ResponseBody
-    public Object getGridCloumnNames(String resourceCategoryId){
+    public Object getGridCloumnNames(String dictId) {
+        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/ResourceBrowses";
         String resultStr = "";
-        params.put("category_id",resourceCategoryId);
+        params.put("category_id", dictId);
 
-        try{
+        try {
 
-            resultStr = HttpClientUtil.doGet(comUrl + url,params,username,password);
-
-        }catch (Exception e){
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
 
         }
-        return resultStr;
+        return envelop.getDetailModelList();
     }
 
     @RequestMapping("/getRsDictEntryList")
@@ -101,12 +126,11 @@ public class ResourceBrowseController extends BaseUIController {
     public Object getRsDictEntryList(String dictId) {
 
         Envelop envelop = new Envelop();
-
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String dictEntryUrl = ServiceApi.Resources.DictEntries;
 
-        params.put("filters", "dictCode="+dictId);
+        params.put("filters", "dictCode=" + dictId);
         params.put("page", 1);
         params.put("size", 500);// TODO: 2016/6/1   字典项没有不分页的接口
         params.put("fields", "");
@@ -116,7 +140,7 @@ public class ResourceBrowseController extends BaseUIController {
             if (!StringUtils.isEmpty(dictId)) {
 
                 resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
-                envelop = toModel(resultStr,Envelop.class);
+                envelop = toModel(resultStr, Envelop.class);
 
             }
         } catch (Exception e) {
@@ -131,24 +155,40 @@ public class ResourceBrowseController extends BaseUIController {
     public Object getDictEntryList(String dictId) {
 
         Envelop envelop = new Envelop();
-
         Map<String, Object> params = new HashMap<>();
+        List<RsBrowseModel> rsBrowseModelList = new ArrayList<>();
+
         String resultStr = "";
-
-        params.put("filters", "dictId=" + dictId);
-        params.put("page", 1);
-        params.put("size", 500);
-        params.put("fields", "");
-        params.put("sorts", "");
-
-            String url ="/dictionaries/entries";
+        String url = "";
 
         try {
             if (!StringUtils.isEmpty(dictId)) {
+                switch (dictId) {
+                    case "34":
+                        params.put("filters", "dictId=" + dictId);
+                        params.put("page", 1);
+                        params.put("size", 500);
+                        params.put("fields", "");
+                        params.put("sorts", "");
+                        url = "/dictionaries/entries";
+                        resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                        envelop = toModel(resultStr, Envelop.class);
+                        break;
 
-                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-                envelop = toModel(resultStr,Envelop.class);
+                    case "andOr":
+                        rsBrowseModelList.add(new RsBrowseModel("AND", "并且"));
+                        rsBrowseModelList.add(new RsBrowseModel("OR", "或者"));
+                        envelop.setDetailModelList(rsBrowseModelList);
+                        break;
+                    default:
+                        url = "/resources/ResourceBrowses";
+                        params.put("category_id", dictId);
 
+                        resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                        envelop = toModel(resultStr, Envelop.class);
+                        break;
+
+                }
             }
         } catch (Exception e) {
 
@@ -158,55 +198,50 @@ public class ResourceBrowseController extends BaseUIController {
     }
 
 
-
-
-
     //数据导出方法  test
     @RequestMapping("testexcel")
     @ResponseBody
-        public String testexcel() {
-            //标题行
-            String title[]={"角色","编号","功能名称","功能描述"};
-            //内容
-            String context[][]={{"UC11","设置课程","创建课程"},
-                    {"UC12","设置学生名单","给出与课程关联的学生名单"},
-                    {"UC21","查看学生名单",""},
-                    {"UC22","查看小组信息","显示助教所负责的小组列表信息"}
-            };
-            //操作执行
-            try {
-                //t.xls为要新建的文件名
-                WritableWorkbook book= Workbook.createWorkbook(new File("F:\\excel\\t.xls"));
-                //生成名为“第一页”的工作表，参数0表示这是第一页
-                WritableSheet sheet=book.createSheet("第一页",0);
+    public String testexcel() {
+        //标题行
+        String title[] = {"角色", "编号", "功能名称", "功能描述"};
+        //内容
+        String context[][] = {{"UC11", "设置课程", "创建课程"},
+                {"UC12", "设置学生名单", "给出与课程关联的学生名单"},
+                {"UC21", "查看学生名单", ""},
+                {"UC22", "查看小组信息", "显示助教所负责的小组列表信息"}
+        };
+        //操作执行
+        try {
+            //t.xls为要新建的文件名
+            WritableWorkbook book = Workbook.createWorkbook(new File("F:\\excel\\t.xls"));
+            //生成名为“第一页”的工作表，参数0表示这是第一页
+            WritableSheet sheet = book.createSheet("第一页", 0);
 
-                //写入内容
-                for(int i=0;i<4;i++)  //title
-                    sheet.addCell(new Label(i,0,title[i]));
-                for(int i=0;i<4;i++)  //context
-                {
-                    for(int j=0;j<3;j++)
-                    {
-                        sheet.addCell(new Label(j+1,i+1,context[i][j]));
-                    }
+            //写入内容
+            for (int i = 0; i < 4; i++)  //title
+                sheet.addCell(new Label(i, 0, title[i]));
+            for (int i = 0; i < 4; i++)  //context
+            {
+                for (int j = 0; j < 3; j++) {
+                    sheet.addCell(new Label(j + 1, i + 1, context[i][j]));
                 }
-                sheet.addCell(new Label(0,1,"教师"));
-                sheet.addCell(new Label(0,3,"助教"));
+            }
+            sheet.addCell(new Label(0, 1, "教师"));
+            sheet.addCell(new Label(0, 3, "助教"));
 
       /*合并单元格.合并既可以是横向的，也可以是纵向的
        *WritableSheet.mergeCells(int m,int n,int p,int q);  表示由(m,n)到(p,q)的单元格组成的矩形区域合并
        * */
-                sheet.mergeCells(0,1,0,2);
-                sheet.mergeCells(0,3,0,4);
+            sheet.mergeCells(0, 1, 0, 2);
+            sheet.mergeCells(0, 3, 0, 4);
 
-                //写入数据
-                book.write();
-                //关闭文件
-                book.close();
-            }
-            catch(Exception e) {
+            //写入数据
+            book.write();
+            //关闭文件
+            book.close();
+        } catch (Exception e) {
 
-            }
-        return null;
         }
+        return null;
+    }
 }
