@@ -14,6 +14,10 @@
             var resourceId = dataModel.resourceId;
 
             var initSub = function (){
+				$('#btn_back').click(function(){
+					$('#contentPage').empty();
+					$('#contentPage').load('${contextRoot}/resource/resourceManage/initial?backParams='+JSON.stringify(dataModel.backParams));
+				});
                 $('#resource_name').val(dataModel.resourceName);
                 $('#resource_sub').val(dataModel.resourceSub);
                 $('#resource_title').html(dataModel.resourceName + "_资源授权");
