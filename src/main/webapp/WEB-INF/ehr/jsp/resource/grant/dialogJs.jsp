@@ -10,7 +10,6 @@
         }
         var model = ${model};
         var mode = '${mode}';
-        var data = [{code: "1", value: "1"}, {code: "2", value: "2"}, {code: "3", value: "3"}];
         var validator;
 
         var initForm = function () {
@@ -129,7 +128,16 @@
             });
         };
 
+        function checkInit(){
+            if(!model.id){
+                $.Notice.error("数据加载失败！", function () {
+                    parent.closeDialog();
+                });
+            }
+        }
+
         var init = function () {
+            checkInit();
             initForm();
             initBtn();
             fillForm(model, $('#infoForm'));

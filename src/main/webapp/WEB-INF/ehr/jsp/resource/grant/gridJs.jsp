@@ -51,6 +51,7 @@
                             {
                                 url:  m.urls.tree + "?resourceId="+resourceId,
                                 delay: true,
+                                renderAll: true,
                                 needCancel: false,
                                 btnClickToToggleOnly: false,
                                 selectable: function (data) {
