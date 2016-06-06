@@ -5,18 +5,15 @@
 
     (function ($, win) {
         var treeData = parent.getTreeData();
-
         var resourceId = '${resourceId}';
         var urls = {grant: "${contextRoot}/resource/grant/saveGrantApp"}
+
         function searchFun(){
-            var p = $('#ipt_app_search').val();
-            appTree.s_search(p);
+            appTree.s_search($('#ipt_app_search').val());
         }
 
         var initFilter = function () {
-            var vo = [
-                {type: 'text', id: 'ipt_app_search', searchFun: searchFun, width: 228},
-            ];
+            var vo = [{type: 'text', id: 'ipt_app_search', searchFun: searchFun, width: 228}];
             initFormFields(vo);
         };
 
@@ -119,65 +116,19 @@
         };
 
         var allChecked = $('#allChecked');
-        var initAppAllChecked =  function(){
-            allChecked.mouseover(function () {
-                $(this).parent().addClass('l-over');
-            })
-            allChecked.mouseout(function () {
-                $(this).parent().removeClass('l-over');
-            });
-            allChecked.click(function (e, model) {
-                var clz = $(this).attr('class');
-                if(clz.indexOf('l-checkbox-checked') != -1 || model=='cancelSelect'){
-                    $(this).removeClass('l-checkbox-checked l-checkbox-incomplete').addClass('l-checkbox-unchecked');
-                    appTree.selectNode(function (e) {
-                        appTree.cancelSelect(e);
-                        return false;
-                    });
-                    if(model != 'cancelSelect'){
-                        if($(appTreeDom).find('.l-box.l-checkbox:hidden').length==0)
-                            cancelSelete(selectedOrg, 2);
-                        else{
-                            var doms = $(appTreeDom).find('li:visible');
-                            var treedata = appTree.getData();
-                            $.each(doms, function (i, v) {
-                                cancelSelete(appTree._getDataNodeByTreeDataIndex(treedata, $(v).attr('treedataindex')), 3);
-                            })
-                        }
-                    }
-                }else{
-                    $(this).removeClass('l-checkbox-incomplete l-checkbox-unchecked').addClass('l-checkbox-checked');
-                    appTree.selectNode(function (e) {
-                        var node = $(appTree.getNodeDom (e));
-                        return !node.is(':hidden');
-                    })
-                    refreshCheckedTree(true, appTree.getCheckedData(), 3, true);
-                }
-            });
-        };
-
         var appTree,appTreeDom = $('#app_tree');
         var initAppTree = function (code) {
             var url = "${contextRoot}/resource/grant/getApps?org="+code;
             if(appTree){
-                $(allChecked).removeClass('l-checkbox-checked l-checkbox-incomplete').addClass('l-checkbox-unchecked');
                 appTree.clear();
                 appTree.loadData(undefined, url, {});
             }
             else{
-                appTree = initTree(appTreeDom, {checkbox: true, url: url,
+                appTree = initTree(appTreeDom, {checkbox: true, url: url, allCheckDom: allChecked,
                     selectable: function () {return false;},
-                    onUnSelect: function (e) {
-                        var checkbox;
-                        if((checkbox=$(e.dom).prev()).hasClass('l-checkbox')){
-                            checkbox.trigger("click");
-                        }
-                    },
-                    onAfterSSearch: function (e) {
-                        refreshAllCheckedDomStatus(true);
-                    },
-                    onSuccess: function (data) {
-                        var data = data.detailModelList;
+                    isSelectToChecked: true,
+                    onBeforeShowData: function (data) {
+                        data = data.detailModelList;
                         var chkLen = 0;
                         $.each(data, function (i, v) {
                             if(findDomById(checkedTreeDom, v.id, 3).length>0){
@@ -185,12 +136,26 @@
                                 v.ischecked = true;
                             }
                         })
-                        this.setData(data);
-                        refreshAllCheckedDomStatus(true);
+                        return data;
                     },
                     onCheck: function (e, checked) {
-                        refreshAllCheckedDomStatus(checked);
                         refreshCheckedTree(checked, [e.data], 3, false);
+                    },
+                    onAllCancelChecked: function (data) {
+                        if(data != 'cancelSelect'){
+                            if($(appTreeDom).find('.l-box.l-checkbox:hidden').length==0)
+                                cancelSelete(selectedOrg, 2);
+                            else{
+                                var doms = $(appTreeDom).find('li:visible');
+                                var treedata = appTree.getData();
+                                $.each(doms, function (i, v) {
+                                    cancelSelete(appTree._getDataNodeByTreeDataIndex(treedata, $(v).attr('treedataindex')), 3);
+                                })
+                            }
+                        }
+                    },
+                    onAllChecked: function () {
+                        refreshCheckedTree(true, appTree.getCheckedData(), 3, true);
                     }
                 });
                 $("#app_tree_wrap").mCustomScrollbar({theme: "minimal-dark", axis: "yx"});
@@ -212,16 +177,15 @@
                         if(outlinelevel==1 && selectedOrg){
                             var id = orgTree.getParentTreeItem(selectedOrg, 1).id;
                             if(res.data.id==id)
-                                allChecked.trigger('click', 'cancelSelect');
+                                appTree.unCheckAll(false);
                         }
                         else if(outlinelevel==2){
                             if(selectedOrg && res.data.id==selectedOrg.id)
-                                allChecked.trigger('click', 'cancelSelect');
+                                appTree.unCheckAll(false);
                         }
                         else {
                             if(selectedOrg && selectedOrg.id==checkedTree.getParentTreeItem(res.target, 2).id){
                                 appTree.cancelSelect(findDomById(appTreeDom, res.data.id, 1));
-                                refreshAllCheckedDomStatus(checked);
                             }
                         }
                         cancelSelete(res.data, outlinelevel);
@@ -236,17 +200,6 @@
             $("#checked_tree_wrap").mCustomScrollbar({theme: "minimal-dark", axis: "yx"});
         }
 
-
-
-        function refreshAllCheckedDomStatus(checked){
-            var allChecked = $('#allChecked');
-            if(checked && appTree.isAllChecked())
-                allChecked.addClass('l-checkbox-checked').removeClass('l-checkbox-unchecked l-checkbox-incomplete');
-            else if(appTree.isEmpty() || appTree.isNoChecked())
-                allChecked.addClass('l-checkbox-unchecked').removeClass('l-checkbox-incomplete l-checkbox-checked');
-            else
-                allChecked.addClass('l-checkbox-incomplete').removeClass('l-checkbox-unchecked l-checkbox-checked');
-        }
 
         function refreshCheckedTree(checked, newData, outlinelevel, allChecked) {
             var tmp;
@@ -277,19 +230,13 @@
             var node = findDomById(checkedTreeDom, newData.id, outlinelevel);
             var parentDom = $(checkedTree.getParentTreeItem(node));
             var parentData ;
-            if(parentDom.length==0 || ((parentData = getDataByDom(checkedTree, parentDom)).children &&　parentData.children.length > 1)){
+            if(parentDom.length==0 || ((parentData = checkedTree.getDataByNode(parentDom)).children &&　parentData.children.length > 1)){
                 checkedTree.cancelSelect(node);
             }
             else{
                 cancelSelete(parentData, parseInt(outlinelevel) - 1);
             }
         }
-
-        function getDataByDom(checkedTree, dom){
-            var dataId = dom.attr?dom.attr('treedataindex'): dom;
-            return checkedTree._getDataNodeByTreeDataIndex(checkedTree.getData(),dataId);
-        }
-
 
         function copyData(data, isCopy){
             var newData, tmp =[];
@@ -319,12 +266,10 @@
 
         var initForm = function () {
             initFilter();
-            initAppAllChecked();
             initOrgTree();
             initAppTree();
             initCheckedTree();
             initBtn();
-//            checkedTree.isAllChecked();
         }();
 
     })(jQuery, window);

@@ -8,19 +8,15 @@
         }
         return -1;
     }
-
     function remove(source, item){
         var rmId = indexOf(source, item);
         if(rmId == -1)
             return source;
         return source.slice(0, rmId).concat(source.slice(rmId+1, source.length));
     }
-
-    //判断字符串是否为空
     function isStrEmpty(str) {
         return str == null || !str || typeof str == undefined || str == '';
     }
-
     function isJson(obj){
 
         return typeof(obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && !obj.length;
@@ -33,26 +29,56 @@
 
     $.ligerui.controls.SearchTree = function (element, options)
     {
-        var customOnSuccess = options.onSuccess;
+
+        var onSuccess = options.onSuccess;
         options.onSuccess = function (data) {
             var g = this;
+
             g._checkNextSearch(data);
-            if(customOnSuccess)customOnSuccess.call(this, data);
+            g.refreshAllCheckedDomStatus(true);
+            if(onSuccess) onSuccess.call(this, data);
         }
+
         var onExpand = options.onExpand;
         options.onExpand = function (e) {
             var g = this;
             g._checkNextSearch(e.data.children);
             if(onExpand)onExpand.call(this, e);
         }
+
         var onBeforeExpand = options.onBeforeExpand;
         options.onBeforeExpand = function (e) {
             var g = this, p= this.options;
-            debugger
             var dataIndex = g._getDataIndexByDom(e.target);
             if(dataIndex!=-1) g._addCache(dataIndex);
             if(onBeforeExpand)onBeforeExpand.call(this, e);
         }
+
+        var onCheck = options.onCheck;
+        options.onCheck = function (e, checked) {
+            var g = this, p= this.options;
+            if(onCheck) onCheck.call(this, e, checked);
+            g.refreshAllCheckedDomStatus(checked);
+        }
+
+        var onAfterSSearch = options.onAfterSSearch;
+        options.onAfterSSearch = function (e) {
+            var g = this
+            if(onAfterSSearch) onAfterSSearch.call(this, e);
+            g.refreshAllCheckedDomStatus(true);
+        }
+
+        var onUnSelect = options.onUnSelect;
+        options.onUnSelect = function (e) {
+            var g = this, p= this.options;
+            if(onUnSelect) onUnSelect.call(this, e);
+            if(!p.isSelectToChecked) return;
+            var checkbox;
+            if((checkbox=$(e.dom).prev()).hasClass('l-checkbox')){
+                checkbox.trigger("click");
+            }
+        }
+
         $.ligerui.controls.SearchTree.base.constructor.call(this, element, options);
     };
 
@@ -62,35 +88,52 @@
         _searchCache: {},
         allCheckDom: undefined,
         onUnSelect: function () {},
-        onAfterSSearch: function() {}
+        onAfterSSearch: function() {},
+
+        allCheckDom: undefined,     //全选的节点
+        onAllChecked: function() {},  //全选事件
+        onAllCancelChecked: function() {},  //取消全选事件
+        isSelectToChecked: false,
+
+        renderAll: false,   //weitrue时，  delay为true  同样渲染所有节点，但是是隐藏的
+        rusultTree: undefined,  // 将选中的数据集放到该树中
+
+        parentTreeDom: undefined,//作废
+        childTree: undefined,     //作废
+        onBeforeShowData: function(data) {return data;}
+
     }
+
+
+
+
+
 
     $.ligerDefaults.SearchTree = $.extend({}, $.ligerDefaults.Tree, options);
 
     $.ligerui.controls.SearchTree.ligerExtend($.ligerui.controls.Tree, {
+        //查询
         s_search: function (queryNm) {
             var g= this;
-
             if (!isStrEmpty(queryNm)) {
-                g.hide($(g.element).find("li").not('.l-onlychild'));//除根节点外，先隐藏所有节点
-                var liArr = $('span[title*="' + queryNm + '"]').closest('li');//查询出符合条件的结果集
-                for (var i = 0; i < liArr.length; i++) {
-                    var outlinelevel = $(liArr[i]).attr("outlinelevel");
-                    if (outlinelevel == "3") {//查询结果集为三级节点，则二级节点也要显示
-                        $(liArr[i]).parent().parent().parent().parent().show();//显示一级节点
-                        $(liArr[i]).parent().parent().show();//显示二级节点
-                    } else if (outlinelevel == "2") {//查询结果集为二级节点，则子节点也要显示
-                        $(liArr[i]).find("li").show();//显示三级节点
-                        $(liArr[i]).parent().parent().show();//显示一级节点
+                g.hide($(g.element).find("li")); //先隐藏所有节点
+                var liArr = $('span[title*="' + queryNm + '"]', g.tree).closest('li');//查询出符合条件的结果集
+                var parent;
+                if(liArr.length>0){
+                    for (var i = 0; i < liArr.length; i++) {
+                        $(liArr[i]).show();
+                        parent = $(liArr[i]);
+                        while((parent = g.getParentTreeItem(parent))!=null){
+                            g.expandNode($(parent));
+                        }
                     }
-                    $(liArr[i]).show();//显示自己
                 }
             } else {//查询条件为空，则显示所有节点
                 g.show($(g.element).find("li"));
             }
             g.trigger("afterSSearch", [g, queryNm]);
-            //g.f_onSimQueryNode(g, param);
         },
+        //异步查询 seq为树形id数组["1,1.2,1.2.3", "2,2.3,2.3.5"]
         s_searchForLazy: function (seq) {
             var g= this, p= this.options;
 
@@ -107,6 +150,7 @@
             })
             g._search(s);
         },
+        //清除数据
         removeData : function (treeNode) {
             var g = this, p = this.options;
             treeNode = g.getNodeDom(treeNode);
@@ -116,7 +160,7 @@
             var treenodedata = g._getDataNodeByTreeDataIndex(g.data, treedataindex);
             //清除数据
             var parentData;
-            if(parentData = g._getDataNodeByTreeDataIndex(g.data, g.getParent(treeNode)))
+            if(parentData = g._getDataNodeByTreeDataIndex(g.data, $(parentNode).attr('treedataindex')))
                 parentData.children = remove(parentData.children, treenodedata);
             else
                 g.data = remove(g.data, treenodedata);
@@ -124,6 +168,75 @@
             $(treeNode).remove();
             g._updateStyle(parentNode ? $("ul:first", parentNode) : g.tree);
         },
+
+        expandNode: function (node) {
+            $(".l-expandable-close:first", node).addClass('l-expandable-open').removeClass('l-expandable-close');
+            $('.l-children:first', node).show();
+            $(node).show();
+        },
+        refreshStatusFromResultTree: function (data) {
+            var g= this;
+            data = data || g.getData();
+
+        },
+        _initAllCheckedDom: function(){
+            var g= this, p= this.options, dom = p.allCheckDom;
+            if(!dom) return;
+            dom.mouseover(function () {
+                $(this).parent().addClass('l-over');
+            })
+            dom.mouseout(function () {
+                $(this).parent().removeClass('l-over');
+            });
+            dom.click(function (e, data) {
+                var clz = $(this).attr('class');
+                if(clz.indexOf('l-checkbox-checked') != -1)
+                    g.unCheckAll(true);
+                else
+                    g.checkAll(true);
+            });
+        },
+        unCheckAll: function (isTriggerAllCancelEvt) {
+            var g= this, p= this.options;
+            if(p.allCheckDom)
+                $(p.allCheckDom).removeClass('l-checkbox-checked l-checkbox-incomplete').addClass('l-checkbox-unchecked');
+
+            g.selectNode(function (e) {
+                if( $(g.getNodeDom(e)).is(':visible'))
+                    g.cancelSelect(e);
+                return false;
+            });
+            if(isTriggerAllCancelEvt==undefined || isTriggerAllCancelEvt==true) g.trigger('allCancelChecked', g);
+        },
+        checkAll: function (isTriggerAllCheckEvt) {
+            var g= this, p= this.options;
+            if(p.allCheckDom)
+                $(p.allCheckDom).removeClass('l-checkbox-incomplete l-checkbox-unchecked').addClass('l-checkbox-checked');
+
+            g.selectNode(function (e) {
+                return ! $(g.getNodeDom(e)).is(':hidden');
+            })
+            if(isTriggerAllCheckEvt==undefined || isTriggerAllCheckEvt==true) g.trigger('allChecked', g);
+        },
+        refreshAllCheckedDomStatus: function(checked){
+            var g= this, p= this.options, allCheckDom = p.allCheckDom;
+            if(!allCheckDom) return;
+            if(g.isAllChecked())
+                allCheckDom.addClass('l-checkbox-checked').removeClass('l-checkbox-unchecked l-checkbox-incomplete');
+            else if(g.isEmpty() || g.isNoChecked())
+                allCheckDom.addClass('l-checkbox-unchecked').removeClass('l-checkbox-incomplete l-checkbox-checked');
+            else
+                allCheckDom.addClass('l-checkbox-incomplete').removeClass('l-checkbox-unchecked l-checkbox-checked');
+        },
+        getDataByNode: function (treenode) {
+            var g= this;
+            var dataindex = g._getDataIndexByDom(treenode);
+            if(dataindex==-1) return {};
+            return g._getDataNodeByTreeDataIndex(g.data, dataindex);
+        },
+        /*****************************************************************************************/
+        /**    判断方法                                                                        **/
+        /*****************************************************************************************/
         isAllChecked: function () {
             var g= this;
             return !g.isEmpty() && $('.l-box.l-checkbox.l-checkbox-unchecked:visible', g.tree).length==0;
@@ -139,6 +252,11 @@
         isExist: function (parentDom, id, outlinelevel) {
             return $(parentDom).find('li[id="'+ id +'"][outlinelevel='+ outlinelevel +']').length>0;
         },
+
+
+        /*****************************************************************************************/
+        /**    异步查询方法                                                                     **/
+        /*****************************************************************************************/
         _removeCache: function (dataIndex) {
             var g= this, p= options;
             p._searchCache[dataIndex] = undefined;
@@ -185,6 +303,8 @@
                 }
             }
         },
+
+
         _getTreeDataIndex: function (id, parent) {
             var g= this;
             var dom = $('#'+id, parent || g.tree);
@@ -210,6 +330,37 @@
             return null;
         },
 
+
+        /*****************************************************************************************/
+        /**    重写原方法                                                                     **/
+        /*****************************************************************************************/
+        _init: function ()
+        {
+            $.ligerui.controls.Tree.base._init.call(this);
+            var g = this, p = this.options;
+            if (p.single) p.autoCheckboxEven = false;
+            g._initAllCheckedDom();
+        },
+        //parm [nodeParm] dom节点(li)、节点数据 或者节点 dataindex
+        cancelSelect: function (nodeParm, isTriggerEvent)
+        {
+            var g = this, p = this.options;
+            var domNode = g.getNodeDom(nodeParm);
+            var treeitem = $(domNode);
+            var treedataindex = parseInt(treeitem.attr("treedataindex"));
+            var treenodedata = g._getDataNodeByTreeDataIndex(g.data, treedataindex);
+            var treeitembody = $(">div:first", treeitem);
+            if (p.checkbox)
+                $(".l-checkbox", treeitembody).removeClass("l-checkbox-checked").addClass("l-checkbox-unchecked");
+            else
+                treeitembody.removeClass("l-selected");
+            if(p.allCheckDom)
+                g.refreshAllCheckedDomStatus(false);
+            if (isTriggerEvent != false)
+            {
+                g.trigger('cancelSelect', [{ data: treenodedata, target: treeitem[0] }]);
+            }
+        },
         _setTreeEven: function ()
         {
             var g = this, p = this.options;
@@ -554,5 +705,263 @@
                 });
             }
         },
+        //根据data生成最终完整的tree html
+        _getTreeHTMLByData: function (data, outlineLevel, isLast, isExpand)
+        {
+            var g = this, p = this.options;
+            if (g.maxOutlineLevel < outlineLevel)
+                g.maxOutlineLevel = outlineLevel;
+            isLast = isLast || [];
+            outlineLevel = outlineLevel || 1;
+            var treehtmlarr = [];
+            if (!isExpand) treehtmlarr.push('<ul class="l-children" style="display:none">');
+            else treehtmlarr.push("<ul class='l-children'>");
+            for (var i = 0; i < data.length; i++)
+            {
+                var o = data[i];
+                var isFirst = i == 0;
+                var isLastCurrent = i == data.length - 1;
+                var delay = g._getDelay(o, outlineLevel);
+                var isExpandCurrent = delay ? false : g._isExpand(o, outlineLevel);
+
+                treehtmlarr.push('<li ');
+                if (o.treedataindex != undefined)
+                    treehtmlarr.push('treedataindex="' + o.treedataindex + '" ');
+                if (isExpandCurrent)
+                    treehtmlarr.push('isexpand=' + o.isexpand + ' ');
+                treehtmlarr.push('outlinelevel=' + outlineLevel + ' ');
+                //增加属性支持
+                for (var j = 0; j < g.sysAttribute.length; j++)
+                {
+                    if ($(this).attr(g.sysAttribute[j]))
+                        data[dataindex][g.sysAttribute[j]] = $(this).attr(g.sysAttribute[j]);
+                }
+                for (var j = 0; j < p.attribute.length; j++)
+                {
+                    if (o[p.attribute[j]])
+                        treehtmlarr.push(p.attribute[j] + '="' + o[p.attribute[j]] + '" ');
+                }
+
+                //css class
+                treehtmlarr.push('class="');
+                isFirst && treehtmlarr.push('l-first ');
+                isLastCurrent && treehtmlarr.push('l-last ');
+                isFirst && isLastCurrent && treehtmlarr.push('l-onlychild ');
+                treehtmlarr.push('"');
+                treehtmlarr.push('>');
+                treehtmlarr.push('<div class="l-body');
+                if (p.selectable && p.selectable(o) == false)
+                {
+                    treehtmlarr.push(' l-unselectable');
+                }
+                treehtmlarr.push('">');
+                for (var k = 0; k <= outlineLevel - 2; k++)
+                {
+                    if (isLast[k]) treehtmlarr.push('<div class="l-box"></div>');
+                    else treehtmlarr.push('<div class="l-box l-line"></div>');
+                }
+                if (g.hasChildren(o))
+                {
+                    if (isExpandCurrent) treehtmlarr.push('<div class="l-box l-expandable-open"></div>');
+                    else treehtmlarr.push('<div class="l-box l-expandable-close"></div>');
+                    if (p.checkbox)
+                    {
+                        if (o.ischecked)
+                            treehtmlarr.push('<div class="l-box l-checkbox l-checkbox-checked"></div>');
+                        else if(g.isIncomplete(o))
+                            treehtmlarr.push('<div class="l-box l-checkbox l-checkbox-incomplete"></div>');
+                        else
+                            treehtmlarr.push('<div class="l-box l-checkbox l-checkbox-unchecked"></div>');
+                    }
+                    if (p.parentIcon)
+                    {
+                        //node icon
+                        treehtmlarr.push('<div class="l-box l-tree-icon ');
+                        treehtmlarr.push(g._getParentNodeClassName(isExpandCurrent ? true : false) + " ");
+                        if (p.iconFieldName && o[p.iconFieldName])
+                            treehtmlarr.push('l-tree-icon-none');
+                        treehtmlarr.push('">');
+                        if (p.iconFieldName && o[p.iconFieldName])
+                            treehtmlarr.push('<img src="' + o[p.iconFieldName] + '" />');
+                        treehtmlarr.push('</div>');
+                    }
+                }
+                else
+                {
+                    if (isLastCurrent) treehtmlarr.push('<div class="l-box l-note-last"></div>');
+                    else treehtmlarr.push('<div class="l-box l-note"></div>');
+                    if (p.checkbox)
+                    {
+                        if (o.ischecked)
+                            treehtmlarr.push('<div class="l-box l-checkbox l-checkbox-checked"></div>');
+                        else
+                            treehtmlarr.push('<div class="l-box l-checkbox l-checkbox-unchecked"></div>');
+                    }
+                    if (p.childIcon)
+                    {
+                        //node icon
+                        treehtmlarr.push('<div class="l-box l-tree-icon ');
+                        treehtmlarr.push(g._getChildNodeClassName() + " ");
+                        if (p.iconFieldName && o[p.iconFieldName])
+                            treehtmlarr.push('l-tree-icon-none');
+                        treehtmlarr.push('">');
+                        if (p.iconFieldName && o[p.iconFieldName])
+                            treehtmlarr.push('<img src="' + o[p.iconFieldName] + '" />');
+                        treehtmlarr.push('</div>');
+                    }
+                }
+                if (p.render)
+                {
+                    treehtmlarr.push('<span>' + p.render(o, o[p.textFieldName]) + '</span>');
+                } else
+                {
+                    /*treehtmlarr.push('<span>' + o[p.textFieldName] + '</span>');*/
+                    /*****************TODO开始*******************/
+                    treehtmlarr.push('<span title="'+ o[p.textFieldName] +'">' + o[p.textFieldName] + '</span>');
+                    /*****************TODO结束*******************/
+                }
+                treehtmlarr.push('</div>');
+                if (g.hasChildren(o))
+                {
+                    var isLastNew = [];
+                    for (var k = 0; k < isLast.length; k++)
+                    {
+                        isLastNew.push(isLast[k]);
+                    }
+                    isLastNew.push(isLastCurrent);
+                    if (delay)
+                    {
+                        if(delay==true && p.renderAll){
+                            treehtmlarr.push(g._getTreeHTMLByData(o.children, outlineLevel + 1, isLastNew, false).join(''));
+                        }
+                        else if (delay == true)
+                        {
+                            g.toggleNodeCallbacks.push({
+                                data: o,
+                                callback: function (dom, o)
+                                {
+                                    var content = g._getTreeHTMLByData(o.children, outlineLevel + 1, isLastNew, isExpandCurrent).join('');
+                                    $(dom).append(content);
+                                    $(">.l-children .l-body", dom).hover(function ()
+                                    {
+                                        $(this).addClass("l-over");
+                                    }, function ()
+                                    {
+                                        $(this).removeClass("l-over");
+                                    });
+                                    g._removeToggleNodeCallback(o);
+                                }
+                            });
+                        }
+                        else if (delay.url)
+                        {
+                            (function (o, url, parms)
+                            {
+                                g.toggleNodeCallbacks.push({
+                                    data: o,
+                                    callback: function (dom, o)
+                                    {
+                                        g.loadData(dom, url, parms, {
+                                            showLoading: function ()
+                                            {
+                                                $("div.l-expandable-close:first", dom).addClass("l-box-loading");
+                                            },
+                                            hideLoading: function ()
+                                            {
+                                                $("div.l-box-loading:first", dom).removeClass("l-box-loading");
+                                            }
+                                        });
+                                        g._removeToggleNodeCallback(o);
+                                    }
+                                });
+                            })(o, delay.url, delay.parms);
+                        }
+                    }
+                    else
+                    {
+                        treehtmlarr.push(g._getTreeHTMLByData(o.children, outlineLevel + 1, isLastNew, isExpandCurrent).join(''));
+                    }
+
+                }
+                treehtmlarr.push('</li>');
+            }
+            treehtmlarr.push("</ul>");
+            return treehtmlarr;
+
+        },
+        loadData: function (node, url, param, e)
+        {
+            var g = this, p = this.options;
+            e = $.extend({
+                showLoading: function ()
+                {
+                    g.loading.show();
+                },
+                success: function () { },
+                error: function () { },
+                hideLoading: function ()
+                {
+                    g.loading.hide();
+                }
+            }, e || {});
+            var ajaxtype = p.ajaxType;
+            //解决树无法设置parms的问题
+            param = $.extend(($.isFunction(p.parms) ? p.parms() : p.parms), param);
+            if (p.ajaxContentType == "application/json" && typeof (param) != "string")
+            {
+                param = liger.toJSON(param);
+            }
+            var urlParms = $.isFunction(p.urlParms) ? p.urlParms.call(g) : p.urlParms;
+            if (urlParms)
+            {
+                for (name in urlParms)
+                {
+                    url += url.indexOf('?') == -1 ? "?" : "&";
+                    url += name + "=" + urlParms[name];
+                }
+            }
+            var ajaxOp = {
+                type: ajaxtype,
+                url: url,
+                data: param,
+                dataType: 'json',
+                beforeSend: function ()
+                {
+                    e.showLoading();
+                },
+                success: function (data)
+                {
+                    if (!data) return;
+                    if (p.idField && p.parentIDField)
+                    {
+                        data = g.arrayToTree(data, p.idField, p.parentIDField);
+                    }
+                    e.hideLoading();
+                    data = p.onBeforeShowData? p.onBeforeShowData(data) : data;
+                    g.append(node, data);
+                    g.trigger('success', [data]);
+                    e.success(data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown)
+                {
+                    try
+                    {
+                        e.hideLoading();
+                        g.trigger('error', [XMLHttpRequest, textStatus, errorThrown]);
+                        e.error(XMLHttpRequest, textStatus, errorThrown);
+                    }
+                    catch (e)
+                    {
+
+                    }
+                }
+            };
+            if (p.ajaxContentType)
+            {
+                ajaxOp.contentType = p.ajaxContentType;
+            }
+            $.ajax(ajaxOp);
+        },
+
     });
 })(jQuery, window);
