@@ -387,7 +387,7 @@
             grid: getGridOptions(false,755,url,parms),
             valueField: "code",
             textField: "code",
-            width : 240,
+            width : 230,
             selectBoxHeight : 260,
             selectBoxWidth:751,
             onSelected: function(id,name){//name为选择的值
@@ -437,7 +437,7 @@
               grid: getGridOptions(true,240,url,parms),
               valueField: "name",
               textField: "name",
-              width : 240,
+              width : 230,
               selectBoxHeight : 260,
               selectBoxWidth:240,
               onSelected: function(id,name){//name为选择的值
@@ -474,7 +474,7 @@
               grid: getGridOptionsByDictEntry(true,240,url),
               valueField: "code",
               textField: "code",
-              width : 240,
+              width : 230,
               selectBoxHeight : 260,
               selectBoxWidth:240,
               onSelected: function(id,name){//name为选择的值
