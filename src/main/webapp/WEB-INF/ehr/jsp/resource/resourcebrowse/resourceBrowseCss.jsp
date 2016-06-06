@@ -17,5 +17,8 @@
     .div-result-msg{ border: 1px solid #D6D6D6; width: 100%;height: auto; float: left; }
     .f-mr279{ margin-right: 279px; }
     .f-pr0{ width: 238px;padding-right: 0; }
+    .f-ds{ display: none; }
+    .f-ml-20{ margin-left: -20px; }
+    .f-ml30{ margin-left: 30px; }
 </style>
 
