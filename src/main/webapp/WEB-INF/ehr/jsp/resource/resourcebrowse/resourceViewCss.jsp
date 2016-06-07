@@ -42,7 +42,7 @@
         float: right;
         width: 22px;
         height: 22px;
-        margin-right: 120px;
+        /*margin-right: 120px;*/
     }
 
     .sp-back-del-img {
@@ -55,6 +55,7 @@
     .f-w90 {
         width: 90%;
     }
+    /*.div_search_model{ margin-left: -7.5%; }*/
 
     .div-result-msg {
         border: 1px solid #D6D6D6;
@@ -83,5 +84,9 @@
     .f-ml30 {
         margin-left: 30px;
     }
+    .div-resource-view-title{ width:100%;height:10px;margin-bottom: 20px; }
+    .sp-search-width{ width: 5%;margin-left: 1%;}
+    .f-mw8{ width:9% }
+    .f-ml15{ margin-left: 15%; }
 </style>
 

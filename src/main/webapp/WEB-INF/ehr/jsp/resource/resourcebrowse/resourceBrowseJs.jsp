@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script>
     (function ($, win) {
         $(function () {
@@ -10,12 +11,15 @@
             var retrieve = null;
             // 页面主模块，对应于用户信息表区域
             var resourceBrowseMaster = null;
+            var windowWidth = $(window).width();
+            var windowHeight = $(window).height();
             //检索模块初始化
             var paramModel = null;
             var resourceInfoGrid = null;
             var resourceCategoryId = "";
             var resourceCategoryName = "";
             var resourcesCode = "";
+            var typeTree = "";
             var columns = null;
 
             var dataModel = $.DataModel.init();
@@ -75,9 +79,16 @@
 
                 init: function () {
                     var self = this;
-                    self.$search.ligerTextBox({
-                        width: 240, isSearch: true, search: function (data) {
-                            self.getResourceBrowseTree();
+                    var width = $(".f-of-hd").width();
+                    var searchs = self.$search.ligerTextBox({
+                        width: width/1.3, isSearch: true, search: function () {
+                            var categoryName = searchs.getValue();
+                            typeTree.s_search(categoryName);
+                            if(categoryName == ''){
+                                typeTree.collapseAll();
+                            }else{
+                                typeTree.expandAll();
+                            }
                         }
                     });
 
@@ -184,23 +195,20 @@
                 },
 
                 getResourceBrowseTree: function (data) {
-                    var typeTree = this.$resourceBrowseTree.ligerTree({
-                        nodeWidth: 260,
-                        url: '${contextRoot}/resourceBrowse/searchResource?ids=',
+
+                    typeTree = this.$resourceBrowseTree.ligerSearchTree({
+                        nodeWidth: 240,
+                        url: '${contextRoot}/resourceBrowse/searchResource',
+                        checkbox: false,
+                        idFieldName: 'id',
+                        parentIDFieldName :'pid',
+                        textFieldName: 'name',
+                        isExpand: false,
+//                        childIcon:'folder',
+//                        parentIcon:'folder',
                         isLeaf: function (data) {
                             return !Util.isStrEmpty(data.resourceIds);
                         },
-                        delay: function (e) {
-                            var data = e.data;
-                            return {url: '${contextRoot}/resourceBrowse/searchResource?ids=' + data.id}
-                        },
-                        checkbox: false,
-                        isExpand: function (e) {
-                        },
-                        idFieldName: 'id',
-                        parentIDFieldName: 'pid',
-                        textFieldName: 'name',
-
                         onSelect: function (data) {
                             resourceCategoryName = data.data.name;
                             resourceCategoryId = data.data.resourceIds;
@@ -233,8 +241,60 @@
                                 "line-height": "22px",
                                 "height": "22px"
                             });
-                        },
+                        }
                     });
+
+                    <%--var typeTree = this.$resourceBrowseTree.ligerTree({--%>
+                        <%--nodeWidth: 260,--%>
+                        <%--url: '${contextRoot}/resourceBrowse/searchResource?ids=',--%>
+                        <%--isLeaf: function (data) {--%>
+                            <%--return !Util.isStrEmpty(data.resourceIds);--%>
+                        <%--},--%>
+                        <%--delay: function (e) {--%>
+                            <%--var data = e.data;--%>
+                            <%--return {url: '${contextRoot}/resourceBrowse/searchResource?ids=' + data.id}--%>
+                        <%--},--%>
+                        <%--checkbox: false,--%>
+                        <%--isExpand: function (e) {--%>
+                        <%--},--%>
+                        <%--idFieldName: 'id',--%>
+                        <%--parentIDFieldName: 'pid',--%>
+                        <%--textFieldName: 'name',--%>
+
+                        <%--onSelect: function (data) {--%>
+                            <%--resourceCategoryName = data.data.name;--%>
+                            <%--resourceCategoryId = data.data.resourceIds;--%>
+                            <%--resourcesCode = data.data.resourceCode;  //根据resourcesCode查询表结构--%>
+
+                            <%--if (Util.isStrEmpty(resourceCategoryId)) {--%>
+                                <%--return;--%>
+                            <%--}--%>
+<%--//                            paramModel.dictId[1] = resourceCategoryId;--%>
+                            <%--paramModel.dictId[1] = resourcesCode;--%>
+<%--//                            paramModel.dictId[2] = resourcesCode;--%>
+                            <%--dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {--%>
+<%--//                                data: {dictId: resourceCategoryId},--%>
+                                <%--data: {dictId: resourcesCode},--%>
+                                <%--success: function (data) {--%>
+                                    <%--retrieve.$defaultCondition.ligerComboBox({--%>
+                                        <%--valueField: 'code',--%>
+                                        <%--textField: 'value',--%>
+                                        <%--width: 240,--%>
+                                        <%--data: data,--%>
+                                    <%--});--%>
+                                <%--}--%>
+                            <%--});--%>
+                            <%--debugger--%>
+                            <%--resourceBrowseMaster.init(resourceCategoryId, resourcesCode);--%>
+                        <%--},--%>
+                        <%--onSuccess: function (data) {--%>
+                            <%--resourceBrowseMaster.init(data[0].id);--%>
+                            <%--$("#div_resource_browse_tree li div span").css({--%>
+                                <%--"line-height": "22px",--%>
+                                <%--"height": "22px"--%>
+                            <%--});--%>
+                        <%--},--%>
+                    <%--});--%>
                 },
             };
             resourceBrowseMaster = {
@@ -274,6 +334,10 @@
 
                     //新增一行查询条件
                     self.$newSearchBtn.click(function () {
+
+                        var searcHheight = $(".div-search-height").height();
+                        resourceInfoGrid.setHeight(windowHeight-(searcHheight+290));
+
                         var model = self.$searchModel.clone(true);
                         self.$newSearch.append(model);
 
@@ -472,6 +536,8 @@
                     });
                     //删除一行查询条件
                     self.$delBtn.click(function () {
+                        var searcHheight = $(".div-search-height").height();
+                        resourceInfoGrid.setHeight(windowHeight-(searcHheight+210));
                         $(this).parent().remove();
                     });
 
@@ -576,9 +642,11 @@
 
                     //导出选择结果
                     self.$outSelExcelBtn.click(function () {
-                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                         var rowData = resourceInfoGrid.getSelectedRows();
-
+                        if (rowData.length<=0){
+                            return;
+                        }
+                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/resourceBrowse/outExcel", {
                                                 data: {rowData:JSON.stringify(rowData),resourceCategoryName:resourceCategoryName},
                                                 success: function (data) {
@@ -593,9 +661,11 @@
 
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
-                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                         var rowData = resourceInfoGrid.data.detailModelList;
-
+                        if (rowData.length<=0){
+                            return;
+                        }
+                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/resourceBrowse/outExcel", {
                             data: {rowData:JSON.stringify(rowData),resourceCategoryName:resourceCategoryName},
                             success: function (data) {

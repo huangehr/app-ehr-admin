@@ -26,7 +26,7 @@ import java.util.Map;
  */
 
 @Controller
-@RequestMapping("resourceView")
+@RequestMapping("/resourceView")
 public class resourceViewController extends BaseUIController {
 
     @Value("${service-gateway.username}")
@@ -40,7 +40,7 @@ public class resourceViewController extends BaseUIController {
     public String resourceBrowseInitial(Model model,String dataModel) {
         model.addAttribute("contentPage", "/resource/resourcebrowse/resourceView");
         model.addAttribute("dataModel",dataModel);
-        return "generalView";
+        return "pageView";
     }
 
     @RequestMapping("/searchResource")
@@ -67,7 +67,6 @@ public class resourceViewController extends BaseUIController {
     public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        resourcesCode = "RS_PATIENT_EVENT";
         String url = "/resources/ResourceBrowses/getResourceData";
         params.put("resourcesCode", resourcesCode);
         params.put("queryCondition", searchParams);

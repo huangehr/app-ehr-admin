@@ -16,7 +16,7 @@
 			var switchUrl = {
 				configUrl:'${contextRoot}/resourceConfiguration/initial',
 				grantUrl:'${contextRoot}/resource/grant/initial',
-				browseUrl:""
+				viewUrl:'${contextRoot}/resourceView/initial'
 			}
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
@@ -116,9 +116,9 @@
 							{display: '资源说明', name: 'description', width: '23%', align: 'left'},
 							{display: '操作', name: 'operator', width: '22%', render: function (row) {
 								var html = '';
-								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl) + '">配置</a>';
-								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl) + '">授权</a>';
-								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{4}'])", "rs:switch:open",row.id,switchUrl.browseUrl) + '">浏览</a>';
+								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1") + '">配置</a>';
+								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1") + '">授权</a>';
+								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.viewUrl,row.code) + '">浏览</a>';
 								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a>';
 								html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a>';
 								return html;
@@ -184,7 +184,7 @@
 						})
 					});
 					//配置、浏览页面跳转
-					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url){
+					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url,resourceCode){
 						var dataModel = $.DataModel.init();
 						dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
 							data:{categoryId:categoryId},
@@ -196,6 +196,7 @@
 										'resourceName':resourceName,
 										'resourceSub':categoryName,
 										'categoryIds':data.obj,
+										'resourceCode':resourceCode,
 										'backParams':{
 											'categoryIds':data.obj,
 											'sourceFilter':$('#inp_searchNm').val(),
