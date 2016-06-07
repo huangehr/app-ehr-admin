@@ -98,10 +98,11 @@
                 //删除事件
                 del : function (event, id) {
                     var m = master;
-                    uniqDel(m.grid, m.find, m.urls.del, id, undefined, 'code');
+                    uniqDel(m.grid, m.find, m.urls.del, id, undefined, 'id');
                 },
                 //查询列表方法
                 find : function (curPage) {
+                    selectRowObj = null;
                     var vo = [{name: 'code', logic: '?', fields: 'code,name'}];
                     var params = {filters: covertFilters(vo, $('#retrieve'))}
                     reloadGrid(master.grid, curPage, params);

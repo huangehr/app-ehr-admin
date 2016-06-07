@@ -15,7 +15,7 @@ public class GrantService extends ExtendService<RsAppResourceMetadataModel> {
 
     public GrantService() {
         init(
-                "/resources/metadata/grants",        //searchUrl
+                "/resources/app_resource/{app_res_id}/metadata",        //searchUrl
                 "/resources/metadata/grants/{id}",   //modelUrl
                 "/resources/metadatas",               //addUrl
                 "/resources/metadata/grants/{id}",   //modifyUrl
