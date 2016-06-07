@@ -21,7 +21,7 @@
 		<!--资源浏览详情-->
 		<div id="div_right" class="div-resource-browse" style="float: left;width: 700px;margin-left: 10px">
 			<div class="right-retrieve">
-				<div class="f-db f-pt10 f-pb10">
+				<div class="f-db f-pt10 f-pb10 f-ml10">
 					<!--输入框-->
 					<input type="text" id="inp_searchNm" placeholder="请输入资源代码或名称" class="f-ml10 f-h28 f-w240" data-attr-scan="searchNm"/>
 				</div>

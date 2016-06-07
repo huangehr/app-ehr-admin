@@ -6,12 +6,12 @@
 <div class="f-mat" id="div_wrapper">
 
     <div class="div-resource-configuration-title">
-        <a class="f-fl" href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/resource/resourceManage/initial');">返回上一层</a>
+        <a id="btn_back" class="f-fl" >返回上一层</a>
         <div class="f-fl f-ml100">
             <span>资源名称：</span><span id="sp_resourceName"></span>
         </div>
         <div class="f-fl f-ml100">
-            <span>资源主题：</span><span></span>
+            <span>资源主题：</span><span id="sp_resourceSub"></span>
         </div>
     </div>
     <hr>
