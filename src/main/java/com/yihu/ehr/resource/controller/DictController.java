@@ -5,6 +5,10 @@ import com.yihu.ehr.resource.service.DictService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
+
 /**
  * @author lincl
  * @version 1.0
@@ -22,4 +26,13 @@ public class DictController extends ExtendController<DictService> {
         comboKv.put("code", "code");
     }
 
+    @Override
+    public Map beforeGotoModify(Map params) {
+        try {
+            params.put("id", URLEncoder.encode(String.valueOf(params.get("id")), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return params;
+    }
 }

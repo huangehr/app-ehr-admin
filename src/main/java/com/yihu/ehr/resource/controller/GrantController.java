@@ -5,6 +5,7 @@ import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.resource.service.GrantService;
+import com.yihu.ehr.util.Envelop;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -32,6 +33,10 @@ public class GrantController extends ExtendController<GrantService>{
         );
     }
 
+    @Override
+    public String beforeSearch(String searchUrl, Map<String, Object> params) {
+        return searchUrl.replace("{app_res_id}", (String) params.get("appResId"));
+    }
 
     @RequestMapping("/gotoAppGrant")
     public Object gotoGrant(Model model, String resourceId){
@@ -131,12 +136,12 @@ public class GrantController extends ExtendController<GrantService>{
 
     @RequestMapping("/lock")
     @ResponseBody
-    public Object lock(String ids, int valid) {
+    public Object lock(String data, int valid) {
 
         try {
             String url = service.comUrl + "/resources/metadatas/valid";
             Map map = new HashMap<>();
-            map.put("ids", ids);
+            map.put("data", data);
             map.put("valid", valid);
             String resultStr = service.doPut(url, map);
             if("true".equals(resultStr))
@@ -150,18 +155,48 @@ public class GrantController extends ExtendController<GrantService>{
 
     @RequestMapping("/saveMeta")
     @ResponseBody
-    public Object saveMeta(String id, String dimension) {
+    public Object saveMeta(String model) {
 
         try {
-            if(StringUtils.isEmpty(id))
-                faild("参数错误！");
-            String url = service.comUrl + "/resources/metadata/grants/"+ id;
+            String url = service.comUrl + "/resources/metadata/grants";
             Map map = new HashMap<>();
-            map.put("dimension", dimension);
+            map.put("model", model);
             String resultStr = service.doPost(url, map);
             return resultStr;
         } catch (Exception e) {
             return faild("授权失败");
         }
     }
+
+    @RequestMapping("/gotoMetaGrant")
+    public Object gotoMetaGrant(Model model, String mode, String id, String appResId, String resMetaId, String appId){
+        try {
+            Envelop envelop;
+            Map<String, Object> params = new HashMap<>();
+
+            if (!StringUtils.isEmpty(id)){
+                params.put("id",id);
+                envelop = getEnvelop(service.getModel(params));
+            }else {
+                params.put("app_res_id",appResId);
+                params.put("res_meta_id", resMetaId);
+                params.put("app_id", appId);
+                envelop = getEnvelop(service.search("/resources/app_resource/metadata/grant", params));
+            }
+
+            Object plan;
+            if(envelop.getObj()==null)
+                plan = service.newModel();
+            else
+                plan = envelop.getObj();
+
+            model.addAttribute("model",toJson(plan));
+            model.addAttribute("contentPage", getModeUrl(mode));
+            return "simpleView";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return systemError();
+        }
+    }
+
 }

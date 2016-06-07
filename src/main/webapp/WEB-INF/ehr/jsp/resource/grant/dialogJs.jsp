@@ -104,23 +104,24 @@
                 if(!validator.validate()) return;
                 $form.attrScan();
                 var logicName = $('#ipt_logic').val(), conditionName = "", dimension = [];
-                var model = $form.Fields.getValues();
-                if(model['content1']){
+                var iptModel = $form.Fields.getValues();
+                if(iptModel['content1']){
                     conditionName = logicName + " " + $('#content1').val() +" 与 "+ $('#content2').val();
-                    if(model.logic == '<>'){
-                        dimension.push({"andOr":" AND ","field":model.metaId,"condition":" > ","value":model['content1'], "conditionName": conditionName});
-                        dimension.push({"andOr":" AND ","field":model.metaId,"condition":" < ","value":model['content2']});
-                    }else if(model.logic == '><'){
-                        dimension.push({"andOr":" OR ","field":model.metaId,"condition":" < ","value":model['content1'], "conditionName": conditionName});
-                        dimension.push({"andOr":" OR ","field":model.metaId,"condition":" > ","value":model['content2']});
+                    if(iptModel.logic == '<>'){
+                        dimension.push({"andOr":" AND ","field":iptModel.metaId,"condition":" > ","value":iptModel['content1'], "conditionName": conditionName});
+                        dimension.push({"andOr":" AND ","field":iptModel.metaId,"condition":" < ","value":iptModel['content2']});
+                    }else if(iptModel.logic == '><'){
+                        dimension.push({"andOr":" OR ","field":iptModel.metaId,"condition":" < ","value":iptModel['content1'], "conditionName": conditionName});
+                        dimension.push({"andOr":" OR ","field":iptModel.metaId,"condition":" > ","value":iptModel['content2']});
                     }
                 } else{
                     conditionName = logicName + " " + $('#content').val();
-                    dimension.push({"andOr":" AND ","field":model.metaId,"condition":" "+ model.logic +" ","value":model['content'], "conditionName": conditionName});
+                    dimension.push({"andOr":" AND ","field":iptModel.metaId,"condition":" "+ iptModel.logic +" ","value":iptModel['content'], "conditionName": conditionName});
                 }
 
-                var params = {dimension: JSON.stringify(dimension), id: model.id};
-                saveForm({url: urls.update, parms: params, $form: $form, validator: validator});
+                var params = {dimensionValue: JSON.stringify(dimension), id: model.id, appResourceId: model.appResourceId, resourceMetadataName: model.resourceMetadataName,
+                    resourceMetadataId: model.resourceMetadataId, appId: model.appId, dimensionId: model.dimensionId, valid: model.valid};
+                saveForm({url: urls.update, parms: {model: JSON.stringify(params)}, $form: $form, validator: validator});
             });
 
             $('#btn_cancel').click(function () {
@@ -129,7 +130,7 @@
         };
 
         function checkInit(){
-            if(!model.id){
+            if(!model.resourceMetadataName){
                 $.Notice.error("数据加载失败！", function () {
                     parent.closeDialog();
                 });
