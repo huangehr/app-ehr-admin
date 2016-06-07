@@ -11,14 +11,20 @@
             var h = $(window).height();
             // 页面主模块，对应于用户信息表区域
             var master = null;
-            var resourceModel =${envelop}.obj;
-            $("#sp_resourceName").html(resourceModel.name);
+            //var resourceModel =${envelop}.obj;
+			//$("#sp_resourceName").html(resourceModel.name);
+
+			var sourceData = ${dataModel};
+			$("#sp_resourceName").html(sourceData.resourceName);
+			$("#sp_resourceSub").html(sourceData.resourceSub);
+
+
 //            var elmDataModel_1 = null;
             var addRowDatas = new Array();
             var delRowDatas = new Array();
 
             var comUrl = '${contextRoot}/resourceConfiguration';
-            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration', comUrl + '/searchSelResourceconfiguration?resourcesId=' + resourceModel.id]
+            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration', comUrl + '/searchSelResourceconfiguration?resourcesId=' + sourceData.resourceId]
             var elmParams = ['resourceConfigurationInfoGrid', 'resourceConfigurationInfoGridTrue'];
 
             var dataModel = $.DataModel.init();
@@ -165,7 +171,7 @@
 
                     function addRows(rowdata) {
                         var metaData_rowData = {
-                            resourcesId: resourceModel.id,
+                            resourcesId: sourceData.resourceId,
                             metadataId: rowdata.id,
                             groupType: "testType",
                             groupData: "testdata",
@@ -205,6 +211,11 @@
                     reloadGrid.call(this, url, {searchNm: value}, searchType);
                 },
                 bindEvents: function () {
+					//返回资源注册页面
+					$('#btn_back').click(function(){
+						$('#contentPage').empty();
+						$('#contentPage').load('${contextRoot}/resource/resourceManage/initial?backParams='+JSON.stringify(sourceData.backParams));
+					});
 
                     retrieve.$saveBtn.click(function () {
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
