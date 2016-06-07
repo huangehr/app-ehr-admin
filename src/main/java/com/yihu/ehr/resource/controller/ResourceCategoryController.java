@@ -190,7 +190,7 @@ public class ResourceCategoryController extends BaseUIController{
             Map<String,Object> params = new HashMap<>();
             if(!StringUtils.isEmpty(strId)){
                 params.put("id",strId);
-                urlGetAll="/types/parent";
+                urlGetAll="/resources/types/parent";
             }
             String envelopStr = HttpClientUtil.doGet(comUrl+urlGetAll,params,username,password);
             return envelopStr;
