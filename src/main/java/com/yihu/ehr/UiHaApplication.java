@@ -1,5 +1,6 @@
 package com.yihu.ehr;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
@@ -12,7 +13,14 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 //@SpringBootApplication
 public class UiHaApplication extends SpringBootServletInitializer {
-	public static void main(String[] args) {
+	static {
+		try{
+			String log4jPath = UiHaApplication.class.getClassLoader().getResource("").getPath()+"log4j.properties";
+			PropertyConfigurator.configure(log4jPath);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}public static void main(String[] args) {
 		SpringApplication.run(UiHaApplication.class, args);
 	}
 
