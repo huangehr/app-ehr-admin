@@ -1,6 +1,7 @@
 package com.yihu.ehr.apps.controller;
 
 import com.yihu.ehr.agModel.app.AppDetailModel;
+import com.yihu.ehr.agModel.resource.RsAppResourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -237,6 +240,45 @@ public class AppController extends BaseUIController {
         model.addAttribute("contentPage", "/app/resource");
         return "pageView";
     }
+
+    //获取app已授权资源ids集合
+    @RequestMapping("/resourceIds")
+    @ResponseBody
+    public  Object getResourceIds(String appId){
+        Envelop envelop = new Envelop();
+        List<String> list = new ArrayList<>();
+        envelop.setSuccessFlg(false);
+        envelop.setDetailModelList(list);
+        URLQueryBuilder builder = new URLQueryBuilder();
+        if (StringUtils.isEmpty(appId)) {
+            return envelop;
+        }
+        builder.addFilter("appId", "=", appId, null);
+        builder.setPageNumber(1)
+                .setPageSize(999);
+        String param = builder.toString();
+        String url = "/resources/grants";
+        String resultStr = "";
+        try {
+            RestTemplates template = new RestTemplates();
+            resultStr = template.doGet(comUrl+url+"?"+param);
+            Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
+            if(resultGet.isSuccessFlg()&&resultGet.getDetailModelList().size()!=0){
+                List<RsAppResourceModel> rsAppModels = (List<RsAppResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsAppResourceModel>(),RsAppResourceModel.class);
+                for(RsAppResourceModel m : rsAppModels){
+                    list.add(m.getResourceId());
+                }
+                envelop.setSuccessFlg(true);
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+        }
+        envelop.setDetailModelList(list);
+        return envelop;
+    }
+
+
+
 
     /**
      * 跳转资源授权页面顶部app信息

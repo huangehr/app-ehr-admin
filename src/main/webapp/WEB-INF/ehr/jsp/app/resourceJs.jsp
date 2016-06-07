@@ -18,6 +18,8 @@
 			var isFirstPage = true;
 			var typeTree = null;
 			var backParams = ${backParams};
+			//应用已授权资源集合
+			var appRsIds = [];
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
 				conditionArea.init();
@@ -118,6 +120,8 @@
 			master = {
 				resourceInfoGrid:null,
 				init: function () {
+					//获取应用已授权资源ids
+					master.loadResourceIds();
 					this.resourceInfoGrid = $("#div_resource_info_grid").ligerGrid($.LigerGridEx.config({
 						url: '${contextRoot}/resource/resourceManage/resources',
 						parms: {
@@ -134,6 +138,9 @@
 							{display: '资源说明', name: 'description', width: '30%', align: 'left'},
 							{display: '操作', name: 'operator', width: '10%', render: function (row) {
 								var html = '';
+								if(appRsIds.indexOf(row.id)<0){
+									return ''
+								}
 								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:resourceManage:list",row.id,appId) + '">维度管理</a>';
 								return html;
 							}}
@@ -152,6 +159,18 @@
 				reloadGrid: function () {
 					var searchNm = $('#inp_searchNm').val();
 					reloadGrid.call(this,{'searchNm':searchNm,'categoryId': categoryId});
+				},
+				loadResourceIds:function(){
+					var dataModel = $.DataModel.init();
+					dataModel.updateRemote("${contextRoot}/app/resourceIds",{
+						data:{appId:appId},
+						async:true,
+						success: function(data) {
+							if(data.successFlg){
+								appRsIds = data.detailModelList;
+							}
+						}
+					});
 				},
 				bindEvents: function () {
 					//授权
@@ -178,6 +197,7 @@
 									success:function(data){
 										if(data.successFlg){
 											$.Notice.success( '授权成功！');
+											master.loadResourceIds();
 											master.reloadGrid();
 										}else{
 											$.Notice.error('授权失败！');
