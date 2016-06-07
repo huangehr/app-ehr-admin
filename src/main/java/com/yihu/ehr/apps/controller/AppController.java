@@ -326,10 +326,38 @@ public class AppController extends BaseUIController {
 
     //-------------------------------------------------------应用----资源----数据元--管理开始--------------
     @RequestMapping("/resourceManage/initial")
-    public String resourceManageInitial(Model model, String dataModel){
+    public String resourceManageInitial(Model model,String appId,String resourceId, String dataModel){
         model.addAttribute("dataModel",dataModel);
+        model.addAttribute("appRsId",getAppResId(appId,resourceId));
         model.addAttribute("contentPage", "/app/resourceManage");
         return "pageView";
+    }
+    //获取应用资源关联关系id
+    public String getAppResId(String appId,String resourceId) {
+        URLQueryBuilder builder = new URLQueryBuilder();
+        if (StringUtils.isEmpty(appId)||StringUtils.isEmpty(resourceId)) {
+            return "";
+        }
+        builder.addFilter("appId", "=", appId, "g1");
+        builder.addFilter("resourceId", "=", resourceId, "g1");
+        builder.setPageNumber(1)
+                .setPageSize(1);
+        String param = builder.toString();
+        String url = "/resources/grants";
+        String resultStr = "";
+        try {
+            RestTemplates template = new RestTemplates();
+            resultStr = template.doGet(comUrl+url+"?"+param);
+            Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
+            if(resultGet.isSuccessFlg()&&resultGet.getDetailModelList().size()!=0){
+                List<RsAppResourceModel> rsAppModels = (List<RsAppResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsAppResourceModel>(),RsAppResourceModel.class);
+                RsAppResourceModel resourceModel = rsAppModels.get(0);
+                return resourceModel.getId();
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+        }
+        return "";
     }
 
     /**

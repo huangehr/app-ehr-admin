@@ -141,7 +141,7 @@
 								if(appRsIds.indexOf(row.id)<0){
 									return ''
 								}
-								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:resourceManage:list",row.id,appId) + '">维度管理</a>';
+								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "app:resourceManage:list",row.id,row.code,row.name,row.categoryName) + '">维度管理</a>';
 								return html;
 							}}
 						],
@@ -209,7 +209,7 @@
 					});
 
 					//维度授权页面跳转
-					$.subscribe('app:resourceManage:list', function (event,resourceId,resourceName,categoryName) {
+					$.subscribe('app:resourceManage:list', function (event,resourceId,code,resourceName,categoryName) {
 						var dataModel = $.DataModel.init();
 						dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
 							data:{categoryId:categoryId},
@@ -219,6 +219,7 @@
 									var data = {
 										'appId':appId,
 										'resourceId':resourceId,
+										'code':code,
 										'resourceName':resourceName,
 										'resourceSub':categoryName,
 										'backParams':{
@@ -227,7 +228,7 @@
 										}
 									}
 									$("#contentPage").empty();
-									$("#contentPage").load('${contextRoot}/app/resourceManage/initial',{dataModel:JSON.stringify(data)});
+									$("#contentPage").load('${contextRoot}/app/resourceManage/initial?appId='+appId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});
 								}
 							},
 						});
