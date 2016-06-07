@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -78,23 +77,50 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/searchResourceData")
     @ResponseBody
-    public Object searchResourceData(String searchParams) {
+    public Object searchResourceData(String resourcesCode,String searchParams, int page, int rows) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-
-        params.put("id", searchParams);
-
+        String url = "/resources/ResourceBrowses/getResourceData";
+        resourcesCode = "RS_PATIENT_EVENT";
+        params.put("resourcesCode", resourcesCode);
+        params.put("queryCondition", searchParams);
+        params.put("page", page);
+        params.put("size", rows);
         try {
-
-            resultStr = HttpClientUtil.doGet(comUrl + "/resources/ResourceBrowses/categories", params, username, password);
-
-            envelop = toModel(resultStr, Envelop.class);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
         } catch (Exception e) {
 
         }
-        return envelop.getDetailModelList();
+        return resultStr;
     }
+
+//    /**
+//     * 动态获取GRID的列名
+//     *
+//     * @param dictId
+//     * @return
+//     */
+//    @RequestMapping("/")
+//    @ResponseBody
+//    public Object getGridCloumnNamestest(String dictId) {
+//        Envelop envelop = new Envelop();
+//        Map<String, Object> params = new HashMap<>();
+//        String url = "/resources/ResourceBrowses";
+//        String resultStr = "";
+//        params.put("category_id", dictId);
+//
+//        try {
+//
+//            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+//            envelop = toModel(resultStr, Envelop.class);
+//        } catch (Exception e) {
+//
+//        }
+//        return envelop.getDetailModelList();
+//    }
+
+
 
     /**
      * 动态获取GRID的列名
@@ -107,9 +133,10 @@ public class ResourceBrowseController extends BaseUIController {
     public Object getGridCloumnNames(String dictId) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String url = "/resources/ResourceBrowses";
+        String url = "/resources/ResourceBrowses/getResourceMetadata";
         String resultStr = "";
-        params.put("category_id", dictId);
+        dictId = "RS_PATIENT_EVENT";
+        params.put("resourcesCode", dictId);
 
         try {
 
@@ -120,6 +147,7 @@ public class ResourceBrowseController extends BaseUIController {
         }
         return envelop.getDetailModelList();
     }
+
 
     @RequestMapping("/getRsDictEntryList")
     @ResponseBody

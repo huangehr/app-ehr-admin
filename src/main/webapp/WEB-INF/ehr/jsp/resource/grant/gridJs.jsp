@@ -72,6 +72,7 @@
                 },
                 //查询列表方法
                 find : function () {
+                    em.find(1, -1);
                     var m = master;
                     m.tree.reload();
                 },
@@ -85,7 +86,7 @@
                 grid: undefined, dialog: undefined, params: {},
                 urls: {
                     list: '${contextRoot}/resource/grant/list',
-                    gotoModify: '${contextRoot}/resource/grant/gotoModify',
+                    gotoModify: '${contextRoot}/resource/grant/gotoMetaGrant',
                     lock: '${contextRoot}/resource/grant/lock'
                 },
                 //初始化
@@ -99,27 +100,40 @@
                 rendBarTools : function(){
                     function lock(type, isLock){
                         var m = em, g = em.grid;
-                        var ids = [];
+                        var ids = [], rows;
                         if(type==1){
-                            var rows = g.getSelectedRows();
+                            rows = g.getSelectedRows();
                             if(rows.length==0){
                                 $.Notice.warn("请选择数据！");
                                 return;
                             }
-                            $.each(rows, function (i, v) {
-                                ids.push(v.id);
-                            })
                         }else{
-                            if(g.getData().length==0){
+                            if((rows = g.getData()).length==0){
                                 $.Notice.warn("没有数据！");
                                 return;
                             }
                         }
+                        var data = [];
+                        $.each(rows, function (i, v) {
+                            if((isLock==0 && v.id) || isLock==1)
+                                data.push({
+                                    "id": v.id,
+                                    "appResourceId": v.appResourceId,
+                                    "appId": v.appId,
+                                    "resourceMetadataId": v.resourceMetadataId,
+                                    "resourceMetadataName": v.resourceMetadataName,
+                                    "dimensionId": v.dimensionId,
+                                    "dimensionValue": v.dimensionValue,
+                                    "valid": isLock
+                                });
+                        })
+
+
 
                         var dialog = $.ligerDialog.waitting('正在处理中,请稍候...');
                         var dataModel = $.DataModel.init();
                         dataModel.updateRemote(m.urls.lock, {
-                            data: {ids: ids.join(","), valid: isLock, type: type},
+                            data: {data: JSON.stringify(data), valid: isLock, type: type},
                             success: function (data) {
                                 if (data.successFlg) {
                                     $.Notice.success('操作成功！');
@@ -182,20 +196,20 @@
                 //操作栏渲染器
                 opratorRender: function (row){
                     var vo = [
-                        {type: 'edit', clkFun: "$.publish('grant:meta:modify',['"+ row['id'] +"', 'modify'])"}
+                        {type: 'edit', clkFun: "$.publish('grant:meta:modify',['"+ row['id'] +"', '"+ row['appResourceId'] +"', '"+ row['resourceMetadataId'] +"', '"+ row['appId'] +"', 'modify'])"}
                     ];
                     return initGridOperator(vo);
                 },
                 //修改、新增点击事件
-                gotoModify : function (event, id, mode) {
+                gotoModify : function (event, id, appResId, resMetaId, appId, mode) {
                     id = id || '';
                     curOprator = em;
-                    var params = {id: id, mode: mode};
+                    var params = {id: id, mode: mode, appResId: appResId, resMetaId: resMetaId, appId: appId};
                     em.dialog = openedDialog = openDialog(em.urls.gotoModify, '维度授权', 500, 250, params);
                 },
                 //查询列表方法
                 find : function (appId, appResourceId) {
-                    var params = !appId? em.params: (em.params = {filters: "appId="+ appId +";appResourceId="+ appResourceId, page:1, rows: 999});
+                    var params = !appId? em.params: (em.params = {extParms: '{"appResId": "'+ appResourceId +'"}', page:1, rows: 999});
                     reloadGrid(this.grid, 1, params);
                 },
                 //公开方法

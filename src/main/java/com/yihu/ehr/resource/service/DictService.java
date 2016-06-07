@@ -21,6 +21,6 @@ public class DictService extends ExtendService<RsDictionaryModel> {
                 "/resources/dict/{id}"       //deleteUniqUrl
         );
         existenceUrl = "/resources/dict/existence"; //存在
-        this.idField = "code";
+//        this.idField = "code";
     }
 }

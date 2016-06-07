@@ -189,7 +189,8 @@ public class ResourceCategoryController extends BaseUIController{
             String urlGetAll = "/resources/categories";
             Map<String,Object> params = new HashMap<>();
             if(!StringUtils.isEmpty(strId)){
-                params.put("filters","id<>"+strId);
+                params.put("id",strId);
+                urlGetAll="/types/parent";
             }
             String envelopStr = HttpClientUtil.doGet(comUrl+urlGetAll,params,username,password);
             return envelopStr;
