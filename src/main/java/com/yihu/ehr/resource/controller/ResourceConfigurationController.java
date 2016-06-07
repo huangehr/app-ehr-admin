@@ -31,8 +31,9 @@ public class ResourceConfigurationController extends BaseUIController {
     private String comUrl;
 
     @RequestMapping("/initial")
-    public String resourceConfigurationInitial(Model model) {
+    public String resourceConfigurationInitial(Model model,String dataModel) {
         model.addAttribute("contentPage", "/resource/resourceconfiguration/resourceConfiguration");
+        model.addAttribute("dataModel",dataModel);
         return "pageView";
     }
 

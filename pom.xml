@@ -32,7 +32,21 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		<!-- 引入log4j-slf4j -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jersey</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>log4j-over-slf4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
 		<!-- 使用intellij作为集成开发环境 -->
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>

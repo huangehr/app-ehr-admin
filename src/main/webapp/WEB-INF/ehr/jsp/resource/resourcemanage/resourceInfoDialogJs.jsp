@@ -22,6 +22,7 @@
 			$name: $("#inp_name"),
 			$code: $("#inp_code"),
 			$interface: $("#inp_interface"),
+			$grantType: $('input[name="grantType"]', this.$form),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -35,6 +36,7 @@
 				this.$name.ligerTextBox({width:240});
 				this.$code.ligerTextBox({width:240});
 				this.$description.ligerTextBox({width:240, height: 120 });
+				this.$grantType.ligerRadio();
 				var mode = '${mode}';
 				if(mode == 'view'){
 					rsInfoForm.$form.addClass('m-form-readonly');
@@ -67,6 +69,7 @@
 				this.$form.show();
 			},
 			initDDL: function () {
+				this.$grantType.eq(0).attr("checked", 'true')
 				//this.$catalog.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",

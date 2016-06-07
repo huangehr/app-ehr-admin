@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -7,9 +8,16 @@
 			var Util = $.Util;
 			var retrieve = null;
 			var master = null;
-			var dataModel = $.DataModel.init();
 			var isFirstPage = true;
 			var categoryId = '';
+			//类别链字符串，类别id，父级id，父级的父级id。。，
+			var backParams = ${backParams};
+			var typeTree = null;
+			var switchUrl = {
+				configUrl:'${contextRoot}/resourceConfiguration/initial',
+				grantUrl:'${contextRoot}/resource/grant/initial',
+				browseUrl:""
+			}
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
 				resizeContent();
@@ -26,6 +34,7 @@
 			}
 			/* *************************** 模块初始化 ***************************** */
 			retrieve = {
+				typeTree: null,
 				$resourceBrowseTree: $("#div_resource_browse_tree"),
 				$logicalRelationship: $("#inp_logical_relationship"),
 				$searchModel: $(".div_search_model"),
@@ -35,40 +44,34 @@
 				init: function () {
 					var self = this;
 					var categoryName = '';
-					var flag = false;
 					this.$search.ligerTextBox({width:220,isSearch: true, search: function () {
 						categoryName = $("#inp_search").val();
-						if(!Util.isStrEmpty(categoryName)){
-							flag = true
+						typeTree.s_search(categoryName);
+						if(categoryName == ''){
+							typeTree.collapseAll();
+						}else{
+							typeTree.expandAll();
 						}
-						self.getResourceBrowseTree(categoryName,flag);
 					}});
 					this.$searchNm.ligerTextBox({width:240,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
 						var parms = {
 							'searchNm':searchNm,
-							'categoryId':categoryId
+							'categoryId':categoryId,
 						};
 						reloadGrid(parms);
 					}});
-					self.getResourceBrowseTree(categoryName,flag);
+					self.getResourceBrowseTree();
 				},
-				getResourceBrowseTree: function (categoryName,flag) {
-					var typeTree = this.$resourceBrowseTree.ligerTree({
+				getResourceBrowseTree: function () {
+					typeTree = this.$resourceBrowseTree.ligerSearchTree({
 						nodeWidth: 240,
-						url: '${contextRoot}/resource/resourceManage/tree?categoryName='+categoryName,//参数ids值为测试值
-						<%--url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=',//参数ids值为测试值--%>
-						<%--isLeaf: function (data) {--%>
-						<%--},--%>
-						<%--delay: function (e) {--%>
-							<%--var data = e.data;--%>
-							<%--return {url: '${contextRoot}/resource/resourceManage/categories?categoryName='+categoryName+'&pid=' + data.id}--%>
-						<%--},--%>
+						url: '${contextRoot}/resource/resourceManage/categories',
 						checkbox: false,
 						idFieldName: 'id',
 						parentIDFieldName :'pid',
 						textFieldName: 'name',
-						isExpand: flag,
+						isExpand: false,
 						childIcon:'folder',
 						parentIcon:'folder',
 						onSelect: function (e) {
@@ -81,14 +84,14 @@
 									"line-height": "22px",
 									"height": "22px"
 								});
-								for(var i=0;i<data.length;i++){
-									if(data[i].pid == null){
-										categoryId =  data[i].id;
-										typeTree.selectNode(categoryId)
-										master.reloadGrid();
-										return
-									}
-								}
+							}
+							if(backParams.categoryIds){
+								var categoryIds = backParams.categoryIds;
+								typeTree.s_searchForLazy(categoryIds);
+								var ids = categoryIds.split(",");
+								var id = ids[ids.length-1];
+								$('#inp_searchNm').val(backParams.sourceFilter)
+								typeTree.selectNode(id);
 							}
 						},
 					});
@@ -100,7 +103,7 @@
 					this.resourceInfoGrid = $("#div_resource_info_grid").ligerGrid($.LigerGridEx.config({
 						url: '${contextRoot}/resource/resourceManage/resources',
 						parms: {
-							searchNm: '',
+							searchNm: $('#inp_searchNm').val(),
 							categoryId: categoryId
 						},
 						columns: [
@@ -113,9 +116,9 @@
 							{display: '资源说明', name: 'description', width: '23%', align: 'left'},
 							{display: '操作', name: 'operator', width: '22%', render: function (row) {
 								var html = '';
-								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'config') + '">配置</a>';
-								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:grant:open",row.id,row.name,row.categoryName) + '">授权</a>';
-								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:switch:open",row.id,'browse') + '">浏览</a>';
+								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl) + '">配置</a>';
+								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl) + '">授权</a>';
+								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{4}'])", "rs:switch:open",row.id,switchUrl.browseUrl) + '">浏览</a>';
 								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a>';
 								html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a>';
 								return html;
@@ -181,22 +184,28 @@
 						})
 					});
 					//配置、浏览页面跳转
-					$.subscribe("rs:switch:open",function(event,resourceId,pageName){
-						var url = '${contextRoot}/resource/resourceManage/switch?pageName='+pageName+'&resourceId='+resourceId;
-						$("#contentPage").empty();
-						$("#contentPage").load(url);
-					});
-					//授权页面跳转
-					$.subscribe("rs:grant:open",function(event,resourceId,resourceName,categoryName){
-						var data = {
-							'resourceId':resourceId,
-							'resourceName':resourceName,
-							'resourceSub':categoryName
-						}
-						//var data="{resourceId:'"+resourceId+"',resourceName:'"+resourceName+"',resourceSub:'"+categoryName+"'}";
-						var url = '${contextRoot}/resource/grant/initial';
-						$("#contentPage").empty();
-						$("#contentPage").load(url,{dataModel:JSON.stringify(data)});
+					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url){
+						var dataModel = $.DataModel.init();
+						dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
+							data:{categoryId:categoryId},
+							async:true,
+							success: function(data) {
+								if (data.successFlg) {
+									var data = {
+										'resourceId':resourceId,
+										'resourceName':resourceName,
+										'resourceSub':categoryName,
+										'categoryIds':data.obj,
+										'backParams':{
+											'categoryIds':data.obj,
+											'sourceFilter':$('#inp_searchNm').val(),
+										}
+									}
+									$("#contentPage").empty();
+									$("#contentPage").load(url,{dataModel:JSON.stringify(data)});
+								}
+							},
+						});
 					});
 				},
 			};
