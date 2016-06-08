@@ -94,7 +94,7 @@
 							{ display: '已授权资源', name: 'description', width: '20%',align:'left'},
 							{ display: '操作', name: 'operator', width: '10%', render: function (row) {
 								var html = '';
-								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:resource:list", row.id) + '">资源授权</a>';
+								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a>';
 								html += '<a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a>';
 								return html;
                             }}
@@ -170,10 +170,17 @@
                         master.check(id,status);
                     });
 					//资源授权页面跳转
-					$.subscribe('app:resource:list', function (event, appId) {
-						var url = '${contextRoot}/app/resource/initial?appId=' + appId+'&backParams=';
+					$.subscribe('app:resource:list', function (event, appId,name,catalogName) {
+						var data = {
+							'appId':appId,
+							'appName':name,
+							'catalogName':catalogName,
+							'categoryIds':'',
+							'sourceFilter':'',
+						}
+						var url = '${contextRoot}/app/resource/initial?';
 						$("#contentPage").empty();
-						$("#contentPage").load(url);
+						$("#contentPage").load(url,{backParams:JSON.stringify(data)});
 					});
                 },
             };
