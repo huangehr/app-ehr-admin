@@ -8,7 +8,7 @@
   <div class="m-form-group">
     <label>资源标准编码<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_std_code" class="required validate-code-char ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="stdCode">
+      <input type="text" id="ipt_meta_code" class="required validate-code-char ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="id">
     </div>
   </div>
 
@@ -22,7 +22,7 @@
   <div class="m-form-group">
     <label>内部标识符<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_meta_code" class="required validate-code-char ajax " required-title=<spring:message code="lbl.must.input"/> data-attr-scan="id">
+      <input type="text" id="ipt_std_code" class="required validate-code-char ajax " required-title=<spring:message code="lbl.must.input"/> data-attr-scan="stdCode">
     </div>
   </div>
 

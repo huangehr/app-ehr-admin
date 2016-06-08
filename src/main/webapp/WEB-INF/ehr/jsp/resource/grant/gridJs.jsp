@@ -250,7 +250,8 @@
                     return undefined;
                 var newData = [];
                 $.each(data, function (i, v) {
-                    newData.push({id: v.id, name: v.name, children: cloneData(v.children)})
+                    newData.push({id: v.id, name: v.name,
+                        appResId: v.otherPro? v.otherPro.appResourceId: undefined, children: cloneData(v.children)})
                 })
                 return newData;
             }
