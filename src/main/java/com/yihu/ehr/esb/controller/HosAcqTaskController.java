@@ -228,8 +228,8 @@ public class HosAcqTaskController extends BaseUIController {
         String filters = "";
         try{
             if (!StringUtils.isEmpty(searchParm)){
-//                filters += "orgCode?"+searchParm+" g1;fullName?"+searchParm+" g1;";
-                filters += "orgCode?"+searchParm+";";
+                filters += "orgCode?"+searchParm+" g1;fullName?"+searchParm+" g1;";
+                //filters += "orgCode?"+searchParm+";";
 
             }
             String url = "/organizations";
