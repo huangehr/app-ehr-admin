@@ -6,7 +6,7 @@
 <div id="div_wrapper" class="f-mt20">
     <!-- ####### 查询条件部分 ####### -->
     <div class="f-h785">
-        <div class="f-w18 f-bd f-of-hd" style="float: left">
+        <div class="f-w20 f-bd f-of-hd" style="float: left">
             <div class="f-mt10 f-ml10 f-w270">
                 <!--输入框-->
                 <input type="text" id="inp_search" class="f-ml10"/>
@@ -18,9 +18,12 @@
         <!--资源浏览详情-->
         <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">
             <!--添加动态查询-->
-            <div id="div_new_search" class="f-mt10 f-ml10">
-                <span class="f-fl f-mt10 f-ml10">查询条件：</span>
-                <div class="f-fl f-w90 f-ml50">
+            <div class="f-mt10 f-ml10 div-search-height" style="float: left;margin-left: 20px;width: 93%;">
+                <div id="div_new_search" class="f-mt10">
+                <div class="f-fl f-w90">
+                    <div class="f-fl f-ml10 f-mr10 f-mw8">
+                        <span class="f-fl f-mt10 f-ml10">查询条件：</span>
+                    </div>
                     <div class="f-fl f-ml10 f-mr10">
                         <input type="text" id="inp_default_condition" style="width: 238px" data-attr-scan="1" class="f-pr0 f-ml10 inp-reset"/>
                     </div>
@@ -32,6 +35,7 @@
                     </div>
                     <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
                 </div>
+                    </div>
             </div>
             <div class="f-fr f-mr20 f-mt10">
                 <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_search_btn">
@@ -54,7 +58,7 @@
 
         </div>
         <div class="f-fl f-w90 f-mt10 f-ml60 dis-none div_search_model" >
-            <div class="f-fl f-ml10 f-mr10">
+            <div class="f-fl f-ml10 f-mr10 f-mw8">
                 <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search"/>
             </div>
             <div class="f-fl f-ml10 f-mr10">

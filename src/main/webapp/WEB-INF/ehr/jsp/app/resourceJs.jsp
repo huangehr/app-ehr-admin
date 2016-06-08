@@ -6,21 +6,23 @@
 		$(function () {
 			/* ************************** 变量定义 ******************************** */
 			var Util = $.Util;
+			// 页面表格条件部模块
 			var retrieve = null;
+			// 页面主模块，对应于用户信息表区域
 			var master = null;
-			var isFirstPage = true;
+			var conditionArea = null;
+			var resourceInfoGrid = null;
+			var dataModel = $.DataModel.init();
+			var appId = '${appId}';
 			var categoryId = '';
-			//类别链字符串，类别id，父级id，父级的父级id。。，
-			var backParams = ${backParams};
+			var isFirstPage = true;
 			var typeTree = null;
-			var switchUrl = {
-				configUrl:'${contextRoot}/resourceConfiguration/initial',
-				grantUrl:'${contextRoot}/resource/grant/initial',
-				viewUrl:'${contextRoot}/resourceView/initial'
-			}
+			var backParams = ${backParams};
+			//应用已授权资源集合
+			var appRsIds = [];
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
-				resizeContent();
+				conditionArea.init();
 				retrieve.init();
 				master.init();
 			}
@@ -33,8 +35,28 @@
 				isFirstPage = true;
 			}
 			/* *************************** 模块初始化 ***************************** */
+			conditionArea = {
+				$appName :$('#msg_appName'),
+				$catalogName :$('#msg_catalogName'),
+				$orgName :$('#msg_orgName'),
+				init : function () {
+					this.initAppMsg();
+				},
+				initAppMsg: function () {
+					var self = this;
+					var dataModel = $.DataModel.init();
+					dataModel.fetchRemote("${contextRoot}/app/app",{
+						data:{appId:appId},
+						success: function(data) {
+							var model = data.obj;
+							self.$appName.val(model.name);
+							self.$catalogName.val(model.catalogName);
+							self.$orgName.val(model.orgName);
+						},
+					});
+				}
+			};
 			retrieve = {
-				typeTree: null,
 				$resourceBrowseTree: $("#div_resource_browse_tree"),
 				$logicalRelationship: $("#inp_logical_relationship"),
 				$searchModel: $(".div_search_model"),
@@ -57,7 +79,7 @@
 						var searchNm = $('#inp_searchNm').val();
 						var parms = {
 							'searchNm':searchNm,
-							'categoryId':categoryId,
+							'categoryId':categoryId
 						};
 						reloadGrid(parms);
 					}});
@@ -69,7 +91,7 @@
 						url: '${contextRoot}/resource/resourceManage/categories',
 						checkbox: false,
 						idFieldName: 'id',
-						parentIDFieldName :'pid',
+						parentIDFieldName:'pid',
 						textFieldName: 'name',
 						isExpand: false,
 						childIcon:'folder',
@@ -79,12 +101,10 @@
 							master.reloadGrid();
 						},
 						onSuccess: function (data) {
-							if(data.length != 0){
-								$("#div_resource_browse_tree li div span").css({
-									"line-height": "22px",
-									"height": "22px"
-								});
-							}
+							$("#div_resource_browse_tree li div span").css({
+								"line-height": "22px",
+								"height": "22px"
+							});
 							if(backParams.categoryIds){
 								var categoryIds = backParams.categoryIds;
 								typeTree.s_searchForLazy(categoryIds);
@@ -100,27 +120,28 @@
 			master = {
 				resourceInfoGrid:null,
 				init: function () {
+					//获取应用已授权资源ids
+					master.loadResourceIds();
 					this.resourceInfoGrid = $("#div_resource_info_grid").ligerGrid($.LigerGridEx.config({
 						url: '${contextRoot}/resource/resourceManage/resources',
 						parms: {
-							searchNm: $('#inp_searchNm').val(),
+							searchNm: '',
 							categoryId: categoryId
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
 							{display: '资源名称', name: 'name', width: '15%', align: 'left'},
-							{display: '资源编码', name: 'code', width: '15%', align: 'left'},
-							{display: '资源接口', name: 'rsInterfaceName', width: '15%', align: 'left'},
-							{display: '资源分类', name: 'categoryName', width: '10%', align: 'left'},
+							{display: '资源代码', name: 'code', width: '15%', align: 'left'},
+							{display: '数据源', name: 'rsInterfaceName', width: '15%', align: 'left'},
+							{display: '资源分类', name: 'categoryName', width: '15%', align: 'left'},
 							{display: '资源分类Id', name: 'categoryId',hide:true},
-							{display: '资源说明', name: 'description', width: '23%', align: 'left'},
-							{display: '操作', name: 'operator', width: '22%', render: function (row) {
+							{display: '资源说明', name: 'description', width: '30%', align: 'left'},
+							{display: '操作', name: 'operator', width: '10%', render: function (row) {
 								var html = '';
-								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1") + '">配置</a>';
-								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1") + '">授权</a>';
-								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.viewUrl,row.code) + '">浏览</a>';
-								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a>';
-								html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a>';
+								if(appRsIds.indexOf(row.id)<0){
+									return ''
+								}
+								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "app:resourceManage:list",row.id,row.code,row.name,row.categoryName) + '">维度管理</a>';
 								return html;
 							}}
 						],
@@ -139,52 +160,56 @@
 					var searchNm = $('#inp_searchNm').val();
 					reloadGrid.call(this,{'searchNm':searchNm,'categoryId': categoryId});
 				},
+				loadResourceIds:function(){
+					var dataModel = $.DataModel.init();
+					dataModel.updateRemote("${contextRoot}/app/resourceIds",{
+						data:{appId:appId},
+						async:true,
+						success: function(data) {
+							if(data.successFlg){
+								appRsIds = data.detailModelList;
+							}
+						}
+					});
+				},
 				bindEvents: function () {
-					//新增修改
-					$('#btn_add').click(function(){
-						$.publish("rs:info:open",['','new',categoryId]);
+					//授权
+					$('#btn_grant').click(function(){
+						$.publish('app:rs:grant',['']);
 					});
-					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
-						var title = "";
-						if(mode == "modify"){title = "修改资源";}
-						if(mode == "view"){title = "查看资源";}
-						if(mode == "new"){title = "新增资源";}
-						master.rsInfoDialog = $.ligerDialog.open({
-							height:550,
-							width:500,
-							title:title,
-							url:'${contextRoot}/resource/resourceManage/infoInitial',
-							urlParms:{
-								id:resourceId,
-								mode:mode,
-								categoryId:categoryId
-							},
-							load:true
-						});
-					});
-					//删除
-					$.subscribe('rs:info:delete',function(event,id){
-						$.ligerDialog.confirm("确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
-							if(yes){
+					$.subscribe('app:rs:grant',function(event,ids){
+						if(!ids){
+							var rows = master.resourceInfoGrid.getSelectedRows();
+							if(rows.length==0){
+								$.Notice.warn('请选择要授权给应用的资源！');
+								return;
+							}
+							for(var i=0;i<rows.length;i++){
+								ids += ',' + rows[i].id;
+							}
+							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
+						}
+						$.Notice.confirm('确认要授权所选资源？', function (r) {
+							if(r){
 								var dataModel = $.DataModel.init();
-								dataModel.updateRemote("${contextRoot}/resource/resourceManage/delete",{
-									data:{id:id},
-									async:true,
-									success: function(data) {
+								dataModel.updateRemote('${contextRoot}/app/resource/grant',{
+									data:{appId:appId,resourceIds:ids},
+									success:function(data){
 										if(data.successFlg){
-											$.Notice.success('删除成功。');
-											isFirstPage = false;
+											$.Notice.success( '授权成功！');
+											master.loadResourceIds();
 											master.reloadGrid();
 										}else{
-											$.Notice.error('删除失败。');
+											$.Notice.error('授权失败！');
 										}
 									}
 								});
 							}
 						})
 					});
-					//配置、浏览页面跳转
-					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url,resourceCode){
+
+					//维度授权页面跳转
+					$.subscribe('app:resourceManage:list', function (event,resourceId,code,resourceName,categoryName) {
 						var dataModel = $.DataModel.init();
 						dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
 							data:{categoryId:categoryId},
@@ -192,31 +217,29 @@
 							success: function(data) {
 								if (data.successFlg) {
 									var data = {
+										'appId':appId,
 										'resourceId':resourceId,
+										'code':code,
 										'resourceName':resourceName,
 										'resourceSub':categoryName,
-										'categoryIds':data.obj,
-										'resourceCode':resourceCode,
 										'backParams':{
 											'categoryIds':data.obj,
 											'sourceFilter':$('#inp_searchNm').val(),
 										}
 									}
 									$("#contentPage").empty();
-									$("#contentPage").load(url,{dataModel:JSON.stringify(data)});
+									$("#contentPage").load('${contextRoot}/app/resourceManage/initial?appId='+appId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});
 								}
 							},
 						});
 					});
 				},
 			};
-			/* ************************* 模块初始化结束 ************************** */
-			/* ************************* dialog回调函数 ************************** */
 			var resizeContent = function(){
 				var contentW = $('#div_content').width();
 				var leftW = $('#div_left').width();
 				$('#div_right').width(contentW-leftW-20);
-			};
+			}();
 			$(window).bind('resize', function() {
 				resizeContent();
 			});
@@ -227,8 +250,7 @@
 				isFirstPage = false;
 				master.rsInfoDialog.close();
 			};
-			/* ************************* dialog回调函数结束 ************************** */
-
+			/* ************************* 模块初始化结束 ************************** */
 			/* *************************** 页面初始化 **************************** */
 			pageInit();
 			/* ************************* 页面初始化结束 ************************** */

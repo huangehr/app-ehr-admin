@@ -2,6 +2,14 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <style>
-    #inp_url { height: 50px; }
-    #inp_description { height: 100px; }
+	.retrieve-border{
+		display:block;
+		border: 1px solid #D6D6D6;
+		border-bottom: 0px
+	}
+	.body-head input{
+		border: 0;
+		font-size: 12px;
+		width: 120px;
+	}
 </style>

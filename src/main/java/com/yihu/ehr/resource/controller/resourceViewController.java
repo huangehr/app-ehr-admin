@@ -14,23 +14,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.ranges.DocumentRange;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
- * Created by wq on 2016/5/17.
+ * Created by wq on 2016/6/7.
  */
 
 @Controller
-@RequestMapping("/resourceBrowse")
-public class ResourceBrowseController extends BaseUIController {
+@RequestMapping("/resourceView")
+public class resourceViewController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
@@ -40,8 +37,9 @@ public class ResourceBrowseController extends BaseUIController {
     private String comUrl;
 
     @RequestMapping("/initial")
-    public String resourceBrowseInitial(Model model) {
-        model.addAttribute("contentPage", "/resource/resourcebrowse/resourceBrowse");
+    public String resourceBrowseInitial(Model model,String dataModel) {
+        model.addAttribute("contentPage", "/resource/resourcebrowse/resourceView");
+        model.addAttribute("dataModel",dataModel);
         return "pageView";
     }
 
@@ -50,18 +48,7 @@ public class ResourceBrowseController extends BaseUIController {
     public Object searchResource(String ids) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String CategoriesUrl = ServiceApi.Resources.Categories;
-        String ResourcesUrl = ServiceApi.Resources.Resources;
         String resultStr = "";
-
-//        params.put("filters","");
-//        if (!StringUtils.isEmpty(ids))
-//            params.put("filters","pid="+ids);//test_code
-//
-//        params.put("page", 1);
-//        params.put("size", 999);
-//        params.put("fields","");
-//        params.put("sorts","");
         params.put("id", ids);
 
         try {
@@ -78,11 +65,9 @@ public class ResourceBrowseController extends BaseUIController {
     @RequestMapping("/searchResourceData")
     @ResponseBody
     public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows) {
-        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String url = "/resources/ResourceBrowses/getResourceData";
-//        resourcesCode = "RS_PATIENT_EVENT";
         params.put("resourcesCode", resourcesCode);
         params.put("queryCondition", searchParams);
         params.put("page", page);
@@ -94,31 +79,6 @@ public class ResourceBrowseController extends BaseUIController {
         }
         return resultStr;
     }
-
-//    /**
-//     * 动态获取GRID的列名
-//     *
-//     * @param dictId
-//     * @return
-//     */
-//    @RequestMapping("/")
-//    @ResponseBody
-//    public Object getGridCloumnNamestest(String dictId) {
-//        Envelop envelop = new Envelop();
-//        Map<String, Object> params = new HashMap<>();
-//        String url = "/resources/ResourceBrowses";
-//        String resultStr = "";
-//        params.put("category_id", dictId);
-//
-//        try {
-//
-//            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//            envelop = toModel(resultStr, Envelop.class);
-//        } catch (Exception e) {
-//
-//        }
-//        return envelop.getDetailModelList();
-//    }
 
 
     /**
@@ -134,7 +94,6 @@ public class ResourceBrowseController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/ResourceBrowses/getResourceMetadata";
         String resultStr = "";
-//        dictId = "RS_PATIENT_EVENT";
         params.put("resourcesCode", dictId);
 
         try {
@@ -230,7 +189,7 @@ public class ResourceBrowseController extends BaseUIController {
     public Object outExcel(String rowData, String resourceCategoryName) {
 
         Envelop envelop = new Envelop();
-        resourceCategoryName = resourceCategoryName.replaceAll("/","")+"_"+System.currentTimeMillis();
+        resourceCategoryName = resourceCategoryName.replaceAll("/", "") + "_" + System.currentTimeMillis();
         //标题行
         List<Object> dataAllList = toModel(rowData, List.class);
 
