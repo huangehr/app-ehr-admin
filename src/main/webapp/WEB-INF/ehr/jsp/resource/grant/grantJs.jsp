@@ -23,7 +23,8 @@
                 if(!treeData || !$.isArray(treeData)|| treeData.length==0)
                     return;
                 $.each(treeData, function (i, v) {
-                    arr.push(v);
+                    if(v.appResId)
+                        arr.push(v);
                     treeToArr(v.children, arr);
                 })
             }
@@ -39,15 +40,15 @@
                 return ids;
             }
 
-            var oldIds = [];
-            treeToArr(treeData, oldIds);
-            oldIds = getDataId(oldIds);
+            var oldApps = [];
+            treeToArr(treeData, oldApps);
+            var oldIds = getDataId(oldApps);
 
             function getDeleteIds(curDataIdStr){
                 var ids = [];
-                $.each(oldIds, function (i, v) {
-                    if(curDataIdStr.indexOf(v)==-1){
-                        ids.push(v);
+                $.each(oldApps, function (i, v) {
+                    if(curDataIdStr.indexOf(v.id)==-1){
+                        ids.push(v.appResId);
                     }
                 })
                 return ids;
@@ -77,7 +78,7 @@
                         if(data.successFlg){
                             parent.closeDialog("授权成功！");
                         }else
-                            $.Notice.error("授权失败！");
+                            $.Notice.error(data.errorMsg);
                     },
                     error: function () {
                         $.Notice.error("请求出错！");

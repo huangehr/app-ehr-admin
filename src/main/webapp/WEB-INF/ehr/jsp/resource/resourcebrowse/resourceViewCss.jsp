@@ -86,7 +86,7 @@
     }
     .div-resource-view-title{ width:100%;height:10px;margin-bottom: 20px; }
     .sp-search-width{ width: 5%;margin-left: 1%;}
-    .f-mw8{ width:9% }
     .f-ml15{ margin-left: 15%; }
+    .f-mw{ width: 100px; }
 </style>
 

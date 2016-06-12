@@ -186,6 +186,7 @@ public class AppController extends BaseUIController {
             if(envelop.isSuccessFlg()){
                 AppDetailModel appUpdate = getEnvelopModel(envelop.getObj(), AppDetailModel.class);
                 appUpdate.setName(appDetailModel.getName());
+                appUpdate.setOrg(appDetailModel.getOrg());
                 appUpdate.setCatalog(appDetailModel.getCatalog());
                 appUpdate.setTags(appDetailModel.getTags());
                 appUpdate.setUrl(appDetailModel.getUrl());
@@ -234,9 +235,8 @@ public class AppController extends BaseUIController {
 
     //-------------------------------------------------------应用---资源授权管理---开始----------------
     @RequestMapping("/resource/initial")
-    public String resourceInitial(Model model,String appId, String backParams){
-        model.addAttribute("appId",appId);
-        model.addAttribute("backParams",StringUtils.isEmpty(backParams)?"{\"categoryIds\":\"\",\"sourceFilter\":\"\"}":backParams);
+    public String resourceInitial(Model model, String backParams){
+        model.addAttribute("backParams",backParams);
         model.addAttribute("contentPage", "/app/resource");
         return "pageView";
     }

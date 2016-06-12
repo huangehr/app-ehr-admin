@@ -180,8 +180,7 @@
                     //新增一行查询条件
                     self.$newSearchBtn.click(function () {
 
-                        debugger;
-
+                        $(".f-w-auto").width($(".div-and-or").width());
                         var searcHheight = $(".div-search-height").height();
                         resourceInfoGrid.setHeight(height-(searcHheight+290));
                         var model = self.$searchModel.clone(true);
@@ -274,7 +273,7 @@
                         paramDatas = {
                             field: defaultCondition.attr('data-attr-scan'),
                             condition: logicalRelationship.attr('data-attr-scan'),
-                            value: defualtParam.val()
+                            value: defualtParam.ligerGetComboBoxManager().getValue()
                         }
                         jsonData.push(paramDatas);
 
@@ -284,7 +283,7 @@
                                 andOr: $((cModel)[0]).ligerGetComboBoxManager().getValue(),
                                 field: $((cModel)[1]).ligerGetComboBoxManager().getValue(),
                                 condition: $((cModel)[2]).ligerGetComboBoxManager().getValue(),
-                                value: $((cModel)[3]).ligerGetComboBoxManager().getValue(),
+                                value: $((cModel)[3]).ligerGetComboBoxManager().getValue()
                             };
                             jsonData.push(paramDatass);
                         }
@@ -298,6 +297,11 @@
 
                     //重置
                     self.$resetBtn.click(function () {
+                        var defaultCondition = self.$defaultCondition;
+                        var logicalRelationship = self.$logicalRelationship;
+                        defaultCondition.attr('data-attr-scan', '');
+                        logicalRelationship.attr('data-attr-scan', '');
+
                         $(".inp-reset").val('');
                     })
 

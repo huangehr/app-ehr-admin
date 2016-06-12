@@ -11,14 +11,13 @@
 
 			var openedDialog, curOprator;
 			var dataModel = ${dataModel};
-			var resourceId = dataModel.resourceId;
+//			var resourceId = dataModel.resourceId;
 			var appBackId = dataModel.appId;
 			var appRsId = '${appRsId}';
-			debugger
 			var initSub = function (){
 				$('#btn_back').click(function(){
 					$('#contentPage').empty();
-					$('#contentPage').load('${contextRoot}/app/resource/initial?appId='+appBackId+'&backParams='+JSON.stringify(dataModel.backParams));
+					$('#contentPage').load('${contextRoot}/app/resource/initial?backParams='+JSON.stringify(dataModel.backParams));
 				});
 				$('#resource_name').val(dataModel.resourceName);
 				$('#resource_code').val(dataModel.code);

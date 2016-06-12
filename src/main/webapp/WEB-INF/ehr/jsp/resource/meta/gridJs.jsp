@@ -47,9 +47,9 @@
             //初始化表格
             var rendGrid = function(){
                 var columns = [
-                    {display: '资源标准编码', name: 'stdCode', width: '20%', align: 'left'},
+                    {display: '资源标准编码', name: 'id', width: '20%', align: 'left'},
                     {display: '业务领域', name: 'domainName', width: '10%', align: 'left'},
-                    {display: '内部标识符', name: 'id', width: '15%', align: 'left'},
+                    {display: '内部标识符', name: 'stdCode', width: '15%', align: 'left'},
                     {display: '数据元名称', name: 'name', width: '10%', align: 'left'},
                     {display: '类型', name: 'columnTypeName', width: '10%', align: 'left'},
                     {display: '关联字典', name: 'dictName', width: '10%', align: 'left'},

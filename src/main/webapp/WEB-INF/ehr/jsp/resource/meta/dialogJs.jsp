@@ -7,10 +7,11 @@
         var urls = {
             update: "${contextRoot}/resource/meta/update",
             existence: "${contextRoot}/resource/meta/existence",
-            dictCombo: "${contextRoot}/resource/dict/combo"
+            dictCombo: "${contextRoot}/resource/dict/searchCombo"
         }
         var model = ${model};
         var mode = '${mode}';
+        var dictCombo;
         var initForm = function () {
             var vo = [
                 {type: 'text', id: 'ipt_std_code'},
@@ -18,12 +19,14 @@
                 {type: 'text', id: 'ipt_meta_code', opts: {readonly: mode=='modify'}},
                 {type: 'text', id: 'ipt_meta_name'},
                 {type: 'select', id: 'ipt_column_type', dictId: 30},
-                {type: 'select', id: 'ipt_dict_code', url: urls.dictCombo, params: {page: 1, rows: 500}},
+//                {type: 'select', id: 'ipt_dict_code', url: urls.dictCombo, params: {page: 1, rows: 500}, opts: { autocomplete: true, selectBoxHeight: 240}},
                 {type: 'radio', id: 'gender'},
                 {type: 'text', id: 'ipt_description', opts:{height:100}}
             ];
 
             initFormFields(vo);
+            dictCombo = $('#ipt_dict_code').customCombo(
+                    urls.dictCombo, {}, undefined, undefined, false, {selectBoxHeight: 280});
         };
 
         var initBtn = function () {
@@ -32,10 +35,10 @@
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
                 if(field=='ipt_meta_code' && val!=model.id){
-                    return uniqValid(urls.existence, "id="+val, "该数据元编码已存在（包含已失效数据）！");
+                    return uniqValid(urls.existence, "id="+val, "该资源标准编码已存在（包含已失效数据）！");
                 }
                 else if(field=='ipt_std_code' && val!=model.stdCode){
-                    return uniqValid(urls.existence, "stdCode="+val+";valid=1", "该资源标准编码已存在！");
+                    return uniqValid(urls.existence, "stdCode="+val+";valid=1", "该内部标识符已存在！");
                 }
             });
 
@@ -52,6 +55,8 @@
             initForm();
             initBtn();
             fillForm(model, $('#infoForm'));
+
+            dictCombo.setValueText(model.dictCode, model.dictName);
         }();
     })(jQuery, window);
 </script>

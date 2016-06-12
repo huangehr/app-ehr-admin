@@ -11,48 +11,39 @@
             var h = $(window).height();
             // 页面主模块，对应于用户信息表区域
             var master = null;
-            //var resourceModel =${envelop}.obj;
-			//$("#sp_resourceName").html(resourceModel.name);
+            var resourceDatas = null;
 
 			var sourceData = ${dataModel};
 			$("#sp_resourceName").html(sourceData.resourceName);
 			$("#sp_resourceSub").html(sourceData.resourceSub);
 
-
-//            var elmDataModel_1 = null;
             var addRowDatas = new Array();
             var delRowDatas = new Array();
 
             var comUrl = '${contextRoot}/resourceConfiguration';
-            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration', comUrl + '/searchSelResourceconfiguration?resourcesId=' + sourceData.resourceId]
+            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration', comUrl + '/searchSelResourceconfiguration?resourcesId=' + sourceData.resourceId];
             var elmParams = ['resourceConfigurationInfoGrid', 'resourceConfigurationInfoGridTrue'];
 
             var dataModel = $.DataModel.init();
 
             /* *************************** 函数定义 ******************************* */
-            /**
-             * 页面初始化。
-             * @type {Function}
-             */
             function pageInit() {
-
                 retrieve.init();
                 master.init();
             }
 
-            function getResource(page, size) {
-                dataModel.fetchRemote(resourceConfigurationUrl[1], {
-                    data: {searchNm: "", page: page, rows: size},
-//                    async: true,
-                    success: function (data) {
-                        if (Util.isStrEquals(data.obj.id, row.id)) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                })
-            }
+//            function getResource(page, size) {
+//                dataModel.fetchRemote(resourceConfigurationUrl[1], {
+//                    data: {searchNm: "", page: page, rows: size},
+//                    success: function (data) {
+//                        if (Util.isStrEquals(data.obj.id, row.id)) {
+//                            return true;
+//                        } else {
+//                            return false;
+//                        }
+//                    }
+//                })
+//            }
 
             function reloadGrid(url, params, searchType) {
                 $("#infoMsg").val(false);
@@ -80,8 +71,8 @@
 
                 init: function () {
 
-                    var mateDataElm = this.$mateDataSearch
-                    var seMetaDataElm = this.$mateDataSearchTrue
+                    var mateDataElm = this.$mateDataSearch;
+                    var seMetaDataElm = this.$mateDataSearchTrue;
 
                     mateDataElm.ligerTextBox({
                         width: 240, isSearch: true, search: function (data) {
@@ -105,7 +96,7 @@
                         {display: '数据元编码', name: 'stdCode', width: '25%', align: 'left'},
                         {display: '数据元名称', name: 'name', width: '25%', align: 'left'},
                         {display: '类型', name: 'columnType', width: '25%', align: 'left'},
-                        {display: '说明', name: 'description', width: '25%', align: 'left'},
+                        {display: '说明', name: 'description', width: '25%', align: 'left'}
                     ];
 
                     var elm = [self.$resourceConfigurationInfoGrid, self.$resourceConfigurationInfoGridTrue];
@@ -120,26 +111,20 @@
                             isChecked: function (row) {
                                 var bo = false;
                                 if (Util.isStrEquals(this.url.split("resourcesId").length, 1)) {
-                                    dataModel.fetchRemote(resourceConfigurationUrl[1], {
-                                        data: {searchNm: "selAll", page: 1, rows: 15},
-                                        async: false,
-                                        success: function (data) {
-                                            var resourceDatas = data.detailModelList;
-                                            for (var i = 0; i < resourceDatas.length; i++) {
-                                                if (Util.isStrEquals(resourceDatas[i].metadataId, row.id)) {
-                                                    bo = true;
-                                                    return;
-                                                } else {
-                                                    bo = false;
-                                                }
+                                    resourceDatas = elmParams[1].data.detailModelList;
+                                        for (var i = 0; i < resourceDatas.length; i++) {
+                                            if (Util.isStrEquals(resourceDatas[i].metadataId, row.id)) {
+                                                bo = true;
+                                                return bo;
+                                            } else {
+                                                bo = false;
                                             }
                                         }
-                                    })
                                 }
                                 return bo
                             },
                             parms: {
-                                searchNm: '',
+                                searchNm: ''
                             },
                             onBeforeCheckRow: function (checked, data, rowid, rowdata) {
                                 for (var i = 0; i < sessionStorage.length; i++) {
@@ -186,7 +171,7 @@
                             description: rowdata.description
                         });
 
-                        var elmParams_1 = elmParams[1].data.detailModelList
+                        var elmParams_1 = elmParams[1].data.detailModelList;
                         for (var i = 0; i < elmParams_1.length; i++) {
                             sessionStorage.setItem("elmParams_1" + i, elmParams_1[i].stdCode)
                         }
@@ -196,7 +181,7 @@
                         var rowParm = rowdata.stdCode;
                         var rows = elmParams[1].data.detailModelList;
                         for (var i = 0; i < rows.length; i++) {
-                            var rowData = rows[i].stdCode
+                            var rowData = rows[i].stdCode;
                             if (Util.isStrEquals(rowData, rowParm)) {
                                 delRowDatas.push(rows[i].id);
                                 elmParams[1].deleteRow(rows[i].__id);
@@ -236,13 +221,13 @@
                                     $.Notice.error("保存失败");
                             }
                         })
-                    })
+                    });
 
 
                     $("#a-back").click(function () {
                         history.back();
                     })
-                },
+                }
             };
 
             /* ************************* 模块初始化结束 ************************** */

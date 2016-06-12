@@ -75,11 +75,11 @@
 							{ display: 'APP ID',name: 'id', width: '15%',isAllowHide: false,hide:true },
 							{ display: 'APP Secret', name: 'secret', width: '10%', minColumnWidth: 60,hide:true },
                             { display: '应用名称', name: 'name',width: '10%', isAllowHide: false,align:'left' },
-							{ display: '机构代码', name: 'org',width: '10%',align:'left'},
+							{ display: '机构代码', name: 'org',width: '8%',align:'left'},
 							{ display: '机构名称', name: 'orgName',width: '15%',align:'left'},
-							{ display: '类型', name: 'catalogName', width: '10%'},
+							{ display: '类型', name: 'catalogName', width: '8%'},
                             { display: '回调URL', name: 'url', width: '15%',align:'left'},
-							{ display: '审核', name: 'checkStatus', width: '10%',minColumnWidth: 20,render: function (row){
+							{ display: '审核', name: 'checkStatus', width: '8%',minColumnWidth: 20,render: function (row){
 								if(Util.isStrEquals( row.status,'WaitingForApprove')) {
 									return '<a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:approved", row.id)+'">'+'通过'+'</a> /' +
 											' <a class="veto label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:reject", row.id)+'">'+'否决'+'</a>'
@@ -91,10 +91,10 @@
 									return '无'
 								}
 							}},
-							{ display: '已授权资源', name: 'description', width: '20%',align:'left'},
+							{ display: '已授权资源', name: 'resourceNames', width: '26%',align:'left'},
 							{ display: '操作', name: 'operator', width: '10%', render: function (row) {
 								var html = '';
-								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:resource:list", row.id) + '">资源授权</a>';
+								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a>';
 								html += '<a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a>';
 								return html;
                             }}
@@ -170,10 +170,17 @@
                         master.check(id,status);
                     });
 					//资源授权页面跳转
-					$.subscribe('app:resource:list', function (event, appId) {
-						var url = '${contextRoot}/app/resource/initial?appId=' + appId+'&backParams=';
+					$.subscribe('app:resource:list', function (event, appId,name,catalogName) {
+						var data = {
+							'appId':appId,
+							'appName':name,
+							'catalogName':catalogName,
+							'categoryIds':'',
+							'sourceFilter':'',
+						}
+						var url = '${contextRoot}/app/resource/initial?';
 						$("#contentPage").empty();
-						$("#contentPage").load(url);
+						$("#contentPage").load(url,{backParams:JSON.stringify(data)});
 					});
                 },
             };

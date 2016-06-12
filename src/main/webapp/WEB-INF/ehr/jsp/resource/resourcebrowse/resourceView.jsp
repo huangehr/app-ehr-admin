@@ -31,14 +31,14 @@
             <div class="div-search-height" style="float: left;margin-left: 20px;width: 93%;">
                 <div id="div_new_search" class="f-mt10">
                     <div class="f-fl f-w90">
-                        <div class="f-fl f-ml10 f-mr10 f-mw8">
+                        <div class="f-fl f-ml10 f-mr10 f-w-auto f-mw">
                             <span class="f-fl f-mt10 f-ml15">查询条件：</span>
                         </div>
-                        <div class="f-fl f-mr10">
+                        <div class="f-fl f-mr10 f-ml10">
                             <input type="text" id="inp_default_condition" style="width: 238px" data-attr-scan="1"
                                    class="f-pr0 f-ml10 inp-reset"/>
                         </div>
-                        <div class="f-fl f-ml10 f-mr10">
+                        <div class="f-fl f-ml10 f-mr10 div-and-or">
                             <input type="text" id="inp_logical_relationship" data-attr-scan="2"
                                    class="f-ml10 inp-reset"/>
                         </div>
@@ -72,10 +72,10 @@
 
         </div>
         <div class="f-fl f-w90 f-mt10 f-ml60 dis-none div_search_model">
-            <div class="f-fl f-ml10 f-mw8 f-mr10">
+            <div class="f-fl f-ml10 f-mr10">
                 <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search"/>
             </div>
-            <div class="f-fl f-mr10">
+            <div class="f-fl f-mr10 f-ml10">
                 <input type="text" class="f-ml10 inp-reset inp-model1 inp-find-search"/>
             </div>
             <div class="f-fl f-ml10 f-mr10">

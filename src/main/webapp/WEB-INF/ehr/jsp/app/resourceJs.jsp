@@ -13,11 +13,11 @@
 			var conditionArea = null;
 			var resourceInfoGrid = null;
 			var dataModel = $.DataModel.init();
-			var appId = '${appId}';
 			var categoryId = '';
 			var isFirstPage = true;
 			var typeTree = null;
 			var backParams = ${backParams};
+			var appId = backParams.appId;
 			//应用已授权资源集合
 			var appRsIds = [];
 			/* *************************** 函数定义 ******************************* */
@@ -43,17 +43,8 @@
 					this.initAppMsg();
 				},
 				initAppMsg: function () {
-					var self = this;
-					var dataModel = $.DataModel.init();
-					dataModel.fetchRemote("${contextRoot}/app/app",{
-						data:{appId:appId},
-						success: function(data) {
-							var model = data.obj;
-							self.$appName.val(model.name);
-							self.$catalogName.val(model.catalogName);
-							self.$orgName.val(model.orgName);
-						},
-					});
+					this.$appName.val(backParams.appName);
+					this.$catalogName.val(backParams.catalogName);
 				}
 			};
 			retrieve = {
@@ -223,6 +214,9 @@
 										'resourceName':resourceName,
 										'resourceSub':categoryName,
 										'backParams':{
+											'appId':appId,
+											'appName':backParams.appName,
+											'catalogName':backParams.catalogName,
 											'categoryIds':data.obj,
 											'sourceFilter':$('#inp_searchNm').val(),
 										}
