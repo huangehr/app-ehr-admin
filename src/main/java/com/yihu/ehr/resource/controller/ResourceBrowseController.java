@@ -50,24 +50,11 @@ public class ResourceBrowseController extends BaseUIController {
     public Object searchResource(String ids) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String CategoriesUrl = ServiceApi.Resources.Categories;
-        String ResourcesUrl = ServiceApi.Resources.Resources;
+        String url = "/resources/ResourceBrowses/categories";
         String resultStr = "";
-
-//        params.put("filters","");
-//        if (!StringUtils.isEmpty(ids))
-//            params.put("filters","pid="+ids);//test_code
-//
-//        params.put("page", 1);
-//        params.put("size", 999);
-//        params.put("fields","");
-//        params.put("sorts","");
         params.put("id", ids);
-
         try {
-
-            resultStr = HttpClientUtil.doGet(comUrl + "/resources/ResourceBrowses/categories", params, username, password);
-
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
 
@@ -82,44 +69,19 @@ public class ResourceBrowseController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String url = "/resources/ResourceBrowses/getResourceData";
-//        resourcesCode = "RS_PATIENT_EVENT";
         params.put("resourcesCode", resourcesCode);
         params.put("queryCondition", searchParams);
         params.put("page", page);
         params.put("size", rows);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
         } catch (Exception e) {
-
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("数据检索失败");
         }
-        return resultStr;
+        return envelop;
     }
-
-//    /**
-//     * 动态获取GRID的列名
-//     *
-//     * @param dictId
-//     * @return
-//     */
-//    @RequestMapping("/")
-//    @ResponseBody
-//    public Object getGridCloumnNamestest(String dictId) {
-//        Envelop envelop = new Envelop();
-//        Map<String, Object> params = new HashMap<>();
-//        String url = "/resources/ResourceBrowses";
-//        String resultStr = "";
-//        params.put("category_id", dictId);
-//
-//        try {
-//
-//            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//            envelop = toModel(resultStr, Envelop.class);
-//        } catch (Exception e) {
-//
-//        }
-//        return envelop.getDetailModelList();
-//    }
-
 
     /**
      * 动态获取GRID的列名
@@ -134,17 +96,14 @@ public class ResourceBrowseController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/ResourceBrowses/getResourceMetadata";
         String resultStr = "";
-//        dictId = "RS_PATIENT_EVENT";
         params.put("resourcesCode", dictId);
-
         try {
-
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = toModel(resultStr, Envelop.class);
+//            envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
 
         }
-        return envelop.getDetailModelList();
+        return resultStr;
     }
 
 
@@ -167,14 +126,13 @@ public class ResourceBrowseController extends BaseUIController {
             if (!StringUtils.isEmpty(dictId)) {
 
                 resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
-                envelop = toModel(resultStr, Envelop.class);
-
+//                envelop = toModel(resultStr, Envelop.class);
             }
         } catch (Exception e) {
 
         }
 
-        return envelop.getDetailModelList();
+        return resultStr;
     }
 
     @RequestMapping("/searchDictEntryList")
@@ -199,29 +157,28 @@ public class ResourceBrowseController extends BaseUIController {
                         params.put("sorts", "");
                         url = "/dictionaries/entries";
                         resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-                        envelop = toModel(resultStr, Envelop.class);
+//                        envelop = toModel(resultStr, Envelop.class);
                         break;
-
                     case "andOr":
                         rsBrowseModelList.add(new RsBrowseModel("AND", "并且"));
                         rsBrowseModelList.add(new RsBrowseModel("OR", "或者"));
                         envelop.setDetailModelList(rsBrowseModelList);
-                        break;
+                        return envelop;
+//                        envelop.setDetailModelList(rsBrowseModelList);
                     default:
                         url = "/resources/ResourceBrowses";
                         params.put("category_id", dictId);
 
                         resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-                        envelop = toModel(resultStr, Envelop.class);
+//                        envelop = toModel(resultStr, Envelop.class);
                         break;
-
                 }
             }
         } catch (Exception e) {
 
         }
 
-        return envelop.getDetailModelList();
+        return resultStr;
     }
 
     //数据导出方法
