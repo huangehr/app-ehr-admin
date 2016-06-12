@@ -248,7 +248,7 @@ public class HosAcqTaskController extends BaseUIController {
                 for (OrgModel m:orgModels){
                     Map map = new HashMap<>();
                     map.put("id",m.getOrgCode());
-                    map.put("name",m.getOrgCode());
+                    map.put("name",m.getFullName());
                     list.add(map);
                 }
                 envelopGet.setDetailModelList(list);

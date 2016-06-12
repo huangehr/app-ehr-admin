@@ -10,6 +10,8 @@
 		// 表单校验工具类
 		var jValidation = $.jValidation;
 		var mode = '${mode}';
+		var nameCopy = '';
+		var codeCopy = '';
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
 			rsInfoForm.init();
@@ -52,6 +54,8 @@
 				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
+					nameCopy = info.name;
+					codeCopy = info.code;
 					this.$form.Fields.fillValues({
 						id:info.id,
 						code:info.code,
@@ -69,7 +73,7 @@
 				this.$form.show();
 			},
 			initDDL: function () {
-				this.$grantType.eq(0).attr("checked", 'true')
+				this.$grantType.eq(1).attr("checked", 'true')
 				//this.$catalog.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
@@ -87,11 +91,40 @@
 
 			bindEvents: function () {
 				var self = this;
-				var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
-					onElementValidateForAjax:function(elm){
-						//TODO 资源名称不重复验证
+				var validator =  new jValidation.Validation(self.$form, {immediate: true, onSubmit: false,
+					onElementValidateForAjax: function (elm) {
+						if (Util.isStrEquals($(elm).attr("id"), 'inp_name')) {
+							var name = $("#inp_name").val();
+							if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
+								return checkUnique("${contextRoot}/resource/resourceManage/isExistName",name,"资源名称不能重复！");
+							}
+						}
+						if (Util.isStrEquals($(elm).attr("id"), 'inp_code')) {
+							var code = $("#inp_code").val();
+							if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){
+								return checkUnique("${contextRoot}/resource/resourceManage/isExistCode",code,"资源编码不能重复！");
+							}
+						}
 					}
 				});
+				//验证编码、名字不可重复
+				function checkUnique(url, value, errorMsg) {
+					var result = new jValidation.ajax.Result();
+					var dataModel = $.DataModel.init();
+					dataModel.fetchRemote(url, {
+						data: {name:value,code:value},
+						async: false,
+						success: function (data) {
+							if (data.successFlg) {
+								result.setResult(false);
+								result.setErrorMsg(errorMsg);
+							} else {
+								result.setResult(true);
+							}
+						}
+					});
+					return result;
+				}
 
 				this.$btnSave.click(function () {
 					if(validator.validate()){

@@ -59,7 +59,7 @@
                         description:app.description
                     });
 					$("#inp_org_code").ligerGetComboBoxManager().setValue(app.org);
-					$("#inp_org_code").ligerGetComboBoxManager().setText(app.org);
+					$("#inp_org_code").ligerGetComboBoxManager().setText(app.orgName);
                 }
                 this.$form.show();
             },
