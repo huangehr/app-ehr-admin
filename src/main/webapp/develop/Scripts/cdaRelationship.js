@@ -6,7 +6,8 @@
     var list = {};
     var webRoot=$("#hd_url").val();
     exports.list = list;
-
+    var staged = $.Util.getUrlQueryString('staged');
+    var isReady = true;
     var base = {
         p: {},
         grid: null,
@@ -21,9 +22,9 @@
             p.get("", base.loadData);
             // 绑定检索事件
             base.bindSearch();
-
             ////数据集选择器 select change  事件
             //base.bindChange();
+            isReady = false;
         },
         buildGrid: function () {
             var jq_pane = $("#pane-list").empty(),
@@ -37,6 +38,9 @@
                     onCheckRow: base.onChecked,
                     onCheckAllRow: base.onCheckAllRows,
                     onAfterShowData: base.onAfterShowData,
+                    onBeforeCheckRow:base.onBeforeCheckRow,
+                    onBeforeCheckAllRow:base.onBeforeCheckAllRow,
+                    onBeforeSelectRow:base.onBeforeSelectRow,
                     root: 'Rows'
                 };
             // init grid
@@ -82,6 +86,9 @@
             //else { jq_search[0].addEventListener("input", base.searchEvent, false); };
         },
         searchEvent: function () {
+            if(staged=='false'&&isReady==false){
+                return false;
+            }
             var jq_search = $("#txb-key");
             base.grid.reload({ Rows: [] });
             base.p.get(jq_search.val().trim(), base.loadData);
@@ -179,7 +186,25 @@
                 base.p.get_relation_xml(strSetId,base.p.versionCode);
             }
         },
+        onBeforeCheckRow:function(){
+            if(staged=='false'&&isReady==false){
+                return false;
+            }
+        },
+        onBeforeCheckAllRow:function(){
+            if(staged=='false'&&isReady==false){
+                return false;
+            }
+        },
+        onBeforeSelectRow:function(){
+            if(staged=='false'&&isReady==false){
+                return false;
+            }
+        },
         addItem: function (data) {
+            if(staged=='false'&&isReady==false){
+                return false;
+            }
             var jq_ul = $("#pane-list-selected");
             // var itemclass = data[base.p.uniqueField].replace("(", "_").replace(")", "_");
             var itemclass = data[base.p.uniqueField].toString().replace("(", "_").replace(")", "_");
@@ -208,6 +233,9 @@
                 .click(function () { $("#pane-list-selected").addClass("changed"); base.deleteItem($(this).data("data")); });
         },
         deleteItem: function (data) {
+            if(staged=='false'&&isReady==false){
+                return false;
+            }
             var uniqueField = base.p.uniqueField,
                 storage = base.p.storage;
             // 移除grid中的勾选
