@@ -6,7 +6,7 @@
     .f-h785{ height: 785px; width: 100%}
     .f-bd { border: 1px solid #D6D6D6;  overflow: auto; height: 100% }
     .f-w270{ width: 15%; }
-    .f-of-hd{ overflow: hidden; }
+    /*.f-of-hd{ overflow: hidden; }*/
     .f-w20{ width: 19% }
     .dis-none{ display: none}
     .div-resource-browse{ height:100%; width:80%; float:right;border: 1px solid #D6D6D6;}
@@ -17,8 +17,8 @@
     .f-mr279{ margin-right: 279px; }
     .f-pr0{ width: 238px;padding-right: 0; }
     .f-ds{ display: none; }
-    .f-ml-20{ margin-left: -20px; }
-    .f-ml30{ margin-left: 30px; }
+    .f-ml-20{ margin-left: 5%; }
+    /*.f-ml30{ margin-left: 30px; }*/
     .f-mw8{ width:10% }
     .f-mw238{ width: 238px }
 </style>

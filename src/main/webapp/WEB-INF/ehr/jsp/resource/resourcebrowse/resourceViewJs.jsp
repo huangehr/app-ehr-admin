@@ -11,6 +11,8 @@
             // 页面主模块，对应于用户信息表区域
             var resourceBrowseMaster = null;
             var height = $(window).height();
+            var defaultWidth = $("#div-f-w1").width();
+            var defaultWidthAndOr = $("#div-f-w2").width();
             //检索模块初始化
             var resourceData = ${dataModel};
             var resourcesCode = resourceData.resourceCode;
@@ -76,9 +78,9 @@
 
                 init: function () {
                     var self = this;
-                    self.initDDL(1, 1, "", self.$defaultCondition, "");
-                    self.initDDL(2, 2, "", self.$logicalRelationship, 100);
-                    self.initDDL('', '', "", self.$defualtParam, 240);
+                    self.initDDL(1, 1, "", self.$defaultCondition, defaultWidth);
+                    self.initDDL(2, 2, "", self.$logicalRelationship, defaultWidthAndOr);
+                    self.initDDL('', '', "", self.$defualtParam, defaultWidth);
 
                 },
 
@@ -189,7 +191,7 @@
                         var modelLength = model.find("input");
                         var paramDatas = [0, 1, 2, 3];
                         var dictId = [10, 11, 12, 13];
-                        var width = [100, 240, 100, 240];
+                        var width = [defaultWidthAndOr, defaultWidth, defaultWidthAndOr, defaultWidth];
                         var cls = '.inp-model';
 
                         for (var i = 0; i < modelLength.length; i++) {
@@ -268,7 +270,7 @@
                         var defualtParam = $(".inp_defualt_param");
                         var pModel = $(self.$newSearch).find('.div_search_model');
 
-                        var condition = defaultCondition.attr('data-attr-scan')
+                        var condition = defaultCondition.attr('data-attr-scan');
 
                         paramDatas = {
                             field: defaultCondition.attr('data-attr-scan'),
@@ -360,15 +362,16 @@
                     html = '<div class="f-fl"><input type="text" data-sttr-scan="3" class="f-ml10 inp-reset inp_defualt_param"/></div>';
 
                     if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
-                        html += '<div class="f-fr f-ml30"><span class="f-fl f-mt10 f-ml-20">～</span><input type="text"  data-sttr-scan="3" class="f-ml10 inp-reset inp_defualt_param"/></div>';
+                        html += '<div class="f-fr div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text"  data-sttr-scan="3" class="f-ml10 inp-reset inp_defualt_param"/></div></div>';
                     }
 
                 } else if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
-                    html += '<div class="f-fr f-ml30"><span class="f-fl f-mt10 f-ml-20">～</span><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" /></div>';
+                    html += '<div class="f-fr div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" /></div></div>';
                 }
 
                 divEle.html("");
                 divEle.html(html);
+                $(".div-time-width").width($(".div-change-search").width() - defaultWidth - 5);
                 switch (ligerType) {
                     case 'ligerComboBox':
                         divEle.find(inpEle).ligerComboBox({
@@ -376,21 +379,17 @@
                             parms: {dictId: dictId},
                             valueField: 'code',
                             textField: 'name',
-                            width: 240,
+                            width: defaultWidth
                         });
                         break;
                     case 'ligerTextBox':
                         divEle.find(inpEle).ligerTextBox({
-                            valueField: 'code',
-                            textField: 'name',
-                            width: 240,
+                            width: defaultWidth
                         });
                         break;
                     case 'ligerDateEditor':
                         divEle.find(inpEle).ligerDateEditor({
-                            valueField: 'code',
-                            textField: 'name',
-                            width: 240,
+                            width: defaultWidth
                         });
                         break;
                 }
