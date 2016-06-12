@@ -69,13 +69,19 @@
     };
 
     CustomCombo.prototype.setValue = function (v) {
-
-        return this.ligerComboBox.setValue(v);
+        this.ligerComboBox.setValue(v);
+        return this;
     };
 
     CustomCombo.prototype.setText = function (t) {
+        this.ligerComboBox.setText(t);
+        return this;
+    };
 
-        return this.ligerComboBox.setText(t);
+    CustomCombo.prototype.setValueText = function (v, t) {
+        this.ligerComboBox.setValue(v);
+        this.ligerComboBox.setText(t);
+        return this;
     };
 
     CustomCombo.prototype.reload = function (parms) {
@@ -95,7 +101,7 @@
         $(this.getLigerComboBox().unselect).on(eventKey, callFunc);
     };
 
-    $.fn.customCombo = function (url, parms, selectedCall, child, readOnly) {
+    $.fn.customCombo = function (url, parms, selectedCall, child, readOnly, opts) {
         el = this;
 
         if(!selectedCall)
@@ -121,15 +127,13 @@
                     childManager.clear();
                 }
             }
-
-        var me = new CustomCombo(el, url,
-            {
-                parms: parms,
-                child: child,
-                onSelected: selectedCall,
-                readonly: readOnly || false
-            }
-        );
+        opts = $.extend({}, {
+            parms: parms,
+            child: child,
+            onSelected: selectedCall,
+            readonly: readOnly || false
+        }, opts);
+        var me = new CustomCombo(el, url, opts);
         if(child)
             me.on("changeValue",function () {
                 child.ligerGetComboBoxManager().clear();

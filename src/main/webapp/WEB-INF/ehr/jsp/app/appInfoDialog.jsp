@@ -12,8 +12,8 @@
     </div>
 	<div class="m-form-group">
 		<label >机构代码:</label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_org_code" class="required useTitle f-h28 f-w240" data-type="select" placeholder="请输入机构代码或名称检索"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="org">
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_org_code" class="f-h28 f-w240" data-type="select" placeholder="请输入机构代码或名称检索" data-attr-scan="org">
 		</div>
 	</div>
     <div class="m-form-group">

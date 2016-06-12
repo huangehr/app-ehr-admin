@@ -12,10 +12,9 @@
 	<div id="conditionArea" class="" align="right">
 		<div class="body-head f-h50" align="left">
 			<a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/app/initial');"  class="f-fwb">返回上一层 </a>
-			<input id="appId" value='${appId}' hidden=hidden />
+			<input id="appId" hidden=hidden />
 			<span class="f-ml20">应用名称：</span><input class="f-fwb f-mt10"  readonly="readonly"  readonly id="msg_appName"/>
-			<span class="f-ml20">类型：</span><input class="f-mt10" readonly="readonly" id="msg_catalogName"/>
-			<span class="f-ml20">机构名称：</span><input class="f-mt10" readonly="readonly" id="msg_orgName"/>
+			<span class="f-ml20">应用类型：</span><input class="f-mt10" readonly="readonly" id="msg_catalogName"/>
 		</div>
 	</div>
 	<div id="div_wrapper">
