@@ -11,7 +11,7 @@
         </div>
     </div>
 	<div class="m-form-group">
-		<label >机构代码:</label>
+		<label >机构名称:</label>
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_org_code" class="f-h28 f-w240" data-type="select" placeholder="请输入机构代码或名称检索" data-attr-scan="org">
 		</div>

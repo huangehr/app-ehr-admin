@@ -138,6 +138,48 @@ public class OrganizationController extends BaseUIController {
         }
     }
 
+    /**
+     * 获取机构代码下拉框-带检索(根据输入机构代码/名称近似查询）
+     * @param searchParm  控件传递参数的参数名
+     */
+    @RequestMapping("/orgCodes")
+    @ResponseBody
+    public Object searchOrgCodes(String searchParm,int page,int rows){
+        Envelop envelop = new Envelop();
+        String filters = "";
+        try{
+            if (!org.apache.commons.lang.StringUtils.isEmpty(searchParm)){
+                filters += "orgCode?"+searchParm+" g1;fullName?"+searchParm+" g1;";
+            }
+            String url = "/organizations";
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters",filters);
+            params.put("sorts","");
+            params.put("page",page);
+            params.put("size",rows);
+            String envelopStrFGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrFGet,Envelop.class);
+            List<OrgModel> orgModels = new ArrayList<>();
+            List<Map> list = new ArrayList<>();
+            if(envelopGet.isSuccessFlg()){
+                orgModels = (List<OrgModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<OrgModel>(),OrgModel.class);
+                for (OrgModel m:orgModels){
+                    Map map = new HashMap<>();
+                    map.put("id",m.getOrgCode());
+                    map.put("name",m.getFullName());
+                    list.add(map);
+                }
+                envelopGet.setDetailModelList(list);
+                return envelopGet;
+            }
+            return envelop;
+        }catch (Exception ex){
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            return envelop;
+        }
+    }
+
     @RequestMapping("deleteOrg")
     @ResponseBody
     public Object deleteOrg(String orgCode) {
