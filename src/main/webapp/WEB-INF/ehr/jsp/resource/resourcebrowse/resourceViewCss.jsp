@@ -78,7 +78,7 @@
     }
 
     .f-ml-20 {
-        margin-left: -20px;
+        margin-left: 5%;
     }
 
     .f-ml30 {

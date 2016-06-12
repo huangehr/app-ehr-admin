@@ -42,7 +42,7 @@
                             <input type="text" id="inp_logical_relationship" data-attr-scan="2"
                                    class="f-ml10 inp-reset"/>
                         </div>
-                        <div class="f-fl f-ml10 f-mr10 div-change-search">
+                        <div class="f-fl f-ml10 f-mr10 div-change-search" style="width: 38%" >
                             <input type="text" data-attr-scan="3" class="f-ml10 inp-reset inp_defualt_param"/>
                         </div>
                         <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
@@ -81,10 +81,12 @@
             <div class="f-fl f-ml10 f-mr10">
                 <input type="text" class="f-ml10 inp-reset inp-model2 inp-find-search"/>
             </div>
-            <div class="f-fl f-ml10 f-mr10 div-new-change-search">
+            <div class="f-fl f-ml10 f-mr10 div-new-change-search" style="width: 38%" >
                 <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search"/>
             </div>
             <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
         </div>
     </div>
+    <div style="display: none;width: 14%" id="div-f-w1"></div>
+    <div style="display: none;width: 7%" id="div-f-w2"></div>
 </div>
