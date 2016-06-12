@@ -14,7 +14,7 @@
             </div>
 			<div class="m-form-control f-ml10">
 				<!--输入框-->
-				<input type="text" id="inp_search_org" placeholder="请输入机构代码或名称" class="f-ml10" data-attr-scan="org"/>
+				<input type="text" id="inp_search_org" placeholder="请输入机构代码" class="f-ml10" data-attr-scan="org"/>
 			</div>
             <div class="m-form-control f-ml10">
                 <!--下拉框-->
