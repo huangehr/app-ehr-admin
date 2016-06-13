@@ -190,6 +190,11 @@ public class ResourceController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         try {
+            if (isRsInUse(id)){
+                result.setSuccessFlg(false);
+                result.setErrorMsg("已授权资源不能删除");
+                return result;
+            }
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             result = objectMapper.readValue(resultStr, Envelop.class);
             if (result.isSuccessFlg()) {
@@ -211,16 +216,43 @@ public class ResourceController extends BaseUIController {
     @ResponseBody
     public Object isExistCode(String code){
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        return envelop;
+        String url = "/resources/isExistCode/"+code;
+        try{
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
     }
 
     @RequestMapping("/isExistName")
     @ResponseBody
     public Object isExistName(String name){
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        return envelop;
+        String url = "/resources/isExistName";
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("name",name);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    public Boolean isRsInUse(String resourceId) throws Exception{
+        String url = "/resources/" + resourceId+"/grant";
+        String resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
+        Envelop result = objectMapper.readValue(resultStr, Envelop.class);
+        if (result.isSuccessFlg()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //资源分类树数据-获取所有分类的不分页方法

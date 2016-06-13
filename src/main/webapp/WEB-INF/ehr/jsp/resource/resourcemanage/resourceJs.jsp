@@ -85,6 +85,10 @@
 									"height": "22px"
 								});
 							}
+							if(backParams.typeFilter){
+								$('#inp_search').val(backParams.typeFilter);
+								typeTree.s_search(backParams.typeFilter);
+							}
 							if(backParams.categoryIds){
 								var categoryIds = backParams.categoryIds;
 								typeTree.s_searchForLazy(categoryIds);
@@ -108,23 +112,26 @@
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
+							{display: '访问方式', name: 'grantType',hide:true},
 							{display: '资源名称', name: 'name', width: '15%', align: 'left'},
 							{display: '资源编码', name: 'code', width: '15%', align: 'left'},
 							{display: '资源接口', name: 'rsInterfaceName', width: '15%', align: 'left'},
 							{display: '资源分类', name: 'categoryName', width: '10%', align: 'left'},
 							{display: '资源分类Id', name: 'categoryId',hide:true},
 							{display: '资源说明', name: 'description', width: '23%', align: 'left'},
-							{display: '操作', name: 'operator', width: '22%', render: function (row) {
+							{display: '操作', name: 'operator', width: '22%',align:'right', render: function (row) {
 								var html = '';
 								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1") + '">配置</a>';
-								html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1") + '">授权</a>';
+								if(row.grantType == '0'){
+									html += '<a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1") + '">授权</a>';
+								}
 								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.viewUrl,row.code) + '">浏览</a>';
 								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a>';
 								html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a>';
 								return html;
 							}}
 						],
-						checkbox: true,
+						checkbox: false,
 						validate : true,
 						unSetValidateAttr:false,
 						allowHideColumn: false,
@@ -142,6 +149,10 @@
 				bindEvents: function () {
 					//新增修改
 					$('#btn_add').click(function(){
+						if(categoryId == ''){
+							$.ligerDialog.warn('请先选择所属资源类别！');
+							return;
+						}
 						$.publish("rs:info:open",['','new',categoryId]);
 					});
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
@@ -176,7 +187,7 @@
 											isFirstPage = false;
 											master.reloadGrid();
 										}else{
-											$.Notice.error('删除失败。');
+											$.Notice.error(data.errorMsg);
 										}
 									}
 								});
@@ -200,6 +211,7 @@
 										'backParams':{
 											'categoryIds':data.obj,
 											'sourceFilter':$('#inp_searchNm').val(),
+											'typeFilter':$('#inp_search').val(),
 										}
 									}
 									$("#contentPage").empty();
