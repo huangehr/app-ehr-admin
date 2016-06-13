@@ -7,8 +7,7 @@
 	<div class="m-form-group">
 		<label>资源分类<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="hidden" id="inp_categoryId"  data-attr-scan="categoryId"/>
-			<input type="text" id="inp_categoryName" readonly="readonly" class="required useTitle f-h28 f-w240 bdc"   required-title=<spring:message code="lbl.must.input"/> />
+			<input type="text" id="inp_category" readonly="readonly" data-type="select" class="required useTitle f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="categoryId" />
 		</div>
 	</div>
 

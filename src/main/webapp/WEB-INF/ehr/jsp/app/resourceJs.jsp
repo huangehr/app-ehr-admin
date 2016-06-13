@@ -11,7 +11,6 @@
 			// 页面主模块，对应于用户信息表区域
 			var master = null;
 			var conditionArea = null;
-			var resourceInfoGrid = null;
 			var dataModel = $.DataModel.init();
 			var categoryId = '';
 			var isFirstPage = true;
@@ -65,6 +64,11 @@
 						}else{
 							typeTree.expandAll();
 						}
+						var parms = {
+							'searchNm':'',
+							'categoryId':'',
+						};
+						reloadGrid(parms);
 					}});
 					this.$searchNm.ligerTextBox({width:240,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
@@ -85,8 +89,8 @@
 						parentIDFieldName:'pid',
 						textFieldName: 'name',
 						isExpand: false,
-						childIcon:'folder',
-						parentIcon:'folder',
+						childIcon:null,
+						parentIcon:null,
 						onSelect: function (e) {
 							categoryId = e.data.id;
 							master.reloadGrid();
@@ -96,6 +100,10 @@
 								"line-height": "22px",
 								"height": "22px"
 							});
+							if(backParams.typeFilter){
+								$('#inp_search').val(backParams.typeFilter);
+								typeTree.s_search(backParams.typeFilter);
+							}
 							if(backParams.categoryIds){
 								var categoryIds = backParams.categoryIds;
 								typeTree.s_searchForLazy(categoryIds);
@@ -164,7 +172,7 @@
 					});
 				},
 				bindEvents: function () {
-					//授权
+					//资源授权
 					$('#btn_grant').click(function(){
 						$.publish('app:rs:grant',['']);
 					});
@@ -176,7 +184,10 @@
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
-								ids += ',' + rows[i].id;
+								//只授权还未授权过的资源（排除已授权资源id）
+								if(appRsIds.indexOf(rows[i].id)<0){
+									ids += ',' + rows[i].id;
+								}
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 						}
@@ -192,6 +203,41 @@
 											master.reloadGrid();
 										}else{
 											$.Notice.error('授权失败！');
+										}
+									}
+								});
+							}
+						})
+					});
+
+					//资源授权删除
+					$.subscribe('app:rs:grant:cancel',function(event,ids){
+						if(!ids){
+							var rows = master.resourceInfoGrid.getSelectedRows();
+							if(rows.length==0){
+								$.Notice.warn('请选择要删除的授权资源！');
+								return;
+							}
+							for(var i=0;i<rows.length;i++){
+								//只删除已授权的资源（排除未授权资源的ids)
+								if(appRsIds.indexOf(rows[i].id)<0){
+									ids += ',' + rows[i].id;
+								}
+							}
+							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
+						}
+						$.Notice.confirm('确认要取消授权所选资源？', function (r) {
+							if(r){
+								var dataModel = $.DataModel.init();
+								dataModel.updateRemote('${contextRoot}/app/resource/cancel',{
+									data:{appId:appId,resourceIds:ids},
+									success:function(data){
+										if(data.successFlg){
+											$.Notice.success( '取消授权成功！');
+											master.loadResourceIds();
+											master.reloadGrid();
+										}else{
+											$.Notice.error('取消授权失败！');
 										}
 									}
 								});
@@ -219,6 +265,7 @@
 											'catalogName':backParams.catalogName,
 											'categoryIds':data.obj,
 											'sourceFilter':$('#inp_searchNm').val(),
+											'typeFilter':$('#inp_search').val(),
 										}
 									}
 									$("#contentPage").empty();
