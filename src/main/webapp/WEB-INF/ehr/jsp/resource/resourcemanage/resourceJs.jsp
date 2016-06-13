@@ -10,7 +10,6 @@
 			var master = null;
 			var isFirstPage = true;
 			var categoryId = '';
-			//类别链字符串，类别id，父级id，父级的父级id。。，
 			var backParams = ${backParams};
 			var typeTree = null;
 			var switchUrl = {
@@ -52,6 +51,11 @@
 						}else{
 							typeTree.expandAll();
 						}
+						var parms = {
+							'searchNm':'',
+							'categoryId':'',
+						};
+						reloadGrid(parms);
 					}});
 					this.$searchNm.ligerTextBox({width:240,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
@@ -72,8 +76,8 @@
 						parentIDFieldName :'pid',
 						textFieldName: 'name',
 						isExpand: false,
-						childIcon:'folder',
-						parentIcon:'folder',
+						childIcon:null,
+						parentIcon:null,
 						onSelect: function (e) {
 							categoryId = e.data.id;
 							master.reloadGrid();
@@ -97,6 +101,10 @@
 								$('#inp_searchNm').val(backParams.sourceFilter)
 								typeTree.selectNode(id);
 							}
+//							else{
+//								var defaultNode = $('#div_resource_browse_tree li')[0];
+//								typeTree.selectNode(defaultNode);
+//							}
 						},
 					});
 				},
@@ -149,10 +157,6 @@
 				bindEvents: function () {
 					//新增修改
 					$('#btn_add').click(function(){
-						if(categoryId == ''){
-							$.ligerDialog.warn('请先选择所属资源类别！');
-							return;
-						}
 						$.publish("rs:info:open",['','new',categoryId]);
 					});
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
@@ -232,8 +236,17 @@
 			$(window).bind('resize', function() {
 				resizeContent();
 			});
-			win.reloadMasterUpdateGrid = function () {
-				master.reloadGrid();
+
+			//未修改所属资源类别时，只刷新右侧列表；有修改所属资源类别时，左侧树重新定位，刷新右侧列表
+			win.reloadMasterUpdateGrid = function (callbackParams) {
+				if(!callbackParams){
+					master.reloadGrid();
+					return
+				}
+				$("#inp_search").val(callbackParams.typeFilter);
+				typeTree.s_search(callbackParams.typeFilter);
+				typeTree.s_searchForLazy(callbackParams.categoryIds);
+				typeTree.selectNode(callbackParams.categoryId);
 			};
 			win.closeRsInfoDialog = function (callback) {
 				isFirstPage = false;
