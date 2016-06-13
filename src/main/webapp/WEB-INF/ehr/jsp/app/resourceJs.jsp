@@ -141,6 +141,7 @@
 									return ''
 								}
 								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "app:resourceManage:list",row.id,row.code,row.name,row.categoryName) + '">维度管理</a>';
+								//html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:rs:grant:cancel",row.id) + '">取消授权</a>';
 								return html;
 							}}
 						],
