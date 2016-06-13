@@ -41,7 +41,6 @@
             paramModel = {
                 url: ["${contextRoot}/resourceBrowse/searchDictEntryList", '${contextRoot}/resourceBrowse/getGridCloumnNames', "${contextRoot}/resourceBrowse/searchDictEntryList", "${contextRoot}/resourceBrowse/getRsDictEntryList"],
                 dictId: ['andOr', resourceCategoryId, '34', '']
-//                paramDatas: ["", {dictId: resourceCategoryId}, "", ""]
             };
 
             /* *************************** 检索模块初始化结束 ***************************** */
@@ -83,6 +82,8 @@
                     self.initDDL('', self.$defualtParam, defaultWidth);
                     self.getResourceBrowseTree();
                     self.$resourceTree.mCustomScrollbar();
+                    self.$resourceTree.height(windowHeight - 170);
+                    self.$resourceTree.find('.mCS_no_scrollbar_y').height(windowHeight - 170);
                     $(".f-w-auto").width($(".div-and-or").width());
                 },
 
@@ -168,12 +169,6 @@
                                             data: data.detailModelList
                                         });
                                     }
-//                                    retrieve.$defaultCondition.ligerComboBox({
-//                                        valueField: 'code',
-//                                        textField: 'value',
-//                                        width: defaultWidth,
-//                                        data: data.detailModelList
-//                                    });
                                 }
                             });
                             resourceBrowseMaster.init(resourceCategoryId, resourcesCode);
@@ -283,7 +278,6 @@
                             });
                         }
                         model.show();
-
                     });
                     //删除一行查询条件
                     self.$delBtn.click(function () {
@@ -307,9 +301,16 @@
                             } else {
                                 values.value = $(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().getValue();
                             }
-                            jsonData.push(values);
+                            if (!Util.isStrEmpty(values.time)) {
+                                var andOr = 'AND';
+                                if (!Util.isStrEquals(jsonData.length,0)){
+                                    andOr = jsonData[jsonData.length].andOr;
+                                }
+                                jsonData.push({andOr: andOr, field: values.field, condition: values.condition, value: values.value});
+                                jsonData.push({andOr: 'AND', field: values.field, condition: values.condition, value: values.time});
+                            } else
+                                jsonData.push(values);
                         }
-
                         resourceBrowseMaster.reloadResourcesGrid({
                             searchParams: JSON.stringify(jsonData),
                             resourcesCode: resourcesCode
@@ -376,10 +377,10 @@
                 if (Util.isStrEquals(defHtml, 'default')) {
                     html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp_defualt_param"  data-type="select" data-attr-scan="value" /></div>';
                     if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
-                        html += '<div class="f-fr div-time-width" ><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text"  data-type="select" class="f-ml10 inp-reset inp_defualt_param" data-attr-scan="valueTime" /></div></div>';
+                        html += '<div class="f-fr div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text"  data-type="select" class="f-ml10 inp-reset inp_defualt_param" data-attr-scan="time" /></div></div>';
                     }
                 } else if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
-                    html += '<div class="f-fr div-time-value div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" data-type="select" data-attr-scan="valueTime" /></div></div>';
+                    html += '<div class="f-fr div-time-value div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" data-type="select" data-attr-scan="time" /></div></div>';
                 }
                 divEle.html("");
                 divEle.html(html);

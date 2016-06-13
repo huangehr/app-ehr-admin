@@ -85,7 +85,6 @@ public class ResourceBrowseController extends BaseUIController {
 
     /**
      * 动态获取GRID的列名
-     *
      * @param dictId
      * @return
      */
@@ -99,7 +98,6 @@ public class ResourceBrowseController extends BaseUIController {
         params.put("resourcesCode", dictId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//            envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
 
         }
@@ -111,22 +109,21 @@ public class ResourceBrowseController extends BaseUIController {
     @ResponseBody
     public Object getRsDictEntryList(String dictId) {
 
-        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String dictEntryUrl = ServiceApi.Resources.DictEntries;
+//        String dictEntryUrl = ServiceApi.Resources.DictEntries;
+        String dictEntryUrl = "/resources/noPageDictEntries";
 
         params.put("filters", "dictCode=" + dictId);
-        params.put("page", 1);
-        params.put("size", 500);// TODO: 2016/6/1   字典项没有不分页的接口
-        params.put("fields", "");
-        params.put("sorts", "");
+//        params.put("page", 1);
+//        params.put("size", 500);
+//        params.put("fields", "");
+//        params.put("sorts", "");
 
         try {
             if (!StringUtils.isEmpty(dictId)) {
 
                 resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
-//                envelop = toModel(resultStr, Envelop.class);
             }
         } catch (Exception e) {
 
@@ -157,20 +154,16 @@ public class ResourceBrowseController extends BaseUIController {
                         params.put("sorts", "");
                         url = "/dictionaries/entries";
                         resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//                        envelop = toModel(resultStr, Envelop.class);
                         break;
                     case "andOr":
                         rsBrowseModelList.add(new RsBrowseModel("AND", "并且"));
                         rsBrowseModelList.add(new RsBrowseModel("OR", "或者"));
                         envelop.setDetailModelList(rsBrowseModelList);
                         return envelop;
-//                        envelop.setDetailModelList(rsBrowseModelList);
                     default:
                         url = "/resources/ResourceBrowses";
                         params.put("category_id", dictId);
-
                         resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//                        envelop = toModel(resultStr, Envelop.class);
                         break;
                 }
             }
