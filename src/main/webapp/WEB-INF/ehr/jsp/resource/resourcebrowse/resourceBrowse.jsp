@@ -6,22 +6,26 @@
 <div id="div_wrapper" class="f-mt20">
     <!-- ####### 查询条件部分 ####### -->
     <div class="f-h785">
-        <div class="f-w20 f-bd f-of-hd " id="div-resource-tree" style="float: left">
+        <div class="f-mw19 f-bd f-of-hd f-fl" id="div-resource-tree" >
             <div class="f-mt10 f-ml10 f-w270">
                 <!--输入框-->
                 <input type="text" id="inp_search" class="f-ml10"/>
             </div>
             <hr>
             <!--资源浏览树-->
-            <div id="div_resource_browse_tree" style="width:100%;"></div>
+            <div id="div_resource_browse_tree" class="f-mw100"></div>
         </div>
         <!--资源浏览详情-->
         <div id="div_resource_browse_msg" class="div-resource-browse">
             <!--添加动态查询-->
-            <div class="f-mt10 f-ml10 div-search-height" id="div-search-data-role-form" style="float: left;margin-left: 20px;width: 93%;">
+            <div class="f-mt10 f-ml10 div-search-height f-fl f-ml20 f-mw93" id="div-search-data-role-form">
                 <div id="div_new_search" class="f-mt10" data-role-form>
-                    <div class="f-fl f-w90" id="div_default_search">
-                        <div class="f-fl f-ml10 f-mr10 f-w-auto" style="width: 7.5%">
+                    <div class="f-fl f-mw100" id="div_default_search">
+                        <div class="f-fl f-ml10 f-mr10 f-w-auto f-mw7">
+                            <div class="f-fl f-ml10 f-mr10 f-dn">
+                                <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search"
+                                       data-attr-scan="andOr" value="AND"/>
+                            </div>
                             <span class="f-fl f-mt10 f-ml10">查询条件：</span>
                         </div>
                         <div class="f-fl f-ml10 f-mr10 ">
@@ -32,7 +36,7 @@
                             <input type="text" id="inp_logical_relationship" data-type="select"
                                    data-attr-scan="condition" class="f-ml10 inp-reset"/>
                         </div>
-                        <div class="f-fl f-ml10 f-mr10 div-change-search" style="width: 42.5%">
+                        <div class="f-fl f-ml10 f-mr10 div-change-search f-mw42">
                             <input type="text" data-attr-scan="value" data-type="select"
                                    class="f-ml10 inp-reset inp_defualt_param"/>
                         </div>
@@ -61,7 +65,7 @@
                 <div id="div_resource_info_grid"></div>
             </div>
         </div>
-        <div class="f-fl f-w90 f-mt10 f-ml60 dis-none div_search_model" data-role-form>
+        <div class="f-fl f-mw100 f-mt10 f-ml60 dis-none div_search_model" data-role-form>
             <div>
                 <div class="f-fl f-ml10 f-mr10">
                     <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search" data-type="select"
@@ -75,14 +79,14 @@
                     <input type="text" class="f-ml10 inp-reset inp-model2 inp-find-search" data-type="select"
                            data-attr-scan="condition"/>
                 </div>
-                <div class="f-fl f-ml10 f-mr10 div-new-change-search" style="width: 42.5%">
+                <div class="f-fl f-ml10 f-mr10 div-new-change-search f-mw42 " >
                     <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" data-type="select"
                            data-attr-scan="value"/>
                 </div>
                 <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
             </div>
         </div>
-        <div style="display: none;width: 14%" id="div-f-w1"></div>
-        <div style="display: none;width: 7%" id="div-f-w2"></div>
+        <div class="f-dn f-mw14" id="div-f-w1"></div>
+        <div class="f-dn f-mw7" id="div-f-w2"></div>
     </div>
 </div>

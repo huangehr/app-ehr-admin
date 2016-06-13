@@ -27,23 +27,22 @@
         </div>
         <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">
             <!--添加动态查询-->
-                <%--<span class="f-fl f-mt20 sp-search-width">查询条件：</span>--%>
-            <div class="div-search-height" style="float: left;margin-left: 20px;width: 93%;">
-                <div id="div_new_search" class="f-mt10">
-                    <div class="f-fl f-w90">
-                        <div class="f-fl f-ml10 f-mr10 f-w-auto f-mw">
+            <%--<span class="f-fl f-mt20 sp-search-width">查询条件：</span>--%>
+            <div class="div-search-height" id="div_search_data_role_form" style="float: left;margin-left: 20px;width: 93%;">
+                <div id="div_new_search" class="f-mt10" data-role-form>
+                    <div class="f-fl f-w90" id="div_default_search">
+                        <div class="f-fl f-ml10 f-mr10 f-w-auto f-mw" style="width: 7.5%">
                             <span class="f-fl f-mt10 f-ml15">查询条件：</span>
                         </div>
                         <div class="f-fl f-mr10 f-ml10">
-                            <input type="text" id="inp_default_condition" style="width: 238px" data-attr-scan="1"
-                                   class="f-pr0 f-ml10 inp-reset"/>
+                            <input type="text" id="inp_default_condition" data-type="select" data-attr-scan="field"
+                                   style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>
                         </div>
                         <div class="f-fl f-ml10 f-mr10 div-and-or">
-                            <input type="text" id="inp_logical_relationship" data-attr-scan="2"
-                                   class="f-ml10 inp-reset"/>
+                            <input type="text" id="inp_logical_relationship" data-type="select" data-attr-scan="condition" class="f-ml10 inp-reset"/>
                         </div>
-                        <div class="f-fl f-ml10 f-mr10 div-change-search" style="width: 38%" >
-                            <input type="text" data-attr-scan="3" class="f-ml10 inp-reset inp_defualt_param"/>
+                        <div class="f-fl f-ml10 f-mr10 div-change-search" style="width: 38%">
+                            <input type="text" data-attr-scan="value" data-type="select" class="f-ml10 inp-reset inp_defualt_param"/>
                         </div>
                         <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
                     </div>
@@ -71,20 +70,26 @@
             </div>
 
         </div>
-        <div class="f-fl f-w90 f-mt10 f-ml60 dis-none div_search_model">
-            <div class="f-fl f-ml10 f-mr10">
-                <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search"/>
+        <div class="f-fl f-w90 f-mt10 f-ml60 dis-none div_search_model" data-role-form >
+            <div>
+                <div class="f-fl f-ml10 f-mr10">
+                    <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search" data-type="select"
+                           data-attr-scan="andOr"/>
+                </div>
+                <div class="f-fl f-mr10 f-ml10">
+                    <input type="text" class="f-ml10 inp-reset inp-model1 inp-find-search div-table-colums" data-type="select"
+                           data-attr-scan="field"/>
+                </div>
+                <div class="f-fl f-ml10 f-mr10">
+                    <input type="text" class="f-ml10 inp-reset inp-model2 inp-find-search" data-type="select"
+                           data-attr-scan="condition"/>
+                </div>
+                <div class="f-fl f-ml10 f-mr10 div-new-change-search" style="width: 38%">
+                    <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" data-type="select"
+                           data-attr-scan="value"/>
+                </div>
+                <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
             </div>
-            <div class="f-fl f-mr10 f-ml10">
-                <input type="text" class="f-ml10 inp-reset inp-model1 inp-find-search"/>
-            </div>
-            <div class="f-fl f-ml10 f-mr10">
-                <input type="text" class="f-ml10 inp-reset inp-model2 inp-find-search"/>
-            </div>
-            <div class="f-fl f-ml10 f-mr10 div-new-change-search" style="width: 38%" >
-                <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search"/>
-            </div>
-            <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
         </div>
     </div>
     <div style="display: none;width: 14%" id="div-f-w1"></div>

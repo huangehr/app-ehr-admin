@@ -13,9 +13,10 @@
             var master = null;
             var resourceDatas = null;
 
-			var sourceData = ${dataModel};
-			$("#sp_resourceName").html(sourceData.resourceName);
-			$("#sp_resourceSub").html(sourceData.resourceSub);
+            var sourceData = ${dataModel};
+            $("#sp_resourceName").html(sourceData.resourceName);
+            $("#sp_resourceSub").html(sourceData.resourceSub);
+            $(".sp-resource-configuration-name").html('<h3>'+sourceData.resourceName+'_资源配置</3>');
 
             var addRowDatas = new Array();
             var delRowDatas = new Array();
@@ -93,7 +94,9 @@
 
                     var columnDatas = [
                         {name: 'id', hide: true, isAllowHide: false},
-                        {display: '数据元编码', name: 'stdCode', width: '25%', align: 'left'},
+                        {display: '资源标准编码', name: 'stdCode', width: '25%', align: 'left',render: function (row) {
+                            return Util.isStrEquals(this.id,'div_resource_configuration_info_grid')? row.id : row.stdCode;
+                        }},
                         {display: '数据元名称', name: 'name', width: '25%', align: 'left'},
                         {display: '类型', name: 'columnType', width: '25%', align: 'left'},
                         {display: '说明', name: 'description', width: '25%', align: 'left'}
@@ -107,19 +110,19 @@
                             columns: columnDatas,
                             checkbox: true,
                             height: h - 315,
-                            async: true,
+                            async: false,
                             isChecked: function (row) {
                                 var bo = false;
                                 if (Util.isStrEquals(this.url.split("resourcesId").length, 1)) {
                                     resourceDatas = elmParams[1].data.detailModelList;
-                                        for (var i = 0; i < resourceDatas.length; i++) {
-                                            if (Util.isStrEquals(resourceDatas[i].metadataId, row.id)) {
-                                                bo = true;
-                                                return bo;
-                                            } else {
-                                                bo = false;
-                                            }
+                                    for (var i = 0; i < resourceDatas.length; i++) {
+                                        if (Util.isStrEquals(resourceDatas[i].metadataId, row.id)) {
+                                            bo = true;
+                                            return bo;
+                                        } else {
+                                            bo = false;
                                         }
+                                    }
                                 }
                                 return bo
                             },
@@ -150,7 +153,7 @@
                             },
                             onAfterShowData: function () {
                                 $("#infoMsg").val(false);
-                            }
+                            },
                         }));
                     }
 
@@ -196,11 +199,11 @@
                     reloadGrid.call(this, url, {searchNm: value}, searchType);
                 },
                 bindEvents: function () {
-					//返回资源注册页面
-					$('#btn_back').click(function(){
-						$('#contentPage').empty();
-						$('#contentPage').load('${contextRoot}/resource/resourceManage/initial?backParams='+JSON.stringify(sourceData.backParams));
-					});
+                    //返回资源注册页面
+                    $('#btn_back').click(function () {
+                        $('#contentPage').empty();
+                        $('#contentPage').load('${contextRoot}/resource/resourceManage/initial?backParams=' + JSON.stringify(sourceData.backParams));
+                    });
 
                     retrieve.$saveBtn.click(function () {
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
