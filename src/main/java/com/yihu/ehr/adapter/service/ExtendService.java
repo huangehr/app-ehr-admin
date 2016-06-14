@@ -2,9 +2,9 @@ package com.yihu.ehr.adapter.service;
 
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.common.utils.ExtTypeReference;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
