@@ -1,0 +1,201 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+
+<script>
+
+    (function ($, win) {
+        $(function () {
+            debugger
+            var grid;
+            var urls = {
+                list: '${contextRoot}/resource/meta/importLs',
+                existence: "${contextRoot}/resource/meta/existence",
+                batchSave: "${contextRoot}/resource/meta/batchSave",
+                downLoad: "${contextRoot}/resource/meta/downLoadErrInfo"
+            }
+            var files = ${files}, domainData= ${domainData}.detailModelList, columnTypeData= ${columnTypeData}.detailModelList, ynData= ${ynData}.detailModelList;
+            var mode = 'eFile';
+
+
+            //初始化工具栏
+            var barTools = function(){
+
+                function save(){
+                    if(validator.validate()){
+                        debugger
+                        $form.attrScan();
+                        var waitting = $.ligerDialog.waitting("正在保存中.....");
+                        var formData = $form.Fields.getValues();
+                        var model = [], f, m;
+                        for(var k in formData){
+                            f = k.split('_');
+                            m = model[f[1]] || {};
+                            m[f[0]] = formData[k];
+                            model[f[1]] = m;
+                        }
+
+                        var dataModel = $.DataModel.init();
+                        dataModel.createRemote(urls.batchSave, {
+                            data: {metas: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
+                            success: function (data) {
+                                waitting.close();
+                                if (data.successFlg) {
+                                    $.Notice.success("保存成功!");
+                                    searchFun();
+                                } else {
+                                    if (data.errorMsg)
+                                        $.Notice.error(data.errorMsg);
+                                    else
+                                        $.Notice.error('出错了！');
+                                }
+                            },
+                            error: function () {
+                                waitting.close();
+                            }
+                        });
+                    }
+                }
+
+                function downLoad(){
+                    $('#downLoadIfm').attr('src', urls.downLoad + "?f=" + files.eFile[1] + "&datePath=" + files.eFile[0] + "&tim=" + new Date());
+                }
+
+                var btn = [
+                    {type: '保存', clkFun: save, id: 'impSave'},
+                    {type: '导出错误信息', clkFun: downLoad, downLoad: 'downLoad'}];
+                initBarBtn($('#sf-bar'), btn);
+
+                //新增成功功能暂时不用
+//                var $s_err = $('#switch_err'), $s_true = $('#switch_true'), $impSave = $('#impSave');
+//                $s_err.click(function () {
+//                    $s_err.addClass('btn-primary');
+//                    $s_true.removeClass('btn-primary');
+//                    $impSave.show();
+//                    mode = 'eFile';
+//                    searchFun();
+//                });
+//
+//                $s_true.click(function () {
+//                    $s_err.removeClass('btn-primary');
+//                    $s_true.addClass('btn-primary');
+//                    $impSave.hide();
+//                    mode = 'tFile';
+//                    searchFun();
+//                });
+            };
+
+            function opratorRender(row){
+                var vo = [];
+                return initGridOperator(vo);
+            }
+
+            var $form =  $("#gridForm"), validator;
+            function onAfterShowData(data){
+                $('.l-grid-row-cell-inner').attr('title', '');
+                validator = initValidate($form, function (elm) {
+                    var errMsg = $(elm).attr('err-msg');
+                    if(errMsg && errMsg!='undefined' && errMsg!=''){
+                        var result = new $.jValidation.ajax.Result();
+                        result.setResult(false);
+                        result.setErrorMsg(errMsg);
+                        $(elm).attr('err-msg', '');
+                        return result;
+                    }
+
+                    var field = $(elm).attr('id');
+                    var val = $('#' + field).val();
+                    if(field.indexOf('id')!=-1){
+                        return uniqValid(urls.existence, "id="+val, "该资源标准编码已存在（包含已失效数据）！");
+                    }
+                    else if(field.indexOf('stdCode')!=-1){
+                        return uniqValid(urls.existence, "stdCode="+val+";valid=1", "该内部标识符已存在！");
+                    }
+                });
+                validator.validate();
+            }
+
+
+            function textRender(row, index, name, column){
+                if(mode=='tFile')
+                    return row[column.name];
+
+                var id = column.name + '_'+ index, val = row[column.name] || '', errMsg = row['errMsg'][column.name],
+                        ajaxClz = column.name=='id' || column.name=='stdCode' ? 'ajax' : '';
+                var reqClz = column.name=='dictCode'?' ' : 'required ';
+                var html = '<input type="text" id="'+ id +'" err-msg="'+ errMsg +'" class=" '+ reqClz + ajaxClz +'" data-attr-scan="'+ id +'"/><script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
+                return html;
+            }
+            win.initText = function(id, width, value){
+                $("#"+ id).ligerTextBox({width: width - 20, value: value});
+            }
+
+            function selRender(row, index, name, column){
+                if(mode=='tFile')
+                    return row[column.name];
+
+                var id = column.name + '_'+ index;
+                var val = row[column.name];
+                return '<input type="text" id="'+ id +'" class="required" data-attr-scan="'+ id +'" data-type="select"/><script>initSl("'+ id +'", "'+ column.name +'", '+ column.width +', "'+ val +'")<\/script>';
+            }
+            win.initSl = function (id, columnName, width, value) {
+                var data;
+                if(columnName== 'domain')
+                    data = domainData;
+                else if(columnName== 'columnType')
+                    data = columnTypeData;
+                else
+                    data = ynData;
+                $("#"+ id ).ligerComboBox({width: width - 20, valueField: "code", textField: "value", data: data}).selectValue(value);
+            }
+
+            //初始化表格
+            var rendGrid = function(){
+                var columns = [
+                    {display: '排序号', name: 'seq', hide: true, render: function (row, index) {
+                        debugger
+                        return '<input type="hidden" value="'+ row.seq +'" data-attr-scan="seq_'+ index +'">'
+                    }},
+                    {display: '资源标准编码', name: 'id', width: '150', align: 'left', render: textRender},
+                    {display: '业务领域', name: 'domain', width: '100', align: 'left', render: selRender},
+                    {display: '内部标识符', name: 'stdCode', width: '150', align: 'left', render: textRender},
+                    {display: '数据元名称', name: 'name', width: '150', align: 'left', render: textRender},
+                    {display: '类型', name: 'columnType', width: '100', align: 'left', render: selRender},
+                    {display: '关联字典', name: 'dictCode', width: '190', align: 'left', render: textRender},
+                    {display: '是否允空', name: 'nullAble', width: '100', align: 'left', render: selRender}];
+
+                grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
+                searchFun();
+            };
+
+            var searchFun = function () {
+                find(1);
+            }
+
+            //初始化过滤
+            var filters = function(){
+                var vo = [];
+//                initFormFields(vo, $('.m-retrieve-inner'));
+            };
+
+            //查询列表
+            var find = function (curPage) {
+                var vo = [];
+                var params = {filenName: files[mode][1], datePath: files[mode][0]}
+                reloadGrid(grid, curPage, params);
+            }
+
+            var publishFunc = function (){
+
+            };
+
+
+            var pageInit = function(){
+                publishFunc();
+                filters();
+                barTools();
+                rendGrid();
+            }();
+        });
+    })(jQuery, window);
+
+</script>

@@ -299,4 +299,10 @@ public class ExtendService<T> {
 
         return typeReference;
     }
+
+    public String searchSysDictEntries(int dictId) throws Exception {
+        PageParms pageParms = new PageParms(50, 1)
+                .addEqualNotNull("dictId", dictId);
+        return doGet(comUrl + "/dictionaries/entries", pageParms);
+    }
 }

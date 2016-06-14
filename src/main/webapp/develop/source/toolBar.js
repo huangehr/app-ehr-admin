@@ -15,6 +15,10 @@ function addBarBtn(type, clkFun, barId, imgClz, id){
         id = "btn_add_" + barId;
         text = "新增";
     }
+    else if(type == 'import'){
+        id = "btn_import_" + barId;
+        text = "导入";
+    }
     else{
         text = type;
     }
@@ -42,7 +46,7 @@ function addBarBtn(type, clkFun, barId, imgClz, id){
 function initBarBtn(el, vo, barId){
     if($.isArray(vo) && vo.length>0){
         for(var i=0; i<vo.length; i++){
-            $(el).append(addBarBtn(vo[i].type, vo[i].clkFun, barId ? barId : 1, vo[i].imgClz))
+            $(el).append(addBarBtn(vo[i].type, vo[i].clkFun, barId ? barId : 1, vo[i].imgClz, vo[i].id));
         }
     }
 }

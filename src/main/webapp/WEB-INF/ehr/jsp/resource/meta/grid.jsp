@@ -7,6 +7,7 @@
 
 <!-- ####### 页面部分 ####### -->
 <div class="adpater-plan-modal">
+
   <!-- ####### 查询条件部分 ####### -->
   <div id="searchForm" class="m-retrieve-area f-h50 f-pr m-form-inline condition" data-role-form>
     <div class="m-retrieve-inner m-form-group f-mt10">
@@ -22,6 +23,8 @@
       <div class="m-form-control f-ml10">
         <input type="text" id="ipt_search_null_able"  placeholder="是否允空" data-type="select" data-attr-scan="nullAble">
       </div>
+
+      <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px"></div>
 
     </div>
   </div>
