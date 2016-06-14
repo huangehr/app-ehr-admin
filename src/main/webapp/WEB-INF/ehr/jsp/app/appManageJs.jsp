@@ -72,8 +72,8 @@
                             status: ''
                         },
                         columns: [
-							{ display: 'APP ID',name: 'id', width: '15%',isAllowHide: false,hide:true },
-							{ display: 'APP Secret', name: 'secret', width: '10%', minColumnWidth: 60,hide:true },
+							{ display: 'APP ID',name: 'id',isAllowHide: false,hide:true },
+							{ display: 'APP Secret', name: 'secret', minColumnWidth: 60,hide:true },
                             { display: '应用名称', name: 'name',width: '10%', isAllowHide: false,align:'left' },
 							{ display: '机构代码', name: 'org',width: '8%',align:'left'},
 							{ display: '机构名称', name: 'orgName',width: '15%',align:'left'},

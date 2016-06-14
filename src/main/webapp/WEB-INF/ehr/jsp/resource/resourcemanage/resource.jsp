@@ -11,12 +11,14 @@
 <div id="div_wrapper">
 	<!-- ####### 查询条件部分 ####### -->
 	<div id="div_content" class="f-ww" style="height:780px ">
-		<div id="div_left" class="f-w240 f-bd f-of-hd" style=" width:240px;float: left;height: 780px">
+		<div id="div_left" class="f-w240 f-bd f-of-hd" style=" width:240px;float: left;height: 100%">
 			<div class="f-mt10 f-mb10 f-ml10 f-w240">
 				<input type="text" id="inp_search" class="f-ml10 f-h28"/>
 			</div>
 			<!--资源浏览树-->
-			<div id="div_resource_browse_tree" style=""></div>
+			<div id="div_tree">
+				<div id="div_resource_browse_tree" style=""></div>
+			</div>
 		</div>
 		<!--资源浏览详情-->
 		<div id="div_right" class="div-resource-browse" style="float: left;width: 700px;margin-left: 10px">
