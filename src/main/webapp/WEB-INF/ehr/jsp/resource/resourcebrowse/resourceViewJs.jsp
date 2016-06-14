@@ -42,33 +42,23 @@
             function reloadGrid(url, ps) {
                 resourceInfoGrid.setOptions({parms: ps});
                 resourceInfoGrid.loadData(true);
-
             }
-
             /* *************************** 检索模块初始化 ***************************** */
-
             paramModel = {
-                <%--comUrl: '${contextRoot}/resourceBrowse/',--%>
-
                 url: ["${contextRoot}/resourceView/searchDictEntryList", '${contextRoot}/resourceView/getGridCloumnNames', "${contextRoot}/resourceView/searchDictEntryList", "${contextRoot}/resourceView/getRsDictEntryList"],
-                dictId: ['andOr', resourcesCode, '34', ''],
-//                paramDatas: ["", {dictId: resourceCategoryId}, "", ""],
-            }
-
+                dictId: ['andOr', resourcesCode, '34', '']
+            };
             /* *************************** 检索模块初始化结束 ***************************** */
 
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
-
                 $resourceBrowseTree: $("#div_resource_browse_tree"),
                 $defaultCondition: $("#inp_default_condition"),
                 $logicalRelationship: $("#inp_logical_relationship"),
                 $defualtParam: $(".inp_defualt_param"),
                 $searchModel: $(".div_search_model"),
                 $resourceInfoGrid: $("#div_resource_info_grid"),
-
-                $newSearch: $("#div_new_search"),
-
+                $newSearch: $("#div_search_data_role_form"),
                 $newSearchBtn: $("#sp_new_search_btn"),
                 $SearchBtn: $("#div_search_btn"),
                 $delBtn: $(".sp-del-btn"),
@@ -95,13 +85,10 @@
                             },
                             width: width,
                             onSelected: function (value) {
-
                                 var dataModels = this.data;
                                 for (var i = 0; i < dataModels.length; i++) {
                                     //判断这个对象的值存不存在字典和判断类型
-
                                     if (Util.isStrEquals(dataModels[i].code, value)) {
-                                        $("#" + this.element.id).attr('data-attr-scan', dataModels[i].code)
                                         if (Util.isStrEquals(this.element.id, 'inp_logical_relationship')) {
                                             return;
                                         }
@@ -140,7 +127,6 @@
             resourceBrowseMaster = {
                 init: function () {
                     var self = retrieve;
-//                    var grid = null;
                     var columnModel = new Array();
                     //获取列名
                     if (!Util.isStrEmpty(resourcesCode)) {
@@ -170,7 +156,6 @@
                 },
 
                 bindEvents: function () {
-
                     var self = retrieve;
 
                     //返回资源注册页面
@@ -189,13 +174,10 @@
                         self.$newSearch.append(model);
 
                         var modelLength = model.find("input");
-                        var paramDatas = [0, 1, 2, 3];
-                        var dictId = [10, 11, 12, 13];
                         var width = [defaultWidthAndOr, defaultWidth, defaultWidthAndOr, defaultWidth];
                         var cls = '.inp-model';
 
                         for (var i = 0; i < modelLength.length; i++) {
-                            model.find(cls + i).attr('data-attr-scan', paramDatas[i]);
                             var code = 'code';
                             var value = 'value';
                             model.find(cls + i).ligerComboBox({
@@ -208,7 +190,6 @@
                                 width: width[i],
                                 onSelected: function (value) {
                                     var dataModels = this.data;
-                                    $(this.element).attr('data-attr-scan', value);
                                     var eleClass_model0 = $(this.element).attr('class').split('inp-model0');
                                     var eleClass_model2 = $(this.element).attr('class').split('inp-model2');
                                     var eleClass_model3 = $(this.element).attr('class').split('inp-model3');
@@ -218,7 +199,7 @@
                                     for (var i = 0; i < dataModels.length; i++) {
                                         //判断这个对象的值存不存在字典和判断类型
                                         if (Util.isStrEquals(dataModels[i].code, value)) {
-                                            var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search')
+                                            var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search');
                                             if (!Util.isStrEquals(dataModels[i].dict, 0)) {
                                                 changeHtml($inpSearchType, '.inp-find-search', '', 'ligerComboBox', dataModels[i].dict, "");
                                             } else {
@@ -234,7 +215,6 @@
                                                         break;
                                                     case 'D':
                                                         changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', '');
-//                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', '');
                                                         break;
                                                     case 'DT':
                                                         changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', '');
@@ -256,46 +236,31 @@
                     self.$delBtn.click(function () {
                         var searcHheight = $(".div-search-height").height();
                         resourceInfoGrid.setHeight(height-(searcHheight+210));
-                        $(this).parent().remove();
+                        $(this).parent().parent().remove();
                     });
 
                     //检索
                     self.$SearchBtn.click(function () {
 
                         var jsonData = new Array();
-                        var paramDatas = {};
-                        var jsonDatass = '';
-                        var defaultCondition = self.$defaultCondition;
-                        var logicalRelationship = self.$logicalRelationship;
                         var defualtParam = $(".inp_defualt_param");
-                        var pModel = $(self.$newSearch).find('.div_search_model');
-
-                        var condition = defaultCondition.attr('data-attr-scan');
-
-                        paramDatas = {
-                            field: defaultCondition.attr('data-attr-scan'),
-                            condition: logicalRelationship.attr('data-attr-scan'),
-                            value: defualtParam.ligerGetComboBoxManager().getValue()
-                        }
-                        jsonData.push(paramDatas);
-
+                        var pModel = $("#div_search_data_role_form").children('div');
                         for (var i = 0; i < pModel.length; i++) {
-                            var cModel = $(pModel[i]).find('.inp-find-search');
-                            var paramDatass = {
-                                andOr: $((cModel)[0]).ligerGetComboBoxManager().getValue(),
-                                field: $((cModel)[1]).ligerGetComboBoxManager().getValue(),
-                                condition: $((cModel)[2]).ligerGetComboBoxManager().getValue(),
-                                value: $((cModel)[3]).ligerGetComboBoxManager().getValue()
-                            };
-                            jsonData.push(paramDatass);
+                            var pModel_child = $(pModel[i]);
+                            pModel_child.attrScan();
+                            var values = pModel_child.Fields.getValues();
+                            if (i == 0) {
+                                values.value = defualtParam.ligerGetComboBoxManager().getValue();
+                            } else {
+                                values.value = $(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().getValue();
+                            }
+                            jsonData.push(values);
                         }
-
                         resourceBrowseMaster.reloadResourcesGrid({
                             searchParams: JSON.stringify(jsonData),
                             resourcesCode: resourcesCode
                         });
-
-                    })
+                    });
 
                     //重置
                     self.$resetBtn.click(function () {
@@ -305,7 +270,7 @@
                         logicalRelationship.attr('data-attr-scan', '');
 
                         $(".inp-reset").val('');
-                    })
+                    });
 
                     //导出选择结果
                     self.$outSelExcelBtn.click(function () {
@@ -314,8 +279,6 @@
                             return;
                         }
                         var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
-
-
                         dataModel.fetchRemote("${contextRoot}/resourceView/outExcel", {
                             data: {rowData: JSON.stringify(rowData), resourceCategoryName: resourceCategoryName},
                             success: function (data) {
@@ -326,8 +289,7 @@
                                     $.Notice.error("保存失败");
                             }
                         });
-                    })
-
+                    });
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.data.detailModelList;
@@ -346,29 +308,23 @@
                             }
                         });
                     })
-                },
+                }
             };
-
             //divEle  input的父节点,（jquery对象）例如：$("#inp_defualt_param")
             //inpEle  输入框input的id或class,例如：#inp_defualt_param
             //defHtml 是否默认搜索条件
             //ligerType liger控件类型
             //dict  是否是字典
             function changeHtml(divEle, inpEle, defHtml, ligerType, dictId, data) {
-
                 var html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" /></div>';
                 if (Util.isStrEquals(defHtml, 'default')) {
-
                     html = '<div class="f-fl"><input type="text" data-sttr-scan="3" class="f-ml10 inp-reset inp_defualt_param"/></div>';
-
                     if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
                         html += '<div class="f-fr div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text"  data-sttr-scan="3" class="f-ml10 inp-reset inp_defualt_param"/></div></div>';
                     }
-
                 } else if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
                     html += '<div class="f-fr div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" /></div></div>';
                 }
-
                 divEle.html("");
                 divEle.html(html);
                 $(".div-time-width").width($(".div-change-search").width() - defaultWidth - 5);
@@ -393,9 +349,7 @@
                         });
                         break;
                 }
-
             }
-
             /* ************************* 模块初始化结束 ************************** */
 
             /* *************************** 页面初始化 **************************** */

@@ -12,6 +12,7 @@
 		var mode = '${mode}';
 		var nameCopy = '';
 		var codeCopy = '';
+		var categoryIdOld = '${categoryId}'
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
 			rsInfoForm.init();
@@ -19,8 +20,7 @@
 		/* *************************** 模块初始化 ***************************** */
 		rsInfoForm = {
 			$form: $("#div_rs_info_form"),
-			$catalogId: $("#inp_categoryId"),
-			$catalogName: $("#inp_categoryName"),
+			$category:$("#inp_category"),
 			$name: $("#inp_name"),
 			$code: $("#inp_code"),
 			$interface: $("#inp_interface"),
@@ -47,10 +47,8 @@
 				}
 				this.$form.attrScan();
 				if(mode == 'new'){
-					$("#inp_categoryId").val('${categoryId}');
-					$("#inp_categoryName").val('${categoryName}');
-					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
-					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
+					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
+					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
 				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
@@ -65,16 +63,14 @@
 						grantType:info.grantType,
 						description:info.description
 					});
-					$("#inp_categoryId").val('${categoryId}');
-					$("#inp_categoryName").val('${categoryName}');
-					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
-					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
+					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
+					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
 				}
 				this.$form.show();
 			},
 			initDDL: function () {
 				this.$grantType.eq(1).attr("checked", 'true')
-				//this.$catalog.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
+				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
 					dataParmName: 'detailModelList',
@@ -127,23 +123,50 @@
 				}
 
 				this.$btnSave.click(function () {
-					if(validator.validate()){
-						var values = self.$form.Fields.getValues();
-						var dataModel = $.DataModel.init();
-						dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
-							data:{dataJson:JSON.stringify(values),mode:mode},
-							success: function(data) {
-								if (data.successFlg) {
-									parent.reloadMasterUpdateGrid();
-									$.Notice.success('操作成功');
-									win.closeRsInfoDialog();
-								} else {
-									$.Notice.error('操作失败！');
-								}
-							}
-						});
+					if(validator.validate() == false){
+						return
 					}
+					var values = self.$form.Fields.getValues();
+					var categoryId = values.categoryId;
+					if(Util.isStrEquals(categoryIdOld,categoryId)){
+						update(values)
+						return
+					}
+					//获取父级页面树定位categoryIds
+					var dataModel = $.DataModel.init();
+					dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
+						data:{categoryId:categoryId},
+						async:true,
+						success: function(data) {
+							if (data.successFlg) {
+								var categoryIds = data.obj;
+								var callbackParams = {
+									'categoryIds':categoryIds,
+									'categoryId':categoryId,
+									'typeFilter':$('#inp_category').val(),
+								}
+								update(values,callbackParams);
+							}
+						},
+					});
 				});
+
+				function update(values,callbackParams){
+					var dataModel = $.DataModel.init();
+					dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
+						data:{dataJson:JSON.stringify(values),mode:mode},
+						success: function(data) {
+							if (data.successFlg) {
+								parent.reloadMasterUpdateGrid(callbackParams);
+								$.Notice.success('操作成功');
+								win.closeRsInfoDialog();
+							} else {
+								$.Notice.error('操作失败！');
+							}
+						}
+					});
+				}
+
 				this.$btnCancel.click(function () {
 					win.closeRsInfoDialog();
 				});
