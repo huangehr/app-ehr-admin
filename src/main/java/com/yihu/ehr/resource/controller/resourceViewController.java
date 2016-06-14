@@ -2,9 +2,9 @@ package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.api.ServiceApi;
-import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;

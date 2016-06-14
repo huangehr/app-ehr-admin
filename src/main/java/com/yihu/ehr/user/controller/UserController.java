@@ -6,22 +6,36 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.patient.controller.PatientController;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.RestTemplates;
-import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.web.RestTemplates;
 import com.yihu.ehr.util.log.LogService;
+import org.apache.commons.httpclient.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -277,7 +291,7 @@ public class UserController extends BaseUIController {
     public String fileUpload(String userId,String inputStream,String fileName){
 
         RestTemplates templates = new RestTemplates();
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        Map<String, Object> params = new HashMap<>();
 
         String fileId = null;
         if (!StringUtils.isEmpty(inputStream)) {
@@ -285,12 +299,14 @@ public class UserController extends BaseUIController {
             FileResourceModel fileResourceModel = new FileResourceModel(userId,"user","");
             String fileResourceModelJsonData = toJson(fileResourceModel);
 
-            params.add("file_str",inputStream);
-            params.add("file_name",fileName);
-            params.add("json_data",fileResourceModelJsonData);
-
-            fileId = templates.doPost(comUrl + "/files",params);
-
+            params.put("file_str", inputStream);
+            params.put("file_name", fileName);
+            params.put("json_data",fileResourceModelJsonData);
+            try {
+                fileId = HttpClientUtil.doPost(comUrl + "/files", params,username,password);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         return fileId;
@@ -481,6 +497,39 @@ public class UserController extends BaseUIController {
         }
 
         return envelop;
+    }
+
+
+    public static String doPost(String url, Map<String, String> params, String charset, boolean pretty) {
+        StringBuffer response = new StringBuffer();
+        HttpClient client = new HttpClient();
+        PostMethod method = new PostMethod(url);
+        //设置Http Post数据
+        if (params != null) {
+            HttpMethodParams p = new HttpMethodParams();
+            NameValuePair[] data = {new NameValuePair("file_str",params.get("fileName")),new NameValuePair("fileResourceModelJsonData",params.get("file_str")),new NameValuePair("file_str",params.get("file_str"))};
+            // 将表单的值放入postMethod中
+            method.setRequestBody(data);
+        }
+        try {
+            client.executeMethod(method);
+            if (method.getStatusCode() == HttpStatus.SC_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), charset));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (pretty)
+                        response.append(line).append(System.getProperty("line.separator"));
+                    else
+                        response.append(line);
+                }
+                reader.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            method.releaseConnection();
+        }
+        return response.toString();
     }
 
 }

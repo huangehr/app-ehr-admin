@@ -2,7 +2,7 @@ package com.yihu.ehr.security.controller;
 
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.security.service.SecurityService;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.log.LogService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;

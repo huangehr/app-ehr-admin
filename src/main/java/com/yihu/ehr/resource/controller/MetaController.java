@@ -4,7 +4,7 @@ import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.agModel.resource.RsMetadataModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.resource.service.MetaService;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
