@@ -3,7 +3,7 @@ package com.yihu.ehr.resource.controller;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.resource.service.DictService;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

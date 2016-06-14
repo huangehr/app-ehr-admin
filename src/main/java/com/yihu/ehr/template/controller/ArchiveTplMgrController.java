@@ -4,7 +4,7 @@ import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.template.TemplateModel;
 import com.yihu.ehr.template.service.TemplateService;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

@@ -4,7 +4,7 @@ package com.yihu.ehr.adapter.controller;
 import com.yihu.ehr.adapter.service.AdapterDataSetService;
 import com.yihu.ehr.adapter.service.OrgAdapterPlanService;
 import com.yihu.ehr.adapter.service.PageParms;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;

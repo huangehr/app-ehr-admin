@@ -5,7 +5,7 @@ import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.resource.service.GrantService;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;

@@ -24,7 +24,6 @@
             base.bindSearch();
             ////数据集选择器 select change  事件
             //base.bindChange();
-            isReady = false;
         },
         buildGrid: function () {
             var jq_pane = $("#pane-list").empty(),
@@ -122,9 +121,9 @@
             return false;
         },
         onAfterShowData: function(currentData){
-
             if(currentData.Rows.length==base.p.storage.length){
                 $('#pane-list').find('.l-grid-header1').find('.l-grid-hd-row').addClass('l-checked');
+                isReady = false;
             }
         },
         onChecked: function (checked, data, rowid, rowdata) {
@@ -202,9 +201,6 @@
             }
         },
         addItem: function (data) {
-            if(staged=='false'&&isReady==false){
-                return false;
-            }
             var jq_ul = $("#pane-list-selected");
             // var itemclass = data[base.p.uniqueField].replace("(", "_").replace(")", "_");
             var itemclass = data[base.p.uniqueField].toString().replace("(", "_").replace(")", "_");

@@ -2,9 +2,9 @@ package com.yihu.ehr.adapter.service;
 
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.common.utils.ExtTypeReference;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -298,5 +298,11 @@ public class ExtendService<T> {
     public ExtTypeReference getExtTypeReference(){
 
         return typeReference;
+    }
+
+    public String searchSysDictEntries(int dictId) throws Exception {
+        PageParms pageParms = new PageParms(50, 1)
+                .addEqualNotNull("dictId", dictId);
+        return doGet(comUrl + "/dictionaries/entries", pageParms);
     }
 }

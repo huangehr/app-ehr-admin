@@ -6,10 +6,10 @@ import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.patient.controller.PatientController;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.RestTemplates;
-import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.web.RestTemplates;
 import com.yihu.ehr.util.encode.*;
 import com.yihu.ehr.util.log.LogService;
 import org.apache.commons.lang.ArrayUtils;
@@ -21,6 +21,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -385,4 +388,31 @@ public class OrganizationController extends BaseUIController {
                 outputStream.close();
         }
     }
+    @RequestMapping("/upload2")
+    @ResponseBody
+    public String upload2(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException,
+            IOException {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession()
+                .getServletContext());
+        if (multipartResolver.isMultipart(request)) {
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+            //取得request中的所有文件名
+            Iterator<String> iter = multiRequest.getFileNames();
+            while (iter.hasNext()) {
+                //取得上传文件
+                MultipartFile file = multiRequest.getFile(iter.next());
+                file.getInputStream();
+                if (file != null) {
+                    String myFileName = file.getOriginalFilename();
+                    System.out.println(myFileName);
+                    String fildName = file.getName();
+                    System.out.println(fildName);
+                }
+            }
+        }
+
+        return "";
+    }
+
+
 }
