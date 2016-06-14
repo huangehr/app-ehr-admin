@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,8 +37,9 @@ public class ResourceController extends BaseUIController {
     ObjectMapper objectMapper;
 
     @RequestMapping("/initial")
-    public String resourceInitial(Model model){
+    public String resourceInitial(Model model,String backParams){
         model.addAttribute("contentPage","/resource/resourcemanage/resource");
+        model.addAttribute("backParams",backParams==""?"{\"categoryIds\":\"\",\"sourceFilter\":\"\"}":backParams);
         return "pageView";
     }
     @RequestMapping("/infoInitial")
@@ -130,64 +131,6 @@ public class ResourceController extends BaseUIController {
         }
     }
 
-    //资源分类树数据-获取所有分类的不不分页方法
-    @RequestMapping("/categories")
-    @ResponseBody
-    public Object getCategories(String categoryName,String pid){
-        List<RsCategoryModel> list = new ArrayList<>();
-        try{
-            String filters = "";
-            String envelopStr = "";
-            if(!StringUtils.isEmpty(categoryName)){
-                filters += "name?"+categoryName+";";
-            }
-            if(StringUtils.isEmpty(pid)){
-                String urlByPid = "/resources/categories/pid";
-                Map<String,Object> args = new HashMap<>();
-                args.put("pid","");
-                envelopStr = HttpClientUtil.doGet(comUrl+urlByPid,args,username,password);
-            }else {
-                filters += "pid="+pid+";";
-                String url = "/resources/categories";
-                Map<String,Object> params = new HashMap<>();
-                params.put("filters",filters);
-                envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            }
-            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
-            if(envelopGet.isSuccessFlg()){
-                list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
-            }
-        }catch (Exception ex){
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
-        }
-        return list;
-    }
-    //-----------------------------
-    //资源分类树数据-普通的RsCategoryModel集合
-    @RequestMapping("/tree")
-    @ResponseBody
-    public Object getCategoriesTree(String categoryName){
-        List<RsCategoryModel> list = new ArrayList<>();
-        try{
-            String url = "/resources/categories/list";
-            String filters = "";
-            Map<String,Object> params = new HashMap<>();
-            if(!StringUtils.isEmpty(categoryName)){
-                filters += "name?"+categoryName;
-            }
-            params.put("filters",filters);
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
-            if(envelopGet.isSuccessFlg()){
-                list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
-            }
-        }catch (Exception ex){
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
-        }
-        return list;
-    }
-    //----------------------------------
-
     //更新
     @RequestMapping("/update")
     @ResponseBody
@@ -247,6 +190,11 @@ public class ResourceController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         try {
+            if (isRsInUse(id)){
+                result.setSuccessFlg(false);
+                result.setErrorMsg("已授权资源不能删除");
+                return result;
+            }
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             result = objectMapper.readValue(resultStr, Envelop.class);
             if (result.isSuccessFlg()) {
@@ -268,19 +216,69 @@ public class ResourceController extends BaseUIController {
     @ResponseBody
     public Object isExistCode(String code){
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        return envelop;
+        String url = "/resources/isExistCode/"+code;
+        try{
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
     }
 
     @RequestMapping("/isExistName")
     @ResponseBody
     public Object isExistName(String name){
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        return envelop;
+        String url = "/resources/isExistName";
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("name",name);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
     }
 
-    //带检索分页的查找资源分类方法
+    public Boolean isRsInUse(String resourceId) throws Exception{
+        String url = "/resources/" + resourceId+"/grant";
+        String resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
+        Envelop result = objectMapper.readValue(resultStr, Envelop.class);
+        if (result.isSuccessFlg()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //资源分类树数据-获取所有分类的不分页方法
+    @RequestMapping("/categories")
+    @ResponseBody
+    public Object getCategories(){
+        List<RsCategoryModel> list = new ArrayList<>();
+        try{
+            String filters = "";
+            String envelopStr = "";
+            String url = "/resources/categories";
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters",filters);
+            envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
+            }
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+        }
+        return list;
+    }
+    //----------------------------------
+
+    //带检索分页的查找资源分类方法,用于下拉框
     @RequestMapping("/rsCategory")
     @ResponseBody
     public Object searchRsCategory(String searchParm,int page,int rows){
@@ -323,7 +321,19 @@ public class ResourceController extends BaseUIController {
         }
     }
 
-
-
-
+    //根据资源分类id，获取其以上直接父级id，含自身
+    @RequestMapping("/categoryIds")
+    @ResponseBody
+    public Object getCategoryParentIdsById(String categoryId){
+        String envelopStr = "";
+        try{
+            String url = "/resources/categories/parent_ids";
+            Map<String,Object> params = new HashMap<>();
+            params.put("id",categoryId);
+            envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+        }catch (Exception ex){
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+        }
+        return envelopStr;
+    }
 }

@@ -6,9 +6,9 @@ import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.DateTimeUtils;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.operator.DateUtil;
 import org.apache.commons.lang.StringUtils;
@@ -228,8 +228,8 @@ public class HosAcqTaskController extends BaseUIController {
         String filters = "";
         try{
             if (!StringUtils.isEmpty(searchParm)){
-//                filters += "orgCode?"+searchParm+" g1;fullName?"+searchParm+" g1;";
-                filters += "orgCode?"+searchParm+";";
+                filters += "orgCode?"+searchParm+" g1;fullName?"+searchParm+" g1;";
+                //filters += "orgCode?"+searchParm+";";
 
             }
             String url = "/organizations";
@@ -248,7 +248,7 @@ public class HosAcqTaskController extends BaseUIController {
                 for (OrgModel m:orgModels){
                     Map map = new HashMap<>();
                     map.put("id",m.getOrgCode());
-                    map.put("name",m.getOrgCode());
+                    map.put("name",m.getFullName());
                     list.add(map);
                 }
                 envelopGet.setDetailModelList(list);

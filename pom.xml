@@ -33,6 +33,26 @@
 			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<!-- 引入log4j-slf4j -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jersey</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>log4j-over-slf4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
 		<!-- 使用intellij作为集成开发环境 -->
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
@@ -63,6 +83,18 @@
 			<groupId>com.yihu.ehr</groupId>
 			<artifactId>commons-util</artifactId>
 			<version>1.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.yihu.ehr</groupId>
+			<artifactId>commons-web</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.minidev</groupId>
+			<artifactId>json-smart</artifactId>
+			<version>2.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

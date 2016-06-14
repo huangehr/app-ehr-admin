@@ -6,10 +6,10 @@ import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.patient.controller.PatientController;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.RestTemplates;
-import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.web.RestTemplates;
 import com.yihu.ehr.util.encode.*;
 import com.yihu.ehr.util.log.LogService;
 import org.apache.commons.lang.ArrayUtils;
@@ -21,6 +21,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -134,6 +137,48 @@ public class OrganizationController extends BaseUIController {
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    /**
+     * 获取机构代码下拉框-带检索(根据输入机构代码/名称近似查询）
+     * @param searchParm  控件传递参数的参数名
+     */
+    @RequestMapping("/orgCodes")
+    @ResponseBody
+    public Object searchOrgCodes(String searchParm,int page,int rows){
+        Envelop envelop = new Envelop();
+        String filters = "";
+        try{
+            if (!org.apache.commons.lang.StringUtils.isEmpty(searchParm)){
+                filters += "orgCode?"+searchParm+" g1;fullName?"+searchParm+" g1;";
+            }
+            String url = "/organizations";
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters",filters);
+            params.put("sorts","");
+            params.put("page",page);
+            params.put("size",rows);
+            String envelopStrFGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrFGet,Envelop.class);
+            List<OrgModel> orgModels = new ArrayList<>();
+            List<Map> list = new ArrayList<>();
+            if(envelopGet.isSuccessFlg()){
+                orgModels = (List<OrgModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<OrgModel>(),OrgModel.class);
+                for (OrgModel m:orgModels){
+                    Map map = new HashMap<>();
+                    map.put("id",m.getOrgCode());
+                    map.put("name",m.getFullName());
+                    list.add(map);
+                }
+                envelopGet.setDetailModelList(list);
+                return envelopGet;
+            }
+            return envelop;
+        }catch (Exception ex){
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
             return envelop;
         }
     }
@@ -343,4 +388,31 @@ public class OrganizationController extends BaseUIController {
                 outputStream.close();
         }
     }
+    @RequestMapping("/upload2")
+    @ResponseBody
+    public String upload2(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException,
+            IOException {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession()
+                .getServletContext());
+        if (multipartResolver.isMultipart(request)) {
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+            //取得request中的所有文件名
+            Iterator<String> iter = multiRequest.getFileNames();
+            while (iter.hasNext()) {
+                //取得上传文件
+                MultipartFile file = multiRequest.getFile(iter.next());
+                file.getInputStream();
+                if (file != null) {
+                    String myFileName = file.getOriginalFilename();
+                    System.out.println(myFileName);
+                    String fildName = file.getName();
+                    System.out.println(fildName);
+                }
+            }
+        }
+
+        return "";
+    }
+
+
 }

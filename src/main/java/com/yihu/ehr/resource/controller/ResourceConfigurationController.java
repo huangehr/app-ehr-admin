@@ -1,9 +1,9 @@
 package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.api.ServiceApi;
-import com.yihu.ehr.util.Envelop;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.stereotype.Controller;
@@ -31,8 +31,9 @@ public class ResourceConfigurationController extends BaseUIController {
     private String comUrl;
 
     @RequestMapping("/initial")
-    public String resourceConfigurationInitial(Model model) {
+    public String resourceConfigurationInitial(Model model,String dataModel) {
         model.addAttribute("contentPage", "/resource/resourceconfiguration/resourceConfiguration");
+        model.addAttribute("dataModel",dataModel);
         return "pageView";
     }
 
@@ -41,7 +42,6 @@ public class ResourceConfigurationController extends BaseUIController {
     public Object searchResourceconfiguration(String searchNm, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         String metaDataUrl = ServiceApi.Resources.MetadataList;
-//        String metaDataUrl = ServiceApi.Resources.Metadatas;
         String resultStr = "";
 
         params.put("filters", "");
@@ -68,12 +68,9 @@ public class ResourceConfigurationController extends BaseUIController {
     @ResponseBody
     public Object searchSelResourceconfiguration(String searchNm, String resourcesId, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
-//        String ResourceMetadataUrl = ServiceApi.Resources.ResourceMetadatas;
         String ResourceMetadataUrl = ServiceApi.Resources.ResourceMetadataList;
         String selResourceMetadataListUrl = "/resources/" + resourcesId + "/metadata_list";
-
         String resultStr = "";
-
         try {
 
             if (searchNm.equals("selAll")) {
@@ -130,24 +127,4 @@ public class ResourceConfigurationController extends BaseUIController {
 
         return resultStr;
     }
-
-
-//    @RequestMapping("/getMetaDataByMetaDataId")
-//    @ResponseBody
-//    public String getMetaDataByMetaDataId(String MetaDataId) {
-//
-//        Map<String, Object> params = new HashMap<>();
-//        String resultStr = "";
-//        String addMetaDataUrl = "/resources/metadatas/";
-//
-//        try {
-//                resultStr = HttpClientUtil.doGet(comUrl + addMetaDataUrl + MetaDataId, params, username, password);
-//        } catch (Exception e) {
-//
-//        }
-//
-//        return resultStr;
-//    }
-
-
 }

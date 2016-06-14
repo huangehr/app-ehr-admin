@@ -10,102 +10,93 @@
             var retrieve = null;
             var master = null;
             var appInfoGrid = null;
-
             var catalogDictId = 1;
             var statusDictId = 2;
-            var selectRow = null;
-            var isSaveSelectStatus = false;
+			var isFirstPage = true;
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 retrieve.init();
                 master.init();
             }
+			function reloadGrid (params) {
+				if (isFirstPage){
+					this.grid.options.newPage = 1;
+				}
+				this.grid.setOptions({parms: params});
+				this.grid.loadData(true);
+				isFirstPage = true;
+			}
 
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
                 $searchNm: $('#inp_search'),
-                $catalogDDL: $('#ipt_catalog'),
-                $statusDDL: $('#ipt_status'),
+				$searchOrg: $('#inp_search_org'),
+                $catalog: $('#ipt_catalog'),
+                $status: $('#ipt_status'),
                 $searchBtn: $('#btn_search'),
                 $addBtn: $('#btn_add'),
-
                 init: function () {
                     this.initDDL(catalogDictId, $('#ipt_catalog'));
                     this.initDDL(statusDictId, $('#ipt_status'));
-
                     this.$searchNm.ligerTextBox({width: 240});
+					this.$searchOrg.ligerTextBox({width:240});
                     this.$element.show();
-
-                    this.bindEvents();
-
                     this.$element.attrScan();
                     window.form = this.$element;
                 },
                 initDDL: function (dictId, target) {
                     var target = $(target);
                     var dataModel = $.DataModel.init();
-
                     dataModel.fetchRemote("${contextRoot}/dict/searchDictEntryList",{data:{dictId: dictId,page: 1, rows: 10},
                         success: function(data) {
                             target.ligerComboBox({
                                 valueField: 'code',
                                 textField: 'value',
-                                data: [].concat({code:'',value:''},data.detailModelList)
+                                data: [].concat({code:'',value:''},data.detailModelList),
+								width:160,
                             });
                         }});
                 },
-                bindEvents: function () {
-                    this.$searchBtn.click(function () {
-                        master.reloadGrid(1);
-                    })
-                }
             };
-
             master = {
                 appInfoDialog: null,
                 grid: null,
                 init: function () {
-                    var searchNm = "";
-                    var catalog = "";
-                    var status = "";
-
                     this.grid = $("#div_app_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/app/searchApps',
                         parms: {
-                            searchNm: searchNm,
-                            catalog: catalog,
-                            status: status
+                            searchNm: '',
+							org: '',
+                            catalog: '',
+                            status: ''
                         },
                         columns: [
-                            { display: '名称', name: 'name',width: '15%', isAllowHide: false },
-                            { display: 'APP ID',name: 'id', width: '10%',isAllowHide: false },
-                            { display: 'APP Secret', name: 'secret', width: '10%', minColumnWidth: 60 },
-                            { display: '类型', name: 'catalogName', width: '10%'},
-                            { display: '回调URL', name: 'url', width: '25%',align:'left'},
-                            { display: 'status', name: 'status',hide:true},
-                            { display: '状态', name: 'statusName', width: '10%',resizable: true},
-                            { display: '审核', name: 'checkStatus', width: '10%',minColumnWidth: 20,render: function (row){
-                                if(Util.isStrEquals( row.status,'WaitingForApprove')) {
-//									return '<div class="grid_edit"  style="margin-left: 20px;cursor:pointer;"  title="通过" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "appInfo:appInfoGrid:approved", row.id) + '"></div>'
-//											+'<div class="grid_delete"  style="margin-left: 60px;cursor:pointer;" title="否决"' +
-//											' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "appInfo:appInfoGrid:reject", row.id) + '"></div>';
-                                    return '<a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:approved", row.id)+'">'+'通过'+'</a> /' +
-                                            ' <a class="veto label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:reject", row.id)+'">'+'否决'+'</a>'
-                                } else if(Util.isStrEquals( row.status,'Approved')){
-//									return '<div class="grid_edit"  style="margin: 10px auto;cursor:pointer;"  title="禁用" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "appInfo:appInfoGrid:forbidden", row.id) + '"></div>'
+							{ display: 'APP ID',name: 'id', width: '15%',isAllowHide: false,hide:true },
+							{ display: 'APP Secret', name: 'secret', width: '10%', minColumnWidth: 60,hide:true },
+                            { display: '应用名称', name: 'name',width: '10%', isAllowHide: false,align:'left' },
+							{ display: '机构代码', name: 'org',width: '8%',align:'left'},
+							{ display: '机构名称', name: 'orgName',width: '15%',align:'left'},
+							{ display: '类型', name: 'catalogName', width: '8%'},
+                            { display: '回调URL', name: 'url', width: '15%',align:'left'},
+							{ display: '审核', name: 'checkStatus', width: '8%',minColumnWidth: 20,render: function (row){
+								if(Util.isStrEquals( row.status,'WaitingForApprove')) {
+									return '<a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:approved", row.id)+'">'+'通过'+'</a> /' +
+											' <a class="veto label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:reject", row.id)+'">'+'否决'+'</a>'
+								} else if(Util.isStrEquals( row.status,'Approved')){
 									return '<a data-toggle="model"  class="Forbidden label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:forbidden", row.id)+'">'+'禁用'+'</a>'
-                                }else if(Util.isStrEquals( row.status,'Forbidden')){
-//									return '<div class="grid_edit"  style="margin: 10px auto;cursor:pointer;"  title="开启" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "appInfo:appInfoGrid:open", row.id) + '"></div>'
+								}else if(Util.isStrEquals( row.status,'Forbidden')){
 									return '<a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:open", row.id)+'">'+'开启'+'</a>'
-                                }else if(Util.isStrEquals( row.status,'Reject')){
-                                    return '无'
-                                }
-                            }},
-                            { display: '操作', name: 'operator', width: '10%', render: function (row) {
-//								var html ='<div class="grid_edit"  style=""  title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id,'modify') + '"></div>'
-                                var html = '<a class="grid_edit" title="编辑" href="#" onclick="javascript:'+Util.format("$.publish('{0}',['{1}','{2}'])","app:appInfo:open", row.id,'modify')+'"></a>' ;
-                                return html;
+								}else if(Util.isStrEquals( row.status,'Reject')){
+									return '无'
+								}
+							}},
+							{ display: '已授权资源', name: 'resourceNames', width: '26%',align:'left'},
+							{ display: '操作', name: 'operator', width: '10%', render: function (row) {
+								var html = '';
+								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a>';
+								html += '<a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a>';
+								return html;
                             }}
                         ],
                         enabledEdit: true,
@@ -113,31 +104,10 @@
                         unSetValidateAttr:false,
                         allowHideColumn: false,
                         onDblClickRow : function (row){
-                            var mode = 'view';
-                            master.appInfoDialog = $.ligerDialog.open({
-                                height:640,
-                                width: 600,
-                                title : '应用基本信息',
-                                url: '${contextRoot}/app/template/appInfo',
-                                urlParms: {
-                                    appId: row.id,
-                                    mode:mode
-                                },
-                                isHidden: false
-                            });
+							$.publish("app:appInfo:open",[row.id,'view']);
                         },
-                        onSelectRow: function (data, rowindex, rowobj) {
-                            selectRow = data;
-                        },
-                        onAfterShowData: function () {
-                            if(selectRow!=null && isSaveSelectStatus){
-                                isSaveSelectStatus = false;
-                                master.grid.select(selectRow);
-                            }
-                        }
                     }));
                     this.bindEvents();
-                    // 自适应宽度
                     this.grid.adjustToWidth();
                 },
                 check: function (id,status) {
@@ -150,24 +120,28 @@
                 },
                 reloadGrid: function (curPage) {
                     var values = retrieve.$element.Fields.getValues();
-                    Util.reloadGrid.call(this.grid, '', values, curPage);
+					reloadGrid.call(this, values);
                 },
                 bindEvents: function () {
+					//检索按钮
+					retrieve.$searchBtn.click(function () {
+						master.reloadGrid();
+					});
+					//新增按钮
+					retrieve.$addBtn.click(function(){
+						$.publish("app:appInfo:open",['','new']);
+					});
+					//新增、修改、查看统一定制方法
                     $.subscribe('app:appInfo:open',function(event,appId,mode){
                         var title = '';
-
-                        //只有new 跟 modify两种模式会到这个函数
                         if(mode == 'modify'){
                             title = '修改应用信息';
-                            isSaveSelectStatus = true;
-                        }
-                        else{
+                        }else{
                             title = '新增应用信息';
                         }
-
                         master.appInfoDialog = $.ligerDialog.open({
-                            height:640,
-                            width: 600,
+                            height:500,
+                            width: 500,
                             title : title,
                             url: '${contextRoot}/app/template/appInfo',
                             urlParms: {
@@ -175,7 +149,8 @@
                                 mode:mode
                             },
                             isHidden: false,
-                            opener: true
+                            opener: true,
+							load:true
                         });
                     });
                     $.subscribe('appInfo:appInfoGrid:approved',function(event,id) {
@@ -194,23 +169,32 @@
                         var status = "Approved";
                         master.check(id,status);
                     });
+					//资源授权页面跳转
+					$.subscribe('app:resource:list', function (event, appId,name,catalogName) {
+						var data = {
+							'appId':appId,
+							'appName':name,
+							'catalogName':catalogName,
+							'categoryIds':'',
+							'sourceFilter':'',
+						}
+						var url = '${contextRoot}/app/resource/initial?';
+						$("#contentPage").empty();
+						$("#contentPage").load(url,{backParams:JSON.stringify(data)});
+					});
                 },
             };
-
             /* ******************Dialog页面回调接口****************************** */
             win.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-
             win.closeDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     master.reloadGrid();
                 }
                 master.appInfoDialog.close();
-                $.Notice.success('更新成功');
             };
-
             /* *************************** 页面功能 **************************** */
             /* *************************** 页面功能 **************************** */
             pageInit();

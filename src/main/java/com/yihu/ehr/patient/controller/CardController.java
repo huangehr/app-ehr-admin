@@ -1,10 +1,10 @@
 package com.yihu.ehr.patient.controller;
 
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.util.Envelop;
-import com.yihu.ehr.util.RestTemplates;
-import com.yihu.ehr.util.URLQueryBuilder;
-import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.url.URLQueryBuilder;
+import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

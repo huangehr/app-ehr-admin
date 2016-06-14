@@ -7,21 +7,20 @@
 	<div class="m-form-group">
 		<label>资源分类<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="hidden" id="inp_categoryId"  data-attr-scan="categoryId"/>
-			<input type="text" id="inp_categoryName" readonly="readonly" class="required useTitle f-h28 f-w240 bdc"   required-title=<spring:message code="lbl.must.input"/> />
+			<input type="text" id="inp_category" readonly="readonly" data-type="select" class="required useTitle f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="categoryId" />
 		</div>
 	</div>
 
 	<div class="m-form-group">
 		<label>资源名称<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_name" class="required useTitle f-h28 f-w240" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
+			<input type="text" id="inp_name" class="required useTitle ajax f-h28 f-w240" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label>资源编码<spring:message code="spe.colon"/></label>
 		<div class="m-form-control essential">
-			<input id="inp_code" class="required useTitle validate-special-char f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
+			<input id="inp_code" class="required useTitle ajax validate-special-char f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -39,7 +38,7 @@
 	</div>
 	<div class="m-form-group">
 		<label>资源说明<spring:message code="spe.colon"/></label>
-		<div class="m-form-control essential">
+		<div class="m-form-control">
 			<textarea id="inp_description" class="f-h28 f-w240 max-length-500 validate-special-char" data-attr-scan="description" maxlength="500"></textarea>
 		</div>
 	</div>

@@ -10,6 +10,9 @@
 		// 表单校验工具类
 		var jValidation = $.jValidation;
 		var mode = '${mode}';
+		var nameCopy = '';
+		var codeCopy = '';
+		var categoryIdOld = '${categoryId}'
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
 			rsInfoForm.init();
@@ -17,11 +20,11 @@
 		/* *************************** 模块初始化 ***************************** */
 		rsInfoForm = {
 			$form: $("#div_rs_info_form"),
-			$catalogId: $("#inp_categoryId"),
-			$catalogName: $("#inp_categoryName"),
+			$category:$("#inp_category"),
 			$name: $("#inp_name"),
 			$code: $("#inp_code"),
 			$interface: $("#inp_interface"),
+			$grantType: $('input[name="grantType"]', this.$form),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -35,6 +38,7 @@
 				this.$name.ligerTextBox({width:240});
 				this.$code.ligerTextBox({width:240});
 				this.$description.ligerTextBox({width:240, height: 120 });
+				this.$grantType.ligerRadio();
 				var mode = '${mode}';
 				if(mode == 'view'){
 					rsInfoForm.$form.addClass('m-form-readonly');
@@ -43,13 +47,13 @@
 				}
 				this.$form.attrScan();
 				if(mode == 'new'){
-					$("#inp_categoryId").val('${categoryId}');
-					$("#inp_categoryName").val('${categoryName}');
-					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
-					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
+					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
+					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
 				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
+					nameCopy = info.name;
+					codeCopy = info.code;
 					this.$form.Fields.fillValues({
 						id:info.id,
 						code:info.code,
@@ -59,15 +63,14 @@
 						grantType:info.grantType,
 						description:info.description
 					});
-					$("#inp_categoryId").val('${categoryId}');
-					$("#inp_categoryName").val('${categoryName}');
-					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
-					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
+					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
+					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
 				}
 				this.$form.show();
 			},
 			initDDL: function () {
-				//this.$catalog.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
+				this.$grantType.eq(1).attr("checked", 'true')
+				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
 					dataParmName: 'detailModelList',
@@ -84,30 +87,86 @@
 
 			bindEvents: function () {
 				var self = this;
-				var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
-					onElementValidateForAjax:function(elm){
-						//TODO 资源名称不重复验证
+				var validator =  new jValidation.Validation(self.$form, {immediate: true, onSubmit: false,
+					onElementValidateForAjax: function (elm) {
+						if (Util.isStrEquals($(elm).attr("id"), 'inp_name')) {
+							var name = $("#inp_name").val();
+							if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
+								return checkUnique("${contextRoot}/resource/resourceManage/isExistName",name,"资源名称不能重复！");
+							}
+						}
+						if (Util.isStrEquals($(elm).attr("id"), 'inp_code')) {
+							var code = $("#inp_code").val();
+							if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){
+								return checkUnique("${contextRoot}/resource/resourceManage/isExistCode",code,"资源编码不能重复！");
+							}
+						}
 					}
 				});
+				//验证编码、名字不可重复
+				function checkUnique(url, value, errorMsg) {
+					var result = new jValidation.ajax.Result();
+					var dataModel = $.DataModel.init();
+					dataModel.fetchRemote(url, {
+						data: {name:value,code:value},
+						async: false,
+						success: function (data) {
+							if (data.successFlg) {
+								result.setResult(false);
+								result.setErrorMsg(errorMsg);
+							} else {
+								result.setResult(true);
+							}
+						}
+					});
+					return result;
+				}
 
 				this.$btnSave.click(function () {
-					if(validator.validate()){
-						var values = self.$form.Fields.getValues();
-						var dataModel = $.DataModel.init();
-						dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
-							data:{dataJson:JSON.stringify(values),mode:mode},
-							success: function(data) {
-								if (data.successFlg) {
-									parent.reloadMasterUpdateGrid();
-									$.Notice.success('操作成功');
-									win.closeRsInfoDialog();
-								} else {
-									$.Notice.error('操作失败！');
-								}
-							}
-						});
+					if(validator.validate() == false){
+						return
 					}
+					var values = self.$form.Fields.getValues();
+					var categoryId = values.categoryId;
+					if(Util.isStrEquals(categoryIdOld,categoryId)){
+						update(values)
+						return
+					}
+					//获取父级页面树定位categoryIds
+					var dataModel = $.DataModel.init();
+					dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
+						data:{categoryId:categoryId},
+						async:true,
+						success: function(data) {
+							if (data.successFlg) {
+								var categoryIds = data.obj;
+								var callbackParams = {
+									'categoryIds':categoryIds,
+									'categoryId':categoryId,
+									'typeFilter':$('#inp_category').val(),
+								}
+								update(values,callbackParams);
+							}
+						},
+					});
 				});
+
+				function update(values,callbackParams){
+					var dataModel = $.DataModel.init();
+					dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
+						data:{dataJson:JSON.stringify(values),mode:mode},
+						success: function(data) {
+							if (data.successFlg) {
+								parent.reloadMasterUpdateGrid(callbackParams);
+								$.Notice.success('操作成功');
+								win.closeRsInfoDialog();
+							} else {
+								$.Notice.error('操作失败！');
+							}
+						}
+					});
+				}
+
 				this.$btnCancel.click(function () {
 					win.closeRsInfoDialog();
 				});

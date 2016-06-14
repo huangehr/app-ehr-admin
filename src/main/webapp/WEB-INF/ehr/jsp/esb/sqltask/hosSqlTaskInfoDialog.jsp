@@ -12,7 +12,7 @@
 <div id="div_his_info_form" data-role-form class="m-form-inline f-mt20" data-role-form>
 	<input type="hidden" id="id" data-attr-scan="id"/>
 	<div class="m-form-group">
-		<label >机构代码:</label>
+		<label >机构名称:</label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_org_code" class="required useTitle f-h28 f-w240" placeholder="请输入机构代码或名称检索" data-type="select"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="orgCode">
 		</div>

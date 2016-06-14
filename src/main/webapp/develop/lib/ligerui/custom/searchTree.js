@@ -384,7 +384,6 @@
             }
             g.tree.click(function (e)
             {
-                debugger
                 var obj = (e.target || e.srcElement);
                 var treeitem = null;
                 if (obj.tagName.toLowerCase() == "a" || obj.tagName.toLowerCase() == "span" || $(obj).hasClass("l-box"))
@@ -708,6 +707,9 @@
         //根据data生成最终完整的tree html
         _getTreeHTMLByData: function (data, outlineLevel, isLast, isExpand)
         {
+            if ($.Util.isStrEmpty(data)){
+                data = [];
+            }
             var g = this, p = this.options;
             if (g.maxOutlineLevel < outlineLevel)
                 g.maxOutlineLevel = outlineLevel;

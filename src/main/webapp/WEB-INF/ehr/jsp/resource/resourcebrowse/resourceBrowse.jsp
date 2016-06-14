@@ -6,31 +6,42 @@
 <div id="div_wrapper" class="f-mt20">
     <!-- ####### 查询条件部分 ####### -->
     <div class="f-h785">
-        <div class="f-w18 f-bd f-of-hd" style="float: left">
+        <div class="f-mw19 f-bd f-of-hd f-fl" id="div-resource-tree" >
             <div class="f-mt10 f-ml10 f-w270">
                 <!--输入框-->
                 <input type="text" id="inp_search" class="f-ml10"/>
             </div>
             <hr>
             <!--资源浏览树-->
-            <div id="div_resource_browse_tree"></div>
+            <div id="div_resource_browse_tree" class="f-mw100"></div>
         </div>
         <!--资源浏览详情-->
-        <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">
+        <div id="div_resource_browse_msg" class="div-resource-browse">
             <!--添加动态查询-->
-            <div id="div_new_search" class="f-mt10 f-ml10">
-                <span class="f-fl f-mt10 f-ml10">查询条件：</span>
-                <div class="f-fl f-w90 f-ml50">
-                    <div class="f-fl f-ml10 f-mr10">
-                        <input type="text" id="inp_default_condition" style="width: 238px" data-attr-scan="1" class="f-pr0 f-ml10 inp-reset"/>
+            <div class="f-mt10 f-ml10 div-search-height f-fl f-ml20 f-mw93" id="div-search-data-role-form">
+                <div id="div_new_search" class="f-mt10" data-role-form>
+                    <div class="f-fl f-mw100" id="div_default_search">
+                        <div class="f-fl f-ml10 f-mr10 f-w-auto f-mw7">
+                            <div class="f-fl f-ml10 f-mr10 f-dn">
+                                <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search"
+                                       data-attr-scan="andOr" value="AND"/>
+                            </div>
+                            <span class="f-fl f-mt10 f-ml10">查询条件：</span>
+                        </div>
+                        <div class="f-fl f-ml10 f-mr10 ">
+                            <input type="text" id="inp_default_condition" data-type="select" data-attr-scan="field"
+                                   class="f-pr0 f-mw238 f-ml10 inp-reset div-table-colums"/>
+                        </div>
+                        <div class="f-fl f-ml10 f-mr10 div-and-or">
+                            <input type="text" id="inp_logical_relationship" data-type="select"
+                                   data-attr-scan="condition" class="f-ml10 inp-reset"/>
+                        </div>
+                        <div class="f-fl f-ml10 f-mr10 div-change-search f-mw42">
+                            <input type="text" data-attr-scan="value" data-type="select"
+                                   class="f-ml10 inp-reset inp_defualt_param"/>
+                        </div>
+                        <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
                     </div>
-                    <div class="f-fl f-ml10 f-mr10">
-                        <input type="text" id="inp_logical_relationship" data-sttr-scan="2" class="f-ml10 inp-reset"/>
-                    </div>
-                    <div class="f-fl f-ml10 f-mr10 div-change-search">
-                        <input type="text" id="inp_defualt_param" data-sttr-scan="3" class="f-ml10 inp-reset"/>
-                    </div>
-                    <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
                 </div>
             </div>
             <div class="f-fr f-mr20 f-mt10">
@@ -40,33 +51,42 @@
                 <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_reset_btn">
                     <span>重置</span>
                 </div>
-                    <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_out_sel_excel_btn">
-                        <span>导出选中结果</span>
-                    </div>
-                    <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_out_all_excel_btn">
-                        <span>导出查询结果</span>
-                    </div>
+                <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar"
+                     id="div_out_sel_excel_btn">
+                    <span>导出选中结果</span>
+                </div>
+                <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar"
+                     id="div_out_all_excel_btn">
+                    <span>导出查询结果</span>
+                </div>
             </div>
 
             <div class="div-result-msg f-mt10">
                 <div id="div_resource_info_grid"></div>
             </div>
-
         </div>
-        <div class="f-fl f-w90 f-mt10 f-ml60 dis-none div_search_model" >
-            <div class="f-fl f-ml10 f-mr10">
-                <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search"/>
+        <div class="f-fl f-mw100 f-mt10 f-ml60 dis-none div_search_model" data-role-form>
+            <div>
+                <div class="f-fl f-ml10 f-mr10">
+                    <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search" data-type="select"
+                           data-attr-scan="andOr"/>
+                </div>
+                <div class="f-fl f-ml10 f-mr10 ">
+                    <input type="text" class="f-ml10 inp-reset inp-model1 inp-find-search div-table-colums" data-type="select"
+                           data-attr-scan="field"/>
+                </div>
+                <div class="f-fl f-ml10 f-mr10">
+                    <input type="text" class="f-ml10 inp-reset inp-model2 inp-find-search" data-type="select"
+                           data-attr-scan="condition"/>
+                </div>
+                <div class="f-fl f-ml10 f-mr10 div-new-change-search f-mw42 " >
+                    <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" data-type="select"
+                           data-attr-scan="value"/>
+                </div>
+                <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
             </div>
-            <div class="f-fl f-ml10 f-mr10">
-                <input type="text" class="f-ml10 inp-reset inp-model1 inp-find-search"/>
-            </div>
-            <div class="f-fl f-ml10 f-mr10">
-                <input type="text" class="f-ml10 inp-reset inp-model2 inp-find-search"/>
-            </div>
-            <div class="f-fl f-ml10 f-mr10 div-new-change-search">
-                <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search"/>
-            </div>
-            <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
         </div>
+        <div class="f-dn f-mw14" id="div-f-w1"></div>
+        <div class="f-dn f-mw7" id="div-f-w2"></div>
     </div>
 </div>
