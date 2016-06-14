@@ -224,6 +224,8 @@ cda.list = {
             idFieldName: 'id',
             textFieldName: 'name',
             slide: false,
+            childIcon:null,
+            parentIcon:null,
             onSelect: function (data) {
                 var id = data.data.id;
                 $("#hdType").val(id);

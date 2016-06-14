@@ -5,11 +5,12 @@ import com.yihu.ehr.agModel.resource.RsAppResourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.util.Envelop;
+import com.yihu.ehr.model.resource.MRsAppResource;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.RestTemplates;
-import com.yihu.ehr.util.URLQueryBuilder;
-import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.url.URLQueryBuilder;
+import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -277,12 +278,6 @@ public class AppController extends BaseUIController {
         return envelop;
     }
 
-
-
-
-    /**
-     * 跳转资源授权页面顶部app信息
-     */
     @RequestMapping("/app")
     @ResponseBody
     public Object getAppById(String appId){
@@ -318,9 +313,51 @@ public class AppController extends BaseUIController {
         return envelop;
     }
 
+    //批量、单个取消资源授权
+    @RequestMapping("/resource/cancel")
+    @ResponseBody
+    public Object resourceGrantCancel(String appId,String resourceIds){
+        Envelop envelop = new Envelop();
+        envelop.setSuccessFlg(false);
+        if(StringUtils.isEmpty(appId)){
+            envelop.setErrorMsg("应用id不能为空！");
+            return envelop;
+        }
+        if(StringUtils.isEmpty(resourceIds)){
+            envelop.setErrorMsg("资源id不能为空！");
+            return envelop;
+        }
+        try {
+            //先获取授权关系表的ids
+            String url = "/resources/grants/no_paging";
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","appId="+appId+";resourceId="+resourceIds);
+            String envelopStrGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
+            String ids = "";
+            if(envelopGet.isSuccessFlg()&&envelopGet.getDetailModelList().size()!=0){
+                List<MRsAppResource> list = (List<MRsAppResource>)getEnvelopList(envelopGet.getDetailModelList(),
+                        new ArrayList<MRsAppResource>(),MRsAppResource.class);
+                for(MRsAppResource m:list){
+                    ids += m.getId()+",";
+                }
+                ids = ids.substring(0,ids.length()-1);
+            }
+            //取消资源授权
+            if(!StringUtils.isEmpty(ids)){
+                String urlCancel = "/resources/grants";
+                Map<String,Object> args = new HashMap<>();
+                args.put("ids",ids);
+                String result = HttpClientUtil.doDelete(comUrl+urlCancel,args,username,password);
+                return result;
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
 
-    //根据资源类别获取资源列表
-    //删除授权资源及清除对应的应用-资源-数据元数据
     //修改、查看授权资源
     //-------------------------------------------------------应用---资源授权管理---结束----------------
 
@@ -349,7 +386,7 @@ public class AppController extends BaseUIController {
             RestTemplates template = new RestTemplates();
             resultStr = template.doGet(comUrl+url+"?"+param);
             Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
-            if(resultGet.isSuccessFlg()&&resultGet.getDetailModelList().size()!=0){
+            if(resultGet.isSuccessFlg()){
                 List<RsAppResourceModel> rsAppModels = (List<RsAppResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsAppResourceModel>(),RsAppResourceModel.class);
                 RsAppResourceModel resourceModel = rsAppModels.get(0);
                 return resourceModel.getId();
@@ -360,45 +397,43 @@ public class AppController extends BaseUIController {
         return "";
     }
 
-    /**
-     * 跳转维度管理页面顶部资源信息
-     */
-    @RequestMapping("/resource")
-    @ResponseBody
-    public Object getResourceById(String resourceId){
-        Envelop envelop = new Envelop();
-        try{
-            String url = "/resources/"+resourceId;
-            RestTemplates template = new RestTemplates();
-            String envelopStr = template.doGet(comUrl+url);
-            return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(AppController.class).error(ex.getMessage());
-        }
-        envelop.setSuccessFlg(false);
-        return envelop;
-    }
+//    /**
+//     * 跳转维度管理页面顶部资源信息
+//     */
+//    @RequestMapping("/resource")
+//    @ResponseBody
+//    public Object getResourceById(String resourceId){
+//        Envelop envelop = new Envelop();
+//        try{
+//            String url = "/resources/"+resourceId;
+//            RestTemplates template = new RestTemplates();
+//            String envelopStr = template.doGet(comUrl+url);
+//            return envelopStr;
+//        }catch (Exception ex){
+//            LogService.getLogger(AppController.class).error(ex.getMessage());
+//        }
+//        envelop.setSuccessFlg(false);
+//        return envelop;
+//    }
+//
+//    //根据资源id获取数据元列表
+//    @RequestMapping("/resource/metadata")
+//    @ResponseBody
+//    public Object resourceMetadata(String resourceId){
+//        Envelop envelop = new Envelop();
+//        try{
+//            String url = "/resources/"+resourceId+"/metadata_list";
+//            RestTemplates template = new RestTemplates();
+//            String envelopStr = template.doGet(comUrl+url);
+//            return envelopStr;
+//        }catch (Exception ex){
+//            LogService.getLogger(AppController.class).error(ex.getMessage());
+//        }
+//        envelop.setSuccessFlg(false);
+//        return envelop;
+//
+//    }
 
-    //根据资源id获取数据元列表
-    @RequestMapping("/resource/metadata")
-    @ResponseBody
-    public Object resourceMetadata(String resourceId){
-        Envelop envelop = new Envelop();
-        try{
-            String url = "/resources/"+resourceId+"/metadata_list";
-            RestTemplates template = new RestTemplates();
-            String envelopStr = template.doGet(comUrl+url);
-            return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(AppController.class).error(ex.getMessage());
-        }
-        envelop.setSuccessFlg(false);
-        return envelop;
-
-    }
-
-    //根据app+资源的id 授权数据元（授权模式（允许/禁止）
-    //已授权/未授权的
     //-------------------------------------------------------应用----资源----数据元--管理结束--------------
 
 }
