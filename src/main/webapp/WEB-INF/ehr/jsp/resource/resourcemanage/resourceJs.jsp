@@ -43,6 +43,7 @@
 				init: function () {
 					var self = this;
 					var categoryName = '';
+					$('#div_tree').mCustomScrollbar();
 					this.$search.ligerTextBox({width:220,isSearch: true, search: function () {
 						categoryName = $("#inp_search").val();
 						typeTree.s_search(categoryName);
@@ -230,7 +231,12 @@
 			/* ************************* dialog回调函数 ************************** */
 			var resizeContent = function(){
 				var contentW = $('#div_content').width();
+				//浏览器窗口高度-固定的（健康之路图标+位置）128-20px包裹上下padding
+				var contentH = $(window).height()-128-20;
 				var leftW = $('#div_left').width();
+				$('#div_content').height(contentH);
+				//减50px的检索条件div高度
+				$('#div_tree').height(contentH-50);
 				$('#div_right').width(contentW-leftW-20);
 			};
 			$(window).bind('resize', function() {
