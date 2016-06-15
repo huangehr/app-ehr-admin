@@ -8,15 +8,14 @@
         <input type="text" data-type="select" id="stdDictVersion" data-attr-scan="version">
 
   </div>
-  <%--todo:导入导出暂不发布--%>
-  <%--<div id="div_upload" class="f-mr100" data-alone-file=true align="right">--%>
-    <%--<!--用来存放item-->--%>
-    <%--<div id="div_file_list" class="uploader-list f-mr100 f-h30"></div>--%>
-    <%--<div id="div_file_picker" class="f-mt10" style="margin-top: -30px;">选择导入</div>--%>
-  <%--</div>--%>
-  <%--<div>--%>
-    <%--<button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="margin-top: -35px;">选择导出</button>--%>
-  <%--</div>--%>
+  <div id="div_upload" class="f-mr100" data-alone-file=true align="right">
+    <!--用来存放item-->
+    <div id="div_file_list" class="uploader-list f-mr100 f-h30"></div>
+    <div id="div_file_picker" class="f-mt10 " style="margin-top: -30px;">导入字典</div>
+  </div>
+  <div>
+    <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="margin-top: -38px;height: 34px">全部导出</button>
+  </div>
   <div style="width: 100%" id="grid_content">
     <!--######标准字典######-->
     <div id="div_left" style=" width:400px;float: left;">
