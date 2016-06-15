@@ -3,6 +3,7 @@
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
 
     (function ($, win) {
@@ -11,7 +12,9 @@
             var urls = {
                 list: '${contextRoot}/resource/meta/list',
                 del: '${contextRoot}/resource/meta/delete',
-                gotoModify: '${contextRoot}/resource/meta/gotoModify'
+                gotoModify: '${contextRoot}/resource/meta/gotoModify',
+                upload: "${contextRoot}/resource/meta/import",
+                gotoImportLs: "${contextRoot}/resource/meta/gotoImportLs"
             }
 
             //跳转新增修改
@@ -26,15 +29,23 @@
                 batchDel(grid, find, urls.del, id, undefined, undefined, '失效', '确定进行失效操作？');
             }
 
-
+            var uploadDialog;
             //初始化工具栏
             var barTools = function(){
+
                 var btn = [
-//                    {type: 'batchDel', clkFun: del},
                     {type: 'edit', clkFun: gotoModify}
                 ];
                 initBarBtn($('.m-retrieve-inner'), btn)
+
+                function onUploadSuccess(g, result){
+                    openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
+                }
+
+                $('#upd').uploadFile({url: "${contextRoot}/resource/meta/import", onUploadSuccess: onUploadSuccess});
+
             };
+
 
             function opratorRender(row){
                 var vo = [

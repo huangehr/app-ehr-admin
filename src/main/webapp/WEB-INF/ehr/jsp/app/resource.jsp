@@ -10,7 +10,7 @@
 <div>
 	<!-- ####### 头部 ####### -->
 	<div id="conditionArea" class="" align="right">
-		<div class="body-head f-h50" align="left">
+		<div class="body-head f-h30 f-mb10" align="left">
 			<a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/app/initial');"  class="f-fwb">返回上一层 </a>
 			<input id="appId" hidden=hidden />
 			<span class="f-ml20">应用名称：</span><input class="f-fwb f-mt10"  readonly="readonly"  readonly id="msg_appName"/>
@@ -20,12 +20,14 @@
 	<div id="div_wrapper">
 		<!-- ####### 查询条件部分 ####### -->
 		<div id="div_content" class="f-ww" style="height:780px ">
-			<div id="div_left" class="f-w240 f-bd f-of-hd" style=" width:240px;float: left;height: 780px">
+			<div id="div_left" class="f-w240 f-bd f-of-hd" style=" width:240px;float: left;height: 100%">
 				<div class="f-mt10 f-mb10 f-ml10 f-w240">
 					<input type="text" id="inp_search" class="f-ml10 f-h28"/>
 				</div>
 				<!--资源浏览树-->
-				<div id="div_resource_browse_tree" style=""></div>
+				<div id="div_tree">
+					<div id="div_resource_browse_tree" style=""></div>
+				</div>
 			</div>
 			<!--资源浏览详情-->
 			<div id="div_right" class="div-resource-browse" style="float: left;width: 700px;margin-left: 10px">
