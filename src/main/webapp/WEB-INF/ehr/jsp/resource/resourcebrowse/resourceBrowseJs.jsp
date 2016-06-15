@@ -303,11 +303,21 @@
                             }
                             if (!Util.isStrEmpty(values.time)) {
                                 var andOr = 'AND';
-                                if (!Util.isStrEquals(jsonData.length,0)){
+                                if (!Util.isStrEquals(jsonData.length, 0)) {
                                     andOr = jsonData[jsonData.length].andOr;
                                 }
-                                jsonData.push({andOr: andOr, field: values.field, condition: values.condition, value: values.value});
-                                jsonData.push({andOr: 'AND', field: values.field, condition: values.condition, value: values.time});
+                                jsonData.push({
+                                    andOr: andOr,
+                                    field: values.field,
+                                    condition: values.condition,
+                                    value: values.value
+                                });
+                                jsonData.push({
+                                    andOr: 'AND',
+                                    field: values.field,
+                                    condition: values.condition,
+                                    value: values.time
+                                });
                             } else
                                 jsonData.push(values);
                         }
@@ -330,31 +340,49 @@
                     //导出选择结果
                     self.$outSelExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.getSelectedRows();
-                        if (rowData.length <= 0) {
-                            return;
-                        }
-                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
-                        dataModel.fetchRemote("${contextRoot}/resourceBrowse/outExcel", {
-                            data: {rowData: JSON.stringify(rowData), resourceCategoryName: resourceCategoryName},
-                            success: function (data) {
-                                dialog.close();
-                                if (data.successFlg) {
-                                    $.Notice.success('保存成功');
-                                } else
-                                    $.Notice.error("保存失败");
-                            }
-                        });
+                        outExcel(rowData);
                     });
-
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.data.detailModelList;
+                        outExcel(rowData);
+                    });
+                    function outExcel(rowData) {
                         if (rowData.length <= 0) {
                             return;
                         }
+                        var columnNames = resourceInfoGrid.columns;
+                        var codes = [];
+                        var names = [];
+                        var values = [];
+                        var valueList = [];
+                        for (var i = 0; i < rowData.length; i++) {
+                            $.each(rowData[i], function (key, value) {
+                                for (var j = 0; j < columnNames.length; j++) {
+                                    var code = columnNames[j].columnname;
+                                    if (Util.isStrEquals(code, key)) {
+                                        if (Util.isStrEquals($.inArray(code, codes), -1)) {
+                                            codes.push(code);
+                                            names.push(columnNames[j].display);
+                                        }
+                                    }
+                                }
+                                if (!Util.isStrEquals($.inArray(key, codes), -1)) {
+                                    values.push(value);
+                                }
+                            });
+                            valueList.push(values);
+                            values = [];
+                        }
                         var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/resourceBrowse/outExcel", {
-                            data: {rowData: JSON.stringify(rowData), resourceCategoryName: resourceCategoryName},
+//                            data: {rowData: JSON.stringify(rowData), resourceCategoryName: resourceCategoryName},
+                            data: {
+                                codes: JSON.stringify(codes),
+                                names: JSON.stringify(names),
+                                valueList: JSON.stringify(valueList),
+                                resourceCategoryName: resourceCategoryName
+                            },
                             success: function (data) {
                                 dialog.close();
                                 if (data.successFlg) {
@@ -363,7 +391,7 @@
                                     $.Notice.error("保存失败");
                             }
                         });
-                    })
+                    }
                 }
             };
 
