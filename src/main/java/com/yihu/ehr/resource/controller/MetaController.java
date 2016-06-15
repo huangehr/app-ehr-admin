@@ -7,8 +7,9 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.resource.service.MetaService;
-import com.yihu.ehr.util.Envelop;
+
 import com.yihu.ehr.util.operator.DateUtil;
+import com.yihu.ehr.util.rest.Envelop;
 import javafx.util.Pair;
 import jxl.Cell;
 import jxl.Sheet;
@@ -116,46 +117,31 @@ public class MetaController extends ExtendController<MetaService> {
     @RequestMapping("/importLs")
     @ResponseBody
     public Object importLs(int page, int rows, String filenName, String datePath){
-
+        Workbook rwb= null;
         try{
-            filenName = datePath + separator + filenName;
-            Envelop envelop = new Envelop();
-            File file = new File( getFullPath(filenName) );
-            Workbook rwb = Workbook.getWorkbook(file);
+            File file = new File( getFullPath( datePath + separator + filenName ) );
+            rwb = Workbook.getWorkbook(file);
             Sheet sheet = rwb.getSheet(0);
-            List ls = new ArrayList<>();
-            RsMetaMsgModel model;
+
             int start = (page-1) * rows + 1;
             int total = sheet.getRows();
             int end = start + rows;
             end = end > total ? total : end;
-            Cell cell;
+
+            List ls = new ArrayList<>();
             for(int i=start; i<end; i++){
-                model = new RsMetaMsgModel();
-                model.setSeq(i);
-                cell = sheet.getCell(0, i);
-                model.setId(cell.getContents());
-                model.addIdMsg(cell.getCellFeatures() != null ? cell.getCellFeatures().getComment() : "");
-
-                cell = sheet.getCell(3, i);
-                model.setStdCode(cell.getContents());
-                model.addStdCodeMsg(cell.getCellFeatures()!=null?cell.getCellFeatures().getComment(): "");
-
-                model.setName(sheet.getCell(1, i).getContents());
-                model.setDomain(sheet.getCell(2, i).getContents());
-                model.setColumnType(sheet.getCell(4, i).getContents());
-                model.setDictCode(sheet.getCell(5, i).getContents());
-                String nullAble = sheet.getCell(6, i).getContents();
-                model.setNullAble(StringUtils.isEmpty(nullAble)? "" : "1".equals(nullAble) ? "true": "0".equals(nullAble) ? "false" : "");
-                ls.add(model);
+                ls.add(initModel(i, sheet));
             }
             rwb.close();
+
+            Envelop envelop = new Envelop();
             envelop.setDetailModelList(ls);
             envelop.setTotalCount(total-1);
             envelop.setSuccessFlg(true);
             return envelop;
         } catch (Exception e) {
             e.printStackTrace();
+            if(rwb!=null) rwb.close();
             return systemError();
         }
     }
