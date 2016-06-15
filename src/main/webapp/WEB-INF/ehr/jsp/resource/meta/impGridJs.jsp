@@ -5,7 +5,7 @@
 
     (function ($, win) {
         $(function () {
-            debugger
+
             var grid;
             var urls = {
                 list: '${contextRoot}/resource/meta/importLs',
@@ -13,7 +13,7 @@
                 batchSave: "${contextRoot}/resource/meta/batchSave",
                 downLoad: "${contextRoot}/resource/meta/downLoadErrInfo"
             }
-            var files = ${files}, domainData= ${domainData}.detailModelList, columnTypeData= ${columnTypeData}.detailModelList, ynData= ${ynData}.detailModelList;
+            var files = ${files}, domainData= ${domainData}.detailModelList, columnTypeData= ${columnTypeData}.detailModelList, ynData= [{code: '1', value: '是'},{code: '0', value: '否'}];
             var mode = 'eFile';
 
 
@@ -119,10 +119,22 @@
                 if(mode=='tFile')
                     return row[column.name];
 
-                var id = column.name + '_'+ index, val = row[column.name] || '', errMsg = row['errMsg'][column.name],
-                        ajaxClz = column.name=='id' || column.name=='stdCode' ? 'ajax' : '';
-                var reqClz = column.name=='dictCode'?' ' : 'required ';
-                var html = '<input type="text" id="'+ id +'" err-msg="'+ errMsg +'" class=" '+ reqClz + ajaxClz +'" data-attr-scan="'+ id +'"/><script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
+                var id = column.name + '_'+ index,
+                        val = row[column.name] || '',
+                        errMsg = row['errMsg'][column.name];
+
+                var html;
+                if(!errMsg || errMsg=='' || errMsg=='undefined'){
+                    html = '<input type="hidden" id="'+ id +'" data-attr-scan="'+ id +'" value="'+ val +'"/>';
+                    html += val;
+                }
+                else{
+                    var ajaxClz = [];
+                    if(column.name!='dictCode') ajaxClz.push('required');
+                    if( column.name=='id' || column.name=='stdCode' ) ajaxClz.push('ajax');
+                    html = '<input type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
+                    html += '<script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
+                }
                 return html;
             }
             win.initText = function(id, width, value){
@@ -132,10 +144,18 @@
             function selRender(row, index, name, column){
                 if(mode=='tFile')
                     return row[column.name];
-
+                var errMsg = row['errMsg'][column.name];
                 var id = column.name + '_'+ index;
                 var val = row[column.name];
-                return '<input type="text" id="'+ id +'" class="required" data-attr-scan="'+ id +'" data-type="select"/><script>initSl("'+ id +'", "'+ column.name +'", '+ column.width +', "'+ val +'")<\/script>';
+                var html = '';
+                if(!errMsg || errMsg=='' || errMsg=='undefined'){
+                    html = '<input type="hidden" id="'+ id +'" data-attr-scan="'+ id +'" value="'+ val +'"/>';
+                    html += val;
+                }else{
+                    html = '<input type="text" id="'+ id +'" class="required" data-attr-scan="'+ id +'" data-type="select"/>';
+                    html += '<script>initSl("'+ id +'", "'+ column.name +'", '+ column.width +', "'+ val +'")<\/script>';
+                }
+                return html;
             }
             win.initSl = function (id, columnName, width, value) {
                 var data;
@@ -152,8 +172,10 @@
             var rendGrid = function(){
                 var columns = [
                     {display: '排序号', name: 'seq', hide: true, render: function (row, index) {
-                        debugger
                         return '<input type="hidden" value="'+ row.seq +'" data-attr-scan="seq_'+ index +'">'
+                    }},
+                    {display: '说明', name: 'description', hide: true, render: function (row, index) {
+                        return '<input type="hidden" value="'+ row.description +'" data-attr-scan="description_'+ index +'">'
                     }},
                     {display: '资源标准编码', name: 'id', width: '150', align: 'left', render: textRender},
                     {display: '业务领域', name: 'domain', width: '100', align: 'left', render: selRender},
