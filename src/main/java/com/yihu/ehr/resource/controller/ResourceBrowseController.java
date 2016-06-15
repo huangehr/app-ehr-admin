@@ -1,8 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
-import com.sun.xml.internal.ws.encoding.MIMEPartStreamingDataHandler;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
-import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
@@ -15,16 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.ranges.DocumentRange;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Created by wq on 2016/5/17.
  */
