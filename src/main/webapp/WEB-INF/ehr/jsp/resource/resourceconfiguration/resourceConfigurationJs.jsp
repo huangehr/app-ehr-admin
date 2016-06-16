@@ -15,7 +15,7 @@
             var sourceData = ${dataModel};
             $("#sp_resourceName").html(sourceData.resourceName);
             $("#sp_resourceSub").html(sourceData.resourceSub);
-            $(".sp-resource-configuration-name").html('<h3>'+sourceData.resourceName+'_资源配置</3>');
+            $(".sp-resource-configuration-name").html('<h3>' + sourceData.resourceName + '_资源配置</3>');
             var addRowDatas = new Array();
             var delRowDatas = new Array();
             var comUrl = '${contextRoot}/resourceConfiguration';
@@ -76,16 +76,17 @@
                     var addResourcesId = new Array();
                     var columnDatas = [
                         {name: 'id', hide: true, isAllowHide: false},
-                        {display: '资源标准编码', name: 'stdCode', width: '25%', align: 'left',render: function (row) {
-                            return Util.isStrEquals(this.id,'div_resource_configuration_info_grid')? row.id : row.stdCode;
-                        }},
+                        {
+                            display: '资源标准编码', name: 'stdCode', width: '25%', align: 'left', render: function (row) {
+                            return Util.isStrEquals(this.id, 'div_resource_configuration_info_grid') ? row.id : row.stdCode;
+                        }
+                        },
                         {display: '数据元名称', name: 'name', width: '25%', align: 'left'},
                         {display: '类型', name: 'columnType', width: '25%', align: 'left'},
                         {display: '说明', name: 'description', width: '25%', align: 'left'}
                     ];
 
                     var elm = [self.$resourceConfigurationInfoGrid, self.$resourceConfigurationInfoGridTrue];
-                    var count = 0;
                     for (var i = 0; i < resourceConfigurationUrl.length; i++) {
                         elmParams[i] = elm[i].ligerGrid($.LigerGridEx.config({
                             url: resourceConfigurationUrl[i],
@@ -139,7 +140,6 @@
                     }
 
                     function addRows(rowdata) {
-
                         var metaData_rowData = {
                             resourcesId: sourceData.resourceId,
                             metadataId: rowdata.id,
@@ -148,10 +148,17 @@
                             description: rowdata.description
                         };
                         debugger
-                        if(Util.isStrEquals(($.inArray(rowdata.id,addResourcesId)),-1)){
-                            addResourcesId.push(rowdata.id);
+                        $.each(addRowDatas,function (key,value) {
+                            debugger
+                            if (Util.isStrEquals(rowdata.id, value.metadataId)) {
+//                                addResourcesId.push(rowdata.id);
+//                                addRowDatas.push(metaData_rowData);
+                                return;
+                            }
+                        });
+//                        if (Util.isStrEmpty(addRowDatas)){
                             addRowDatas.push(metaData_rowData);
-                        }
+//                        }
                         elmParams[1].addRow({
                             id: rowdata.stdCode,
                             stdCode: rowdata.id,
@@ -167,11 +174,12 @@
                     }
 
                     function deleteRows(rowdata) {
+                        debugger
                         var rowParm = rowdata.id;
-                        $.each(addRowDatas,function (key,value){
-                            if (!Util.isStrEquals(rowParm,value.metadataId)){
-                                addRowDatas.splice(key,1);
-                                addResourcesId.splice(key,1);
+                        $.each(addRowDatas, function (key, value) {
+                            if (Util.isStrEquals(rowParm, value.metadataId)) {
+                                addRowDatas.splice(key, 1);
+//                                addResourcesId.splice(key, 1);
                             }
                         });
                         var rows = elmParams[1].data.detailModelList;
