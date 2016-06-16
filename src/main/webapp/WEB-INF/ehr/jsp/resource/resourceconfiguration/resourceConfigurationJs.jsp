@@ -12,19 +12,15 @@
             // 页面主模块，对应于用户信息表区域
             var master = null;
             var resourceDatas = null;
-
             var sourceData = ${dataModel};
             $("#sp_resourceName").html(sourceData.resourceName);
             $("#sp_resourceSub").html(sourceData.resourceSub);
             $(".sp-resource-configuration-name").html('<h3>'+sourceData.resourceName+'_资源配置</3>');
-
             var addRowDatas = new Array();
             var delRowDatas = new Array();
-
             var comUrl = '${contextRoot}/resourceConfiguration';
             var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration', comUrl + '/searchSelResourceconfiguration?resourcesId=' + sourceData.resourceId];
             var elmParams = ['resourceConfigurationInfoGrid', 'resourceConfigurationInfoGridTrue'];
-
             var dataModel = $.DataModel.init();
 
             /* *************************** 函数定义 ******************************* */
@@ -32,19 +28,6 @@
                 retrieve.init();
                 master.init();
             }
-
-//            function getResource(page, size) {
-//                dataModel.fetchRemote(resourceConfigurationUrl[1], {
-//                    data: {searchNm: "", page: page, rows: size},
-//                    success: function (data) {
-//                        if (Util.isStrEquals(data.obj.id, row.id)) {
-//                            return true;
-//                        } else {
-//                            return false;
-//                        }
-//                    }
-//                })
-//            }
 
             function reloadGrid(url, params, searchType) {
                 $("#infoMsg").val(false);
@@ -71,7 +54,6 @@
                 $saveBtn: $("#div_save_btn"),
 
                 init: function () {
-
                     var mateDataElm = this.$mateDataSearch;
                     var seMetaDataElm = this.$mateDataSearchTrue;
 
@@ -85,13 +67,13 @@
                             master.reloadResourceConfigurationGrid(resourceConfigurationUrl[1], seMetaDataElm.val(), "seMetaData");
                         }
                     });
-                },
+                }
             };
             master = {
 
                 init: function () {
                     var self = retrieve;
-
+                    var addResourcesId = new Array();
                     var columnDatas = [
                         {name: 'id', hide: true, isAllowHide: false},
                         {display: '资源标准编码', name: 'stdCode', width: '25%', align: 'left',render: function (row) {
@@ -144,7 +126,6 @@
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid') && Util.isStrEquals(infoMsg, 'true')) {
                                     addRows(rowdata);
                                 }
-
                             },
                             onUnSelectRow: function (rowdata, rowid, rowobj) {
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
@@ -153,22 +134,27 @@
                             },
                             onAfterShowData: function () {
                                 $("#infoMsg").val(false);
-                            },
+                            }
                         }));
                     }
 
                     function addRows(rowdata) {
+
                         var metaData_rowData = {
                             resourcesId: sourceData.resourceId,
                             metadataId: rowdata.id,
-                            groupType: "testType",
-                            groupData: "testdata",
+                            groupType: "",
+                            groupData: "",
                             description: rowdata.description
                         };
-                        addRowDatas.push(metaData_rowData);
+                        debugger
+                        if(Util.isStrEquals(($.inArray(rowdata.id,addResourcesId)),-1)){
+                            addResourcesId.push(rowdata.id);
+                            addRowDatas.push(metaData_rowData);
+                        }
                         elmParams[1].addRow({
-                            id: rowdata.id,
-                            stdCode: rowdata.stdCode,
+                            id: rowdata.stdCode,
+                            stdCode: rowdata.id,
                             name: rowdata.name,
                             columnType: rowdata.columnType,
                             description: rowdata.description
@@ -181,7 +167,13 @@
                     }
 
                     function deleteRows(rowdata) {
-                        var rowParm = rowdata.stdCode;
+                        var rowParm = rowdata.id;
+                        $.each(addRowDatas,function (key,value){
+                            if (!Util.isStrEquals(rowParm,value.metadataId)){
+                                addRowDatas.splice(key,1);
+                                addResourcesId.splice(key,1);
+                            }
+                        });
                         var rows = elmParams[1].data.detailModelList;
                         for (var i = 0; i < rows.length; i++) {
                             var rowData = rows[i].stdCode;
@@ -206,6 +198,7 @@
                     });
 
                     retrieve.$saveBtn.click(function () {
+                        debugger
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
                             return;
                         }

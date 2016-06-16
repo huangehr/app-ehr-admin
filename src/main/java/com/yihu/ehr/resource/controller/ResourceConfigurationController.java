@@ -46,7 +46,7 @@ public class ResourceConfigurationController extends BaseUIController {
 
         params.put("filters", "");
         if (!StringUtils.isEmpty(searchNm))
-            params.put("filters", "name?" + searchNm + " g1;stdCode?" + searchNm + " g1");
+            params.put("filters", "name?" + searchNm + " g1;id?" + searchNm + " g1");
 
         params.put("page", page);
         params.put("size", rows);
@@ -80,7 +80,7 @@ public class ResourceConfigurationController extends BaseUIController {
 
                 params.put("filters", "");
                 if (!StringUtils.isEmpty(searchNm))
-                    params.put("filters", "name?" + searchNm + " g1;stdCode?" + searchNm + " g1");
+                    params.put("filters", "name?" + searchNm + " g1;id?" + searchNm + " g1");
 
                 params.put("resources_id", "");
                 if (!StringUtils.isEmpty(resourcesId))

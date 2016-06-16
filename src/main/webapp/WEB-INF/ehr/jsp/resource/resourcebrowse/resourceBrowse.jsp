@@ -38,7 +38,7 @@
                         </div>
                         <div class="f-fl f-ml10 f-mr10 div-change-search f-mw42">
                             <input type="text" data-attr-scan="value" data-type="select"
-                                   class="f-ml10 inp-reset inp_defualt_param"/>
+                                   class="f-ml10 inp-reset inp-com-param inp_defualt_param"/>
                         </div>
                         <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
                     </div>
@@ -80,7 +80,7 @@
                            data-attr-scan="condition"/>
                 </div>
                 <div class="f-fl f-ml10 f-mr10 div-new-change-search f-mw42 " >
-                    <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" data-type="select"
+                    <input type="text" class="f-ml10 inp-reset inp-model3 inp-com-param inp-find-search" data-type="select"
                            data-attr-scan="value"/>
                 </div>
                 <span class="sp-back-del-img f-mt10 sp-del-btn"></span>
