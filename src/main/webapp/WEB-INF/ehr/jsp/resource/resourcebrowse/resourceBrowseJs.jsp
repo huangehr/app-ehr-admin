@@ -291,7 +291,7 @@
                         jsonData = [];
                         var defualtParam = $(".inp_defualt_param");
                         var pModel = $("#div-search-data-role-form").children('div');
-
+                        debugger
                         for (var i = 0; i < pModel.length; i++) {
                             var pModel_child = $(pModel[i]);
                             pModel_child.attrScan();
@@ -301,15 +301,21 @@
                             } else {
                                 values.value = $(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().getValue();
                             }
+
                             if (!Util.isStrEmpty(values.time)) {
-                                var andOr = 'AND';
-                                if (!Util.isStrEquals(jsonData.length,0)){
-                                    andOr = jsonData[jsonData.length].andOr;
-                                }
-                                jsonData.push({andOr: andOr, field: values.field, condition: values.condition, value: values.value});
-                                jsonData.push({andOr: 'AND', field: values.field, condition: values.condition, value: values.time});
-                            } else
-                                jsonData.push(values);
+                                values.value = $(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().getValue() + "," + $(pModel_child.find('.inp-com-param')[1]).ligerGetComboBoxManager().getValue();
+                                delete values['time'];
+//                                var andOr = 'AND';
+//                                if (!Util.isStrEquals(jsonData.length, 0)) {
+//                                    andOr = jsonData[jsonData.length].andOr;
+//                                }
+//                                jsonData.push({andOr: andOr, field: values.field, condition: values.condition, value: values.value});
+//                                jsonData.push({andOr: 'AND', field: values.field, condition: values.condition, value: $(defualtParam[1]).ligerGetComboBoxManager().getValue()});
+                            }
+                            jsonData.push(values);
+                        }
+                        if(Util.isStrEquals(jsonData.length,1)&&Util.isStrEmpty(jsonData[0].value)){
+                            jsonData = '';
                         }
                         resourceBrowseMaster.reloadResourcesGrid({
                             searchParams: JSON.stringify(jsonData),
@@ -319,42 +325,57 @@
 
                     //重置
                     self.$resetBtn.click(function () {
-                        var defaultCondition = self.$defaultCondition;
-                        var logicalRelationship = self.$logicalRelationship;
-                        defaultCondition.attr('data-attr-scan', '');
-                        logicalRelationship.attr('data-attr-scan', '');
-
+                        var defualtParam = $(".inp_defualt_param");
                         $(".inp-reset").val('');
+                        defualtParam.ligerGetComboBoxManager().setValue('');
                     });
 
                     //导出选择结果
                     self.$outSelExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.getSelectedRows();
-                        if (rowData.length <= 0) {
-                            return;
-                        }
-                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
-                        dataModel.fetchRemote("${contextRoot}/resourceBrowse/outExcel", {
-                            data: {rowData: JSON.stringify(rowData), resourceCategoryName: resourceCategoryName},
-                            success: function (data) {
-                                dialog.close();
-                                if (data.successFlg) {
-                                    $.Notice.success('保存成功');
-                                } else
-                                    $.Notice.error("保存失败");
-                            }
-                        });
+                        outExcel(rowData);
                     });
-
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.data.detailModelList;
+                        outExcel(rowData);
+                    });
+                    function outExcel(rowData) {
                         if (rowData.length <= 0) {
                             return;
                         }
+                        var columnNames = resourceInfoGrid.columns;
+                        var codes = [];
+                        var names = [];
+                        var values = [];
+                        var valueList = [];
+                        for (var i = 0; i < rowData.length; i++) {
+                            $.each(rowData[i], function (key, value) {
+                                for (var j = 0; j < columnNames.length; j++) {
+                                    var code = columnNames[j].columnname;
+                                    if (Util.isStrEquals(code, key)) {
+                                        if (Util.isStrEquals($.inArray(code, codes), -1)) {
+                                            codes.push(code);
+                                            names.push(columnNames[j].display);
+                                        }
+                                    }
+                                }
+                                if (!Util.isStrEquals($.inArray(key, codes), -1)) {
+                                    values.push(value);
+                                }
+                            });
+                            valueList.push(values);
+                            values = [];
+                        }
                         var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/resourceBrowse/outExcel", {
-                            data: {rowData: JSON.stringify(rowData), resourceCategoryName: resourceCategoryName},
+//                            data: {rowData: JSON.stringify(rowData), resourceCategoryName: resourceCategoryName},
+                            data: {
+                                codes: JSON.stringify(codes),
+                                names: JSON.stringify(names),
+                                valueList: JSON.stringify(valueList),
+                                resourceCategoryName: resourceCategoryName
+                            },
                             success: function (data) {
                                 dialog.close();
                                 if (data.successFlg) {
@@ -363,7 +384,7 @@
                                     $.Notice.error("保存失败");
                             }
                         });
-                    })
+                    }
                 }
             };
 
@@ -373,14 +394,14 @@
             //ligerType liger控件类型
             //dict  是否是字典
             function changeHtml(divEle, inpEle, defHtml, ligerType, dictId, data) {
-                var html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search"  data-type="select" data-attr-scan="value" /></div>';
+                var html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp-model3 inp-com-param inp-find-search" data-type="select" data-attr-scan="value" /></div>';
                 if (Util.isStrEquals(defHtml, 'default')) {
-                    html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp_defualt_param"  data-type="select" data-attr-scan="value" /></div>';
+                    html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp-com-param inp_defualt_param" data-type="select" data-attr-scan="value" /></div>';
                     if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
-                        html += '<div class="f-fr div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text"  data-type="select" class="f-ml10 inp-reset inp_defualt_param" data-attr-scan="time" /></div></div>';
+                        html += '<div class="f-fr div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text" class="f-ml10 inp-reset inp-com-param inp_defualt_param" data-type="select" data-attr-scan="time" /></div></div>';
                     }
                 } else if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
-                    html += '<div class="f-fr div-time-value div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" data-type="select" data-attr-scan="time" /></div></div>';
+                    html += '<div class="f-fr div-time-value div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text" class="f-ml10 inp-reset inp-model3 inp-com-param inp-find-search" data-type="select" data-attr-scan="time" /></div></div>';
                 }
                 divEle.html("");
                 divEle.html(html);

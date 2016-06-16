@@ -9,6 +9,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -120,7 +121,7 @@ public class HttpClientUtil {
         logger.info( "用户：" + username+"；发起post请求连接：" + url+"，请求标示："+postKey);
         HttpClient httpClient = new HttpClient();
         String response = "";
-        List<BasicNameValuePair> jsonParams = new ArrayList<>();
+        List<NameValuePair> jsonParams=new ArrayList<NameValuePair>();
         PostMethod postMethod = null;
         StringBuilder param = new StringBuilder();
         int i = 0;
@@ -130,12 +131,15 @@ public class HttpClientUtil {
                 UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
                 httpClient.getState().setCredentials(AuthScope.ANY, creds);
             }
+            NameValuePair nameValuePair  =null;
             //配置参数
+            postMethod = new PostMethod(url);
             for (String key : params.keySet()) {
-                jsonParams.add(new BasicNameValuePair(key, String.valueOf(params.get(key))));
+                nameValuePair = new NameValuePair(key, String.valueOf(params.get(key)));
+                postMethod.addParameter(nameValuePair);
             }
-            postMethod = new PostMethod(url + "?" + URLEncodedUtils.format(jsonParams, HTTP.UTF_8));
             postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+            postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
             int statusCode = httpClient.executeMethod(postMethod);
             if (statusCode != HttpStatus.SC_OK) {
                 String jsonObject = JSONObject.toJSONString(params);

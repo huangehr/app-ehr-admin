@@ -1,7 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
-import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
@@ -14,16 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.ranges.DocumentRange;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Created by wq on 2016/5/17.
  */
@@ -174,57 +168,99 @@ public class ResourceBrowseController extends BaseUIController {
         return resultStr;
     }
 
-    //数据导出方法
-    @RequestMapping("outExcel")
-    @ResponseBody
-    public Object outExcel(String rowData, String resourceCategoryName) {
+//    //数据导出方法
+//    @RequestMapping("outExcel")
+//    @ResponseBody
+//    public Object outExcel(String rowData, String resourceCategoryName) {
+//
+//        Envelop envelop = new Envelop();
+////        resourceCategoryName = resourceCategoryName.replaceAll("/","")+"_"+System.currentTimeMillis();
+//        resourceCategoryName = System.currentTimeMillis()+"";
+//        //标题行
+//        List<Object> dataAllList = toModel(rowData, List.class);
+//
+//        List<String> titleList = new ArrayList<>();
+//        List<List> dataList = new ArrayList<>();
+//        List<String> rowContext = new ArrayList<>();
+//
+//        Map<String, String> map = new HashMap<>();
+//
+//        for (int i = 0; i < dataAllList.size(); i++) {
+//            map = toModel(toJson(dataAllList.get(i)), Map.class);
+//            for (String key : map.keySet()) {
+//
+//                if (!titleList.contains(key)) {
+//                    titleList.add(key);
+//                }
+//                rowContext.add(String.valueOf(map.get(key)));
+//            }
+//            dataList.add(rowContext);
+//            rowContext = new ArrayList<>();
+//        }
+//
+//        try {
+//            //resourceCategoryName.xls为要新建的文件名
+//            WritableWorkbook book = Workbook.createWorkbook(new File("F:\\excel\\" + resourceCategoryName + ".xls"));
+//            //生成名为“resourceCategoryName”的工作表，参数0表示这是第一页
+//            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
+//            //title
+//            for (int i = 0; i < titleList.size(); i++) {
+//                sheet.addCell(new Label(i, 0, titleList.get(i)));
+//            }
+//            //context
+//            for (int i = 0; i < dataList.size(); i++) {
+//                for (int j = 0; j < dataList.get(i).size(); j++) {
+//                    sheet.addCell(new Label(j, i + 1, String.valueOf(dataList.get(i).get(j))));
+//                }
+//            }
+//            book.write();
+//            book.close();
+//        } catch (Exception e) {
+//            envelop.setSuccessFlg(false);
+//            envelop.setErrorMsg("数据导出失败");
+//        }
+//        envelop.setSuccessFlg(true);
+//        return envelop;
+//    }
+//数据导出方法
+@RequestMapping("outExcel")
+@ResponseBody
+public Object outExcel(String codes,String names,String valueList, String resourceCategoryName) {
 
-        Envelop envelop = new Envelop();
-        resourceCategoryName = resourceCategoryName.replaceAll("/","")+"_"+System.currentTimeMillis();
-        //标题行
-        List<Object> dataAllList = toModel(rowData, List.class);
-
-        List<String> titleList = new ArrayList<>();
-        List<List> dataList = new ArrayList<>();
-        List<String> rowContext = new ArrayList<>();
-
-        Map<String, String> map = new HashMap<>();
-
-        for (int i = 0; i < dataAllList.size(); i++) {
-            map = toModel(toJson(dataAllList.get(i)), Map.class);
-            for (String key : map.keySet()) {
-
-                if (!titleList.contains(key)) {
-                    titleList.add(key);
-                }
-                rowContext.add(String.valueOf(map.get(key)));
-            }
-            dataList.add(rowContext);
-            rowContext = new ArrayList<>();
+    Envelop envelop = new Envelop();
+    resourceCategoryName = System.currentTimeMillis()+"";
+    List<String> titleList = toModel(codes,List.class);
+    List<List> dataList = toModel(valueList,List.class);
+    List<String> nameList = toModel(names,List.class);
+    String path = "C:\\resourceData\\"+resourceCategoryName + ".xls";
+    try {
+        File file = new File(path);
+        if(!file.getParentFile().exists()){
+            file.getParentFile().mkdirs();
         }
-
-        try {
-            //resourceCategoryName.xls为要新建的文件名
-            WritableWorkbook book = Workbook.createWorkbook(new File("F:\\excel\\" + resourceCategoryName + ".xls"));
-            //生成名为“resourceCategoryName”的工作表，参数0表示这是第一页
-            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-            //title
-            for (int i = 0; i < titleList.size(); i++) {
-                sheet.addCell(new Label(i, 0, titleList.get(i)));
-            }
-            //context
-            for (int i = 0; i < dataList.size(); i++) {
-                for (int j = 0; j < dataList.get(i).size(); j++) {
-                    sheet.addCell(new Label(j, i + 1, String.valueOf(dataList.get(i).get(j))));
-                }
-            }
-            book.write();
-            book.close();
-        } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("数据导出失败");
+        WritableWorkbook book = Workbook.createWorkbook(file);
+        WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
+        for (int i = 0; i < titleList.size(); i++) {
+            //new laberl（'列','行','数据'）
+            sheet.addCell(new Label(0,0,"代码"));
+            sheet.addCell(new Label(0,1,"名称"));
+            sheet.addCell(new Label(i+1, 0, titleList.get(i)));
+            sheet.addCell(new Label(i+1,1,nameList.get(i)));
         }
-        envelop.setSuccessFlg(true);
-        return envelop;
+        for (int i = 0; i < dataList.size(); i++) {
+            for (int j = 0; j < dataList.get(i).size(); j++) {
+                sheet.mergeCells(0,2,0,dataList.size()+1);
+                sheet.addCell(new Label(0,2,"值"));
+                sheet.addCell(new Label(j+1, i + 2, String.valueOf(dataList.get(i).get(j))));
+            }
+        }
+        book.write();
+        book.close();
+    } catch (Exception e) {
+        envelop.setSuccessFlg(false);
+        envelop.setErrorMsg("数据导出失败");
     }
+    envelop.setSuccessFlg(true);
+    return envelop;
+}
 }
