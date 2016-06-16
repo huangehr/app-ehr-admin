@@ -3,6 +3,7 @@
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
 
     (function ($, win) {
@@ -136,7 +137,22 @@
                     var btn = [
                         {type: 'edit', clkFun: this.gotoModify}
                     ];
-                    initBarBtn($('#entry_retrieve_inner'), btn)
+                    initBarBtn($('#entry_retrieve_inner'), btn);
+
+                    function onUploadSuccess(g, result){
+                        if(result=='suc')
+                            $.Notice.success("导入成功");
+                        else{
+                            result = eval('(' + result + ')')
+                            var url = "${contextRoot}/resource/dict/downLoadErrInfo?f="+ result.eFile[1] + "&datePath=" + result.eFile[0];
+                            $.ligerDialog.open({
+                                height: 80,
+                                content: "请下载&nbsp;<a target='diframe' href='"+ url +"'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
+                            });
+                        }
+                    }
+
+                    $('#upd').uploadFile({url: "${contextRoot}/resource/dict/import", onUploadSuccess: onUploadSuccess});
                 },
                 //初始化过滤
                 rendFilters : function(){

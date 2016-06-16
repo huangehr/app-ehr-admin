@@ -397,20 +397,7 @@ public class MetaController extends ExtendController<MetaService> {
         ws.addCell(label);
     }
 
-    protected void writerResponse(HttpServletResponse response, String body, String client_method) throws IOException {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<script type=\"text/javascript\">//<![CDATA[\n");
-        sb.append("     parent.").append(client_method).append("(").append(body).append(");\n");
-        sb.append("//]]></script>");
 
-        response.setContentType("text/html;charset=UTF-8");
-        response.addHeader("Pragma", "no-cache");
-        response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
-        response.setHeader("Cache-Control", "pre-check=0,post-check=0");
-        response.setDateHeader("Expires", 0);
-        response.getWriter().write(sb.toString());
-        response.flushBuffer();
-    }
 
     private String createFileName(String userId, String type) throws IOException {
         File file = new File( tmpdir + defPath  );
