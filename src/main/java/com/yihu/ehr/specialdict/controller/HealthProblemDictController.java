@@ -49,13 +49,13 @@ public class HealthProblemDictController extends BaseUIController {
 
     //新增、修改弹出框初始页面
     @RequestMapping("dialog/hp")
-    public String hpInfoTemplate(Model model,String id,String mode){
+    public String hpInfoTemplate(Model model,Long id,String mode){
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","specialdict/healthproblem/hpInfoDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
         try{
-            if (!StringUtils.isEmpty(id)) {
+            if (id != null) {
                 String url = "/dict/hp/" + id;
                 envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
             }
@@ -210,7 +210,7 @@ public class HealthProblemDictController extends BaseUIController {
 
     @RequestMapping("/hpIcd10Relation/initial")
     //关联的icd10列表初始化页面
-    public  String hpIcd10RelationInitial(Model model,String hpId){
+    public  String hpIcd10RelationInitial(Model model,Long hpId){
         model.addAttribute("hpId",hpId);
         model.addAttribute("contentPage","specialdict/healthproblem/icd10HpRelaInfoDialog");
         return "pageView";
@@ -219,7 +219,7 @@ public class HealthProblemDictController extends BaseUIController {
 
     @RequestMapping("/hpIcd10RelationCreate/initial")
     //新增关联icd10页面初始化
-    public  String hpIcd10RelationCreateInitial(Model model,String hpId){
+    public  String hpIcd10RelationCreateInitial(Model model,Long hpId){
         model.addAttribute("hpId",hpId);
         model.addAttribute("contentPage","specialdict/healthproblem/icd10HpRelaCreate");
         return "pageView";
@@ -229,7 +229,7 @@ public class HealthProblemDictController extends BaseUIController {
     //获取健康问题已经关了的icd10信息列表
     @RequestMapping("/icd10ListRelaInclude")
     @ResponseBody
-    public Object icd10ListRelaInclude(String searchNm,String hpId){
+    public Object icd10ListRelaInclude(String searchNm,Long hpId){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         try{
@@ -258,7 +258,7 @@ public class HealthProblemDictController extends BaseUIController {
     //除健康问提字典已经关了的icd10之外的icd10列表
     @RequestMapping("/icd10ListRelaExclude")
     @ResponseBody
-    public Object icd10ListRelaExclude(String searchNm,String hpId,int page,int rows){
+    public Object icd10ListRelaExclude(String searchNm,Long hpId,int page,int rows){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         try{
@@ -292,7 +292,7 @@ public class HealthProblemDictController extends BaseUIController {
      * @return
      * @throws Exception
      */
-    public String getRelatedIcd10Ids(String hpId) throws Exception{
+    public String getRelatedIcd10Ids(Long hpId) throws Exception{
         String icd10Ids = "";
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
@@ -318,7 +318,7 @@ public class HealthProblemDictController extends BaseUIController {
      * @return
      * @throws Exception
      */
-    public String getRelatedIcd10IdsForDel(String hpId,String icd10Ids) throws Exception{
+    public String getRelatedIcd10IdsForDel(Long hpId,String icd10Ids) throws Exception{
         String ids = "";
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
@@ -341,7 +341,7 @@ public class HealthProblemDictController extends BaseUIController {
     @RequestMapping("/hpIcd10Relation/creates")
     @ResponseBody
     //"为健康问题增加ICD10疾病关联。
-    public Object createHpIcd10Relations(String hpId,String icd10Ids,HttpServletRequest request){
+    public Object createHpIcd10Relations(Long hpId,String icd10Ids,HttpServletRequest request){
         Envelop envelop = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/hp/icd10s";
@@ -360,7 +360,7 @@ public class HealthProblemDictController extends BaseUIController {
                 url = "/dict/hp/icd10";
                 HpIcd10RelationModel model = new HpIcd10RelationModel();
                 model.setCreateUser(userDetailModel.getId());
-                model.setIcd10Id(icd10Ids);
+                model.setIcd10Id(Long.parseLong(icd10Ids));
                 model.setHpId(hpId);
                 String modelJson = objectMapper.writeValueAsString(model);
                 Map<String,Object> params = new HashMap<>();
@@ -385,7 +385,7 @@ public class HealthProblemDictController extends BaseUIController {
     @RequestMapping("/hpIcd10Relation/deletes")
     @ResponseBody
     // "为健康问题删除ICD10疾病关联---单个、批量删除。"
-    public Object deleteHpIcd10Relations(String icd10Ids,String hpId){
+    public Object deleteHpIcd10Relations(String icd10Ids,Long hpId){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         try{
@@ -437,7 +437,7 @@ public class HealthProblemDictController extends BaseUIController {
     @RequestMapping("isHpIcd10RelaExist")
     @ResponseBody
     //"判断健康问题与ICD10的关联关系在系统中是否已存在"
-    public Object isHpIcd10RelaExist(String hpId,String icd10Id){
+    public Object isHpIcd10RelaExist(Long hpId,Long icd10Id){
         Envelop envelop = new Envelop();
         try{
             String url = "/dict/hp/icd10/existence";
