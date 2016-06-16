@@ -7,7 +7,7 @@
 
 <!-- ####### 页面部分 ####### -->
 <div>
-
+    <div style="height: 40px"><div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div></div>
     <div id="div_wrapper">
 
         <div id="grid_content" style="width: 100%">
@@ -45,8 +45,7 @@
                             <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>" class="f-ml10" data-attr-scan="code"/>
                         </div>
 
-
-                        </div>
+                    </div>
 
                 </div>
 
