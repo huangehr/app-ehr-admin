@@ -56,7 +56,6 @@
                 init: function () {
                     var mateDataElm = this.$mateDataSearch;
                     var seMetaDataElm = this.$mateDataSearchTrue;
-
                     mateDataElm.ligerTextBox({
                         width: 240, isSearch: true, search: function (data) {
                             master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], mateDataElm.val(), "mateData");
@@ -70,10 +69,8 @@
                 }
             };
             master = {
-
                 init: function () {
                     var self = retrieve;
-                    var addResourcesId = new Array();
                     var columnDatas = [
                         {name: 'id', hide: true, isAllowHide: false},
                         {
@@ -99,7 +96,7 @@
                                 if (Util.isStrEquals(this.url.split("resourcesId").length, 1)) {
                                     resourceDatas = elmParams[1].data.detailModelList;
                                     for (var i = 0; i < resourceDatas.length; i++) {
-                                        if (Util.isStrEquals(resourceDatas[i].metadataId, row.id)) {
+                                        if (Util.isStrEquals(resourceDatas[i].stdCode, row.id)) {
                                             bo = true;
                                             return bo;
                                         } else {
@@ -108,6 +105,19 @@
                                     }
                                 }
                                 return bo
+                            },
+                            onCheckAllRow:function (checked,element) {
+                                var rowAll = elmParams[0].data.detailModelList;
+                                if (checked){
+                                    $.each(rowAll,function (key,value) {
+                                        addRows(value);
+                                    })
+                                }else {
+                                    $.each(rowAll,function (key,value) {
+                                        deleteRows(value);
+                                    })
+                                }
+
                             },
                             parms: {
                                 searchNm: ''
@@ -138,48 +148,28 @@
                             }
                         }));
                     }
-
                     function addRows(rowdata) {
-                        var metaData_rowData = {
-                            resourcesId: sourceData.resourceId,
-                            metadataId: rowdata.id,
-                            groupType: "",
-                            groupData: "",
-                            description: rowdata.description
-                        };
-                        debugger
-                        $.each(addRowDatas,function (key,value) {
-                            debugger
+                        var metaData_rowData = {resourcesId: sourceData.resourceId, metadataId: rowdata.id, groupType: "", groupData: "", description: rowdata.description};
+                        var bo = true;
+                        $.each(addRowDatas, function (key, value) {
                             if (Util.isStrEquals(rowdata.id, value.metadataId)) {
-//                                addResourcesId.push(rowdata.id);
-//                                addRowDatas.push(metaData_rowData);
-                                return;
+                                bo = false;
                             }
                         });
-//                        if (Util.isStrEmpty(addRowDatas)){
+                        if (bo){
                             addRowDatas.push(metaData_rowData);
-//                        }
-                        elmParams[1].addRow({
-                            id: rowdata.stdCode,
-                            stdCode: rowdata.id,
-                            name: rowdata.name,
-                            columnType: rowdata.columnType,
-                            description: rowdata.description
-                        });
-
+                        }
+                        elmParams[1].addRow({id: rowdata.stdCode, stdCode: rowdata.id, name: rowdata.name, columnType: rowdata.columnType, description: rowdata.description});
                         var elmParams_1 = elmParams[1].data.detailModelList;
                         for (var i = 0; i < elmParams_1.length; i++) {
                             sessionStorage.setItem("elmParams_1" + i, elmParams_1[i].stdCode)
                         }
                     }
-
                     function deleteRows(rowdata) {
-                        debugger
                         var rowParm = rowdata.id;
                         $.each(addRowDatas, function (key, value) {
-                            if (Util.isStrEquals(rowParm, value.metadataId)) {
+                            if (!Util.isStrEmpty(value)&&Util.isStrEquals(rowParm, value.metadataId)) {
                                 addRowDatas.splice(key, 1);
-//                                addResourcesId.splice(key, 1);
                             }
                         });
                         var rows = elmParams[1].data.detailModelList;
@@ -192,7 +182,6 @@
                             sessionStorage.removeItem("elmParams_1" + i);
                         }
                     }
-
                     this.bindEvents();
                 },
                 reloadResourceConfigurationGrid: function (url, value, searchType) {
@@ -204,9 +193,7 @@
                         $('#contentPage').empty();
                         $('#contentPage').load('${contextRoot}/resource/resourceManage/initial?backParams=' + JSON.stringify(sourceData.backParams));
                     });
-
                     retrieve.$saveBtn.click(function () {
-                        debugger
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
                             return;
                         }
@@ -220,20 +207,18 @@
                                 delRowDatas = new Array();
                                 if (data.successFlg) {
                                     $.Notice.success('保存成功');
-                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], "", "mateData");
+                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], "", "");
+                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[1], "", "mateData");
                                 } else
                                     $.Notice.error("保存失败");
                             }
                         })
                     });
-
-
                     $("#a-back").click(function () {
                         history.back();
                     })
                 }
             };
-
             /* ************************* 模块初始化结束 ************************** */
             var resizeContent = function () {
                 var contentW = $('.div-resource-configuration').width();
@@ -243,7 +228,6 @@
             $(window).bind('resize', function () {
                 resizeContent();
             });
-
             /* *************************** 页面初始化 **************************** */
             pageInit();
             /* ************************* 页面初始化结束 ************************** */

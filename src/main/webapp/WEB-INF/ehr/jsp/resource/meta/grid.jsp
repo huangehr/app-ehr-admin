@@ -24,6 +24,10 @@
         <input type="text" id="ipt_search_null_able"  placeholder="是否允空" data-type="select" data-attr-scan="nullAble">
       </div>
 
+      <div class="m-form-control f-ml10">
+        <input type="text" id="ipt_search_is_valid"  placeholder="是否失效" data-type="select" data-attr-scan="nullAble">
+      </div>
+
       <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px"></div>
 
     </div>
