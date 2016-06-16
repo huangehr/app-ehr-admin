@@ -45,13 +45,13 @@ public class DrugDictController extends BaseUIController {
     }
 
     @RequestMapping("dialog/drugInfo")
-    public String drugInfoTemplate(Model model,String id, String mode){
+    public String drugInfoTemplate(Model model,Long id, String mode){
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","specialdict/drug/drugInfoDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
         try {
-            if(!StringUtils.isEmpty(id)){
+            if(id != null){
                 String url = "/dict/drug/"+id;
                 envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             }
@@ -90,7 +90,7 @@ public class DrugDictController extends BaseUIController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    public Object deleteDrugDict(String id) {
+    public Object deleteDrugDict(Long id) {
         String url = "/dict/drug/"+id;
         String envelopStr = "";
         try{
@@ -167,7 +167,7 @@ public class DrugDictController extends BaseUIController {
 
     @RequestMapping("/drugDictInfo")
     @ResponseBody
-    public Object getDrugDict( String id){
+    public Object getDrugDict( Long id){
         Envelop envelop = new Envelop();
         try {
             String url = "/dict/drug/"+id;
@@ -184,7 +184,7 @@ public class DrugDictController extends BaseUIController {
     @RequestMapping("/isRelatedIcd10")
     @ResponseBody
     //"根据drug的ID判断是否与ICD10字典存在关联。
-    public Object isRelatedIcd10(String id){
+    public Object isRelatedIcd10(Long id){
         Envelop envelop = new Envelop();
         String url = "/dict/drug/icd10/"+id;
         try{

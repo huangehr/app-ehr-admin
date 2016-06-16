@@ -46,13 +46,13 @@ public class Icd10Controller extends BaseUIController {
     }
 
     @RequestMapping("dialog/icd10Info")
-    public String icd10InfoTemplate(Model model,String id,String mode){
+    public String icd10InfoTemplate(Model model,Long id,String mode){
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","specialdict/icd10/icd10InfoDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
         try{
-            if (!StringUtils.isEmpty(id)) {
+            if (id != null) {
                 String url = "/dict/icd10/" + id;
                 envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
             }
@@ -172,13 +172,13 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/icd10")
     @ResponseBody
-    MIcd10Dict getIcd10Dict( String id){
+    MIcd10Dict getIcd10Dict( long id){
         return null;
     }
 
     @RequestMapping("/icd10DictIsUsage")
     @ResponseBody
-    public Object icd10DictIsUsage(String id){
+    public Object icd10DictIsUsage(long id){
         Envelop envelop = new Envelop();
         try{
             String url = "dict/icd10/hp/"+id;
@@ -229,14 +229,14 @@ public class Icd10Controller extends BaseUIController {
     //-------------------------ICD10与诊断之间关联关系管理---开始--------------------------------------------------------
     //关联信息列表页面
     @RequestMapping("/diagnoseRelaInfo/initial")
-    public String diagnoseIcd10RelaInfoInitial(Model model,String id){
+    public String diagnoseIcd10RelaInfoInitial(Model model,Long id){
         model.addAttribute("icd10Id",id);
         model.addAttribute("contentPage","specialdict/icd10/diagnoseIcd10RelaInfo");
         return "simpleView";
     }
     //关联操作界面
     @RequestMapping("/diagnoseRelaCreate/initial")
-    public String diagnoseIcd10RelaCreateInitial(Model model,String id){
+    public String diagnoseIcd10RelaCreateInitial(Model model,Long id){
         model.addAttribute("icd10Id",id);
         model.addAttribute("contentPage","specialdict/icd10/diagnoseIcd10RelaCreate");
         return "simpleView";
@@ -247,7 +247,7 @@ public class Icd10Controller extends BaseUIController {
     //-------------------------ICD10与药品之间关联关系管理-----------------------------------------------------------
     //关联信息列表页面
     @RequestMapping("/drugRelaInfo/initial")
-    public String drugIcd10RelaInfoInitial(Model model,String id){
+    public String drugIcd10RelaInfoInitial(Model model,Long id){
         model.addAttribute("icd10Id",id);
         model.addAttribute("contentPage","specialdict/icd10/drugIcd10RelaInfo");
         return "simpleView";
@@ -263,7 +263,7 @@ public class Icd10Controller extends BaseUIController {
     //根据icd10Id获取已关联的药品字典列表
     @RequestMapping("/drugs/include")
     @ResponseBody
-    public Object drugsInclude(String icd10Id,String searchNm){
+    public Object drugsInclude(Long icd10Id,String searchNm){
         Envelop envelop = new Envelop();
         try{
             String drugsIds = getRelatedDrugsIds(icd10Id);
@@ -291,7 +291,7 @@ public class Icd10Controller extends BaseUIController {
     //根据icd10Id获取未关联的药品字典列表
     @RequestMapping("/drug/exclude")
     @ResponseBody
-    public Object drugsExclude(String icd10Id,String searchNm,int page,int rows){
+    public Object drugsExclude(Long icd10Id,String searchNm,int page,int rows){
         Envelop envelop = new Envelop();
         try{
             String drugIds = getRelatedDrugsIds(icd10Id);
@@ -320,11 +320,11 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/drug/creates")
     @ResponseBody
-    public Object createIcd10DrugRelations(String icd10Id,String drugIds,HttpServletRequest request){
+    public Object createIcd10DrugRelations(Long icd10Id,String drugIds,HttpServletRequest request){
         Envelop envelop = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/icd10/drugs";
-        if(StringUtils.isEmpty(icd10Id)){
+        if(icd10Id == null){
             envelop.setErrorMsg("icd10字典id不能为空！");
             return envelop;
         }
@@ -340,7 +340,7 @@ public class Icd10Controller extends BaseUIController {
                 Icd10DrugRelationModel model = new Icd10DrugRelationModel();
                 model.setCreateUser(userDetailModel.getId());
                 model.setIcd10Id(icd10Id);
-                model.setDrugId(drugIds);
+                model.setDrugId(Long.parseLong(drugIds));
                 String modelJson = objectMapper.writeValueAsString(model);
                 Map<String,Object> params = new HashMap<>();
                 params.put("dictionary",modelJson);
@@ -363,7 +363,7 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/drug/deletes")
     @ResponseBody
-    public Object deleteIcd10DrugRelations(String icd10Id,String drugIds){
+    public Object deleteIcd10DrugRelations(Long icd10Id,String drugIds){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         try{
@@ -408,7 +408,7 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/drug/isIcd10DrugRelaExist")
     @ResponseBody
-    public Object isIcd10DrugRelaExist(String drugId,String icd10Id){
+    public Object isIcd10DrugRelaExist(Long drugId,Long icd10Id){
         Envelop envelop = new Envelop();
         String url = "/dict/icd10/drug/existence";
         try{
@@ -430,7 +430,7 @@ public class Icd10Controller extends BaseUIController {
      * @return
      * @throws Exception
      */
-    public String getRelatedDrugsIds(String icd10Id) throws Exception{
+    public String getRelatedDrugsIds(Long icd10Id) throws Exception{
         String drugIds = "";
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
@@ -457,7 +457,7 @@ public class Icd10Controller extends BaseUIController {
      * @return
      * @throws Exception
      */
-    public String getIcd10DrugRelaIdsForDel(String icd10Id,String drugIds) throws Exception{
+    public String getIcd10DrugRelaIdsForDel(Long icd10Id,String drugIds) throws Exception{
         String ids = "";
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
@@ -483,14 +483,14 @@ public class Icd10Controller extends BaseUIController {
 
     //关联信息页面
     @RequestMapping("/indicator/initial")
-    public String indicatorIcd10Initial(Model model,String id){
+    public String indicatorIcd10Initial(Model model,Long id){
         model.addAttribute("icd10Id",id);
         model.addAttribute("contentPage","specialdict/icd10/indicatorIcd10RelaInfo");
         return "simpleView";
     }
     //关联操作界面
     @RequestMapping("/indicatorRelation/initial")
-    public String indicatorIcd10RelationInitial(Model model,String id){
+    public String indicatorIcd10RelationInitial(Model model,Long id){
         model.addAttribute("icd10Id",id);
         model.addAttribute("contentPage","specialdict/icd10/indicatorIcd10RelaCreate");
         return "simpleView";
@@ -499,7 +499,7 @@ public class Icd10Controller extends BaseUIController {
     //根据icd10Id获取已关联的indicator列表
     @RequestMapping("/indicators/include")
     @ResponseBody
-    public Object icd10IndicatorsInclude(String icd10Id,String searchNm){
+    public Object icd10IndicatorsInclude(Long icd10Id,String searchNm){
         Envelop envelop = new Envelop();
         try{
             String indicatorIds = getRelatedIndicatorIds(icd10Id);
@@ -527,7 +527,7 @@ public class Icd10Controller extends BaseUIController {
     //根据icd10Id获取未关联的indicator列表
     @RequestMapping("/indicators/exclude")
     @ResponseBody
-    public Object icd10IndicatorsExclude(String icd10Id,String searchNm,int page,int rows){
+    public Object icd10IndicatorsExclude(Long icd10Id,String searchNm,int page,int rows){
         Envelop envelop = new Envelop();
         try{
             String indicatorIds = getRelatedIndicatorIds(icd10Id);
@@ -557,11 +557,11 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/indicator/creates")
     @ResponseBody
-    public Object createIcd10IndicatorRelations(String icd10Id,String indicatorIds,HttpServletRequest request){
+    public Object createIcd10IndicatorRelations(Long icd10Id,String indicatorIds,HttpServletRequest request){
         Envelop envelop = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/icd10/indicators";
-        if(StringUtils.isEmpty(icd10Id)){
+        if(icd10Id == null){
             envelop.setErrorMsg("icd10字典id不能为空！");
             return envelop;
         }
@@ -577,7 +577,7 @@ public class Icd10Controller extends BaseUIController {
                 Icd10IndicatorRelationModel model = new Icd10IndicatorRelationModel();
                 model.setCreateUser(userDetailModel.getId());
                 model.setIcd10Id(icd10Id);
-                model.setIndicatorId(indicatorIds);
+                model.setIndicatorId(Long.parseLong(indicatorIds));
                 String modelJson = objectMapper.writeValueAsString(model);
                 Map<String,Object> params = new HashMap<>();
                 params.put("dictionary",modelJson);
@@ -600,7 +600,7 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/indicator/deletes")
     @ResponseBody
-    public Object deleteIcd10IndicatorRelations(String icd10Id,String indicatorIds){
+    public Object deleteIcd10IndicatorRelations(Long icd10Id,String indicatorIds){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         try{
@@ -646,7 +646,7 @@ public class Icd10Controller extends BaseUIController {
 
     @RequestMapping("/indicator/isIcd10IndicatorsRelaExist")
     @ResponseBody
-    public Object isIcd10IndicatorsRelaExist(String indicatorId,String icd10Id){
+    public Object isIcd10IndicatorsRelaExist(Long indicatorId,Long icd10Id){
         Envelop envelop = new Envelop();
         String url = "/dict/icd10/indicator/existence";
         try{
@@ -668,7 +668,7 @@ public class Icd10Controller extends BaseUIController {
      * @return
      * @throws Exception
      */
-    public String getRelatedIndicatorIds(String icd10Id) throws Exception{
+    public String getRelatedIndicatorIds(Long icd10Id) throws Exception{
         String indicatorIds = "";
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
@@ -695,7 +695,7 @@ public class Icd10Controller extends BaseUIController {
      * @return
      * @throws Exception
      */
-    public String getIcd10IndicatorRelaIdsForDel(String icd10Id,String indicatorIds) throws Exception{
+    public String getIcd10IndicatorRelaIdsForDel(Long icd10Id,String indicatorIds) throws Exception{
         String ids = "";
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
