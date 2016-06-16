@@ -47,7 +47,7 @@ public class IndicatorDictController extends BaseUIController {
 
     //新增、修改弹出框初始页面
     @RequestMapping("dialog/indicator")
-    public String indicatorInfoTemplate(Model model,String id,String mode){
+    public String indicatorInfoTemplate(Model model,Long id,String mode){
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","specialdict/indicator/indicatorInfoDialog");
         Envelop envelop = new Envelop();
@@ -107,7 +107,7 @@ public class IndicatorDictController extends BaseUIController {
 
     @RequestMapping("/delete")
     @ResponseBody
-    public Object deleteIndicatorDict(String id){
+    public Object deleteIndicatorDict(Long id){
         String url = "/dict/indicator/"+id;
         String envelopStr = "";
         try{
@@ -189,7 +189,7 @@ public class IndicatorDictController extends BaseUIController {
     @RequestMapping("/indicatorIsUsage")
     @ResponseBody
     //根据指标的ID判断是否与ICD10字典存在关联。
-    public Object indicatorIsUsage(String id){
+    public Object indicatorIsUsage(Long id){
         Envelop envelop = new Envelop();
         try{
             String url = "dict/indicator/icd10/"+id;

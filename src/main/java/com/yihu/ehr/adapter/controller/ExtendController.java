@@ -11,7 +11,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -359,6 +360,49 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    protected void writerResponse(HttpServletResponse response, String body, String client_method) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<script type=\"text/javascript\">//<![CDATA[\n");
+        sb.append("     parent.").append(client_method).append("(").append(body).append(");\n");
+        sb.append("//]]></script>");
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.addHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+        response.setHeader("Cache-Control", "pre-check=0,post-check=0");
+        response.setDateHeader("Expires", 0);
+        response.getWriter().write(sb.toString());
+        response.flushBuffer();
+    }
+
+    public void downLoadFile(String filePath,  HttpServletResponse response) throws IOException {
+
+        InputStream fis=null;
+        OutputStream toClient = null;
+        try{
+            File file = new File( filePath );
+            fis = new BufferedInputStream(new FileInputStream(file));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+
+            response.reset();
+            response.setContentType("octets/stream");
+            response.addHeader("Content-Length", "" + file.length());
+            response.addHeader("Content-Disposition", "attachment; filename="
+                    + new String(file.getName().getBytes("gb2312"), "ISO8859-1"));
+
+            toClient = new BufferedOutputStream(response.getOutputStream());
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(fis!=null) fis.close();
+            if(toClient!=null) toClient.close();
         }
     }
 }
