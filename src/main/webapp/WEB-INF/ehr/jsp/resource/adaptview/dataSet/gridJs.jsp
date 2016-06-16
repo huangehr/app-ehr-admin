@@ -279,6 +279,8 @@
               if(row){
                 code = row.code;
               }
+            }else{
+              code="-1";
             }
             var values = {
               adapterSchemeId :adapterSchemeId,
@@ -379,17 +381,18 @@
             })
         },
         initMetadataId:function(){
+          var widthOption = $("#div_relation_grid").width()*0.2-40
           if(cfgModel==0){
             var url = "${contextRoot}/resource/meta/combo";
             var parms={};
             $("input[name=metadataId]").ligerComboBox({
-            condition: { inputWidth: 240 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "value", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-            grid: getGridOptions(false,755,url,parms),
+            condition: { inputWidth: widthOption ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "value", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
+            grid: getGridOptions(false,widthOption*3,url,parms),
             valueField: "code",
             textField: "code",
-            width : 230,
-            selectBoxHeight : 260,
-            selectBoxWidth:751,
+            width : widthOption-10,
+            selectBoxHeight : widthOption+50,
+            selectBoxWidth:widthOption*3,
             onSelected: function(id,name){//name为选择的值
               if(this.grid==undefined) return;
               var rowData  = this.grid.getSelected();
@@ -434,12 +437,12 @@
             var parms={};
             $("input[name=dictName]").ligerComboBox({
               condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-              grid: getGridOptions(true,240,url,parms),
+              grid: getGridOptions(true,widthOption,url,parms),
               valueField: "name",
               textField: "name",
-              width : 230,
-              selectBoxHeight : 260,
-              selectBoxWidth:240,
+              width : widthOption-10,
+              selectBoxHeight : widthOption+50,
+              selectBoxWidth:widthOption,
               onSelected: function(id,name){//name为选择的值
                 if(this.grid==undefined) return;
                 var rowData  = this.grid.getSelected();
@@ -470,12 +473,12 @@
             //初始化字典项下拉框
             url = "${contextRoot}/resource/dict/entry/list";
             $("input[name=dictEntryCode]").ligerComboBox({
-              condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-              grid: getGridOptionsByDictEntry(true,240,url),
+              condition: { inputWidth:100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
+              grid: getGridOptionsByDictEntry(true,widthOption,url),
               valueField: "code",
               textField: "code",
-              width : 230,
-              selectBoxHeight : 260,
+              width : widthOption-10,
+              selectBoxHeight : widthOption+50,
               selectBoxWidth:240,
               onSelected: function(id,name){//name为选择的值
                 if(this.grid==undefined||name=="") return;
@@ -571,14 +574,14 @@
         var columnCfg =[];
         if(!isDict){
           columnCfg=[
-            {display : '资源标准编码', name :'code',width :243},
-            {display : '业务领域', name :'domainName',width : 243},
-            {display : '数据元名称', name :'value',width : 243}
+            {display : '资源标准编码', name :'code',width :'32%'},
+            {display : '业务领域', name :'domainName',width : '32%'},
+            {display : '数据元名称', name :'value',width : '32%'}
           ]
         }else if(isDict){
           columnCfg=[
-            {display : '编码', name :'code',width :100},
-            {display : '名称', name :'name',width : 100}
+            {display : '编码', name :'code',width :'45%'},
+            {display : '名称', name :'name',width : '46%'}
           ]
         }
         return columnCfg;
