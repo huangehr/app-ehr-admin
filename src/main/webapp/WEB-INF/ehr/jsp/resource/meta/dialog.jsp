@@ -5,10 +5,12 @@
 <div id="infoForm" data-role-form class="m-form-inline f-mt20">
 
   <input id="valid" name="valid" value="1" data-attr-scan="valid"  hidden >
+  <input id="dictCode" name="dictCode" value="1" data-attr-scan="dictCode"  hidden >
+
   <div class="m-form-group">
     <label>资源标准编码<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_meta_code" class="required validate-code-char ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="id">
+      <input type="text" id="ipt_meta_code" class="required validate-meta-id ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="id">
     </div>
   </div>
 
@@ -43,7 +45,7 @@
   <div class="m-form-group">
     <label>关联字典代码<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control">
-      <input type="text" id="ipt_dict_code" data-type="select" class="" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dictCode">
+      <input type="text" id="ipt_dict_id" data-type="select" class="" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dictId">
     </div>
   </div>
 
