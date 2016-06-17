@@ -67,10 +67,16 @@ public class OrganizationController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + getOrgUrl, username, password);
             Envelop envelop = getEnvelop(resultStr);
             OrgDetailModel orgDetailModel = toModel(toJson(envelop.getObj()), OrgDetailModel.class);
+            Map<String, Object> params = new HashMap<>();
+            String url = comUrl + "/files_path";
+            params.put("object_id",orgCode);
+            String envelopStr = HttpClientUtil.doGet(url,params, username, password);
             session.setAttribute("userImageStream", orgDetailModel.getImgLocalPath() == null ? "" : orgDetailModel.getImgLocalPath());
-
+            Envelop imageLop =   getEnvelop(envelopStr);
+            session.setAttribute("imageLop",toJson(imageLop));
         } catch (Exception e) {
-            LogService.getLogger(OrganizationController.class).error(e.getMessage());
+             session.setAttribute("imageLop","");
+             LogService.getLogger(OrganizationController.class).error(e.getMessage());
         }
         model.addAttribute("mode", mode);
         model.addAttribute("envelop", resultStr);
@@ -413,6 +419,5 @@ public class OrganizationController extends BaseUIController {
 
         return "";
     }
-
 
 }
