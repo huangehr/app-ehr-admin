@@ -21,7 +21,7 @@
                 <input type="text" id="ipt_catalog" data-type="select" placeholder="请选择应用类型" data-attr-scan="catalog">
             </div>
             <div class="m-form-control f-ml10">
-                <input type="text" data-type="select" id="ipt_status" placeholder="是否生/失效" data-attr-scan="status">
+                <input type="text" data-type="select" id="ipt_status" placeholder="应用状态" data-attr-scan="status">
             </div>
             <div class="m-form-control f-ml10">
                 <!--按钮:查询 & 新增-->

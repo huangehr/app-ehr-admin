@@ -499,37 +499,4 @@ public class UserController extends BaseUIController {
         return envelop;
     }
 
-
-    public static String doPost(String url, Map<String, String> params, String charset, boolean pretty) {
-        StringBuffer response = new StringBuffer();
-        HttpClient client = new HttpClient();
-        PostMethod method = new PostMethod(url);
-        //设置Http Post数据
-        if (params != null) {
-            HttpMethodParams p = new HttpMethodParams();
-            NameValuePair[] data = {new NameValuePair("file_str",params.get("fileName")),new NameValuePair("fileResourceModelJsonData",params.get("file_str")),new NameValuePair("file_str",params.get("file_str"))};
-            // 将表单的值放入postMethod中
-            method.setRequestBody(data);
-        }
-        try {
-            client.executeMethod(method);
-            if (method.getStatusCode() == HttpStatus.SC_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), charset));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (pretty)
-                        response.append(line).append(System.getProperty("line.separator"));
-                    else
-                        response.append(line);
-                }
-                reader.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            method.releaseConnection();
-        }
-        return response.toString();
-    }
-
 }
