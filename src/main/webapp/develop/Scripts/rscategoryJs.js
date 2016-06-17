@@ -12,6 +12,10 @@ cateType.list = {
         this.columns = [
             {display: '名称', name: 'name', align: 'left', id: 'tree_id'},
             {display: '说明', name: 'description', align: 'left'},
+            {name: 'id',hide: true,render:function (rowdata) {
+                var html = "<div id='"+rowdata.id+"'></div>";
+                return html;
+            }},
             {
                 display: '操作', isSort: false, width: 200, align: 'center', render: function (rowdata, rowindex, value) {
                 var html = "<a class='grid_edit' title='编辑' name='edit_click' style='' onclick='cateType.list.add(\"" + rowdata.id + "\", \"modify\")'></a> " +
@@ -79,13 +83,24 @@ cateType.list = {
                 root: 'Rows',
                 tree: {columnId: 'tree_id',height:'100%'}
             });
-
         }
         else {
             u.grid.reload(gridData);
         }
+
+        var cateTypeDatas = u.grid.getData();
+        this.expandcateType(cateTypeDatas);
         u.grid.collapseAll();
         window.grid = u.grid;
+    },
+
+    expandcateType:function (cateTypeDatas) {
+        debugger
+        var cateTypePid = sessionStorage.getItem('cateTypePid');
+
+        $.each(cateTypeDatas,function (key,value) {
+
+        })
     },
     showDialog: function (_tital, _url, _height, _width, callback) {
         cateType.list.top.dialog_cateType_detail = $.ligerDialog.open({
@@ -187,6 +202,7 @@ cateType.list = {
 };
 
 cateType.attr = {
+        cateTypePid:"",
         type_form: $("#div_catetype_info_form"),
         validator: null,
         parent_select: null,
@@ -264,6 +280,8 @@ cateType.attr = {
                 if (data != null) {
                     var _res = eval(data);
                     if (_res.successFlg) {
+                        var cateTypePid = dataJson.pid.getValue();
+                        sessionStorage.setItem("cateTypePid",cateTypePid);
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
                             parent.cateType.list.top.dialog_cateType_detail.close();
                         }, null);
