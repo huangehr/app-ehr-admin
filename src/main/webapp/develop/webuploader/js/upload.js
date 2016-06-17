@@ -5,11 +5,12 @@
         var $wrap = $('#uploader');
             if($(".filelist").length>0){
                 isEdit = true;
-            }
+                $queue = $(".filelist");
+            }else{
             // 图片容器
                 $queue = $( '<ul class="filelist"></ul>' )
                     .appendTo( $wrap.find( '.queueList' ) );
-
+            }
 
             // 状态栏，包括进度和控制按钮
             $statusBar = $wrap.find( '.statusBar' ),
@@ -197,7 +198,7 @@
         // 添加“添加文件”的按钮，
         uploader.addButton({
             id: '#filePicker2',
-            label: '继续添加'
+            label: '添加文件'
         });
         uploader.on('ready', function() {
             window.uploader = uploader;
@@ -363,7 +364,6 @@
         // 负责view的销毁
         function removeFile( file ) {
             var $li = $('#'+file.id);
-
             delete percentages[ file.id ];
             updateTotalProgress();
             $li.off().find('.file-panel').off().end().remove();
@@ -425,15 +425,15 @@
             $upload.removeClass( 'state-' + state );
             $upload.addClass( 'state-' + val );
             state = val;
-
             switch ( state ) {
                 case 'pedding':
                     $placeHolder.removeClass( 'element-invisible' );
-                    $queue.hide();
-                    $statusBar.addClass( 'element-invisible' );
+                    if($(".filelist").children().length==1&&isEdit==false){
+                      $queue.hide();
+                      $statusBar.addClass( 'element-invisible' );
+                    }
                     uploader.refresh();
                     break;
-
                 case 'ready':
                     $placeHolder.addClass( 'element-invisible' );
                     $( '#filePicker2' ).removeClass( 'element-invisible');

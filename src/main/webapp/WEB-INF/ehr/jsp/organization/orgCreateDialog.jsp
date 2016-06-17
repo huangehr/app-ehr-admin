@@ -82,9 +82,9 @@
             <div class="f-pa f-w20 f-wtl">
                 高级
             </div>
-            <div class="div-aptitude-manager" style="width:550px;height:225px;">
+            <div class="div-aptitude-manager" style="width:550px;height:320px;margin-top:20px;">
                 &nbsp;资质管理:
-                <div id="uploader" style="width:540px;">
+                <div id="uploader" style="width:550px;overflow-y: auto;overflow-x: hidden;height: 260px;">
                     <input id="mime" type="hidden" value="org"/>
                     <input id="objectId" type="hidden" value="10254555-1"/>
                     <input id="purpose" type="hidden" value="org"/>
