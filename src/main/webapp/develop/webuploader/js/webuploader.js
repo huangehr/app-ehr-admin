@@ -4203,7 +4203,7 @@
     
                 if ( count >= max && flag ) {
                     flag = false;
-                    this.trigger( 'error', 'Q_EXCEED_NUM_LIMIT', max, file );
+                    this.trigger( 'error', '文件总数'+count+'个,超过'+uploader.options.fileNumLimit+"个，多出部分自动删减！", max, file );
                     setTimeout(function() {
                         flag = true;
                     }, 1 );
@@ -4248,7 +4248,7 @@
     
                 if ( invalid && flag ) {
                     flag = false;
-                    this.trigger( 'error', 'Q_EXCEED_SIZE_LIMIT', max, file );
+                    this.trigger( 'error', '文件大小为'+count + file.size+'Byte,超过'+uploader.options.fileSizeLimit+'Byte，请压缩后上传', max, file );
                     setTimeout(function() {
                         flag = true;
                     }, 1 );
@@ -4289,7 +4289,7 @@
     
                 if ( file.size > max ) {
                     file.setStatus( WUFile.Status.INVALID, 'exceed_size' );
-                    this.trigger( 'error', 'F_EXCEED_SIZE', max, file );
+                    this.trigger( 'error', '文件大小'+file.size+'byte,超出限制'+uploader.options.fileSingleSizeLimit+"Byte", max, file );
                     return false;
                 }
     
@@ -4332,7 +4332,7 @@
     
                 // 已经重复了
                 if ( mapping[ hash ] ) {
-                    this.trigger( 'error', 'F_DUPLICATE', file );
+                    this.trigger( 'error', '文件重复，请重新选择！', file );
                     return false;
                 }
             });

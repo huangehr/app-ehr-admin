@@ -66,13 +66,13 @@
             <div class="f-pa f-w20 f-wtl">
                 高级
             </div>
-            <div class="div-aptitude-manager" style="width:550px;height:225px;">
+            <div class="div-aptitude-manager" style="width:550px;height:320px;margin-top:20px;">
                 &nbsp;资质管理:
-                <div id="uploader" style="width:540px;">
+                <div id="uploader" style="width:550px;overflow-y: auto;overflow-x: hidden;height: 260px;">
                     <input id="mime" type="hidden" value="org"/>
                     <input id="objectId" type="hidden" value=""/>
                     <input id="purpose" type="hidden" value="org"/>
-                    <div class="queueList" style="width:530px;">
+                    <div class="queueList" style="width:535px;">
                         <div id="dndArea" class="placeholder">
                             <div id="filePicker"></div>
                             <p>或将照片拖到这里，单次最多可选300张</p>
