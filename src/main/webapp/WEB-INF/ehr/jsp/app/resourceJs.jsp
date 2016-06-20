@@ -135,14 +135,18 @@
 							{display: '数据源', name: 'rsInterfaceName', width: '15%', align: 'left'},
 							{display: '资源分类', name: 'categoryName', width: '15%', align: 'left'},
 							{display: '资源分类Id', name: 'categoryId',hide:true},
-							{display: '资源说明', name: 'description', width: '30%', align: 'left'},
+							{display: '资源说明', name: 'description', width: '20%', align: 'left'},
+							{display: '是否授权', name: 'status', width: '10%', render: function (row) {
+								if(appRsIds.indexOf(row.id)<0){
+									return '否'
+								}
+								return '是';
+							}},
 							{display: '操作', name: 'operator', width: '10%', render: function (row) {
-								var html = '';
 								if(appRsIds.indexOf(row.id)<0){
 									return ''
 								}
-								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "app:resourceManage:list",row.id,row.code,row.name,row.categoryName) + '">维度管理</a>';
-								//html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:rs:grant:cancel",row.id) + '">取消授权</a>';
+								var html = '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "app:resourceManage:list",row.id,row.code,row.name,row.categoryName) + '">维度授权</a>';
 								return html;
 							}}
 						],
@@ -192,6 +196,10 @@
 								}
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
+							if(Util.isStrEmpty(ids)){
+								$.Notice.warn( '所选资源都已授权！');
+								return;
+							}
 						}
 						$.Notice.confirm('确认要授权所选资源？', function (r) {
 							if(r){
@@ -213,6 +221,9 @@
 					});
 
 					//资源授权删除
+					$('#btn_grant_cancel').click(function(){
+						$.publish("app:rs:grant:cancel",[''])
+					});
 					$.subscribe('app:rs:grant:cancel',function(event,ids){
 						if(!ids){
 							var rows = master.resourceInfoGrid.getSelectedRows();
@@ -222,11 +233,15 @@
 							}
 							for(var i=0;i<rows.length;i++){
 								//只删除已授权的资源（排除未授权资源的ids)
-								if(appRsIds.indexOf(rows[i].id)<0){
+								if(appRsIds.indexOf(rows[i].id)>0){
 									ids += ',' + rows[i].id;
 								}
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
+							if(Util.isStrEmpty(ids)){
+								$.Notice.warn('所选资源都未授权！');
+								return;
+							}
 						}
 						$.Notice.confirm('确认要取消授权所选资源？', function (r) {
 							if(r){

@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
 <!--######机构管理页面 > 机构信息对话框模板页######-->
 <div id="div_organization_info_form" data-role-form="" class="m-form-inline f-mt20" data-role-form
      style="overflow:auto">
@@ -79,17 +78,31 @@
 
 
     <div>
-        <hr class="u-border">
-        <div class="f-pr u-bd">
+        <div class="f-pr u-bd" style="height: 380px;">
             <div class="f-pa f-w20 f-wtl">
                 高级
             </div>
-            <div class="div-aptitude-manager">
+            <div class="div-aptitude-manager" style="width:550px;height:320px;margin-top:20px;">
                 &nbsp;资质管理:
-                <div id="div_aptitude_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img " data-alone-file=true>
-                    <!--用来存放item-->
-                    <div id="div_file_list" class="uploader-list"></div>
-                    <div id="div_file_picker" class="f-mt10 u-image-btn"></div>
+                <div id="uploader" style="width:550px;overflow-y: auto;overflow-x: hidden;height: 260px;">
+                    <input id="mime" type="hidden" value="org"/>
+                    <input id="objectId" type="hidden" value="10254555-1"/>
+                    <input id="purpose" type="hidden" value="org"/>
+                    <div class="queueList" style="width:530px;">
+                        <div id="dndArea" class="placeholder">
+                            <div id="filePicker"></div>
+                            <p>或将照片拖到这里，单次最多可选300张</p>
+                        </div>
+                    </div>
+                    <div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div><div class="info" style=""></div>
+                        <div class="btns">
+                            <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

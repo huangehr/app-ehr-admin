@@ -62,22 +62,35 @@
         </div>
     </div>
     <div>
-        <hr class="u-border">
         <div class="f-pr u-bd">
             <div class="f-pa f-w20 f-wtl">
                 高级
             </div>
-
-            <div class="div-aptitude-manager-show">
+            <div class="div-aptitude-manager" style="width:550px;height:320px;margin-top:20px;">
                 &nbsp;资质管理:
-                <div id="div_aptitude_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img " data-alone-file=true>
-                    <!--用来存放item-->
-                    <div id="div_file_list" class="uploader-list"></div>
-                    <div id="div_file_picker" class="f-mt10 u-image-btn"></div>
+                <div id="uploader" style="width:550px;overflow-y: auto;overflow-x: hidden;height: 260px;">
+                    <input id="mime" type="hidden" value="org"/>
+                    <input id="objectId" type="hidden" value=""/>
+                    <input id="purpose" type="hidden" value="org"/>
+                    <div class="queueList" style="width:535px;">
+                        <div id="dndArea" class="placeholder">
+                            <div id="filePicker"></div>
+                            <p>或将照片拖到这里，单次最多可选300张</p>
+                        </div>
+                        <ul id="filelist" class="filelist"></ul>
+                    </div>
+
+                    <div class="statusBar" style="display:none;">
+                        <div class="progress">
+                            <span class="text">0%</span>
+                            <span class="percentage"></span>
+                        </div><div class="info" style=""></div>
+                        <div class="btns">
+                            <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <hr class="u-border">
 
             <div class="m-form-group f-h100" hidden="hidden" id="div_publicKeyMessage">
                 <label class="lbl-public-key">公钥信息:</label>

@@ -12,19 +12,15 @@
             // 页面主模块，对应于用户信息表区域
             var master = null;
             var resourceDatas = null;
-
             var sourceData = ${dataModel};
             $("#sp_resourceName").html(sourceData.resourceName);
             $("#sp_resourceSub").html(sourceData.resourceSub);
-            $(".sp-resource-configuration-name").html('<h3>'+sourceData.resourceName+'_资源配置</3>');
-
+            $(".sp-resource-configuration-name").html('<h3>' + sourceData.resourceName + '_资源配置</3>');
             var addRowDatas = new Array();
             var delRowDatas = new Array();
-
             var comUrl = '${contextRoot}/resourceConfiguration';
             var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration', comUrl + '/searchSelResourceconfiguration?resourcesId=' + sourceData.resourceId];
             var elmParams = ['resourceConfigurationInfoGrid', 'resourceConfigurationInfoGridTrue'];
-
             var dataModel = $.DataModel.init();
 
             /* *************************** 函数定义 ******************************* */
@@ -32,19 +28,6 @@
                 retrieve.init();
                 master.init();
             }
-
-//            function getResource(page, size) {
-//                dataModel.fetchRemote(resourceConfigurationUrl[1], {
-//                    data: {searchNm: "", page: page, rows: size},
-//                    success: function (data) {
-//                        if (Util.isStrEquals(data.obj.id, row.id)) {
-//                            return true;
-//                        } else {
-//                            return false;
-//                        }
-//                    }
-//                })
-//            }
 
             function reloadGrid(url, params, searchType) {
                 $("#infoMsg").val(false);
@@ -71,10 +54,8 @@
                 $saveBtn: $("#div_save_btn"),
 
                 init: function () {
-
                     var mateDataElm = this.$mateDataSearch;
                     var seMetaDataElm = this.$mateDataSearchTrue;
-
                     mateDataElm.ligerTextBox({
                         width: 240, isSearch: true, search: function (data) {
                             master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], mateDataElm.val(), "mateData");
@@ -85,25 +66,24 @@
                             master.reloadResourceConfigurationGrid(resourceConfigurationUrl[1], seMetaDataElm.val(), "seMetaData");
                         }
                     });
-                },
+                }
             };
             master = {
-
                 init: function () {
                     var self = retrieve;
-
                     var columnDatas = [
                         {name: 'id', hide: true, isAllowHide: false},
-                        {display: '资源标准编码', name: 'stdCode', width: '25%', align: 'left',render: function (row) {
-                            return Util.isStrEquals(this.id,'div_resource_configuration_info_grid')? row.id : row.stdCode;
-                        }},
+                        {
+                            display: '资源标准编码', name: 'stdCode', width: '25%', align: 'left', render: function (row) {
+                            return Util.isStrEquals(this.id, 'div_resource_configuration_info_grid') ? row.id : row.stdCode;
+                        }
+                        },
                         {display: '数据元名称', name: 'name', width: '25%', align: 'left'},
                         {display: '类型', name: 'columnType', width: '25%', align: 'left'},
                         {display: '说明', name: 'description', width: '25%', align: 'left'}
                     ];
 
                     var elm = [self.$resourceConfigurationInfoGrid, self.$resourceConfigurationInfoGridTrue];
-                    var count = 0;
                     for (var i = 0; i < resourceConfigurationUrl.length; i++) {
                         elmParams[i] = elm[i].ligerGrid($.LigerGridEx.config({
                             url: resourceConfigurationUrl[i],
@@ -116,7 +96,7 @@
                                 if (Util.isStrEquals(this.url.split("resourcesId").length, 1)) {
                                     resourceDatas = elmParams[1].data.detailModelList;
                                     for (var i = 0; i < resourceDatas.length; i++) {
-                                        if (Util.isStrEquals(resourceDatas[i].metadataId, row.id)) {
+                                        if (Util.isStrEquals(resourceDatas[i].stdCode, row.id)) {
                                             bo = true;
                                             return bo;
                                         } else {
@@ -125,6 +105,19 @@
                                     }
                                 }
                                 return bo
+                            },
+                            onCheckAllRow:function (checked,element) {
+                                var rowAll = elmParams[0].data.detailModelList;
+                                if (checked){
+                                    $.each(rowAll,function (key,value) {
+                                        addRows(value);
+                                    })
+                                }else {
+                                    $.each(rowAll,function (key,value) {
+                                        deleteRows(value);
+                                    })
+                                }
+
                             },
                             parms: {
                                 searchNm: ''
@@ -144,7 +137,6 @@
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid') && Util.isStrEquals(infoMsg, 'true')) {
                                     addRows(rowdata);
                                 }
-
                             },
                             onUnSelectRow: function (rowdata, rowid, rowobj) {
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
@@ -153,35 +145,33 @@
                             },
                             onAfterShowData: function () {
                                 $("#infoMsg").val(false);
-                            },
+                            }
                         }));
                     }
-
                     function addRows(rowdata) {
-                        var metaData_rowData = {
-                            resourcesId: sourceData.resourceId,
-                            metadataId: rowdata.id,
-                            groupType: "testType",
-                            groupData: "testdata",
-                            description: rowdata.description
-                        };
-                        addRowDatas.push(metaData_rowData);
-                        elmParams[1].addRow({
-                            id: rowdata.id,
-                            stdCode: rowdata.stdCode,
-                            name: rowdata.name,
-                            columnType: rowdata.columnType,
-                            description: rowdata.description
+                        var metaData_rowData = {resourcesId: sourceData.resourceId, metadataId: rowdata.id, groupType: "", groupData: "", description: rowdata.description};
+                        var bo = true;
+                        $.each(addRowDatas, function (key, value) {
+                            if (Util.isStrEquals(rowdata.id, value.metadataId)) {
+                                bo = false;
+                            }
                         });
-
+                        if (bo){
+                            addRowDatas.push(metaData_rowData);
+                        }
+                        elmParams[1].addRow({id: rowdata.stdCode, stdCode: rowdata.id, name: rowdata.name, columnType: rowdata.columnType, description: rowdata.description});
                         var elmParams_1 = elmParams[1].data.detailModelList;
                         for (var i = 0; i < elmParams_1.length; i++) {
                             sessionStorage.setItem("elmParams_1" + i, elmParams_1[i].stdCode)
                         }
                     }
-
                     function deleteRows(rowdata) {
-                        var rowParm = rowdata.stdCode;
+                        var rowParm = rowdata.id;
+                        $.each(addRowDatas, function (key, value) {
+                            if (!Util.isStrEmpty(value)&&Util.isStrEquals(rowParm, value.metadataId)) {
+                                addRowDatas.splice(key, 1);
+                            }
+                        });
                         var rows = elmParams[1].data.detailModelList;
                         for (var i = 0; i < rows.length; i++) {
                             var rowData = rows[i].stdCode;
@@ -192,7 +182,6 @@
                             sessionStorage.removeItem("elmParams_1" + i);
                         }
                     }
-
                     this.bindEvents();
                 },
                 reloadResourceConfigurationGrid: function (url, value, searchType) {
@@ -204,7 +193,6 @@
                         $('#contentPage').empty();
                         $('#contentPage').load('${contextRoot}/resource/resourceManage/initial?backParams=' + JSON.stringify(sourceData.backParams));
                     });
-
                     retrieve.$saveBtn.click(function () {
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {
                             return;
@@ -219,20 +207,18 @@
                                 delRowDatas = new Array();
                                 if (data.successFlg) {
                                     $.Notice.success('保存成功');
-                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], "", "mateData");
+                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], "", "");
+                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[1], "", "mateData");
                                 } else
                                     $.Notice.error("保存失败");
                             }
                         })
                     });
-
-
                     $("#a-back").click(function () {
                         history.back();
                     })
                 }
             };
-
             /* ************************* 模块初始化结束 ************************** */
             var resizeContent = function () {
                 var contentW = $('.div-resource-configuration').width();
@@ -242,7 +228,6 @@
             $(window).bind('resize', function () {
                 resizeContent();
             });
-
             /* *************************** 页面初始化 **************************** */
             pageInit();
             /* ************************* 页面初始化结束 ************************** */

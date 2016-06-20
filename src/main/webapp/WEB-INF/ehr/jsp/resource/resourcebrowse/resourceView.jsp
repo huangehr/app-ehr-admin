@@ -6,16 +6,6 @@
 <div id="div_wrapper" class="f-mt10">
     <!-- ####### 查询条件部分 ####### -->
     <div class="f-h785">
-        <%--<div class="f-w18 f-bd f-of-hd" style="float: left">--%>
-        <%--<div class="f-mt10 f-ml10 f-w270">--%>
-        <%--<!--输入框-->--%>
-        <%--<input type="text" id="inp_search" class="f-ml10"/>--%>
-        <%--</div>--%>
-        <%--<hr>--%>
-        <%--<!--资源浏览树-->--%>
-        <%--<div id="div_resource_browse_tree"></div>--%>
-        <%--</div>--%>
-        <!--资源浏览详情-->
         <div class="div-resource-view-title">
             <a id="btn_back" class="f-fl">返回上一层</a>
             <div class="f-fl f-ml100">
@@ -27,7 +17,6 @@
         </div>
         <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">
             <!--添加动态查询-->
-            <%--<span class="f-fl f-mt20 sp-search-width">查询条件：</span>--%>
             <div class="div-search-height" id="div_search_data_role_form" style="float: left;margin-left: 20px;width: 93%;">
                 <div id="div_new_search" class="f-mt10" data-role-form>
                     <div class="f-fl f-w90" id="div_default_search">
@@ -42,7 +31,7 @@
                             <input type="text" id="inp_logical_relationship" data-type="select" data-attr-scan="condition" class="f-ml10 inp-reset"/>
                         </div>
                         <div class="f-fl f-ml10 f-mr10 div-change-search" style="width: 38%">
-                            <input type="text" data-attr-scan="value" data-type="select" class="f-ml10 inp-reset inp_defualt_param"/>
+                            <input type="text" data-attr-scan="value" data-type="select" class="f-ml10 inp-reset inp-find-search inp_defualt_param"/>
                         </div>
                         <span class="sp-back-add-img f-mt10" id="sp_new_search_btn"></span>
                     </div>
@@ -85,7 +74,7 @@
                            data-attr-scan="condition"/>
                 </div>
                 <div class="f-fl f-ml10 f-mr10 div-new-change-search" style="width: 38%">
-                    <input type="text" class="f-ml10 inp-reset inp-model3 inp-find-search" data-type="select"
+                    <input type="text" class="f-ml10 inp-find-search inp-reset inp-model3 inp-find-search" data-type="select"
                            data-attr-scan="value"/>
                 </div>
                 <span class="sp-back-del-img f-mt10 sp-del-btn"></span>

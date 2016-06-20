@@ -925,12 +925,14 @@ public class DictController  extends BaseUIController {
             String sheetName; //sheet名字
             String dictName;//名称
             String dictCode;//代码
+            String dictDesc;//说明
             //字典项信息
             List<DictEntryModel> dictEntryModelList;
             Set<String> set;
             DictEntryModel dictEntryModel;
             String code;//字典项编码
             String name;//字典项名称
+            String desc;//字典项说明
 
             for (Sheet sheet : sheets) {
                 dictModel = new DictModel();
@@ -939,6 +941,7 @@ public class DictController  extends BaseUIController {
                 sheetName = sheet.getName(); //sheet名字
                 dictCode = sheet.getCell(1, 0).getContents();//代码
                 dictName = sheet.getCell(1, 1).getContents();//名称
+                dictDesc = sheet.getCell(1, 2).getContents();//名称
 
                 //字典校验
                 if (dictCode==null || dictCode.equals("")){
@@ -956,6 +959,7 @@ public class DictController  extends BaseUIController {
                 //插入字典信息
                 dictModel.setCode(dictCode);//
                 dictModel.setName(dictName);
+                dictModel.setDescription(dictDesc);
                 dictModel.setId(0);//内部自增长
                 dictModel.setStdVersion(versionCode);
                 dictModel.setAuthor(userId);
@@ -967,10 +971,11 @@ public class DictController  extends BaseUIController {
                 set = new HashSet<String>();
                 dictEntryModelList = new ArrayList<>();
                 rows = sheet.getRows();
-                for (int j = 0; j < rows - 5; j++) {
+                for (int j = 0; j < rows; j++) {
                     dictEntryModel = new DictEntryModel();
                     code = sheet.getCell(3, j).getContents();//字典项编码
                     name = sheet.getCell(4, j).getContents();//字典项名称
+                    desc = sheet.getCell(5, j).getContents();//字典项名称
 
                     //字典项校验
                     if (code==null || code.equals("")){
@@ -996,6 +1001,7 @@ public class DictController  extends BaseUIController {
                     dictEntryModel.setId(0);//为0内部自增
                     dictEntryModel.setCode(code);
                     dictEntryModel.setValue(name);
+                    dictEntryModel.setDesc(desc);
                     dictEntryModelList.add(dictEntryModel);
                     //todo：test--测试时备注做区别，方便删除测试
                     //dictEntryModel.setDesc("测试excel导入");
@@ -1064,7 +1070,7 @@ public class DictController  extends BaseUIController {
             params.put("filters","dictId="+ids);
             params.put("sorts","+dictId");
             params.put("page",1);
-            params.put("size",9999);
+            params.put("size",9999999);
             params.put("version",versionCode);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop dictEntryEnvelop = getEnvelop(envelopStr);
@@ -1083,6 +1089,7 @@ public class DictController  extends BaseUIController {
                 //添加字典信息
                 addCell(ws,1,0,dict.getCode());//代码
                 addCell(ws,1,1,dict.getName());//名称
+                addCell(ws,1,2,dict.getDescription());//说明
 
                 //添加字典项信息
                 WritableCellFormat wc = new WritableCellFormat();
@@ -1094,6 +1101,7 @@ public class DictController  extends BaseUIController {
                     }
                     addCell(ws,3,j,dictEntry.getCode(),wc);//代码
                     addCell(ws,4,j,dictEntry.getValue(),wc);//名称
+                    addCell(ws,5,j,dictEntry.getValue(),wc);//说明
                 }
             }
             //写入工作表

@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<script type="text/javascript" src="${contextRoot}/develop/webuploader/js/webuploader.js"></script>
+<link rel="stylesheet" type="text/css" href="${contextRoot}/develop/webuploader/js/webuploader.css" />
+<link rel="stylesheet" type="text/css" href="${contextRoot}/develop/webuploader/js/style.css" />
 <script type="text/javascript">
     (function ($, win) {
         /* ************************** 变量定义 ******************************** */
@@ -18,17 +20,17 @@
         var publicKeyMsgDialog = null;
 
         var org =${envelop}.obj;
-
+        var imgLop =${imageLop};
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             organizationInfo.init();
+
         }
 
         /* *************************** 模块初始化 ***************************** */
         organizationInfo = {
             //form
             $form: $("#div_organization_info_form"),
-
             $orgCode: $("#org_code"),
             $fullName: $('#full_name'),
             $shortName: $('#short_name'),
@@ -38,12 +40,10 @@
             $tel: $('#tel'),
             $orgType: $('#org_type'),
             $tags: $("#tags"),
-
             $keyReadBtn: $("#keyReadBtn"),
             $footer: $("#div_footer"),
             $updateOrgBtn: $("#div_update_btn"),
             $cancelBtn: $("#btn_cancel"),
-
             $publicKey: $("#div_publicKey"),
             $allotpublicKey: $("#div_allot_publicKey"),
             $publicManage: $("#div_public_manage"),
@@ -67,27 +67,9 @@
             init: function () {
                 this.initForm();
                 this.bindEvents();
-
-                this.$uploader.instance = this.$uploader.webupload({
-                    server: "${contextRoot}/organization/updateOrg",
-                    pick: {id: '#div_file_picker'},
-                    accept: {
-                        title: 'Images',
-                        extensions: 'gif,jpg,jpeg,bmp,png',
-                        mimeTypes: 'image/*'
-                    },
-                    auto: false,
-
-                });
-                this.$uploader.instance.on('uploadSuccess', function (file, resp) {
-                    $.ligerDialog.alert("保存成功", function () {
-                        win.parent.closeAddOrgInfoDialog(function () {
-                        });
-                    });
-                });
+                addImg();
             },
             initForm: function () {
-
                 this.$orgCode.ligerTextBox({width: 240});
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
@@ -212,16 +194,22 @@
                 });
 
                 function updateOrg(orgModel, addressModel, msg) {
+                    var orgCode = orgModel.orgCode;
                     var orgModel = JSON.stringify(orgModel);
                     var addressModel = JSON.stringify(addressModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
                         data: {orgModel: orgModel, addressModel: addressModel, mode: msg},
                         success: function (data) {
+                            uploader.options.formData.objectId = orgCode;
+                            uploader.options.server="${contextRoot}/file/upload/image";
+                            $(".uploadBtn").click();
                             if (data.successFlg) {
-                                win.parent.closeAddOrgInfoDialog(function () {
-                                    win.parent.$.Notice.success('修改成功');
-                                });
+                                    uploader.options.successCallBack=function(){
+                                        win.parent.closeAddOrgInfoDialog(function () {
+                                            win.parent.$.Notice.success('修改成功');
+                                        });
+                                    }
                             } else {
                                 win.parent.closeAddOrgInfoDialog(function () {
                                 });
@@ -245,7 +233,6 @@
                     });
                     //分配公钥点击事件
                     self.$allotpublicKey.click(function () {
-
                         var code = self.$form.Fields.orgCode.getValue();
                         var dataModel = $.DataModel.init();
                         dataModel.createRemote('${contextRoot}/organization/distributeKey', {
@@ -274,6 +261,63 @@
 
         /* *************************** 页面初始化 **************************** */
         pageInit();
+        function addImg(){
+            if(imgLop.detailModelList.length>0){
+                $("#dndArea").css("display",'none');
+                $(".filelist").css("display","block");
+                var html=""
+                for(var j in imgLop.detailModelList){
+                    html+="<li id='WU_FILE_"+(parseInt(j)+1)+"' class=\"state-complete\">"+
+                            "<p class=\"title\">服务器图片"+(parseInt(j)+1)+".JPG</p>"+
+                            "<p class=\"imgWrap\">"+
+                            "<img id='imageview"+(parseInt(j)+1)+"'></p><p class=\"progress\"><span style=\"display: none; width: 0px;\">"+
+                            " </span>"+
+                            "</p>"+
+                            "<span class=\"success\"></span>"+
+                            "<div class='file-panel' ><span class='cancel' imgnum='"+(parseInt(j)+1)+"'   id='"+imgLop.detailModelList[j]+"'>删除</span></div>"+
+                            "</li>"
+                }
+                $("#filelist").html(html);
+                doGetImg(1,imgLop.detailModelList[0]);
+            }
+            $("#filelist .cancel").bind("click",function(){
+                _this = this;
+                $.ajax({
+                    type: 'get',
+                    url: '${contextRoot}/file/delete/image?storagePath='+this.id,
+                    dataType: "json",
+                    async:true,
+                    success: function (data) {
+                        if(data.successFlg){
+                            $("#WU_FILE_"+$(_this).attr("imgnum")).remove();
+                        }else{
+                             $.Notice.error("删除失败！");
+                        }
+                    }
+                });
+            })
+        }
+
+        function doGetImg(index,storagePath){
+                $.ajax({
+                    type: 'get',
+                    url: '${contextRoot}/file/view/image?storagePath='+storagePath ,
+                    dataType: "json",
+                    async:true,
+                    success: function (data) {
+                        if(data.successFlg){
+                            $("#imageview"+index).attr("src",data.obj);
+                        }
+                    }
+                });
+              if(index<imgLop.detailModelList.length){
+                setTimeout(function(){
+                    doGetImg((index+1),imgLop.detailModelList[index])
+                 },200);
+              }
+        }
+
 
     })(jQuery, window);
 </script>
+<script type="text/javascript" src="${contextRoot}/develop/webuploader/js/upload.js"></script>

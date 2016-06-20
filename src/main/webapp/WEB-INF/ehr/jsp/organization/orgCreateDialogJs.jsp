@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<script type="text/javascript" src="${contextRoot}/develop/webuploader/js/webuploader.js"></script>
+<link rel="stylesheet" type="text/css" href="${contextRoot}/develop/webuploader/js/webuploader.css" />
+<link rel="stylesheet" type="text/css" href="${contextRoot}/develop/webuploader/js/style.css" />
 <script type="text/javascript">
     (function ($, win) {
         /* ************************** 变量定义 ******************************** */
@@ -18,9 +20,10 @@
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             organizationInfo.init();
-        }
 
-        /* *************************** 模块初始化 ***************************** */
+
+        }
+    /* *************************** 模块初始化 ***************************** */
         organizationInfo = {
             $form: $("#div_organization_info_form"),
             $orgCode: $("#org_code"),
@@ -55,14 +58,12 @@
 
                 });
                 this.$uploader.instance.on('uploadSuccess', function (file, resp) {
-                    debugger;
                     $.ligerDialog.alert("保存成功", function () {
                         win.parent.closeAddOrgInfoDialog(function () {
 
                         });
                     });
                 });
-
             },
             initForm: function () {
                 this.$orgCode.ligerTextBox({width: 240});
@@ -190,9 +191,16 @@
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddOrgInfoDialog(function () {
-                                    win.parent.$.Notice.success('机构新增成功');
-                                });
+                                if($(".filelist li").length>0) {
+                                    uploader.options.formData.objectId = data.obj.orgCode;
+                                    uploader.options.server="${contextRoot}/file/upload/image";
+                                    uploader.options.successCallBack=function(){
+                                        win.parent.closeAddOrgInfoDialog(function () {
+                                            win.parent.$.Notice.success('保存成功！');
+                                        });
+                                    }
+                                    $(".uploadBtn").click();
+                                }
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
                             }
@@ -205,6 +213,7 @@
 
         /* *************************** 页面初始化 **************************** */
         pageInit();
-
     })(jQuery, window);
 </script>
+<script type="text/javascript" src="${contextRoot}/develop/webuploader/js/upload.js"></script>
+
