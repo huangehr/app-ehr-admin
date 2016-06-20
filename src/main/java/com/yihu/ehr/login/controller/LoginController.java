@@ -5,7 +5,9 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.web.RestTemplates;
@@ -89,9 +91,12 @@ public class LoginController extends BaseUIController {
                 } else {
                     request.getSession().removeAttribute("defaultPassWord");
                     SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
-                    String now = sdf.format(new Date());
+                    Date date = new Date();
+                    String now = sdf.format(date);
                     if (userDetailModel.getLastLoginTime() != null) {
-                        lastLoginTime = userDetailModel.getLastLoginTime();
+                        Date dateLogin = DateTimeUtils.utcDateTimeParse(userDetailModel.getLastLoginTime());
+                        lastLoginTime = dateLogin == null?"": DateTimeUtil.simpleDateTimeFormat(dateLogin);
+                        //lastLoginTime = userDetailModel.getLastLoginTime();
                     } else {
                         lastLoginTime = now;
                     }
@@ -99,7 +104,7 @@ public class LoginController extends BaseUIController {
 //                    model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                     request.getSession().setAttribute("last_login_time", lastLoginTime);
                     //update lastLoginTime
-                    userDetailModel.setLastLoginTime(now);
+                    userDetailModel.setLastLoginTime(DateTimeUtils.utcDateTimeFormat(date));
                     url = "/user";
                     MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
                     conditionMap.add("user_json_data", toJson(userDetailModel));

@@ -72,7 +72,7 @@
                     if(!resp.successFlg)
                         win.parent.$.Notice.error(resp.errorMsg);
                     else
-                        win.parent.$.Notice.success('修改成功');
+                        win.parent.$.Notice.success('新增成功');
                         win.parent.closeAddUserInfoDialog(function () {
                         });
                 });
