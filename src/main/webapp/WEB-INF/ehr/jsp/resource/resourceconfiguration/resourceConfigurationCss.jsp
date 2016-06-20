@@ -15,6 +15,7 @@
     .div-resource-configuration{ float: left;height: auto;width: 95%;height: auto;margin:0 2%; }
     .f-mpr{  position: relative;width: 100%  }
     .f-wat{ width: auto }
+    /*.background-image{ background-position: 0px -39px; }*/
     /*.f-mr200{ margin-right: 200px; }*/
 
 </style>
