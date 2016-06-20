@@ -44,6 +44,12 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.1</version>
+		</dependency>
 		<!-- 引入log4j-slf4j -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
