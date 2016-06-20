@@ -12,10 +12,12 @@ cateType.list = {
         this.columns = [
             {display: '名称', name: 'name', align: 'left', id: 'tree_id'},
             {display: '说明', name: 'description', align: 'left'},
-            {name: 'id',hide: true,render:function (rowdata) {
-                var html = "<div id='"+rowdata.id+"'></div>";
+            {
+                name: 'id', hide: true, render: function (rowdata) {
+                var html = "<div id='" + rowdata.id + "' pid='" + rowdata.pid + "'></div>";
                 return html;
-            }},
+            }
+            },
             {
                 display: '操作', isSort: false, width: 200, align: 'center', render: function (rowdata, rowindex, value) {
                 var html = "<a class='grid_edit' title='编辑' name='edit_click' style='' onclick='cateType.list.add(\"" + rowdata.id + "\", \"modify\")'></a> " +
@@ -40,7 +42,7 @@ cateType.list = {
             url: u._url + "/rscategory/getTreeGridData",
             type: "get",
             dataType: "json",
-            data:{codeName:codeName},
+            data: {codeName: codeName},
             success: function (data) {
                 var envelop = eval(data);
                 var result = envelop.detailModelList;
@@ -66,7 +68,7 @@ cateType.list = {
             u.grid = $("#div_cate_type_grid").ligerGrid({
                 record: 'totalCount',
                 root: 'detailModelList',
-                pageSize:15,
+                pageSize: 15,
                 pagesizeParmName: 'rows',
                 heightDiff: -10,
                 headerRowHeight: 40,
@@ -81,7 +83,7 @@ cateType.list = {
                 rownumbers: false,
                 checkbox: false,
                 root: 'Rows',
-                tree: {columnId: 'tree_id',height:'100%'}
+                tree: {columnId: 'tree_id', height: '100%'}
             });
         }
         else {
@@ -89,19 +91,45 @@ cateType.list = {
         }
 
         var cateTypeDatas = u.grid.getData();
-        this.expandcateType(cateTypeDatas);
         u.grid.collapseAll();
+        this.expandcateType();
         window.grid = u.grid;
     },
 
-    expandcateType:function (cateTypeDatas) {
-        debugger
-        var cateTypePid = sessionStorage.getItem('cateTypePid');
+    // expandcateType: function () {
+    //
+    //     var cateTypePid = sessionStorage.getItem('cateTypePid');
+    //     if ($.Util.isStrEmpty(cateTypePid)){
+    //         return;
+    //     }
+    //     var Pid = $("#" + cateTypePid).attr('pid');
+    //     var clickEle = $($($("#" + cateTypePid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
+    //     if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
+    //         clickEle[clickEle.length-1].click();
+    //     }
+    //     while (Pid) {
+    //         clickEle = $($($("#" + Pid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
+    //         if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
+    //             clickEle[clickEle.length-1].click();
+    //         }
+    //         Pid = $("#" + Pid).attr('pid');
+    //     }
+    //     sessionStorage.removeItem('cateTypePid');
+    // },
+    expandcateType: function () {
+        var Pid = sessionStorage.getItem('cateTypePid');
+        if ($.Util.isStrEmpty(Pid)) return;
 
-        $.each(cateTypeDatas,function (key,value) {
-
-        })
+        while (Pid) {
+            var clickEle = $($($("#" + Pid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
+            if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
+                clickEle[clickEle.length-1].click();
+            }
+            Pid = $("#" + Pid).attr('pid');
+        }
+        sessionStorage.removeItem('cateTypePid');
     },
+
     showDialog: function (_tital, _url, _height, _width, callback) {
         cateType.list.top.dialog_cateType_detail = $.ligerDialog.open({
             title: _tital,
@@ -112,7 +140,7 @@ cateType.list = {
         });
     },
     add: function (id, type) {
-        var _tital = type=="modify"?"修改资源分类":"新增资源分类";
+        var _tital = type == "modify" ? "修改资源分类" : "新增资源分类";
         var _url = cateType.list._url + "/rscategory/typeupdate?id=" + id;
         var callback = function () {
             cateType.list.getTypeList();
@@ -126,9 +154,9 @@ cateType.list = {
             dataType: "json",
             data: {id: id},
             success: function (data) {
-                if (data == null||data.length==0) {
-                    cateType.list.doDeleted(id,"是否确定删除数据！");
-                 }else{
+                if (data == null || data.length == 0) {
+                    cateType.list.doDeleted(id, "是否确定删除数据！");
+                } else {
                     $.Notice.error("存在子节点不允许删除!");
                 }
             }
@@ -202,17 +230,18 @@ cateType.list = {
 };
 
 cateType.attr = {
-        cateTypePid:"",
-        type_form: $("#div_catetype_info_form"),
-        validator: null,
-        parent_select: null,
-        init: function () {
-            this.getCateTypeInfo();
-            this.event();
-            this.validator =  new $.jValidation.Validation(this.type_form, {immediate: true, onSubmit: false,
-                onElementValidateForAjax:function(elm){
-                }
-            });
+    cateTypePid: "",
+    type_form: $("#div_catetype_info_form"),
+    validator: null,
+    parent_select: null,
+    init: function () {
+        this.getCateTypeInfo();
+        this.event();
+        this.validator = new $.jValidation.Validation(this.type_form, {
+            immediate: true, onSubmit: false,
+            onElementValidateForAjax: function (elm) {
+            }
+        });
     },
     getParentType: function (initValue, initText) {
         cateType.attr.parent_select = $("#ipt_select").ligerComboBox({
@@ -259,29 +288,29 @@ cateType.attr = {
         })
     },
     save: function () {
-        if(!this.validator.validate()){
+        if (!this.validator.validate()) {
             return;
         }
         var id = $("#hdId").val();
         cateType.attr.type_form.attrScan();
         var dataJson = cateType.attr.type_form.Fields;
-        var saveJson={};
+        var saveJson = {};
         saveJson.id = id;
-        saveJson.pid=dataJson.pid.getValue();
+        saveJson.pid = dataJson.pid.getValue();
         saveJson.name = dataJson.name.getValue();
-        saveJson.description= dataJson.description.getValue();
+        saveJson.description = dataJson.description.getValue();
         var _url = cateType.list._url + "/rscategory/saveCateType";
         $.ajax({
             url: _url,
             type: "POST",
             dataType: "json",
-            data: {dataJson:JSON.stringify(saveJson)},
+            data: {dataJson: JSON.stringify(saveJson)},
             success: function (data) {
                 if (data != null) {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         var cateTypePid = dataJson.pid.getValue();
-                        sessionStorage.setItem("cateTypePid",cateTypePid);
+                        sessionStorage.setItem("cateTypePid", cateTypePid);
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
                             parent.cateType.list.top.dialog_cateType_detail.close();
                         }, null);
