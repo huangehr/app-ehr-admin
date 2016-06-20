@@ -11,7 +11,8 @@
                 list: '${contextRoot}/resource/meta/importLs',
                 existence: "${contextRoot}/resource/meta/existence",
                 batchSave: "${contextRoot}/resource/meta/batchSave",
-                downLoad: "${contextRoot}/resource/meta/downLoadErrInfo"
+                downLoad: "${contextRoot}/resource/meta/downLoadErrInfo",
+                dictCombo: "${contextRoot}/resource/dict/searchCombo"
             }
             var files = ${files}, domainData= ${domainData}.detailModelList, columnTypeData= ${columnTypeData}.detailModelList, ynData= [{code: '1', value: '是'},{code: '0', value: '否'}];
             var mode = 'eFile';
@@ -22,7 +23,8 @@
 
                 function save(){
                     if(validator.validate()){
-                        debugger
+                        if($form.Fields)
+                            $form.removeData('propMap');
                         $form.attrScan();
                         var waitting = $.ligerDialog.waitting("正在保存中.....");
                         var formData = $form.Fields.getValues();
@@ -93,17 +95,19 @@
             function onAfterShowData(data){
                 $('.l-grid-row-cell-inner').attr('title', '');
                 validator = initValidate($form, function (elm) {
+                    var field = $(elm).attr('id');
+                    var val = $('#' + field).val();
+                    var oldVal = $(elm).attr('data-old-val');
                     var errMsg = $(elm).attr('err-msg');
-                    if(errMsg && errMsg!='undefined' && errMsg!=''){
+                    if(oldVal==val && errMsg && errMsg!='undefined' && errMsg!=''){
                         var result = new $.jValidation.ajax.Result();
                         result.setResult(false);
                         result.setErrorMsg(errMsg);
-                        $(elm).attr('err-msg', '');
+//                        $(elm).attr('err-msg', '');
                         return result;
                     }
 
-                    var field = $(elm).attr('id');
-                    var val = $('#' + field).val();
+
                     if(field.indexOf('id')!=-1){
                         return uniqValid(urls.existence, "id="+val, "该资源标准编码已存在（包含已失效数据）！");
                     }
@@ -112,6 +116,35 @@
                     }
                 });
                 validator.validate();
+            }
+
+            function comboRender(row, index, name, column){
+                if(mode=='tFile')
+                    return row[column.name];
+                var id = column.name + '_'+ index,
+                        val = row[column.name] || '',
+                        errMsg = row['errMsg'][column.name],
+                        dictId = 'dictId_'+ index;
+
+                var html;
+                if(!errMsg || errMsg=='' || errMsg=='undefined'){
+                    html = '<input type="hidden" id="'+ id +'" data-attr-scan="'+ id +'" value="'+ val +'"/>';
+                    html += '<input type="hidden" id="'+ dictId +'" data-attr-scan="'+ dictId +'" value="'+ row.dictId +'">';
+                    html += val;
+                }  else{
+                    var html = '<input type="text" data-old-val="'+ val +'" err-msg="'+ errMsg +'" id="'+ id +'" data-type="select" class="ajax" data-attr-scan="'+ id +'">';
+                    html += '<input type="hidden" id="'+ dictId +'" data-attr-scan="'+ dictId +'">';
+                    html += '<script>initCombo("'+ id +'", '+ column.width +', "'+ val +'", '+ index +')<\/script>';
+                }
+                return html;
+            }
+            win.initCombo = function(id, width, value, index){
+                var el = $('#' + id);
+                var g = el.customCombo(urls.dictCombo, {}, function () {
+                    var row = el.ligerGetComboBoxManager().grid.getSelectedRow();
+                    $('#dictId_' + index).val(row.id);
+                }, undefined, false, {selectBoxHeight: 280, selectBoxWidth: 240, width: width - 20, valueField: 'code'});
+                g.setText(value);
             }
 
 
@@ -129,10 +162,10 @@
                     html += val;
                 }
                 else{
-                    var ajaxClz = [];
-                    if(column.name!='dictCode') ajaxClz.push('required');
-                    if( column.name=='id' || column.name=='stdCode' ) ajaxClz.push('ajax');
-                    html = '<input type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
+                    var ajaxClz = ['required'];
+                    if( column.name=='id') ajaxClz.push('validate-meta-id');
+                    if( column.name=='id' || column.name=='stdCode') ajaxClz.push('ajax');
+                    html = '<input data-old-val="'+ val +'" type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
                     html += '<script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
                 }
                 return html;
@@ -182,7 +215,7 @@
                     {display: '内部标识符', name: 'stdCode', width: '150', align: 'left', render: textRender},
                     {display: '数据元名称', name: 'name', width: '150', align: 'left', render: textRender},
                     {display: '类型', name: 'columnType', width: '100', align: 'left', render: selRender},
-                    {display: '关联字典', name: 'dictCode', width: '190', align: 'left', render: textRender},
+                    {display: '关联字典', name: 'dictCode', width: '190', align: 'left', render: comboRender},
                     {display: '是否允空', name: 'nullAble', width: '100', align: 'left', render: selRender}];
 
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});

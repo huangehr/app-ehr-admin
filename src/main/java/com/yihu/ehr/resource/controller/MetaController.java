@@ -2,6 +2,7 @@ package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.adapter.controller.ExtendController;
+import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.resource.RsMetaMsgModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
@@ -40,7 +41,7 @@ public class MetaController extends ExtendController<MetaService> {
     String fileType = ".xls";
     String defPath = "ehr" + separator;
 
-    private String[] excelHeader = new String[]{"资源标准编码", "数据元名称", "业务领域", "内部标识符", "类型",	"关联字段","是否允空"};
+    private String[] excelHeader = new String[]{"资源标准编码", "数据元名称", "业务领域", "内部标识符", "类型",	"关联字段","是否允空", "说明", "关联字典编号"};
 
     public MetaController() {
         this.init(
@@ -152,37 +153,41 @@ public class MetaController extends ExtendController<MetaService> {
 
         UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         try {
-            Pair<String, List> domainData = getSysDictEntries(31);
-            Pair<String, List> columnTypeData = getSysDictEntries(30);
-
             request.setCharacterEncoding("UTF-8");
             Workbook rwb = Workbook.getWorkbook(file.getInputStream());
             Sheet[] sheets = rwb.getSheets();
 
             RsMetaMsgModel model;
-            List<RsMetaMsgModel> trueLs = new ArrayList<>();
-            List<RsMetaMsgModel> errorLs = new ArrayList<>();
+            List<RsMetaMsgModel> all = new ArrayList<>();
             int rows;
 
             writerResponse(response, 10+"", "l_upd_progress");
-            Set<String> stdCodes = new HashSet<>();
-            Set<String> ids = new HashSet<>();
+
+            Set<String> dictCode = new HashSet<>();
+            String dictCodes = "";
             for(Sheet sheet : sheets){
                 rows = sheet.getRows();
                 for(int i=1; i<rows; i++){
                     model = initModel(i, sheet);
-                    if(validModel(model, domainData.getKey(), columnTypeData.getKey(), "0, 1", stdCodes, ids))
-                        trueLs.add(model);
-                    else
-                        errorLs.add(model);
+                    if(!StringUtils.isEmpty(model.getDictCode()) && dictCode.add(model.getDictCode()))
+                        dictCodes += "," + model.getDictCode();
+                    all.add(model);
                 }
             }
             rwb.close();
             writerResponse(response, 55+"", "l_upd_progress");
 
+            Map<String, List<RsMetaMsgModel>> validateRs = validate(all, dictCodes);
+            List<RsMetaMsgModel> trueLs = validateRs.get("correct");
+            List<RsMetaMsgModel> errorLs = validateRs.get("error");
+
             //将保存失败的添加到错误列表， 并从正确列表删除
-            List ls = saveMeta(toJson(trueLs));
-            errorLs.addAll(ls);
+            if(trueLs.size()>0){
+                List ls = saveMeta(toJson(trueLs));
+                if(ls!=null)
+                    errorLs.addAll(ls);
+            }
+
 //            trueLs.removeAll(ls); //新增成功功能暂时不用
 
             writerResponse(response, 75 + "", "l_upd_progress");
@@ -202,6 +207,65 @@ public class MetaController extends ExtendController<MetaService> {
         }
     }
 
+    private Map getDictIds( String dictCodes) throws Exception {
+        PageParms pageParms = new PageParms(1000,1)
+                .addEqual("code", dictCodes)
+                .setFields("id,code");
+        Envelop rs = getEnvelop(service.search("/resources/dict", pageParms));
+        if(rs.isSuccessFlg()){
+            Map dictIds = new HashMap<>();
+            List<Map> maps = rs.getDetailModelList();
+            for (Map map : maps){
+                dictIds.put(map.get("code"), map.get("id"));
+            }
+            return dictIds;
+        }
+
+        throw new Exception("获取字典数据出错");
+    }
+
+    private boolean validateDictCode(RsMetaMsgModel model, Map dictIds){
+
+        if(!StringUtils.isEmpty(model.getDictCode())){
+            if(dictIds==null){
+                model.addErrorMsg("dictId", "该字典代码不存在！");
+                return false;
+            }
+
+            Integer dictId = (Integer) dictIds.get(model.getDictCode());
+            if(dictId==null || dictId==0){
+                model.addErrorMsg("dictId", "该字典代码不存在！");
+                return false;
+            }
+            model.setDictId(dictId);
+        }
+        return true;
+    }
+
+    private Map validate(List<RsMetaMsgModel> all,  String dictCodes) throws Exception {
+        Pair<String, List> domainData = getSysDictEntries(31);
+        Pair<String, List> columnTypeData = getSysDictEntries(30);
+        Map dictIds=null;
+        if(!StringUtils.isEmpty(dictCodes))
+            dictIds = getDictIds(dictCodes.substring(1));
+
+        Set<String> stdCodes = new HashSet<>();
+        Set<String> ids = new HashSet<>();
+        List<RsMetaMsgModel> trueLs = new ArrayList<>();
+        List<RsMetaMsgModel> errorLs = new ArrayList<>();
+
+        for(RsMetaMsgModel model: all){
+            if(validModel(model, domainData.getKey(), columnTypeData.getKey(), "0, 1", stdCodes, ids)
+                    & validateDictCode(model, dictIds))
+                trueLs.add(model);
+            else
+                errorLs.add(model);
+        }
+        Map rs = new HashMap<>();
+        rs.put("error", errorLs);
+        rs.put("correct", trueLs);
+        return rs;
+    }
 
     private boolean validModel(RsMetaMsgModel model, String domainData, String columnTypeData, String ynData,
                                Set<String> stdCodes, Set<String> ids){
@@ -256,13 +320,35 @@ public class MetaController extends ExtendController<MetaService> {
                     ls.add(model);
                 }
             }
-            ls.removeAll(toSaveLs);
             rwb.close();
+
+            ls.removeAll(toSaveLs);
+            copy(ls, errLs);
+
             createXls(ls , eFile);
 //            addToXls(toSaveLs, tFile);  //新增成功功能暂时不用
         }catch (Exception e){
             if(rwb!=null) rwb.close();
             throw e;
+        }
+    }
+
+    private void copy(List<RsMetaMsgModel> ls, List<RsMetaMsgModel> errLs) {
+        int idx = 0;
+        RsMetaMsgModel source;
+        for(RsMetaMsgModel model : ls){
+            if((idx = errLs.indexOf(model)) != -1){
+                source = errLs.get(idx);
+                model.setId(source.getId());
+                model.setName(source.getName());
+                model.setDomain(source.getDomain());
+                model.setColumnType(source.getColumnType());
+                model.setNullAble(source.getNullAble());
+                model.setDictCode(source.getDictCode());
+                model.setDictId(source.getDictId());
+                model.setErrMsg(source.getErrMsg());
+                model.setDescription(source.getDescription());
+            }
         }
     }
 
@@ -314,8 +400,10 @@ public class MetaController extends ExtendController<MetaService> {
                 addCell(ws, 2, i, model.getDomain(), model.findDomainMsg());
                 addCell(ws, 3, i, model.getStdCode(), model.findStdCodeMsg());
                 addCell(ws, 4, i, model.getColumnType(), model.findColumnTypeMsg());
-                addCell(ws, 5, i, model.getDictCode(), model.findDictCodeMsg());
+                addCell(ws, 5, i, model.getDictCode(), model.findErrorMsg("dictId"));
                 addCell(ws, 6, i, model.getNullAble(), model.findNullAbleMsg());
+                addCell(ws, 7, i, model.getDescription(), model.getDescription());
+                addCell(ws, 8, i, model.getDictId()+"");
             }
             wwb.write();
         }catch (Exception e){
@@ -355,6 +443,15 @@ public class MetaController extends ExtendController<MetaService> {
         cell = sheet.getCell(6, row);
         model.setNullAble(cell.getContents());
         readCellFeatures(cell, model, "nullAble");
+
+        cell = sheet.getCell(7, row);
+        model.setDescription(cell.getContents());
+        readCellFeatures(cell, model, "description");
+
+        try{
+            cell = sheet.getCell(8, row);
+            model.setDictId(Integer.parseInt(cell.getContents()));
+        }catch (Exception e){}
 
         return model;
     }

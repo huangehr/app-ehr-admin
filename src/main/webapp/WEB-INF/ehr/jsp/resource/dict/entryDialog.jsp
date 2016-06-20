@@ -5,6 +5,7 @@
 <div id="infoForm" data-role-form class="m-form-inline f-mt20">
     <input id="id" name="id" data-attr-scan="id" hidden>
     <input id="dictCode" name="dictCode" data-attr-scan="dictCode" hidden>
+    <input id="dictId" name="dictId" data-attr-scan="dictId" hidden>
     <div class="m-form-group">
         <label>值域名称<spring:message code="spe.colon"/></label>
 

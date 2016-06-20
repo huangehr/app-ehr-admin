@@ -42,6 +42,8 @@ public class DictController extends ExtendController<DictService> {
                 "/resource/dict/dialog"      //编辑页面url
         );
         comboKv.put("code", "code");
+        comboKv.put("id", "id");
+
         dictExcel = new HashMap<>();
         dictExcel.put("code", 0);
         dictExcel.put("name", 1);
@@ -83,8 +85,9 @@ public class DictController extends ExtendController<DictService> {
             if(envelop.isSuccessFlg())
                 for(Map<String, String> map: (List<Map<String, String>>) envelop.getDetailModelList()){
                     combo = new HashMap<>();
-                    combo.put("id", map.get("code"));
+                    combo.put("id", map.get("id"));
                     combo.put("name", map.get("name"));
+                    combo.put("code", map.get("code"));
                     rs.add(combo);
                 }
             envelop.setDetailModelList(rs);
@@ -124,18 +127,15 @@ public class DictController extends ExtendController<DictService> {
                 writerResponse(response, 35+"", "l_upd_progress");
 
                 Set<String> codes = objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
-                int len = codes.size();
                 List saveLs = new ArrayList<>();
                 for(int i=0; i<correctLs.size(); i++){
                     p = correctLs.get(i);
-                    codes.add(p.getKey().getCode());
-                    if(len == codes.size()){
+                    if(!codes.add(p.getKey().getCode())){
                         p.getKey().addErrorMsg("code", "该代码已存在！");
                         errorMap.put(p.getKey(), p.getValue());
                     }
                     else
                         saveLs.add(correctLs.get(i));
-                    len = codes.size();
                 }
                 writerResponse(response, 55+"", "l_upd_progress");
                 if(saveLs.size()>0)

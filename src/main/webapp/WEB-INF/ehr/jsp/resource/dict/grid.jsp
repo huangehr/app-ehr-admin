@@ -34,7 +34,7 @@
             <!--   字典项   -->
             <div id="div_right" style="float: left;width: 700px;margin-left: 10px">
                 <div id="entryRetrieve" class="m-retrieve-area f-h50 f-pr m-form-inline condition retrieve-border" data-role-form>
-                    <input id="s_dictCode" data-attr-scan="dictCode"  hidden>
+                    <input id="s_dictId" data-attr-scan="dictId"  hidden>
                     <div id="entry_retrieve_inner" class="m-retrieve-inner m-form-group f-mt10">
 
                         <div class="f-mt10 f-fs14 f-ml10 f-fl f-fwb f-mr10">

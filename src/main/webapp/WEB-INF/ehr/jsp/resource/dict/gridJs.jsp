@@ -29,34 +29,31 @@
                 },
                 //初始化工具栏
                 rendBarTools : function(){
-                    var btn = [
-                        {type: 'edit', clkFun: master.gotoModify, imgClz: 'image-create'}
-                    ];
+                    var btn = [{type: 'edit', clkFun: master.gotoModify, imgClz: 'image-create'}];
                     initBarBtn($('#retrieve_inner'), btn)
                 },
                 //初始化过滤
                 rendFilters : function(){
-                    var vo = [
-                        {type: 'text', id: 'ipt_search', searchFun: master.searchFun}
-                    ];
+                    var vo = [{type: 'text', id: 'ipt_search', searchFun: master.searchFun}];
                     initFormFields(vo, $('#retrieve_inner'));
                 },
                 //初始化表格
                 rendGrid : function(){
                     var m = master;
                     var columns = [
+                        {display: '字典id', name: 'id', hide: true},
                         {display: '字典编码', name: 'code', width: '30%', align: 'left'},
                         {display: '字典名称', name: 'name', width: '40%', align: 'left'},
                         {display: '操作', name: 'operator', width: '30%', render: m.opratorRender}];
 
                     function onSelectRow(row){
                         selectRowObj = row;
-                        $('#s_dictCode').val(selectRowObj.code);
+                        $('#s_dictId').val(selectRowObj.id);
                         em.searchFun();
                     }
 
                     function onBeforeShowData(data) {
-                        $('#s_dictCode').val(-1);
+                        $('#s_dictId').val(-1);
                         if(data.detailModelList.length == 0)
                             em.searchFun();
                     }
@@ -74,13 +71,13 @@
                     m.grid = initGrid(
                             $('#leftGrid'), m.urls.list, {}, columns,
                                 {checkbox: false, onSelectRow: onSelectRow, onAfterShowData: onAfterShowData, onBeforeShowData: onBeforeShowData});
-                    m.grid.resizeColumns();
+//                    m.grid.resizeColumns();
                 },
                 //操作栏渲染器
                 opratorRender: function (row){
                     var vo = [
-                        {type: 'edit', clkFun: "$.publish('dict:modify',['"+ row['code'] +"', 'modify'])"},
-                        {type: 'del', clkFun: "$.publish('dict:del',['"+ row['code'] +"'])"}
+                        {type: 'edit', clkFun: "$.publish('dict:modify',['"+ row['id'] +"', 'modify'])"},
+                        {type: 'del', clkFun: "$.publish('dict:del',['"+ row['id'] +"'])"}
                     ];
                     return initGridOperator(vo);
                 },
@@ -134,9 +131,7 @@
                 },
                 //初始化工具栏
                 rendBarTools : function(){
-                    var btn = [
-                        {type: 'edit', clkFun: this.gotoModify}
-                    ];
+                    var btn = [{type: 'edit', clkFun: this.gotoModify}];
                     initBarBtn($('#entry_retrieve_inner'), btn);
 
                     function onUploadSuccess(g, result){
@@ -151,14 +146,15 @@
                             });
                         }
                     }
-
-                    $('#upd').uploadFile({url: "${contextRoot}/resource/dict/import", onUploadSuccess: onUploadSuccess});
+                    function onDlgClose(){
+                        debugger
+                        master.searchFun();
+                    }
+                    $('#upd').uploadFile({url: "${contextRoot}/resource/dict/import", onUploadSuccess: onUploadSuccess, onDlgClose: onDlgClose});
                 },
                 //初始化过滤
                 rendFilters : function(){
-                    var vo = [
-                        {type: 'text', id: 'searchNmEntry', searchFun: this.searchFun}
-                    ];
+                    var vo = [{type: 'text', id: 'searchNmEntry', searchFun: this.searchFun}];
                     initFormFields(vo, $('#entry_retrieve_inner'));
                 },
                 //初始化表格
@@ -176,13 +172,13 @@
                 opratorRender: function (row){
                     var vo = [
                         {type: 'edit', clkFun: "$.publish('dict:entry:modify',['"+ row['id'] +"', 'modify'])"},
-                        {type: 'del', clkFun: "$.publish('dict:entry:del',['"+ row['id'] +"'])"},
+                        {type: 'del', clkFun: "$.publish('dict:entry:del',['"+ row['id'] +"'])"}
                     ];
                     return initGridOperator(vo);
                 },
                 //修改、新增点击事件
                 gotoModify : function (event, id, mode) {
-                    if(!getSelectDictId()){
+                    if(!getSelected() || getSelected().length==0){
                         $.Notice.warn("请先添加字典！");
                         return;
                     }
@@ -204,7 +200,7 @@
                 find : function (curPage) {
                     var vo = [
                         {name: 'code', logic: '?', fields: 'code,name'},
-                        {name: 'dictCode', logic: '='}];
+                        {name: 'dictId', logic: '='}];
                     var params = {filters: covertFilters(vo, $('#entryRetrieve'))}
                     reloadGrid(em.grid, curPage, params);
                 },
@@ -228,9 +224,8 @@
             em.init();
             master.init();
 
-            win.getSelectDictId = function () {
-                var row = master.grid.getSelectedRow();
-                return row['code'];
+            win.getSelected = function () {
+                return master.grid.getSelectedRow();
             }
 
             win.closeDialog = function(msg){

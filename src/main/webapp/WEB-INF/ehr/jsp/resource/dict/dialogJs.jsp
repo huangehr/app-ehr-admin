@@ -10,7 +10,6 @@
             existence: "${contextRoot}/resource/dict/existence"
         }
         var model = ${model};
-        model.id = model.code;
         var mode = '${mode}';
         var initForm = function () {
             var vo = [
@@ -33,7 +32,7 @@
             });
 
             $('#btn_save').click(function () {
-                saveForm({url: urls.update, $form: $form, notIncluded: 'id', validator: validator});
+                saveForm({url: urls.update, $form: $form, validator: validator});
             });
 
             $('#btn_cancel').click(function () {

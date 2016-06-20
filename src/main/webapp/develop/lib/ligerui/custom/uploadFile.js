@@ -8,7 +8,8 @@
         id: 'l_upd',
         field: 'file',
         result: undefined,
-        onUploadSuccess: function () {}
+        onUploadSuccess: function () {},
+        onDlgClose: function () {}
     };
 
     var form =
@@ -76,8 +77,10 @@
         $('#'+  p.id + "_file", g._el).change(function (v) {
             if($(this).val()=='')
                 return;
-            uploadDialog = $.ligerDialog.open({content: "<span id='importPros'>导入进度：0 %</span>" +
-            "<iframe name='handleFrame' style='display:none'></iframe>  "});
+            uploadDialog = $.ligerDialog.open({
+                onClose: p.onDlgClose,
+                content: "<span id='importPros'>导入进度：0 %</span>" +
+                    "<iframe name='handleFrame' style='display:none'></iframe>  "});
             $('#'+ p.id + "_form", g._el).submit();
         })
     };
