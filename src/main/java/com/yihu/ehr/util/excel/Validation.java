@@ -10,5 +10,5 @@ import java.util.Set;
  */
 public interface Validation {
 
-    public int validate(Map<String, Set> repeatMap);
+    public int validate(Map<String, Set> repeatMap) throws Exception;
 }

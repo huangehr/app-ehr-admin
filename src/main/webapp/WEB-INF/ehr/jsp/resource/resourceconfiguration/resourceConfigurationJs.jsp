@@ -94,6 +94,13 @@
                             isChecked: function (row) {
                                 var bo = false;
                                 if (Util.isStrEquals(this.url.split("resourcesId").length, 1)) {
+//                                    if (elmParams[0].getSelecteds().length>=15){
+//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0px -13px');
+//                                    }else if(0<elmParams[0].getSelecteds().length<=15){
+//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0px -39px');
+//                                    }else {
+//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 0');
+//                                    }
                                     resourceDatas = elmParams[1].data.detailModelList;
                                     for (var i = 0; i < resourceDatas.length; i++) {
                                         if (Util.isStrEquals(resourceDatas[i].stdCode, row.id)) {
@@ -106,18 +113,21 @@
                                 }
                                 return bo
                             },
-                            onCheckAllRow:function (checked,element) {
-                                var rowAll = elmParams[0].data.detailModelList;
-                                if (checked){
-                                    $.each(rowAll,function (key,value) {
-                                        addRows(value);
-                                    })
-                                }else {
-                                    $.each(rowAll,function (key,value) {
-                                        deleteRows(value);
-                                    })
+                            onCheckAllRow: function (checked, element) {
+                                if (Util.isStrEquals(this.id, "div_resource_configuration_info_grid")) {
+                                    var rowAll = elmParams[0].data.detailModelList;
+                                    if (checked) {
+//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 -13px');
+                                        $.each(rowAll, function (key, value) {
+                                            addRows(value);
+                                        })
+                                    } else {
+//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 0');
+                                        $.each(rowAll, function (key, value) {
+                                            deleteRows(value);
+                                        })
+                                    }
                                 }
-
                             },
                             parms: {
                                 searchNm: ''
@@ -135,10 +145,20 @@
                             onSelectRow: function (rowdata) {
                                 var infoMsg = $("#infoMsg").val();
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid') && Util.isStrEquals(infoMsg, 'true')) {
+//                                    if (elmParams[0].getSelecteds().length>=15){
+//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0px -13px');
+//                                    }else if(0<elmParams[0].getSelecteds().length<=15){
+//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0px -39px');
+//                                    }
                                     addRows(rowdata);
                                 }
                             },
                             onUnSelectRow: function (rowdata, rowid, rowobj) {
+//                                if (elmParams[0].getSelecteds().length == 0){
+//                                    $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 0');
+//                                }else{
+//                                    $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 -39px');
+//                                }
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
                                     deleteRows(rowdata);
                                 }
@@ -149,26 +169,39 @@
                         }));
                     }
                     function addRows(rowdata) {
-                        var metaData_rowData = {resourcesId: sourceData.resourceId, metadataId: rowdata.id, groupType: "", groupData: "", description: rowdata.description};
+                        var metaData_rowData = {
+                            resourcesId: sourceData.resourceId,
+                            metadataId: rowdata.id,
+                            groupType: "",
+                            groupData: "",
+                            description: rowdata.description
+                        };
                         var bo = true;
                         $.each(addRowDatas, function (key, value) {
                             if (Util.isStrEquals(rowdata.id, value.metadataId)) {
                                 bo = false;
                             }
                         });
-                        if (bo){
+                        if (bo) {
                             addRowDatas.push(metaData_rowData);
                         }
-                        elmParams[1].addRow({id: rowdata.stdCode, stdCode: rowdata.id, name: rowdata.name, columnType: rowdata.columnType, description: rowdata.description});
+                        elmParams[1].addRow({
+                            id: rowdata.stdCode,
+                            stdCode: rowdata.id,
+                            name: rowdata.name,
+                            columnType: rowdata.columnType,
+                            description: rowdata.description
+                        });
                         var elmParams_1 = elmParams[1].data.detailModelList;
                         for (var i = 0; i < elmParams_1.length; i++) {
                             sessionStorage.setItem("elmParams_1" + i, elmParams_1[i].stdCode)
                         }
                     }
+
                     function deleteRows(rowdata) {
                         var rowParm = rowdata.id;
                         $.each(addRowDatas, function (key, value) {
-                            if (!Util.isStrEmpty(value)&&Util.isStrEquals(rowParm, value.metadataId)) {
+                            if (!Util.isStrEmpty(value) && Util.isStrEquals(rowParm, value.metadataId)) {
                                 addRowDatas.splice(key, 1);
                             }
                         });
@@ -182,6 +215,7 @@
                             sessionStorage.removeItem("elmParams_1" + i);
                         }
                     }
+
                     this.bindEvents();
                 },
                 reloadResourceConfigurationGrid: function (url, value, searchType) {

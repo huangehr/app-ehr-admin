@@ -1,12 +1,12 @@
 package com.yihu.ehr.util.excel;
 
-import com.yihu.ehr.agModel.resource.RsMetaMsgModel;
-import com.yihu.ehr.resource.model.RsDictionaryEntryMsg;
 import com.yihu.ehr.resource.model.RsDictionaryMsg;
-import javafx.util.Pair;
+import com.yihu.ehr.resource.model.RsMetaMsgModel;
 
-import java.lang.reflect.Field;
+import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,54 +16,51 @@ import java.util.Map;
  * @created 2016/6/15
  */
 public class ExcelRWFactory {
-    private static Map<String, Map<String, Method[]>> entityMap;
+    private static Map<Class, Class[]> excelReaderMap;
 
     static {
-        entityMap = new HashMap<>();
         Class[] clzs = new Class[]{
-                RsMetaMsgModel.class, RsDictionaryMsg.class, RsDictionaryEntryMsg.class};
+                RsMetaMsgModel.class, RsDictionaryMsg.class};
 
-        initEntityMap(clzs);
-    }
-
-    private static void initEntityMap(Class[] clzs){
-        Map<String, Method[]> clsMtd;
-        Method[] mtds;
-        Field[] fields;
-        String fieldName;
-        for(Class clz : clzs){
-            clsMtd = new HashMap<>();
-            fields = clz.getDeclaredFields();
-            for(Field field :fields){
-                mtds = new Method[2];
-                fieldName = firstToUpper(field.getName());
-                try {
-                    mtds[0] = clz.getMethod("set"+ fieldName, field.getType());
-                    mtds[1] = clz.getMethod("get"+ fieldName);
-                    clsMtd.put(field.getName(), mtds);
-                } catch (NoSuchMethodException e) {}
+        excelReaderMap = new HashMap<>();
+        try {
+            addPath(new File(ReaderCreator.path));
+            for(Class clz : clzs){
+                excelReaderMap.put(clz, ReaderCreator.create(clz));
             }
-            entityMap.put(clz.getName(), clsMtd);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    private static String firstToUpper(String str){
-        return str.substring(0,1).toUpperCase() + str.substring(1, str.length());
+    private static void addPath(File f) throws Exception {
+        URL u = f.toURI().toURL();
+        URLClassLoader urlClassLoader = (URLClassLoader) ReaderCreator.class.getClassLoader();
+        Class urlClass = URLClassLoader.class;
+        Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
+        method.setAccessible(true);
+        method.invoke(urlClassLoader, new Object[]{u});
     }
-    public static ExcelReader createReader(Class entityClz, Map<String, Integer> seq, Class entryEntity,  Map<String, Integer> entrySeq, Pair<String, String> relevancy){
-
-        return new ExcelReader(entityClz, getMethods(entityClz), seq,
-                entryEntity, getMethods(entryEntity), entrySeq, relevancy);
+    /**
+     * 获取AExcelReader对象
+     * @param clz
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    public static AExcelReader getReader(Class clz) throws IllegalAccessException, InstantiationException {
+        return (AExcelReader) excelReaderMap.get(clz)[0].newInstance();
     }
 
-    public static ExcelWriter createWriter(Class entityClz, Map<String, Integer> seq, Class entryEntity,  Map<String, Integer> entrySeq,
-                                           String sheetNameFiled, Map<Integer, String> headerMap){
-
-        return new ExcelWriter(entityClz, getMethods(entityClz), seq,
-                entryEntity, getMethods(entryEntity), entrySeq, sheetNameFiled, headerMap);
+    /**
+     * 获取AExcelWriter对象
+     * @param clz
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
+    public static AExcelWriter getWriter(Class clz) throws IllegalAccessException, InstantiationException {
+        return (AExcelWriter) excelReaderMap.get(clz)[1].newInstance();
     }
 
-    public static Map<String, Method[]> getMethods(Class clz){
-        return entityMap.get(clz.getName());
-    }
 }

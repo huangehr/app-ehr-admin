@@ -123,7 +123,7 @@
                     return row[column.name];
                 var id = column.name + '_'+ index,
                         val = row[column.name] || '',
-                        errMsg = row['errMsg'][column.name],
+                        errMsg = row['errorMsg'][column.name],
                         dictId = 'dictId_'+ index;
 
                 var html;
@@ -154,7 +154,7 @@
 
                 var id = column.name + '_'+ index,
                         val = row[column.name] || '',
-                        errMsg = row['errMsg'][column.name];
+                        errMsg = row['errorMsg'][column.name];
 
                 var html;
                 if(!errMsg || errMsg=='' || errMsg=='undefined'){
@@ -177,7 +177,7 @@
             function selRender(row, index, name, column){
                 if(mode=='tFile')
                     return row[column.name];
-                var errMsg = row['errMsg'][column.name];
+                var errMsg = row['errorMsg'][column.name];
                 var id = column.name + '_'+ index;
                 var val = row[column.name];
                 var html = '';
@@ -204,8 +204,8 @@
             //初始化表格
             var rendGrid = function(){
                 var columns = [
-                    {display: '排序号', name: 'seq', hide: true, render: function (row, index) {
-                        return '<input type="hidden" value="'+ row.seq +'" data-attr-scan="seq_'+ index +'">'
+                    {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
+                        return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                     }},
                     {display: '说明', name: 'description', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.description +'" data-attr-scan="description_'+ index +'">'

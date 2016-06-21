@@ -3,6 +3,10 @@ server:
   port: 8080
   sessionTimeout:  30000000
 
+multipart:
+  maxFileSize: 50Mb
+  maxRequestSize: 50Mb
+
 fast-dfs:
   pool:
     init-size: 5
