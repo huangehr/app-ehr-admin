@@ -174,13 +174,20 @@ public class MetaController extends ExtendController<MetaService> {
             List<RsMetaMsgModel> correctLs = excelReader.getCorrectLs();
             writerResponse(response, 20+"", "l_upd_progress");
 
+            Set<String> dictCodeSet = excelReader.getRepeat().get("dictCode");
+            String dictCodes = "";
+            for(String code :dictCodeSet){
+                dictCodes += "," + code;
+            }
             List saveLs = new ArrayList<>();
             if(correctLs.size()>0){
                 Set<String> ids = findExistId(toJson(excelReader.getRepeat().get("id")));
                 String domains = getSysDictEntries(31);
                 String columnTypes = getSysDictEntries(30);
                 String nullAbles = "[0,1]";
-                Map dictIds = getDictIds(toJson(excelReader.getRepeat().get("dictCode")));
+                Map dictIds = null;
+                if(dictCodes.length()>0)
+                    dictIds = getDictIds(dictCodes.substring(1));
                 writerResponse(response, 35+"", "l_upd_progress");
 
                 RsMetaMsgModel model;
@@ -257,7 +264,7 @@ public class MetaController extends ExtendController<MetaService> {
 
     private Map getDictIds( String dictCodes) throws Exception {
         PageParms pageParms = new PageParms(5000,1)
-                .addEqual("code", dictCodes)
+                .addGroupNotNull("code", dictCodes, "g1")
                 .setFields("id,code");
         Envelop rs = getEnvelop(service.search("/resources/dict", pageParms));
         if(rs.isSuccessFlg()){
