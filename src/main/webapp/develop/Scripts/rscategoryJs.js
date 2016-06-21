@@ -10,8 +10,8 @@ cateType.list = {
         this.top = $.Util.getTopWindowDOM();
         //资源分类 列名
         this.columns = [
-            {display: '名称', name: 'name', align: 'left', id: 'tree_id'},
-            {display: '说明', name: 'description', align: 'left'},
+            {display: '名称', name: 'name',width: "43%", align: 'left', id: 'tree_id'},
+            {display: '说明', name: 'description',width: "43%", align: 'left'},
             {
                 name: 'id', hide: true, render: function (rowdata) {
                 var html = "<div id='" + rowdata.id + "' pid='" + rowdata.pid + "'></div>";
@@ -19,7 +19,7 @@ cateType.list = {
             }
             },
             {
-                display: '操作', isSort: false, width: 200, align: 'center', render: function (rowdata, rowindex, value) {
+                display: '操作', isSort: false, width: "14%", align: 'center', render: function (rowdata, rowindex, value) {
                 var html = "<a class='grid_edit' title='编辑' name='edit_click' style='' onclick='cateType.list.add(\"" + rowdata.id + "\", \"modify\")'></a> " +
                     "<a class='grid_delete' title='删除' name='delete_click' style='' onclick='cateType.list.deleted(\"" + rowdata.id + "\")'></a>";
                 return html;
