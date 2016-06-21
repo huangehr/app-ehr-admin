@@ -70,53 +70,6 @@ public class ReaderCreator {
         }
     }
 
-//    public static Class create(Class clz) throws Exception {
-//        File file = new File(path + packege.replace(".", splitMark) + splitMark);
-//        if(!file.exists() && !file.mkdirs())
-//            throw new Exception("创建文件目录失败");
-//
-//        String clzName = clz.getSimpleName() + "Reader";
-//        String source = createSource(clz);
-//        String filePath = file.getPath() +splitMark+ clzName + ".java";
-//        file = new File(filePath);
-//        if(file.exists())
-//            file.delete();
-//
-//        //输出文件
-//        FileWriter fw = new FileWriter(file);
-//        fw.write(source);
-//        fw.flush();
-//
-//        //编译
-//        compile(filePath);
-//        //加载类并返回
-//        return loadClass(clzName);
-//    }
-
-
-
-//    public static Class createWriter(Class clz) throws Exception {
-//        File file = new File(path + packege.replace(".", splitMark) + splitMark);
-//        if(!file.exists() && !file.mkdirs())
-//            throw new Exception("创建文件目录失败");
-//
-//        String clzName = clz.getSimpleName() + "Writer";
-//        String source = createWSource(clz);
-//        String filePath = file.getPath() +splitMark+ clzName + ".java";
-//        file = new File(filePath);
-//        if(file.exists())
-//            file.delete();
-//
-//        //输出文件
-//        FileWriter fw = new FileWriter(file);
-//        fw.write(source);
-//        fw.flush();
-//
-//        //编译
-//        compile(filePath);
-//        //加载类并返回
-//        return loadClass(clzName);
-//    }
 
     private static Class loadClass(String clzName) throws Exception {
 //        File file = new File(path);
@@ -187,7 +140,7 @@ public class ReaderCreator {
                 .replace("$clzName", clzName)
                 .replace("$import", "import "+clz.getName() + ";\n")
                 .replace("$util", str);
-        return new String(code.getBytes(), "UTF-8");
+        return code;
     }
     /**
      * 创建含子类的writer
@@ -236,7 +189,7 @@ public class ReaderCreator {
         code = code.replace("$clzName", clzName)
                 .replace("$import", "import " + clz.getName() + ";\nimport " + childClz.getName() + ";\n")
                 .replace("$util", str);
-        return new String(code.getBytes(), "UTF-8");
+        return code;
     }
 
 
@@ -274,7 +227,7 @@ public class ReaderCreator {
                 .replace("$declare", clzName)
                 .replace("$repeat", repeat)
                 .replace("$util", str);
-        return new String(code.getBytes(), "UTF-8");
+        return code;
     }
 
     /**
@@ -328,7 +281,7 @@ public class ReaderCreator {
             }
         }
         code = code.replace("$cRepeat", pRepeat).replace("$childUtil", str);
-        return new String(code.getBytes(), "UTF-8");
+        return code;
     }
 
     private static String firstToUpper(String str){
