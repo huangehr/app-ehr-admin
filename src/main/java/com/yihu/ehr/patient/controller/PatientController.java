@@ -230,7 +230,7 @@ public class PatientController extends BaseUIController {
                     updatePatient.setNation(patientDetailModel.getNation());
                     updatePatient.setNativePlace(patientDetailModel.getNativePlace());
                     updatePatient.setMartialStatus(patientDetailModel.getMartialStatus());
-                    updatePatient.setBirthday(patientDetailModel.getBirthday());
+                    updatePatient.setBirthday(patientDetailModel.getBirthday()+" 00:00:00");
                     updatePatient.setBirthPlaceInfo(patientDetailModel.getBirthPlaceInfo());
                     updatePatient.setHomeAddressInfo(patientDetailModel.getHomeAddressInfo());
                     updatePatient.setWorkAddressInfo(patientDetailModel.getWorkAddressInfo());
