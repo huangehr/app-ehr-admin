@@ -185,7 +185,9 @@ public class MetaController extends ExtendController<MetaService> {
                 String domains = getSysDictEntries(31);
                 String columnTypes = getSysDictEntries(30);
                 String nullAbles = "[0,1]";
-                Map dictIds = getDictIds(dictCodes.substring(1));
+                Map dictIds = null;
+                if(dictCodes.length()>0)
+                    dictIds = getDictIds(dictCodes.substring(1));
                 writerResponse(response, 35+"", "l_upd_progress");
 
                 RsMetaMsgModel model;
