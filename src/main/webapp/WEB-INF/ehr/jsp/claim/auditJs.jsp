@@ -10,8 +10,9 @@
             var recordGrid = null;
             var reloadData = null;
             var unrelevanceDialog = null;
-            var rowId = null;
-            var claimModel = ${'claimModel'};
+
+            var claimModel = ${claimModel};
+            var ApplyStrModel = ${ApplyStr};
             var auditHeight = $(".div-audit-msg").height();
             var windowHeight = $(window).height();
             var dataModel = $.DataModel.init();
@@ -77,24 +78,29 @@
 
                     self.$unrelevanceeElse.ligerRadio();
 
-                    reloadData.reloadAuditData(claimModel, self.$applyForm);
+//                    $($('.sp-matching-change-btn')[0]).addClass('f-dn');
+                    $('.sp-lift-btn').css('background','url()')
+                    reloadData.reloadAuditData(claimModel.obj, self.$applyForm);
+                    reloadData.reloadAuditData(ApplyStrModel.detailModelList[0], self.$matchingForm);
 
                 },
 
                 recordGridInfo: function () {
                     var self = this;
                     recordGrid = self.$matchingRecordGrid.ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/user/searchUsers',
+                        data: ApplyStrModel,
+                        <%--url: '${contextRoot}/user/searchUsers',--%>
                         width: $(window).width() - 210,
                         height: windowHeight - (auditHeight + 185),
                         columns: [
-                            {display: '就诊时间', name: 'realName', width: '25%', align: 'left'},
-                            {display: '就诊机构', name: 'loginCode', width: '25%', isAllowHide: false, align: 'left'},
-                            {display: '医生', name: 'organizationName', width: '25%', align: 'left'},
+                            {display: '就诊时间', name: 'visDate', width: '25%', align: 'left'},
+                            {display: '就诊机构', name: 'visOrg', width: '25%', isAllowHide: false, align: 'left'},
+                            {display: '医生', name: 'visDoctor', width: '25%', align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '25%', render: function (row, a, f, e, h) {
-                                var data = encodeURIComponent(JSON.stringify(row));
-                                var html = '<a class="" title="详细对比" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1},{2}'])", "audit:auditInfo:open", row.id, row.__id) + '">详细对比</a>';
+                                display: '操作', name: 'operator', width: '25%', render: function (row) {
+//                                var data = encodeURIComponent(JSON.stringify(row));
+                                var jsonStr = JSON.stringify(row);
+                                var html = '<a class="" title="详细对比" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}'])", "audit:auditInfo:open", jsonStr) + '>详细对比</a>';
                                 return html;
                             }
                             }
@@ -105,12 +111,18 @@
                 },
                 clicks: function () {
                     var self = this;
+                    var claimId = ApplyStrModel.detailModelList[0].id;
+                    var cont = 0;
 
                     self.$relevanceBtn.click(function () {
+
+                        self.$matchingForm.attrScan();
+                        var data = self.$matchingForm.Fields.getValues();
+                        debugger
                         $.ligerDialog.confirm('是否确认关联？<br>是否确认关联？操作后无法更改。', function (yes) {
                             if (yes) {
-                                dataModel.updateRemote("${contextRoot}/audit/saveAudit", {
-                                    data: {applyId: "123456789", matchingId: "987654321"},
+                                dataModel.updateRemote("${contextRoot}/audit/addArRelations", {
+                                    data: {idCard: claimModel.idCardNo,arApplyId:claimModel.id, archiveId: data.id},
                                     async: true,
                                     success: function (data) {
                                         if (data.successFlg) {
@@ -136,8 +148,11 @@
                         $("#inp_else").val($(".tet-else").val());
                         self.$unrelevanceForm.attrScan();
                         var data = self.$unrelevanceForm.Fields.getValues();
+                        debugger
+
+                        claimModel.auditReason = data.unrelevanceeElse;
                         dataModel.updateRemote("${contextRoot}/audit/updateClaim", {
-                            data: {ClaimId: "123456789", unrelevance: data.unrelevanceeElse},
+                            data: {jsonModel:JSON.stringify(claimModel)},
                             async: true,
                             success: function (data) {
                                 if (data.successFlg) {
@@ -154,35 +169,56 @@
                     });
 
                     self.$matchingChangeBtn.click(function () {
-                        var dataModel = recordGrid
-                        reloadData.reloadAuditData(dataModel, self.$matchingForm);
+                        debugger
+                        var dataModel = ApplyStrModel.detailModelList;
+                        var eleId = $(this).attr('id');
+                        switch (eleId) {
+                            case 'sp_lift':
+                                cont--;
+                                if (cont<=0) {
+                                    $('.sp-lift-btn').css('background','url()');
+                                    $('.sp-right-btn').css('background','url(${staticRoot}/images/Right_btn_pre.png)');
+//                                    $($('.sp-matching-change-btn')[0]).addClass('f-dn');
+//                                    $($('.sp-matching-change-btn')[1]).removeClass('f-dn');
+                                    cont = 0;
+                                }
+                                break;
+                            default:
+                                cont++;
+                                if (dataModel.length<=cont+1) {
+//                                    $($('.sp-matching-change-btn')[1]).addClass('f-dn');
+                                    $('.sp-lift-btn').css('background','url(${staticRoot}/images/Left_btn_pre.png)');
+                                    $('.sp-right-btn').css('background','url()');
+//                                    $($('.sp-matching-change-btn')[0]).removeClass('f-dn');
+                                    cont = dataModel.length-1;
+                                }
+                                break;
+                        }
+                        reloadData.reloadAuditData(dataModel[cont], self.$matchingForm);
                     });
-                    $.subscribe('audit:auditInfo:open', function (event, objId, rowId) {
-                        var data = null;
-
-                        reloadData.reloadAuditData(data, self.$matchingForm);
+                    $.subscribe('audit:auditInfo:open', function (event, jsonStr) {
+                        var jsonObj = JSON.parse(jsonStr);
+                        debugger
+                        claimId = jsonObj.id;
+                        reloadData.reloadAuditData(jsonObj, self.$matchingForm);
                     })
                 }
             };
 
             reloadData = {
                 reloadAuditData: function (data, ele) {
-
-//                    ele.attrScan();
-//                    ele.Fields.fillValues({
-//                        id: data.id,
-//                        loginCode: data.loginCode,
-//                        realName: data.realName,
-//                        idCardNo: data.idCardNo,
-//                        gender: data.gender,
-//                        email: data.email,
-//                        telephone: data.telephone,
-//                        major: data.major,
-//                        publicKey: data.publicKey,
-//                        validTime: data.validTime,
-//                        startTime: data.startTime,
-//                        sourceName:data.sourceName
-//                    });
+                    ele.attrScan();
+                    ele.Fields.fillValues({
+                        id:data.id,
+                        visDate: data.visDate,
+                        visOrg: data.visOrg,
+                        visDoctor: data.visDoctor,
+                        cardNo: data.cardNo,
+                        diagnosedResult: data.diagnosedResult,
+                        diagnosedProject: data.diagnosedProject,
+                        medicines: data.medicines,
+                        memo: data.memo
+                    });
                 }
             };
             /* *************************** 检索模块初始化结束 ***************************** */

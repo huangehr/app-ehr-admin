@@ -18,49 +18,56 @@
                     <div class="m-form-group m-form-readonly">
                         <label>就诊时间:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_apply_analyse_time" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_apply_analyse_time" class="f-matching-bd"
+                                   data-attr-scan="visDate"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly">
                         <label>就诊机构:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_apply_analyse_org" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_apply_analyse_org" class="f-matching-bd"
+                                   data-attr-scan="visOrg"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly">
                         <label>就诊医生:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_apply_analyse_doctor" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_apply_analyse_doctor" class="f-matching-bd"
+                                   data-attr-scan="visDoctor"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly">
                         <label>卡号:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_apply_card_nmuber" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_apply_card_nmuber" class="f-matching-bd"
+                                   data-attr-scan="cardNo"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly">
                         <label>就诊结果:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_apply_analyse_out" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_apply_analyse_out" class="f-matching-bd"
+                                   data-attr-scan="diagnosedResult"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly">
                         <label>检查项目:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_apply_examine_pro" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_apply_examine_pro" class="f-matching-bd"
+                                   data-attr-scan="diagnosedProject"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly">
                         <label>诊断开药:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_apply_analyse_drug" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_apply_analyse_drug" class="f-matching-bd"
+                                   data-attr-scan="medicines"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly">
                         <label>备注:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_apply_remark" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_apply_remark" class="f-matching-bd" data-attr-scan="memo"/>
                         </div>
                     </div>
                 </div>
@@ -69,59 +76,66 @@
         <div class="div-matching-msg f-audit-fw50 f-fl">
             <fieldset class="fie-bd">
                 <legend class="f-pl10 f-pr10"><b>待匹配档案</b></legend>
-                <div class="f-fl div-lift-btn"><span class="sp-lift-btn f-fl sp-matching-change-btn"></span></div>
+                <div class="f-fl div-lift-btn"><span class="sp-lift-btn f-fl sp-matching-change-btn" id="sp_lift"></span></div>
                 <div id="div_matching_form" data-role-form class="m-form-inline f-fl f-mw80">
+                    <input type="text" class="f-dn" data-attr-scan="id"/>
                     <div class="m-form-group m-form-readonly f-fl">
                         <label>就诊时间:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_matching_analyse_time" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_matching_analyse_time" class="f-matching-bd"
+                                   data-attr-scan="visDate"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly f-fl">
                         <label>就诊机构:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_matching_analyse_org" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_matching_analyse_org" class="f-matching-bd"
+                                   data-attr-scan="visOrg"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly f-fl">
                         <label>就诊医生:</label>
                         <div class="l-text-wrapper m-form-control">
                             <input type="text" id="inp_matching_analyse_doctor" class="f-matching-bd"
-                                   data-attr-scan=""/>
+                                   data-attr-scan="visDoctor"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly f-fl">
                         <label>卡号:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_matching_card_nmuber" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_matching_card_nmuber" class="f-matching-bd"
+                                   data-attr-scan="cardNo"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly f-fl">
                         <label>就诊结果:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_matching_analyse_out" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_matching_analyse_out" class="f-matching-bd"
+                                   data-attr-scan="diagnosedResult"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly f-fl">
                         <label>检查项目:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_matching_examine_pro" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_matching_examine_pro" class="f-matching-bd"
+                                   data-attr-scan="diagnosedProject"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly f-fl">
                         <label>诊断开药:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_matching_analyse_drug" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_matching_analyse_drug" class="f-matching-bd"
+                                   data-attr-scan="medicines"/>
                         </div>
                     </div>
                     <div class="m-form-group m-form-readonly f-fl">
                         <label>备注:</label>
                         <div class="l-text-wrapper m-form-control">
-                            <input type="text" id="inp_matching_remark" class="f-matching-bd" data-attr-scan=""/>
+                            <input type="text" id="inp_matching_remark" class="f-matching-bd" data-attr-scan="memo"/>
                         </div>
                     </div>
                 </div>
-                <div class="f-fl div-right-btn"><span class="sp-right-btn f-fl sp-matching-change-btn"></span></div>
+                <div class="f-fl div-right-btn"><span class="sp-right-btn f-fl sp-matching-change-btn" id="sp_right"></span></div>
             </fieldset>
         </div>
 
@@ -137,19 +151,19 @@
 
     <div class="f-dn f-ml20 u-public-manage m-form-inline" id="div_unrelevance_form" data-role-form>
         <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan value="提供的内容不够完善，有多条档案相似" >提供的内容不够完善，有多条档案相似<br>
+            <input type="radio" name="unrelevanceeElse" data-attr-scan value="提供的内容不够完善，有多条档案相似">提供的内容不够完善，有多条档案相似<br>
         </div>
         <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大" >诊断结果差异较大<br>
+            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大">诊断结果差异较大<br>
         </div>
         <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大" >检查项目差异较大<br>
+            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大">检查项目差异较大<br>
         </div>
         <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大" >诊断开药差异较大<br>
+            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大">诊断开药差异较大<br>
         </div>
         <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan id="inp_else" >其他<br>
+            <input type="radio" name="unrelevanceeElse" data-attr-scan id="inp_else">其他<br>
             <textarea class="tet-else"></textarea><br>
         </div>
 
