@@ -381,7 +381,7 @@
             })
         },
         initMetadataId:function(){
-          var widthOption = $("#div_relation_grid").width()*0.2-40
+          var widthOption = $("#div_relation_grid").width()*0.2-5
           if(cfgModel==0){
             var url = "${contextRoot}/resource/meta/combo";
             var parms={};
