@@ -123,7 +123,9 @@
 				},
 				validateResult:function(result,id){
 					if(result=="1"){
-						$.Notice.success("成功跳转审核页面!");
+						var url = '${contextRoot}/audit/initial?claimId=' + id;
+						$("#contentPage").empty();
+						$("#contentPage").load(url);
 					}else if("-1"==result){
 						master.openViewMsgDialog(result,id);
 					}else{

@@ -32,6 +32,9 @@
                 rejectForm.$auditReason.ligerTextBox({width: 340, height: 75});
                 this.bindEvents();
                 this.$form.attrScan();
+                if(mode.auditReason==null||mode.auditReason==""){
+                    mode.auditReason="找不到对应的档案列表！";
+                }
                 rejectForm.$form.Fields.fillValues({
                     applyDate:mode.applyDate,
                     visOrg:mode.visOrg,
