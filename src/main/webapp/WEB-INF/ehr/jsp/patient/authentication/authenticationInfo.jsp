@@ -23,8 +23,7 @@
 				<input class="f-mt10 f-b0" readonly="readonly" data-attr-scan="medicalCardType"/>
 			</div>
 			<div class="m-form-group f-mt20 f-tac">
-				<div class="div_image">
-					<img class="f-tac" src="" alt="" style="margin: 50% auto" />
+				<div id="div_image_left" class="div_image">
 				</div>
 			</div>
 
@@ -44,8 +43,7 @@
 				<input class="f-mt10 f-b0" readonly="readonly" data-attr-scan="medicalCardNo"/>
 			</div>
 			<div class="m-form-group f-mt20 f-tac">
-				<div class="div_image">
-					<img class="f-tac" src="" alt="" style="margin: 50% auto" />
+				<div id="div_image_right" class="div_image">
 				</div>
 			</div>
 		</div>
