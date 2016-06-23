@@ -24,7 +24,7 @@
 			</div>
 			<div class="m-form-group f-mt20 f-tac">
 				<div class="div_image">
-					<img class="f-tac" src="12.jpg" alt="" style="margin: 50% auto" />
+					<img class="f-tac" src="" alt="" style="margin: 50% auto" />
 				</div>
 			</div>
 
@@ -37,7 +37,7 @@
 			</div>
 			<div class="m-form-group f-tac">
 				<span>身份证有效期：</span>
-				<input class="f-mt10 f-b0" readonly="readonly" data-attr-scan="time"/>
+				<input class="f-mt10 f-b0" readonly="readonly" data-attr-scan="idCardEffective"/>
 			</div>
 			<div class="m-form-group f-tac">
 				<span>&nbsp&nbsp医疗卡号：</span>
@@ -45,7 +45,7 @@
 			</div>
 			<div class="m-form-group f-mt20 f-tac">
 				<div class="div_image">
-					<img class="f-tac" src="sdd" alt="" style="margin: 50% auto" />
+					<img class="f-tac" src="" alt="" style="margin: 50% auto" />
 				</div>
 			</div>
 		</div>

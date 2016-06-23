@@ -13,6 +13,14 @@
 			var master = null;
 			// 页面面信息列表
 			var isFirstPage = true;
+			//跳转页面回传主页吧过滤参数、Grid表格参数
+			var backParams = ${backParams};
+			var searchParms = {
+				startTime:backParams.startTime || '',
+				endTime:backParams.endTime || '',
+				status:backParams.status || '',
+				name:backParams.name || '',
+			}
 			/* *************************** 函数定义 ******************************* */
 			//页面初始化
 			function pageInit() {
@@ -32,14 +40,15 @@
 			/* *************************** 模块初始化 ***************************** */
 			retrieve = {
 				$element: $('.m-retrieve-area'),
-				$name: $('#inp_name'),
+				$startTime:$('#inp_start_time'),
+				$endTime:$('#inp_end_time'),
 				$status:$('#inp_status'),
-				$startTimeLow:$('#inp_start_time'),
-				$startTimeUp:$('#inp_end_time'),
+				$name: $('#inp_name'),
 				$searchBtn: $('#btn_search'),
+				statusBox : null,
 				init: function () {
-					this.$status.ligerComboBox({
-						data:[["0","全部"],["1","待审核"],["2","已通过"],["3","已拒绝"]],
+					this.statusBox = this.$status.ligerComboBox({
+						data:[["0","待审核"],["1","已通过"],["2","已拒绝"]],
 						valueField : 0,
 						textField: 1,
 						width: 120,
@@ -47,33 +56,38 @@
 					this.$element.attrScan();
 					window.form = this.$element;
 					this.$name.ligerTextBox({width:120});
-					this.$startTimeLow.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
-					this.$startTimeUp.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
+					this.$startTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
+					this.$endTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
+					this.initSearch();
 				},
+				initSearch:function(){
+					this.$startTime.val(searchParms.startTime);
+					this.$endTime.val(searchParms.endTime);
+					this.statusBox.setValue(searchParms.status);
+					this.$name.val(searchParms.name);
+				}
 			};
 			master = {
 				init: function () {
 					infoGrid = $("#div_info_grid").ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/esb/acqTask/hosAcqTasks',
+						url: '${contextRoot}/authentication/search',
 						parms: {
-							orgSysCode: '',
-							status:'',
-							startTimeLow:'',
-							startTimeUp:'',
-							endTimeLow:'',
-							endTimeUp:''
+							startTime:searchParms.startTime || '',
+							endTime:searchParms.endTime || '',
+							status:searchParms.status || '',
+							name:searchParms.name || '',
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
-							{display: '申请时间', name: 'startTime', width: '25%', resizable: true,align:'center'},
-							{display: '认证用户',name: 'orgCode', width:'35%', isAllowHide: false,align:'left'},
+							{display: '申请时间', name: 'applyDate', width: '25%', resizable: true,align:'center'},
+							{display: '认证用户',name: 'name', width:'35%', isAllowHide: false,align:'left'},
 							{display: '状态', name: 'status', hide:true},
 							{display: '状态', name: 'statusName', width: '15%', minColumnWidth: 20,},
 							{display: '操作', name: 'operator', width: '25%', render: function (row) {
 								var html = '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:info:open", row.id,row.status) + '">详情</a>';
-								if(row.status != "1"){
-									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:operate", row.id, 'approve') + '">同意</a>';
-									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:operate", row.id, 'refuse') + '">拒绝</a>';
+								if(row.status == "0"){
+									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '1') + '">同意</a>';
+									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '2') + '">拒绝</a>';
 								}
 								return html;
 							}}
@@ -96,34 +110,36 @@
 						master.reloadGrid();
 					});
 					//详情页面
-					$.subscribe('authentication:info:open',function(event,id,statusName){
+					$.subscribe('authentication:info:open',function(event,id,status){
 						var value = retrieve.$element.Fields.getValues();
 						value.page = 1;
 						value.rows = 15;
 						value.sort = '';
 						var data = {
-							'statusName': statusName,
+							'status':status,
 							'backParams': value,
 						}
 						$("#contentPage").empty();
 						$("#contentPage").load('${contextRoot}/authentication/infoInitial',{id:id,dataModel:JSON.stringify(data)});
 					});
 					//修改状态
-					$.subscribe('authentication:operate', function (event, id,operate) {
+					$.subscribe('authentication:status', function (event, id,status) {
 						var msg = "";
-						if(Util.isStrEquals("approve",operate)){msg = "您同意了该认证，操作后无法修改，是否确认操作？";}
-						if(Util.isStrEquals("refuse",operate)){msg = "您拒绝了该认证，操作后无法修改，是否确认操作？";}
+						if(Util.isStrEquals("1",status)){msg = "您同意了该认证，操作后无法修改，是否确认操作？";}
+						if(Util.isStrEquals("2",status)){msg = "您拒绝了该认证，操作后无法修改，是否确认操作？";}
 						if(Util.isStrEmpty(msg)){return;}
 						$.ligerDialog.confirm(msg, function (yes) {
 							if (yes) {
 								var dataModel = $.DataModel.init();
-								dataModel.updateRemote('${contextRoot}/authentication/operate', {
-									data: {id: id,status:operate},
+								dataModel.updateRemote('${contextRoot}/authentication/updateStatus', {
+									data: {id: id,status:status},
 									success: function (data) {
 										if (data.successFlg) {
 											isFirstPage = false;
+											$.Notice.success("操作成功")
 											master.reloadGrid();
 										} else {
+											$.Notice.error("操作失败")
 										}
 									}
 								});

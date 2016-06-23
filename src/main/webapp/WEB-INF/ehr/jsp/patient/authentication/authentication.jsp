@@ -8,19 +8,18 @@
 		<div class="m-form-group f-mt10 ">
 			<div class="m-form-control">
 				<!--下拉框-->
-				<input type="text" id="inp_start_time" class="f-h28 f-w160" placeholder="起始时间"  data-attr-scan="startTimeLow">
+				<input type="text" id="inp_start_time" class="f-h28 f-w160" placeholder="起始时间"  data-attr-scan="startTime">
 			</div>
 			<div class="m-form-control" style="margin-top: 10px;font-weight:bold;font-size:35px;"> ~</div>
 			<div class="m-form-control">
-				<input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="截止时间"  data-attr-scan="startTimeUp">
+				<input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="截止时间"  data-attr-scan="endTime">
 			</div>
 			<div class="m-form-control f-ml10">
 				<!--下拉框-->
 				<input type="text" id="inp_status" class="f-h28 f-w160" placeholder="请选择状态" data-type="select" data-attr-scan="status">
 			</div>
 			<div class="m-form-control f-ml10">
-				<!--下拉框-->
-				<input type="text" id="inp_name" class="f-h28 f-w1240" placeholder="请输入姓名" data-type="select" data-attr-scan="orgSysCode">
+				<input type="text" id="inp_name" class="f-h28 f-w1240" placeholder="请输入姓名" data-attr-scan="name">
 			</div>
 			<div class="m-form-control f-ml10">
 				<!--按钮:查询 & 新增-->
