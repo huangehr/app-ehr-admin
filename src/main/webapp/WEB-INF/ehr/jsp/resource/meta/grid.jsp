@@ -21,7 +21,7 @@
       </div>
 
       <div class="m-form-control f-ml10">
-        <input type="text" id="ipt_search_null_able"  placeholder="是否允空" data-type="select" data-attr-scan="nullAble">
+        <input type="text" id="ipt_search_null_able"  placeholder="是否可为空" data-type="select" data-attr-scan="nullAble">
       </div>
 
       <div class="m-form-control f-ml10">

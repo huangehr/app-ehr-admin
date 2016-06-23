@@ -101,8 +101,8 @@
                     }},
                     {name: 'valid', logic: '=', cover: function (v) {
                         if(v=='true')
-                            return 1;
-                        return 0;
+                            return 0;
+                        return 1;
                     }}
                 ];
                 var f = covertFilters(vo, $('#searchForm'));

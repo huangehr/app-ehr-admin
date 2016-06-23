@@ -12,5 +12,11 @@
     .m-form-inline .m-form-group{ padding-bottom: 0; }
     .f-matching-bd{ background: #fff;border: 0; }
     .div-relevance-unrelevance-btn{ float: right;margin-top: 10px;margin-right: 50px; }
+    .div-unrelevance-reason-btn{ bottom: 10px; margin-left: 140px; }
+    .tet-else{ margin-top: 10px;  width: 300px;  height: 50px;  margin-left: 25px;}
+    .f-mw80{ width: 80% }
+    .div-lift-btn{ height: 100%;}
+    .sp-lift-btn{ width: 30px;height: 60px;margin-top:90px;background: url(${staticRoot}/images/Left_btn_pre.png)}
+    .sp-right-btn{ width: 30px;height: 60px;margin-top:90px;background: url(${staticRoot}/images/Right_btn_pre.png)}
 </style>
 

@@ -43,14 +43,14 @@
   </div>
 
   <div class="m-form-group">
-    <label>关联字典代码<spring:message code="spe.colon"/></label>
+    <label>关联字典<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control">
       <input type="text" id="ipt_dict_id" data-type="select" class="" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dictId">
     </div>
   </div>
 
   <div class="m-form-group">
-    <label>是否允空<spring:message code="spe.colon"/></label>
+    <label>是否可为空<spring:message code="spe.colon"/></label>
     <div class="u-checkbox-wrap m-form-control">
       <input type="radio" value="1" name="gender" data-attr-scan="nullAble" checked>是
       <input type="radio" value="0" name="gender" data-attr-scan="nullAble">否
