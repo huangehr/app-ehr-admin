@@ -10,8 +10,14 @@
             var recordGrid = null;
             var reloadData = null;
             var unrelevanceDialog = null;
-
+debugger
             var claimModel = ${claimModel};
+            delete claimModel.obj['statusName'];
+            delete claimModel.obj['visOrgName'];
+//            claimModel.obj.applyDate = new Date(claimModel.obj.applyDate);
+//            claimModel.obj.auditDate = new Date(claimModel.obj.auditDate);
+//            claimModel.obj.applyDate = '2016-06-22T13:41:11Z+0800';
+
             var ApplyStrModel = ${ApplyStr};
             var auditHeight = $(".div-audit-msg").height();
             var windowHeight = $(window).height();
@@ -119,10 +125,11 @@
                         self.$matchingForm.attrScan();
                         var data = self.$matchingForm.Fields.getValues();
                         debugger
+                        var relationModel = {idCard:claimModel.obj.idCard,arApplyId:claimModel.obj.id,archiveId:data.id,status:'0'}
                         $.ligerDialog.confirm('是否确认关联？<br>是否确认关联？操作后无法更改。', function (yes) {
                             if (yes) {
                                 dataModel.updateRemote("${contextRoot}/audit/addArRelations", {
-                                    data: {idCard: claimModel.idCardNo,arApplyId:claimModel.id, archiveId: data.id},
+                                    data: {relationModel:JSON.stringify(relationModel)},
                                     async: true,
                                     success: function (data) {
                                         if (data.successFlg) {
@@ -150,9 +157,9 @@
                         var data = self.$unrelevanceForm.Fields.getValues();
                         debugger
 
-                        claimModel.auditReason = data.unrelevanceeElse;
+                        claimModel.obj.auditReason = data.unrelevanceeElse;
                         dataModel.updateRemote("${contextRoot}/audit/updateClaim", {
-                            data: {jsonModel:JSON.stringify(claimModel)},
+                            data: {jsonModel:JSON.stringify(claimModel.obj)},
                             async: true,
                             success: function (data) {
                                 if (data.successFlg) {

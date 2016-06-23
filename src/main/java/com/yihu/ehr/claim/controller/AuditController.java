@@ -1,8 +1,10 @@
 package com.yihu.ehr.claim.controller;
 
+import com.yihu.ehr.agModel.patient.ArApplyModel;
 import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.model.patient.MArApply;
+import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +37,7 @@ public class AuditController extends BaseUIController{
         List<MArApply>  mArApplyListTest = new ArrayList<>();
         MArApply mArApplyTest = new MArApply();
 
-        mArApplyTest.setVisDate(new Date());
+        mArApplyTest.setVisDate("");
         mArApplyTest.setId(123);
         mArApplyTest.setVisOrg("就诊机构");
         mArApplyTest.setVisDoctor("就诊医生");
@@ -48,7 +50,7 @@ public class AuditController extends BaseUIController{
         MArApply mArApplyTest2 = new MArApply();
 
         mArApplyTest2.setId(456);
-        mArApplyTest2.setVisDate(new Date());
+        mArApplyTest2.setVisDate("");
         mArApplyTest2.setVisOrg("就诊机构2");
         mArApplyTest2.setVisDoctor("就诊医生2");
         mArApplyTest2.setCardNo("开号2");
@@ -100,31 +102,30 @@ public class AuditController extends BaseUIController{
         return resultStr;
     }
 
-    @RequestMapping("/updateClaim")
-    @ResponseBody
-    public String updateClaim(String ClaimId,String unrelevance){
-        String url = "/audit/updateClaim/";
-        String resultStr = "";
-        Map<String, Object> params = new HashMap<>();
-        params.put("ClaimId", ClaimId);
-        params.put("unrelevance", unrelevance);
-        try {
-            resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
-
-        } catch (Exception e) {
-
-        }
-        return resultStr;
-    }
+//    @RequestMapping("/updateClaim")
+//    @ResponseBody
+//    public String updateClaim(String ClaimId,String unrelevance){
+//        String url = "/audit/updateClaim/";
+//        String resultStr = "";
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("ClaimId", ClaimId);
+//        params.put("unrelevance", unrelevance);
+//        try {
+//            resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+//
+//        } catch (Exception e) {
+//
+//        }
+//        return resultStr;
+//    }
 
     @RequestMapping("/addArRelations")
     @ResponseBody
-    public String addArRelations(String idCard,String arApplyId,String archiveId){
+    public String addArRelations(String relationModel){
         String url = ServiceApi.Patients.ArRelations;
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
-        params.put("arApplyId", arApplyId);
-        params.put("archiveId", archiveId);
+        params.put("model", relationModel);
         try {
             resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
 
@@ -138,11 +139,23 @@ public class AuditController extends BaseUIController{
     @ResponseBody
     public String updateClaim(String jsonModel) {
 
-        String url = ServiceApi.Patients.ArRelations;
+        String url = ServiceApi.Patients.ArApplications;
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
-        params.put("model", jsonModel);
+
+
         try {
+            ArApplyModel arApplyModel = toModel(jsonModel, ArApplyModel.class);
+            Date date = DateTimeUtils.simpleDateParse(arApplyModel.getApplyDate());
+            String applyData = DateTimeUtils.utcDateTimeFormat(date);
+
+            arApplyModel.setApplyDate(applyData);
+//            date = DateTimeUtils.utcDateTimeParse(arApplyModel.getAuditDate());
+//            String auditDate = DateTimeUtils.utcDateTimeFormat(date);
+//            arApplyModel.setAuditDate(auditDate);
+            jsonModel = toJson(arApplyModel);
+
+            params.put("model", jsonModel);
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
 
         } catch (Exception e) {
