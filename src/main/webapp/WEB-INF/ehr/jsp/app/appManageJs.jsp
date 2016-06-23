@@ -72,11 +72,11 @@
                             status: ''
                         },
                         columns: [
-							{ display: 'APP ID',name: 'id',isAllowHide: false,hide:true },
-							{ display: 'APP Secret', name: 'secret', minColumnWidth: 60,hide:true },
+							{ display: 'APP ID',name: 'id', width: '10%',isAllowHide: false},
+							{ display: 'APP Secret', name: 'secret', width: '10%', minColumnWidth: 60,},
                             { display: '应用名称', name: 'name',width: '10%', isAllowHide: false,align:'left' },
 							{ display: '机构代码', name: 'org',width: '8%',align:'left'},
-							{ display: '机构名称', name: 'orgName',width: '15%',align:'left'},
+							{ display: '机构名称', name: 'orgName',width: '11%',align:'left'},
 							{ display: '类型', name: 'catalogName', width: '8%'},
                             { display: '回调URL', name: 'url', width: '15%',align:'left'},
 							{ display: '审核', name: 'checkStatus', width: '8%',minColumnWidth: 20,render: function (row){
@@ -91,7 +91,7 @@
 									return '无'
 								}
 							}},
-							{ display: '已授权资源', name: 'resourceNames', width: '26%',align:'left'},
+							{ display: '已授权资源', name: 'resourceNames', width: '10%',align:'left'},
 							{ display: '操作', name: 'operator', width: '10%', render: function (row) {
 								var html = '';
 								html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a>';
@@ -99,6 +99,7 @@
 								return html;
                             }}
                         ],
+						enabledSort:true,
                         enabledEdit: true,
                         validate : true,
                         unSetValidateAttr:false,
@@ -134,14 +135,12 @@
 					//新增、修改、查看统一定制方法
                     $.subscribe('app:appInfo:open',function(event,appId,mode){
                         var title = '';
-                        if(mode == 'modify'){
-                            title = '修改应用信息';
-                        }else{
-                            title = '新增应用信息';
-                        }
+                        if(mode == 'modify'){title = '修改应用信息';};
+						if(mode == 'new'){title = '新增应用信息';};
+						if(mode == 'view'){title = '查看应用信息';}
                         master.appInfoDialog = $.ligerDialog.open({
-                            height:500,
-                            width: 500,
+                            height:640,
+                            width: 600,
                             title : title,
                             url: '${contextRoot}/app/template/appInfo',
                             urlParms: {

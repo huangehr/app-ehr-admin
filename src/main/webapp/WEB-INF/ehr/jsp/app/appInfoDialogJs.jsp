@@ -10,20 +10,25 @@
         // 表单校验工具类
         var jValidation = $.jValidation;
 		var catalogDictId = 1;
+		var statusDictId = 2;
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
             appInfoForm.init();
         }
         /* *************************** 模块初始化 ***************************** */
         appInfoForm = {
-            $form: $("#div_app_info_form"),
-            $name: $("#inp_app_name"),
-			$orgCode: $("#inp_org_code"),
+			$form: $("#div_app_info_form"),
+			$name: $("#inp_app_name"),
+			$orgCode:$('#inp_org_code'),
 			$catalog: $("#inp_dialog_catalog"),
-            $url: $("#inp_url"),
-            $description: $("#inp_description"),
-            $btnSave: $("#btn_save"),
-            $btnCancel: $("#btn_cancel"),
+			$status: $("#inp_dialog_status"),
+			$tags: $("#inp_tags"),
+			$appId: $("#inp_app_id"),
+			$secret: $("#inp_app_secret"),
+			$url: $("#inp_url"),
+			$description: $("#inp_description"),
+			$btnSave: $("#btn_save"),
+			$btnCancel: $("#btn_cancel"),
 
             init: function () {
                 this.initForm();
@@ -31,8 +36,12 @@
             },
             initForm: function () {
                 this.$name.ligerTextBox({width:240});
-				this.initDDL(catalogDictId, $('#inp_dialog_catalog'));
-				this.$orgCode.customCombo('${contextRoot}/esb/acqTask/orgCodes',{})
+				this.initDDL(catalogDictId, this.$catalog);
+				this.initDDL(statusDictId, this.$status);
+				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{})
+				this.$tags.ligerTextBox({width:240});
+				this.$appId.ligerTextBox({width:240});
+				this.$secret.ligerTextBox({width:240});
 				this.$url.ligerTextBox({width:240, height: 50 });
                 this.$description.ligerTextBox({width:240, height: 120 });
                 var mode = '${mode}';

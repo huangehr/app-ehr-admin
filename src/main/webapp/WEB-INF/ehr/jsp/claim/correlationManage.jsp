@@ -1,38 +1,44 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<!-- ####### Title设置 ####### -->
-<div class="f-dn" data-head-title="true">维度授权</div>
-
-<!-- ####### 页面部分 ####### -->
-<div>
-
-	<div id="div_wrapper">
-
-		<div id="conditionArea" class="f-mb10 f-mr10" align="right">
-			<div class="body-head f-h30" align="left">
-				<a id="btn_back" class="f-fwb">返回上一层 </a>
-				<input id="adapter_plan_id" value='${adapterPlanId}' hidden="none" />
-				<span class="f-ml20">资源名称：</span><input class="f-fwb f-mt10" readonly id="resource_name"/>
-				<span class="f-ml20">资源代码：</span><input class="f-fwb f-mt10" readonly id="resource_code"/>
-				<span class="f-ml20">资源主题：</span><input class="f-mt10" readonly id="resource_sub"/>
+<!--######关联关系审核######-->
+<div class="f-dn" data-head-title="true"><spring:message code="title.correlation.audit"/></div>
+<div id="div_wrapper" >
+	<!-- ####### 查询条件部分 ####### -->
+	<div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
+		<div class="m-form-group">
+			<div class="m-form-control">
+				<input type="text" id="beginTime" class="useTitle u-f-mt5"  placeholder="申请开始时间" data-attr-scan="beginTime" />
 			</div>
-		</div>
 
-		<div id="grid_content" style="width: 100%">
-			<!--   列表   -->
-			<div id="div_right">
-				<div id="entryRetrieve" class="m-retrieve-area f-pr m-form-inline condition retrieve-border" data-role-form>
-					<div id="resource_title" style="font-size: 20px; height: 40px; text-align: center; padding-top: 14px; font-weight: bold"></div>
-					<div id="entry_retrieve_inner" class="m-retrieve-inner m-form-group f-mt10">
-					</div>
+			<div class="m-form-control">
+				<div style="margin-top: 10px;font-weight:bold;font-size:35px;"> ~</div>
+			</div>
+
+			<div class="m-form-control">
+				<input type="text" id="endTime" class="useTitle u-f-mt5"   placeholder="申请结束时间" data-attr-scan="endTime" />
+			</div>
+
+			<div class="m-form-control f-ml10" >
+				<!--下拉框-->
+				<input type="text" id="auditStatus" style="width:240px;"  data-type="select" class="validate-org-length f-w240" data-attr-scan="auditStatus"/>
+			</div>
+
+			<div class="m-form-control f-ml10">
+				<input type="text" id="applyName" class="useTitle u-f-mt5"   placeholder=<spring:message code="title.correlation.applyname"/> data-attr-scan="applyName" />
+			</div>
+			<div class="m-form-control f-ml20">
+				<!--按钮:查询-->
+				<div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+					<span><spring:message code="btn.search"/></span>
 				</div>
-				<div id="rightGrid"></div>
 			</div>
 		</div>
+
 	</div>
+	<!--######关联关系审核列表#开始######-->
+	<div id="div_correlation_audit_grid" >
 
+	</div>
+	<!--######关联关系审核列表#结束######-->
 </div>
-
-
