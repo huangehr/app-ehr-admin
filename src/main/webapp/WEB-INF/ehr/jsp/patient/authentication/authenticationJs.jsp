@@ -20,6 +20,8 @@
 				endTime:backParams.endTime || '',
 				status:backParams.status || '',
 				name:backParams.name || '',
+				page:backParams.page || 1,
+				pageSize:backParams.pageSize || 15,
 			}
 			/* *************************** 函数定义 ******************************* */
 			//页面初始化
@@ -48,10 +50,13 @@
 				statusBox : null,
 				init: function () {
 					this.statusBox = this.$status.ligerComboBox({
-						data:[["0","待审核"],["1","已通过"],["2","已拒绝"]],
-						valueField : 0,
-						textField: 1,
+						url: "${contextRoot}/dict/searchDictEntryList",
+						dataParmName: 'detailModelList',
+						urlParms: {dictId: 36},
+						valueField: 'code',
+						textField: 'value',
 						width: 120,
+						value:"0"
 					});
 					this.$element.attrScan();
 					window.form = this.$element;
@@ -72,10 +77,12 @@
 					infoGrid = $("#div_info_grid").ligerGrid($.LigerGridEx.config({
 						url: '${contextRoot}/authentication/search',
 						parms: {
-							startTime:searchParms.startTime || '',
-							endTime:searchParms.endTime || '',
-							status:searchParms.status || '',
-							name:searchParms.name || '',
+							startTime:searchParms.startTime,
+							endTime:searchParms.endTime,
+							status:searchParms.status,
+							name:searchParms.name,
+							page:searchParms.page ,
+							pageSize:searchParms.pageSize,
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
@@ -92,6 +99,8 @@
 								return html;
 							}}
 						],
+						page:searchParms.page,
+						pageSize:searchParms.pageSize,
 						enabledEdit: true,
 						validate: true,
 						unSetValidateAttr: false,
@@ -112,8 +121,8 @@
 					//详情页面
 					$.subscribe('authentication:info:open',function(event,id,status){
 						var value = retrieve.$element.Fields.getValues();
-						value.page = 1;
-						value.rows = 15;
+						value.page = parseInt($('.pcontrol input', infoGrid.toolbar).val());
+						value.pageSize = $(".l-bar-selectpagesize select", infoGrid.toolbar).val();
 						value.sort = '';
 						var data = {
 							'status':status,
