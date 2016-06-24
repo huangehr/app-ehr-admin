@@ -37,9 +37,9 @@ public class AuditController extends BaseUIController{
         List<MArApply>  mArApplyListTest = new ArrayList<>();
         MArApply mArApplyTest = new MArApply();
 
-        mArApplyTest.setVisDate("");
+        mArApplyTest.setVisDate("1111111111111111111111111111");
         mArApplyTest.setId(123);
-        mArApplyTest.setVisOrg("就诊机构");
+        mArApplyTest.setVisOrg("就诊机构11111111111111111111111013245678");
         mArApplyTest.setVisDoctor("就诊医生");
         mArApplyTest.setCardNo("开号");
         mArApplyTest.setDiagnosedResult("就赠结果");
@@ -84,6 +84,11 @@ public class AuditController extends BaseUIController{
         return "pageView";
     }
 
+    @RequestMapping("/auditDialog")
+    public String auditDialog(Model model){
+        model.addAttribute("contentPage", "claim/auditDialog");
+        return "pageView";
+    }
 
     @RequestMapping("/saveAudit")
     @ResponseBody

@@ -10,10 +10,10 @@
             <a id="btn_back" class="f-fl">返回上一层</a>
         </div>
     </div>
-    <div class="div-audit-msg f-audit-fw100 f-fl f-mb10 f-mt10">
+    <div class="div-audit-msg f-audit-fw100 f-fl f-mb10">
         <div class="div-apply-msg f-audit-fw50 f-fl">
             <fieldset class="fie-bd">
-                <legend class="f-pl10 f-pr10"><b>申请信息</b></legend>
+                <legend class="f-pl10 f-pr10 f-ml10"><b>申请信息</b></legend>
                 <div id="div_apply_form" data-role-form class="m-form-inline">
                     <div class="m-form-group m-form-readonly">
                         <label>就诊时间:</label>
@@ -75,7 +75,7 @@
         </div>
         <div class="div-matching-msg f-audit-fw50 f-fl">
             <fieldset class="fie-bd">
-                <legend class="f-pl10 f-pr10"><b>待匹配档案</b></legend>
+                <legend class="f-pl10 f-pr10 f-ml10"><b>待匹配档案</b></legend>
                 <div class="f-fl div-lift-btn"><span class="sp-lift-btn f-fl sp-matching-change-btn" id="sp_lift"></span></div>
                 <div id="div_matching_form" data-role-form class="m-form-inline f-fl f-mw80">
                     <input type="text" class="f-dn" data-attr-scan="id"/>
@@ -148,6 +148,7 @@
             </div>
         </div>
     </div>
+    <div id="temp"></div>
 
     <div class="f-dn f-ml20 u-public-manage m-form-inline" id="div_unrelevance_form" data-role-form>
         <div class="f-mt10 f-mb10">
