@@ -59,8 +59,7 @@
                     selectBoxHeight : 300,
                     selectBoxWidth:300,
                     conditionSearchClick: function (g) {
-                        var param = g.rules.length>0? "code="+g.rules[0].value +" g1;name="+g.rules[0].value+" g1": '';
-                        param = {"filters":param}
+                        param = {"searchNm":g.rules.length>0?g.rules[0].value: ''};
                         g.grid.set({
                             parms: param,
                             newPage: 1

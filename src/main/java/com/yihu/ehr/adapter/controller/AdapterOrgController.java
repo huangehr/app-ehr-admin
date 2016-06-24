@@ -94,7 +94,7 @@ public class AdapterOrgController extends BaseUIController {
 
         String filters = "";
         if(!StringUtils.isEmpty(searchNm)){
-            filters+="name?"+searchNm+" g1;";
+            filters+="name?"+searchNm+" g1;code?"+searchNm+" g1";
         }
         if(!StringUtils.isEmpty(type)){
             filters+= "type="+type+" g2;";
