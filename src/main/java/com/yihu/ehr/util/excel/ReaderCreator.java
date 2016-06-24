@@ -1,23 +1,16 @@
 package com.yihu.ehr.util.excel;
 
 import com.yihu.ehr.util.excel.annotation.*;
-import sun.nio.cs.UnicodeEncoder;
-import sun.nio.cs.ext.GBK;
 
 import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 
 /**
  * @author lincl
@@ -27,8 +20,9 @@ import java.util.Arrays;
 public class ReaderCreator {
     static String splitMark = System.getProperty("file.separator");
     static String path = System.getProperty("user.home") +splitMark+ "ehr" + splitMark + "app" + splitMark;
-    static String packege = "com.yihu.ehr.util.excel.read";
-
+    static String packege = "com.yihu.ehr.util.excel.read" ;
+    //输出目录
+    static String proPath = "F:\\linclWork\\ideaProject\\app-ehr-admin-XIN\\src\\main\\java\\";
 
 
     public static Class[] create(Class clz) throws Exception {
@@ -36,6 +30,35 @@ public class ReaderCreator {
         clzs[0] = create(clz, createSource(clz), "Reader");
         clzs[1] = create(clz, createWSource(clz), "Writer");
         return clzs;
+    }
+
+    public static void createJavaFile(Class clz) throws Exception {
+        createJavaFile(clz, createSource(clz), "Reader");
+        createJavaFile(clz, createWSource(clz), "Writer");
+    }
+
+    private static void createJavaFile(Class clz, String source, String type) throws Exception {
+        BufferedWriter writer = null;
+        try{
+            File file = new File(proPath + packege.replace(".", splitMark) + splitMark);
+            if(!file.exists() && !file.mkdirs())
+                throw new Exception("创建文件目录失败");
+
+            String clzName = clz.getSimpleName() + type;
+            String filePath = file.getPath() +splitMark+ clzName + ".java";
+            file = new File(filePath);
+            if(file.exists())
+                file.delete();
+
+            //输出文件
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(file), "UTF-8"));
+            writer.write(source);
+            writer.flush();
+        }catch (Exception e){
+            if(writer!=null) writer.close();
+            throw e;
+        }
     }
 
     public static Class create(Class clz, String source, String type) throws Exception {
