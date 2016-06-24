@@ -203,13 +203,19 @@
                         success: function (data) {
                             uploader.options.formData.objectId = orgCode;
                             uploader.options.server="${contextRoot}/file/upload/image";
-                            $(".uploadBtn").click();
+                            uploader.options.successCallBack=function(){
+                                win.parent.closeAddOrgInfoDialog(function () {
+                                    win.parent.$.Notice.success('保存成功！');
+                                });
+                            }
                             if (data.successFlg) {
-                                    uploader.options.successCallBack=function(){
-                                        win.parent.closeAddOrgInfoDialog(function () {
-                                            win.parent.$.Notice.success('修改成功');
-                                        });
-                                    }
+                                if(uploader.getFiles().length>0){
+                                    $(".uploadBtn").click();
+                                }else{
+                                    win.parent.closeAddOrgInfoDialog(function () {
+                                        win.parent.$.Notice.success('保存成功！');
+                                    });
+                                }
                             } else {
                                 win.parent.closeAddOrgInfoDialog(function () {
                                 });
