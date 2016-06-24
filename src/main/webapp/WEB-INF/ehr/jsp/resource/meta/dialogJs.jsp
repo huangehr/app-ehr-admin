@@ -25,7 +25,13 @@
 
             initFormFields(vo);
             dictCombo = $('#ipt_dict_id').customCombo(
-                    urls.dictCombo, {}, undefined, undefined, false, {selectBoxHeight: 280});
+                    urls.dictCombo, {}, function (id, name) {
+                        if(this.grid){
+                            var dictVal = this.grid.getSelectedRow();
+                            if(dictVal)
+                                $('#dictCode').val(dictVal.code);
+                        }
+                    }, undefined, false, {selectBoxHeight: 280, valueField: 'id'});
         };
 
         var initBtn = function () {
@@ -42,9 +48,9 @@
             });
 
             $('#btn_save').click(function () {
-                var dictVal = dictCombo.getLigerComboBox().grid.getSelectedRow();
-                if(dictVal)
-                    $('#dictCode').val(dictVal.code);
+//                var dictVal = dictCombo.getLigerComboBox().grid.getSelectedRow();
+//                if(dictVal)
+//                    $('#dictCode').val(dictVal.code);
 
                 saveForm({url: urls.update, $form: $form, modelName: 'metadata', validator: validator});
             });

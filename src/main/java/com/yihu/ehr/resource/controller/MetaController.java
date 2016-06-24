@@ -11,7 +11,7 @@ import com.yihu.ehr.resource.service.MetaService;
 import com.yihu.ehr.util.excel.AExcelReader;
 import com.yihu.ehr.util.excel.ObjectFileRW;
 import com.yihu.ehr.util.excel.TemPath;
-import com.yihu.ehr.util.excel.read.RsDictionaryMsgReader;
+import com.yihu.ehr.util.excel.read.RsMetaMsgModelReader;
 import com.yihu.ehr.util.excel.read.RsMetaMsgModelWriter;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.web.RestTemplates;
@@ -170,7 +170,7 @@ public class MetaController extends ExtendController<MetaService> {
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
-            AExcelReader excelReader = new RsDictionaryMsgReader();
+            AExcelReader excelReader = new RsMetaMsgModelReader();
             excelReader.read(file.getInputStream());
             List<RsMetaMsgModel> errorLs = excelReader.getErrorLs();
             List<RsMetaMsgModel> correctLs = excelReader.getCorrectLs();
