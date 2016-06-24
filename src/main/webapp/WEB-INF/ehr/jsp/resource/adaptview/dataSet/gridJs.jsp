@@ -440,7 +440,7 @@
               grid: getGridOptions(true,widthOption,url,parms),
               valueField: "name",
               textField: "name",
-              width : widthOption-10,
+              width : widthOption-15,
               selectBoxHeight : widthOption+50,
               selectBoxWidth:widthOption,
               onSelected: function(id,name){//name为选择的值

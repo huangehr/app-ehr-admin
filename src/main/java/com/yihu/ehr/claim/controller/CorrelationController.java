@@ -1,7 +1,9 @@
 package com.yihu.ehr.claim.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.annotation.JSONP;
 import com.sun.net.httpserver.Authenticator;
+import com.yihu.ehr.agModel.patient.ArApplyModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -61,7 +63,7 @@ public class CorrelationController extends BaseUIController {
     @RequestMapping("msgDialog")
     public String msgDialog(Model model,String status,String id) {
         try{
-            String url = "/archive/applications/"+id;
+            String url = "/archive/applications/"+id+"/archive_info";
             Map<String, Object> params = new HashMap<>();
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop result = getEnvelop(resultStr);
@@ -69,9 +71,12 @@ public class CorrelationController extends BaseUIController {
                 Object list =  result.getObj();
                 model.addAttribute("mode",toJson(list));
             }
-            //审核失败的查看，及无内容的展示
-            if("-1".equals(status)||"view".equals(status)){
+            //审核失败的查看，
+            if("view".equals(status)){
                 model.addAttribute("contentPage", "/claim/correlationRejectDialog");
+            }else if("-1".equals(status)){//及无内容的展示
+                model.addAttribute("contentPage", "/claim/correlationValidateDialog");
+                model.addAttribute("msg","数据库中未查找到相关档案列表，建议审核不通过，原因为“未查找到相关就诊机构，请您核对就诊机构信息后重新提交申请!");
             }else if("2".equals(status)){//无机构导致无内容
                 model.addAttribute("contentPage", "/claim/correlationValidateDialog");
                 model.addAttribute("msg","数据库中未查找到相关就诊机构，建议审核不通过，原因为“未查找到相关就诊机构，请您核对就诊机构信息后重新提交申请!");
@@ -82,10 +87,6 @@ public class CorrelationController extends BaseUIController {
                 model.addAttribute("contentPage", "/claim/correlationValidateDialog");
                 model.addAttribute("msg","该时间段内未查找到相关档案，建议审核不通过，原因为“未查找到相关档案，请您核对相关信息后重新提交申请!");
             }else if("success".equals(status)){//查看预关联
-                String urlArchives = "/correlation/getArchivesModeList/"+id;
-                model.addAttribute("contentPage", "/claim/correlationAuditDialog");
-                String envelopStr = HttpClientUtil.doGet(comUrl + urlArchives, username, password);
-                Envelop envelop = getEnvelop(resultStr);
                 if(result.getDetailModelList()!=null&&result.getDetailModelList().size()==1){
                     Object list =  result.getDetailModelList().get(0);
                     model.addAttribute("archives",toJson(list));
@@ -190,7 +191,7 @@ public class CorrelationController extends BaseUIController {
     @ResponseBody
     public String validateAudit(String id) throws Exception{
         try{
-            String url = "/correlation/validateAudit/"+id;
+            String url = "/archive/applications/"+id+"/audit";
             Envelop envelop = new Envelop();
             String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
             if(envelop.getDetailModelList().size()>0){
@@ -228,7 +229,14 @@ public class CorrelationController extends BaseUIController {
         Envelop envelop = new Envelop();
         try{
             Map<String, Object> params = new HashMap<>();
-            params.put("model",correlationMode);
+            ArApplyModel arApplyModel = toModel(correlationMode, ArApplyModel.class);
+            Date date = DateTimeUtils.simpleDateParse(arApplyModel.getApplyDate());
+            String applyData = DateTimeUtils.utcDateTimeFormat(date);
+            arApplyModel.setApplyDate(applyData);
+            date = DateTimeUtils.simpleDateParse(arApplyModel.getAuditDate());
+            applyData = DateTimeUtils.utcDateTimeFormat(date);
+            arApplyModel.setAuditDate(applyData);
+            params.put("model",toJson(arApplyModel));
             String url = "/archive/applications";
             String resultStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
             envelop = getEnvelop(resultStr);
