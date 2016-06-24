@@ -37,17 +37,17 @@ public class ExcelRWFactory {
     /**
      * 根据配置信息生成excel导入导出工具类
      */
-    public static void main(String[] args){
-        Class[] clzs = new Class[]{
-                RsMetaMsgModel.class, RsDictionaryMsg.class};
-        try {
-            for(Class clz : clzs){
-                ReaderCreator.createJavaFile(clz);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args){
+//        Class[] clzs = new Class[]{
+//                RsMetaMsgModel.class, RsDictionaryMsg.class};
+//        try {
+//            for(Class clz : clzs){
+//                ReaderCreator.createJavaFile(clz);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private static void addPath(File f) throws Exception {
         URL u = f.toURI().toURL();
