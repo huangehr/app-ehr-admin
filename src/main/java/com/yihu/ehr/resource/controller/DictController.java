@@ -8,8 +8,9 @@ import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.resource.model.RsDictionaryMsg;
 import com.yihu.ehr.resource.service.DictService;
 import com.yihu.ehr.util.excel.AExcelReader;
-import com.yihu.ehr.util.excel.ExcelRWFactory;
 import com.yihu.ehr.util.excel.TemPath;
+import com.yihu.ehr.util.excel.read.RsDictionaryMsgReader;
+import com.yihu.ehr.util.excel.read.RsDictionaryMsgWriter;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.web.RestTemplates;
 import org.springframework.stereotype.Controller;
@@ -21,7 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -59,12 +62,6 @@ public class DictController extends ExtendController<DictService> {
         headerMap.put(0, "代码");
         headerMap.put(1, "名称");
         headerMap.put(2, "说明");
-
-        try {
-            ExcelRWFactory.getReader(RsDictionaryMsg.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -113,7 +110,7 @@ public class DictController extends ExtendController<DictService> {
         try {
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
-            AExcelReader excelReader = ExcelRWFactory.getReader(RsDictionaryMsg.class);
+            AExcelReader excelReader = new RsDictionaryMsgReader();
             excelReader.read(file.getInputStream());
             List<RsDictionaryMsg> errorLs = excelReader.getErrorLs();
             List<RsDictionaryMsg> correctLs = excelReader.getCorrectLs();
@@ -143,7 +140,7 @@ public class DictController extends ExtendController<DictService> {
             Map rs = new HashMap<>();
             if(errorLs.size()>0){
                 String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
-                ExcelRWFactory.getWriter(RsDictionaryMsg.class).write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
+                new RsDictionaryMsgWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
                 rs.put("eFile", eFile.split("\\\\"));
             }
             writerResponse(response, 65 + "", "l_upd_progress");

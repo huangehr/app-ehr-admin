@@ -156,6 +156,7 @@ public class ClzCode {
                     "            $pRepeat" +
                     "\n" +
                     "            for(Sheet sheet : sheets){\n" +
+                    "                correct = true;\n" +
                     "                if((rows = sheet.getRows()) == 0) continue;\n" +
                     "                $parentUtil" +
                     "                p.setExcelSeq(j);\n" +
