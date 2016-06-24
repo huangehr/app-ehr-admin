@@ -5,6 +5,7 @@
 		$(function () {
 			var Util = $.Util;
 			var authenticationId = '${id}';
+			var imgPath = ${imgPath}.detailModelList;
 			var dataModel = ${dataModel};
 			function pageInit() {
 				dataInfo.init();
@@ -30,6 +31,8 @@
 						idCardEffective:info.idCardEffective,
 						medicalCardNo:info.medicalCardNo,
 					});
+					$('#div_image_left').html('<img id="img_left" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[3])+'" alt="图片加载失败！" class="div_image"></img>');
+					$('#div_image_right').html('<img src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[4])+'" alt="图片加载失败！" class="div_image"></img>');
 				},
 				bindEvents:function(){
 					//返回上一页

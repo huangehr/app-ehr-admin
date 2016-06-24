@@ -14,6 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,9 +55,16 @@ public class AuthenticationController extends BaseUIController {
             String url ="/patient/Authentication/"+id;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             model.addAttribute("envelop",envelopStr);
+            Map<String,Object> params = new HashMap<>();
+            // 测试用 object_id
+            params.put("object_id","0dae0003565ebea49b10c5241790f84e");
+//            params.put("mime","patient");
+            String envelopStrImgPath = HttpClientUtil.doGet(comUrl+"/files_path",params,username,password);
+            model.addAttribute("imgPath",envelopStrImgPath);
         }catch (Exception ex){
             LogService.getLogger(AuthenticationController.class).error(ex.getMessage());
             model.addAttribute("envelop",en);
+            model.addAttribute("imgPath",en);
         }
         return "pageView";
     }
@@ -117,6 +128,28 @@ public class AuthenticationController extends BaseUIController {
         }
         envelop.setSuccessFlg(false);
         return envelop;
+    }
+
+    @RequestMapping("/showImage")
+    @ResponseBody
+    public void showImage(String timestamp,String imgPath,HttpServletResponse response) throws Exception {
+        OutputStream outputStream = null;
+        try {
+            Map<String,Object> params = new HashMap<>();
+            params.put("storagePath",imgPath);
+            String imageOutStream = HttpClientUtil.doGet(comUrl + "/image_view",params,username, password);
+            response.setContentType("text/html; charset=UTF-8");
+            response.setContentType("image/jpeg");
+            outputStream = response.getOutputStream();
+            byte[] bytes = Base64.getDecoder().decode(imageOutStream);
+            outputStream.write(bytes);
+            outputStream.flush();
+        } catch (IOException e) {
+            LogService.getLogger(PatientController.class).error(e.getMessage());
+        } finally {
+            if (outputStream != null)
+                outputStream.close();
+        }
     }
 
 
