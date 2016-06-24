@@ -5,6 +5,7 @@
     (function ($, win) {
         var auditForm = null;
         var mode = eval("(" + '${mode}' + ")");
+        var archives = '${archives}'==''?{}:eval("(" + '${archives}' + ")");
         function pageInit() {
             auditForm.init();
         }

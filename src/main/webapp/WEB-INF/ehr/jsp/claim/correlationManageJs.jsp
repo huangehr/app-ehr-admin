@@ -98,7 +98,7 @@
 							{name: 'id', hide: true, isAllowHide: false},
 							{display: '申请时间', name: 'applyDate', width: '30%',align:'left'},
 							{display: '申请人', name: 'name', width: '30%',align:'left'},
-							{display: '状态', name: 'status', width: '30%',align:'left'},
+							{display: '状态', name: 'statusName', width: '30%',align:'left'},
 							{display: '操作',name: 'operator', width:'10%', align:'center',render: function (row) {
 								var html="";
 								if(row.status==0){
@@ -200,6 +200,7 @@
 			};
 			win.closeDialog = function (msg) {
 				master.validateDialog.close();
+				master.reloadGrid();
 				if(msg)
 					$.Notice.success(msg);
 			};
