@@ -13,7 +13,7 @@
 
     <div id="form_middle">
         <div class="f-ml10 f-fl" style="width: 230px; height: 260px; border: 1px solid #888; ">
-            <div style="border-bottom: 1px solid #888; line-height: 30px; text-align: center">授权系统类型</div>
+            <div style="border-bottom: 1px solid #888; line-height: 30px; text-align: center">授权机构</div>
             <div id="org_tree_wrap" style="height: 224px;">
                 <div id="org_tree"></div>
             </div>
