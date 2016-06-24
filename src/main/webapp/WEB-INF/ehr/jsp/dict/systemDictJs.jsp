@@ -146,6 +146,9 @@
                                 systemDictInfoGrid.select(selectRow);
                             }else
                                 systemDictInfoGrid.select(0);
+                        },onBeforeShowData:function(currentData){
+                            if(currentData.detailModelList.length==0)
+                                master.searchSystemDictEntity('-1');
                         }
 
                     }));
