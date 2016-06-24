@@ -200,6 +200,10 @@
                                 if($(".filelist li").length>0) {
                                     uploader.options.server="${contextRoot}/file/upload/image";
                                     $(".uploadBtn").click();
+                                }else{
+                                    win.parent.closeAddOrgInfoDialog(function () {
+                                        win.parent.$.Notice.success('保存成功！');
+                                    });
                                 }
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
