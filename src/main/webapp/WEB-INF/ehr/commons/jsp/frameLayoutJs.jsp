@@ -21,6 +21,7 @@
         var notice = null;
 
         //登入成功后，将输入次数过多的错误密码清除
+        sessionStorage.setItem("logined", "true");
         sessionStorage.removeItem("errorPassWord");
         localStorage.removeItem('${current_user.loginCode}');
 

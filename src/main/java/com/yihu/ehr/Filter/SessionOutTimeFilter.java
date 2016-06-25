@@ -22,7 +22,7 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String path = httpServletRequest.getRequestURI();
         if (path.indexOf("/login") != -1
-                || path.indexOf("/time_out") != -1
+                || path.indexOf("/out") != -1
                 || path.indexOf(httpServletRequest.getContextPath() + "/static-dev") != -1
                 || path.indexOf(httpServletRequest.getContextPath() + "/develop") != -1
                 || path.indexOf(httpServletRequest.getContextPath() + "/rest") != -1
@@ -43,7 +43,7 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
                 httpServletResponse.getWriter().print("{}");
                 return;
             }
-            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/time_out");
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/out");
             return;
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);

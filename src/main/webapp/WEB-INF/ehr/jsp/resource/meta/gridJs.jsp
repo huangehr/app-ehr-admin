@@ -83,10 +83,12 @@
                     {type: 'text', id: 'ipt_search'},
                     {type: 'select', id: 'ipt_search_type', opts:{width: 140}, dictId: 30},
                     {type: 'select', id: 'ipt_search_null_able', opts:{width: 140}, dictId: 18},
-                    {type: 'select', id: 'ipt_search_is_valid', opts:{width: 140}, dictId: 18},
+                    {type: 'select', id: 'ipt_search_is_valid', opts:{width: 140, cancelable: false,
+                        data:[{value: '有效', code: '1'}, {value: '无效', code: '0'}]}},
                     {type: 'searchBtn', id: 'search_btn', searchFun: searchFun}
                 ];
                 initFormFields(vo, $('.m-retrieve-inner'));
+                $('#ipt_search_is_valid').ligerGetComboBoxManager().selectValue('1');
             };
 
             //查询列表
@@ -99,18 +101,10 @@
                             return 1;
                         return 0;
                     }},
-                    {name: 'valid', logic: '=', cover: function (v) {
-                        if(v=='true')
-                            return 0;
-                        return 1;
-                    }}
+                    {name: 'valid', logic: '='}
                 ];
-                var f = covertFilters(vo, $('#searchForm'));
-                var valid = "valid";
-                if($.Util.isStrEquals(f.indexOf(valid),-1)){
-                    f += valid+"=1";
-                }
-                var params = {filters: f};
+
+                var params = {filters: covertFilters(vo, $('#searchForm'))};
                 reloadGrid(grid, curPage, params);
             };
 
