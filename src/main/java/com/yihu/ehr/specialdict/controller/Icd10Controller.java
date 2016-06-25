@@ -503,6 +503,9 @@ public class Icd10Controller extends BaseUIController {
         Envelop envelop = new Envelop();
         try{
             String indicatorIds = getRelatedIndicatorIds(icd10Id);
+            if(StringUtils.isEmpty(indicatorIds)){
+                return envelop;
+            }
             String filters = "";
             if(!StringUtils.isEmpty(searchNm)){
                 filters +="code?"+searchNm+" g1;name?"+searchNm+" g1;";
@@ -678,7 +681,7 @@ public class Icd10Controller extends BaseUIController {
         String urlRelation = "/dict/icd10/indicators/no_paging";
         String envelopGetRelation = HttpClientUtil.doGet(comUrl+urlRelation,params,username,password);
         Envelop result = objectMapper.readValue(envelopGetRelation,Envelop.class);
-        if (!result.isSuccessFlg()){
+        if (!result.isSuccessFlg()&&result.getDetailModelList().size() <= 0){
             return indicatorIds;
         }
         List<Icd10IndicatorRelationModel> models = (List<Icd10IndicatorRelationModel>)getEnvelopList(result.getDetailModelList(),new ArrayList<Icd10IndicatorRelationModel>(),Icd10IndicatorRelationModel.class);

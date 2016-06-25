@@ -245,10 +245,12 @@ public class ResourceController extends BaseUIController {
     }
 
     public Boolean isRsInUse(String resourceId) throws Exception{
-        String url = "/resources/" + resourceId+"/grant";
-        String resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
+        String url = "/resources/grants/no_paging";
+        Map<String,Object> params = new HashMap<>();
+        params.put("filters","resourceId="+resourceId);
+        String resultStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
         Envelop result = objectMapper.readValue(resultStr, Envelop.class);
-        if (result.isSuccessFlg()) {
+        if (result.isSuccessFlg()&&result.getDetailModelList().size() >0) {
             return true;
         } else {
             return false;
