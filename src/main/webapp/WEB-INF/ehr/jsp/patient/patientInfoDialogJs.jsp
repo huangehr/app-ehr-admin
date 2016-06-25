@@ -102,7 +102,6 @@
                             win.parent.$.Notice.error('修改失败');
                         }
                     }
-                    win.parent.patientDialogRefresh();
                     win.parent.patientDialogClose();
                     //dialog.close();
                 }
