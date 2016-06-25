@@ -207,6 +207,7 @@
             };
             win.patientDialogClose = function () {
                 patientDialog.close();
+                patientMaster.reloadGrid();
             };
             /* ************************* Dialog页面回调接口结束 ************************** */
             /* *************************** 页面初始化 **************************** */
