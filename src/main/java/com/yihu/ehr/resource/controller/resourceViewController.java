@@ -62,23 +62,23 @@ public class resourceViewController extends BaseUIController {
         return envelop.getDetailModelList();
     }
 
-    @RequestMapping("/searchResourceData")
-    @ResponseBody
-    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows) {
-        Map<String, Object> params = new HashMap<>();
-        String resultStr = "";
-        String url = "/resources/ResourceBrowses/getResourceData";
-        params.put("resourcesCode", resourcesCode);
-        params.put("queryCondition", searchParams);
-        params.put("page", page);
-        params.put("size", rows);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-        } catch (Exception e) {
-
-        }
-        return resultStr;
-    }
+//    @RequestMapping("/searchResourceData")
+//    @ResponseBody
+//    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows) {
+//        Map<String, Object> params = new HashMap<>();
+//        String resultStr = "";
+//        String url = "/resources/ResourceBrowses/getResourceData";
+//        params.put("resourcesCode", resourcesCode);
+//        params.put("queryCondition", searchParams);
+//        params.put("page", page);
+//        params.put("size", rows);
+//        try {
+//            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+//        } catch (Exception e) {
+//
+//        }
+//        return resultStr;
+//    }
 
 
     /**
@@ -107,34 +107,34 @@ public class resourceViewController extends BaseUIController {
     }
 
 
-    @RequestMapping("/getRsDictEntryList")
-    @ResponseBody
-    public Object getRsDictEntryList(String dictId) {
-
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String resultStr = "";
-        String dictEntryUrl = ServiceApi.Resources.DictEntries;
-
-        params.put("filters", "dictCode=" + dictId);
-        params.put("page", 1);
-        params.put("size", 500);// TODO: 2016/6/1   字典项没有不分页的接口
-        params.put("fields", "");
-        params.put("sorts", "");
-
-        try {
-            if (!StringUtils.isEmpty(dictId)) {
-
-                resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
-                envelop = toModel(resultStr, Envelop.class);
-
-            }
-        } catch (Exception e) {
-
-        }
-
-        return envelop.getDetailModelList();
-    }
+//    @RequestMapping("/getRsDictEntryList")
+//    @ResponseBody
+//    public Object getRsDictEntryList(String dictId) {
+//
+//        Envelop envelop = new Envelop();
+//        Map<String, Object> params = new HashMap<>();
+//        String resultStr = "";
+//        String dictEntryUrl = ServiceApi.Resources.DictEntries;
+//
+//        params.put("filters", "dictCode=" + dictId);
+//        params.put("page", 1);
+//        params.put("size", 500);// TODO: 2016/6/1   字典项没有不分页的接口
+//        params.put("fields", "");
+//        params.put("sorts", "");
+//
+//        try {
+//            if (!StringUtils.isEmpty(dictId)) {
+//
+//                resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
+//                envelop = toModel(resultStr, Envelop.class);
+//
+//            }
+//        } catch (Exception e) {
+//
+//        }
+//
+//        return envelop.getDetailModelList();
+//    }
 
     @RequestMapping("/searchDictEntryList")
     @ResponseBody
