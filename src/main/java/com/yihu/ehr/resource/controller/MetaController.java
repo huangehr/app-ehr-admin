@@ -211,7 +211,7 @@ public class MetaController extends ExtendController<MetaService> {
             String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".dat");
             ObjectFileRW.write(new File(TemPath.getFullPath(eFile, parentFile)),errorLs);
             Map rs = new HashMap<>();
-            rs.put("eFile", eFile.split("\\\\"));
+            rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
             writerResponse(response, 75 + "", "l_upd_progress");
 
             if(saveLs.size()>0)

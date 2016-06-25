@@ -48,10 +48,6 @@
             });
 
             $('#btn_save').click(function () {
-//                var dictVal = dictCombo.getLigerComboBox().grid.getSelectedRow();
-//                if(dictVal)
-//                    $('#dictCode').val(dictVal.code);
-
                 saveForm({url: urls.update, $form: $form, modelName: 'metadata', validator: validator});
             });
 
@@ -65,7 +61,7 @@
             initBtn();
             fillForm(model, $('#infoForm'));
 
-            dictCombo.setValueText(model.dictCode, model.dictName);
+            dictCombo.setValueText(model.dictId, model.dictName);
         }();
     })(jQuery, window);
 </script>

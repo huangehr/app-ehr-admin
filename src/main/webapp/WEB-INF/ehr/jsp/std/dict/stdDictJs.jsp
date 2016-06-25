@@ -170,11 +170,7 @@
                             unSetValidateAttr: false,
                             allowHideColumn: false,
                             onBeforeShowData: function (data) {
-                                if(!data.successFlg){
-                                    $.Notice.error("数据加载失败！");
-                                    entryMater.reloadGrid(1, '');
-                                }
-                                else if (data.totalCount == 0) {
+                                if (data.totalCount == 0) {
                                     entryMater.reloadGrid(1, '');
                                 }
                             },
