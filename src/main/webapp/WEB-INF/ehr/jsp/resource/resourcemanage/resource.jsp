@@ -17,7 +17,7 @@
 			</div>
 			<!--资源浏览树-->
 			<div id="div_tree">
-				<div id="div_resource_browse_tree" style=""></div>
+				<div id="div_resource_browse_tree"></div>
 			</div>
 		</div>
 		<!--资源浏览详情-->
