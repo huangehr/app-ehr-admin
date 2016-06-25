@@ -105,14 +105,8 @@ public class ResourceBrowseController extends BaseUIController {
 
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-//        String dictEntryUrl = ServiceApi.Resources.DictEntries;
         String dictEntryUrl = "/resources/noPageDictEntries";
-
         params.put("filters", "dictCode=" + dictId);
-//        params.put("page", 1);
-//        params.put("size", 500);
-//        params.put("fields", "");
-//        params.put("sorts", "");
 
         try {
             if (!StringUtils.isEmpty(dictId)) {
