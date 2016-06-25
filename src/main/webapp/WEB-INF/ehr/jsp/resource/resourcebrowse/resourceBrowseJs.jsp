@@ -23,7 +23,6 @@
             var resourcesCode = "";
             var typeTree = "";
             var inpTypes = "";
-            var conditionDictId = "";
             var conditionBo = false;
             var jsonData = new Array();
             var dataModel = $.DataModel.init();
@@ -114,7 +113,6 @@
                                         return;
                                     }
                                     if (!Util.isStrEquals(dataModels[i].dict, 0)) {
-//                                        conditionDictId = dataModels[i].dict;
                                         switchType('dict', $(".div-change-search"), '.inp_defualt_param', 'default', conditionBo, dataModels[i].dict);
 //                                        changeHtml($(".div-change-search"), '.inp_defualt_param', 'default', 'ligerComboBox', dataModels[i].dict, "");
                                     } else {
@@ -277,7 +275,6 @@
                         jsonData = [];
                         var defualtParam = $(".inp_defualt_param");
                         var pModel = $("#div-search-data-role-form").children('div');
-                        debugger
                         for (var i = 0; i < pModel.length; i++) {
                             var pModel_child = $(pModel[i]);
                             pModel_child.attrScan();
@@ -438,7 +435,6 @@
                             width: defaultWidth,
                             dataParmName: 'detailModelList',
                             onSelected: function (value) {
-                                debugger
 //                                divEle.find(inpEle).ligerGetComboBoxManager().setValue(value);
                             }
                         });
