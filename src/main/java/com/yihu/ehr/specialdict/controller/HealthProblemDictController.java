@@ -234,6 +234,9 @@ public class HealthProblemDictController extends BaseUIController {
         envelop.setSuccessFlg(false);
         try{
             String icd10Ids = this.getRelatedIcd10Ids(hpId);
+            if(StringUtils.isEmpty(icd10Ids)){
+                return envelop;
+            }
             String filters = "";
             if(!StringUtils.isEmpty(searchNm)){
                 filters +="code?"+searchNm+" g1;name?"+searchNm+" g1;";
@@ -302,7 +305,7 @@ public class HealthProblemDictController extends BaseUIController {
         String urlRelation = "/dict/hp/icd10s/no_paging";
         String envelopGetRelation = HttpClientUtil.doGet(comUrl+urlRelation,params,username,password);
         Envelop result = objectMapper.readValue(envelopGetRelation,Envelop.class);
-        if (!result.isSuccessFlg()){
+        if (!result.isSuccessFlg()&&result.getDetailModelList().size() <= 0){
             return icd10Ids;
         }
         List<HpIcd10RelationModel> models = (List<HpIcd10RelationModel>)getEnvelopList(result.getDetailModelList(),new ArrayList<HpIcd10RelationModel>(),HpIcd10RelationModel.class);
@@ -328,7 +331,7 @@ public class HealthProblemDictController extends BaseUIController {
         String urlRelation = "/dict/hp/icd10s/no_paging";
         String envelopGetRelation = HttpClientUtil.doGet(comUrl+urlRelation,params,username,password);
         Envelop result = objectMapper.readValue(envelopGetRelation,Envelop.class);
-        if (!result.isSuccessFlg()){
+        if (!result.isSuccessFlg()&&result.getDetailModelList().size() <= 0){
             return ids;
         }
         List<HpIcd10RelationModel> models = (List<HpIcd10RelationModel>)getEnvelopList(result.getDetailModelList(),new ArrayList<HpIcd10RelationModel>(),HpIcd10RelationModel.class);

@@ -60,8 +60,10 @@
 				if(mode == 'view'){
 					$("#btn_save").hide();
 					$("#btn_cancel").hide();
-					$('#div_data_info_form input,textarea').attr("disabled","disabled")
-					$('#div_data_info_form input,textarea').css("background-color","#EDF6FA")
+					//设置只读且能使用滚动条，屏蔽能删除按钮
+					$('#div_data_info_form input,textarea').attr("disabled","disabled");
+					$('#div_data_info_form input,textarea').css("background-color","#EDF6FA");
+					$(".m-form-control .l-text-trigger-cancel").remove();
 				}
 			},
 			bindEvents: function () {
