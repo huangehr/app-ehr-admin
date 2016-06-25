@@ -104,44 +104,21 @@
                         width: width,
                         onSelected: function (value) {
                             var dataModels = this.data;
-
+                            var eleType = $(this.element).parents('#div_default_search');
                             for (var i = 0; i < dataModels.length; i++) {
                                 //判断这个对象的值存不存在字典和判断类型
-
                                 if (Util.isStrEquals(dataModels[i].code, value)) {
                                     if (Util.isStrEquals(this.element.id, 'inp_logical_relationship')) {
-                                        debugger
-                                        conditionDictId = getEleid($(this.element))
-                                        conditionBo = Util.isStrEquals(this.selectedValue,'RANGE')||Util.isStrEquals(this.selectedValue,'NOT RANGE');
-                                        switchType(inpTypes,$(".div-change-search"),'.inp_defualt_param','default',conditionBo,conditionDictId);
+                                        conditionBo = Util.isStrEquals(this.selectedValue, 'RANGE') || Util.isStrEquals(this.selectedValue, 'NOT RANGE');
+                                        switchType(getEleType(eleType, 'inpType'), $(".div-change-search"), '.inp_defualt_param', 'default', conditionBo, getEleType(eleType, 'dict'));
                                         return;
                                     }
                                     if (!Util.isStrEquals(dataModels[i].dict, 0)) {
 //                                        conditionDictId = dataModels[i].dict;
-                                        switchType('dict',$(".div-change-search"),'.inp_defualt_param','default',conditionBo,dataModels[i].dict);
+                                        switchType('dict', $(".div-change-search"), '.inp_defualt_param', 'default', conditionBo, dataModels[i].dict);
 //                                        changeHtml($(".div-change-search"), '.inp_defualt_param', 'default', 'ligerComboBox', dataModels[i].dict, "");
                                     } else {
-                                        switchType(dataModels[i].type,$(".div-change-search"),'.inp_defualt_param','default',conditionBo,'');
-//                                        switch (dataModels[i].type) {
-//                                            case 'S':
-//                                                changeHtml($(".div-change-search"), '.inp_defualt_param', 'default', 'ligerTextBox', "", "");
-//                                                break;
-//                                            case 'L':
-//                                                changeHtml($(".div-change-search"), '.inp_defualt_param', 'default', 'ligerComboBox', 'boolean', "");
-//                                                break;
-//                                            case 'N':
-//                                                changeHtml($(".div-change-search"), '.inp_defualt_param', 'default', 'ligerTextBox', "", "");
-//                                                break;
-//                                            case 'D':
-//                                                changeHtml($(".div-change-search"), '.inp_defualt_param', 'default', 'ligerDateEditor', "", "D");
-//                                                break;
-//                                            case 'DT':
-//                                                changeHtml($(".div-change-search"), '.inp_defualt_param', 'default', 'ligerDateEditor', "", "DT");
-//                                                break;
-//                                            default:
-//                                                changeHtml($(".div-change-search"), '.inp_defualt_param', 'default', 'ligerTextBox', "", "");
-//                                                break;
-//
+                                        switchType(dataModels[i].type, $(".div-change-search"), '.inp_defualt_param', 'default', conditionBo, '');
                                     }
                                 }
                             }
@@ -250,46 +227,36 @@
                                 width: width[i],
                                 onSelected: function (value) {
                                     var dataModels = this.data;
+                                    var eleType = $(this.element).parents('.div_search_model');
                                     var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search');
-                                    debugger
                                     var eleClass_model0 = $(this.element).attr('class').split('inp-model0');
                                     var eleClass_model2 = $(this.element).attr('class').split('inp-model2');
                                     var eleClass_model3 = $(this.element).attr('class').split('inp-model3');
-                                    if (eleClass_model0.length >= 2 || eleClass_model2.length >= 2 || eleClass_model3.length >= 2) {
-                                            var bo = Util.isStrEquals(this.selectedValue,'RANGE')||Util.isStrEquals(this.selectedValue,'NOT RANGE');
-                                            switchType(inpTypes,$inpSearchType,'.inp-find-search','',bo,'');
-                                            return;
+//                                    if (eleClass_model0.length >= 2 || eleClass_model2.length >= 2 || eleClass_model3.length >= 2) {
+//
+//                                        conditionBo = Util.isStrEquals(this.selectedValue,'RANGE')||Util.isStrEquals(this.selectedValue,'NOT RANGE');
+//
+////                                        var bo = Util.isStrEquals(this.selectedValue,'RANGE')||Util.isStrEquals(this.selectedValue,'NOT RANGE');
+//                                            switchType(getEleType(eleType,'inpType'),$inpSearchType,'.inp-find-search','',conditionBo,getEleType(eleType,'dict'));
+//                                            return;
+//                                    }
+                                    if (eleClass_model0.length >= 2 || eleClass_model3.length >= 2) {
+                                        return;
+                                    }else {
+                                        conditionBo = Util.isStrEquals(this.selectedValue, 'RANGE') || Util.isStrEquals(this.selectedValue, 'NOT RANGE');
+                                        switchType(getEleType(eleType, 'inpType'), $inpSearchType, '.inp-find-search', '', conditionBo, getEleType(eleType, 'dict'));
+                                        return;
                                     }
+
                                     for (var i = 0; i < dataModels.length; i++) {
                                         //判断这个对象的值存不存在字典和判断类型
                                         if (Util.isStrEquals(dataModels[i].code, value)) {
 //                                            var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search');
                                             if (!Util.isStrEquals(dataModels[i].dict, 0)) {
 //                                                changeHtml($inpSearchType, '.inp-find-search', '', 'ligerComboBox', dataModels[i].dict, "");
-                                                switchType('dict',$inpSearchType,'.inp-find-search','',bo,dataModels[i].dict);
+                                                switchType('dict', $inpSearchType, '.inp-find-search', '', conditionBo, dataModels[i].dict);
                                             } else {
-                                                switchType(dataModels[i].type,$inpSearchType,'.inp-find-search','');
-
-//                                                switch (dataModels[i].type) {
-//                                                    case 'S1':
-//                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');
-//                                                        break;
-//                                                    case 'L':
-//                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerComboBox', 'boolean', '');
-//                                                        break;
-//                                                    case 'N':
-//                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');
-//                                                        break;
-//                                                    case 'D':
-//                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', 'D');
-//                                                        break;
-//                                                    case 'DT':
-//                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerDateEditor', '', 'DT');
-//                                                        break;
-//                                                    default:
-//                                                        changeHtml($inpSearchType, '.inp-find-search', '', 'ligerTextBox', '', '');
-//                                                        break;
-//                                                }
+                                                switchType(dataModels[i].type, $inpSearchType, '.inp-find-search', conditionBo);
                                             }
                                         }
                                     }
@@ -310,6 +277,7 @@
                         jsonData = [];
                         var defualtParam = $(".inp_defualt_param");
                         var pModel = $("#div-search-data-role-form").children('div');
+                        debugger
                         for (var i = 0; i < pModel.length; i++) {
                             var pModel_child = $(pModel[i]);
                             pModel_child.attrScan();
@@ -332,7 +300,7 @@
                             }
                             jsonData.push(values);
                         }
-                        if(Util.isStrEquals(jsonData.length,1)&&Util.isStrEmpty(jsonData[0].value)){
+                        if (Util.isStrEquals(jsonData.length, 1) && Util.isStrEmpty(jsonData[0].value)) {
                             jsonData = '';
                         }
                         resourceBrowseMaster.reloadResourcesGrid({
@@ -405,38 +373,39 @@
                     }
                 }
             };
-            function switchType(columnTypes,inpSearchType,chlidEle,def,condition,dictId) {
+            function switchType(columnTypes, inpSearchType, chlidEle, def, condition, dictId) {
                 inpTypes = columnTypes;
                 switch (columnTypes) {
                     case 'S1':
-                        changeHtml(inpSearchType, chlidEle, def, 'ligerTextBox', dictId, '',condition);
+                        changeHtml(inpSearchType, chlidEle, def, 'ligerTextBox', dictId, '', condition);
                         break;
                     case 'L':
-                        changeHtml(inpSearchType, chlidEle, def, 'ligerComboBox', 'boolean', '',condition);
+                        changeHtml(inpSearchType, chlidEle, def, 'ligerComboBox', 'boolean', '', condition);
                         break;
                     case 'N':
-                        changeHtml(inpSearchType, chlidEle, def, 'ligerTextBox', dictId, '',condition);
+                        changeHtml(inpSearchType, chlidEle, def, 'ligerTextBox', dictId, '', condition);
                         break;
                     case 'D':
-                        changeHtml(inpSearchType, chlidEle, def, 'ligerDateEditor', dictId, 'D',condition);
+                        changeHtml(inpSearchType, chlidEle, def, 'ligerDateEditor', dictId, 'D', condition);
                         break;
                     case 'DT':
-                        changeHtml(inpSearchType, chlidEle, def, 'ligerDateEditor', dictId, 'DT',condition);
+                        changeHtml(inpSearchType, chlidEle, def, 'ligerDateEditor', dictId, 'DT', condition);
                         break;
                     case 'dict':
-                        changeHtml(inpSearchType, chlidEle, def, 'ligerComboBox', dictId, 'DT',condition);
+                        changeHtml(inpSearchType, chlidEle, def, 'ligerComboBox', dictId, 'DT', condition);
                         break;
                     default:
-                        changeHtml(inpSearchType, chlidEle, def, 'ligerTextBox', '', dictId,condition);
+                        changeHtml(inpSearchType, chlidEle, def, 'ligerTextBox', '', dictId, condition);
                         break;
                 }
             }
+
             //divEle  input的父节点,（jquery对象）例如：$("#inp_defualt_param")
             //inpEle  输入框input的id或class,例如：#inp_defualt_param
             //defHtml 是否默认搜索条件
             //ligerType liger控件类型
             //dict  是否是字典
-            function changeHtml(divEle, inpEle, defHtml, ligerType, dictId, data,condition) {
+            function changeHtml(divEle, inpEle, defHtml, ligerType, dictId, data, condition) {
                 var html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp-model3 inp-com-param inp-find-search" data-type="select" data-attr-scan="value" /></div>';
                 if (Util.isStrEquals(defHtml, 'default')) {
                     html = '<div class="f-fl"><input type="text" class="f-ml10 inp-reset inp-com-param inp_defualt_param" data-type="select" data-attr-scan="value" /></div>';
@@ -453,8 +422,6 @@
 //                if (Util.isStrEquals(ligerType, 'ligerDateEditor')) {
 //                    html += '<div class="f-fr div-time-value div-time-width"><span class="f-fl f-mt10 f-ml-20">～</span><div style="float: right"><input type="text" class="f-ml10 inp-reset inp-model3 inp-com-param inp-find-search" data-type="select" data-attr-scan="time" /></div></div>';
 //                }
-
-
                 divEle.html("");
                 divEle.html(html);
                 $(".div-time-width").width($(".div-change-search").width() - defaultWidth - 5);
@@ -471,7 +438,8 @@
                             width: defaultWidth,
                             dataParmName: 'detailModelList',
                             onSelected: function (value) {
-                                divEle.find(inpEle).ligerGetComboBoxManager().setValue(value);
+                                debugger
+//                                divEle.find(inpEle).ligerGetComboBoxManager().setValue(value);
                             }
                         });
                         break;
@@ -489,9 +457,15 @@
                         break;
                 }
             }
-            
-            function getEleid(ele) {
-                return ele.parents('#div_default_search').find('.div-table-colums').liger().selected.dict;
+
+            function getEleType(ele, type) {
+                var obj = ele.find('.div-table-colums').liger().selected
+
+                var value = obj.dict;
+                if (Util.isStrEquals(type, 'inpType')) {
+                    value = Util.isStrEmpty(obj.dict) ? obj.type : 'dict';
+                }
+                return value;
 //                $(this.element).parents('#div_default_search').find('#inp_logical_relationship').liger().selected.code
             }
 
