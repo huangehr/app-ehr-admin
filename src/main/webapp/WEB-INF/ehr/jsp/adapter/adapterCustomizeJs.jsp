@@ -7,6 +7,8 @@
 
     /* ************************** 变量定义 ******************************** */
     var dialog = frameElement.dialog;
+    var version = '${version}';
+    var planId = '${planId}';
     //标准定制变量
     var adapterCustomize = null;
     var fromTree;
@@ -50,6 +52,19 @@
     }
   /* ************************** 函数定义结束 **************************** */
 
+    function getAllData(){
+      var allData = $.ajax({
+        dataType: 'json',
+        url: "${contextRoot}/adapter/getAdapterCustomizeData",
+        data: {version: version, planId: planId},
+        async: false
+      }).responseText;
+      if(allData=='false'){
+        $.Notice.error("数据获取失败！");
+        throw new Error("数据获取失败！");
+      }
+      return eval('(' + allData + ')');
+    }
   /* *************************** 模块初始化 ***************************** */
     adapterCustomize = {
       $treeFrom:$("#tree_from"),
@@ -71,12 +86,9 @@
           childIcon: null,
           adjustToWidth: true
         };
-        var allData = JSON.parse('${allData}');
+        var allData = getAllData();
         var stdDataSet = allData.stdDataSet;
         var adapterDataSet = allData.adapterDataSet;
-        //var stdDataSet = JSON.parse('${stdDataSet}');
-        //var adapterDataSet = JSON.parse('${adapterDataSet}');
-//        debugger;
         //来源树对象（ligerTree对象）
         fromTree = self.$treeFrom.ligerTree($.extend({},defaults,{
           data:stdDataSet,

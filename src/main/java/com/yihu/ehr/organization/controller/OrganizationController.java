@@ -97,7 +97,7 @@ public class OrganizationController extends BaseUIController {
         Envelop envelop = new Envelop();
         try {
             //获取地址的 ids
-            String addrIds = "";
+          /*  String addrIds = "";
             if (!"".equals(province)) {
                 String urlAddr = "/geographies";
                 Map<String, Object> args = new HashMap<>();
@@ -114,7 +114,7 @@ public class OrganizationController extends BaseUIController {
                     String[] addrIdsArrays = addrList.toArray(new String[addrList.size()]);
                     addrIds = String.join(",", addrIdsArrays);
                 }
-            }
+            }*/
 
             //分页查询机构列表
             String url = "/organizations";
@@ -129,15 +129,18 @@ public class OrganizationController extends BaseUIController {
             if (!StringUtils.isEmpty(orgType)) {
                 filters += "orgType=" + orgType + ";";
             }
-            //添加地址过滤条件
+           /* //添加地址过滤条件
             if (!"".equals(addrIds)) {
                 filters += "location=" + addrIds + ";";
-            }
+            }*/
             params.put("fields", "");
             params.put("filters", filters);
             params.put("sorts", "");
             params.put("size", rows);
             params.put("page", page);
+            params.put("province", province);
+            params.put("city", city);
+            params.put("district", district);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {

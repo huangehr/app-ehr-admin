@@ -334,9 +334,9 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
+//            LogService.getLogger(DictController.class).error(ex.getMessage());
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg("数据加载失败！");
             return result;
         }
     }
@@ -813,7 +813,7 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
+//            LogService.getLogger(DictController.class).error(ex.getMessage());
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;

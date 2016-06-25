@@ -75,7 +75,7 @@
                     <input type="text" id="inp_systemDictEntity_value" class="required useTitle max-length-100" required-title=<spring:message code="lbl.must.input"/> />
                 </div>
             </div>
-            <div class="m-form-group">
+            <div class="m-form-group" style="display: none">
                 <label>序号:</label>
                 <div class="l-text-wrapper m-form-control">
                     <input type="text" id="inp_systemDictEntity_sort" class="max-length-11 validate-digits" />
@@ -106,7 +106,7 @@
                     <input type="text" id="inp_update_systemDictEntity_value" class="required useTitle" data-attr-scan="value" required-title=<spring:message code="lbl.must.input"/>  />
                 </div>
             </div>
-            <div class="m-form-group">
+            <div class="m-form-group" style="display: none">
                 <label>序号:</label>
                 <div class="l-text-wrapper m-form-control">
                     <input type="text" id="inp_update_systemDictEntity_sort" class="validate-digits" data-attr-scan="sort"  />
