@@ -56,8 +56,7 @@ public class AuthenticationController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             model.addAttribute("envelop",envelopStr);
             Map<String,Object> params = new HashMap<>();
-            // 测试用 object_id
-            params.put("object_id","0dae0003565ebea49b10c5241790f84e");
+            params.put("object_id",id);
 //            params.put("mime","patient");
             String envelopStrImgPath = HttpClientUtil.doGet(comUrl+"/files_path",params,username,password);
             model.addAttribute("imgPath",envelopStrImgPath);

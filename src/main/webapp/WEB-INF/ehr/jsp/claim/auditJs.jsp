@@ -10,10 +10,9 @@
             var recordGrid = null;
             var reloadData = null;
             var unrelevanceDialog = null;
-debugger
             var claimModel = ${claimModel};
-            delete claimModel.obj['statusName'];
-            delete claimModel.obj['visOrgName'];
+//            delete claimModel.obj['statusName'];
+//            delete claimModel.obj['visOrgName'];
 //            claimModel.obj.applyDate = new Date(claimModel.obj.applyDate);
 //            claimModel.obj.auditDate = new Date(claimModel.obj.auditDate);
 //            claimModel.obj.applyDate = '2016-06-22T13:41:11Z+0800';
@@ -64,28 +63,28 @@ debugger
 
                 init: function () {
                     var self = this;
-                    self.$matchingAnalyseTime.ligerTextBox({width: 240, height: 25});
-                    self.$matchingAnalyseOrg.ligerTextBox({width: 240, height: 25});
-                    self.$matchingAnalyseDoctor.ligerTextBox({width: 240, height: 25});
-                    self.$matchingCardNmuber.ligerTextBox({width: 240, height: 25});
-                    self.$matchingAnalyseOut.ligerTextBox({width: 240, height: 25});
-                    self.$matchingExaminePro.ligerTextBox({width: 240, height: 25});
-                    self.$matchingAnalyseDrug.ligerTextBox({width: 240, height: 25});
-                    self.$matchingRemark.ligerTextBox({width: 240, height: 25});
+                    self.$matchingAnalyseTime.ligerTextBox({width: 200, height: 25});
+                    self.$matchingAnalyseOrg.ligerTextBox({width: 200, height: 25});
+                    self.$matchingAnalyseDoctor.ligerTextBox({width: 200, height: 25});
+                    self.$matchingCardNmuber.ligerTextBox({width: 200, height: 25});
+                    self.$matchingAnalyseOut.ligerTextBox({width: 200, height: 25});
+                    self.$matchingExaminePro.ligerTextBox({width: 200, height: 25});
+                    self.$matchingAnalyseDrug.ligerTextBox({width: 200, height: 25});
+                    self.$matchingRemark.ligerTextBox({width: 200, height: 25});
 
-                    self.$applyAnalyseTime.ligerTextBox({width: 240, height: 25});
-                    self.$applyAnalyseOrg.ligerTextBox({width: 240, height: 25});
-                    self.$applyAnalyseDoctor.ligerTextBox({width: 240, height: 25});
-                    self.$applyCardNmuber.ligerTextBox({width: 240, height: 25});
-                    self.$applyAnalyseOut.ligerTextBox({width: 240, height: 25});
-                    self.$applyExaminePro.ligerTextBox({width: 240, height: 25});
-                    self.$applyAnalyseDrug.ligerTextBox({width: 240, height: 25});
-                    self.$applyRemark.ligerTextBox({width: 240, height: 25});
+                    self.$applyAnalyseTime.ligerTextBox({width: 200, height: 25});
+                    self.$applyAnalyseOrg.ligerTextBox({width: 200, height: 25});
+                    self.$applyAnalyseDoctor.ligerTextBox({width: 200, height: 25});
+                    self.$applyCardNmuber.ligerTextBox({width: 200, height: 25});
+                    self.$applyAnalyseOut.ligerTextBox({width: 200, height: 25});
+                    self.$applyExaminePro.ligerTextBox({width: 200, height: 25});
+                    self.$applyAnalyseDrug.ligerTextBox({width: 200, height: 25});
+                    self.$applyRemark.ligerTextBox({width: 200, height: 25});
 
                     self.$unrelevanceeElse.ligerRadio();
 
 //                    $($('.sp-matching-change-btn')[0]).addClass('f-dn');
-                    $('.sp-lift-btn').css('background','url()')
+                    $('.sp-lift-btn').css('background','url()');
                     reloadData.reloadAuditData(claimModel.obj, self.$applyForm);
                     reloadData.reloadAuditData(ApplyStrModel.detailModelList[0], self.$matchingForm);
 
@@ -128,10 +127,12 @@ debugger
                         var relationModel = {idCard:claimModel.obj.idCard,arApplyId:claimModel.obj.id,archiveId:data.id,status:'0'}
                         $.ligerDialog.confirm('是否确认关联？<br>是否确认关联？操作后无法更改。', function (yes) {
                             if (yes) {
+                                var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                                 dataModel.updateRemote("${contextRoot}/audit/addArRelations", {
                                     data: {relationModel:JSON.stringify(relationModel)},
                                     async: true,
                                     success: function (data) {
+                                        dialog.close();
                                         if (data.successFlg) {
                                             $.Notice.success('关联成功。');
                                         } else {
@@ -148,7 +149,7 @@ debugger
                             height: 330,
                             width: 400,
                             title: '请选择不通过的原意',
-                            target: self.$unrelevanceForm
+                            url: '${contextRoot}/audit/auditDialog'
                         });
                     });
                     self.$unrelevanceSaveBtn.click(function () {
@@ -157,11 +158,13 @@ debugger
                         var data = self.$unrelevanceForm.Fields.getValues();
                         debugger
 
+                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
                         claimModel.obj.auditReason = data.unrelevanceeElse;
                         dataModel.updateRemote("${contextRoot}/audit/updateClaim", {
                             data: {jsonModel:JSON.stringify(claimModel.obj)},
                             async: true,
                             success: function (data) {
+                                dialog.close();
                                 if (data.successFlg) {
                                     $.Notice.success('保存成功。');
                                 } else {
@@ -214,18 +217,18 @@ debugger
 
             reloadData = {
                 reloadAuditData: function (data, ele) {
-                    ele.attrScan();
-                    ele.Fields.fillValues({
-                        id:data.id,
-                        visDate: data.visDate,
-                        visOrg: data.visOrg,
-                        visDoctor: data.visDoctor,
-                        cardNo: data.cardNo,
-                        diagnosedResult: data.diagnosedResult,
-                        diagnosedProject: data.diagnosedProject,
-                        medicines: data.medicines,
-                        memo: data.memo
-                    });
+//                    ele.attrScan();
+//                    ele.Fields.fillValues({
+//                        id:data.id,
+//                        visDate: data.visDate,
+//                        visOrg: data.visOrg,
+//                        visDoctor: data.visDoctor,
+//                        cardNo: data.cardNo,
+//                        diagnosedResult: data.diagnosedResult,
+//                        diagnosedProject: data.diagnosedProject,
+//                        medicines: data.medicines,
+//                        memo: data.memo
+//                    });
                 }
             };
             /* *************************** 检索模块初始化结束 ***************************** */
