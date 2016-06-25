@@ -163,7 +163,12 @@
             disableGlobalDnd: true,
             fileNumLimit: 300,
             fileSizeLimit: 200 * 1024 * 1024,    // 200 M
-            fileSingleSizeLimit: 50 * 1024 * 1024
+            fileSingleSizeLimit: 50 * 1024 * 1024,
+            accept: {
+                title: 'Images',
+                extensions: 'jpg,png,jpeg,gif,bmp',
+                mimeTypes: 'image/*'
+            }
         });
 
         // 拖拽时不接受 js, txt 文件。
