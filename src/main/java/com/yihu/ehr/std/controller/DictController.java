@@ -334,9 +334,9 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
+//            LogService.getLogger(DictController.class).error(ex.getMessage());
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg("数据加载失败！");
             return result;
         }
     }
@@ -813,7 +813,7 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
+//            LogService.getLogger(DictController.class).error(ex.getMessage());
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
@@ -932,7 +932,6 @@ public class DictController  extends BaseUIController {
             DictEntryModel dictEntryModel;
             String code;//字典项编码
             String name;//字典项名称
-            String desc;//字典项说明
 
             for (Sheet sheet : sheets) {
                 dictModel = new DictModel();
@@ -941,7 +940,6 @@ public class DictController  extends BaseUIController {
                 sheetName = sheet.getName(); //sheet名字
                 dictCode = sheet.getCell(1, 0).getContents();//代码
                 dictName = sheet.getCell(1, 1).getContents();//名称
-                dictDesc = sheet.getCell(1, 2).getContents();//名称
 
                 //字典校验
                 if (dictCode==null || dictCode.equals("")){
@@ -959,7 +957,6 @@ public class DictController  extends BaseUIController {
                 //插入字典信息
                 dictModel.setCode(dictCode);//
                 dictModel.setName(dictName);
-                dictModel.setDescription(dictDesc);
                 dictModel.setId(0);//内部自增长
                 dictModel.setStdVersion(versionCode);
                 dictModel.setAuthor(userId);
@@ -975,7 +972,6 @@ public class DictController  extends BaseUIController {
                     dictEntryModel = new DictEntryModel();
                     code = sheet.getCell(3, j).getContents();//字典项编码
                     name = sheet.getCell(4, j).getContents();//字典项名称
-                    desc = sheet.getCell(5, j).getContents();//字典项名称
 
                     //字典项校验
                     if (code==null || code.equals("")){
@@ -1001,7 +997,6 @@ public class DictController  extends BaseUIController {
                     dictEntryModel.setId(0);//为0内部自增
                     dictEntryModel.setCode(code);
                     dictEntryModel.setValue(name);
-                    dictEntryModel.setDesc(desc);
                     dictEntryModelList.add(dictEntryModel);
                     //todo：test--测试时备注做区别，方便删除测试
                     //dictEntryModel.setDesc("测试excel导入");

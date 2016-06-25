@@ -5,6 +5,7 @@
 		$(function () {
 			var Util = $.Util;
 			var authenticationId = '${id}';
+			var imgPath = ${imgPath}.detailModelList;
 			var dataModel = ${dataModel};
 			function pageInit() {
 				dataInfo.init();
@@ -30,6 +31,15 @@
 						idCardEffective:info.idCardEffective,
 						medicalCardNo:info.medicalCardNo,
 					});
+					$('#div_image_left_large').html('<img style="max-width:500px;" onclick="document.getElementById('+"'div_image_left_large'"+').style.display = '+"'none'"
+							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[3])+'" alt="图片加载失败！" />');
+					$('#div_image_left').html('<img class="div_image" onclick="document.getElementById('+"'div_image_left_large'"+').style.display ='+"'block'"+
+							'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[3])+'" title="点击查看大图" alt="图片加载失败！" />');
+
+					$('#div_image_right_large').html('<img style="max-width:500px;" onclick="document.getElementById('+"'div_image_right_large'"+').style.display = '+"'none'"
+							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[4])+'" alt="图片加载失败！" />');
+					$('#div_image_right').html('<img class="div_image" onclick="document.getElementById('+"'div_image_right_large'"+').style.display ='+"'block'"+
+							'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[4])+'" title="点击查看大图" alt="图片加载失败！" />');
 				},
 				bindEvents:function(){
 					//返回上一页

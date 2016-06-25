@@ -39,7 +39,7 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
 
     @RequestMapping("/getCDAListByVersionAndKey")
     @ResponseBody
-    public Object getCDAListByVersionAndKey(String version, String searchName, int page, int rows) {
+    public Object getCDAListByVersionAndKey(String version, String searchName,String searchParm, int page, int rows) {
         String url = "/cda/cdas";
         try {
             PageParms pageParms =
@@ -47,7 +47,10 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
                             .setFields("id,name")
                             .addExt("version", version)
                             .addGroupNotNull("name", searchName, "g1")
-                            .addGroupNotNull("code", searchName, "g1");
+                            .addGroupNotNull("code", searchName, "g1")
+                            .addGroupNotNull("name",PageParms.LIKE,searchParm, "g1")
+                            .addGroupNotNull("code",PageParms.LIKE, searchParm, "g1");
+
             String resultStr = service.search(url, pageParms);
             return formatComboData(resultStr, "id", "name");
         } catch (Exception e) {

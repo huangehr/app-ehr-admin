@@ -268,6 +268,7 @@ public class PatientController extends BaseUIController {
                 String tag = "联系电话";
                 telphoneNo.put(tag, patientDetailModel.getTelephoneNo());
                 patientDetailModel.setTelephoneNo(toJson(telphoneNo));
+                patientDetailModel.setBirthday(patientDetailModel.getBirthday()+" 00:00:00");
 
                 imageId = fileUpload(patientDetailModel.getIdCardNo(),restStream,imageName);
                 if (!StringUtils.isEmpty(imageId)) {

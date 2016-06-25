@@ -8,11 +8,11 @@ import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.resource.model.RsMetaMsgModel;
 import com.yihu.ehr.resource.service.MetaService;
-
 import com.yihu.ehr.util.excel.AExcelReader;
-import com.yihu.ehr.util.excel.ExcelRWFactory;
 import com.yihu.ehr.util.excel.ObjectFileRW;
 import com.yihu.ehr.util.excel.TemPath;
+import com.yihu.ehr.util.excel.read.RsMetaMsgModelReader;
+import com.yihu.ehr.util.excel.read.RsMetaMsgModelWriter;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.web.RestTemplates;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -78,7 +80,7 @@ public class MetaController extends ExtendController<MetaService> {
                     + new String((f.substring(0, f.length()-4)+".xls").getBytes("gb2312"), "ISO8859-1"));
 
 //            toClient = new BufferedOutputStream(response.getOutputStream());
-            ExcelRWFactory.getWriter(RsMetaMsgModel.class).write(toClient, (List) ObjectFileRW.read(file));
+            new RsMetaMsgModelWriter().write(toClient, (List) ObjectFileRW.read(file));
             toClient.flush();
             toClient.close();
         } catch (Exception e) {
@@ -168,7 +170,7 @@ public class MetaController extends ExtendController<MetaService> {
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
-            AExcelReader excelReader = ExcelRWFactory.getReader(RsMetaMsgModel.class);
+            AExcelReader excelReader = new RsMetaMsgModelReader();
             excelReader.read(file.getInputStream());
             List<RsMetaMsgModel> errorLs = excelReader.getErrorLs();
             List<RsMetaMsgModel> correctLs = excelReader.getCorrectLs();

@@ -683,6 +683,7 @@ public class DataSetsController extends BaseUIController {
                 metaDataList = new ArrayList<>();
                 rows = sheet.getRows();
                 for (int j = 0; j < rows - 5; j++) {
+                    dictId = 0;
                     metaData = new MetaDataModel();
                     row = j + 5;
                     innerCode = sheet.getCell(1, row).getContents();//内部标识
@@ -726,14 +727,14 @@ public class DataSetsController extends BaseUIController {
                     //关联字典是否已经导入
                     if (!StringUtils.isEmpty(dictCode)){
                         dictParams = new HashMap<>();
-                        dictFilters = "code?" + dictCode;
+                        dictFilters = "code=" + dictCode + " g1";
                         dictParams.put("filters", dictFilters);
                         dictParams.put("version",versionCode);
                         dictParams.put("page", 1);
                         dictParams.put("size", 1);
                         resultStr = HttpClientUtil.doGet(comUrl + dictUrl, dictParams, username, password);
                         envelopTemp = getEnvelop(resultStr);
-                        if (envelopTemp.isSuccessFlg()){
+                        if (envelopTemp.getDetailModelList().size()!= 0){
                             dictModelList = (List<DictModel>)getEnvelopList(envelopTemp.getDetailModelList(),new ArrayList<DictModel>(),DictModel.class) ;
                             dictId = dictModelList.get(0).getId();
                         }else{

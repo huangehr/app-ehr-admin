@@ -437,12 +437,12 @@
             var parms={};
             $("input[name=dictName]").ligerComboBox({
               condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-              grid: getGridOptions(true,widthOption,url,parms),
+              grid: getGridOptions(true,widthOption*2,url,parms),
               valueField: "name",
               textField: "name",
-              width : widthOption-10,
+              width : widthOption-widthOption*0.08,
               selectBoxHeight : widthOption+50,
-              selectBoxWidth:widthOption,
+              selectBoxWidth:widthOption*2,
               onSelected: function(id,name){//name为选择的值
                 if(this.grid==undefined) return;
                 var rowData  = this.grid.getSelected();
@@ -474,12 +474,12 @@
             url = "${contextRoot}/resource/dict/entry/list";
             $("input[name=dictEntryCode]").ligerComboBox({
               condition: { inputWidth:100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-              grid: getGridOptionsByDictEntry(true,widthOption,url),
+              grid: getGridOptionsByDictEntry(true,widthOption*2,url),
               valueField: "code",
               textField: "code",
-              width : widthOption-10,
+              width : widthOption-widthOption*0.08,
               selectBoxHeight : widthOption+50,
-              selectBoxWidth:240,
+              selectBoxWidth:widthOption*2,
               onSelected: function(id,name){//name为选择的值
                 if(this.grid==undefined||name=="") return;
                 var rowData  = this.grid.getSelected();

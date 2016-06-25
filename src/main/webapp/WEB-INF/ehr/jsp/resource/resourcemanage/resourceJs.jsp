@@ -46,6 +46,7 @@
 					$('#div_tree').mCustomScrollbar();
 					this.$search.ligerTextBox({width:220,isSearch: true, search: function () {
 						categoryName = $("#inp_search").val();
+						typeTree.selectNode('');
 						typeTree.s_search(categoryName);
 						if(categoryName == ''){
 							typeTree.collapseAll();

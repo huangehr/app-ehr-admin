@@ -8,6 +8,9 @@
 	#div_content{width: 500px;height: 420px;margin: 0 auto}
 	#div_left{width: 49%;height: 330px;float: left;}
 	#div_right{width:49%;height: 330px;float: right;}
+	.div_image_large{
+		position: fixed; top:0px;  width: 500px;height:600px; padding: 10px; margin:0px auto; text-align: center;
+		overflow: hidden; z-index: 9990; display: none;}
 	.div_image{height:220px;width: 180px;border: 1px solid #CCCCCC;margin: 0px auto;background-color: #CCCCCC}
 </style>
 

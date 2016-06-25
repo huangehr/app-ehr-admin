@@ -11,7 +11,7 @@
 
         var model = ${model};
         var dict = parent.getSelected();
-        model.dictCode = dict.dictCode;
+        model.dictCode = dict.code;
         model.dictId = dict.id;
         var mode = '${mode}';
 
@@ -31,7 +31,7 @@
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
                 if(field=='ipt_code' && val!=model.code){
-                    return uniqValid(urls.existence, "code="+val+";dictCode="+ model +" g1" .dictCode, "值域编码已存在！");
+                    return uniqValid(urls.existence, "code="+val+";dictCode="+ model.dictCode +" g1", "值域编码已存在！");
                 }
             });
 

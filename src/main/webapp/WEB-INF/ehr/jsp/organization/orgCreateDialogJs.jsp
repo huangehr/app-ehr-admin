@@ -190,16 +190,20 @@
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
+                            uploader.options.successCallBack=function(){
+                                win.parent.closeAddOrgInfoDialog(function () {
+                                    win.parent.$.Notice.success('保存成功！');
+                                });
+                            }
+                            uploader.options.formData.objectId = data.obj.orgCode;
                             if (data.successFlg) {
                                 if($(".filelist li").length>0) {
-                                    uploader.options.formData.objectId = data.obj.orgCode;
                                     uploader.options.server="${contextRoot}/file/upload/image";
-                                    uploader.options.successCallBack=function(){
-                                        win.parent.closeAddOrgInfoDialog(function () {
-                                            win.parent.$.Notice.success('保存成功！');
-                                        });
-                                    }
                                     $(".uploadBtn").click();
+                                }else{
+                                    win.parent.closeAddOrgInfoDialog(function () {
+                                        win.parent.$.Notice.success('保存成功！');
+                                    });
                                 }
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
