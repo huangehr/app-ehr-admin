@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/time_out")
+@RequestMapping("/out")
 public class TimeOutController {
 
     @RequestMapping(value = "")
