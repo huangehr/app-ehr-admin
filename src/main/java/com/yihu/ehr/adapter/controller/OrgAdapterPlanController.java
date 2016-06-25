@@ -48,13 +48,14 @@ public class OrgAdapterPlanController extends ExtendController<OrgAdapterPlanSer
     public Object getAdapterCustomize(Model model, Long planId, String version) {
 
         try {
-            String url = "/adapter/plan/adapterCustomizes/" + planId;
-            String resultStr = "";
-            Map<String, Object> params = new HashMap<>();
-            params.put("version", version);
-            resultStr = HttpClientUtil.doGet(service.comUrl + url, params, service.username, service.password);
+//            String url = "/adapter/plan/adapterCustomizes/" + planId;
+//            String resultStr = "";
+//            Map<String, Object> params = new HashMap<>();
+//            params.put("version", version);
+//            resultStr = HttpClientUtil.doGet(service.comUrl + url, params, service.username, service.password);
             model.addAttribute("planId", planId);
-            model.addAttribute("allData", resultStr);
+            model.addAttribute("version", version);
+//            model.addAttribute("allData", resultStr);
             model.addAttribute("contentPage", "/adapter/adapterCustomize");
             return "generalView";
         } catch (Exception e) {
@@ -166,6 +167,25 @@ public class OrgAdapterPlanController extends ExtendController<OrgAdapterPlanSer
             return envelop;
         } catch (Exception ex) {
             return systemError();
+        }
+    }
+
+    /**
+     * 获取标准数据以及定制数据
+     */
+    @RequestMapping("/getAdapterCustomizeData")
+    @ResponseBody
+    public Object getAdapterCustomizeData(Model model, Long planId, String version) {
+
+        try {
+            String url = "/adapter/plan/adapterCustomizes/" + planId;
+            Map<String, Object> params = new HashMap<>();
+            params.put("version", version);
+            String resultStr = HttpClientUtil.doGet(service.comUrl + url, params, service.username, service.password);
+            return resultStr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "false";
         }
     }
 }

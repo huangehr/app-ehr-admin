@@ -23,12 +23,12 @@
                 dictRetrieve.init();
                 conditionArea.init();
                 entryRetrieve.init();
+                entryMater.init();
                 //versionStage=getStagedByValue();
             }
 
             function getStagedByValue()
             {
-                //debugger;
                 var _value = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                 if (!_value && _value == "") return false;
                 var data = $("#stdDictVersion").ligerComboBox().data;
@@ -159,9 +159,6 @@
                                 {display: '字典名称', name: 'name', width: '34%', isAllowHide: false, align: 'left'},
                                 {
                                     display: '操作', name: 'operator', width: '33%', render: function (row) {
-//					var html ='<div class="grid_edit"  style="" title="" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "stddict:dictInfo:open", row.id,'modify') + '"></div>'
-//							+'<div class="grid_delete"  style="" title=""' +
-//							' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "stddict:dictInfoGrid:delete", row.id) + '"></div>';
                                     var html = '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "stddict:dictInfo:open", row.id, 'modify') + '"></a>' +
                                             '<a class="grid_delete" href="#" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "stddict:dictInfoGrid:delete", row.id) + '"></a>';
                                     return html;
@@ -173,7 +170,11 @@
                             unSetValidateAttr: false,
                             allowHideColumn: false,
                             onBeforeShowData: function (data) {
-                                if (data.totalCount == 0) {
+                                if(!data.successFlg){
+                                    $.Notice.error("数据加载失败！");
+                                    entryMater.reloadGrid(1, '');
+                                }
+                                else if (data.totalCount == 0) {
                                     entryMater.reloadGrid(1, '');
                                 }
                             },
@@ -186,7 +187,6 @@
                             },
                             onSelectRow: function (row) {
                                 selectRowObj = row;
-                                entryMater.init();
                                 entryMater.reloadGrid(1);
                             }
                         }));
@@ -254,7 +254,6 @@
                                 dataModel.updateRemote('${contextRoot}/cdadict/deleteDict', {
                                     data: {dictId: id, cdaVersion: stdDictVersion},
                                     success: function (data) {
-                                        debugger
                                         if(data.successFlg){
                                             $.Notice.success('删除成功！');
                                             dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
