@@ -74,7 +74,7 @@
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
                 this.$location.ligerComboBox({width: 240});
-                this.$tags.ligerTextBox({width: 240, height: 28});
+                this.$tags.ligerTextBox({width: 240, height: 100});
                 this.$admin.ligerTextBox({width: 240, height: 28});
                 this.$tel.ligerTextBox({width: 240, height: 28});
                 this.$tel.removeClass('l-text-field-number');
@@ -285,6 +285,9 @@
                             "</li>"
                 }
                 $("#filelist").html(html);
+                if ('${mode}' == 'view') {
+                    $(".file-panel").hide();
+                }
                 doGetImg(1,imgLop.detailModelList[0]);
             }
             $("#filelist .cancel").bind("click",function(){
