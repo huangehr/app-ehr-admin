@@ -74,7 +74,7 @@
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
                 this.$location.ligerComboBox({width: 240});
-                this.$tags.ligerTextBox({width: 240, height: 100});
+                this.$tags.ligerTextBox({width: 240, height: 56});
                 this.$admin.ligerTextBox({width: 240, height: 28});
                 this.$tel.ligerTextBox({width: 240, height: 28});
                 this.$tel.removeClass('l-text-field-number');
@@ -130,6 +130,8 @@
                     this.$selectPublicKeyStartTime.show();
                     this.$filePicker.addClass("hidden");
                     $("#filePicker2").hide();
+                    $('#div_organization_info_form textarea').attr("disabled","disabled");
+                    $(".m-form-control .l-text-trigger-cancel").remove();
                 }
                 if ('${mode}' == 'modify') {
                     //this.$publicManage.hide();
