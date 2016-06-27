@@ -53,12 +53,8 @@
                 $applyRemark: $("#inp_apply_remark"),
 
                 $matchingRecordGrid: $("#div_matching_record_grid"),
-                $unrelevanceForm: $("#div_unrelevance_form"),
-                $unrelevanceeElse: $('input[name="unrelevanceeElse"]', this.$unrelevanceForm),
                 $relevanceBtn: $("#div_relevance_btn"),
                 $unrelevanceBtn: $("#div_unrelevance_btn"),
-                $unrelevanceSaveBtn: $("#div_unrelevance_save_btn"),
-                $unrelevanceCancelBtn: $("#div_unrelevance_cancel_btn"),
                 $matchingChangeBtn: $(".sp-matching-change-btn"),
 
                 init: function () {
@@ -81,7 +77,6 @@
                     self.$applyAnalyseDrug.ligerTextBox({width: 200, height: 25});
                     self.$applyRemark.ligerTextBox({width: 200, height: 25});
 
-                    self.$unrelevanceeElse.ligerRadio();
 
 //                    $($('.sp-matching-change-btn')[0]).addClass('f-dn');
                     $('.sp-lift-btn').css('background','url()');
@@ -103,7 +98,6 @@
                             {display: '医生', name: 'visDoctor', width: '25%', align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '25%', render: function (row) {
-//                                var data = encodeURIComponent(JSON.stringify(row));
                                 var jsonStr = JSON.stringify(row);
                                 var html = '<a class="" title="详细对比" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}'])", "audit:auditInfo:open", jsonStr) + '>详细对比</a>';
                                 return html;
@@ -120,10 +114,8 @@
                     var cont = 0;
 
                     self.$relevanceBtn.click(function () {
-
                         self.$matchingForm.attrScan();
                         var data = self.$matchingForm.Fields.getValues();
-                        debugger
                         var relationModel = {idCard:claimModel.obj.idCard,arApplyId:claimModel.obj.id,archiveId:data.id,status:'0'}
                         $.ligerDialog.confirm('是否确认关联？<br>是否确认关联？操作后无法更改。', function (yes) {
                             if (yes) {
@@ -149,37 +141,15 @@
                             height: 330,
                             width: 400,
                             title: '请选择不通过的原意',
-                            url: '${contextRoot}/audit/auditDialog'
-                        });
-                    });
-                    self.$unrelevanceSaveBtn.click(function () {
-                        $("#inp_else").val($(".tet-else").val());
-                        self.$unrelevanceForm.attrScan();
-                        var data = self.$unrelevanceForm.Fields.getValues();
-                        debugger
-
-                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
-                        claimModel.obj.auditReason = data.unrelevanceeElse;
-                        dataModel.updateRemote("${contextRoot}/audit/updateClaim", {
-                            data: {jsonModel:JSON.stringify(claimModel.obj)},
-                            async: true,
-                            success: function (data) {
-                                dialog.close();
-                                if (data.successFlg) {
-                                    $.Notice.success('保存成功。');
-                                } else {
-                                    $.Notice.error('保存失败。');
-                                }
+//                            load:true,
+                            url: '${contextRoot}/audit/auditDialog',
+                            urlParms: {
+                                jsonModel:JSON.stringify(claimModel.obj)
                             }
                         });
-                        unrelevanceDialog.close();
-                    });
-                    self.$unrelevanceCancelBtn.on("click", function () {
-                        unrelevanceDialog.close();
                     });
 
                     self.$matchingChangeBtn.click(function () {
-                        debugger
                         var dataModel = ApplyStrModel.detailModelList;
                         var eleId = $(this).attr('id');
                         switch (eleId) {
@@ -208,7 +178,6 @@
                     });
                     $.subscribe('audit:auditInfo:open', function (event, jsonStr) {
                         var jsonObj = JSON.parse(jsonStr);
-                        debugger
                         claimId = jsonObj.id;
                         reloadData.reloadAuditData(jsonObj, self.$matchingForm);
                     })
@@ -217,19 +186,23 @@
 
             reloadData = {
                 reloadAuditData: function (data, ele) {
-//                    ele.attrScan();
-//                    ele.Fields.fillValues({
-//                        id:data.id,
-//                        visDate: data.visDate,
-//                        visOrg: data.visOrg,
-//                        visDoctor: data.visDoctor,
-//                        cardNo: data.cardNo,
-//                        diagnosedResult: data.diagnosedResult,
-//                        diagnosedProject: data.diagnosedProject,
-//                        medicines: data.medicines,
-//                        memo: data.memo
-//                    });
+                    ele.attrScan();
+                    ele.Fields.fillValues({
+                        id:data.id,
+                        visDate: data.visDate,
+                        visOrg: data.visOrg,
+                        visDoctor: data.visDoctor,
+                        cardNo: data.cardNo,
+                        diagnosedResult: data.diagnosedResult,
+                        diagnosedProject: data.diagnosedProject,
+                        medicines: data.medicines,
+                        memo: data.memo
+                    });
                 }
+            };
+            win.closeAuditDialog = function (msg) {
+                unrelevanceDialog.close();
+                $.Notice.success(msg);
             };
             /* *************************** 检索模块初始化结束 ***************************** */
 

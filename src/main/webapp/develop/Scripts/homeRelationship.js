@@ -34,10 +34,10 @@ home.list={
             },
             async: true,
             columns: [
-                {display: '姓名', name: 'name', align: 'left'},
-                {display: '年龄', name: 'age', align: 'left'},
-                {display: '关系', name: 'relationShipName', align: 'left'},
-                {display: '关联时间', name: 'relationTime', align: 'left'}
+                {display: '姓名', name: 'name', align: 'left',width:'25%'},
+                {display: '年龄', name: 'age', align: 'left',width:'15%'},
+                {display: '关系', name: 'relationShipName', align: 'left',width:'20%'},
+                {display: '关联时间', name: 'relationTime', align: 'left',width:'40%'}
             ],
             pageSizeOptions: [10, 15, 20, 30, 40, 50],
             pageSize: 15,

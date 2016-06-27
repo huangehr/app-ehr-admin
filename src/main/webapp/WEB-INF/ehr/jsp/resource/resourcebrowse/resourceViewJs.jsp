@@ -13,6 +13,8 @@
             var height = $(window).height();
             var defaultWidth = $("#div-f-w1").width();
             var defaultWidthAndOr = $("#div-f-w2").width();
+            var windowHeight = $(window).height();
+            var searcHheight = $(".div-search-height").height();
             //检索模块初始化
             var resourceData = ${dataModel};
             var resourcesCode = resourceData.resourceCode;
@@ -126,7 +128,7 @@
                                     url: '${contextRoot}/resourceBrowse/searchResourceData',
                                     parms: {searchParams: '', resourcesCode: resourcesCode},
                                     columns: columnModel,
-                                    height: 680,
+                                    height: windowHeight - (searcHheight + 235),
                                     checkbox: true
                                 }));
                             }
