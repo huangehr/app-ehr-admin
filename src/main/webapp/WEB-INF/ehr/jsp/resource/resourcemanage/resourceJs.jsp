@@ -91,6 +91,7 @@
 									"height": "22px"
 								});
 							}
+							$('#div_resource_browse_tree').parent().css("height","100%")
 							if(backParams.typeFilter){
 								$('#inp_search').val(backParams.typeFilter);
 								typeTree.s_search(backParams.typeFilter);
@@ -179,7 +180,13 @@
 							urlParms:{
 								id:resourceId,
 								mode:mode,
-								categoryId:categoryId
+								categoryId:categoryId,
+								callbackParams:JSON.stringify({
+									sourcePage:1,
+									sourceSize:15,
+									sourceFilter:'',
+									categoryFilter:''
+								})
 							},
 							load:true
 						});
@@ -264,6 +271,24 @@
 				isFirstPage = false;
 				master.rsInfoDialog.close();
 			};
+			//新增、修改（资源分类有修改情况）定位
+			win.locationTree = function(callbackParams){
+				if(!callbackParams){
+					master.reloadGrid();
+					return
+				}
+				var select = function(id){
+					if(id){
+						var parentId = $('#'+id).parent().parent().attr("id");
+						$('#'+id+' >.l-body>.l-expandable-close').click()
+						select(parentId);
+					}
+				}
+				$("#inp_search").val(callbackParams.typeFilter);
+				typeTree.s_search(callbackParams.typeFilter);
+				select(callbackParams.categoryId);
+
+			}
 			/* ************************* dialog回调函数结束 ************************** */
 
 			/* *************************** 页面初始化 **************************** */
