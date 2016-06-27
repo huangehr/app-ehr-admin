@@ -277,7 +277,7 @@
                     html+="<li id='WU_FILE_"+(parseInt(j)+1)+"' class=\"state-complete\">"+
                             "<p class=\"title\">服务器图片"+(parseInt(j)+1)+".JPG</p>"+
                             "<p class=\"imgWrap\">"+
-                            "<img style='height: auto;' id='imageview"+(parseInt(j)+1)+"'></p><p class=\"progress\"><span style=\"display: none; width: 0px;\">"+
+                            "<img style='height: 100%;' id='imageview"+(parseInt(j)+1)+"'></p><p class=\"progress\"><span style=\"display: none; width: 0px;\">"+
                             " </span>"+
                             "</p>"+
                             "<span class=\"success\"></span>"+
