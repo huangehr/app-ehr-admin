@@ -103,6 +103,11 @@
 								$('#inp_searchNm').val(backParams.sourceFilter)
 								typeTree.selectNode(id);
 							}
+							var treeW = $('#div_resource_browse_tree').width();
+							if(treeW >=372){
+								$('#div_resource_browse_tree').addClass("tree_type");
+								$('#div_resource_browse_tree .l-body').css("width","500px")
+							}
 //							else{
 //								var defaultNode = $('#div_resource_browse_tree li')[0];
 //								typeTree.selectNode(defaultNode);
