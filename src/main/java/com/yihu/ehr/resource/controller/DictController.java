@@ -141,7 +141,7 @@ public class DictController extends ExtendController<DictService> {
             if(errorLs.size()>0){
                 String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
                 new RsDictionaryMsgWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
-                rs.put("eFile", eFile.split("\\\\"));
+                rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
             }
             writerResponse(response, 65 + "", "l_upd_progress");
 

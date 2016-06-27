@@ -54,6 +54,7 @@
 
     function getAllData(){
       var allData = $.ajax({
+        dataType: 'json',
         url: "${contextRoot}/adapter/getAdapterCustomizeData",
         data: {version: version, planId: planId},
         async: false

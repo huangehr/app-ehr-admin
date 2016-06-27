@@ -7,7 +7,6 @@
     var webRoot=$("#hd_url").val();
     exports.list = list;
     var staged = $.Util.getUrlQueryString('staged');
-    var isReady = true;
     var base = {
         p: {},
         grid: null,
@@ -85,7 +84,7 @@
             //else { jq_search[0].addEventListener("input", base.searchEvent, false); };
         },
         searchEvent: function () {
-            if(staged=='false'&&isReady==false){
+            if(staged=='false'){
                 return false;
             }
             var jq_search = $("#txb-key");
@@ -123,7 +122,6 @@
         onAfterShowData: function(currentData){
             if(currentData.Rows.length==base.p.storage.length){
                 $('#pane-list').find('.l-grid-header1').find('.l-grid-hd-row').addClass('l-checked');
-                isReady = false;
             }
         },
         onChecked: function (checked, data, rowid, rowdata) {
@@ -186,17 +184,17 @@
             }
         },
         onBeforeCheckRow:function(){
-            if(staged=='false'&&isReady==false){
+            if(staged=='false'){
                 return false;
             }
         },
         onBeforeCheckAllRow:function(){
-            if(staged=='false'&&isReady==false){
+            if(staged=='false'){
                 return false;
             }
         },
         onBeforeSelectRow:function(){
-            if(staged=='false'&&isReady==false){
+            if(staged=='false'){
                 return false;
             }
         },
@@ -229,7 +227,7 @@
                 .click(function () { $("#pane-list-selected").addClass("changed"); base.deleteItem($(this).data("data")); });
         },
         deleteItem: function (data) {
-            if(staged=='false'&&isReady==false){
+            if(staged=='false'){
                 return false;
             }
             var uniqueField = base.p.uniqueField,

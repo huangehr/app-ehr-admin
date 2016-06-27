@@ -335,7 +335,7 @@
                     addSystemDictEntityDialog = $.ligerDialog.open({
                         title: '新增字典详情',
                         width: 416,
-                        height: 320,
+                        height: 250,
                         target: self.$addSystemDictEntityDialog
                     });
                     //新增、修改字典详情验证
@@ -373,7 +373,7 @@
                     updateSystemDictEntityDialog = $.ligerDialog.open({
                         title: '修改字典详情',
                         width: 416,
-                        height: 320,
+                        height: 250,
                         target: self.$updateSystemDictEntityDialog
                     });
                     var validateEntityUpdate = new jValidation.Validation(self.$updateSystemDictEntityDialog, {immediate: true, onSubmit: false,
