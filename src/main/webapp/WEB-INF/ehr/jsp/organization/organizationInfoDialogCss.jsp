@@ -33,4 +33,5 @@
     .f-mt-20{ margin-top: -20px; }
     .m-combo-tab.f-dn.on { top: 28px;  bottom: 35px;  border-bottom: 1px #ddd solid;}
     #filelist .file-panel{ height: 30px !important;}
+    .m-form-readonly textarea{pointer-events: auto}
 </style>

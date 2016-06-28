@@ -50,6 +50,8 @@
 				}
 				if(mode == 'view'){
 					appInfoForm.$form.addClass('m-form-readonly');
+                    $('#div_app_info_form textarea').attr("disabled","disabled");
+                    $(".m-form-control .l-text-trigger-cancel").remove();
 					$("#btn_save").hide();
 					$("#btn_cancel").hide();
 					//$("input,select", this.$form).prop('disabled', false);
