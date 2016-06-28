@@ -32,14 +32,14 @@
 						medicalCardNo:info.medicalCardNo,
 					});
 					$('#div_image_left_large').html('<img style="max-width:500px;" onclick="document.getElementById('+"'div_image_left_large'"+').style.display = '+"'none'"
-							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[3])+'" alt="图片加载失败！" />');
+							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[0])+'" alt="图片加载失败！" />');
 					$('#div_image_left').html('<img class="div_image" onclick="document.getElementById('+"'div_image_left_large'"+').style.display ='+"'block'"+
-							'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[3])+'" title="点击查看大图" alt="图片加载失败！" />');
+							'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[0])+'" title="点击查看大图" alt="图片加载失败！" />');
 
 					$('#div_image_right_large').html('<img style="max-width:500px;" onclick="document.getElementById('+"'div_image_right_large'"+').style.display = '+"'none'"
-							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[4])+'" alt="图片加载失败！" />');
+							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[1])+'" alt="图片加载失败！" />');
 					$('#div_image_right').html('<img class="div_image" onclick="document.getElementById('+"'div_image_right_large'"+').style.display ='+"'block'"+
-							'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[4])+'" title="点击查看大图" alt="图片加载失败！" />');
+							'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[1])+'" title="点击查看大图" alt="图片加载失败！" />');
 				},
 				bindEvents:function(){
 					//返回上一页
