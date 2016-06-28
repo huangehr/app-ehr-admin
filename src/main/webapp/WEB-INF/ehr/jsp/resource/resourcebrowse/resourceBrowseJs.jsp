@@ -175,6 +175,7 @@
                 init: function (objectId, resourcesCode) {
                     var self = retrieve;
                     var columnModel = new Array();
+                    var sh = $(".div-search-height").height();
                     //获取列名
                     if (!Util.isStrEmpty(objectId)) {
                         dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {
@@ -190,8 +191,9 @@
                                     url: '${contextRoot}/resourceBrowse/searchResourceData',
                                     parms: {searchParams: '', resourcesCode: resourcesCode},
                                     columns: columnModel,
-                                    height: 680,
-                                    checkbox: true
+                                    height: windowHeight - (sh + 230),
+                                    checkbox: true,
+                                    isScroll:true
                                 }));
                             }
                         });

@@ -7,6 +7,7 @@ import jxl.Workbook;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class RsDictionaryMsgWriter extends AExcelWriter {
             WritableSheet ws;
             int i = 0;
             for (RsDictionaryMsg m : (List<RsDictionaryMsg>) ls) {
-                ws = wwb.createSheet(m.getName(), i);
+                ws = wwb.createSheet(StringUtils.isEmpty(m.getName())? "sheet" +i : m.getName() , i);
                 addHeader(ws);
                 addCell(ws, 0, 1, m.getCode(), m.findErrorMsg("code"));
                 addCell(ws, 1, 1, m.getName(), m.findErrorMsg("name"));

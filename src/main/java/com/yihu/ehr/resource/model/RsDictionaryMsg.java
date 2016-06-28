@@ -39,6 +39,12 @@ public class RsDictionaryMsg extends ExcelUtil implements Validation {
             rs = 0;
             addErrorMsg("code", "代码重复！" );
         }
+
+        if(!RegUtil.regLen(name)){
+            rs = 0;
+            addErrorMsg("name", RegUtil.lenMsg);
+        }
+
         return rs;
     }
 
