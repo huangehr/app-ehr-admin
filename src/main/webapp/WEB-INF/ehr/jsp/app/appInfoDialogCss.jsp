@@ -4,4 +4,5 @@
 <style>
     #inp_url { height: 50px; }
     #inp_description { height: 100px; }
+    .m-form-readonly textarea{pointer-events: auto}
 </style>

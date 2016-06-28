@@ -150,35 +150,6 @@
     </div>
     <div id="temp"></div>
 
-    <div class="f-dn f-ml20 u-public-manage m-form-inline" id="div_unrelevance_form" data-role-form>
-        <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan value="提供的内容不够完善，有多条档案相似">提供的内容不够完善，有多条档案相似<br>
-        </div>
-        <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大">诊断结果差异较大<br>
-        </div>
-        <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大">检查项目差异较大<br>
-        </div>
-        <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断结果差异较大">诊断开药差异较大<br>
-        </div>
-        <div class="f-mt10 f-mb10">
-            <input type="radio" name="unrelevanceeElse" data-attr-scan id="inp_else">其他<br>
-            <textarea class="tet-else"></textarea><br>
-        </div>
-
-        <div class="m-form-control pane-attribute-toolbar div-unrelevance-reason-btn f-pa f-mb10">
-            <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_unrelevance_save_btn">
-                <span>确认</span>
-            </div>
-            <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar"
-                 id="div_unrelevance_cancel_btn">
-                <span>取消</span>
-            </div>
-        </div>
-    </div>
-
     <div id="div_matching_record_grid" class="f-fl f-audit-fw100"></div>
 
 </div>
