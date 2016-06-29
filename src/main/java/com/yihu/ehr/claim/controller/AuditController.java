@@ -64,16 +64,16 @@ public class AuditController extends BaseUIController {
         mArApplyListTest.add(mArApplyTest2);
         envelopTest.setDetailModelList(mArApplyListTest);
 
-//        String url = "/archive/applications/1"+claimId;
-        String url = "/archive/applications/5";
+        claimId = "5";//todo test id
+        String url = "/archive/applications/"+claimId;
         Map<String, Object> params = new HashMap<>();
         String resultStr = null;
         String ApplyStr = null;
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            params.put("filters", "id=" + claimId);
-            url = ServiceApi.Patients.ArApplications;
-//            ApplyStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+//            params.put("filters", "id=" + claimId);
+            url = "/archive/applications/"+claimId+"/archive_info";
+            ApplyStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,6 +82,7 @@ public class AuditController extends BaseUIController {
         model.addAttribute("claimModel", resultStr);
         model.addAttribute("contentPage", "claim/audit");
         model.addAttribute("ApplyStr", toJson(envelopTest));
+//        model.addAttribute("ApplyStr", ApplyStr);
         return "pageView";
     }
 

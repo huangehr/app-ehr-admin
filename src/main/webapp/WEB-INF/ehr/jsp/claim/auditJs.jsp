@@ -11,24 +11,16 @@
             var reloadData = null;
             var unrelevanceDialog = null;
             var claimModel = ${claimModel};
-//            delete claimModel.obj['statusName'];
-//            delete claimModel.obj['visOrgName'];
-//            claimModel.obj.applyDate = new Date(claimModel.obj.applyDate);
-//            claimModel.obj.auditDate = new Date(claimModel.obj.auditDate);
-//            claimModel.obj.applyDate = '2016-06-22T13:41:11Z+0800';
-
             var ApplyStrModel = ${ApplyStr};
             var auditHeight = $(".div-audit-msg").height();
             var windowHeight = $(window).height();
             var dataModel = $.DataModel.init();
             // 页面表格条件部模块
-
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 recordInfo.init();
                 recordInfo.recordGridInfo();
             }
-
 
             /* *************************** 检索模块初始化 ***************************** */
             recordInfo = {
@@ -77,21 +69,16 @@
                     self.$applyAnalyseDrug.ligerTextBox({width: 200, height: 25});
                     self.$applyRemark.ligerTextBox({width: 200, height: 25});
 
-
-//                    $($('.sp-matching-change-btn')[0]).addClass('f-dn');
                     $('.sp-lift-btn').css('background','url()');
                     reloadData.reloadAuditData(claimModel.obj, self.$applyForm);
                     reloadData.reloadAuditData(ApplyStrModel.detailModelList[0], self.$matchingForm);
 
                 },
-
                 recordGridInfo: function () {
                     var self = this;
                     recordGrid = self.$matchingRecordGrid.ligerGrid($.LigerGridEx.config({
                         data: ApplyStrModel,
-                        <%--url: '${contextRoot}/user/searchUsers',--%>
-                        width: $(window).width() - 210,
-                        height: windowHeight - (auditHeight + 185),
+                        height: windowHeight - (auditHeight + 230),
                         columns: [
                             {display: '就诊时间', name: 'visDate', width: '25%', align: 'left'},
                             {display: '就诊机构', name: 'visOrg', width: '25%', isAllowHide: false, align: 'left'},
@@ -103,7 +90,8 @@
                                 return html;
                             }
                             }
-                        ]
+                        ],
+//                        isScroll:false,
 
                     }));
                     self.clicks();
@@ -112,7 +100,6 @@
                     var self = this;
                     var claimId = ApplyStrModel.detailModelList[0].id;
                     var cont = 0;
-
                     self.$relevanceBtn.click(function () {
                         self.$matchingForm.attrScan();
                         var data = self.$matchingForm.Fields.getValues();
@@ -135,20 +122,17 @@
                             }
                         });
                     });
-
                     self.$unrelevanceBtn.click(function () {
                         unrelevanceDialog = $.ligerDialog.open({
                             height: 330,
                             width: 400,
                             title: '请选择不通过的原意',
-//                            load:true,
                             url: '${contextRoot}/audit/auditDialog',
                             urlParms: {
                                 jsonModel:JSON.stringify(claimModel.obj)
                             }
                         });
                     });
-
                     self.$matchingChangeBtn.click(function () {
                         var dataModel = ApplyStrModel.detailModelList;
                         var eleId = $(this).attr('id');
@@ -158,18 +142,14 @@
                                 if (cont<=0) {
                                     $('.sp-lift-btn').css('background','url()');
                                     $('.sp-right-btn').css('background','url(${staticRoot}/images/Right_btn_pre.png)');
-//                                    $($('.sp-matching-change-btn')[0]).addClass('f-dn');
-//                                    $($('.sp-matching-change-btn')[1]).removeClass('f-dn');
                                     cont = 0;
                                 }
                                 break;
                             default:
                                 cont++;
                                 if (dataModel.length<=cont+1) {
-//                                    $($('.sp-matching-change-btn')[1]).addClass('f-dn');
                                     $('.sp-lift-btn').css('background','url(${staticRoot}/images/Left_btn_pre.png)');
                                     $('.sp-right-btn').css('background','url()');
-//                                    $($('.sp-matching-change-btn')[0]).removeClass('f-dn');
                                     cont = dataModel.length-1;
                                 }
                                 break;
@@ -183,7 +163,6 @@
                     })
                 }
             };
-
             reloadData = {
                 reloadAuditData: function (data, ele) {
                     ele.attrScan();

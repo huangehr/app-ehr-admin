@@ -18,8 +18,9 @@
             <input type="radio" name="unrelevanceeElse" data-attr-scan value="诊断开药差异较大">诊断开药差异较大<br>
         </div>
         <div class="f-mt10 f-mb10 m-form-readonly">
-            <input type="radio" name="unrelevanceeElse" class="required useTitle ajax"  id="inp_else">其他<br>
-            <textarea class="tet-else required useTitle ajax" required-title="2" data-attr-scan ></textarea><br>
+            <input type="radio" name="unrelevanceeElse" id="inp_else">其他<br>
+            <textarea class="tet-else ajax" data-attr-scan ></textarea><br>
+            <span class="f-ml25 f-dn"><b>请输入原因</b></span>
         </div>
 
         <div class="m-form-control pane-attribute-toolbar div-unrelevance-reason-btn f-pa f-mb10">
