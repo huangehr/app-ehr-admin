@@ -181,7 +181,9 @@ public class ReaderCreator {
 
         StringBuilder str = new StringBuilder();
         if((annotation = clz.getAnnotation(Sheet.class))!=null)
-            str.append("ws = wwb.createSheet(m.get"+ firstToUpper(((Sheet)annotation).name())+"(), i);\naddHeader(ws);\n");
+
+            str.append("ws = wwb.createSheet(StringUtils.isEmpty(m.get"+ firstToUpper(((Sheet)annotation).name()) +"())? \"sheet\" +i : m.get"+ firstToUpper(((Sheet)annotation).name()) +"(), i);\naddHeader(ws);\n");
+//            str.append("ws = wwb.createSheet(m.get"+ firstToUpper(((Sheet)annotation).name())+"(), i);\naddHeader(ws);\n");
 
         Class childClz=null;
         Location location;

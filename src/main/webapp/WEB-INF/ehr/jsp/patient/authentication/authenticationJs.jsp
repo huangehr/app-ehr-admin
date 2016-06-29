@@ -82,7 +82,6 @@
 							status:searchParms.status,
 							name:searchParms.name,
 							page:searchParms.page ,
-							pageSize:searchParms.pageSize,
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
@@ -99,13 +98,16 @@
 								return html;
 							}}
 						],
-						page:searchParms.page,
 						pageSize:searchParms.pageSize,
 						enabledEdit: true,
 						validate: true,
 						unSetValidateAttr: false,
 					}));
 					infoGrid.adjustToWidth();
+					delete infoGrid.options.parms.page;
+					if(searchParms.page >1){
+						infoGrid.options.newPage = searchParms.page;
+					}
 					this.bindEvents();
 				},
 				reloadGrid: function () {

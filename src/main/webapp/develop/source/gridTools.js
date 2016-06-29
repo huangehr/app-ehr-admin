@@ -19,6 +19,16 @@ function addLockBtn(clkFun){
 }
 
 /**
+ * 操作栏添加生效按钮
+ * @param clkFun 点击事件
+ * @returns {string}
+ */
+function addActiveBtn(clkFun){
+
+    return '<a class="grid_active" title="生效" href="#" onclick="javascript:' + clkFun + '"></a>'
+}
+
+/**
  * 操作栏添加删除按钮
  * @param clkFun 点击事件
  * @returns {string}
@@ -56,6 +66,8 @@ function initGridOperator(vo, spiltFlag){
                 html = addDelBtn(v.clkFun);
             else if(v.type == 'lock')
                 html = addLockBtn(v.clkFun);
+            else if(v.type == 'active')
+                html = addActiveBtn(v.clkFun);
             else
                 html = addTextBtn(v.type, v.clkFun);
             oprs.push(html);

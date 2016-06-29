@@ -182,31 +182,28 @@ public class MetaController extends ExtendController<MetaService> {
                 dictCodes += "," + code;
             }
             List saveLs = new ArrayList<>();
-            if(correctLs.size()>0){
-                Set<String> ids = findExistId(toJson(excelReader.getRepeat().get("id")));
-                String domains = getSysDictEntries(31);
-                String columnTypes = getSysDictEntries(30);
-                String nullAbles = "[0,1]";
-                Map dictIds = null;
-                if(dictCodes.length()>0)
-                    dictIds = getDictIds(dictCodes.substring(1));
-                writerResponse(response, 35+"", "l_upd_progress");
 
-                RsMetaMsgModel model;
-                for(int i=0; i<correctLs.size(); i++){
-                    model = correctLs.get(i);
-                    if(validate(model, ids, domains, columnTypes, dictIds, nullAbles, 1)==0)
-                        errorLs.add(model);
-                    else
-                        saveLs.add(model);
-                }
-
-                for(int i=0; i<errorLs.size(); i++){
-                    model = errorLs.get(i);
-                    validate(model, ids, domains, columnTypes, dictIds, nullAbles, 1);
-                }
-                writerResponse(response, 55+"", "l_upd_progress");
+            Set<String> ids = findExistId(toJson(excelReader.getRepeat().get("id")));
+            String domains = getSysDictEntries(31);
+            String columnTypes = getSysDictEntries(30);
+            String nullAbles = "[0,1]";
+            Map dictIds = null;
+            if(dictCodes.length()>0)
+                dictIds = getDictIds(dictCodes.substring(1));
+            writerResponse(response, 35+"", "l_upd_progress");
+            RsMetaMsgModel model;
+            for(int i=0; i<correctLs.size(); i++){
+                model = correctLs.get(i);
+                if(validate(model, ids, domains, columnTypes, dictIds, nullAbles, 1)==0)
+                    errorLs.add(model);
+                else
+                    saveLs.add(model);
             }
+            for(int i=0; i<errorLs.size(); i++){
+                model = errorLs.get(i);
+                validate(model, ids, domains, columnTypes, dictIds, nullAbles, 1);
+            }
+            writerResponse(response, 55+"", "l_upd_progress");
 
             String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".dat");
             ObjectFileRW.write(new File(TemPath.getFullPath(eFile, parentFile)),errorLs);
@@ -223,6 +220,20 @@ public class MetaController extends ExtendController<MetaService> {
         }
     }
 
+    @RequestMapping("/active")
+    @ResponseBody
+    public Object delete(String ids){
+
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("id", nullToSpace(ids));
+            String rs = service.doPut(service.comUrl+ "/resources/metadata/active", params);
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return systemError();
+        }
+    }
 
 
     private int validate(RsMetaMsgModel model, Set<String> ids, String domains,
@@ -232,18 +243,18 @@ public class MetaController extends ExtendController<MetaService> {
             model.addErrorMsg("id", "该资源标准编码已存在！");
             rs = 0;
         }
-
-        if(!domains.contains(model.getDomain())){
+        int i = 0;
+        if((i=domains.indexOf(model.getDomain()))==0 || i==-1){
             model.addErrorMsg("domain", "只能是"+ domains +"里的值！");
             rs = 0;
         }
 
-        if(!columnTypes.contains(model.getColumnType())){
+        if( (i=columnTypes.indexOf(model.getColumnType()))==0 || i==-1 ){
             model.addErrorMsg("columnType", "只能是"+ columnTypes +"里的值！");
             rs = 0;
         }
 
-        if(!nullAbles.contains(model.getNullAble())){
+        if( (i=nullAbles.indexOf(model.getNullAble()))==0 || i==-1 ){
             model.addErrorMsg("nullAble", "只能是"+ nullAbles +"里的值！");
             rs = 0;
         }
