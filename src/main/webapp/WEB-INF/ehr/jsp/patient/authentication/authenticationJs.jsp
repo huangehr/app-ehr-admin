@@ -105,6 +105,9 @@
 					}));
 					infoGrid.adjustToWidth();
 					delete infoGrid.options.parms.page;
+					if(searchParms.page >1){
+						infoGrid.options.newPage = searchParms.page;
+					}
 					this.bindEvents();
 				},
 				reloadGrid: function () {

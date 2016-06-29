@@ -13,6 +13,20 @@
             var catalogDictId = 1;
             var statusDictId = 2;
 			var isFirstPage = true;
+
+			//初始检索条件、page、pageSize
+			var appPageParams = JSON.parse(sessionStorage.getItem('appPageParams'))
+			sessionStorage.removeItem('appPageParams');
+			var searchParms = {
+				searchNm:appPageParams && appPageParams.searchNm || '',
+				org:appPageParams && appPageParams.org || '',
+				catalog:appPageParams && appPageParams.catalog || '',
+				status:appPageParams && appPageParams.status || '',
+				page:appPageParams && appPageParams.page || 1,
+				pageSize:appPageParams && appPageParams.pageSize || 15,
+			}
+
+
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 retrieve.init();
@@ -37,25 +51,27 @@
                 $searchBtn: $('#btn_search'),
                 $addBtn: $('#btn_add'),
                 init: function () {
-                    this.initDDL(catalogDictId, $('#ipt_catalog'));
-                    this.initDDL(statusDictId, $('#ipt_status'));
-                    this.$searchNm.ligerTextBox({width: 240});
-					this.$searchOrg.ligerTextBox({width:240});
+                    this.initDDL(catalogDictId, $('#ipt_catalog'),searchParms.catalog);
+                    this.initDDL(statusDictId, $('#ipt_status'),searchParms.status);
+					this.$searchNm.ligerTextBox({width: 240,value:searchParms.searchNm});
+					this.$searchOrg.ligerTextBox({width:240,value:searchParms.org});
+
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
                 },
-                initDDL: function (dictId, target) {
+                initDDL: function (dictId, target,initValue) {
                     var target = $(target);
                     var dataModel = $.DataModel.init();
                     dataModel.fetchRemote("${contextRoot}/dict/searchDictEntryList",{data:{dictId: dictId,page: 1, rows: 10},
                         success: function(data) {
-                            target.ligerComboBox({
+                            var comboBox = target.ligerComboBox({
                                 valueField: 'code',
                                 textField: 'value',
                                 data: [].concat({code:'',value:''},data.detailModelList),
 								width:160,
                             });
+							comboBox.setValue(initValue);//设置初始值
                         }});
                 },
             };
@@ -66,10 +82,11 @@
                     this.grid = $("#div_app_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/app/searchApps',
                         parms: {
-                            searchNm: '',
-							org: '',
-                            catalog: '',
-                            status: ''
+							searchNm:searchParms.searchNm,
+							org: searchParms.org,
+							catalog: searchParms.catalog,
+							status: searchParms.status,
+							page:searchParms.page
                         },
                         columns: [
 							{ display: 'APP ID',name: 'id', width: '10%',isAllowHide: false},
@@ -101,6 +118,8 @@
 								return html;
                             }}
                         ],
+						pageSize:searchParms.pageSize,
+
 						enabledSort:true,
                         enabledEdit: true,
                         validate : true,
@@ -110,6 +129,12 @@
 							$.publish("app:appInfo:open",[row.id,'view']);
                         },
                     }));
+
+					delete master.grid.options.parms.page;
+					if(searchParms.page >1){
+						master.grid.options.newPage = searchParms.page;
+					}
+
                     this.bindEvents();
                     this.grid.adjustToWidth();
                 },
@@ -125,6 +150,15 @@
                     var values = retrieve.$element.Fields.getValues();
 					reloadGrid.call(this, values);
                 },
+
+				//获取当前页面检索条件及页面分页信息,并保存到session中
+				savePageParamsToSession: function(){
+					var values = retrieve.$element.Fields.getValues();
+					values.page = parseInt($('.pcontrol input', master.grid.toolbar).val());
+					values.pageSize = $(".l-bar-selectpagesize select", master.grid.toolbar).val();
+					sessionStorage.setItem("appPageParams",JSON.stringify(values));
+				},
+
                 bindEvents: function () {
 					//检索按钮
 					retrieve.$searchBtn.click(function () {
@@ -136,6 +170,7 @@
 					});
 					//新增、修改、查看统一定制方法
                     $.subscribe('app:appInfo:open',function(event,appId,mode){
+						isFirstPage = false;
                         var title = '';
                         if(mode == 'modify'){title = '修改应用信息';};
 						if(mode == 'new'){title = '新增应用信息';};
@@ -172,6 +207,9 @@
                     });
 					//资源授权页面跳转
 					$.subscribe('app:resource:list', function (event, appId,name,catalogName) {
+
+						master.savePageParamsToSession();
+
 						var data = {
 							'appId':appId,
 							'appName':name,

@@ -13,7 +13,7 @@
 	<div id="div_content" class="f-ww contentH">
 		<div id="div_left" class="f-w240 f-bd f-of-hd">
 			<div class="f-mt10 f-mb10 f-ml10 f-w240">
-				<input type="text" id="inp_search" class="f-ml10 f-h28"/>
+				<input type="text" id="inp_search" placeholder="请输入资源分类名称" class="f-ml10 f-h28"/>
 			</div>
 			<!--资源浏览树-->
 			<div id="div_tree" class="f-w230">

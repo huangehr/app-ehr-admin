@@ -31,13 +31,13 @@
 						idCardEffective:info.idCardEffective,
 						medicalCardNo:info.medicalCardNo,
 					});
-					$('#div_image_left_large').html('<img style="max-width:500px;" onclick="document.getElementById('+"'div_image_left_large'"+').style.display = '+"'none'"
-							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[0])+'" alt="图片加载失败！" />');
-					$('#div_image_left').html('<img class="div_image" onclick="document.getElementById('+"'div_image_left_large'"+').style.display ='+"'block'"+
+					$('#div_image_left_large').html('<img style="max-width:500px;" title="点击还原" onclick="document.getElementById('+"'div_image_left_large'"+').style.display = '+"'none'"
+							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[0])+'"/>');
+					$('#div_image_left').html('<img class="div_image" onclick="document.getElementById('+"'div_image_left_large'"+').style.display ='+"'block';"+'document.getElementById('+"'div_image_right_large'"+').style.display = '+"'none'"+
 							'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[0])+'" title="点击查看大图" alt="图片加载失败！" />');
 
-					$('#div_image_right_large').html('<img style="max-width:500px;" onclick="document.getElementById('+"'div_image_right_large'"+').style.display = '+"'none'"
-							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[1])+'" alt="图片加载失败！" />');
+					$('#div_image_right_large').html('<img style="max-width:500px;" title="点击还原" onclick="document.getElementById('+"'div_image_right_large'"+').style.display = '+"'none';"+'document.getElementById('+"'div_image_left_large'"+').style.display = '+"'none'"
+							+'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[1])+'"/>');
 					$('#div_image_right').html('<img class="div_image" onclick="document.getElementById('+"'div_image_right_large'"+').style.display ='+"'block'"+
 							'" src="${contextRoot}/authentication/showImage?timestamp='+(new Date()).valueOf()+'&&imgPath='+encodeURI(imgPath[1])+'" title="点击查看大图" alt="图片加载失败！" />');
 				},
