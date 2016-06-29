@@ -173,13 +173,6 @@
 						}
 					}));
 					this.resourceInfoGrid.adjustToWidth();
-
-					//--------------------
-					delete master.resourceInfoGrid.options.parms.page;
-					if(searchParams.page >1){
-						master.resourceInfoGrid.options.newPage = searchParams.page;
-					}
-					//---------------------
 					this.bindEvents();
 				},
 				reloadGrid: function () {
