@@ -37,9 +37,8 @@ public class ResourceController extends BaseUIController {
     ObjectMapper objectMapper;
 
     @RequestMapping("/initial")
-    public String resourceInitial(Model model,String backParams){
+    public String resourceInitial(Model model){
         model.addAttribute("contentPage","/resource/resourcemanage/resource");
-        model.addAttribute("backParams",backParams==""?"{\"categoryIds\":\"\",\"sourceFilter\":\"\"}":backParams);
         return "pageView";
     }
     @RequestMapping("/infoInitial")

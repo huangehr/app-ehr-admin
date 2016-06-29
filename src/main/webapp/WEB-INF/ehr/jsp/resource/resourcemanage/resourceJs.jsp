@@ -10,13 +10,24 @@
 			var master = null;
 			var isFirstPage = true;
 			var categoryId = '';
-			var backParams = ${backParams};
 			var typeTree = null;
 			var switchUrl = {
 				configUrl:'${contextRoot}/resourceConfiguration/initial',
 				grantUrl:'${contextRoot}/resource/grant/initial',
 				viewUrl:'${contextRoot}/resourceView/initial'
 			}
+
+			var rsPageParams = JSON.parse(sessionStorage.getItem('rsPageParams'));
+			sessionStorage.removeItem('rsPageParams');
+			var searchParams = {
+				categoryId:rsPageParams&&rsPageParams.categoryId || '',
+				categorySearchNm:rsPageParams &&rsPageParams.categorySearchNm || '',
+				resourceSearchNm:rsPageParams&&rsPageParams.resourceSearchNm || '',
+				page:rsPageParams&&rsPageParams.page || 1,
+				pageSize:rsPageParams&&rsPageParams.pageSize || 15,
+			}
+
+
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
 				resizeContent();
@@ -27,10 +38,28 @@
 				if (isFirstPage){
 					master.resourceInfoGrid.options.newPage = 1;
 				}
+				if(searchParams.page >1){
+					master.resourceInfoGrid.options.newPage = searchParams.page;//只针对跳转页面返回时
+					searchParams.page = 1;//重置
+				}
 				master.resourceInfoGrid.setOptions({parms: params});
 				master.resourceInfoGrid.loadData(true);
 				isFirstPage = true;
-			}
+			};
+			//由跳转页面返回资源注册页面时的页面初始化-------------
+			function treeNodeInit (id){
+				if(!id){return}
+				function expandNode (id){
+					var level = $($('#'+id).parent()).parent().attr('outlinelevel')
+					if(level){
+						var parentId = $($('#'+id).parent()).parent().attr('id')
+						$($($('#'+id).parent()).prev()).children(".l-expandable-close").click()//展开节点
+						expandNode(parentId);
+					}
+				}
+				expandNode(id);
+				typeTree.selectNode(id);
+			};
 			/* *************************** 模块初始化 ***************************** */
 			retrieve = {
 				typeTree: null,
@@ -43,8 +72,10 @@
 				init: function () {
 					var self = this;
 					var categoryName = '';
-					$('#div_tree').mCustomScrollbar();
-					this.$search.ligerTextBox({width:220,isSearch: true, search: function () {
+					$('#div_tree').mCustomScrollbar({
+						axis:"yx"
+					});
+					this.$search.ligerTextBox({width:220,value:searchParams.categorySearchNm,isSearch: true, search: function () {
 						categoryName = $("#inp_search").val();
 						typeTree.selectNode('');
 						typeTree.s_search(categoryName);
@@ -59,7 +90,7 @@
 						};
 						reloadGrid(parms);
 					}});
-					this.$searchNm.ligerTextBox({width:240,isSearch: true, search: function () {
+					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
 						var parms = {
 							'searchNm':searchNm,
@@ -91,28 +122,13 @@
 									"height": "22px"
 								});
 							}
-							$('#div_resource_browse_tree').parent().css("height","100%")
-							if(backParams.typeFilter){
-								$('#inp_search').val(backParams.typeFilter);
-								typeTree.s_search(backParams.typeFilter);
+							if(!Util.isStrEmpty(searchParams.categorySearchNm)){
+								$('#inp_search').val(searchParams.categorySearchNm);
+								typeTree.s_search(searchParams.categorySearchNm);
 							}
-							if(backParams.categoryIds){
-								var categoryIds = backParams.categoryIds;
-								typeTree.s_searchForLazy(categoryIds);
-								var ids = categoryIds.split(",");
-								var id = ids[ids.length-1];
-								$('#inp_searchNm').val(backParams.sourceFilter)
-								typeTree.selectNode(id);
+							if(!Util.isStrEmpty(searchParams.categoryId)){
+								treeNodeInit(searchParams.categoryId)
 							}
-							var treeW = $('#div_resource_browse_tree').width();
-							if(treeW >=372){
-								$('#div_resource_browse_tree').addClass("tree_type");
-								$('#div_resource_browse_tree .l-body').css("width","500px")
-							}
-//							else{
-//								var defaultNode = $('#div_resource_browse_tree li')[0];
-//								typeTree.selectNode(defaultNode);
-//							}
 						},
 					});
 				},
@@ -147,6 +163,7 @@
 								return html;
 							}}
 						],
+						pageSize:searchParams.pageSize,
 						checkbox: false,
 						validate : true,
 						unSetValidateAttr:false,
@@ -156,12 +173,30 @@
 						}
 					}));
 					this.resourceInfoGrid.adjustToWidth();
+
+					//--------------------
+					delete master.resourceInfoGrid.options.parms.page;
+					if(searchParams.page >1){
+						master.resourceInfoGrid.options.newPage = searchParams.page;
+					}
+					//---------------------
 					this.bindEvents();
 				},
 				reloadGrid: function () {
 					var searchNm = $('#inp_searchNm').val();
 					reloadGrid.call(this,{'searchNm':searchNm,'categoryId': categoryId});
 				},
+
+				saveParamsToSession:function(){
+					var values = {};
+					values.categoryId = categoryId;
+					values.categorySearchNm = $("#inp_search").val();
+					values.resourceSearchNm = $('#inp_searchNm').val();
+					values.page = parseInt($('.pcontrol input', master.resourceInfoGrid.toolbar).val());
+					values.pageSize = $(".l-bar-selectpagesize select", master.resourceInfoGrid.toolbar).val();
+					sessionStorage.setItem("rsPageParams",JSON.stringify(values));
+				},
+
 				bindEvents: function () {
 					//新增修改
 					$('#btn_add').click(function(){
@@ -181,12 +216,6 @@
 								id:resourceId,
 								mode:mode,
 								categoryId:categoryId,
-								callbackParams:JSON.stringify({
-									sourcePage:1,
-									sourceSize:15,
-									sourceFilter:'',
-									categoryFilter:''
-								})
 							},
 							load:true
 						});
@@ -212,31 +241,17 @@
 							}
 						})
 					});
-					//配置、浏览页面跳转
+					//配置、浏览、授权页面跳转
 					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url,resourceCode){
-						var dataModel = $.DataModel.init();
-						dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
-							data:{categoryId:categoryId},
-							async:true,
-							success: function(data) {
-								if (data.successFlg) {
-									var data = {
-										'resourceId':resourceId,
-										'resourceName':resourceName,
-										'resourceSub':categoryName,
-										'categoryIds':data.obj,
-										'resourceCode':resourceCode,
-										'backParams':{
-											'categoryIds':data.obj,
-											'sourceFilter':$('#inp_searchNm').val(),
-											'typeFilter':$('#inp_search').val(),
-										}
-									}
-									$("#contentPage").empty();
-									$("#contentPage").load(url,{dataModel:JSON.stringify(data)});
-								}
-							},
-						});
+						master.saveParamsToSession();
+						var data = {
+							'resourceId':resourceId,
+							'resourceName':resourceName,
+							'resourceSub':categoryName,
+							'resourceCode':resourceCode,
+						}
+						$("#contentPage").empty();
+						$("#contentPage").load(url,{dataModel:JSON.stringify(data)});
 					});
 				},
 			};
@@ -256,16 +271,13 @@
 				resizeContent();
 			});
 
-			//未修改所属资源类别时，只刷新右侧列表；有修改所属资源类别时，左侧树重新定位，刷新右侧列表
-			win.reloadMasterUpdateGrid = function (callbackParams) {
-				if(!callbackParams){
+			//新增修改所属资源类别为默认时，只刷新右侧列表；有修改所属资源类别时，左侧树重新定位，刷新右侧列表
+			win.reloadMasterUpdateGrid = function (categoryIdNew) {
+				if(!categoryIdNew){
 					master.reloadGrid();
 					return
 				}
-				$("#inp_search").val(callbackParams.typeFilter);
-				typeTree.s_search(callbackParams.typeFilter);
-				typeTree.s_searchForLazy(callbackParams.categoryIds);
-				typeTree.selectNode(callbackParams.categoryId);
+				treeNodeInit(categoryIdNew);
 			};
 			win.closeRsInfoDialog = function (callback) {
 				isFirstPage = false;
