@@ -384,10 +384,12 @@
           var widthOption = $("#div_relation_grid").width()*0.2-5
           if(cfgModel==0){
             var url = "${contextRoot}/resource/meta/combo";
-            var parms={};
+            var parms={"filters":"valid=1"};
+            var opintion = getGridOptions(false,widthOption*3,url,parms);
             $("input[name=metadataId]").ligerComboBox({
             condition: { inputWidth: widthOption ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "value", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-            grid: getGridOptions(false,widthOption*3,url,parms),
+            grid: opintion,
+            parms:parms,
             valueField: "code",
             textField: "code",
             width : widthOption-10,
@@ -412,7 +414,8 @@
               entryMater.save(saveData);
             },
             conditionSearchClick: function (g) {
-              var param = g.rules.length>0? "id?"+g.rules[0].value +" g1;name?"+g.rules[0].value+" g1": '';
+              debugger;
+              var param = g.rules.length>0? "id?"+g.rules[0].value +" g1;name?"+g.rules[0].value+" g1;valid=1": 'valid=1';
               param = {"filters":param}
               g.grid.set({
                 parms: param,
@@ -437,7 +440,7 @@
             var parms={};
             $("input[name=dictName]").ligerComboBox({
               condition: { inputWidth: 100 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
-              grid: getGridOptions(true,widthOption*2,url,parms),
+              grid: getGridOptions(true,widthOption*2,url),
               valueField: "name",
               textField: "name",
               width : widthOption-widthOption*0.08,

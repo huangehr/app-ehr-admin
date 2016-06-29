@@ -88,7 +88,7 @@
                                 $.Notice.open({type: 'success', msg: '操作成功！'});
                                 master.reloadGrid(Util.checkCurPage.call(master, 1));
                             } else {
-                                $.Notice.open({type: 'success', msg: '删除失败！'});
+                                $.Notice.open({type: 'success', msg: data.errorMsg});
                                 return;
                             }
                         }
@@ -234,7 +234,7 @@
                                             $.Notice.success('删除成功！');
                                             master.reloadGrid(Util.checkCurPage.call(master.grid, delLen));
                                         } else
-                                            $.Notice.error('删除失败！');
+                                            $.Notice.error(data.errorMsg);
                                     }
                                 });
                             }

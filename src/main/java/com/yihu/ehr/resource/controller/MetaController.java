@@ -220,6 +220,20 @@ public class MetaController extends ExtendController<MetaService> {
         }
     }
 
+    @RequestMapping("/active")
+    @ResponseBody
+    public Object delete(String ids){
+
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("id", nullToSpace(ids));
+            String rs = service.doPut(service.comUrl+ "/resources/metadata/active", params);
+            return rs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return systemError();
+        }
+    }
 
 
     private int validate(RsMetaMsgModel model, Set<String> ids, String domains,

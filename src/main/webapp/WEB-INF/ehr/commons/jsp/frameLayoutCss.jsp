@@ -75,6 +75,18 @@
 		background: url(${staticRoot}/images/app/suo_btn_pre.png) center no-repeat;
 	}
 
+	.grid_active{
+		display:inline-block;
+		width: 40px;
+		height: 40px;
+		cursor:pointer;
+		background: url(${staticRoot}/images/app/active.png) center no-repeat;
+	}
+
+	.grid_active:hover{
+		background: url(${staticRoot}/images/app/active_pre.png) center no-repeat;
+	}
+
 	.grid_on{
 		display: inline-block;
 		width: 60px;

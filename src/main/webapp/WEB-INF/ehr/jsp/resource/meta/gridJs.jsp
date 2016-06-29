@@ -12,6 +12,7 @@
             var urls = {
                 list: '${contextRoot}/resource/meta/list',
                 del: '${contextRoot}/resource/meta/delete',
+                active: '${contextRoot}/resource/meta/active',
                 gotoModify: '${contextRoot}/resource/meta/gotoModify',
                 upload: "${contextRoot}/resource/meta/import",
                 gotoImportLs: "${contextRoot}/resource/meta/gotoImportLs"
@@ -27,6 +28,10 @@
 
             var del = function (event, id) {
                 batchDel(grid, find, urls.del, id, undefined, undefined, '失效', '确定进行失效操作？');
+            }
+
+            var active = function (event, id) {
+                batchDel(grid, find, urls.active, id, undefined, undefined, '生效', '确定进行生效操作？');
             }
 
             var uploadDialog;
@@ -48,10 +53,11 @@
 
 
             function opratorRender(row){
-                var vo = [
-                    {type: 'edit', clkFun: "$.publish('meta:modify',['"+ row['id'] +"', 'modify'])"},
-                    {type: 'lock', clkFun: "$.publish('meta:del',['"+ row['id'] +"'])"},
-                ];
+                var vo = [{type: 'edit', clkFun: "$.publish('meta:modify',['"+ row['id'] +"', 'modify'])"}];
+                if(row.valid==1)
+                    vo.push({type: 'lock', clkFun: "$.publish('meta:del',['"+ row['id'] +"'])"});
+                else
+                    vo.push({type: 'active', clkFun: "$.publish('meta:active',['"+ row['id'] +"'])"});
                 return initGridOperator(vo);
             }
 
@@ -111,6 +117,7 @@
             var publishFunc = function (){
                 $.subscribe('meta:modify', gotoModify);
                 $.subscribe('meta:del', del);
+                $.subscribe('meta:active', active);
             };
 
             win.closeDialog = function(msg){
