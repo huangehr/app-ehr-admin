@@ -132,6 +132,7 @@
                     $("#filePicker2").hide();
                     $('#div_organization_info_form textarea').attr("disabled","disabled");
                     $(".m-form-control .l-text-trigger-cancel").remove();
+                    $(".info").hide();
                 }
                 if ('${mode}' == 'modify') {
                     //this.$publicManage.hide();
