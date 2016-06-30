@@ -5,12 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.standard.datasset.DataSetModel;
 import com.yihu.ehr.agModel.standard.datasset.MetaDataModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
+import com.yihu.ehr.agModel.standard.standardsource.StdSourceModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.std.model.DataSetMsg;
+import com.yihu.ehr.std.model.MetaDataMsg;
+import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.excel.AExcelReader;
+import com.yihu.ehr.util.excel.TemPath;
+import com.yihu.ehr.util.excel.read.DataSetMsgReader;
+import com.yihu.ehr.util.excel.read.DataSetMsgWriter;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.web.RestTemplates;
 import javafx.util.Pair;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -21,14 +31,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.Boolean;
 import java.util.*;
 
@@ -1043,4 +1055,223 @@ public class DataSetsController extends BaseUIController {
         }
     }
 
+
+    private static final String parentFile = "stdDataSet";
+    @RequestMapping(value = "import")
+    @ResponseBody
+    public void importData(MultipartFile file, String version,
+                           HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        try {
+            writerResponse(response, 1 + "", "l_upd_progress");
+            request.setCharacterEncoding("UTF-8");
+            AExcelReader excelReader = new DataSetMsgReader();
+            excelReader.read(file.getInputStream());
+            List<DataSetMsg> errorLs = excelReader.getErrorLs();
+            List<DataSetMsg> correctLs = excelReader.getCorrectLs();
+            writerResponse(response, 35+"", "l_upd_progress");
+
+            List saveLs = validate(version, response, excelReader, errorLs, correctLs);
+            writerResponse(response, 55+"", "l_upd_progress");
+
+            Map rs = new HashMap<>();
+            if(errorLs.size()>0){
+                String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
+                new DataSetMsgWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
+                rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
+            }
+            writerResponse(response, 65 + "", "l_upd_progress");
+
+            if(saveLs.size()>0)
+                saveData(toJson(saveLs), version);
+            if(errorLs.size()==0)
+                writerResponse(response, 100 + ",'suc'", "l_upd_progress");
+            else
+                writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            writerResponse(response, "-1", "l_upd_progress");
+        }
+    }
+
+    private List validate(String version, HttpServletResponse response, AExcelReader excelReader,
+                          List<DataSetMsg> errorLs, List<DataSetMsg> correctLs) throws Exception {
+        List saveLs = new ArrayList<>();
+        if(correctLs.size()>0){
+            Set<String> codes = findExistCode(excelReader.getRepeat().get("code"), version);
+//            Map<String, String> stdSources = findStdSources(excelReader.getRepeat().get("referenceCode").toString().replace("[", "").replace("]", "").replace(" ", ""));
+            Map<String, String> stdSources = null;
+            Map<String, String> dicts = findStdDict(version);
+            String columnTypes = "VARCHAR,INT,FLOAT,DOUBLE,CHAR,TEXT,DATE";
+            writerResponse(response, 45+"", "l_upd_progress");
+            DataSetMsg model;
+            boolean valid;
+            String sourceId;
+            for(int i=0; i<correctLs.size(); i++){
+                valid = true;
+                model = correctLs.get(i);
+                if(codes.contains(model.getCode())){
+                    model.addErrorMsg("code", "该标识已存在！");
+                    valid = false;
+                }
+//                if(!StringUtils.isEmpty(model.getReferenceCode())){
+//                    if((sourceId = stdSources.get(model.getReferenceCode())) == null){
+//                        model.addErrorMsg("referenceCode", "该参考来源不存在！");
+//                        valid = false;
+//                    }else
+//                        model.setReferenceId(sourceId);
+//                }
+
+                valid = valid & validateMeta(model, columnTypes, dicts) ;
+                if(valid)
+                    saveLs.add(correctLs.get(i));
+                else
+                    errorLs.add(model);
+            }
+        }
+        return saveLs;
+    }
+
+    private boolean validateMeta(DataSetMsg model, String columnTypes, Map<String, String> dicts) throws Exception {
+        List<MetaDataMsg> children = model.getChildren();
+
+        boolean valid= true;
+        String dictId;
+        for(MetaDataMsg meta : children){
+            if(!StringUtils.isEmpty(meta.getDictCode())){
+                if((dictId=dicts.get(meta.getDictCode())) == null){
+                    valid = false;
+                    meta.addErrorMsg("dictCode", "该术语范围值不存在");
+                }else
+                    meta.setDictId(dictId);
+            }
+
+            if(!StringUtils.isEmpty(meta.getColumnType()) && columnTypes.indexOf(meta.getColumnType())==-1){
+                meta.addErrorMsg("columnType", "只能是["+ columnTypes +"]里的值！");
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+
+    @RequestMapping("/downLoadErrInfo")
+    public void downLoadErrInfo(String f, String datePath,  HttpServletResponse response) throws IOException {
+
+        try{
+            f = datePath + TemPath.separator + f;
+            downLoadFile(TemPath.getFullPath(f, parentFile), response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveData(String datas, String version) throws Exception {
+        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<>();
+        conditionMap.add("models", datas);
+        conditionMap.add("version", version);
+        RestTemplates restTemplates = new RestTemplates();
+        String rs = restTemplates.doPost(comUrl + "/data_set/batch", conditionMap);
+        if(!"true".equals(rs))
+            throw new Exception("保存失败！");
+    }
+
+    private Map<String, String> findStdDict(String version) throws Exception {
+        Map map = new HashMap<>();
+        map.put("fields", "");
+        map.put("filters", "");
+        map.put("sorts", "");
+        map.put("page", 1);
+        map.put("size", 999);
+        map.put("version", version);
+        EnvelopExt<DictModel> rs = objectMapper.readValue(
+                HttpClientUtil.doGet(comUrl + "/dicts", map),
+                new TypeReference<EnvelopExt<DictModel>>() {});
+
+        if(rs.isSuccessFlg()){
+            Map modelMap = new HashMap<>();
+            for(DictModel m : rs.getDetailModelList()){
+                modelMap.put(m.getCode(), String.valueOf(m.getId()));
+            }
+            return modelMap;
+        }
+        throw new Exception("获取标准字典出错");
+    }
+
+    private Map<String, String> findStdSources(String referenceCodes) throws Exception {
+        Map map = new HashMap<>();
+        map.put("fields", "");
+        map.put("filters", "code=" + referenceCodes + " g1");
+        map.put("sorts", "");
+        map.put("page", 1);
+        map.put("size", 500);
+        EnvelopExt<StdSourceModel> rs = objectMapper.readValue(
+                HttpClientUtil.doGet(stdSrcUrl + "/sources", map),
+                new TypeReference<EnvelopExt<StdSourceModel>>() {});
+
+        if(rs.isSuccessFlg()){
+            Map modelMap = new HashMap<>();
+            for(StdSourceModel m : rs.getDetailModelList()){
+                modelMap.put(m.getCode(), m.getId());
+            }
+            return modelMap;
+        }
+
+        throw new Exception("获取标准来源出错");
+    }
+
+    private Set<String> findExistCode(Set<String> codes, String version) throws Exception {
+
+        Map<String,Object> conditionMap = new HashMap<>();
+        conditionMap.put("codes", codes.toString().replace(" ", "").replace("[", "").replace("]", ""));
+        conditionMap.put("version", version);
+        conditionMap.put("size", codes.size() + "");
+        String rs = HttpClientUtil.doGet(comUrl + "/data_set/codes/existence", conditionMap);
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
+
+    protected void writerResponse(HttpServletResponse response, String body, String client_method) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<script type=\"text/javascript\">//<![CDATA[\n");
+        sb.append("     parent.").append(client_method).append("(").append(body).append(");\n");
+        sb.append("//]]></script>");
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.addHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+        response.setHeader("Cache-Control", "pre-check=0,post-check=0");
+        response.setDateHeader("Expires", 0);
+        response.getWriter().write(sb.toString());
+        response.flushBuffer();
+    }
+
+    public void downLoadFile(String filePath,  HttpServletResponse response) throws IOException {
+
+        InputStream fis=null;
+        OutputStream toClient = null;
+        try{
+            File file = new File( filePath );
+            fis = new BufferedInputStream(new FileInputStream(file));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+
+            response.reset();
+            response.setContentType("octets/stream");
+            response.addHeader("Content-Length", "" + file.length());
+            response.addHeader("Content-Disposition", "attachment; filename="
+                    + new String(file.getName().getBytes("gb2312"), "ISO8859-1"));
+
+            toClient = new BufferedOutputStream(response.getOutputStream());
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(fis!=null) fis.close();
+            if(toClient!=null) toClient.close();
+        }
+    }
 }
