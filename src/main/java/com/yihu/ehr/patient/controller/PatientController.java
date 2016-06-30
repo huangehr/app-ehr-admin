@@ -230,7 +230,10 @@ public class PatientController extends BaseUIController {
                     updatePatient.setNation(patientDetailModel.getNation());
                     updatePatient.setNativePlace(patientDetailModel.getNativePlace());
                     updatePatient.setMartialStatus(patientDetailModel.getMartialStatus());
-                    updatePatient.setBirthday(patientDetailModel.getBirthday()+" 00:00:00");
+                    updatePatient.setBirthday(patientDetailModel.getBirthday());
+                    if(!StringUtils.isEmpty(patientDetailModel.getBirthday())){
+                        updatePatient.setBirthday(patientDetailModel.getBirthday()+" 00:00:00");
+                    }
                     updatePatient.setBirthPlaceInfo(patientDetailModel.getBirthPlaceInfo());
                     updatePatient.setHomeAddressInfo(patientDetailModel.getHomeAddressInfo());
                     updatePatient.setWorkAddressInfo(patientDetailModel.getWorkAddressInfo());
@@ -268,8 +271,9 @@ public class PatientController extends BaseUIController {
                 String tag = "联系电话";
                 telphoneNo.put(tag, patientDetailModel.getTelephoneNo());
                 patientDetailModel.setTelephoneNo(toJson(telphoneNo));
-                patientDetailModel.setBirthday(patientDetailModel.getBirthday()+" 00:00:00");
-
+                if(!StringUtils.isEmpty(patientDetailModel.getBirthday())){
+                    patientDetailModel.setBirthday(patientDetailModel.getBirthday()+" 00:00:00");
+                }
                 imageId = fileUpload(patientDetailModel.getIdCardNo(),restStream,imageName);
                 if (!StringUtils.isEmpty(imageId)) {
                     patientDetailModel.setPicPath(imageId);
