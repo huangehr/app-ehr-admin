@@ -76,7 +76,8 @@
         <div class="div-matching-msg f-audit-fw50 f-fl">
             <fieldset class="fie-bd">
                 <legend class="f-pl10 f-pr10 f-ml10"><b>待匹配档案</b></legend>
-                <div class="f-fl div-lift-btn"><span class="sp-lift-btn f-fl sp-matching-change-btn" id="sp_lift"></span></div>
+                <div class="f-fl div-lift-btn"><span class="sp-lift-btn f-fl sp-matching-change-btn"
+                                                     id="sp_lift"></span></div>
                 <div id="div_matching_form" data-role-form class="m-form-inline f-fl f-mw80">
                     <input type="text" class="f-dn" data-attr-scan="id"/>
                     <div class="m-form-group m-form-readonly f-fl">
@@ -135,7 +136,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="f-fl div-right-btn"><span class="sp-right-btn f-fl sp-matching-change-btn" id="sp_right"></span></div>
+                <div class="f-fl div-right-btn"><span class="sp-right-btn f-fl sp-matching-change-btn"
+                                                      id="sp_right"></span></div>
             </fieldset>
         </div>
 
@@ -150,6 +152,7 @@
     </div>
     <div id="temp"></div>
 
-    <div id="div_matching_record_grid" class="f-fl f-audit-fw100"></div>
-
+    <div class="f-fl f-audit-fw100">
+        <div id="div_matching_record_grid" class="f-audit-fw100"></div>
+    </div>
 </div>

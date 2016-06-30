@@ -20,4 +20,5 @@
     .sp-right-btn{ width: 30px;height: 60px;margin-top:90px;background: url(${staticRoot}/images/Right_btn_pre.png)}
     .m-form-readonly .l-text, .m-form-readonly input{ background: #fff!important;border:0; }
     label { margin-bottom: 0; }
+    .f-ml25{ margin-left: 25px; }
 </style>

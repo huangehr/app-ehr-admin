@@ -6,14 +6,16 @@
 <div id="div_wrapper" class="f-mt20">
     <!-- ####### 查询条件部分 ####### -->
     <div class="f-h785">
-        <div class="f-mw19 f-bd f-of-hd f-fl" id="div-resource-tree" >
+        <div class="f-mw19 f-bd f-of-hd f-fl">
             <div class="f-mt10 f-ml10 f-w270">
                 <!--输入框-->
                 <input type="text" id="inp_search" class="f-ml10"/>
             </div>
             <hr>
             <!--资源浏览树-->
-            <div id="div_resource_browse_tree" class="f-mw100"></div>
+            <div class="div-resource-tree">
+                <div id="div_resource_browse_tree" class="f-mw100"></div>
+            </div>
         </div>
         <!--资源浏览详情-->
         <div id="div_resource_browse_msg" class="div-resource-browse">
@@ -72,15 +74,17 @@
                            data-attr-scan="andOr"/>
                 </div>
                 <div class="f-fl f-ml10 f-mr10 ">
-                    <input type="text" class="f-ml10 inp-reset inp-model1 inp-find-search div-table-colums" data-type="select"
+                    <input type="text" class="f-ml10 inp-reset inp-model1 inp-find-search div-table-colums"
+                           data-type="select"
                            data-attr-scan="field"/>
                 </div>
                 <div class="f-fl f-ml10 f-mr10">
                     <input type="text" class="f-ml10 inp-reset inp-model2 inp-find-search" data-type="select"
                            data-attr-scan="condition"/>
                 </div>
-                <div class="f-fl f-ml10 f-mr10 div-new-change-search f-mw42 " >
-                    <input type="text" class="f-ml10 inp-reset inp-model3 inp-com-param inp-find-search" data-type="select"
+                <div class="f-fl f-ml10 f-mr10 div-new-change-search f-mw42 ">
+                    <input type="text" class="f-ml10 inp-reset inp-model3 inp-com-param inp-find-search"
+                           data-type="select"
                            data-attr-scan="value"/>
                 </div>
                 <span class="sp-back-del-img f-mt10 sp-del-btn"></span>

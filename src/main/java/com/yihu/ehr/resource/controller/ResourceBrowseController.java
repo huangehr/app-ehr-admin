@@ -103,21 +103,24 @@ public class ResourceBrowseController extends BaseUIController {
     @ResponseBody
     public Object getRsDictEntryList(String dictId) {
 
+        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String dictEntryUrl = "/resources/noPageDictEntries";
-        params.put("filters", "dictCode=" + dictId);
+        params.put("filters", "dictCode=" + dictId+" g0");
 
         try {
             if (!StringUtils.isEmpty(dictId)) {
 
                 resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
+                return resultStr;
             }
         } catch (Exception e) {
-
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("字典查询失败");
         }
 
-        return resultStr;
+        return envelop;
     }
 
     @RequestMapping("/searchDictEntryList")
