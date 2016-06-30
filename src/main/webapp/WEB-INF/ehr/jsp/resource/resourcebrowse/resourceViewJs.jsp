@@ -145,7 +145,7 @@
                     //返回资源注册页面
                     $('#btn_back').click(function(){
                         $('#contentPage').empty();
-                        $('#contentPage').load('${contextRoot}/resource/resourceManage/initial?backParams='+JSON.stringify(resourceData.backParams));
+                        $('#contentPage').load('${contextRoot}/resource/resourceManage/initial');
                     });
 
                     //新增一行查询条件
