@@ -10,7 +10,6 @@
             var dialog = frameElement.dialog;
             var claimModel = ${claimModel};
             // 表单校验工具类
-            var jValidation = $.jValidation;
             var dataModel = $.DataModel.init();
             // 页面表格条件部模块
 
@@ -29,25 +28,23 @@
                     self.$unrelevanceeElse.ligerRadio();
                     self.clicks();
                 },
-
                 clicks: function () {
                     var self = this;
                     self.$unrelevanceeElse.click(function () {
-                        Util.isStrEmpty(this.id)?(self.$tetElse.addClass('m-form-readonly'),$(".tet-else").val('')):self.$tetElse.removeClass('m-form-readonly');
+                        Util.isStrEmpty(this.id)?(self.$tetElse.addClass('m-form-readonly'),$(".tet-else").val(''),$(".tet-else").css('border','1px solid #c8c8c8'),$(".tet-else").siblings('span').hide()):self.$tetElse.removeClass('m-form-readonly');
                     });
-                    var validator = new jValidation.Validation(self.$unrelevanceForm, {
-                        immediate: true, onSubmit: false,
-                        onElementValidateForAjax: function (elm) {
-                            return Util.isStrEmpty($(elm).val())?false:true;
-                        }
+                    $(".tet-else").blur(function () {
+                        var textEle = $(this);
+                        Util.isStrEmpty(textEle.val())?(textEle.css('border','1px solid #f09784'),textEle.siblings('span').show().css('color','red')):(textEle.css('border','1px solid #c8c8c8'),textEle.siblings('span').hide());
                     });
-
                     self.$unrelevanceSaveBtn.click(function () {
-                        debugger
-                        if (validator.validate()){
+                        $("#inp_else").val($(".tet-else").val());
+                        self.$unrelevanceForm.attrScan();
+                        var data = self.$unrelevanceForm.Fields.getValues();
+                        if (Util.isStrEmpty(data.unrelevanceeElse)){
+                            $(".tet-else").css('border','1px solid #f09784');$(".tet-else").siblings('span').show().css('color','red');
                             return;
                         }
-//                        $("#inp_else").val($(".tet-else").val());
                         self.$unrelevanceForm.attrScan();
                         var data = self.$unrelevanceForm.Fields.getValues();
                         var savedialog = $.ligerDialog.waitting('正在保存,请稍候...');
