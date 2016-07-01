@@ -147,7 +147,6 @@
                         }
                     }
                     function onDlgClose(){
-                        debugger
                         master.searchFun();
                     }
                     $('#upd').uploadFile({url: "${contextRoot}/resource/dict/import", onUploadSuccess: onUploadSuccess, onDlgClose: onDlgClose});

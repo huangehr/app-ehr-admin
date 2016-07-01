@@ -148,6 +148,7 @@ set.list = {
                     onSelected: function (value, text) {
                         u.versionStage = u.getStagedByValue();
                         set.list.getSetList(value, 1);
+                        $('#l_upd_form').attr('action', u._url +'/std/dataset/import?version='+value);
                     }
                 });
                 var manager = $("#cdaVersion").ligerGetComboBoxManager();
