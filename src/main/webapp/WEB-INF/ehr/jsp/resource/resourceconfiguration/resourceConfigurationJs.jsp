@@ -206,7 +206,7 @@
                     //返回资源注册页面
                     $('#btn_back').click(function () {
                         $('#contentPage').empty();
-                        $('#contentPage').load('${contextRoot}/resource/resourceManage/initial?backParams=' + JSON.stringify(sourceData.backParams));
+                        $('#contentPage').load('${contextRoot}/resource/resourceManage/initial');
                     });
                     retrieve.$saveBtn.click(function () {
                         if (Util.isStrEmpty(addRowDatas) && Util.isStrEmpty(delRowDatas)) {

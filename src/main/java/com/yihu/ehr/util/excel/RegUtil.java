@@ -40,4 +40,9 @@ public class RegUtil {
 
         return lenPtn.matcher(str).matches();
     }
+
+    public static boolean regLength2(int min, int max, String str){
+
+        return str.length()>=min && str.length()<=max;
+    }
 }

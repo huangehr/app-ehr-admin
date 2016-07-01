@@ -9,7 +9,8 @@
         field: 'file',
         result: undefined,
         onUploadSuccess: function () {},
-        onDlgClose: function () {}
+        onDlgClose: function () {},
+        onBeforeUpload: function () {}
     };
 
     var form =
@@ -74,7 +75,11 @@
     UploadFile.prototype._bindEvt = function () {
         var g= this, p= this.options;
 
-        $('#'+  p.id + "_file", g._el).change(function (v) {
+        $('#'+  p.id + "_file", g._el).click(function () {
+            if(p.onBeforeUpload)
+                return p.onBeforeUpload(g);
+            return true;
+        }).change(function (v) {
             if($(this).val()=='')
                 return;
             uploadDialog = $.ligerDialog.open({
