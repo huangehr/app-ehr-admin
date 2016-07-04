@@ -90,16 +90,7 @@ public class ResourceBrowseController extends BaseUIController {
     @RequestMapping("/getGridCloumnNames")
     @ResponseBody
     public Object getGridCloumnNames(String dictId) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String url = "/resources/ResourceBrowses/getResourceMetadata";
-        String resultStr = "";
-        params.put("resourcesCode", dictId);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-        } catch (Exception e) {
-
-        }
+        String resultStr = getColumns(dictId);
         return resultStr;
     }
 
@@ -170,43 +161,64 @@ public class ResourceBrowseController extends BaseUIController {
         return resultStr;
     }
 
-//数据导出方法
+    //数据导出方法
     @RequestMapping("outExcel")
-    public void outExcel(HttpServletResponse response, String codes, String names, Integer size, String resourcesCode, String searchParams) {
+//    public void outExcel(HttpServletResponse response, String codes, String names, Integer size, String resourcesCode, String searchParams) {
+    public void outExcel(HttpServletResponse response, Integer size, String resourcesCode, String searchParams) {
 
         Envelop envelop = new Envelop();
-        String resourceCategoryName = System.currentTimeMillis() + "";
-        List<String> titleList = toModel(codes, List.class);
-        List<List> dataList = new ArrayList<>();
-        List<String> nameList = toModel(names, List.class);
-        String fileName = "资源数据";
-
-        Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String url = "/resources/ResourceBrowses/getResourceData";
-        params.put("resourcesCode", resourcesCode);
-        params.put("queryCondition", searchParams);
-        params.put("page", 1);
-        params.put("size", size);
+        String fileName = "资源数据";
+        String resourceCategoryName = System.currentTimeMillis() + "";
+
+        resultStr = getColumns(resourcesCode);
+        envelop = toModel(resultStr, Envelop.class);
+//        Map cmap = new HashMap();
 
         try {
-
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = toModel(resultStr, Envelop.class);
-            List<Object> objectList = envelop.getDetailModelList();
             response.setContentType("octets/stream");
             response.setHeader("Content-Disposition", "attachment; filename="
                     + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
             OutputStream os = response.getOutputStream();
             WritableWorkbook book = Workbook.createWorkbook(os);
             WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-            for (int i = 0; i < titleList.size(); i++) {
+
+
+            for (int i = 0; i < envelop.getDetailModelList().size(); i++) {
+                Map cmap = toModel(toJson(envelop.getDetailModelList().get(i)), Map.class);
                 //new laberl（'列','行','数据'）
                 sheet.addCell(new Label(0, 0, "代码"));
                 sheet.addCell(new Label(0, 1, "名称"));
-                sheet.addCell(new Label(i + 1, 0, titleList.get(i)));
-                sheet.addCell(new Label(i + 1, 1, nameList.get(i)));
+                sheet.addCell(new Label(i + 1, 0, String.valueOf(cmap.get("code"))));
+                sheet.addCell(new Label(i + 1, 1, String.valueOf(cmap.get("value"))));
             }
+
+
+//        List<String> titleList = toModel(codes, List.class);
+//        List<String> nameList = toModel(names, List.class);
+
+
+            Map<String, Object> params = new HashMap<>();
+
+            String url = "/resources/ResourceBrowses/getResourceData";
+            params.put("resourcesCode", resourcesCode);
+            params.put("queryCondition", searchParams);
+            params.put("page", 1);
+            params.put("size", size);
+
+
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+            List<Object> objectList = envelop.getDetailModelList();
+
+
+//            for (int i = 0; i < titleList.size(); i++) {
+//                //new laberl（'列','行','数据'）
+//                sheet.addCell(new Label(0, 0, "代码"));
+//                sheet.addCell(new Label(0, 1, "名称"));
+//                sheet.addCell(new Label(i + 1, 0, titleList.get(i)));
+//                sheet.addCell(new Label(i + 1, 1, nameList.get(i)));
+//            }
             Cell[] cells = sheet.getRow(0);
             for (int i = 0; i < objectList.size(); i++) {
                 Map<String, String> map = toModel(toJson(objectList.get(i)), Map.class);
@@ -230,5 +242,21 @@ public class ResourceBrowseController extends BaseUIController {
             envelop.setErrorMsg("数据导出失败");
         }
         envelop.setSuccessFlg(true);
+    }
+
+    public String getColumns(String resourceCode) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "/resources/ResourceBrowses/getResourceMetadata";
+        String resultStr = "";
+        params.put("resourcesCode", resourceCode);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("获取表结构信息失败");
+        }
+        return toJson(envelop);
     }
 }
