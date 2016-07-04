@@ -284,12 +284,12 @@
                             " </span>"+
                             "</p>"+
                             "<span class=\"success\"></span>"+
-                            "<div class='file-panel' ><span class='cancel' imgnum='"+(parseInt(j)+1)+"'   id='"+imgLop.detailModelList[j]+"'>删除</span></div>"+
+                            "<div class='file-panel' ><a href='javascript:void(0);' class='fangda'></a><span class='cancel' imgnum='"+(parseInt(j)+1)+"'   id='"+imgLop.detailModelList[j]+"'>删除</span></div>"+
                             "</li>"
                 }
                 $("#filelist").html(html);
                 if ('${mode}' == 'view') {
-                    $(".file-panel").hide();
+                    $(".file-panel .cancel").hide();
                 }
                 doGetImg(1,imgLop.detailModelList[0]);
             }

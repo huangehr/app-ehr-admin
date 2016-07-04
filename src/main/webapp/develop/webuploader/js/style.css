@@ -415,3 +415,12 @@ table {
     pointer-events: none;
     opacity: 0.6;
 }
+#uploader .fangda{    float: left;width: 20px; height: 20px;margin: 4px;background: url(./icon-fda.png) no-repeat;}
+.cyc-layer.imgfada{width: 100%; height: 100%;position: fixed;left: 0;top: 0;z-index: 10000; background: rgba(0,0,0,0.5);}
+.cyc-layer.imgfada .img{position: absolute;left: 0;top: 0; bottom: 0;right: 0;margin: auto;width: 500px;height: 500px;}
+.cyc-layer.imgfada .nav{position: absolute;bottom:0px;height: 24px;line-height: 24px;text-align: center;background: rgba(0,0,0,0.8);width: 100%;}
+.cyc-layer.imgfada .nav a{ display:inline-block;vertical-align:middle;width: 24px;height: 24px; background: url(./icons.png) no-repeat}
+.cyc-layer.imgfada .nav a.rotateLeft{background-position: 4px -21px;}
+.cyc-layer.imgfada .nav a.rotateRight{background-position: -20px -21px;}
+#uploader .queueList{margin: 20px 0 0 9px;}
+#uploader .placeholder{background-position:center 17px;padding-top: 96px;}

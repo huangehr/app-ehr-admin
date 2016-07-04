@@ -19,6 +19,13 @@
                         initInputFields();
                     },
                     onSuccess: function (data) {
+                        for(var i in data){
+                            if(data[i].value=='介于')
+                                data[i].code = '<>';
+                            else if(data[i].value=='不介于')
+                                data[i].code = '><';
+                        }
+                        this.setData(data);
                         initInputFields();
                     }}}
             ];
