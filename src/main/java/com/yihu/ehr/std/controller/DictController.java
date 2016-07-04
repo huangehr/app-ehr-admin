@@ -1075,7 +1075,6 @@ public class DictController  extends BaseUIController {
                     }
                     addCell(ws,3,j,dictEntry.getCode(),wc);//代码
                     addCell(ws,4,j,dictEntry.getValue(),wc);//名称
-                    addCell(ws,5,j,dictEntry.getValue(),wc);//说明
                 }
             }
             //写入工作表
