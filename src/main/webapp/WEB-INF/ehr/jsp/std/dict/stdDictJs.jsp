@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
     (function ($, win) {
         $(function () {
@@ -57,6 +61,7 @@
                     this.initDDL(this.$stdDictVersion);
                     this.$element.show();
                     this.event();
+                    this.rendBarTools();
                 },
                 initDDL: function (target) {
                     var dataModel = $.DataModel.init();
@@ -71,6 +76,7 @@
                                 onSelected: function (value, text) {
                                     versionStage=getStagedByValue();
                                     dictMaster.init();
+                                    $("#l_upd_form").attr("action","${contextRoot}/cdadict/importFromExcel?version="+value);
                                 }
                             });
                             var manager = target.ligerGetComboBoxManager();
@@ -79,39 +85,41 @@
                         }
                     });
                 },
-                event:function(){
-                    var uploader = $("#div_upload").webupload({
-                        server: "${contextRoot}/cdadict/importFromExcel",
-                        pick: {id: '#div_file_picker'},
-                        accept: {
-                            title: 'Excel',
-                            extensions: 'xls,xlsx',
-                            mimeTypes: '.xls,.xlsx'
-                        },
-                        auto: true
-                    });
-                    uploader.on('beforeSend',function( file, data ) {
-                        if(!versionStage)
-                        {
-                            $.Notice.error("已发布版本不可新增，请确认!");
-                            return;
-                        }else{
-                            var versionCode = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                            data.versionCode = versionCode;
+                //初始化工具栏
+               rendBarTools : function(){
+                    function onUploadSuccess(g, result){
+                        if(result=='suc')
+                            $.Notice.success("导入成功");
+                        else{
+                            result = eval('(' + result + ')')
+                            var url = "${contextRoot}/resource/dict/downLoadErrInfo?f="+ result.eFile[1] + "&datePath=" + result.eFile[0];
+                            $.ligerDialog.open({
+                                height: 80,
+                                content: "请下载&nbsp;<a target='diframe' href='"+ url +"'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
+                            });
                         }
+                    }
+                     function onDlgClose(){
+                        dictMaster.reloadGrid();
+                    }
+                   function onBeforeUpload(){
+                       if(!versionStage)
+                       {
+                           $.Notice.error("已发布版本不可新增，请确认!");
+                           return false;
+                       }else{
+                           return true;
+                       }
+                   };
+                    $('#upd').uploadFile({
+                        url: "${contextRoot}/cdadict/importFromExcel",
+                        onUploadSuccess: onUploadSuccess,
+                        onDlgClose: onDlgClose,
+                        onBeforeUpload:onBeforeUpload
                     });
-                    uploader.on('uploadSuccess', function (file, resp) {
-                        if(!versionStage) {
-                            return;
-                        }
-                        if (!resp.successFlg) {
 
-                            $.Notice.error(resp.errorMsg);
-                        }else{
-                            //导入成功，展示
-                            //resp.obj;
-                        }
-                    });
+                },
+                event:function(){
                     $("#div_file_export").click(function(){
                         var versionCode = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                         var versionName = $("#stdDictVersion").ligerGetComboBoxManager().getText();
