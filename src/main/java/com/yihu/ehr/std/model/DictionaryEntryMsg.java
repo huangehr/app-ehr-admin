@@ -1,4 +1,4 @@
-package com.yihu.ehr.resource.model;
+package com.yihu.ehr.std.model;
 
 import com.yihu.ehr.util.excel.ExcelUtil;
 import com.yihu.ehr.util.excel.RegUtil;

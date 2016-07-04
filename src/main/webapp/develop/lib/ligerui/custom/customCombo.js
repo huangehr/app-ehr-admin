@@ -103,7 +103,6 @@
 
     $.fn.customCombo = function (url, parms, selectedCall, child, readOnly, opts) {
         el = this;
-
         if(!selectedCall)
             selectedCall = function(id, name){
                 if(!name || !id)

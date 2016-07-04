@@ -359,7 +359,7 @@
                     pid: 9,
                     level:2,
                     text: '<spring:message code="title.template.manage"/>',
-                    url: '${contextRoot}/template/initial'
+                    url: '${contextRoot}/correlation/initial'
                 }
             ],
 
