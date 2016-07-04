@@ -35,7 +35,10 @@ public class DictionaryEntryMsg extends ExcelUtil implements Validation {
             rs = 0;
             addErrorMsg("code", "代码重复！");
         }
-
+        if(!RegUtil.regLen(code)){
+            rs = 0;
+            addErrorMsg("code", RegUtil.lenMsg);
+        }
         if(!RegUtil.regLen(name)){
             rs = 0;
             addErrorMsg("name", RegUtil.lenMsg);
