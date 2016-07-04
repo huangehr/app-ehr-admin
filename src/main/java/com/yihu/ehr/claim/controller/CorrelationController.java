@@ -90,6 +90,8 @@ public class CorrelationController extends BaseUIController {
                 if(result.getDetailModelList()!=null&&result.getDetailModelList().size()==1){
                     Object list =  result.getDetailModelList().get(0);
                     model.addAttribute("archives",toJson(list));
+                }else{
+                    model.addAttribute("archives","");
                 }
             }
         }catch (Exception e){
