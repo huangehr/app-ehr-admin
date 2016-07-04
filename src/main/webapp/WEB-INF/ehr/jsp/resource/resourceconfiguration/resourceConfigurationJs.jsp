@@ -94,13 +94,6 @@
                             isChecked: function (row) {
                                 var bo = false;
                                 if (Util.isStrEquals(this.url.split("resourcesId").length, 1)) {
-//                                    if (elmParams[0].getSelecteds().length>=15){
-//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0px -13px');
-//                                    }else if(0<elmParams[0].getSelecteds().length<=15){
-//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0px -39px');
-//                                    }else {
-//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 0');
-//                                    }
                                     resourceDatas = elmParams[1].data.detailModelList;
                                     for (var i = 0; i < resourceDatas.length; i++) {
                                         if (Util.isStrEquals(resourceDatas[i].stdCode, row.id)) {
@@ -117,12 +110,10 @@
                                 if (Util.isStrEquals(this.id, "div_resource_configuration_info_grid")) {
                                     var rowAll = elmParams[0].data.detailModelList;
                                     if (checked) {
-//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 -13px');
                                         $.each(rowAll, function (key, value) {
                                             addRows(value);
                                         })
                                     } else {
-//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 0');
                                         $.each(rowAll, function (key, value) {
                                             deleteRows(value);
                                         })
@@ -145,20 +136,10 @@
                             onSelectRow: function (rowdata) {
                                 var infoMsg = $("#infoMsg").val();
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid') && Util.isStrEquals(infoMsg, 'true')) {
-//                                    if (elmParams[0].getSelecteds().length>=15){
-//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0px -13px');
-//                                    }else if(0<elmParams[0].getSelecteds().length<=15){
-//                                        $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0px -39px');
-//                                    }
                                     addRows(rowdata);
                                 }
                             },
                             onUnSelectRow: function (rowdata, rowid, rowobj) {
-//                                if (elmParams[0].getSelecteds().length == 0){
-//                                    $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 0');
-//                                }else{
-//                                    $($(".l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div")[0]).css('background-position','0 -39px');
-//                                }
                                 if (Util.isStrEquals(this.id, 'div_resource_configuration_info_grid')) {
                                     deleteRows(rowdata);
                                 }
@@ -241,8 +222,8 @@
                                 delRowDatas = new Array();
                                 if (data.successFlg) {
                                     $.Notice.success('保存成功');
-                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], "", "");
-                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[1], "", "mateData");
+                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], retrieve.$mateDataSearchTrue.liger().getValue(), "");
+                                    master.reloadResourceConfigurationGrid(resourceConfigurationUrl[1], retrieve.$mateDataSearch.liger().getValue(), "mateData");
                                 } else
                                     $.Notice.error("保存失败");
                             }
