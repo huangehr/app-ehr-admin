@@ -43,7 +43,7 @@ public class DataSetMsgWriter extends AExcelWriter {
                 addCell(ws, 3, 1, m.getSummary(), m.findErrorMsg("summary"));
                 j = 5;
                 for (MetaDataMsg e : m.getChildren()) {
-                    addCell(ws, j, 1, (j-4) +"");
+                    addCell(ws, j, 0, (j-4) +"");
                     addCell(ws, j, 1, e.getInnerCode(), e.findErrorMsg("innerCode"));
                     addCell(ws, j, 2, e.getCode(), e.findErrorMsg("code"));
                     addCell(ws, j, 3, e.getName(), e.findErrorMsg("name"));
