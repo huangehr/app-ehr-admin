@@ -25,6 +25,8 @@
             var inpTypes = "";
             var conditionBo = false;
             var searchBo = false;
+            var newTreeBo = null;
+            var RSsearchParams = null;
             var jsonData = new Array();
             var dataModel = $.DataModel.init();
 
@@ -160,11 +162,19 @@
                             return !Util.isStrEmpty(data.resourceIds);
                         },
                         onSelect: function (data) {
-                            searchBo = true;
+//                            if(!Util.isStrEmpty(data.data.resourceCode)&&!Util.isStrEmpty(newTreeBo)&&!Util.isStrEquals(newTreeBo,data.data.resourceCode)){
+//                                searchBo = true
+//                            }else{
+//                                searchBo = false
+//                            }
+//                            newTreeBo = data.data.resourceCode;
+//                            searchBo = (Util.isStrEmpty(newTreeBo)||!Util.isStrEquals(newTreeBo,data.data.resourceCode))?true:false;
+
                             $(".inp-reset").val('');
                             resourceCategoryName = data.data.name;
                             resourceCategoryId = data.data.resourceIds;
                             resourcesCode = data.data.resourceCode;  //根据resourcesCode查询表结构
+                            newTreeBo = resourcesCode;
                             if (Util.isStrEmpty(resourceCategoryId)) {
                                 return;
                             }
@@ -350,7 +360,9 @@
                         if (Util.isStrEquals(jsonData.length, 1) && Util.isStrEmpty(jsonData[0].value)) {
                             searchBo = true;
                         }
-                        jsonData = searchBo ? '' : JSON.stringify(jsonData);
+                        RSsearchParams = JSON.stringify(jsonData);
+                        debugger
+                        jsonData = searchBo? '' : JSON.stringify(jsonData);
                         searchBo = false;
                         resourceBrowseMaster.reloadResourcesGrid({
                             searchParams: jsonData,
@@ -376,9 +388,9 @@
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.data.detailModelList;
-                        outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize,"");
+                        outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize,RSsearchParams);
                     });
-                    function outExcel(rowData, size,param) {
+                    function outExcel(rowData, size,RSsearchParams) {
                         if (rowData.length <= 0) {
                             $.Notice.error('请先选择数据');
                             return;
@@ -406,7 +418,7 @@
                             valueList.push(values);
                             values = [];
                         }
-                        window.open("${contextRoot}/resourceBrowse/outExcel?codes=" + JSON.stringify(codes) + "&names=" + JSON.stringify(names) +"&size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + param, "资源数据导出");
+                        window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
                     }
                 }
             };

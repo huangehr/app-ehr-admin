@@ -27,6 +27,7 @@
             var resourceCategoryName = "";
             var inpTypes = "";
             var conditionBo = false;
+            var RSsearchParams = null;
 
             var dataModel = $.DataModel.init();
 
@@ -290,6 +291,7 @@
                         if (Util.isStrEquals(jsonData.length,1)&&Util.isStrEmpty(jsonData[0].value)) {
                             searchBo = true;
                         }
+                        RSsearchParams = JSON.stringify(jsonData);
                         jsonData = searchBo ? '' : JSON.stringify(jsonData);
                         searchBo = false;
                         resourceBrowseMaster.reloadResourcesGrid({
@@ -317,9 +319,9 @@
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.data.detailModelList;
-                        outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize,"");
+                        outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize,RSsearchParams);
                     });
-                    function outExcel(rowData, size,param) {
+                    function outExcel(rowData, size,RSsearchParams) {
                         if (rowData.length <= 0) {
                             $.Notice.error('请先选择数据');
                             return;
@@ -347,7 +349,7 @@
                             valueList.push(values);
                             values = [];
                         }
-                        window.open("${contextRoot}/resourceBrowse/outExcel?codes=" + JSON.stringify(codes) + "&names=" + JSON.stringify(names) +"&size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + param, "资源数据导出");
+                        window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
                     }
                 }
             };
