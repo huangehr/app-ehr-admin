@@ -15,7 +15,7 @@
                 <span>资源主题：</span><span id="sp_resourceSub"></span>
             </div>
         </div>
-        <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">
+        <div id="div_resource_browse_msg" data-role-form class="div-resource-browse div-resource-treess">
             <!--添加动态查询-->
             <div class="div-search-height" id="div_search_data_role_form" style="float: left;margin-left: 20px;width: 93%;">
                 <div id="div_new_search" class="f-mt10" data-role-form>
@@ -44,7 +44,7 @@
                 <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_reset_btn">
                     <span>重置</span>
                 </div>
-                <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar"
+                <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam save-toolbar"
                      id="div_out_sel_excel_btn">
                     <span>导出选中结果</span>
                 </div>

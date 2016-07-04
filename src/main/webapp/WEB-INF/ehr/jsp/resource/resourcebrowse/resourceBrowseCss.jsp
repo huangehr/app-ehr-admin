@@ -25,6 +25,6 @@
     .f-ml-20{ margin-left: 5%; }
     .f-mw8{ width:10% }
     .f-mw238{ width: 238px }
-    #mCSB_6_container{ margin-right: 0 }
+    /*#mCSB_6_container{ margin-right: 0 }*/
 </style>
 
