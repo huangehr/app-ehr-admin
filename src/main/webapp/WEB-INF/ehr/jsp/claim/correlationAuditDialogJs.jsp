@@ -61,7 +61,16 @@
                     diagnosedResult:mode.diagnosedResult,
                     diagnosedProject:mode.diagnosedProject,
                     medicines:mode.medicines,
-                    memo:mode.memo
+                    memo:mode.memo,
+                    applyDateArchives:archives.applyDate,
+                    visOrgArchives:archives.visOrg,
+                    visDoctorArchives:archives.visDoctor,
+                    cardNoArchives:archives.cardNo,
+                    diagnosedResultArchives:archives.diagnosedResult,
+                    diagnosedProjectArchives:archives.diagnosedProject,
+                    medicinesArchives:archives.medicines,
+                    memoArchives:archives.memo
+
                 });
                 //档案字段填充
 
