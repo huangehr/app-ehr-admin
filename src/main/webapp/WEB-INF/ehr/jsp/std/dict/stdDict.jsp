@@ -8,8 +8,12 @@
         <input type="text" data-type="select" id="stdDictVersion" data-attr-scan="version">
 
   </div>
-  <div style="height: 40px"><div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px;right: 200px; position: relative"></div>
-    <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="height: 28px">全部导出</button>
+  <div style="height: 34px">
+
+    <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
+    <div>
+      <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="margin-top: 0px;height: 30px">全部导出</button>
+    </div>
   </div>
   <div style="width: 100%" id="grid_content">
     <!--######标准字典######-->

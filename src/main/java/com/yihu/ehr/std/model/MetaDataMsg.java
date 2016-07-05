@@ -100,6 +100,9 @@ public class MetaDataMsg extends ExcelUtil implements Validation {
         if(!RegUtil.regLength2(1, 64, columnName)){
             rs = 0;
             addErrorMsg("columnName", "请输入1~64个字符");
+        }else if(!repeatMap.get("columnName").add(columnName)){
+            rs = 0;
+            addErrorMsg("columnName", "列名重复");
         }
 
         if(!RegUtil.regLength2(0, 50, columnType)){
@@ -112,18 +115,24 @@ public class MetaDataMsg extends ExcelUtil implements Validation {
             addErrorMsg("columnLength", "不得超过15个字符");
         }
 
-        if(StringUtils.isEmpty(nullable) || nullable.equals("0")){
+        if(StringUtils.isEmpty(primaryKey)){
+            primaryKey = "0";
+        }
+
+        if(!primaryKey.equals("0") && !primaryKey.equals("1")){
+            rs = 0;
+            addErrorMsg("primaryKey", "只允许输入0或1， 不填默认为0");
+        }
+
+        if(StringUtils.isEmpty(nullable)){
             nullable = "0";
         }
 
-        if(!StringUtils.isEmpty(nullable) && !nullable.equals("0") && !nullable.equals("1")){
+        if(!nullable.equals("0") && !nullable.equals("1")){
             rs = 0;
             addErrorMsg("nullable", "只允许输入0或1， 不填默认为0");
-        }
-
-        if(!StringUtils.isEmpty(primaryKey) && !primaryKey.equals("0") && !primaryKey.equals("1")){
-            rs = 0;
-            addErrorMsg("primaryKey", "只允许输入0或1， 不填默认为0");
+        }else if(primaryKey.equals("1") && nullable.equals(primaryKey)){
+            addErrorMsg("nullable", "主键不允许为空");
         }
 
         return rs;
