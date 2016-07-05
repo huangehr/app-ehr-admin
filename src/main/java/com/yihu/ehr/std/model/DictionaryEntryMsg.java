@@ -1,4 +1,4 @@
-package com.yihu.ehr.resource.model;
+package com.yihu.ehr.std.model;
 
 import com.yihu.ehr.util.excel.ExcelUtil;
 import com.yihu.ehr.util.excel.RegUtil;
@@ -35,7 +35,10 @@ public class DictionaryEntryMsg extends ExcelUtil implements Validation {
             rs = 0;
             addErrorMsg("code", "代码重复！");
         }
-
+        if(!RegUtil.regLen(code)){
+            rs = 0;
+            addErrorMsg("code", RegUtil.lenMsg);
+        }
         if(!RegUtil.regLen(name)){
             rs = 0;
             addErrorMsg("name", RegUtil.lenMsg);

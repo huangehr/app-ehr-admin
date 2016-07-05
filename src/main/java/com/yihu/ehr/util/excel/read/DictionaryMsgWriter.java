@@ -1,9 +1,7 @@
 package com.yihu.ehr.util.excel.read;
 
-import com.yihu.ehr.resource.model.DictionaryEntryMsg;
-import com.yihu.ehr.resource.model.DictionaryMsg;
-import com.yihu.ehr.resource.model.RsDictionaryEntryMsg;
-import com.yihu.ehr.resource.model.RsDictionaryMsg;
+import com.yihu.ehr.std.model.DictionaryEntryMsg;
+import com.yihu.ehr.std.model.DictionaryMsg;
 import com.yihu.ehr.util.excel.AExcelWriter;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
