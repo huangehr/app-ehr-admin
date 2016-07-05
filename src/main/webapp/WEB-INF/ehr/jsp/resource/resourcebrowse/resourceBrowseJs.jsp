@@ -13,7 +13,6 @@
             var resourceBrowseMaster = null;
             var defaultWidth = $("#div-f-w1").width();
             var defaultWidthAndOr = $("#div-f-w2").width();
-            var windowWidth = $(window).width();
             var windowHeight = $(window).height();
             //检索模块初始化
             var paramModel = null;
@@ -24,46 +23,41 @@
             var typeTree = "";
             var inpTypes = "";
             var conditionBo = false;
-            var searchBo = false;
-            var newTreeBo = null;
             var RSsearchParams = null;
+            var gridColumns = null;
             var jsonData = new Array();
             var dataModel = $.DataModel.init();
 
             /* *************************** 函数定义 ******************************* */
 
+            Date.prototype.format = function (fmt) {
+                var o = {
+                    "M+": this.getMonth() + 1, //月份
+                    "d+": this.getDate(), //日
+                    "H+": this.getHours(), //小时
+                    "m+": this.getMinutes(), //分
+                    "s+": this.getSeconds(), //秒
+                    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                    "S": this.getMilliseconds() //毫秒
+                };
+                if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+            };
             function pageInit() {
                 retrieve.init();
                 resourceBrowseMaster.bindEvents();
-
-                Date.prototype.format = function (fmt) {
-                    var o = {
-                        "M+": this.getMonth() + 1, //月份
-                        "d+": this.getDate(), //日
-                        "H+": this.getHours(), //小时
-                        "m+": this.getMinutes(), //分
-                        "s+": this.getSeconds(), //秒
-                        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-                        "S": this.getMilliseconds() //毫秒
-                    };
-                    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-                    for (var k in o)
-                        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-                    return fmt;
-                }
             }
-
             function reloadGrid(url, ps) {
                 resourceInfoGrid.setOptions({parms: ps});
                 resourceInfoGrid.loadData(true);
             }
-
             /* *************************** 检索模块初始化 ***************************** */
             paramModel = {
                 url: ["${contextRoot}/resourceBrowse/searchDictEntryList", '${contextRoot}/resourceBrowse/getGridCloumnNames', "${contextRoot}/resourceBrowse/searchDictEntryList", "${contextRoot}/resourceBrowse/getRsDictEntryList"],
                 dictId: ['andOr', resourceCategoryId, '34', '']
             };
-
             /* *************************** 检索模块初始化结束 ***************************** */
 
             /* *************************** 模块初始化 ***************************** */
@@ -111,7 +105,7 @@
                     $(".div-resource-treess").mCustomScrollbar({
                         axis: "y"
                     });
-                    $($("#div_resource_browse_msg").children('div').children('div')[0]).css('margin-right','0');
+                    $($("#div_resource_browse_msg").children('div').children('div')[0]).css('margin-right', '0');
                     self.$resourceTree.height(windowHeight - 240);
                     $(".f-w-auto").width($(".div-and-or").width());
                 },
@@ -162,26 +156,20 @@
                             return !Util.isStrEmpty(data.resourceIds);
                         },
                         onSelect: function (data) {
-//                            if(!Util.isStrEmpty(data.data.resourceCode)&&!Util.isStrEmpty(newTreeBo)&&!Util.isStrEquals(newTreeBo,data.data.resourceCode)){
-//                                searchBo = true
-//                            }else{
-//                                searchBo = false
-//                            }
-//                            newTreeBo = data.data.resourceCode;
-//                            searchBo = (Util.isStrEmpty(newTreeBo)||!Util.isStrEquals(newTreeBo,data.data.resourceCode))?true:false;
-
-                            $(".inp-reset").val('');
+                            resourceInfoGrid.options.newPage = 1;
+                            resetSearch();
                             resourceCategoryName = data.data.name;
                             resourceCategoryId = data.data.resourceIds;
                             resourcesCode = data.data.resourceCode;  //根据resourcesCode查询表结构
-                            newTreeBo = resourcesCode;
                             if (Util.isStrEmpty(resourceCategoryId)) {
                                 return;
                             }
                             paramModel.dictId[1] = resourcesCode;
                             dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {
                                 data: {dictId: resourcesCode},
+                                async: false,
                                 success: function (data) {
+                                    gridColumns = data;
                                     var reloadSelects = $("#div-search-data-role-form").children('div');
                                     for (var i = 0; i < reloadSelects.length; i++) {
                                         var inputElm = $($(reloadSelects)[i]).find('.div-table-colums');
@@ -213,47 +201,37 @@
                     var sh = $(".div-search-height").height();
                     //获取列名
                     if (!Util.isStrEmpty(objectId)) {
-                        dataModel.fetchRemote("${contextRoot}/resourceBrowse/getGridCloumnNames", {
-                            data: {
-                                dictId: resourcesCode
-                            },
-                            success: function (data) {
-                                var data = data.detailModelList;
-                                for (var i = 0; i < data.length; i++) {
-                                    columnModel.push({display: data[i].value, name: data[i].code, width: 100});
+                        var data = Util.isStrEmpty(gridColumns) ? "" : gridColumns.detailModelList;
+                        for (var i = 0; i < data.length; i++) {
+                            columnModel.push({display: data[i].value, name: data[i].code, width: 100});
+                        }
+                        self.$outAllExcelBtn.css('background', '#B9C8D2');
+                        resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
+                            url: '${contextRoot}/resourceBrowse/searchResourceData',
+                            parms: {searchParams: '', resourcesCode: resourcesCode},
+                            columns: columnModel,
+                            height: windowHeight - (sh + 230),
+                            checkbox: true,
+                            onSelectRow: function () {
+                                if (Util.isStrEquals(resourceInfoGrid.getSelectedRows().length, 0)) {
+                                    self.$outSelExcelBtn.css('background', '#B9C8D2');
+                                } else {
+                                    self.$outSelExcelBtn.css('background', '#2D9BD2');
                                 }
-                                self.$outAllExcelBtn.css('background','#B9C8D2');
-                                resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
-                                    url: '${contextRoot}/resourceBrowse/searchResourceData',
-                                    parms: {searchParams: '', resourcesCode: resourcesCode},
-                                    columns: columnModel,
-//                                    height: 700,
-                                    height: windowHeight - (sh + 230),
-                                    checkbox: true,
-                                    onSelectRow:function () {
-                                        if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){
-                                            self.$outSelExcelBtn.css('background','#B9C8D2');
-                                        }else{
-                                            self.$outSelExcelBtn.css('background','#2D9BD2');
-                                        }
-                                    },
-                                    onUnSelectRow:function () {
-                                        if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){
-                                            self.$outSelExcelBtn.css('background','#B9C8D2');
-                                        }else{
-                                            self.$outSelExcelBtn.css('background','#2D9BD2');
-                                        }
-                                    },
-                                    onAfterShowData:function () {
-                                        if (resourceInfoGrid.data.detailModelList.length > 0){
-                                            self.$outAllExcelBtn.css('background','#2D9BD2');
-                                        }
-                                    }
-                                }));
-                                resourceInfoGrid.options.newPage = 1;
-                                resourceInfoGrid.reload(true);
+                            },
+                            onUnSelectRow: function () {
+                                if (Util.isStrEquals(resourceInfoGrid.getSelectedRows().length, 0)) {
+                                    self.$outSelExcelBtn.css('background', '#B9C8D2');
+                                } else {
+                                    self.$outSelExcelBtn.css('background', '#2D9BD2');
+                                }
+                            },
+                            onAfterShowData: function () {
+                                if (resourceInfoGrid.data.detailModelList.length > 0) {
+                                    self.$outAllExcelBtn.css('background', '#2D9BD2');
+                                }
                             }
-                        });
+                        }));
                     }
                 },
                 reloadResourcesGrid: function (searchParams) {
@@ -265,8 +243,6 @@
                     //新增一行查询条件
                     self.$newSearchBtn.click(function () {
                         $(".f-w-auto").width($(".div-and-or").width());
-                        var searcHheight = $(".div-search-height").height();
-//                        resourceInfoGrid.setHeight(windowHeight - (searcHheight + 290));
                         var model = self.$searchModel.clone(true);
                         $("#div-search-data-role-form").append(model);
                         var modelLength = model.find("input");
@@ -315,8 +291,6 @@
                     });
                     //删除一行查询条件
                     self.$delBtn.click(function () {
-                        var searcHheight = $(".div-search-height").height();
-//                        resourceInfoGrid.setHeight(windowHeight - (searcHheight + 210));
                         $(this).parent().parent().remove();
                     });
 
@@ -325,45 +299,40 @@
                         jsonData = [];
                         var defualtParam = $(".inp_defualt_param");
                         var pModel = $("#div-search-data-role-form").children('div');
+                        var value = null;
                         for (var i = 0; i < pModel.length; i++) {
                             var pModel_child = $(pModel[i]);
                             pModel_child.attrScan();
                             var values = pModel_child.Fields.getValues();
-                            if (i == 0) {
-                                values.value = defualtParam.ligerGetComboBoxManager().getValue();
-                                if (defualtParam.ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
-                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-dd');
-                                }
-                                else if (defualtParam.ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
-                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-ddTHH:mm:ssZ');
-                                }
-                            } else {
-                                values.value = $(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().getValue();
-                                if ($(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
-                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-dd');
-                                }
-                                else if ($(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
-                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-ddTHH:mm:ssZ');
-                                }
+                            values.value = value = pModel_child.find('.inp-com-param').liger().getValue();
+                            if (pModel_child.find('.inp-com-param').liger().options.format == "yyyy-MM-dd") {
+                                values.value = Util.isStrEmpty(value) ? "" : value.format('yyyy-MM-dd');
+                            }
+                            else if (pModel_child.find('.inp-com-param').liger().options.format == "yyyy-MM-dd hh:mm:ss") {
+                                values.value = Util.isStrEmpty(value) ? "" : value.format('yyyy-MM-ddTHH:mm:ssZ');
                             }
                             if (!Util.isStrEmpty(values.time)) {
-                                if ($(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
-                                    values.value = $(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().getValue().format('yyyy-MM-dd')+ "," + $(pModel_child.find('.inp-com-param')[1]).ligerGetComboBoxManager().getValue().format('yyyy-MM-dd');
+                                var rangeLigerElm = $(pModel_child.find('.inp-com-param')[0]).liger();
+                                var rangeLigerElm1 = $(pModel_child.find('.inp-com-param')[1]).liger();
+                                values.value = rangeLigerElm.getValue() + "," + rangeLigerElm1.getValue();
+                                if (rangeLigerElm.options.format == "yyyy-MM-dd") {
+                                    values.value = rangeLigerElm.getValue().format('yyyy-MM-dd') + "," + rangeLigerElm1.getValue().format('yyyy-MM-dd');
                                 }
-                                else if ($(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
-                                    values.value = $(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().getValue().format('yyyy-MM-ddTHH:mm:ssZ')+ "," + $(pModel_child.find('.inp-com-param')[1]).ligerGetComboBoxManager().getValue().format('yyyy-MM-ddTHH:mm:ssZ');
+                                else if (rangeLigerElm.options.format == "yyyy-MM-dd hh:mm:ss") {
+                                    values.value = rangeLigerElm.getValue().format('yyyy-MM-ddTHH:mm:ssZ') + "," + rangeLigerElm1.getValue().format('yyyy-MM-ddTHH:mm:ssZ');
                                 }
                                 delete values['time'];
                             }
                             jsonData.push(values);
                         }
-                        if (Util.isStrEquals(jsonData.length, 1) && Util.isStrEmpty(jsonData[0].value)) {
-                            searchBo = true;
+                        for (var i = 0; i < jsonData.length; i++) {
+                            if (Util.isStrEmpty(jsonData[i].value) || Util.isStrEmpty(jsonData[i].field)) {
+                                jsonData.splice(i, 1);
+                                i--;
+                            }
                         }
-                        RSsearchParams = JSON.stringify(jsonData);
-                        debugger
-                        jsonData = searchBo? '' : JSON.stringify(jsonData);
-                        searchBo = false;
+                        jsonData = RSsearchParams = Util.isStrEquals(jsonData.length, 0) ? "" : JSON.stringify(jsonData);
+                        console.log(jsonData);
                         resourceBrowseMaster.reloadResourcesGrid({
                             searchParams: jsonData,
                             resourcesCode: resourcesCode
@@ -371,26 +340,26 @@
                     });
                     //重置
                     self.$resetBtn.click(function () {
-                        searchBo = true;
-                        $(".inp-reset").val('');
+                        resetSearch();
                     });
                     //导出选择结果
                     self.$outSelExcelBtn.click(function () {
                         var jsonDatas = [];
                         var rowData = resourceInfoGrid.getSelectedRows();
-                        $.each(rowData,function (key,value) {
+                        $.each(rowData, function (key, value) {
                             var jsonParam = {andOr: "OR", field: "rowkey", condition: "=", value: ""};
                             jsonParam.value = value.rowkey;
                             jsonDatas.push(jsonParam);
                         });
-                        outExcel(rowData, rowData.length,JSON.stringify(jsonDatas));
+                        outExcel(rowData, rowData.length, JSON.stringify(jsonDatas));
                     });
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.data.detailModelList;
-                        outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize,RSsearchParams);
+                        outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize, RSsearchParams);
                     });
-                    function outExcel(rowData, size,RSsearchParams) {
+
+                    function outExcel(rowData, size, RSsearchParams) {
                         if (rowData.length <= 0) {
                             $.Notice.error('请先选择数据');
                             return;
@@ -498,6 +467,7 @@
                         break;
                 }
             }
+
             function getEleType(ele, type) {
                 var obj = ele.find('.div-table-colums').liger().selected;
 
@@ -506,6 +476,14 @@
                     value = Util.isStrEmpty(obj.dict) ? obj.type : 'dict';
                 }
                 return value;
+            }
+
+            function resetSearch() {
+                var pModel = $("#div-search-data-role-form").children('div');
+                var resetInp = $(pModel.find('.inp-reset'));
+                for (var i = 1; i < resetInp.length; i++) {
+                    $(resetInp[i]).ligerGetComboBoxManager().setValue();
+                }
             }
 
             /* ************************* 模块初始化结束 ************************** */
