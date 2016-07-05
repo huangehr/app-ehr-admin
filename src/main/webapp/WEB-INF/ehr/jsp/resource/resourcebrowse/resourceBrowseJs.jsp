@@ -45,14 +45,17 @@
                     if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
                 return fmt;
             };
+
             function pageInit() {
                 retrieve.init();
                 resourceBrowseMaster.bindEvents();
             }
+
             function reloadGrid(url, ps) {
                 resourceInfoGrid.setOptions({parms: ps});
                 resourceInfoGrid.loadData(true);
             }
+
             /* *************************** 检索模块初始化 ***************************** */
             paramModel = {
                 url: ["${contextRoot}/resourceBrowse/searchDictEntryList", '${contextRoot}/resourceBrowse/getGridCloumnNames', "${contextRoot}/resourceBrowse/searchDictEntryList", "${contextRoot}/resourceBrowse/getRsDictEntryList"],
@@ -78,6 +81,7 @@
                 $outSelExcelBtn: $("#div_out_sel_excel_btn"),
                 $outAllExcelBtn: $("#div_out_all_excel_btn"),
                 $resourceTree: $(".div-resource-tree"),
+                $resourceBrowse: $(".div-resource-browse"),
                 init: function () {
                     var self = this;
                     self.$resourceBrowseMsg.height(windowHeight - 170);
@@ -102,10 +106,11 @@
                     self.$resourceTree.mCustomScrollbar({
                         axis: "yx"
                     });
-                    $(".div-resource-treess").mCustomScrollbar({
+                    self.$resourceBrowse.mCustomScrollbar({
                         axis: "y"
                     });
-                    $($("#div_resource_browse_msg").children('div').children('div')[0]).css('margin-right', '0');
+//                    $($("#div_resource_browse_msg").children('div').children('div')[0]).css('margin-right', '0');
+                    $(self.$resourceBrowseMsg.children('div').children('div')[0]).css('margin-right', '0');
                     self.$resourceTree.height(windowHeight - 240);
                     $(".f-w-auto").width($(".div-and-or").width());
                 },
@@ -158,6 +163,7 @@
                         onSelect: function (data) {
                             resourceInfoGrid.options.newPage = 1;
                             resetSearch();
+
                             resourceCategoryName = data.data.name;
                             resourceCategoryId = data.data.resourceIds;
                             resourcesCode = data.data.resourceCode;  //根据resourcesCode查询表结构
@@ -264,7 +270,7 @@
                                     var eleType = $(this.element).parents('.div_search_model');
                                     var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search');
                                     var eleClass_model0 = $(this.element).attr('class').split('inp-model0');
-                                    var eleClass_model2 = $(this.element).attr('class').split('inp-model2');
+//                                    var eleClass_model2 = $(this.element).attr('class').split('inp-model2');
                                     var eleClass_model3 = $(this.element).attr('class').split('inp-model3');
                                     if (eleClass_model0.length >= 2 || eleClass_model3.length >= 2) {
                                         return;
@@ -273,7 +279,6 @@
                                         switchType(getEleType(eleType, 'inpType'), $inpSearchType, '.inp-find-search', '', conditionBo, getEleType(eleType, 'dict'));
                                         return;
                                     }
-
                                     for (var i = 0; i < dataModels.length; i++) {
                                         //判断这个对象的值存不存在字典和判断类型
                                         if (Util.isStrEquals(dataModels[i].code, value)) {
@@ -297,7 +302,7 @@
                     //检索
                     self.$SearchBtn.click(function () {
                         jsonData = [];
-                        var defualtParam = $(".inp_defualt_param");
+//                        var defualtParam = $(".inp_defualt_param");
                         var pModel = $("#div-search-data-role-form").children('div');
                         var value = null;
                         for (var i = 0; i < pModel.length; i++) {
@@ -316,23 +321,23 @@
                                 var rangeLigerElm1 = $(pModel_child.find('.inp-com-param')[1]).liger();
                                 values.value = rangeLigerElm.getValue() + "," + rangeLigerElm1.getValue();
                                 if (rangeLigerElm.options.format == "yyyy-MM-dd") {
-                                    values.value = rangeLigerElm.getValue().format('yyyy-MM-dd') + "," + rangeLigerElm1.getValue().format('yyyy-MM-dd');
+                                    values.value = (Util.isStrEmpty(rangeLigerElm.getValue()) ? "" : rangeLigerElm.getValue().format('yyyy-MM-dd')) + "," + (Util.isStrEmpty(rangeLigerElm1.getValue()) ? "" : rangeLigerElm1.getValue().format('yyyy-MM-dd'));
                                 }
                                 else if (rangeLigerElm.options.format == "yyyy-MM-dd hh:mm:ss") {
-                                    values.value = rangeLigerElm.getValue().format('yyyy-MM-ddTHH:mm:ssZ') + "," + rangeLigerElm1.getValue().format('yyyy-MM-ddTHH:mm:ssZ');
+                                    values.value = (Util.isStrEmpty(rangeLigerElm.getValue()) ? "" : rangeLigerElm.getValue().format('yyyy-MM-ddTHH:mm:ssZ')) + "," + (Util.isStrEmpty(rangeLigerElm1.getValue()) ? "" : rangeLigerElm1.getValue().format('yyyy-MM-ddTHH:mm:ssZ'));
                                 }
                                 delete values['time'];
                             }
                             jsonData.push(values);
                         }
-                        for (var i = 0; i < jsonData.length; i++) {
-                            if (Util.isStrEmpty(jsonData[i].value) || Util.isStrEmpty(jsonData[i].field)) {
-                                jsonData.splice(i, 1);
-                                i--;
+                        for (var j = 0; j < jsonData.length; j++) {
+                            if (Util.isStrEmpty(jsonData[j].value) || Util.isStrEmpty(jsonData[j].field)) {
+                                jsonData.splice(j, 1);
+                                j--;
                             }
                         }
                         jsonData = RSsearchParams = Util.isStrEquals(jsonData.length, 0) ? "" : JSON.stringify(jsonData);
-                        console.log(jsonData);
+                        console.log(Util.isStrEmpty(jsonData) ? "查询条件为空或查询的值为空" : jsonData);
                         resourceBrowseMaster.reloadResourcesGrid({
                             searchParams: jsonData,
                             resourcesCode: resourcesCode
@@ -356,7 +361,7 @@
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
                         var rowData = resourceInfoGrid.data.detailModelList;
-                        outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize, RSsearchParams);
+                        outExcel(rowData, resourceInfoGrid.currentData.totalCount, RSsearchParams);
                     });
 
                     function outExcel(rowData, size, RSsearchParams) {
@@ -470,7 +475,8 @@
 
             function getEleType(ele, type) {
                 var obj = ele.find('.div-table-colums').liger().selected;
-
+                if (Util.isStrEmpty(obj))
+                    return;
                 var value = obj.dict;
                 if (Util.isStrEquals(type, 'inpType')) {
                     value = Util.isStrEmpty(obj.dict) ? obj.type : 'dict';
@@ -482,7 +488,7 @@
                 var pModel = $("#div-search-data-role-form").children('div');
                 var resetInp = $(pModel.find('.inp-reset'));
                 for (var i = 1; i < resetInp.length; i++) {
-                    $(resetInp[i]).ligerGetComboBoxManager().setValue();
+                    $(resetInp[i]).liger().setValue('');
                 }
             }
 

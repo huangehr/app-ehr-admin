@@ -43,7 +43,6 @@
                 resourceBrowseMaster.bindEvents();
                 resourceBrowseMaster.init();
 
-
                 Date.prototype.format = function (fmt) {
                     var o = {
                         "M+": this.getMonth() + 1, //月份
@@ -88,11 +87,12 @@
                 $resetBtn: $("#div_reset_btn"),
                 $outSelExcelBtn: $("#div_out_sel_excel_btn"),
                 $outAllExcelBtn: $("#div_out_all_excel_btn"),
+                $resourceBrowse: $(".div-resource-browse"),
 
                 init: function () {
                     var self = this;
                     self.$resourceBrowseMsg.height(windowHeight - 185);
-                    $(".div-resource-treess").mCustomScrollbar({
+                    self.$resourceBrowse.mCustomScrollbar({
                         axis: "y"
                     });
 
@@ -252,58 +252,103 @@
                         var searcHheight = $(".div-search-height").height();
                         $(this).parent().parent().remove();
                     });
+                    //检索
                     self.$SearchBtn.click(function () {
-                        jsonData = [];
-                        var defualtParam = $(".inp_defualt_param");
                         var pModel = self.$newSearch.children('div');
+
+                        jsonData = [];
+//                        var defualtParam = $(".inp_defualt_param");
+                        var value = null;
                         for (var i = 0; i < pModel.length; i++) {
                             var pModel_child = $(pModel[i]);
                             pModel_child.attrScan();
                             var values = pModel_child.Fields.getValues();
-                            if (i == 0) {
-                                values.value = defualtParam.ligerGetComboBoxManager().getValue();
-                                if (defualtParam.ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
-                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-dd');
-                                }
-                                else if (defualtParam.ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
-                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-ddTHH:mm:ssZ');
-                                }
-                            } else {
-                                values.value = $(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().getValue();
-                                if ($(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
-                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-dd');
-                                }
-                                else if ($(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
-                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-ddTHH:mm:ssZ');
-                                }
+                            values.value = value = pModel_child.find('.inp-com-param').liger().getValue();
+                            if (pModel_child.find('.inp-com-param').liger().options.format == "yyyy-MM-dd") {
+                                values.value = Util.isStrEmpty(value) ? "" : value.format('yyyy-MM-dd');
+                            }
+                            else if (pModel_child.find('.inp-com-param').liger().options.format == "yyyy-MM-dd hh:mm:ss") {
+                                values.value = Util.isStrEmpty(value) ? "" : value.format('yyyy-MM-ddTHH:mm:ssZ');
                             }
                             if (!Util.isStrEmpty(values.time)) {
-                                if ($(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
-                                    values.value = $(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().getValue().format('yyyy-MM-dd')+ "," + $(pModel_child.find('.inp-com-param')[1]).ligerGetComboBoxManager().getValue().format('yyyy-MM-dd');
+                                var rangeLigerElm = $(pModel_child.find('.inp-com-param')[0]).liger();
+                                var rangeLigerElm1 = $(pModel_child.find('.inp-com-param')[1]).liger();
+                                values.value = rangeLigerElm.getValue() + "," + rangeLigerElm1.getValue();
+                                if (rangeLigerElm.options.format == "yyyy-MM-dd") {
+                                    values.value = (Util.isStrEmpty(rangeLigerElm.getValue()) ? "" : rangeLigerElm.getValue().format('yyyy-MM-dd')) + "," + (Util.isStrEmpty(rangeLigerElm1.getValue()) ? "" : rangeLigerElm1.getValue().format('yyyy-MM-dd'));
                                 }
-                                else if ($(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
-                                    values.value = $(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().getValue().format('yyyy-MM-ddTHH:mm:ssZ')+ "," + $(pModel_child.find('.inp-com-param')[1]).ligerGetComboBoxManager().getValue().format('yyyy-MM-ddTHH:mm:ssZ');
+                                else if (rangeLigerElm.options.format == "yyyy-MM-dd hh:mm:ss") {
+                                    values.value = (Util.isStrEmpty(rangeLigerElm.getValue()) ? "" : rangeLigerElm.getValue().format('yyyy-MM-ddTHH:mm:ssZ')) + "," + (Util.isStrEmpty(rangeLigerElm1.getValue()) ? "" : rangeLigerElm1.getValue().format('yyyy-MM-ddTHH:mm:ssZ'));
                                 }
                                 delete values['time'];
                             }
                             jsonData.push(values);
                         }
-                        if (Util.isStrEquals(jsonData.length,1)&&Util.isStrEmpty(jsonData[0].value)) {
-                            searchBo = true;
+                        for (var j = 0; j < jsonData.length; j++) {
+                            if (Util.isStrEmpty(jsonData[j].value) || Util.isStrEmpty(jsonData[j].field)) {
+                                jsonData.splice(j, 1);
+                                j--;
+                            }
                         }
-                        RSsearchParams = JSON.stringify(jsonData);
-                        jsonData = searchBo ? '' : JSON.stringify(jsonData);
-                        searchBo = false;
+                        jsonData = RSsearchParams = Util.isStrEquals(jsonData.length, 0) ? "" : JSON.stringify(jsonData);
+                        console.log(Util.isStrEmpty(jsonData)?"查询条件为空或查询的值为空":jsonData);
                         resourceBrowseMaster.reloadResourcesGrid({
                             searchParams: jsonData,
                             resourcesCode: resourcesCode
                         });
+
+//                        jsonData = [];
+//                        var defualtParam = $(".inp_defualt_param");
+//
+//                        for (var i = 0; i < pModel.length; i++) {
+//                            var pModel_child = $(pModel[i]);
+//                            pModel_child.attrScan();
+//                            var values = pModel_child.Fields.getValues();
+//                            if (i == 0) {
+//                                values.value = defualtParam.ligerGetComboBoxManager().getValue();
+//                                if (defualtParam.ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
+//                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-dd');
+//                                }
+//                                else if (defualtParam.ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
+//                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-ddTHH:mm:ssZ');
+//                                }
+//                            } else {
+//                                values.value = $(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().getValue();
+//                                if ($(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
+//                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-dd');
+//                                }
+//                                else if ($(pModel_child.find('.inp-find-search')[3]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
+//                                    values.value = Util.isStrEmpty(values.value)?"":values.value.format('yyyy-MM-ddTHH:mm:ssZ');
+//                                }
+//                            }
+//                            if (!Util.isStrEmpty(values.time)) {
+//                                if ($(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd"){
+//                                    values.value = $(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().getValue().format('yyyy-MM-dd')+ "," + $(pModel_child.find('.inp-com-param')[1]).ligerGetComboBoxManager().getValue().format('yyyy-MM-dd');
+//                                }
+//                                else if ($(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().options.format == "yyyy-MM-dd hh:mm:ss"){
+//                                    values.value = $(pModel_child.find('.inp-com-param')[0]).ligerGetComboBoxManager().getValue().format('yyyy-MM-ddTHH:mm:ssZ')+ "," + $(pModel_child.find('.inp-com-param')[1]).ligerGetComboBoxManager().getValue().format('yyyy-MM-ddTHH:mm:ssZ');
+//                                }
+//                                delete values['time'];
+//                            }
+//                            jsonData.push(values);
+//                        }
+//                        if (Util.isStrEquals(jsonData.length,1)&&Util.isStrEmpty(jsonData[0].value)) {
+//                            searchBo = true;
+//                        }
+//                        RSsearchParams = JSON.stringify(jsonData);
+//                        jsonData = searchBo ? '' : JSON.stringify(jsonData);
+//                        searchBo = false;
+//                        resourceBrowseMaster.reloadResourcesGrid({
+//                            searchParams: jsonData,
+//                            resourcesCode: resourcesCode
+//                        });
                     });
 
                     //重置
                     self.$resetBtn.click(function () {
-                        searchBo = true;
-                        $(".inp-reset").val('');
+//                        searchBo = true;
+//                        $(".inp-reset").val('');
+                        resetSearch();
                     });
                     //导出选择结果
                     self.$outSelExcelBtn.click(function () {
@@ -435,6 +480,13 @@
                     value = Util.isStrEmpty(obj.dict) ? obj.type : 'dict';
                 }
                 return value;
+            }
+            function resetSearch() {
+                var pModel = retrieve.$newSearch.children('div');
+                var resetInp = $(pModel.find('.inp-reset'));
+                for (var i = 1; i < resetInp.length; i++) {
+                    $(resetInp[i]).liger().setValue('');
+                }
             }
             /* ************************* 模块初始化结束 ************************** */
 

@@ -163,26 +163,23 @@ public class ResourceBrowseController extends BaseUIController {
 
     //数据导出方法
     @RequestMapping("outExcel")
-//    public void outExcel(HttpServletResponse response, String codes, String names, Integer size, String resourcesCode, String searchParams) {
     public void outExcel(HttpServletResponse response, Integer size, String resourcesCode, String searchParams) {
 
         Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String fileName = "资源数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
-
-        resultStr = getColumns(resourcesCode);
-        envelop = toModel(resultStr, Envelop.class);
-//        Map cmap = new HashMap();
-
         try {
+            resultStr = getColumns(resourcesCode);
+            envelop = toModel(resultStr, Envelop.class);
+
             response.setContentType("octets/stream");
             response.setHeader("Content-Disposition", "attachment; filename="
                     + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
             OutputStream os = response.getOutputStream();
             WritableWorkbook book = Workbook.createWorkbook(os);
             WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-
 
             for (int i = 0; i < envelop.getDetailModelList().size(); i++) {
                 Map cmap = toModel(toJson(envelop.getDetailModelList().get(i)), Map.class);
@@ -193,32 +190,15 @@ public class ResourceBrowseController extends BaseUIController {
                 sheet.addCell(new Label(i + 1, 1, String.valueOf(cmap.get("value"))));
             }
 
-
-//        List<String> titleList = toModel(codes, List.class);
-//        List<String> nameList = toModel(names, List.class);
-
-
-            Map<String, Object> params = new HashMap<>();
-
             String url = "/resources/ResourceBrowses/getResourceData";
             params.put("resourcesCode", resourcesCode);
             params.put("queryCondition", searchParams);
             params.put("page", 1);
             params.put("size", size);
 
-
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
             List<Object> objectList = envelop.getDetailModelList();
-
-
-//            for (int i = 0; i < titleList.size(); i++) {
-//                //new laberl（'列','行','数据'）
-//                sheet.addCell(new Label(0, 0, "代码"));
-//                sheet.addCell(new Label(0, 1, "名称"));
-//                sheet.addCell(new Label(i + 1, 0, titleList.get(i)));
-//                sheet.addCell(new Label(i + 1, 1, nameList.get(i)));
-//            }
             Cell[] cells = sheet.getRow(0);
             for (int i = 0; i < objectList.size(); i++) {
                 Map<String, String> map = toModel(toJson(objectList.get(i)), Map.class);
