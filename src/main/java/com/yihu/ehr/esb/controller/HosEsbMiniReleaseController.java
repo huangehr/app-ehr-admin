@@ -149,9 +149,8 @@ public class HosEsbMiniReleaseController extends BaseUIController {
         Map<String, Object> params = new HashMap<String, Object>();
         String url = "/esb/deleteHosEsbMiniRelease/"+releaseInfoId;
         try{
-            HttpClientUtil.doDelete(comUrl+url,params,username,password);
-            result.setSuccessFlg(true);
-            return result;
+            String resultStr =  HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            return resultStr;
         }catch(Exception ex){
             LogService.getLogger(HosEsbMiniReleaseController.class).error(ex.getMessage());
             result.setSuccessFlg(false);
