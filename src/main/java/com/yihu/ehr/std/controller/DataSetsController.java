@@ -1099,23 +1099,32 @@ public class DataSetsController extends BaseUIController {
     private List validate(String version, HttpServletResponse response, AExcelReader excelReader,
                           List<DataSetMsg> errorLs, List<DataSetMsg> correctLs) throws Exception {
         List saveLs = new ArrayList<>();
-        if(correctLs.size()>0){
-            Set<String> codes = findExistCode(excelReader.getRepeat().get("code"), version);
+
+        Set<String> codes = findExistCode(excelReader.getRepeat().get("code"), version);
 //            Map<String, String> stdSources = findStdSources(excelReader.getRepeat().get("referenceCode").toString().replace("[", "").replace("]", "").replace(" ", ""));
-            Map<String, String> stdSources = null;
-            Map<String, String> dicts = findStdDict(version);
-            String columnTypes = "VARCHAR,INT,FLOAT,DOUBLE,CHAR,TEXT,DATE";
-            writerResponse(response, 45+"", "l_upd_progress");
-            DataSetMsg model;
-            boolean valid;
-            String sourceId;
-            for(int i=0; i<correctLs.size(); i++){
-                valid = true;
-                model = correctLs.get(i);
-                if(codes.contains(model.getCode())){
-                    model.addErrorMsg("code", "该标识已存在！");
-                    valid = false;
-                }
+        Map<String, String> stdSources = null;
+        Map<String, String> dicts = findStdDict(version);
+        String columnTypes = "VARCHAR,INT,FLOAT,DOUBLE,CHAR,TEXT,DATE";
+        writerResponse(response, 45+"", "l_upd_progress");
+        DataSetMsg model;
+        boolean valid;
+        String sourceId;
+
+        for(int i=0; i<errorLs.size(); i++){
+            model = errorLs.get(i);
+            if(codes.contains(model.getCode())){
+                model.addErrorMsg("code", "该标识已存在！");
+            }
+            validateMeta(model, columnTypes, dicts) ;
+        }
+
+        for(int i=0; i<correctLs.size(); i++){
+            valid = true;
+            model = correctLs.get(i);
+            if(codes.contains(model.getCode())){
+                model.addErrorMsg("code", "该标识已存在！");
+                valid = false;
+            }
 //                if(!StringUtils.isEmpty(model.getReferenceCode())){
 //                    if((sourceId = stdSources.get(model.getReferenceCode())) == null){
 //                        model.addErrorMsg("referenceCode", "该参考来源不存在！");
@@ -1124,12 +1133,12 @@ public class DataSetsController extends BaseUIController {
 //                        model.setReferenceId(sourceId);
 //                }
 
-                valid = valid & validateMeta(model, columnTypes, dicts) ;
-                if(valid)
-                    saveLs.add(correctLs.get(i));
-                else
-                    errorLs.add(model);
-            }
+            valid = valid & validateMeta(model, columnTypes, dicts) ;
+            if(valid)
+                saveLs.add(correctLs.get(i));
+            else
+                errorLs.add(model);
+
         }
         return saveLs;
     }

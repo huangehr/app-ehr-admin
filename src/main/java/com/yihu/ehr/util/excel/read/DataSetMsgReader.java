@@ -40,6 +40,7 @@ public class DataSetMsgReader extends AExcelReader {
                 childRepeat = new HashMap<>();
                 childRepeat.put("innerCode", new HashSet<>());
                 childRepeat.put("dictCode", new HashSet<>());
+                childRepeat.put("columnName", new HashSet<>());
                 for (int i = 5; i < rows; i++) {
                     child = new MetaDataMsg();
                     child.setDataSetCode(p.getCode());
