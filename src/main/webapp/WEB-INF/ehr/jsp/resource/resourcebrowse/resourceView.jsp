@@ -15,14 +15,21 @@
                 <span>资源主题：</span><span id="sp_resourceSub"></span>
             </div>
         </div>
-        <div id="div_resource_browse_msg" data-role-form class="div-resource-browse div-resource-treess">
+        <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">
             <!--添加动态查询-->
             <div class="div-search-height" id="div_search_data_role_form" style="float: left;margin-left: 20px;width: 93%;">
                 <div id="div_new_search" class="f-mt10" data-role-form>
                     <div class="f-fl f-w90" id="div_default_search">
-                        <div class="f-fl f-ml10 f-mr10 f-w-auto f-mw" style="width: 7.5%">
-                            <span class="f-fl f-mt10 f-ml15">查询条件：</span>
+                        <div class="f-fl f-ml10 f-mr10 f-w-auto f-mw7">
+                            <div class="f-fl f-ml10 f-mr10 f-dn">
+                                <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search"
+                                       data-attr-scan="andOr" value="AND"/>
+                            </div>
+                            <span class="f-fl f-mt10 f-ml10">查询条件：</span>
                         </div>
+                        <%--<div class="f-fl f-ml10 f-mr10 f-w-auto f-mw" style="width: 7.5%">--%>
+                            <%--<span class="f-fl f-mt10 f-ml15">查询条件：</span>--%>
+                        <%--</div>--%>
                         <div class="f-fl f-mr10 f-ml10">
                             <input type="text" id="inp_default_condition" data-type="select" data-attr-scan="field"
                                    style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>
