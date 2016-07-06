@@ -55,7 +55,8 @@
                                 waitting.close();
                             }
                         });
-                    }
+                    }else
+                        $.Notice.warn("还有错误数据未修改正确！");
                 }
 
                 function downLoad(){
