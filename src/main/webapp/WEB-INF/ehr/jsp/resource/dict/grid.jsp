@@ -7,7 +7,12 @@
 
 <!-- ####### 页面部分 ####### -->
 <div>
-    <div style="height: 40px"><div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div></div>
+    <div style="height: 40px">
+        <a href="<%=request.getContextPath()%>/template/资源字典导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10">
+            下载模版
+        </a>
+        <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
+    </div>
     <div id="div_wrapper">
 
         <div id="grid_content" style="width: 100%">
