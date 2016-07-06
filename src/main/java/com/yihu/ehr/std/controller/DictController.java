@@ -974,7 +974,7 @@ public class DictController  extends BaseUIController {
         map.put("model", dicts);
         map.put("version",version);
         Envelop envelop = getEnvelop(HttpClientUtil.doPost(comUrl + "/dict/entry/batch", map,username,password));
-        if(envelop.isSuccessFlg())
+        if(envelop!=null&&envelop.isSuccessFlg())
             return envelop.getDetailModelList();
         throw new Exception("保存失败！");
     }
