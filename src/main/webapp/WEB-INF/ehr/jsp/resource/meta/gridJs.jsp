@@ -44,7 +44,10 @@
                 initBarBtn($('.m-retrieve-inner'), btn)
 
                 function onUploadSuccess(g, result){
-                    openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
+                    if(result)
+                        openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
+                    else
+                        $.Notice.success("导入成功！");
                 }
 
                 $('#upd').uploadFile({url: "${contextRoot}/resource/meta/import", onUploadSuccess: onUploadSuccess});
