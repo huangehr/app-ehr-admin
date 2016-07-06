@@ -246,7 +246,7 @@
                     level:2,
                     pid: 3,
                     text: '<spring:message code="title.resource.register"/>',
-                    url: '${contextRoot}/resource/resourceManage/initial?backParams='
+                    url: '${contextRoot}/resource/resourceManage/initial'
                 },
                 <%--{--%>
                     <%--id: 331,--%>

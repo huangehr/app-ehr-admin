@@ -11,7 +11,6 @@
 			// 页面主模块，对应于用户信息表区域
 			var master = null;
 			var conditionArea = null;
-			var dataModel = $.DataModel.init();
 			var categoryId = '';
 			var isFirstPage = true;
 			var typeTree = null;
@@ -19,6 +18,20 @@
 			var appId = backParams.appId;
 			//应用已授权资源集合
 			var appRsIds = [];
+
+			// 资源分类；资源明细检索信息，page，pageSize-------------------
+			var appRsPageParams = JSON.parse(sessionStorage.getItem('appRsPageParams'))
+			sessionStorage.removeItem('appRsPageParams');
+			var searchParams = {
+				//左侧资源分类树
+				categoryId:appRsPageParams && appRsPageParams.categoryId || '',
+				categorySearchNm:appRsPageParams && appRsPageParams.categoryFilter || '',
+				//右侧资源列表
+				searchNm:appRsPageParams && appRsPageParams.resourceFilter || '',
+				page:appRsPageParams && appRsPageParams.page || 1,
+				pageSize:appRsPageParams && appRsPageParams.pageSize || 15,
+			}
+
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
 				conditionArea.init();
@@ -29,9 +42,27 @@
 				if (isFirstPage){
 					master.resourceInfoGrid.options.newPage = 1;
 				}
+				if(searchParams.page >1){
+					master.resourceInfoGrid.options.newPage = searchParms.page;
+					searchParams.page = 1;//重置
+				}
 				master.resourceInfoGrid.setOptions({parms: params});
 				master.resourceInfoGrid.loadData(true);
 				isFirstPage = true;
+			}
+			//维度授权返回资源页面，资源页面的初始化
+			function treeNodeInit(id){
+				if(!id){return}
+				function expandNode (id){
+					var level = $($('#'+id).parent()).parent().attr('outlinelevel')
+					if(level){
+						var parentId = $($('#'+id).parent()).parent().attr('id')
+						$($($('#'+id).parent()).prev()).children(".l-expandable-close").click()//展开节点
+						expandNode(parentId);
+					}
+				}
+				expandNode(id);
+				typeTree.selectNode(id);
 			}
 			/* *************************** 模块初始化 ***************************** */
 			conditionArea = {
@@ -56,8 +87,10 @@
 				init: function () {
 					var self = this;
 					var categoryName = '';
-					$('#div_tree').mCustomScrollbar();
-					this.$search.ligerTextBox({width:220,isSearch: true, search: function () {
+					$('#div_tree').mCustomScrollbar({
+						axis:'yx'
+					});
+					this.$search.ligerTextBox({width:220,value:searchParams.categorySearchNm,isSearch: true, search: function () {
 						categoryName = $("#inp_search").val();
 						typeTree.s_search(categoryName);
 						if(categoryName == ''){
@@ -71,7 +104,7 @@
 						};
 						reloadGrid(parms);
 					}});
-					this.$searchNm.ligerTextBox({width:240,isSearch: true, search: function () {
+					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
 						var parms = {
 							'searchNm':searchNm,
@@ -101,17 +134,12 @@
 								"line-height": "22px",
 								"height": "22px"
 							});
-							if(backParams.typeFilter){
-								$('#inp_search').val(backParams.typeFilter);
-								typeTree.s_search(backParams.typeFilter);
+							if(!Util.isStrEmpty(searchParams.categorySearchNm)){
+								$('#inp_search').val(searchParams.categorySearchNm);
+								typeTree.s_search(searchParams.categorySearchNm);
 							}
-							if(backParams.categoryIds){
-								var categoryIds = backParams.categoryIds;
-								typeTree.s_searchForLazy(categoryIds);
-								var ids = categoryIds.split(",");
-								var id = ids[ids.length-1];
-								$('#inp_searchNm').val(backParams.sourceFilter)
-								typeTree.selectNode(id);
+							if(!Util.isStrEmpty(searchParams.categoryId)){
+								treeNodeInit(searchParams.categoryId);
 							}
 						},
 					});
@@ -150,6 +178,7 @@
 								return html;
 							}}
 						],
+						pageSize:searchParams.pageSize,
 						checkbox: true,
 						validate : true,
 						unSetValidateAttr:false,
@@ -176,6 +205,16 @@
 							}
 						}
 					});
+				},
+				//资源分类、资源列表检索页面数据保存到sessionStorage
+				savePageParamsToSession:function(){
+					var values = {};
+					values.categoryId = categoryId;
+					values.categorySearchNm = $("#inp_search").val();
+					values.resourceSearchNm = $('#inp_searchNm').val();
+					values.page = parseInt($('.pcontrol input', master.resourceInfoGrid.toolbar).val());
+					values.pageSize = $(".l-bar-selectpagesize select", master.resourceInfoGrid.toolbar).val();
+					sessionStorage.setItem("appRsPageParams",JSON.stringify(values));
 				},
 				bindEvents: function () {
 					//资源授权
@@ -208,6 +247,7 @@
 									data:{appId:appId,resourceIds:ids},
 									success:function(data){
 										if(data.successFlg){
+											isFirstPage = false;
 											$.Notice.success( '授权成功！');
 											master.loadResourceIds();
 											master.reloadGrid();
@@ -250,6 +290,7 @@
 									data:{appId:appId,resourceIds:ids},
 									success:function(data){
 										if(data.successFlg){
+											isFirstPage = false;
 											$.Notice.success( '取消授权成功！');
 											master.loadResourceIds();
 											master.reloadGrid();
@@ -264,32 +305,18 @@
 
 					//维度授权页面跳转
 					$.subscribe('app:resourceManage:list', function (event,resourceId,code,resourceName,categoryName) {
-						var dataModel = $.DataModel.init();
-						dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
-							data:{categoryId:categoryId},
-							async:true,
-							success: function(data) {
-								if (data.successFlg) {
-									var data = {
-										'appId':appId,
-										'resourceId':resourceId,
-										'code':code,
-										'resourceName':resourceName,
-										'resourceSub':categoryName,
-										'backParams':{
-											'appId':appId,
-											'appName':backParams.appName,
-											'catalogName':backParams.catalogName,
-											'categoryIds':data.obj,
-											'sourceFilter':$('#inp_searchNm').val(),
-											'typeFilter':$('#inp_search').val(),
-										}
-									}
-									$("#contentPage").empty();
-									$("#contentPage").load('${contextRoot}/app/resourceManage/initial?appId='+appId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});
-								}
-							},
-						});
+						master.savePageParamsToSession();//页面数据保存sessionStorage
+						//跳转维度授权页面，带参数
+						var data = {
+							'appId':appId,
+							'resourceId':resourceId,
+							'code':code,
+							'resourceName':resourceName,
+							'resourceSub':categoryName,
+							'backParams':backParams,//资源页面顶app信息
+						}
+						$("#contentPage").empty();
+						$("#contentPage").load('${contextRoot}/appnew/resourceManage/initial?appId='+appId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});
 					});
 				},
 			};

@@ -7,96 +7,66 @@
             // 通用工具类库
             var Util = $.Util;
             var recordInfo = null;
-            var recordGrid = null;
-            var reloadData = null;
-            var unrelevanceDialog = null;
+            var dialog = frameElement.dialog;
             var claimModel = ${claimModel};
-//            delete claimModel.obj['statusName'];
-//            delete claimModel.obj['visOrgName'];
-//            claimModel.obj.applyDate = new Date(claimModel.obj.applyDate);
-//            claimModel.obj.auditDate = new Date(claimModel.obj.auditDate);
-//            claimModel.obj.applyDate = '2016-06-22T13:41:11Z+0800';
-
-            var ApplyStrModel = ${ApplyStr};
-            var auditHeight = $(".div-audit-msg").height();
-            var windowHeight = $(window).height();
+            // 表单校验工具类
             var dataModel = $.DataModel.init();
             // 页面表格条件部模块
 
-            /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 recordInfo.init();
-                recordInfo.recordGridInfo();
             }
-
-
-            /* *************************** 检索模块初始化 ***************************** */
             recordInfo = {
-
-
-                $matchingRecordGrid: $("#div_matching_record_grid"),
                 $unrelevanceForm: $("#div_unrelevance_form"),
                 $unrelevanceeElse: $('input[name="unrelevanceeElse"]', this.$unrelevanceForm),
-                $relevanceBtn: $("#div_relevance_btn"),
-                $unrelevanceBtn: $("#div_unrelevance_btn"),
                 $unrelevanceSaveBtn: $("#div_unrelevance_save_btn"),
                 $unrelevanceCancelBtn: $("#div_unrelevance_cancel_btn"),
-                $matchingChangeBtn: $(".sp-matching-change-btn"),
+                $tetElse: $(".tet-else").parent(),
 
                 init: function () {
                     var self = this;
-
                     self.$unrelevanceeElse.ligerRadio();
-
-                    $('.sp-lift-btn').css('background','url()');
-                    reloadData.reloadAuditData(claimModel.obj, self.$applyForm);
-                    reloadData.reloadAuditData(ApplyStrModel.detailModelList[0], self.$matchingForm);
-
-                },
-
-                recordGridInfo: function () {
-                    var self = this;
-
                     self.clicks();
                 },
                 clicks: function () {
                     var self = this;
-                    var claimId = ApplyStrModel.detailModelList[0].id;
-
+                    self.$unrelevanceeElse.click(function () {
+                        Util.isStrEmpty(this.id)?(self.$tetElse.addClass('m-form-readonly'),$(".tet-else").val(''),$(".tet-else").css('border','1px solid #c8c8c8'),$(".tet-else").siblings('span').hide()):self.$tetElse.removeClass('m-form-readonly');
+                    });
+                    $(".tet-else").blur(function () {
+                        var textEle = $(this);
+                        Util.isStrEmpty(textEle.val())?(textEle.css('border','1px solid #f09784'),textEle.siblings('span').show().css('color','red')):(textEle.css('border','1px solid #c8c8c8'),textEle.siblings('span').hide());
+                    });
                     self.$unrelevanceSaveBtn.click(function () {
                         $("#inp_else").val($(".tet-else").val());
                         self.$unrelevanceForm.attrScan();
                         var data = self.$unrelevanceForm.Fields.getValues();
-                        debugger
-
-                        var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
-                        claimModel.obj.auditReason = data.unrelevanceeElse;
+                        if (Util.isStrEmpty(data.unrelevanceeElse)){
+                            $(".tet-else").css('border','1px solid #f09784');$(".tet-else").siblings('span').show().css('color','red');
+                            return;
+                        }
+                        self.$unrelevanceForm.attrScan();
+                        var data = self.$unrelevanceForm.Fields.getValues();
+                        var savedialog = $.ligerDialog.waitting('正在保存,请稍候...');
+                        claimModel.auditReason = data.unrelevanceeElse;
                         dataModel.updateRemote("${contextRoot}/audit/updateClaim", {
-                            data: {jsonModel:JSON.stringify(claimModel.obj)},
-                            async: true,
+                            data: {jsonModel:JSON.stringify(claimModel)},
                             success: function (data) {
-                                dialog.close();
+                                savedialog.close();
                                 if (data.successFlg) {
-                                    $.Notice.success('保存成功。');
+                                    win.parent.closeAuditDialog("保存成功");
                                 } else {
-                                    $.Notice.error('保存失败。');
+                                    win.parent.closeAuditDialog("保存失败");
                                 }
                             }
-                        });
-                        unrelevanceDialog.close();
+                        })
                     });
                     self.$unrelevanceCancelBtn.on("click", function () {
-                        unrelevanceDialog.close();
+                        dialog.close();
                     });
-
                 }
             };
-
-            /* *************************** 检索模块初始化结束 ***************************** */
-
-            /* *************************** 页面初始化 **************************** */
             pageInit();
-            /* ************************* 页面初始化结束 ************************** */
         });
     })(jQuery, window);
 </script>

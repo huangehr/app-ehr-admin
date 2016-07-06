@@ -15,8 +15,8 @@
     .f-mw19{ width: 19% }
     .dis-none{ display: none}
     .div-resource-browse{ height:100%; width:80%; float:right;border: 1px solid #D6D6D6;}
-    .sp-back-add-img{ background: url(${staticRoot}/images/app/add_btn.png);float:right;width:22px;height:22px; }
-    .sp-back-del-img{ background: url(${staticRoot}/images/app/Close_btn_pre01.png);float:right;width:20px;height:20px; }
+    .sp-back-add-img{ background: url(${staticRoot}/images/app/add_btn.png);float:right;width:22px;height:22px;cursor:pointer; }
+    .sp-back-del-img{ background: url(${staticRoot}/images/app/Close_btn_pre01.png);float:right;width:20px;height:20px;cursor:pointer; }
     /*.f-w90{ width:100%; }*/
     .div-result-msg{ border: 1px solid #D6D6D6; width: 100%;height: auto; float: left; }
     .f-mr279{ margin-right: 279px; }
@@ -25,5 +25,6 @@
     .f-ml-20{ margin-left: 5%; }
     .f-mw8{ width:10% }
     .f-mw238{ width: 238px }
+    /*#mCSB_6_container{ margin-right: 0 }*/
 </style>
 

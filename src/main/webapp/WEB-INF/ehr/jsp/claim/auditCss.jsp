@@ -7,7 +7,7 @@
     .f-audit-fw50{ width:50%; }
     .div-audit-view-title{ height:10px;margin-bottom: 10px; }
     legend{ width:auto; border-bottom: 0;}
-    .fie-bd{ padding: 15px 0;border: 1px solid #DFDFDF;width: 70%;margin: auto; }
+    .fie-bd{ border: 1px solid #DFDFDF;width: 70%;margin: auto; }
     .m-form-inline .m-form-group label{ width: 100px;}
     .m-form-inline .m-form-group{ padding-bottom: 0; }
     .f-matching-bd{ background: #fff;border: 0; }

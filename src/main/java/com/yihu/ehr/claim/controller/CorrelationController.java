@@ -70,6 +70,10 @@ public class CorrelationController extends BaseUIController {
             if(result.getObj()!=null){
                 Object list =  result.getObj();
                 model.addAttribute("mode",toJson(list));
+            }else{
+                ArApplyModel arApplyModel =  new ArApplyModel();
+                arApplyModel.setId(Integer.parseInt(id));
+                model.addAttribute("mode",toJson(arApplyModel));
             }
             //审核失败的查看，
             if("view".equals(status)){
@@ -87,9 +91,12 @@ public class CorrelationController extends BaseUIController {
                 model.addAttribute("contentPage", "/claim/correlationValidateDialog");
                 model.addAttribute("msg","该时间段内未查找到相关档案，建议审核不通过，原因为“未查找到相关档案，请您核对相关信息后重新提交申请!");
             }else if("success".equals(status)){//查看预关联
+                model.addAttribute("contentPage", "/claim/correlationAuditDialog");
                 if(result.getDetailModelList()!=null&&result.getDetailModelList().size()==1){
                     Object list =  result.getDetailModelList().get(0);
                     model.addAttribute("archives",toJson(list));
+                }else{
+                    model.addAttribute("archives",toJson(new ArApplyModel()));
                 }
             }
         }catch (Exception e){

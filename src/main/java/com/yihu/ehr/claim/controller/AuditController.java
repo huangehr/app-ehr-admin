@@ -10,6 +10,7 @@ import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -21,7 +22,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/audit")
-public class AuditController extends BaseUIController{
+public class AuditController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
@@ -31,10 +32,10 @@ public class AuditController extends BaseUIController{
     private String comUrl;
 
     @RequestMapping("/initial")
-    public String initial(Model model,String claimId){
+    public String initial(Model model, String claimId) {
 
         Envelop envelopTest = new Envelop();
-        List<MArApply>  mArApplyListTest = new ArrayList<>();
+        List<MArApply> mArApplyListTest = new ArrayList<>();
         MArApply mArApplyTest = new MArApply();
 
         mArApplyTest.setVisDate("1111111111111111111111111111");
@@ -63,36 +64,38 @@ public class AuditController extends BaseUIController{
         mArApplyListTest.add(mArApplyTest2);
         envelopTest.setDetailModelList(mArApplyListTest);
 
-//        String url = "/archive/applications/1"+claimId;
-        String url = "/archive/applications/5";
+        claimId = "5";//todo test id
+        String url = "/archive/applications/"+claimId;
         Map<String, Object> params = new HashMap<>();
         String resultStr = null;
         String ApplyStr = null;
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            params.put("filters","id="+claimId);
-            url = ServiceApi.Patients.ArApplications;
-//            ApplyStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+//            params.put("filters", "id=" + claimId);
+            url = "/archive/applications/"+claimId+"/archive_info";
+            ApplyStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        model.addAttribute("claimModel",resultStr);
-        model.addAttribute("contentPage","claim/audit");
-        model.addAttribute("ApplyStr",toJson(envelopTest));
+        model.addAttribute("claimModel", resultStr);
+        model.addAttribute("contentPage", "claim/audit");
+        model.addAttribute("ApplyStr", toJson(envelopTest));
+//        model.addAttribute("ApplyStr", ApplyStr);
         return "pageView";
     }
 
     @RequestMapping("/auditDialog")
-    public String auditDialog(Model model){
+    public String auditDialog(Model model, String jsonModel) {
+        model.addAttribute("claimModel", jsonModel);
         model.addAttribute("contentPage", "claim/auditDialog");
-        return "pageView";
+        return "generalView";
     }
 
     @RequestMapping("/saveAudit")
     @ResponseBody
-    public String saveAudit(String applyId,String matchingId){
+    public String saveAudit(String applyId, String matchingId) {
         String url = "/audit/saveAudit/";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
@@ -107,26 +110,9 @@ public class AuditController extends BaseUIController{
         return resultStr;
     }
 
-//    @RequestMapping("/updateClaim")
-//    @ResponseBody
-//    public String updateClaim(String ClaimId,String unrelevance){
-//        String url = "/audit/updateClaim/";
-//        String resultStr = "";
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("ClaimId", ClaimId);
-//        params.put("unrelevance", unrelevance);
-//        try {
-//            resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
-//
-//        } catch (Exception e) {
-//
-//        }
-//        return resultStr;
-//    }
-
     @RequestMapping("/addArRelations")
     @ResponseBody
-    public String addArRelations(String relationModel){
+    public String addArRelations(String relationModel) {
         String url = ServiceApi.Patients.ArRelations;
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
@@ -148,16 +134,18 @@ public class AuditController extends BaseUIController{
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
 
-
         try {
             ArApplyModel arApplyModel = toModel(jsonModel, ArApplyModel.class);
-            Date date = DateTimeUtils.simpleDateParse(arApplyModel.getApplyDate());
-            String applyData = DateTimeUtils.utcDateTimeFormat(date);
-
-            arApplyModel.setApplyDate(applyData);
-//            date = DateTimeUtils.utcDateTimeParse(arApplyModel.getAuditDate());
-//            String auditDate = DateTimeUtils.utcDateTimeFormat(date);
-//            arApplyModel.setAuditDate(auditDate);
+            if (!StringUtils.isEmpty(arApplyModel.getApplyDate())){
+                Date applyDate = DateTimeUtils.simpleDateParse(arApplyModel.getApplyDate());
+                String apply = DateTimeUtils.utcDateTimeFormat(applyDate);
+                arApplyModel.setApplyDate(apply);
+            }
+            if (!StringUtils.isEmpty(arApplyModel.getAuditDate())) {
+                Date auditDate = DateTimeUtils.simpleDateParse(arApplyModel.getAuditDate());
+                String audit = DateTimeUtils.utcDateTimeFormat(auditDate);
+                arApplyModel.setAuditDate(audit);
+            }
             jsonModel = toJson(arApplyModel);
 
             params.put("model", jsonModel);

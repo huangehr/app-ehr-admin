@@ -132,32 +132,20 @@
 						update(values)
 						return
 					}
-					//获取父级页面树定位categoryIds
-					var dataModel = $.DataModel.init();
-					dataModel.updateRemote("${contextRoot}/resource/resourceManage/categoryIds", {
-						data:{categoryId:categoryId},
-						async:true,
-						success: function(data) {
-							if (data.successFlg) {
-								var categoryIds = data.obj;
-								var callbackParams = {
-									'categoryIds':categoryIds,
-									'categoryId':categoryId,
-									'typeFilter':$('#inp_category').val(),
-								}
-								update(values,callbackParams);
-							}
-						},
-					});
+					var callbackParams = {
+						'categoryId':categoryId,
+						'typeFilter':$('#inp_category').val(),
+					}
+					update(values,categoryId);
 				});
 
-				function update(values,callbackParams){
+				function update(values,categoryIdNew){
 					var dataModel = $.DataModel.init();
 					dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
 						data:{dataJson:JSON.stringify(values),mode:mode},
 						success: function(data) {
 							if (data.successFlg) {
-								parent.reloadMasterUpdateGrid(callbackParams);
+								parent.reloadMasterUpdateGrid(categoryIdNew);
 								$.Notice.success('操作成功');
 								win.closeRsInfoDialog();
 							} else {

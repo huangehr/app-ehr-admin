@@ -4,6 +4,7 @@ import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
+import jxl.Cell;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
@@ -13,11 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import java.io.File;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * Created by wq on 2016/5/17.
  */
@@ -79,22 +83,14 @@ public class ResourceBrowseController extends BaseUIController {
 
     /**
      * 动态获取GRID的列名
+     *
      * @param dictId
      * @return
      */
     @RequestMapping("/getGridCloumnNames")
     @ResponseBody
     public Object getGridCloumnNames(String dictId) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String url = "/resources/ResourceBrowses/getResourceMetadata";
-        String resultStr = "";
-        params.put("resourcesCode", dictId);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-        } catch (Exception e) {
-
-        }
+        String resultStr = getColumns(dictId);
         return resultStr;
     }
 
@@ -103,21 +99,24 @@ public class ResourceBrowseController extends BaseUIController {
     @ResponseBody
     public Object getRsDictEntryList(String dictId) {
 
+        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String dictEntryUrl = "/resources/noPageDictEntries";
-        params.put("filters", "dictCode=" + dictId);
+        params.put("filters", "dictCode=" + dictId + " g0");
 
         try {
             if (!StringUtils.isEmpty(dictId)) {
 
                 resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
+                return resultStr;
             }
         } catch (Exception e) {
-
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("字典查询失败");
         }
 
-        return resultStr;
+        return envelop;
     }
 
     @RequestMapping("/searchDictEntryList")
@@ -162,99 +161,102 @@ public class ResourceBrowseController extends BaseUIController {
         return resultStr;
     }
 
-//    //数据导出方法
-//    @RequestMapping("outExcel")
-//    @ResponseBody
-//    public Object outExcel(String rowData, String resourceCategoryName) {
-//
-//        Envelop envelop = new Envelop();
-////        resourceCategoryName = resourceCategoryName.replaceAll("/","")+"_"+System.currentTimeMillis();
-//        resourceCategoryName = System.currentTimeMillis()+"";
-//        //标题行
-//        List<Object> dataAllList = toModel(rowData, List.class);
-//
-//        List<String> titleList = new ArrayList<>();
-//        List<List> dataList = new ArrayList<>();
-//        List<String> rowContext = new ArrayList<>();
-//
-//        Map<String, String> map = new HashMap<>();
-//
-//        for (int i = 0; i < dataAllList.size(); i++) {
-//            map = toModel(toJson(dataAllList.get(i)), Map.class);
-//            for (String key : map.keySet()) {
-//
-//                if (!titleList.contains(key)) {
-//                    titleList.add(key);
-//                }
-//                rowContext.add(String.valueOf(map.get(key)));
-//            }
-//            dataList.add(rowContext);
-//            rowContext = new ArrayList<>();
-//        }
-//
-//        try {
-//            //resourceCategoryName.xls为要新建的文件名
-//            WritableWorkbook book = Workbook.createWorkbook(new File("F:\\excel\\" + resourceCategoryName + ".xls"));
-//            //生成名为“resourceCategoryName”的工作表，参数0表示这是第一页
-//            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-//            //title
-//            for (int i = 0; i < titleList.size(); i++) {
-//                sheet.addCell(new Label(i, 0, titleList.get(i)));
-//            }
-//            //context
-//            for (int i = 0; i < dataList.size(); i++) {
-//                for (int j = 0; j < dataList.get(i).size(); j++) {
-//                    sheet.addCell(new Label(j, i + 1, String.valueOf(dataList.get(i).get(j))));
-//                }
-//            }
-//            book.write();
-//            book.close();
-//        } catch (Exception e) {
-//            envelop.setSuccessFlg(false);
-//            envelop.setErrorMsg("数据导出失败");
-//        }
-//        envelop.setSuccessFlg(true);
-//        return envelop;
-//    }
-//数据导出方法
-@RequestMapping("outExcel")
-@ResponseBody
-public Object outExcel(String codes,String names,String valueList, String resourceCategoryName) {
+    //数据导出方法
+    @RequestMapping("outExcel")
+//    public void outExcel(HttpServletResponse response, String codes, String names, Integer size, String resourcesCode, String searchParams) {
+    public void outExcel(HttpServletResponse response, Integer size, String resourcesCode, String searchParams) {
 
-    Envelop envelop = new Envelop();
-    resourceCategoryName = System.currentTimeMillis()+"";
-    List<String> titleList = toModel(codes,List.class);
-    List<List> dataList = toModel(valueList,List.class);
-    List<String> nameList = toModel(names,List.class);
-    String path = "C:\\resourceData\\"+resourceCategoryName + ".xls";
-    try {
-        File file = new File(path);
-        if(!file.getParentFile().exists()){
-            file.getParentFile().mkdirs();
-        }
-        WritableWorkbook book = Workbook.createWorkbook(file);
-        WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-        for (int i = 0; i < titleList.size(); i++) {
-            //new laberl（'列','行','数据'）
-            sheet.addCell(new Label(0,0,"代码"));
-            sheet.addCell(new Label(0,1,"名称"));
-            sheet.addCell(new Label(i+1, 0, titleList.get(i)));
-            sheet.addCell(new Label(i+1,1,nameList.get(i)));
-        }
-        for (int i = 0; i < dataList.size(); i++) {
-            for (int j = 0; j < dataList.get(i).size(); j++) {
-                sheet.mergeCells(0,2,0,dataList.size()+1);
-                sheet.addCell(new Label(0,2,"值"));
-                sheet.addCell(new Label(j+1, i + 2, String.valueOf(dataList.get(i).get(j))));
+        Envelop envelop = new Envelop();
+        String resultStr = "";
+        String fileName = "资源数据";
+        String resourceCategoryName = System.currentTimeMillis() + "";
+
+        resultStr = getColumns(resourcesCode);
+        envelop = toModel(resultStr, Envelop.class);
+//        Map cmap = new HashMap();
+
+        try {
+            response.setContentType("octets/stream");
+            response.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
+            OutputStream os = response.getOutputStream();
+            WritableWorkbook book = Workbook.createWorkbook(os);
+            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
+
+
+            for (int i = 0; i < envelop.getDetailModelList().size(); i++) {
+                Map cmap = toModel(toJson(envelop.getDetailModelList().get(i)), Map.class);
+                //new laberl（'列','行','数据'）
+                sheet.addCell(new Label(0, 0, "代码"));
+                sheet.addCell(new Label(0, 1, "名称"));
+                sheet.addCell(new Label(i + 1, 0, String.valueOf(cmap.get("code"))));
+                sheet.addCell(new Label(i + 1, 1, String.valueOf(cmap.get("value"))));
             }
+
+
+//        List<String> titleList = toModel(codes, List.class);
+//        List<String> nameList = toModel(names, List.class);
+
+
+            Map<String, Object> params = new HashMap<>();
+
+            String url = "/resources/ResourceBrowses/getResourceData";
+            params.put("resourcesCode", resourcesCode);
+            params.put("queryCondition", searchParams);
+            params.put("page", 1);
+            params.put("size", size);
+
+
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+            List<Object> objectList = envelop.getDetailModelList();
+
+
+//            for (int i = 0; i < titleList.size(); i++) {
+//                //new laberl（'列','行','数据'）
+//                sheet.addCell(new Label(0, 0, "代码"));
+//                sheet.addCell(new Label(0, 1, "名称"));
+//                sheet.addCell(new Label(i + 1, 0, titleList.get(i)));
+//                sheet.addCell(new Label(i + 1, 1, nameList.get(i)));
+//            }
+            Cell[] cells = sheet.getRow(0);
+            for (int i = 0; i < objectList.size(); i++) {
+                Map<String, String> map = toModel(toJson(objectList.get(i)), Map.class);
+                for (String key : map.keySet()) {
+                    for (Cell cell : cells) {
+                        if (cell.getContents().equals(key)) {
+                            sheet.addCell(new Label(cell.getColumn(), i + 2, String.valueOf(map.get(key))));
+                        }
+                    }
+                }
+            }
+            sheet.mergeCells(0, 2, 0, objectList.size() + 1);
+            sheet.addCell(new Label(0, 2, "值"));
+
+            book.write();
+            book.close();
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("数据导出失败");
         }
-        book.write();
-        book.close();
-    } catch (Exception e) {
-        envelop.setSuccessFlg(false);
-        envelop.setErrorMsg("数据导出失败");
+        envelop.setSuccessFlg(true);
     }
-    envelop.setSuccessFlg(true);
-    return envelop;
-}
+
+    public String getColumns(String resourceCode) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "/resources/ResourceBrowses/getResourceMetadata";
+        String resultStr = "";
+        params.put("resourcesCode", resourceCode);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("获取表结构信息失败");
+        }
+        return toJson(envelop);
+    }
 }

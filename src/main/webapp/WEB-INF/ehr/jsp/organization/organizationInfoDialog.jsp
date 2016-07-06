@@ -62,8 +62,8 @@
         </div>
     </div>
     <div>
-        <div class="f-pr u-bd">
-            <div class="f-pa f-w20 f-wtl">
+        <div class="f-pr u-bd" >
+            <div class="f-pa f-w20 f-wtl" >
                 高级
             </div>
             <div class="div-aptitude-manager" style="width:550px;height:320px;margin-top:20px;">
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <div class="m-form-group f-h100" hidden="hidden" id="div_publicKeyMessage">
+            <div class="m-form-group f-h100" hidden="hidden" id="div_publicKeyMessage" style="margin: 0 0 10px 10px;" >
                 <label class="lbl-public-key">公钥信息:</label>
                 <div class="l-text-wrapper m-form-control f-ml130">
                     <textarea type="text" class="required useTitle u-public-key-msg f-w400" data-attr-scan="publicKey"

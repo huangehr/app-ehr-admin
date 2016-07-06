@@ -65,50 +65,50 @@
                 <div class="m-form-group m-form-readonly f-fl">
                     <label>就诊时间:</label>
                     <div class="l-text-wrapper m-form-control">
-                        <input type="text" id="inp_matching_analyse_time" class="f-matching-bd" data-attr-scan=""/>
+                        <input type="text" id="inp_matching_analyse_time" class="f-matching-bd" data-attr-scan="applyDateArchives"/>
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly f-fl">
                     <label>就诊机构:</label>
                     <div class="l-text-wrapper m-form-control">
-                        <input type="text" id="inp_matching_analyse_org" class="f-matching-bd" data-attr-scan=""/>
+                        <input type="text" id="inp_matching_analyse_org" class="f-matching-bd" data-attr-scan="visOrgArchives"/>
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly f-fl">
                     <label>就诊医生:</label>
                     <div class="l-text-wrapper m-form-control">
                         <input type="text" id="inp_matching_analyse_doctor" class="f-matching-bd"
-                               data-attr-scan=""/>
+                               data-attr-scan="visDoctorArchives"/>
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly f-fl">
                     <label>卡号:</label>
                     <div class="l-text-wrapper m-form-control">
-                        <input type="text" id="inp_matching_card_nmuber" class="f-matching-bd" data-attr-scan=""/>
+                        <input type="text" id="inp_matching_card_nmuber" class="f-matching-bd" data-attr-scan="cardNoArchives"/>
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly f-fl">
                     <label>就诊结果:</label>
                     <div class="l-text-wrapper m-form-control">
-                        <input type="text" id="inp_matching_analyse_out" class="f-matching-bd" data-attr-scan=""/>
+                        <input type="text" id="inp_matching_analyse_out" class="f-matching-bd" data-attr-scan="diagnosedResultArchives"/>
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly f-fl">
                     <label>检查项目:</label>
                     <div class="l-text-wrapper m-form-control">
-                        <input type="text" id="inp_matching_examine_pro" class="f-matching-bd" data-attr-scan=""/>
+                        <input type="text" id="inp_matching_examine_pro" class="f-matching-bd" data-attr-scan="diagnosedProjectArchives"/>
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly f-fl">
                     <label>诊断开药:</label>
                     <div class="l-text-wrapper m-form-control">
-                        <input type="text" id="inp_matching_analyse_drug" class="f-matching-bd" data-attr-scan=""/>
+                        <input type="text" id="inp_matching_analyse_drug" class="f-matching-bd" data-attr-scan="medicinesArchives"/>
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly f-fl">
                     <label>备注:</label>
                     <div class="l-text-wrapper m-form-control">
-                        <input type="text" id="inp_matching_remark" class="f-matching-bd" data-attr-scan=""/>
+                        <input type="text" id="inp_matching_remark" class="f-matching-bd" data-attr-scan="memoArchives"/>
                     </div>
                 </div>
             </div>

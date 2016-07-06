@@ -1,30 +1,37 @@
 package com.yihu.ehr.std.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.standard.dict.DictEntryModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.std.model.DictionaryMsg;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.excel.AExcelReader;
+import com.yihu.ehr.util.excel.TemPath;
+import com.yihu.ehr.util.excel.read.DictionaryMsgReader;
+import com.yihu.ehr.util.excel.read.DictionaryMsgWriter;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import javafx.util.Pair;
-import jxl.Sheet;
+import com.yihu.ehr.web.RestTemplates;
 import jxl.Workbook;
 import jxl.format.CellFormat;
 import jxl.write.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -43,7 +50,7 @@ public class DictController  extends BaseUIController {
     private String comUrl;
     @Value("${service-gateway.stdsourceurl}")
     private String stdsourceurl;
-
+    final String parentFile = "dict";
     @RequestMapping("initial")
     public String dictInitial(Model model) {
         model.addAttribute("contentPage","/std/dict/stdDict");
@@ -904,124 +911,96 @@ public class DictController  extends BaseUIController {
 
     @RequestMapping("/importFromExcel")
     @ResponseBody
-    public Object importFromExcel(HttpServletRequest request,String versionCode){
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String userId = userDetailModel.getId().toString();
-        Envelop envelop = new Envelop();
+    public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         try {
+            String version = request.getParameter("version");
+            if(StringUtils.isBlank(version)){
+                throw new RuntimeException("版本号不能为空！");
+            }
+            writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
-            InputStream inputStream = request.getInputStream();
-            Workbook rwb = Workbook.getWorkbook(inputStream);
-            Sheet[] sheets = rwb.getSheets();
-            String strErrorMsg="";
-            int rows;
-            //批量入库
-            List<Pair<DictModel,List<DictEntryModel>>> allData = new ArrayList<>();
-            Pair<DictModel,List<DictEntryModel>> pair=null;
-            List<Envelop> saveDatas = new ArrayList<>();
-            Envelop saveData;   //obj对应DictModel,detailModelList对应List<DictEntryModel>
-            //字典信息
-            DictModel dictModel;
-            String sheetName; //sheet名字
-            String dictName;//名称
-            String dictCode;//代码
-            String dictDesc;//说明
-            //字典项信息
-            List<DictEntryModel> dictEntryModelList;
-            Set<String> set;
-            DictEntryModel dictEntryModel;
-            String code;//字典项编码
-            String name;//字典项名称
+            AExcelReader excelReader = new DictionaryMsgReader();
+            excelReader.read(file.getInputStream());
+            List<DictionaryMsg> errorLs = excelReader.getErrorLs();
+            List<DictionaryMsg> correctLs = excelReader.getCorrectLs();
+            writerResponse(response, 35+"", "l_upd_progress");
 
-            for (Sheet sheet : sheets) {
-                dictModel = new DictModel();
-                dictModel.setStdVersion(versionCode);
-                //获取字典信息
-                sheetName = sheet.getName(); //sheet名字
-                dictCode = sheet.getCell(1, 0).getContents();//代码
-                dictName = sheet.getCell(1, 1).getContents();//名称
-
-                //字典校验
-                if (dictCode==null || dictCode.equals("")){
-                    strErrorMsg = sheetName +"字典代码不能为空，请检查！";
-                }
-                if (dictName==null || dictName.equals("")){
-                    strErrorMsg = sheetName +"字典名称不能为空，请检查！";
-                }
-                if (!StringUtils.isEmpty(strErrorMsg)) {
-                    //字典校验
-                    envelop.setSuccessFlg(false);
-                    envelop.setErrorMsg(strErrorMsg);
-                    return envelop;
-                }
-                //插入字典信息
-                dictModel.setCode(dictCode);//
-                dictModel.setName(dictName);
-                dictModel.setId(0);//内部自增长
-                dictModel.setStdVersion(versionCode);
-                dictModel.setAuthor(userId);
-
-                //todo：test--测试时备注做区别，方便删除测试
-                //dictModel.setDescription("测试excel导入");
-
-                //获取字典项信息
-                set = new HashSet<String>();
-                dictEntryModelList = new ArrayList<>();
-                rows = sheet.getRows();
-                for (int j = 0; j < rows; j++) {
-                    dictEntryModel = new DictEntryModel();
-                    code = sheet.getCell(3, j).getContents();//字典项编码
-                    name = sheet.getCell(4, j).getContents();//字典项名称
-
-                    //字典项校验
-                    if (code==null || code.equals("")){
-                        strErrorMsg = sheetName+"第"+(j+1)+"行字典项编码不能为空，请检查！";
-                    }else{
-                        set.add(code);
-                        if (set.toArray(new String[set.size()]).length != j+1){
-                            //code重复
-                            strErrorMsg = sheetName+"第"+(j+1)+"行字典项编码已存在，请检查！";
+            //保存验证通过数据
+            List saveLs = new ArrayList<>();
+            if(correctLs.size()>0){
+                Set<String> codes = findExistCode(toJson(excelReader.getRepeat().get("code")),version);
+                writerResponse(response, 45+"", "l_upd_progress");
+                if(codes.size()>0){
+                    DictionaryMsg model;
+                    for(int i=0; i<correctLs.size(); i++){
+                        model = correctLs.get(i);
+                        if(codes.contains(model.getCode())){
+                            model.addErrorMsg("code", "该代码已存在！");
+                            errorLs.add(model);
                         }
+                        else
+                            saveLs.add(correctLs.get(i));
                     }
-                    if (name==null || name.equals("")){
-                        strErrorMsg = sheetName+"第"+(j+1)+"行字典项名称不能为空，请检查！";
-                    }
-
-                    if (!StringUtils.isEmpty(strErrorMsg)) {
-                        //字典项校验
-                        envelop.setSuccessFlg(false);
-                        envelop.setErrorMsg(strErrorMsg);
-                        return envelop;
-                    }
-                    //插入字典项信息
-                    dictEntryModel.setId(0);//为0内部自增
-                    dictEntryModel.setCode(code);
-                    dictEntryModel.setValue(name);
-                    dictEntryModelList.add(dictEntryModel);
-                    //todo：test--测试时备注做区别，方便删除测试
-                    //dictEntryModel.setDesc("测试excel导入");
-                }
-                //缓存，后面字典、字典项批量入库
-                pair = new Pair<>(dictModel,dictEntryModelList);
-                allData.add(pair);
+                }else
+                    saveLs = correctLs;
             }
-            //批量入库
-            for(Pair<DictModel,List<DictEntryModel>> pairTemp:allData){
-                saveData = saveData(pairTemp.getKey(),pairTemp.getValue(),versionCode);//保存字典、字典项信息
-                saveDatas.add(saveData);
-            }
+            writerResponse(response, 55+"", "l_upd_progress");
 
-            //关闭
-            rwb.close();
-            inputStream.close();
-            //todo：汇总返回前台展示,saveDatas处理
-            envelop.setObj(saveDatas);
-            envelop.setSuccessFlg(true);
+            Map rs = new HashMap<>();
+            if(errorLs.size()>0){
+                String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
+                new DictionaryMsgWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
+                rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
+            }
+            writerResponse(response, 65 + "", "l_upd_progress");
+
+            if(saveLs.size()>0)
+                saveDicts(toJson(saveLs),version);
+            if(errorLs.size()==0)
+                writerResponse(response, 100 + ",'suc'", "l_upd_progress");
+            else
+                writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
+
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            writerResponse(response, "-1", "l_upd_progress");
         }
-        return envelop;
+    }
+
+    private List saveDicts(String dicts,String version) throws Exception {
+        Map map = new HashMap<>();
+        map.put("model", dicts);
+        map.put("version",version);
+        Envelop envelop = getEnvelop(HttpClientUtil.doPost(comUrl + "/dict/entry/batch", map,username,password));
+        if(envelop.isSuccessFlg())
+            return envelop.getDetailModelList();
+        throw new Exception("保存失败！");
+    }
+
+    private Set<String> findExistCode(String codes,String version) throws Exception {
+        HashMap<String,Object> conditionMap = new HashMap<>();
+        conditionMap.put("codes", codes);
+        conditionMap.put("version", version);
+        RestTemplates template = new RestTemplates();
+        String rs = HttpClientUtil.doPost(comUrl + "/dict/codes/existence", conditionMap,username,password);
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
+
+    protected void writerResponse(HttpServletResponse response, String body, String client_method) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<script type=\"text/javascript\">//<![CDATA[\n");
+        sb.append("     parent.").append(client_method).append("(").append(body).append(");\n");
+        sb.append("//]]></script>");
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.addHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+        response.setHeader("Cache-Control", "pre-check=0,post-check=0");
+        response.setDateHeader("Expires", 0);
+        response.getWriter().write(sb.toString());
+        response.flushBuffer();
     }
 
     @RequestMapping("/exportToExcel")
@@ -1096,7 +1075,6 @@ public class DictController  extends BaseUIController {
                     }
                     addCell(ws,3,j,dictEntry.getCode(),wc);//代码
                     addCell(ws,4,j,dictEntry.getValue(),wc);//名称
-                    addCell(ws,5,j,dictEntry.getValue(),wc);//说明
                 }
             }
             //写入工作表

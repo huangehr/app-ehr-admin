@@ -45,9 +45,11 @@ public class ResourceConfigurationController extends BaseUIController {
         String resultStr = "";
 
         params.put("filters", "");
-        if (!StringUtils.isEmpty(searchNm))
-            params.put("filters", "name?" + searchNm + " g1;id?" + searchNm + " g1");
-
+        String filters ="valid=1";
+        if (!StringUtils.isEmpty(searchNm)){
+            filters += ";name?" + searchNm + " g1;id?" + searchNm + " g1";
+        }
+        params.put("filters",filters);
         params.put("page", page);
         params.put("size", rows);
         params.put("fields", "");
