@@ -27,7 +27,10 @@
       <div class="m-form-control f-ml10">
         <input type="text" id="ipt_search_is_valid"  placeholder="是否失效" data-type="select" data-attr-scan="valid">
       </div>
-
+      <a href="<%=request.getContextPath()%>/template/资源数据元导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+         style="">
+        下载模版
+      </a>
       <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px"></div>
 
     </div>
