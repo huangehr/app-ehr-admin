@@ -2,5 +2,6 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <style>
-
+    .u-btn-lar{
+        width: 100px !important;}
 </style>

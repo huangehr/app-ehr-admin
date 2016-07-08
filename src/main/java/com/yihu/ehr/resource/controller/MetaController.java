@@ -102,6 +102,7 @@ public class MetaController extends ExtendController<MetaService> {
 
             Map<String, Set> repeat = new HashMap<>();
             repeat.put("id", new HashSet<String>());
+            repeat.put("dictCode", new HashSet<String>());
             for(RsMetaMsgModel model : rsMetaMsgModels){
                 model.validate(repeat);
             }
@@ -205,15 +206,20 @@ public class MetaController extends ExtendController<MetaService> {
             }
             writerResponse(response, 55+"", "l_upd_progress");
 
-            String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".dat");
-            ObjectFileRW.write(new File(TemPath.getFullPath(eFile, parentFile)),errorLs);
             Map rs = new HashMap<>();
-            rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
-            writerResponse(response, 75 + "", "l_upd_progress");
-
+            if(errorLs.size()>0){
+                String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".dat");
+                ObjectFileRW.write(new File(TemPath.getFullPath(eFile, parentFile)),errorLs);
+                rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
+                writerResponse(response, 75 + "", "l_upd_progress");
+            }
             if(saveLs.size()>0)
                 saveMeta(toJson(saveLs));
-            writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
+
+            if(rs.size()>0)
+                writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
+            else
+                writerResponse(response, 100 + "", "l_upd_progress");
         } catch (Exception e) {
             e.printStackTrace();
             writerResponse(response, "-1", "l_upd_progress");

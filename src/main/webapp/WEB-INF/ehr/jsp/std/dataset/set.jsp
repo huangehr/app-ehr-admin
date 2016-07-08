@@ -15,6 +15,10 @@
     </div>
     <div style="height: 34px">
 
+        <a href="<%=request.getContextPath()%>/template/平台标准数据集导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+           style="">
+            下载模版
+        </a>
         <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
 
     <%--<div id="div_upload" class="f-mr100" data-alone-file=true align="right">--%>
@@ -22,9 +26,9 @@
         <%--<div id="div_file_list" class="uploader-list f-mr100 f-h30"></div>--%>
         <%--<div id="div_file_picker" class="f-mt10" style="margin-top: -30px;">导入数据集</div>--%>
     <%--</div>--%>
-    <div>
-        <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="margin-top: 0px;height: 30px">全部导出</button>
-    </div>
+        <div>
+            <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="margin-top: 0px;height: 30px">全部导出</button>
+        </div>
     </div>
     <div style="width: 100%" id="grid_content">
         <!--######CDA信息表######-->

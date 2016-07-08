@@ -55,7 +55,8 @@
                                 waitting.close();
                             }
                         });
-                    }
+                    }else
+                        $.Notice.warn("还有错误数据未修改正确！");
                 }
 
                 function downLoad(){
@@ -64,9 +65,9 @@
 
                 var btn = [
                     {type: '保存', clkFun: save, id: 'impSave'},
-                    {type: '导出错误信息', clkFun: downLoad, downLoad: 'downLoad'}];
+                    {type: '导出错误信息', clkFun: downLoad, downLoad: 'downLoad', id: 'downLoad'}];
                 initBarBtn($('#sf-bar'), btn);
-
+                $('#downLoad').addClass('u-btn-lar');
                 //新增成功功能暂时不用
 //                var $s_err = $('#switch_err'), $s_true = $('#switch_true'), $impSave = $('#impSave');
 //                $s_err.click(function () {

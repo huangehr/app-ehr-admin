@@ -9,7 +9,10 @@
 
   </div>
   <div style="height: 34px">
-
+    <a href="<%=request.getContextPath()%>/template/平台标准字典导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+       style="">
+      下载模版
+    </a>
     <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
     <div>
       <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="margin-top: 0px;height: 30px">全部导出</button>

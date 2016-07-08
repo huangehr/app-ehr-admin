@@ -74,20 +74,30 @@
     var uploadDialog;
     UploadFile.prototype._bindEvt = function () {
         var g= this, p= this.options;
-
-        $('#'+  p.id + "_file", g._el).click(function () {
+        function clk() {
             if(p.onBeforeUpload)
                 return p.onBeforeUpload(g);
             return true;
-        }).change(function (v) {
+        }
+
+        function chg(v) {
             if($(this).val()=='')
                 return;
             uploadDialog = $.ligerDialog.open({
                 onClose: p.onDlgClose,
                 content: "<span id='importPros'>导入进度：0 %</span>" +
-                    "<iframe name='handleFrame' style='display:none'></iframe>  "});
+                "<iframe name='handleFrame' style='display:none'></iframe>  "});
             $('#'+ p.id + "_form", g._el).submit();
-        })
+
+            var file = $('#'+ p.id + "_file", g._el);
+            var newFile = file.clone();
+            newFile.val("");
+            file.after(newFile);
+            newFile.click(clk).change(chg);
+            file.remove();
+        }
+
+        $('#'+  p.id + "_file", g._el).click(clk).change(chg);
     };
 
     $.fn.uploadFile = function (opts) {
