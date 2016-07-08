@@ -1,16 +1,9 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: wq
-  Date: 2016/7/7
-  Time: 17:08
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-</body>
-</html>
+<style>
+
+    .f-mw100{ width:100%; }
+    .f-mw50{ width:49%;}
+    .f-ds1{ border: 1px solid #D6D6D6; }
+</style>
