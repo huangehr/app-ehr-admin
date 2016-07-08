@@ -85,30 +85,36 @@
                     id: 11,
                     pid: 1,
                     level:2,
-                    text: '<spring:message code="title.user.manage"/>',
-                    url: '${contextRoot}/user/initial'
-                },
-				<%--{--%>
-					<%--id: 111,--%>
-					<%--pid: 11,--%>
-					<%--level:3,--%>
-					<%--text: '用户角色管理',--%>
-					<%--url: '${contextRoot}/userRoles/initial'--%>
-				<%--},--%>
-                {
-                    id: 12,
-                    pid: 1,
-                    level:2,
                     text: '<spring:message code="title.org.manage"/>',
                     url: '${contextRoot}/organization/initial'
                 },
                 {
-                    id: 13,
+                    id: 12,
                     pid: 1,
                     level:2,
-                    text: '<spring:message code="title.patient.manage"/>',
+                    text: '<spring:message code="title.patient.manage"/>'
+                },
+                {
+                    id: 121,
+                    pid: 12,
+                    level:3,
+                    text: '基本信息',
                     url: '${contextRoot}/patient/initial'
                 },
+                /*{
+                 id: 122,
+                 pid: 12,
+                 level:3,
+                 text: '档案关联审核',
+                 url: '${contextRoot}/correlation/initial'
+                 },
+                 {
+                 id: 123,
+                 pid: 12,
+                 level:3,
+                 text: '身份认证',
+                 url: '${contextRoot}/authentication/initial'
+                 },*/
                 //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
 
                 //2 - 标准规范中心
@@ -209,153 +215,165 @@
                     text: '<spring:message code="title.adapter.manager"/>',
                     url: '${contextRoot}/adapter/initial'
                 },
+                {
+                    id: 24,
+                    pid: 2,
+                    level:2,
+                    text: '<spring:message code="title.template.manage"/>',
+                    url: '${contextRoot}/template/initial'
+                },
 
-                //3 - 资源管理中心
-                {id: 3, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
-                //3-1 资源标准
+                //3 - 开放中心
+                {id: 3,level:1, text: '<spring:message code="title.open.hub.manage.center"/>'},
                 {
                     id: 31,
                     level:2,
                     pid: 3,
-                    text: '<spring:message code="title.resource.standard"/>'
+                    text: '<spring:message code="title.app.manage"/>',
+                    url: '${contextRoot}/app/initial'
                 },
-                //3-1-1 数据元
-                {
-                    id: 311,
-                    level:3,
-                    pid: 31,
-                    text: '<spring:message code="title.resource.standard.metaData"/>',
-                    url: '${contextRoot}/resource/meta/initial'
-                },
-                {
-                    id: 312,
-                    level:3,
-                    pid: 31,
-                    text: '<spring:message code="title.resource.standard.dict"/>',
-                    url: '${contextRoot}/resource/dict/initial'
-                },
-                {
-                    id: 313,
-                    level:3,
-                    pid: 31,
-                    text: '<spring:message code="title.resource.standard.adapter"/>',
-                    url: '${contextRoot}/schemeAdapt/initial'
-                },
-                {
-                    id: 32,
-                    level:2,
-                    pid: 3,
-                    text: '<spring:message code="title.resource.catalog"/>',
-                    url: '${contextRoot}/rscategory/index'
-                },
-                {
-                    id: 33,
-                    level:2,
-                    pid: 3,
-                    text: '<spring:message code="title.resource.register"/>',
-                    url: '${contextRoot}/resource/resourceManage/initial'
-                },
-                <%--{--%>
-                    <%--id: 331,--%>
-                    <%--level:3,--%>
-                    <%--pid: 33,--%>
-                    <%--text: '资源配置',--%>
-                    <%--url: '${contextRoot}/resourceConfiguration/initial'--%>
-                <%--},--%>
-                <%--{--%>
-                    <%--id: 332,--%>
-                    <%--level:3,--%>
-                    <%--pid: 33,--%>
-                    <%--text: '资源授权',--%>
-                    <%--url: '${contextRoot}/resource/grant/initial'--%>
-                <%--},--%>
-                <%--{--%>
-                    <%--id: 333,--%>
-                    <%--level:3,--%>
-                    <%--pid: 33,--%>
-                    <%--text: '资源浏览',--%>
-                    <%--url: '${contextRoot}/resourceBrowse/initial'--%>
-                <%--},--%>
-                {
-                    id: 34,
-                    level:2,
-                    pid: 3,
-                    text: '<spring:message code="title.resource.view"/>',
-                    url: '${contextRoot}/resourceBrowse/initial'
-                },
-                {
-                    id: 35,
-                    level:2,
-                    pid: 3,
-                    text: '<spring:message code="title.resource.interface"/>',
-                    url: '${contextRoot}/resource/resourceInterface/initial'
-                },
+                /*{
+                 id: 32,
+                 level:2,
+                 pid: 3,
+                 text: '平台应用'
+                 },
+                 {
+                 id: 33,
+                 level:2,
+                 pid: 3,
+                 text: 'API管理'
+                 },
+                 {
+                 id: 34,
+                 level:2,
+                 pid: 3,
+                 text: '应用角色'
+                 },*/
                 //4 - 安全管理中心
-                //{id: 4, text: '<spring:message code="title.security.manage.center"/>'},
+                {id: 4, level:1, text: '<spring:message code="title.security.manage.center"/>'},
+                {
+                    id: 41,
+                    pid: 4,
+                    level:2,
+                    text: '<spring:message code="title.user.manage"/>',
+                    url: '${contextRoot}/user/initial'
+                },
+                /*{
+                 id: 42,
+                 pid: 4,
+                 level:2,
+                 text: '角色管理'
+                 },*/
 
-                //4 - 运营中心
-                {id: 5, level:1, text: '<spring:message code="title.operating.center"/>'},
+                //5 - 资源管理中心
+                {id: 5, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
+                //3-1 资源标准
                 {
                     id: 51,
                     level:2,
                     pid: 5,
-                    text: '<spring:message code="title.esb.manage"/>'
+                    text: '<spring:message code="title.resource.standard"/>'
                 },
+                //3-1-1 数据元
                 {
                     id: 511,
                     level:3,
                     pid: 51,
-                    text: '<spring:message code="title.esb.log.upload"/>',
-                    url: '${contextRoot}/hosLogs/initial'
+                    text: '<spring:message code="title.resource.standard.metaData"/>',
+                    url: '${contextRoot}/resource/meta/initial'
                 },
                 {
                     id: 512,
                     level:3,
                     pid: 51,
-                    text: '<spring:message code="title.esb.source.list"/>',
-                    url: '${contextRoot}/esb/hosRelease/initial'
+                    text: '<spring:message code="title.resource.standard.dict"/>',
+                    url: '${contextRoot}/resource/dict/initial'
                 },
                 {
                     id: 513,
                     level:3,
                     pid: 51,
+                    text: '<spring:message code="title.resource.standard.adapter"/>',
+                    url: '${contextRoot}/schemeAdapt/initial'
+                },
+                {
+                    id: 52,
+                    level:2,
+                    pid: 5,
+                    text: '<spring:message code="title.resource.catalog"/>',
+                    url: '${contextRoot}/rscategory/index'
+                },
+                {
+                    id: 53,
+                    level:2,
+                    pid: 5,
+                    text: '<spring:message code="title.resource.register"/>',
+                    url: '${contextRoot}/resource/resourceManage/initial'
+                },
+                {
+                    id: 54,
+                    level:2,
+                    pid: 5,
+                    text: '<spring:message code="title.resource.view"/>',
+                    url: '${contextRoot}/resourceBrowse/initial'
+                },
+                {
+                    id: 55,
+                    level:2,
+                    pid: 5,
+                    text: '<spring:message code="title.resource.interface"/>',
+                    url: '${contextRoot}/resource/resourceInterface/initial'
+                },
+
+                //6 - 运营中心
+                {id: 6, level:1, text: '<spring:message code="title.operating.center"/>'},
+                {
+                    id: 61,
+                    level:2,
+                    pid: 6,
+                    text: '<spring:message code="title.esb.manage"/>'
+                },
+                {
+                    id: 611,
+                    level:3,
+                    pid: 61,
+                    text: '<spring:message code="title.esb.log.upload"/>',
+                    url: '${contextRoot}/hosLogs/initial'
+                },
+                {
+                    id: 612,
+                    level:3,
+                    pid: 61,
+                    text: '<spring:message code="title.esb.source.list"/>',
+                    url: '${contextRoot}/esb/hosRelease/initial'
+                },
+                {
+                    id: 613,
+                    level:3,
+                    pid: 61,
                     text: '<spring:message code="title.esb.source.org.update"/>',
                     url: '${contextRoot}/esb/installLog/initial'
                 },
                 {
-                    id: 514,
+                    id: 614,
                     level:3,
-                    pid: 51,
+                    pid: 61,
                     text: '<spring:message code="title.esb.his.search"/>',
                     url: '${contextRoot}/esb/sqlTask/initial'
                 },
                 {
-                    id: 515,
+                    id: 615,
                     level:3,
-                    pid: 51,
+                    pid: 61,
                     text: '<spring:message code="title.esb.task.recollect"/>',
                     url: '${contextRoot}/esb/acqTask/initial'
                 },
 
-                //6 - 服务管理中心
-                //{id: 6, text: '<spring:message code="title.server.manage.center"/>'},
+                //7 - 服务管理中心
+                //{id: 7, text: '<spring:message code="title.server.manage.center"/>'},
 
-                //7 - 开放中心
-                {id: 7,level:1, text: '<spring:message code="title.open.hub.manage.center"/>'},
-                {
-                    id: 71,
-                    level:2,
-                    pid: 7,
-                    text: '<spring:message code="title.app.manage"/>',
-                    url: '${contextRoot}/app/initial'
-                },
-                <%--{--%>
-                    <%--id: 74,--%>
-                    <%--level:2,--%>
-                    <%--pid: 7,--%>
-                    <%--text: '应用角色',--%>
-                    <%--url: '${contextRoot}/appRole/initial'--%>
-                <%--},--%>
+
                 //8 - 配置管理中心
                 {id: 8,level:1,text: '<spring:message code="title.setting.manage.center"/>'},
                 {
@@ -364,16 +382,6 @@
                     level:2,
                     text: '<spring:message code="title.sysDict.manage"/>',
                     url: '${contextRoot}/dict/initial'
-                },
-
-                //9 - 健康档案浏览器
-                {id: 9,level:1, text: '<spring:message code="title.health.archive.browser"/>'},
-                {
-                    id: 91,
-                    pid: 9,
-                    level:2,
-                    text: '<spring:message code="title.template.manage"/>',
-                    url: '${contextRoot}/template/initial'
                 }
             ],
 

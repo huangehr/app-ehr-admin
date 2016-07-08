@@ -1,17 +1,10 @@
 package com.yihu.ehr.apps.controller;
 
-import com.google.gson.Gson;
-import com.yihu.ehr.agModel.app.AppModel;
 import com.yihu.ehr.agModel.user.RolesModel;
-import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.util.url.URLQueryBuilder;
-import com.yihu.ehr.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
