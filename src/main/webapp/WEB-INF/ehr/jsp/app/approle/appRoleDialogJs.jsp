@@ -8,43 +8,42 @@
             var master = null;
             // 表单校验工具类
             var jValidation = $.jValidation;
+            var dataModel = $.DataModel.init();
             var appRoleGroupModel = ${appRoleGroupModel};
-            appRoleGroupModel = Util.isStrEmpty(appRoleGroupModel.obj)?"addAppRoleGroup":appRoleGroupModel;
-            debugger
+            appRoleGroupModel = Util.isStrEmpty(appRoleGroupModel.obj) ? "addAppRoleGroup" : appRoleGroupModel;
 
             function pageInit() {
                 master.init();
             }
-
             master = {
                 $appRoleGroupId: $("#inp_appRole_groupId"),
                 $appRoleGroupName: $("#inp_appRole_groupName"),
                 $appRoleExplain: $("#inp_appRole_explain"),
-                $addAppRoleGroupForm: $("#div_add_appRole_group_form"),
+                $appRoleGroupForm: $("#div_appRole_group_form"),
                 $addRoleGroupBtn: $("#div_add_roleGroup_btn"),
                 $cancelRoleGroupBtn: $("#div_cancel_roleGroup_btn"),
                 $roleGroupBtn: $(".div-roleGroup-btn"),
 
                 init: function () {
                     var self = this;
+                    self.$appRoleGroupForm.attrScan();
                     self.$appRoleGroupId.ligerTextBox({width: 240});
                     self.$appRoleGroupName.ligerTextBox({width: 240});
-                    self.$appRoleExplain.ligerTextBox({width: 240});
-
-//                    this.$addAppRoleGroupForm.attrScan();
-//                    this.$addAppRoleGroupForm.Fields.fillValues({
-//                        id: user.id,
-//                        loginCode: user.loginCode,
-//                        realName: user.realName,
-//                        idCardNo: user.idCardNo
-//                    });
+                    self.$appRoleExplain.ligerTextBox({width: 240,height:130});
+                    if (!Util.isStrEquals(appRoleGroupModel, 'addAppRoleGroup')) {
+                        self.$appRoleGroupForm.Fields.fillValues({
+                            id:appRoleGroupModel.obj.id,
+                            code: appRoleGroupModel.obj.code,
+                            name: appRoleGroupModel.obj.name,
+                            description: appRoleGroupModel.obj.description
+                        });
+                    }
                     self.clicks();
                 },
-
                 clicks: function () {
                     //修改用户信息
                     var self = this;
-                    var validator = new jValidation.Validation(this.$addAppRoleGroupForm, {
+                    var validator = new jValidation.Validation(this.$appRoleGroupForm, {
                         immediate: true, onSubmit: false,
                         onElementValidateForAjax: function (elm) {
                         }
@@ -52,19 +51,17 @@
                     self.$roleGroupBtn.click(function () {
                         if (Util.isStrEquals(this.id, 'div_cancel_roleGroup_btn'))
                             return win.parent.closeAppRoleGroupInfoDialog();
-
-                        var appRoleGroupModel = self.$addAppRoleGroupForm.Fields.getValues();
-                        var dataModel = $.DataModel.init();
+                        var appRoleGroupModel = self.$appRoleGroupForm.Fields.getValues();
+                        var saveType = Util.isStrEquals(appRoleGroupModel.id,'')?'add':'update';
                         dataModel.updateRemote("${contextRoot}/appRole/saveAppRoleGroup", {
-                            data: {appRoleGroupModel: JSON.stringify(appRoleGroupModel)},
+                            data: {appRoleGroupModel: JSON.stringify(appRoleGroupModel),saveType:saveType},
                             success: function (data) {
-//                                var dialogMsg = Util.isStrEquals(appRoleGroupModel,'addAppRoleGroup')?"新增成功":"新增失败";
+                                var dialogMsg = Util.isStrEquals(appRoleGroupModel.id,'')?"新增":"修改";
                                 if (data.successFlg) {
-                                    win.parent.closeAddUserInfoDialog(function () {
-                                        win.parent.$.Notice.success('用户新增成功');
-                                    });
+                                    win.parent.closeAppRoleGroupInfoDialog();
+                                    $.Notice.success(dialogMsg+'成功');
                                 } else {
-                                    window.top.$.Notice.error(data.errorMsg);
+                                    $.Notice.error(dialogMsg+'失败');
                                 }
                             }
                         })
