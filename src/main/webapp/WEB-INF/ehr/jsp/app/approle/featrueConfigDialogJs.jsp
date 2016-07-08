@@ -7,6 +7,8 @@
 
             var Util = $.Util;
             var master = null;
+            debugger
+            var obj = ${jsonStr};
             var gridType = ['apiFeatrueGrid', 'functionFeatrueGrid'];
             var gridUrl = ['${contextRoot}/resourceBrowse/searchResource', '${contextRoot}/resourceBrowse/searchResource'];
 
@@ -25,6 +27,7 @@
 
                 init: function () {
                     var self = this;
+                    $(".lab-title-msg").html(obj.name+"权限");
                     self.$appRoleGridScrollbar.mCustomScrollbar({
                     });
 //                    $(self.$appRoleGridScrollbar.children('div').children('div')[0]).css('margin-right', '0');

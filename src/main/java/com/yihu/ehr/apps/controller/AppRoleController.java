@@ -53,20 +53,20 @@ public class AppRoleController extends BaseUIController {
      * 应用接入、
      * 弹框、
      * @param model
-     * @param appRoleGroupId
+     * @param jsonStr
      * @param type
      * @return
      */
     @RequestMapping("/appRoleDialog")
-    public String appRoleDialog(Model model,String appRoleGroupId,String type){
+    public String appRoleDialog(Model model,String jsonStr,String type){
 
         Envelop envelop = new Envelop();
         model.addAttribute("appRoleGroupModel",toJson(envelop));
-        if (!StringUtils.isEmpty(appRoleGroupId)&&type.equals("edit")){
+        if (!StringUtils.isEmpty(jsonStr)&&type.equals("edit")){
             Map<String, Object> params = new HashMap<>();
             String resultStr = "";
             String url = "/appRoleGroup";
-            params.put("appRoleGroupId",appRoleGroupId);
+            params.put("appRoleGroupId",toModel(jsonStr,RolesModel.class).getId());
             try {
                 resultStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
                 model.addAttribute("appRoleGroupModel",resultStr);
@@ -78,6 +78,7 @@ public class AppRoleController extends BaseUIController {
         switch (type){
             case "featrueConfig":
                 contentPage = "/app/approle/featrueConfigDialog";
+                model.addAttribute("jsonStr", jsonStr);
                 break;
             case "appInsert":
                 contentPage = "/app/approle/appInsert";

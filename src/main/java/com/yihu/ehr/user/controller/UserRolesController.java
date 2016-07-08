@@ -34,92 +34,106 @@ public class UserRolesController extends BaseUIController {
     private ObjectMapper objectMapper;
 
     @RequestMapping("/initial")
-    public String rolesInitial(Model model){
-        model.addAttribute("contentPage","user/roles/roles");
+    public String rolesInitial(Model model) {
+        model.addAttribute("contentPage", "user/roles/roles");
         return "pageView";
     }
 
     @RequestMapping("/rolesInfoInitial")
-    public String rolesInfoInitial(Model model,String id,String mode){
-        model.addAttribute("contentPage","user/roles/rolesInfoDialog");
-        model.addAttribute("mode",mode);
+    public String rolesInfoInitial(Model model, String id, String mode) {
+        model.addAttribute("contentPage", "user/roles/rolesInfoDialog");
+        model.addAttribute("mode", mode);
         Envelop envelop = new Envelop();
         String en = "";
-        try{
+        try {
             en = objectMapper.writeValueAsString(envelop);
-            String url ="/roles/role/"+id;
+            String url = "/roles/role/" + id;
             String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
-            model.addAttribute("envelop",envelopStr);
-        }catch (Exception ex){
+            model.addAttribute("envelop", envelopStr);
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            model.addAttribute("envelop",en);
+            model.addAttribute("envelop", en);
         }
         return "simpleView";
     }
 
-    @RequestMapping("/rolesUsersInitial")
-    public String rolesUsersInitial(Model model,String id){
-        model.addAttribute("contentPage","user/roles/rolesUsers");
+    //    @RequestMapping("/rolesUsersInitial")
+//    public String rolesUsersInitial(Model model,String id){
+//
+//        model.addAttribute("contentPage","user/roles/rolesUsers");
+//        return "simpleView";
+//    }
+    @RequestMapping("/configDialog")
+    public String configDialog(Model model, String obj, String dialogType) {
+        String dialogUrl = dialogType.equals("users")?"user/roles/rolesUsers":"user/roles/rolesFeature";
+        model.addAttribute("obj", obj);
+        model.addAttribute("contentPage", dialogUrl);
         return "simpleView";
     }
 
     @RequestMapping("/rolesLimitsInitial")
-    public String rolesLimitsInitial(Model model,String id){
-        model.addAttribute("contentPage","user/roles/rolesUsersInitial");
+    public String rolesLimitsInitial(Model model, String id) {
+        model.addAttribute("contentPage", "user/roles/rolesUsersInitial");
         return "simpleView";
     }
+
     //角色组增改
     @RequestMapping("/update")
     @ResponseBody
-    public Object rolesUpdate(String dataJson,String mode){
+    public Object rolesUpdate(String dataJson, String mode) {
         return null;
     }
 
     //角色组删除
     @RequestMapping("/delete")
     @ResponseBody
-    public Object rolesDelete(String id){
+    public Object rolesDelete(String id) {
         return null;
     }
+
     //角色组列表查询
     @RequestMapping("/search")
     @ResponseBody
-    public Object searchRoles(String rolesName,String type,String stdAppId,int page,int rows){
-        if(StringUtils.isEmpty(type)){type = "1";}
+    public Object searchRoles(String rolesName, String type, String stdAppId, int page, int rows) {
+        if (StringUtils.isEmpty(type)) {
+            type = "1";
+        }
         StringBuffer buffer = new StringBuffer();
-        buffer.append("type"+type+";");
-        if(!StringUtils.isEmpty(rolesName)){
-            buffer.append("name?"+rolesName);
+        buffer.append("type" + type + ";");
+        if (!StringUtils.isEmpty(rolesName)) {
+            buffer.append("name?" + rolesName);
         }
         String filters = buffer.toString();
         Envelop envelop = new Envelop();
-        try{
-            Map<String,Object> params = new HashMap<>();
-            params.put("fields","");
-            params.put("filters",filters);
-            params.put("sorts","");
-            params.put("size",rows);
-            params.put("page",page);
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("fields", "");
+            params.put("filters", filters);
+            params.put("sorts", "");
+            params.put("size", rows);
+            params.put("page", page);
             String url = "/roles/roles";
-            String enveloStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            String enveloStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return enveloStr;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
     }
+
     //角色组人员配置（增删人员）
     @RequestMapping("/userUpdate")
     @ResponseBody
-    public Object roleUserUpdate(){
+    public Object roleUserUpdate() {
         return null;
     }
+
     //角色组权限配置（增删）
     @RequestMapping("/featureUpdate")
     @ResponseBody
-    public Object roleFeatureUpdate(){
+    public Object roleFeatureUpdate() {
         return null;
     }
 }
