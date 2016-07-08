@@ -88,6 +88,13 @@
                     text: '<spring:message code="title.user.manage"/>',
                     url: '${contextRoot}/user/initial'
                 },
+				<%--{--%>
+					<%--id: 111,--%>
+					<%--pid: 11,--%>
+					<%--level:3,--%>
+					<%--text: '用户角色管理',--%>
+					<%--url: '${contextRoot}/userRoles/initial'--%>
+				<%--},--%>
                 {
                     id: 12,
                     pid: 1,
