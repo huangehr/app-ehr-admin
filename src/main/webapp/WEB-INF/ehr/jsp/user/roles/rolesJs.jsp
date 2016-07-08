@@ -103,12 +103,13 @@
 						columns: [
 							{display: 'id', name: 'id', hide: true},
 							{display: '角色组编码', name: 'code', width: '20%', isAllowHide: false, align: 'center'},
-							{display: '角色组名称', name: 'value', width: '20%', isAllowHide: false, align: 'center'},
-							{display: '描述', name: 'name', width: '30%', isAllowHide: false, align: 'center'},
+							{display: '角色组名称', name: 'name', width: '20%', isAllowHide: false, align: 'center'},
+							{display: '描述', name: 'description', width: '30%', isAllowHide: false, align: 'center'},
 							{
 								display: '操作', name: 'operator', width: '30%', render: function (row) {
-								var html = '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:users:open", row.id, row.value) + '">人员配置</a>';
-								html += '<a class="label_a" style="margin-left:15px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:limits:open", row.id, row.value) + '">权限配置</a>';
+								var jsonStr = JSON.stringify(row);
+								var html = '<a class="label_a" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"limits") + '>权限配置</a>';
+								html += '<a class="label_a" style="margin-left:15px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"users") + '>人员配置</a>';
 								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:infoDialog:open", row.id, 'modify') + '"></a>';
 								html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:info:delete", row.id, 'delete') + '"></a>';
 								return html;
@@ -186,37 +187,54 @@
 							}
 						});
 					});
-					//人员配置弹出页面
-					$.subscribe("roles:users:open",function(events,id,rolesName){
-						rolesMaster.rolesInfoDialog = $.ligerDialog.open({
+
+					//人员、权限配置弹出页面
+					$.subscribe("roles:config:open",function(events,obj,type){
+						var title = Util.isStrEquals(type,'users')?'人员配置':'权限配置';
+						$.ligerDialog.open({
 							height: 600,
 							width: 800,
-							title: '角色管理>'+rolesName+'人员配置',
+							title: title,
 							urlParms:{
-								id:id,
+								obj:obj,
+								dialogType:type,
 							},
-							url: '${contextRoot}/userRoles/rolesUsersInitial',
+							url: '${contextRoot}/userRoles/configDialog',
 							isHidden: false,
-							load: true,
+							load: true
 						})
 					});
 
+					<%--$.subscribe("roles:users:open",function(events,id,rolesName){--%>
+						<%--rolesMaster.rolesInfoDialog = $.ligerDialog.open({--%>
+							<%--height: 600,--%>
+							<%--width: 800,--%>
+							<%--title: '角色管理>'+rolesName+'人员配置',--%>
+							<%--urlParms:{--%>
+								<%--id:id,--%>
+							<%--},--%>
+							<%--url: '${contextRoot}/userRoles/rolesUsersInitial',--%>
+							<%--isHidden: false,--%>
+							<%--load: true,--%>
+						<%--})--%>
+					<%--});--%>
 
-					//权限配置弹出页面
 
-					$.subscribe("roles:limits:open",function(events,id,rolesName){
-						rolesMaster.rolesInfoDialog = $.ligerDialog.open({
-							height: 600,
-							width: 800,
-							title: '角色管理>'+rolesName+'权限配置',
-							urlParms:{
-								id:id,
-							},
-							url: '${contextRoot}/userRoles/rolesUsersInitial',
-							isHidden: false,
-							load: true,
-						})
-					});
+					<%--//权限配置弹出页面--%>
+
+					<%--$.subscribe("roles:limits:open",function(events,id,rolesName){--%>
+						<%--rolesMaster.rolesInfoDialog = $.ligerDialog.open({--%>
+							<%--height: 600,--%>
+							<%--width: 800,--%>
+							<%--title: '角色管理>'+rolesName+'权限配置',--%>
+							<%--urlParms:{--%>
+								<%--id:id,--%>
+							<%--},--%>
+							<%--url: '${contextRoot}/userRoles/rolesUsersInitial',--%>
+							<%--isHidden: false,--%>
+							<%--load: true,--%>
+						<%--})--%>
+					<%--});--%>
 				}
 			};
 			/* ******************Dialog页面回调接口****************************** */

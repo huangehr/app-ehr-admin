@@ -1,6 +1,8 @@
 package com.yihu.ehr.apps.controller;
 
 import com.google.gson.Gson;
+import com.yihu.ehr.agModel.app.AppModel;
+import com.yihu.ehr.agModel.user.RolesModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -9,6 +11,7 @@ import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.url.URLQueryBuilder;
 import com.yihu.ehr.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -41,16 +44,29 @@ public class AppRoleController extends BaseUIController {
         return "pageView";
     }
 
+
+    /**
+     * 应用角色组
+     * 新增、
+     * 修改、
+     * 权限配置、
+     * 应用接入、
+     * 弹框、
+     * @param model
+     * @param jsonStr
+     * @param type
+     * @return
+     */
     @RequestMapping("/appRoleDialog")
-    public String appRoleDialog(Model model,String appRoleGroupId,String type){
+    public String appRoleDialog(Model model,String jsonStr,String type){
 
         Envelop envelop = new Envelop();
         model.addAttribute("appRoleGroupModel",toJson(envelop));
-        if (!StringUtils.isEmpty(appRoleGroupId)){
+        if (!StringUtils.isEmpty(jsonStr)&&type.equals("edit")){
             Map<String, Object> params = new HashMap<>();
             String resultStr = "";
             String url = "/appRoleGroup";
-            params.put("appRoleGroupId",appRoleGroupId);
+            params.put("appRoleGroupId",toModel(jsonStr,RolesModel.class).getId());
             try {
                 resultStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
                 model.addAttribute("appRoleGroupModel",resultStr);
@@ -58,7 +74,20 @@ public class AppRoleController extends BaseUIController {
                 e.printStackTrace();
             }
         }
-        model.addAttribute("contentPage", "/app/approle/appRoleDialog");
+        String contentPage = "";
+        switch (type){
+            case "featrueConfig":
+                contentPage = "/app/approle/featrueConfigDialog";
+                model.addAttribute("jsonStr", jsonStr);
+                break;
+            case "appInsert":
+                contentPage = "/app/approle/appInsert";
+                break;
+            default:
+                contentPage = "/app/approle/appRoleDialog";
+                break;
+        }
+        model.addAttribute("contentPage", contentPage);
         return "pageView";
     }
 
@@ -82,32 +111,29 @@ public class AppRoleController extends BaseUIController {
 
         //todo 暂无数据，以下为测试部分
         Envelop envelop = new Envelop();
-        UsersModel usersModel = new UsersModel();
-        usersModel.setEmail("8555@qq.com");
-        usersModel.setLoginCode("wq");
-        usersModel.setId("124");
-        usersModel.setRealName("王琼");
-        usersModel.setTelephone("110");
+        RolesModel rolesModel = new RolesModel();
+        rolesModel.setName("8555@qq.com");
+        rolesModel.setCode("wq");
+        rolesModel.setId(124l);
+        rolesModel.setDescription("王琼");
 
-        UsersModel usersModel1 = new UsersModel();
-        usersModel1.setEmail("112@qq.com");
-        usersModel1.setLoginCode("1wq");
-        usersModel1.setId("1124");
-        usersModel1.setRealName("1王琼");
-        usersModel1.setTelephone("1110");
+        RolesModel rolesModel1 = new RolesModel();
+        rolesModel1.setName("8555@qq.com");
+        rolesModel1.setCode("wq");
+        rolesModel1.setId(124l);
+        rolesModel1.setDescription("王琼");
 
-        UsersModel usersModel2 = new UsersModel();
-        usersModel2.setEmail("22@qq.com");
-        usersModel2.setLoginCode("2wq");
-        usersModel2.setId("2124");
-        usersModel2.setRealName("2王琼");
-        usersModel2.setTelephone("2110");
+        RolesModel rolesModel2 = new RolesModel();
+        rolesModel2.setName("8555@qq.com");
+        rolesModel2.setCode("wq");
+        rolesModel2.setId(124l);
+        rolesModel2.setDescription("王琼");
 
-        List<UsersModel> usersModelList = new ArrayList<>();
-        usersModelList.add(usersModel);
-        usersModelList.add(usersModel1);
-        usersModelList.add(usersModel2);
-        envelop.setDetailModelList(usersModelList);
+        List<RolesModel> rolesModelList = new ArrayList<>();
+        rolesModelList.add(rolesModel);
+        rolesModelList.add(rolesModel1);
+        rolesModelList.add(rolesModel2);
+        envelop.setDetailModelList(rolesModelList);
         resultStr = toJson(envelop);
         // TODO: 2016/7/7 测试数据结束
 
@@ -116,18 +142,24 @@ public class AppRoleController extends BaseUIController {
 
     @RequestMapping("/saveAppRoleGroup")
     @ResponseBody
-    public String saveAppRoleGroup(String appRoleGroupModel){
+    public String saveAppRoleGroup(String appRoleGroupModel,String saveType){
         Map<String, Object> params = new HashMap<>();
-        String url = "/saveAppRoleGroup";
+        String url = saveType.equals("add")?"/addAppRoleGroup":"/updateAppRoleGroup";
         String resultStr = "";
 
         params.put("appRoleGroupModel", appRoleGroupModel);
         try {
-            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+//            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resultStr;
+
+//        return resultStr;
+        // TODO: 2016/7/8 以下为测试数据
+        Envelop envelop = new Envelop();
+        envelop.setErrorMsg("error");
+        envelop.setSuccessFlg(true);
+        return toJson(envelop);
 
     }
 
@@ -152,5 +184,57 @@ public class AppRoleController extends BaseUIController {
         return resultStr;
     }
 
+    @RequestMapping("/updateFeatureConfig")
+    @ResponseBody
+    public String updateFeatureConfig(int AppFeatureId,boolean updateType){
+        Map<String, Object> params = new HashMap<>();
+        String url = updateType?"/addFeatureConfig":"/updateFeatureConfig";
+        String resultStr = "";
+
+        params.put("AppFeatureId", AppFeatureId);
+        try {
+//            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        return resultStr;
+        // TODO: 2016/7/8 以下为测试数据
+        Envelop envelop = new Envelop();
+        envelop.setErrorMsg("error");
+        envelop.setSuccessFlg(true);
+        return toJson(envelop);
+    }
+
+    @RequestMapping("/updateAppInsert")
+    @ResponseBody
+    public String updateAppInsert(String appInsertId,boolean updateType){
+        Map<String, Object> params = new HashMap<>();
+        String url = updateType?"/addFeatureConfig":"/updateFeatureConfig";
+        String resultStr = "";
+        params.put("appInsertId", appInsertId);
+        try {
+//            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return resultStr;
+    }
+
+    @RequestMapping("/searchAppInsert")
+    @ResponseBody
+    public String searchAppInsert(String searchNm,int page, int rows){
+//        Map<String, Object> params = new HashMap<>();
+//        String url = updateType?"/addFeatureConfig":"/updateFeatureConfig";
+        String resultStr = "";
+//        params.put("appInsertId", appInsertId);
+//        try {
+////            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        return resultStr;
+    }
 
 }

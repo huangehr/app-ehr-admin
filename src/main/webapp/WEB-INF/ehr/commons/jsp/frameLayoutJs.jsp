@@ -349,6 +349,13 @@
                     text: '<spring:message code="title.app.manage"/>',
                     url: '${contextRoot}/app/initial'
                 },
+                <%--{--%>
+                    <%--id: 74,--%>
+                    <%--level:2,--%>
+                    <%--pid: 7,--%>
+                    <%--text: '应用角色',--%>
+                    <%--url: '${contextRoot}/appRole/initial'--%>
+                <%--},--%>
                 //8 - 配置管理中心
                 {id: 8,level:1,text: '<spring:message code="title.setting.manage.center"/>'},
                 {
