@@ -18,9 +18,9 @@
     <div class="f-mw100">
 
         <div class="f-mw50 f-ds1 f-fl div-appRole-grid-scrollbar" style="height: 450px">
-            <label class="f-mt10 f-ml10">健康档案浏览器权限</label>
+            <label class="f-mt10 f-ml10 lab-title-msg"></label>
             <hr class="f-mt5 f-mb10">
-            <div id="div_function_featrue_grid" class="" ></div>
+            <div id="div_function_featrue_grid" class=""></div>
         </div>
         <div class="f-mw50 f-ds1 f-fr div-appRole-grid-scrollbar" style="height: 450px">
             <label class="f-mt10 f-ml10">已配置权限</label>
