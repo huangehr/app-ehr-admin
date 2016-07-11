@@ -11,7 +11,8 @@
 		var mode = '${mode}';
 		var nameCopy = '';
 		var codeCopy = '';
-		var stdAppId = '${stdAppId}'
+		var appId = '${appId}';
+		$('#roleType').val('1');
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
 			rolesInfo.init();
@@ -20,13 +21,10 @@
 		rolesInfo = {
 			$form: $("#div_roles_info_form"),
 
+			$type:$('#roleType'),
 			$code: $("#inp_roles_code"),
 			$name: $("#inp_roles_name"),
 			$description: $("#inp_description"),
-
-			$btnSave: $("#btn_save"),
-			$btnCancel: $("#btn_cancel"),
-
 			init: function () {
 				this.$code.ligerTextBox({width:240});
 				this.$name.ligerTextBox({width:240});
@@ -57,6 +55,7 @@
 					});
 				}
 				this.$form.show();
+				this.bindEvents();
 			},
 			bindEvents: function () {
 				var self = this;
@@ -65,13 +64,13 @@
 						if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_name')) {
 							var name = $("#inp_roles_name").val();
 							if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
-								return checkUnique("${contextRoot}/resource/resourceManage/isExistName",name,"资源名称不能重复！");
+								return checkUnique("${contextRoot}/userRoles/isNameExistence",name,"角色组名称不能重复！");
 							}
 						}
 						if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {
 							var code = $("#inp_roles_code").val();
 							if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){
-								return checkUnique("${contextRoot}/resource/resourceManage/isExistCode",code,"资源编码不能重复！");
+								return checkUnique("${contextRoot}/userRoles/isCodeExistence",code,"角色组编码不能重复！");
 							}
 						}
 					}
@@ -95,14 +94,14 @@
 					return result;
 				}
 
-				this.$btnSave.click(function () {
+				$("#btn_save").click(function () {
 					if(validator.validate() == false){return}
 					var values = self.$form.Fields.getValues();
 					update(values)
 				});
 				function update(values){
 					var dataModel = $.DataModel.init();
-					dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
+					dataModel.updateRemote("${contextRoot}/userRoles/update", {
 						data:{dataJson:JSON.stringify(values),mode:mode},
 						success: function(data) {
 							if (data.successFlg) {
@@ -115,8 +114,7 @@
 						}
 					});
 				}
-				this.$btnCancel.click(function () {
-					debugger
+				$("#btn_cancel").click(function () {
 					win.closeRolesInfoDialog();
 				});
 			}

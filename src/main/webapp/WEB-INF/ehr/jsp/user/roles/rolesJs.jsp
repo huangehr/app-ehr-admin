@@ -6,11 +6,9 @@
 			/* ************************** 全局变量定义 **************************** */
 			var Util = $.Util;
 			var retrieve = null;
-			var masters = null;
 			var appMaster = null;
 			var rolesMaster = null;
-			var isSaveSelectStatus = false;
-			var stdAppId = '';
+			var appId = '';
 			var isFirstPage = true;
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
@@ -26,8 +24,12 @@
 				$('#div_right').width(rightW);
 			}
 			function reloadRolesGrid(params) {
+				if (isFirstPage){
+					rolesMaster.rolesGrid.options.newPage = 1;
+				}
 				rolesMaster.rolesGrid.setOptions({parms: params});
 				rolesMaster.rolesGrid.loadData(true);
+				isFirstPage = true;
 			}
 			/* *************************** 标准字典模块初始化 ***************************** */
 			retrieve = {
@@ -43,11 +45,9 @@
 				init : function (){
 					var appName = $("#inp_search").val();
 					this.appGrid = $("#div_std_app_grid").ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/dict/searchSysDicts',
+						url: '${contextRoot}/userRoles/searchApps',
 						parms: {
-							//stdAppName:appName,
 							searchNm: appName,
-							searchType: appName,
 						},
 						columns: [
 							{display: 'id', name: 'id', hide: true},
@@ -65,14 +65,14 @@
 //						},
 						onSuccess: function(data){
 							if(data.detailModelList.length >0){
-								stdAppId = data.detailModelList[0].id;
+								appId = data.detailModelList[0].id;
 							}else{
-								stdAppId = '-1';
+								appId = '-1';
 							}
 							rolesMaster.reloadRolesGrid();
 						},
 						onSelectRow: function (row) {
-							stdAppId = row.id;
+							appId = row.id;
 							rolesMaster.reloadRolesGrid();
 						}
 					}));
@@ -95,10 +95,10 @@
 				init : function (){
 					var rolesName = $("#inp_searchNm").val();
 					this.rolesGrid = $("#div_roles_grid").ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/dict/searchDictEntryList',
+						url: '${contextRoot}/userRoles/search',
 						parms: {
-							//stdAppId:'',
-							dictId: stdAppId
+							searchNm:rolesName,
+							appId: appId,
 						},
 						columns: [
 							{display: 'id', name: 'id', hide: true},
@@ -121,7 +121,7 @@
 						unSetValidateAttr: false,
 						allowHideColumn: false,
 						onDblClickRow : function (data, rowindex, rowobj) {
-							$.publish('roles:infoDialog:open',[data.dictId,'view']);
+							$.publish('roles:infoDialog:open',[data.id,'view']);
 						}
 					}));
 					this.bindEvents();
@@ -129,9 +129,8 @@
 				reloadRolesGrid:function(){
 					var rolesName = $("#inp_searchNm").val();
 					var values = {
-						dictId: stdAppId,
-						//stdAppId:'',
-						//rolesName:rolesName,
+						appId: appId,
+						searchNm:rolesName,
 					};
 					reloadRolesGrid.call(this,values);
 				},
@@ -140,11 +139,12 @@
 					$('#btn_roles_search').click(function () {
 						rolesMaster.reloadRolesGrid();
 					});
-					//新增、该、查看角色组
+					//新增、修改、查看角色组
 					$('#div_new_record').click(function () {
 						$.publish("roles:infoDialog:open",['','new']);
 					});
 					$.subscribe("roles:infoDialog:open",function(events,id,mode){
+						isFirstPage = false;
 						var title = '';
 						if(mode == 'modify'){
 							title = '修改角色组';
@@ -171,7 +171,7 @@
 						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
 							if(yes){
 								var dataModel = $.DataModel.init();
-								dataModel.updateRemote("${contextRoot}/resource/resourceInterface/delete",{
+								dataModel.updateRemote("${contextRoot}/userRoles/delete",{
 									data:{id:id},
 									async:true,
 									success: function(data) {
@@ -191,7 +191,7 @@
 					//人员、权限配置弹出页面
 					$.subscribe("roles:config:open",function(events,obj,type){
 						var title = Util.isStrEquals(type,'users')?'人员配置':'权限配置';
-						$.ligerDialog.open({
+						rolesMaster.roleRelationDialog = $.ligerDialog.open({
 							height: 600,
 							width: 800,
 							title: title,
@@ -246,12 +246,9 @@
 				//角色组新增、修改会话框关闭
 				rolesMaster.rolesInfoDialog.close();
 			};
-			win.closeRolesInfoDialog = function () {
-				//角色组人员配置会话框关闭
-
-			};
-			win.closeRolesInfoDialog = function () {
-				//角色组权限配置会话框关闭
+			win.closeRoleRelationDialog = function () {
+				//角色组人员配置、权限配置会话框关闭
+				rolesMaster.roleRelationDialog
 			};
 			/* *************************** 页面功能 **************************** */
 			pageInit();

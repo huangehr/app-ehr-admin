@@ -33,7 +33,7 @@ service-gateway:
   stdsourceurl: http://localhost:10000/api/v1.0/admin/standard_source
   adaption: http://localhost:10000/api/v1.0/adapter
   template: http://localhost:10000/api/v1.0/template
-  standard: http://172.19.103.75:10000/api/v1.0/std
+  standard: http://localhost:10000/api/v1.0/std
 fast-dfs:
   tracker-server: 172.19.103.54:22122
 
