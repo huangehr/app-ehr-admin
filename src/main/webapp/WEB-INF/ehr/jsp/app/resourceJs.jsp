@@ -316,7 +316,7 @@
 							'backParams':backParams,//资源页面顶app信息
 						}
 						$("#contentPage").empty();
-						$("#contentPage").load('${contextRoot}/appnew/resourceManage/initial?appId='+appId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});
+						$("#contentPage").load('${contextRoot}/app/resourceManage/initial?appId='+appId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});
 					});
 				},
 			};
