@@ -1,11 +1,14 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.url.URLQueryBuilder;
+import com.yihu.ehr.web.RestTemplates;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -88,23 +91,35 @@ public class UserRolesController extends BaseUIController {
     @RequestMapping("/delete")
     @ResponseBody
     public Object rolesDelete(String id) {
-        return null;
+        Envelop envelop = new Envelop();
+        try{
+            String url = "/roles/role/"+id;
+            Map<String,Object> params = new HashMap<>();
+            params.put("id",id);
+            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed("角色组删除失败！");
+        }
     }
 
     //角色组列表查询
     @RequestMapping("/search")
     @ResponseBody
-    public Object searchRoles(String rolesName, String type, String stdAppId, int page, int rows) {
-        if (StringUtils.isEmpty(type)) {
-            type = "1";
+    public Object searchRoles(String searchNm, String appId, int page, int rows) {
+        Envelop envelop = new Envelop();
+        if(StringUtils.isEmpty(appId)){
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("应用id不能为空！");
+            return envelop;
         }
         StringBuffer buffer = new StringBuffer();
-        buffer.append("type" + type + ";");
-        if (!StringUtils.isEmpty(rolesName)) {
-            buffer.append("name?" + rolesName);
+        buffer.append("type=1;appId="+appId+";");
+        if (!StringUtils.isEmpty(searchNm)) {
+            buffer.append("name?" + searchNm);
         }
         String filters = buffer.toString();
-        Envelop envelop = new Envelop();
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("fields", "");
@@ -135,5 +150,57 @@ public class UserRolesController extends BaseUIController {
     @ResponseBody
     public Object roleFeatureUpdate() {
         return null;
+    }
+
+    //查找平台应用列表
+
+    @RequestMapping("/searchApps")
+    @ResponseBody
+    public Object getAppList(String searchNm, int page, int rows) {
+        URLQueryBuilder builder = new URLQueryBuilder();
+        if (!StringUtils.isEmpty(searchNm)) {
+           //builder.addField("sourceType","=","","")
+            builder.addFilter("name", "?", searchNm,"");
+        }
+        builder.setPageNumber(page)
+                .setPageSize(rows);
+        String param = builder.toString();
+        String url = "/apps";
+        String resultStr = "";
+        try {
+            RestTemplates template = new RestTemplates();
+            resultStr = template.doGet(comUrl+url+"?"+param);
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+        }
+        return resultStr;
+    }
+
+    @RequestMapping("/isNameExistence")
+    public Object isNameExistence(String name){
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("name",name);
+            String url = "";
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+    @RequestMapping("/isCodeExistence")
+    public Object isCodeExistence(String code){
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("code",code);
+            String url = "";
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+
     }
 }
