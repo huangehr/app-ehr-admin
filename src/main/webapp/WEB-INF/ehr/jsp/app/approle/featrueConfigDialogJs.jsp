@@ -30,13 +30,13 @@
                     var ele = [self.$apiFeatrueTree,self.$functionFeatrueTree];
                     for (var i = 0; i < treeType.length; i++) {
                         var checkboxBo = Util.isStrEquals(i,1)?true:false;
-                        var appRoleId = Util.isStrEquals(i,1)?obj.id:"";
+                        var appRoleId = Util.isStrEquals(i,0)?obj.id:"";
                         treeType[i] = ele[i].ligerSearchTree({
 //                            nodeWidth: 200,
                             url: '${contextRoot}/appRole/searchFeatrueTree',
                             parms:{searchNm: '',treeType:treeType[i],appRoleId:appRoleId},
                             idFieldName: 'id',
-                            parentIDFieldName: 'pid',
+                            parentIDFieldName: 'parentId',
                             textFieldName: 'name',
                             isExpand: false,
                             checkbox: checkboxBo,
