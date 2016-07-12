@@ -12,6 +12,7 @@
 		var nameCopy = '';
 		var codeCopy = '';
 		var appId = '${appId}';
+		debugger
 		$('#roleType').val('1');
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
@@ -36,22 +37,24 @@
 				}
 				this.$form.attrScan();
 				if(mode !='new'){
-					//var info = ${envelop}.obj;
-					var info = {
-						id:'1122112',
-						stdAppId:'3323223',
-						code: 'wwcs',
-						name: 'yww',
-						description:'用户角色组模拟数据'
+					var info = ${envelop}.obj;
+					if(!info){
+						info = {
+							id:'1122112',
+							appId:'3323223',
+							code: 'wwcs',
+							name: 'yww',
+							description:'用户角色组模拟数据'
+						}
 					}
 					nameCopy = info.name;
 					codeCopy = info.code;
 					this.$form.Fields.fillValues({
 						id:info.id,
-						stdAppId:info.id,
-						rolesCode:info.code,
-						rolesName:info.name,
-						description:info.description,
+						appId:info.appId,
+						code:info.code,
+						name:info.name,
+						description:info.description
 					});
 				}
 				this.$form.show();
@@ -59,22 +62,22 @@
 			},
 			bindEvents: function () {
 				var self = this;
-				var validator =  new jValidation.Validation(self.$form, {immediate: true, onSubmit: false,
-					onElementValidateForAjax: function (elm) {
-						if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_name')) {
-							var name = $("#inp_roles_name").val();
-							if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
-								return checkUnique("${contextRoot}/userRoles/isNameExistence",name,"角色组名称不能重复！");
-							}
-						}
-						if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {
-							var code = $("#inp_roles_code").val();
-							if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){
-								return checkUnique("${contextRoot}/userRoles/isCodeExistence",code,"角色组编码不能重复！");
-							}
-						}
-					}
-				});
+				<%--var validator =  new jValidation.Validation(self.$form, {immediate: true, onSubmit: false,--%>
+					<%--onElementValidateForAjax: function (elm) {--%>
+						<%--if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_name')) {--%>
+							<%--var name = $("#inp_roles_name").val();--%>
+							<%--if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){--%>
+								<%--return checkUnique("${contextRoot}/userRoles/isNameExistence",name,"角色组名称不能重复！");--%>
+							<%--}--%>
+						<%--}--%>
+						<%--if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {--%>
+							<%--var code = $("#inp_roles_code").val();--%>
+							<%--if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){--%>
+								<%--return checkUnique("${contextRoot}/userRoles/isCodeExistence",code,"角色组编码不能重复！");--%>
+							<%--}--%>
+						<%--}--%>
+					<%--}--%>
+				<%--});--%>
 				//验证编码、名字不可重复
 				function checkUnique(url, value, errorMsg) {
 					var result = new jValidation.ajax.Result();
@@ -95,7 +98,7 @@
 				}
 
 				$("#btn_save").click(function () {
-					if(validator.validate() == false){return}
+					//if(validator.validate() == false){return}
 					var values = self.$form.Fields.getValues();
 					update(values)
 				});

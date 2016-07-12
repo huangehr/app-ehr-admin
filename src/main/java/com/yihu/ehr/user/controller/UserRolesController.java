@@ -1,6 +1,8 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.user.RoleUserModel;
+import com.yihu.ehr.agModel.user.RolesModel;
 import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
@@ -74,8 +76,8 @@ public class UserRolesController extends BaseUIController {
         return "simpleView";
     }
 
-    @RequestMapping("/rolesLimitsInitial")
-    public String rolesLimitsInitial(Model model, String id) {
+    @RequestMapping("/rolesFeatureInitial")
+    public String rolesFeatureInitial(Model model, String id) {
         model.addAttribute("contentPage", "user/roles/rolesUsersInitial");
         return "simpleView";
     }
@@ -84,14 +86,54 @@ public class UserRolesController extends BaseUIController {
     @RequestMapping("/update")
     @ResponseBody
     public Object rolesUpdate(String dataJson, String mode) {
-        return null;
+        String url = ServiceApi.Roles.Role;
+        try{
+            RolesModel model = objectMapper.readValue(dataJson,RolesModel.class);
+            if(StringUtils.isEmpty(model.getName())){
+                return failed("角色组名称不能为空！");
+            }
+            if(StringUtils.isEmpty(model.getCode())){
+                return failed("角色组编码不能为空！");
+            }
+            if(StringUtils.isEmpty(model.getType())){
+                return failed("角色组类型不能为空！");
+            }
+            if(StringUtils.isEmpty(model.getAppId())){
+                return failed("应用id不能为空！");
+            }
+            if("new".equals(mode)){
+                Map<String,Object> args = new HashMap<>();
+                args.put("data_json",dataJson);
+                String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
+                return envelopStr;
+            }
+            String urlGet = url+"/"+model.getId();
+            String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+            if (!envelopGet.isSuccessFlg()){
+                return failed("原角色组信息获取失败！");
+            }
+            RolesModel updateModel = getEnvelopModel(envelopGet.getObj(),RolesModel.class);
+            updateModel.setCode(model.getCode());
+            updateModel.setName(model.getName());
+            updateModel.setAppId(model.getAppId());
+            updateModel.setType(model.getType());
+            updateModel.setDescription(model.getDescription());
+            String updateModelJson = objectMapper.writeValueAsString(updateModel);
+            Map<String,Object> params = new HashMap<>();
+            params.put("data_json",updateModelJson);
+            String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch(Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
     }
 
     //角色组删除
     @RequestMapping("/delete")
     @ResponseBody
     public Object rolesDelete(String id) {
-        Envelop envelop = new Envelop();
         try{
             String url = "/roles/role/"+id;
             Map<String,Object> params = new HashMap<>();
@@ -100,7 +142,7 @@ public class UserRolesController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed("角色组删除失败！");
+            return failed(ErrorCode.SystemError.toString());
         }
     }
 
@@ -108,11 +150,8 @@ public class UserRolesController extends BaseUIController {
     @RequestMapping("/search")
     @ResponseBody
     public Object searchRoles(String searchNm, String appId, int page, int rows) {
-        Envelop envelop = new Envelop();
         if(StringUtils.isEmpty(appId)){
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("应用id不能为空！");
-            return envelop;
+            return failed("应用id不能为空！");
         }
         StringBuffer buffer = new StringBuffer();
         buffer.append("type=1;appId="+appId+";");
@@ -128,21 +167,48 @@ public class UserRolesController extends BaseUIController {
             params.put("size", rows);
             params.put("page", page);
             String url = "/roles/roles";
-            String enveloStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return enveloStr;
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return envelopStr;
         } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ErrorCode.SystemError.toString());
         }
     }
 
-    //角色组人员配置（增删人员）
-    @RequestMapping("/userUpdate")
+    //用户角色组添加人员
+    @RequestMapping("/userCreate")
     @ResponseBody
-    public Object roleUserUpdate() {
-        return null;
+    public Object roleUserCreate(String userId,String roleId) {
+        RoleUserModel model = new RoleUserModel();
+        model.setRoleId(Long.parseLong(roleId));
+        model.setUserId(userId);
+        try{
+            String url = ServiceApi.Roles.RoleUser;
+            Map<String,Object> params = new HashMap<>();
+            params.put("data_json",objectMapper.writeValueAsString(model));
+            String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //用户角色组删除人员
+    @RequestMapping("/userDelete")
+    @ResponseBody
+    public Object roleUserDelete(String userId,String roleId) {
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("user_id",userId);
+            params.put("role_id",roleId);
+            String url = ServiceApi.Roles.RoleUser;
+            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
     }
 
     //角色组权限配置（增删）
@@ -158,8 +224,8 @@ public class UserRolesController extends BaseUIController {
     @ResponseBody
     public Object getAppList(String searchNm, int page, int rows) {
         URLQueryBuilder builder = new URLQueryBuilder();
+        builder.addFilter("sourceType","=","1","");
         if (!StringUtils.isEmpty(searchNm)) {
-           //builder.addField("sourceType","=","","")
             builder.addFilter("name", "?", searchNm,"");
         }
         builder.setPageNumber(page)
@@ -181,7 +247,7 @@ public class UserRolesController extends BaseUIController {
         try{
             Map<String,Object> params = new HashMap<>();
             params.put("name",name);
-            String url = "";
+            String url = ServiceApi.Roles.RoleNameExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
@@ -194,13 +260,12 @@ public class UserRolesController extends BaseUIController {
         try{
             Map<String,Object> params = new HashMap<>();
             params.put("code",code);
-            String url = "";
+            String url = ServiceApi.Roles.RoleCodeExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
-
     }
 }
