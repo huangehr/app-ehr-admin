@@ -7,18 +7,17 @@
 
             var Util = $.Util;
             var master = null;
+            var obj = ${jsonStr};
             var gridType = ['configAppInsertGrid', 'appInsertGrid'];
-            <%--var gridUrl = ['${contextRoot}/resourceBrowse/searchResource', '${contextRoot}/resourceBrowse/searchResource'];--%>
-
             var dataModel = $.DataModel.init();
 
             function pageInit() {
                 master.init();
             }
 
-            function reloadGrid(url, value) {
-                gridType[1].setOptions({parms: value});
-                gridType[1].loadData(true);
+            function reloadGrid(url, value,grid,type) {
+                grid.setOptions({parms: value});
+                grid.loadData(true);
             }
 
             master = {
@@ -30,15 +29,15 @@
                     var self = this;
                     self.$appInsertSearch.ligerTextBox({
                         width: 240, isSearch: true, search: function () {
-                            self.reloadAppInsetrGrid(self.$appInsertSearch.val());
+                            self.reloadAppInsetrGrid(self.$appInsertSearch.val(),gridType[1],'appInsertGrid');
                         }
                     });
                     var ele = [self.$configAppInsertGrid,self.$appInsertGrid];
                     for (var i = 0; i < gridType.length; i++) {
                         var checkboxBo = Util.isStrEquals(i,1)?true:false;
                         gridType[i] = ele[i].ligerGrid($.LigerGridEx.config({
-                            url: '${contextRoot}/appRole/searchAppInsert',
-                            parms: {searchNm: ''},
+                            url: '${contextRoot}/appRole/searchInsertApps',
+                            parms: {searchNm: '',gridType:gridType[i],appRoleId:obj.id},
                             width:$(".f-mw50").width(),
                             height:400,
                             isScroll: true,
@@ -46,11 +45,12 @@
                             async: true,
                             columns: [{display: '应用名称', name: 'name', width: '100%'}],
                             onCheckRow: function (checked,data,rowid,rowdata) {
-                                debugger
                                 dataModel.updateRemote("${contextRoot}/appRole/updateAppInsert", {
-                                    data: {appInsertId: data.id,updateType:checked},
+                                    data: {appInsertId: data.id,appRoleId:obj.id,updateType:checked},
                                     success: function (data) {
-
+                                        if (data.successFlg){
+                                            self.reloadAppInsetrGrid('',gridType[0],'configAppInsertGrid');
+                                        }
                                     }
                                 });
                             }
@@ -58,8 +58,9 @@
                     }
                     self.clicks();
                 },
-                reloadAppInsetrGrid: function (value) {
-                    reloadGrid.call(this, '${contextRoot}/appRole/searchAppInsert', value);
+                reloadAppInsetrGrid: function (value,grid,type) {
+                    value = {searchNm:value,gridType:type};
+                    reloadGrid.call(this, '${contextRoot}/appRole/searchInsertApps', value,grid,type);
                 },
                 clicks: function () {
                     //修改用户信息

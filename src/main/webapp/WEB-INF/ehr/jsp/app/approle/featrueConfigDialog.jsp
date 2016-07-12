@@ -16,7 +16,6 @@
         </div>
     </div>
     <div class="f-mw100">
-
         <div class="f-mw50 f-ds1 f-fl div-appRole-grid-scrollbar" style="height: 450px">
             <label class="f-mt10 f-ml10 lab-title-msg"></label>
             <hr class="f-mt5 f-mb10">

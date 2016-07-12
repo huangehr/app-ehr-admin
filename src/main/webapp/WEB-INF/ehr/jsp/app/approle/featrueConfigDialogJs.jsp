@@ -7,13 +7,9 @@
 
             var Util = $.Util;
             var master = null;
-            debugger
             var obj = ${jsonStr};
-            var gridType = ['apiFeatrueGrid', 'functionFeatrueGrid'];
-            var gridUrl = ['${contextRoot}/resourceBrowse/searchResource', '${contextRoot}/resourceBrowse/searchResource'];
-
-            // 表单校验工具类
-//            var jValidation = $.jValidation;
+            var treeType = ['apiFeatrueTree', 'functionFeatrueTree'];
+            var gridUrl = ['${contextRoot}/appRole/searchFeatrueTree', '${contextRoot}/resourceBrowse/searchResource'];
             var dataModel = $.DataModel.init();
 
             function pageInit() {
@@ -21,8 +17,8 @@
             }
 
             master = {
-                $functionFeatrueGrid: $("#div_function_featrue_grid"),
-                $apiFeatrueGrid: $("#div_api_featrue_grid"),
+                $functionFeatrueTree: $("#div_function_featrue_grid"),
+                $apiFeatrueTree: $("#div_api_featrue_grid"),
                 $appRoleGridScrollbar: $(".div-appRole-grid-scrollbar"),
 
                 init: function () {
@@ -31,12 +27,14 @@
                     self.$appRoleGridScrollbar.mCustomScrollbar({
                     });
 //                    $(self.$appRoleGridScrollbar.children('div').children('div')[0]).css('margin-right', '0');
-                    var ele = [self.$apiFeatrueGrid,self.$functionFeatrueGrid];
-                    for (var i = 0; i < gridType.length; i++) {
+                    var ele = [self.$apiFeatrueTree,self.$functionFeatrueTree];
+                    for (var i = 0; i < treeType.length; i++) {
                         var checkboxBo = Util.isStrEquals(i,1)?true:false;
-                        gridType[i] = ele[i].ligerSearchTree({
+                        var appRoleId = Util.isStrEquals(i,1)?obj.id:"";
+                        treeType[i] = ele[i].ligerSearchTree({
 //                            nodeWidth: 200,
-                            url: gridUrl[i],
+                            url: '${contextRoot}/appRole/searchFeatrueTree',
+                            parms:{searchNm: '',treeType:treeType[i],appRoleId:appRoleId},
                             idFieldName: 'id',
                             parentIDFieldName: 'pid',
                             textFieldName: 'name',
@@ -53,12 +51,6 @@
                                 dataModel.updateRemote("${contextRoot}/appRole/updateFeatureConfig", {
                                     data: {AppFeatureId: data.data.id,updateType:checked},
                                     success: function (data) {
-//                                        if (data.successFlg) {
-//                                            win.parent.closeAppRoleGroupInfoDialog();
-//                                            $.Notice.success(dialogMsg+'成功');
-//                                        } else {
-//                                            $.Notice.error(dialogMsg+'失败');
-//                                        }
                                     }
                                 })
 
@@ -77,9 +69,7 @@
                     //修改用户信息
                     var self = this;
                 }
-
             };
-
             pageInit();
         })
     })(jQuery, window)

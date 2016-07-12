@@ -9,6 +9,7 @@
             // 表单校验工具类
             var jValidation = $.jValidation;
             var dataModel = $.DataModel.init();
+            var Dialogtype = '${Dialogtype}';
             var appRoleGroupModel = ${appRoleGroupModel};
             appRoleGroupModel = Util.isStrEmpty(appRoleGroupModel.obj) ? "addAppRoleGroup" : appRoleGroupModel;
 
@@ -30,6 +31,8 @@
                     self.$appRoleGroupId.ligerTextBox({width: 240});
                     self.$appRoleGroupName.ligerTextBox({width: 240});
                     self.$appRoleExplain.ligerTextBox({width: 240,height:130});
+                    Util.isStrEquals(Dialogtype,'sel')?($(".div-appRole-btn").hide(),$(".m-form-group").addClass('m-form-readonly')):"";
+
                     if (!Util.isStrEquals(appRoleGroupModel, 'addAppRoleGroup')) {
                         self.$appRoleGroupForm.Fields.fillValues({
                             id:appRoleGroupModel.obj.id,
