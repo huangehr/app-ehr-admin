@@ -243,13 +243,14 @@
                  level:2,
                  pid: 3,
                  text: 'API管理'
-                 },
-                 {
-                 id: 34,
-                 level:2,
-                 pid: 3,
-                 text: '应用角色'
                  },*/
+                {
+                    id: 34,
+                    level: 2,
+                    pid: 3,
+                    text: '应用角色',
+                    url: '${contextRoot}/appRole/initial'
+                },
                 //4 - 安全管理中心
                 {id: 4, level:1, text: '<spring:message code="title.security.manage.center"/>'},
                 {

@@ -4,6 +4,8 @@
 <div id="div_appRole_group_form" data-role-form class="m-form-inline f-mt20 f-pb30">
 
     <input type="text" class="f-dn" data-attr-scan="id"/>
+    <input type="text" class="f-dn" data-attr-scan="appId"/>
+    <input type="text" class="f-dn" data-attr-scan="type" value="0"/>
     <div class="m-form-group">
         <label>角色组ID</label>
         <div class="l-text-wrapper m-form-control essential">

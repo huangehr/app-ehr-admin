@@ -58,11 +58,10 @@ public class AppRoleController extends BaseUIController {
         model.addAttribute("appRoleGroupModel",toJson(envelop));
         if (!StringUtils.isEmpty(jsonStr)&&(type.equals("edit")||type.equals("sel"))){
             Map<String, Object> params = new HashMap<>();
-            String resultStr = "";
+//            String resultStr = "";
             String url = "/roles/role/"+jsonStr;
             try {
-                resultStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-                model.addAttribute("appRoleGroupModel",resultStr);
+                jsonStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -79,6 +78,7 @@ public class AppRoleController extends BaseUIController {
                 break;
             default:
                 contentPage = "/app/approle/appRoleDialog";
+                model.addAttribute("appRoleGroupModel",jsonStr);
                 break;
         }
         model.addAttribute("Dialogtype", type);
@@ -93,7 +93,7 @@ public class AppRoleController extends BaseUIController {
         String url = ServiceApi.Roles.Roles;
         String resultStr = "";
 
-        String filters = StringUtils.isEmpty(searchNm)?"type=0":"type=0 g0;name="+searchNm+" g1;appId="+appRoleId+" g2";
+        String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;name?"+searchNm+" g1;appId="+appRoleId+" g2";
         if(gridType.equals("appRole")){
             url = "/apps";
             filters = StringUtils.isEmpty(searchNm)?"sourceType=1":"sourceType=1 g0;name?"+searchNm+" g1";
@@ -173,7 +173,7 @@ public class AppRoleController extends BaseUIController {
         String url = "";
         String filters = "";
         if (treeType.equals("apiFeatrueTree")){
-            url = ServiceApi.AppFeature.AppFeatures;
+            url = ServiceApi.AppFeature.FilterFeatureNoPage;
         }else {
             url = ServiceApi.Roles.RoleFeaturesNoPage;
             filters = "roleId="+appRoleId;
@@ -194,8 +194,8 @@ public class AppRoleController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String url = updateType?"/addAppInsert":"/delAppInsert";
         String resultStr = "";
-        params.put("appInsertId", appInsertId);
-        params.put("appRoleId", appRoleId);
+        params.put("role_ids", appInsertId);
+        params.put("app_id", appRoleId);
         try {
             if (updateType){
                 resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
