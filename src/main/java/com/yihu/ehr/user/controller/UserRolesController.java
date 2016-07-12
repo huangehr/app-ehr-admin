@@ -45,9 +45,10 @@ public class UserRolesController extends BaseUIController {
     }
 
     @RequestMapping("/rolesInfoInitial")
-    public String rolesInfoInitial(Model model, String id, String mode) {
+    public String rolesInfoInitial(Model model, String id, String mode,String appId) {
         model.addAttribute("contentPage", "user/roles/rolesInfoDialog");
         model.addAttribute("mode", mode);
+        model.addAttribute("appId",appId);
         Envelop envelop = new Envelop();
         String en = "";
         try {
@@ -243,6 +244,7 @@ public class UserRolesController extends BaseUIController {
     }
 
     @RequestMapping("/isNameExistence")
+    @ResponseBody
     public Object isNameExistence(String name){
         try{
             Map<String,Object> params = new HashMap<>();
@@ -256,6 +258,7 @@ public class UserRolesController extends BaseUIController {
         }
     }
     @RequestMapping("/isCodeExistence")
+    @ResponseBody
     public Object isCodeExistence(String code){
         try{
             Map<String,Object> params = new HashMap<>();

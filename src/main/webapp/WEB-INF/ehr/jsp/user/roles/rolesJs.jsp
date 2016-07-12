@@ -141,9 +141,9 @@
 					});
 					//新增、修改、查看角色组
 					$('#div_new_record').click(function () {
-						$.publish("roles:infoDialog:open",['','new']);
+						$.publish("roles:infoDialog:open",['','new',appId]);
 					});
-					$.subscribe("roles:infoDialog:open",function(events,id,mode){
+					$.subscribe("roles:infoDialog:open",function(events,id,mode,appId){
 						isFirstPage = false;
 						var title = '';
 						if(mode == 'modify'){
@@ -153,6 +153,9 @@
 						}else{
 							title = '查看角色组';
 						};
+						if(!appId){
+							appId = '';
+						}
 						rolesMaster.rolesInfoDialog = $.ligerDialog.open({
 							height: 360,
 							width: 500,
@@ -160,6 +163,7 @@
 							urlParms:{
 								id:id,
 								mode:mode,
+								appId:appId
 							},
 							url: '${contextRoot}/userRoles/rolesInfoInitial',
 							isHidden: false,
