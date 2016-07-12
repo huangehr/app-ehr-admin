@@ -3,9 +3,16 @@ package com.yihu.ehr.template.controller;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.template.TemplateModel;
+import com.yihu.ehr.model.profile.MTemplate;
+import com.yihu.ehr.model.standard.MCDADocument;
 import com.yihu.ehr.template.service.TemplateService;
+import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONUtil;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +37,12 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
 
     @Value("${service-gateway.template}")
     public String templateUrl;
+    @Value("${service-gateway.url}")
+    public String comUrl;
+    @Value("${service-gateway.username}")
+    private String username;
+    @Value("${service-gateway.password}")
+    private String password;
 
     public ArchiveTplMgrController() {
         this.init(
@@ -110,6 +124,34 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
         }
     }
 
+    @Override
+    public Map beforeUpdate(Map parms){
+        String model  = (String)parms.get("model");
+        MTemplate mTemplate = toModel(model,MTemplate.class);
+        Map<String,Object> params = new HashMap<>();
+        try{
+            params.put("version_code",mTemplate.getCdaVersion());
+            params.put("cda_id",mTemplate.getCdaDocumentId());
+            String _rus = HttpClientUtil.doGet(comUrl + "/cda/cda", params, username, password);
+            Envelop envelop = getEnvelop(_rus);
+            if(envelop.isSuccessFlg()){
+                List mcdaDocuments = envelop.getDetailModelList();
+                if(mcdaDocuments.size()>0){
+                    Object obj = mcdaDocuments.get(0);
+                    Map dataMap  = objectMapper.readValue(toJson(obj), Map.class);
+                    mTemplate.setCdaCode(dataMap.get("code").toString());
+                    parms.put("model",toJson(mTemplate));
+                }else{
+                    throw new RuntimeException("获取cda文档失败！cda文档不存在！");
+                }
+            }else{
+                throw new RuntimeException("获取cda文档失败！");
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+        return parms;
+    }
     @Override
     public Object afterGotoModify(Object rs, Map params) {
 
