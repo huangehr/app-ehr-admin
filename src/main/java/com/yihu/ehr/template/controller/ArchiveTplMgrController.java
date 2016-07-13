@@ -140,7 +140,7 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
                     Object obj = mcdaDocuments.get(0);
                     Map dataMap  = objectMapper.readValue(toJson(obj), Map.class);
                     mTemplate.setCdaCode(dataMap.get("code").toString());
-                    parms.put("model",toJson(mTemplate));
+                     parms.put("model",toJson(mTemplate));
                 }else{
                     throw new RuntimeException("获取cda文档失败！cda文档不存在！");
                 }
