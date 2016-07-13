@@ -10,7 +10,8 @@
             var jValidation = $.jValidation;
             var dataModel = $.DataModel.init();
             var Dialogtype = '${Dialogtype}';
-            var appRoleGroupModel = Util.isStrEquals(Dialogtype,'addAppRoleGroup')?'${appRoleGroupModel}':${appRoleGroupModel};
+            <%--var appRoleGroupModel = Util.isStrEquals(Dialogtype,'addAppRoleGroup')?'${appRoleGroupModel}':${appRoleGroupModel};--%>
+            var appRoleGroupModel = ${appRoleGroupModel};
 
             function pageInit() {
                 master.init();
@@ -55,12 +56,13 @@
                         if (Util.isStrEquals(this.id, 'div_cancel_roleGroup_btn'))
                             return win.parent.closeAppRoleGroupInfoDialog();
                         var appGroupModel = self.$appRoleGroupForm.Fields.getValues();
-                        var saveType = Util.isStrEquals(appGroupModel.id,'')?('add',appGroupModel.appId = appRoleGroupModel):'update';
+                        var saveType = Util.isStrEquals(appGroupModel.id,'')?('add',appGroupModel.appId = appRoleGroupModel.obj):'update';
                         dataModel.updateRemote("${contextRoot}/appRole/saveAppRoleGroup", {
                             data: {appRoleGroupModel: JSON.stringify(appGroupModel),saveType:'add'},
                             success: function (data) {
                                 var dialogMsg = Util.isStrEquals(appGroupModel.id,'')?"新增":"修改";
                                 if (data.successFlg) {
+
                                     win.parent.closeAppRoleGroupInfoDialog();
                                     $.Notice.success(dialogMsg+'成功');
                                 } else {

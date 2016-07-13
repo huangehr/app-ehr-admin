@@ -34,8 +34,19 @@
                     });
                     var ele = [self.$configAppInsertGrid, self.$appInsertGrid];
                     for (var i = 0; i < gridType.length; i++) {
-                        var name = "name";
-                        var checkboxBo = Util.isStrEquals(i, 1) ? true : (false,name="appName");
+//                        var name = "name";
+//                        var checkboxBo = true;
+                        var name = null;
+                        var checkboxBo = null;
+                        debugger
+//                        var checkboxBo = Util.isStrEquals(i, 1) ? (true,name ="name"): (false,name="appName");
+                        if (Util.isStrEquals(i, 1)){
+                            name = "name";
+                            checkboxBo = true;
+                        }else{
+                            checkboxBo = false;
+                            name="appName";
+                        }
                         gridType[i] = ele[i].ligerGrid($.LigerGridEx.config({
                             url: '${contextRoot}/appRole/searchInsertApps',
                             parms: {searchNm: '', gridType: gridType[i], appRoleId: obj.id},
@@ -73,7 +84,8 @@
                     self.clicks();
                 },
                 reloadAppInsetrGrid: function (value, grid, type) {
-                    value = {searchNm: value, gridType: type};
+                    debugger
+                    value = {searchNm: value, gridType: type,appRoleId: obj.id};
                     reloadGrid.call(this, '${contextRoot}/appRole/searchInsertApps', value, grid, type);
                 },
                 clicks: function () {
