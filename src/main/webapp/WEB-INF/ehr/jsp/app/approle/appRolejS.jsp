@@ -8,10 +8,9 @@
             var master = null;
             var appRoleGrid = null;
             var appRoleGroupGrid = null;
-            var windowHeight = $(window).height();
             var appRoleId = null;
             var appRoleGroupInfoDialog = null;
-
+            var url = "${contextRoot}/appRole/";
             var dataModel = $.DataModel.init();
 
             function pageInit() {
@@ -19,7 +18,11 @@
             }
 
             function reloadGrid(url, type, appRoleId, ps) {
-                var appGrid = Util.isStrEquals(type, "appRole") ? appRoleGrid : appRoleGroupGrid;
+                var appGrid = appRoleGroupGrid;
+                if (Util.isStrEquals(type, "appRole")) {
+                    appGrid = appRoleGrid;
+                    appGrid.options.newPage = 1;
+                }
                 appGrid.setOptions({parms: ps});
                 appGrid.loadData(true);
             }
@@ -43,11 +46,11 @@
                     });
 
                     appRoleGrid = self.$appRoleGrid.ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/appRole/searchAppRole',
+                        url: url+'searchAppRole',
                         parms: {searchNm: '', gridType: 'appRole'},
                         isScroll: true,
                         async: true,
-                        columns: [{display: '应用名称', name: 'realName', width: '100%'}],
+                        columns: [{display: '应用名称', name: 'name', width: '100%'}],
                         onSelectRow: function (data) {
                             self.reloadAppRoleGrid("appRoleGroup", appRoleId = data.id, "");
                         },
@@ -57,49 +60,57 @@
                     }));
 
                     appRoleGroupGrid = self.$appRoleGroupGrid.ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/appRole/searchAppRole',
-                        parms: {searchNm: '', gridType: 'appRoleGroup', appRoleId: appRoleGrid.appRoleid},
+                        url: url+'searchAppRole',
+                        parms: {searchNm: '', gridType: 'appRoleGroup', appRoleId: appRoleId},
                         isScroll: true,
+                        async: true,
                         columns: [
-                            {display: '应用组编码', name: 'realName', width: '25%'},
-                            {display: '应用组明称', name: 'loginCode', width: '25%'},
-                            {display: '描述', name: 'loginCode', width: '25%'},
+                            {display: '应用组编码', name: 'code', width: '25%'},
+                            {display: '应用组明称', name: 'name', width: '25%'},
+                            {display: '描述', name: 'description', width: '25%'},
                             {
                                 display: '操作', name: 'operator', width: '25%', render: function (row) {
-                                var html = '<a class="label_a" title="权限配置" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'featrueConfig') + '">权限配置</a>&nbsp;&nbsp;';
-                                html += '<a class="label_a" title="接入应用" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'appInsert') + '">应用接入</a>';
+                                var html = '<a class="label_a" title="权限配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'featrueConfig') + '>权限配置</a>&nbsp;&nbsp;';
+                                html += '<a class="label_a" title="接入应用" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appInsert') + '>应用接入</a>';
                                 html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'edit') + '"></a>';
                                 html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'delete') + '"></a>';
                                 return html;
                             }
                             }
-                        ]
+                        ],
+                        onDblClickRow : function (row){
+                            $.publish('app:roles', [row.id, 'sel']);
+                        }
                     }));
                     self.clicks();
                 },
                 reloadAppRoleGrid: function (type, appRoleId, searchParams) {
-                    reloadGrid.call(this, '${contextRoot}/app/searchAppData', type, appRoleId, searchParams);
+                    if (Util.isStrEquals(type, "appRole")){
+                        searchParams = {searchNm:searchParams,gridType:type};
+                    }else{
+                        searchParams = {searchNm: searchParams, gridType: type, appRoleId: appRoleId}
+                    }
+                    reloadGrid.call(this, url+'searchAppRole', type, appRoleId, searchParams);
                 },
                 clicks: function () {
-                    //修改用户信息
                     var self = this;
-                    self.$addAppRoleGroupBtn.click(function () {
-                        $.publish('app:roles',['','addAppRoleGroup'])
-                    });
 
-                    $.subscribe('app:roles', function (event, appGroupId, type) {
+                    self.$addAppRoleGroupBtn.click(function () {
+                        $.publish('app:roles', [appRoleId, 'addAppRoleGroup'])
+                    });
+                    $.subscribe('app:roles', function (event, jsonStr, type) {
                         switch (type) {
                             case 'featrueConfig':
-                                self.ligerDialogOpen(appGroupId,type,"权限配置");
+                                self.ligerDialogOpen(jsonStr, type, "权限配置", 600, 800);
                                 break;
                             case 'appInsert':
-                                self.ligerDialogOpen(appGroupId,type,"应用接入");
+                                self.ligerDialogOpen(jsonStr, type, "应用接入", 600, 800);
                                 break;
                             case 'delete':
                                 $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                                     if (yes) {
-                                        dataModel.updateRemote("${contextRoot}/appRole/deleteAppRoleGroup", {
-                                            data: {appGroupId: appGroupId},
+                                        dataModel.updateRemote(url+"deleteAppRoleGroup", {
+                                            data: {appGroupId: jsonStr},
                                             async: true,
                                             success: function (data) {
                                                 if (data.successFlg) {
@@ -114,24 +125,26 @@
                                 });
                                 break;
                             case 'addAppRoleGroup':
-                                self.ligerDialogOpen(appGroupId,type,"新增角色组");
+                                self.ligerDialogOpen(jsonStr, type, "新增角色组", 400, 500);
+                                break;
+                            case 'edit':
+                                self.ligerDialogOpen(jsonStr, type, "修改角色组", 400, 500);
                                 break;
                             default:
-                                self.ligerDialogOpen(appGroupId,type,"修改角色组");
+                                self.ligerDialogOpen(jsonStr, type, "查看角色组", 400, 500);
                                 break;
                         }
                     });
                 },
-                ligerDialogOpen: function (appRoleGroupId,type,title) {
-//                    var self = this;
+                ligerDialogOpen: function (jsonStr, type, title, width, height) {
                     appRoleGroupInfoDialog = $.ligerDialog.open({
                         title: title,
-                        height: 400,
-                        width: 500,
-                        url: '${contextRoot}/appRole/appRoleDialog',
+                        height: width,
+                        width: height,
+                        url: url+'appRoleDialog',
                         load: true,
                         urlParms: {
-                            appRoleGroupId: appRoleGroupId,
+                            jsonStr: jsonStr,
                             type: type
                         }
                     });

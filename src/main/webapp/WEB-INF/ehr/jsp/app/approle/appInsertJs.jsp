@@ -15,7 +15,7 @@
                 master.init();
             }
 
-            function reloadGrid(url, value,grid,type) {
+            function reloadGrid(url, value, grid, type) {
                 grid.setOptions({parms: value});
                 grid.loadData(true);
             }
@@ -29,38 +29,52 @@
                     var self = this;
                     self.$appInsertSearch.ligerTextBox({
                         width: 240, isSearch: true, search: function () {
-                            self.reloadAppInsetrGrid(self.$appInsertSearch.val(),gridType[1],'appInsertGrid');
+                            self.reloadAppInsetrGrid(self.$appInsertSearch.val(), gridType[1], 'appInsertGrid');
                         }
                     });
-                    var ele = [self.$configAppInsertGrid,self.$appInsertGrid];
+                    var ele = [self.$configAppInsertGrid, self.$appInsertGrid];
                     for (var i = 0; i < gridType.length; i++) {
-                        var checkboxBo = Util.isStrEquals(i,1)?true:false;
+                        var name = "name";
+                        var checkboxBo = Util.isStrEquals(i, 1) ? true : (false,name="appName");
                         gridType[i] = ele[i].ligerGrid($.LigerGridEx.config({
                             url: '${contextRoot}/appRole/searchInsertApps',
-                            parms: {searchNm: '',gridType:gridType[i],appRoleId:obj.id},
-                            width:$(".f-mw50").width(),
-                            height:400,
+                            parms: {searchNm: '', gridType: gridType[i], appRoleId: obj.id},
+                            width: $(".f-mw50").width(),
+                            height: 400,
                             isScroll: true,
-                            checkbox:checkboxBo,
+                            checkbox: checkboxBo,
                             async: true,
-                            columns: [{display: '应用名称', name: 'name', width: '100%'}],
-                            onCheckRow: function (checked,data,rowid,rowdata) {
+                            columns: [{display: '应用名称', name: name, width: '100%'}],
+                            onCheckRow: function (checked, data, rowid, rowdata) {
                                 dataModel.updateRemote("${contextRoot}/appRole/updateAppInsert", {
-                                    data: {appInsertId: data.id,appRoleId:obj.id,updateType:checked},
+                                    data: {appInsertId: data.id, appRoleId: obj.id, updateType: checked},
                                     success: function (data) {
-                                        if (data.successFlg){
-                                            self.reloadAppInsetrGrid('',gridType[0],'configAppInsertGrid');
+                                        if (data.successFlg) {
+                                            self.reloadAppInsetrGrid('', gridType[0], 'configAppInsertGrid');
                                         }
                                     }
                                 });
+                            },
+                            isChecked: function (row) {
+                                var bo = false;
+                                if (Util.isStrEquals(i, 1)) {
+                                    return;
+                                }
+                                var configAppInsertGrid = gridType[0].data.detailModelList;
+                                for (var i = 0; i < configAppInsertGrid.length; i++) {
+                                    if (Util.isStrEquals(row.id, configAppInsertGrid[i].appId)) {
+                                        bo = true
+                                    }
+                                }
+                                return bo;
                             }
                         }));
                     }
                     self.clicks();
                 },
-                reloadAppInsetrGrid: function (value,grid,type) {
-                    value = {searchNm:value,gridType:type};
-                    reloadGrid.call(this, '${contextRoot}/appRole/searchInsertApps', value,grid,type);
+                reloadAppInsetrGrid: function (value, grid, type) {
+                    value = {searchNm: value, gridType: type};
+                    reloadGrid.call(this, '${contextRoot}/appRole/searchInsertApps', value, grid, type);
                 },
                 clicks: function () {
                     //修改用户信息

@@ -1,5 +1,6 @@
 package com.yihu.ehr.apps.controller;
 
+import com.yihu.ehr.agModel.user.RoleAppRelationModel;
 import com.yihu.ehr.agModel.user.RolesModel;
 import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.controller.BaseUIController;
@@ -58,11 +59,10 @@ public class AppRoleController extends BaseUIController {
         model.addAttribute("appRoleGroupModel",toJson(envelop));
         if (!StringUtils.isEmpty(jsonStr)&&(type.equals("edit")||type.equals("sel"))){
             Map<String, Object> params = new HashMap<>();
-            String resultStr = "";
+//            String resultStr = "";
             String url = "/roles/role/"+jsonStr;
             try {
-                resultStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-                model.addAttribute("appRoleGroupModel",resultStr);
+                jsonStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -79,6 +79,7 @@ public class AppRoleController extends BaseUIController {
                 break;
             default:
                 contentPage = "/app/approle/appRoleDialog";
+                model.addAttribute("appRoleGroupModel",jsonStr);
                 break;
         }
         model.addAttribute("Dialogtype", type);
@@ -93,7 +94,7 @@ public class AppRoleController extends BaseUIController {
         String url = ServiceApi.Roles.Roles;
         String resultStr = "";
 
-        String filters = StringUtils.isEmpty(searchNm)?"type=0":"type=0 g0;name="+searchNm+" g1;appId="+appRoleId+" g2";
+        String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;name?"+searchNm+" g1;appId="+appRoleId+" g2";
         if(gridType.equals("appRole")){
             url = "/apps";
             filters = StringUtils.isEmpty(searchNm)?"sourceType=1":"sourceType=1 g0;name?"+searchNm+" g1";
@@ -168,38 +169,50 @@ public class AppRoleController extends BaseUIController {
 
     @RequestMapping("/searchFeatrueTree")
     @ResponseBody
-    public String searchFeatrueTree(String treeType,String appRoleId){
+    public Object searchFeatrueTree(String treeType,String appRoleId){
+        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "";
         String filters = "";
         if (treeType.equals("apiFeatrueTree")){
-            url = ServiceApi.AppFeature.AppFeatures;
+            url = "/role_app_feature/no_paging";
+//            url = ServiceApi.Roles.RoleFeaturesNoPage;
+//            filters = "role_id="+appRoleId;
+            params.put("role_id", appRoleId);
         }else {
-            url = ServiceApi.Roles.RoleFeaturesNoPage;
-            filters = "roleId="+appRoleId;
+            url = ServiceApi.AppFeature.FilterFeatureNoPage;
+            params.put("filters", filters);
         }
         String resultStr = "";
-        params.put("filters", filters);
+//        params.put("filters", filters);
+
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resultStr;
+        return envelop.getDetailModelList();
     }
 
     @RequestMapping("/updateAppInsert")
     @ResponseBody
     public String updateAppInsert(String appInsertId,String appRoleId,boolean updateType){
         Map<String, Object> params = new HashMap<>();
-        String url = updateType?"/addAppInsert":"/delAppInsert";
+        String url = updateType?ServiceApi.Roles.RoleApp:ServiceApi.Roles.RoleApp;
+        RoleAppRelationModel roleAppRelationModel = new RoleAppRelationModel();
         String resultStr = "";
-        params.put("appInsertId", appInsertId);
-        params.put("appRoleId", appRoleId);
+//        params.put("role_ids", appInsertId);
+//        params.put("app_id", appRoleId);
+        roleAppRelationModel.setAppId(appInsertId);
+        roleAppRelationModel.setRoleId(Long.valueOf(appRoleId));
+        params.put("data_json", toJson(roleAppRelationModel));
         try {
             if (updateType){
                 resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             }else{
+                params.put("app_id", appInsertId);
+                params.put("role_id", appRoleId);
                 resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             }
 
