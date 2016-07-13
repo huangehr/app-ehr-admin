@@ -12,6 +12,7 @@
 		var nameCopy = '';
 		var codeCopy = '';
 		var appId = '${appId}';
+		//用户角色组类型为"1"
 		$('#roleType').val('1');
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
@@ -36,23 +37,19 @@
 				}
 				this.$form.attrScan();
 				if(mode !='new'){
-					//var info = ${envelop}.obj;
-					var info = {
-						id:'1122112',
-						stdAppId:'3323223',
-						code: 'wwcs',
-						name: 'yww',
-						description:'用户角色组模拟数据'
-					}
+					var info = ${envelop}.obj;
 					nameCopy = info.name;
 					codeCopy = info.code;
 					this.$form.Fields.fillValues({
 						id:info.id,
-						stdAppId:info.id,
-						rolesCode:info.code,
-						rolesName:info.name,
-						description:info.description,
+						appId:info.appId,
+						code:info.code,
+						name:info.name,
+						description:info.description
 					});
+				}
+				if(mode == 'new'){
+					$('#appId').val(appId);
 				}
 				this.$form.show();
 				this.bindEvents();
