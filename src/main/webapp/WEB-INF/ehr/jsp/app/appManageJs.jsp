@@ -108,13 +108,14 @@
 									return '无'
 								}
 							}},
-							{ display: '已授权资源', name: 'resourceNames', width: '10%',align:'left'},
-							{ display: '操作', name: 'operator', width: '10%', render: function (row) {
+							{ display: '已授权资源', name: 'resourceNames', width: '8%',align:'left'},
+							{ display: '操作', name: 'operator', width: '12%', render: function (row) {
 								var html = '';
 								if(Util.isStrEquals( row.status,'WaitingForApprove') || Util.isStrEquals( row.status,'Approved')){
 									html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a>';
 								}
-								html += '<a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a>';
+								html += '<a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a>';
+								html += '<a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:appInfo:delete", row.id) + '"></a>';
 								return html;
                             }}
                         ],
@@ -189,6 +190,28 @@
 							load:true
                         });
                     });
+
+					//删除
+					$.subscribe('app:appInfo:delete',function(event,appId){
+						isFirstPage = false;
+						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+							if (yes) {
+								var dataModel = $.DataModel.init();
+								dataModel.updateRemote('${contextRoot}/app/deleteApp', {
+									data: {appId: appId},
+									success: function (data) {
+										if (data.successFlg) {
+											$.Notice.success('操作成功。');
+											master.reloadGrid();
+										} else {
+											$.Notice.open({type: 'error', msg: '操作失败。'});
+										}
+									}
+								});
+							}
+						});
+					});
+
                     $.subscribe('appInfo:appInfoGrid:approved',function(event,id) {
                         var status = "Approved";
                         master.check(id,status);
