@@ -244,13 +244,13 @@
                  pid: 3,
                  text: 'API管理'
                  },*/
-                {
-                    id: 34,
-                    level: 2,
-                    pid: 3,
-                    text: '应用角色',
-                    url: '${contextRoot}/appRole/initial'
-                },
+                <%--{--%>
+                    <%--id: 34,--%>
+                    <%--level: 2,--%>
+                    <%--pid: 3,--%>
+                    <%--text: '应用角色',--%>
+                    <%--url: '${contextRoot}/appRole/initial'--%>
+                <%--},--%>
                 //4 - 安全管理中心
                 {id: 4, level:1, text: '<spring:message code="title.security.manage.center"/>'},
                 {
@@ -260,12 +260,13 @@
                     text: '<spring:message code="title.user.manage"/>',
                     url: '${contextRoot}/user/initial'
                 },
-                /*{
-                 id: 42,
-                 pid: 4,
-                 level:2,
-                 text: '角色管理'
-                 },*/
+				<%--{--%>
+					<%--id: 42,--%>
+					<%--pid: 4,--%>
+					<%--level:2,--%>
+					<%--text: '角色管理',--%>
+					<%--url: '${contextRoot}/userRoles/initial'--%>
+				<%--},--%>
 
                 //5 - 资源管理中心
                 {id: 5, level:1, text: '<spring:message code="title.resource.manage.center"/>'},

@@ -37,7 +37,7 @@
                 init: function () {
                     var self = this;
                     self.$appRoleComSearch.ligerTextBox({
-                        width: 240, isSearch: true, search: function () {
+                        width: 200, isSearch: true, search: function () {
                             var inpEleType = this.find('input').attr('id');
                             var gridType = Util.isStrEquals(inpEleType, 'inp_appRole_search') ? 'appRole' : 'appRoleGroup';
                             appRoleId = Util.isStrEquals(inpEleType, 'inp_appRole_group_search') ? appRoleId : '';
@@ -55,7 +55,7 @@
                             self.reloadAppRoleGrid("appRoleGroup", appRoleId = data.id, "");
                         },
                         onAfterShowData: function (data) {
-                            appRoleId = data.detailModelList[0].id;
+                            appRoleGrid.select(0);
                         }
                     }));
 
@@ -65,11 +65,11 @@
                         isScroll: true,
                         async: true,
                         columns: [
-                            {display: '应用组编码', name: 'code', width: '25%'},
-                            {display: '应用组明称', name: 'name', width: '25%'},
+                            {display: '应用组编码', name: 'code', width: '20%'},
+                            {display: '应用组明称', name: 'name', width: '20%'},
                             {display: '描述', name: 'description', width: '25%'},
                             {
-                                display: '操作', name: 'operator', width: '25%', render: function (row) {
+                                display: '操作', name: 'operator', width: '35%', render: function (row) {
                                 var html = '<a class="label_a" title="权限配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'featrueConfig') + '>权限配置</a>&nbsp;&nbsp;';
                                 html += '<a class="label_a" title="接入应用" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appInsert') + '>应用接入</a>';
                                 html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'edit') + '"></a>';
@@ -153,9 +153,10 @@
 
             win.closeAppRoleGroupInfoDialog = function (callback) {
                 appRoleGroupInfoDialog.close();
+                master.reloadAppRoleGrid("appRoleGroup", appRoleId, "");
             };
-
             pageInit();
+
         })
     })(jQuery, window)
 </script>

@@ -1,10 +1,15 @@
 package com.yihu.ehr.apps.controller;
 
+import com.yihu.ehr.agModel.user.RoleApiRelationModel;
 import com.yihu.ehr.agModel.user.RoleAppRelationModel;
+import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RolesModel;
 import com.yihu.ehr.api.ServiceApi;
+import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.user.controller.UserRolesController;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.jasper.tagplugins.jstl.Util;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +61,7 @@ public class AppRoleController extends BaseUIController {
     public String appRoleDialog(Model model,String jsonStr,String type){
 
         Envelop envelop = new Envelop();
+        envelop.setObj(jsonStr);
         model.addAttribute("appRoleGroupModel",toJson(envelop));
         if (!StringUtils.isEmpty(jsonStr)&&(type.equals("edit")||type.equals("sel"))){
             Map<String, Object> params = new HashMap<>();
@@ -76,6 +82,10 @@ public class AppRoleController extends BaseUIController {
             case "appInsert":
                 contentPage = "/app/approle/appInsert";
                 model.addAttribute("jsonStr", jsonStr);
+                break;
+            case "addAppRoleGroup":
+                contentPage = "/app/approle/appRoleDialog";
+//                model.addAttribute("appRoleGroupModel", jsonStr);
                 break;
             default:
                 contentPage = "/app/approle/appRoleDialog";
@@ -148,23 +158,50 @@ public class AppRoleController extends BaseUIController {
 
     @RequestMapping("/updateFeatureConfig")
     @ResponseBody
-    public String updateFeatureConfig(int AppFeatureId,boolean updateType){
+    public String updateFeatureConfig(String AppFeatureId,String roleId,boolean updateType){
         Map<String, Object> params = new HashMap<>();
-        String url = updateType?"/addFeatureConfig":"/updateFeatureConfig";
+        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
         String resultStr = "";
-
-        params.put("AppFeatureId", AppFeatureId);
+        RoleFeatureRelationModel roleFeatureRelationModel = new RoleFeatureRelationModel();
+        roleFeatureRelationModel.setFeatureId(Long.valueOf(AppFeatureId));
+        roleFeatureRelationModel.setRoleId(Long.valueOf(roleId));
+        params.put("data_json", toJson(roleFeatureRelationModel));
         try {
-//            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            if (updateType){
+                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            }else{
+                params.put("feature_id", AppFeatureId);
+                params.put("role_id", roleId);
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        return resultStr;
-        // TODO: 2016/7/8 以下为测试数据
-        Envelop envelop = new Envelop();
-        envelop.setErrorMsg("error");
-        envelop.setSuccessFlg(true);
-        return toJson(envelop);
+        return resultStr;
+    }
+
+    @RequestMapping("/updateApiConfig")
+    @ResponseBody
+    public String updateApiConfig(String apiFeatureId,String roleId,boolean updateType){
+        Map<String, Object> params = new HashMap<>();
+        String url = updateType?ServiceApi.Roles.RoleApi:ServiceApi.Roles.RoleApi;
+        String resultStr = "";
+        RoleApiRelationModel roleApiRelationModel = new RoleApiRelationModel();
+        roleApiRelationModel.setApiId(Long.valueOf(apiFeatureId));
+        roleApiRelationModel.setRoleId(Long.valueOf(roleId));
+        params.put("data_json", toJson(roleApiRelationModel));
+        try {
+            if (updateType){
+                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            }else{
+                params.put("api_id", apiFeatureId);
+                params.put("role_id", roleId);
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultStr;
     }
 
     @RequestMapping("/searchFeatrueTree")
@@ -174,7 +211,8 @@ public class AppRoleController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String url = "";
         String filters = "";
-        if (treeType.equals("apiFeatrueTree")){
+        if (treeType.equals("configFeatrue")){
+//        if (treeType.equals("configFeatrueTree")){
             url = "/role_app_feature/no_paging";
 //            url = ServiceApi.Roles.RoleFeaturesNoPage;
 //            filters = "role_id="+appRoleId;
@@ -182,10 +220,35 @@ public class AppRoleController extends BaseUIController {
         }else {
             url = ServiceApi.AppFeature.FilterFeatureNoPage;
             params.put("filters", filters);
+            params.put("roleId", appRoleId);
         }
         String resultStr = "";
 //        params.put("filters", filters);
 
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return envelop.getDetailModelList();
+    }
+    @RequestMapping("/searchApiTree")
+    @ResponseBody
+    public Object searchApiTree(String treeType,String appRoleId){
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "";
+        String filters = "";
+        if (treeType.equals("configapiTree")){
+            url = "/role_app_api/no_paging";
+            params.put("filters", "roleId="+appRoleId);
+        }else {
+            url = ServiceApi.AppApi.AppApisNoPage;
+            params.put("filters", filters);
+            params.put("roleId", appRoleId);
+        }
+        String resultStr = "";
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -247,6 +310,37 @@ public class AppRoleController extends BaseUIController {
         }
 
         return resultStr;
+    }
+
+    @RequestMapping("/isNameExistence")
+    @ResponseBody
+    public Object isNameExistence(String appId,String name){
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("id",appId);
+            params.put("name",name);
+            String url = ServiceApi.Roles.RoleNameExistence;
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+    @RequestMapping("/isCodeExistence")
+    @ResponseBody
+    public Object isCodeExistence(String appId,String code){
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("id",appId);
+            params.put("code",code);
+            String url = ServiceApi.Roles.RoleCodeExistence;
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
     }
 
 }

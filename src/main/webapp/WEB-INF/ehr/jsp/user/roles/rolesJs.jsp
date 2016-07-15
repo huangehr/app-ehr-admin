@@ -58,19 +58,17 @@
 						validate: true,
 						unSetValidateAttr: false,
 						allowHideColumn: false,
-//						onAfterShowData:function(data){
-//							if(!Util.isStrEmpty(stdAppId)){
-//								appMaster.appGrid.select(0)
-//							}
-//						},
-						onSuccess: function(data){
-							if(data.detailModelList.length >0){
-								appId = data.detailModelList[0].id;
-							}else{
-								appId = '-1';
-							}
-							rolesMaster.reloadRolesGrid();
+						onAfterShowData:function(data){
+								appMaster.appGrid.select(0);
 						},
+//						onSuccess: function(data){
+//							if(data.detailModelList.length >0){
+//								appId = data.detailModelList[0].id;
+//							}else{
+//								appId = '-1';
+//							}
+//							rolesMaster.reloadRolesGrid();
+//						},
 						onSelectRow: function (row) {
 							appId = row.id;
 							rolesMaster.reloadRolesGrid();

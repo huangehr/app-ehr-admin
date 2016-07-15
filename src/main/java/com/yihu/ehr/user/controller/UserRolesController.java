@@ -1,6 +1,7 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
 import com.yihu.ehr.agModel.user.RolesModel;
 import com.yihu.ehr.api.ServiceApi;
@@ -62,27 +63,6 @@ public class UserRolesController extends BaseUIController {
         }
         return "simpleView";
     }
-
-    //    @RequestMapping("/rolesUsersInitial")
-//    public String rolesUsersInitial(Model model,String id){
-//
-//        model.addAttribute("contentPage","user/roles/rolesUsers");
-//        return "simpleView";
-//    }
-    @RequestMapping("/configDialog")
-    public String configDialog(Model model, String obj, String dialogType) {
-        String dialogUrl = dialogType.equals("users")?"user/roles/rolesUsers":"user/roles/rolesFeature";
-        model.addAttribute("obj", obj);
-        model.addAttribute("contentPage", dialogUrl);
-        return "simpleView";
-    }
-
-    @RequestMapping("/rolesFeatureInitial")
-    public String rolesFeatureInitial(Model model, String id) {
-        model.addAttribute("contentPage", "user/roles/rolesUsersInitial");
-        return "simpleView";
-    }
-
     //角色组增改
     @RequestMapping("/update")
     @ResponseBody
@@ -135,6 +115,9 @@ public class UserRolesController extends BaseUIController {
     @RequestMapping("/delete")
     @ResponseBody
     public Object rolesDelete(String id) {
+        if(StringUtils.isEmpty(id)){
+            return failed("角色组id不能为空！");
+        }
         try{
             String url = "/roles/role/"+id;
             Map<String,Object> params = new HashMap<>();
@@ -176,71 +159,21 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
-    //用户角色组添加人员
-    @RequestMapping("/userCreate")
+    //用户角色组列表查询，不分页，用于下拉列表框
+    @RequestMapping("/rolesForForm")
     @ResponseBody
-    public Object roleUserCreate(String userId,String roleId) {
-        RoleUserModel model = new RoleUserModel();
-        model.setRoleId(Long.parseLong(roleId));
-        model.setUserId(userId);
+    public Object getRolesForForm(){
         try{
-            String url = ServiceApi.Roles.RoleUser;
+            String url = ServiceApi.Roles.RoleUsersNoPage;
             Map<String,Object> params = new HashMap<>();
-            params.put("data_json",objectMapper.writeValueAsString(model));
-            String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            //type=1,为用户角色
+            params.put("filters","type=1");
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
-    }
-
-    //用户角色组删除人员
-    @RequestMapping("/userDelete")
-    @ResponseBody
-    public Object roleUserDelete(String userId,String roleId) {
-        try{
-            Map<String,Object> params = new HashMap<>();
-            params.put("user_id",userId);
-            params.put("role_id",roleId);
-            String url = ServiceApi.Roles.RoleUser;
-            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
-            return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
-        }
-    }
-
-    //角色组权限配置（增删）
-    @RequestMapping("/featureUpdate")
-    @ResponseBody
-    public Object roleFeatureUpdate() {
-        return null;
-    }
-
-    //查找平台应用列表
-
-    @RequestMapping("/searchApps")
-    @ResponseBody
-    public Object getAppList(String searchNm, int page, int rows) {
-        URLQueryBuilder builder = new URLQueryBuilder();
-        builder.addFilter("sourceType","=","1","");
-        if (!StringUtils.isEmpty(searchNm)) {
-            builder.addFilter("name", "?", searchNm,"");
-        }
-        builder.setPageNumber(page)
-                .setPageSize(rows);
-        String param = builder.toString();
-        String url = "/apps";
-        String resultStr = "";
-        try {
-            RestTemplates template = new RestTemplates();
-            resultStr = template.doGet(comUrl+url+"?"+param);
-        } catch (Exception ex) {
-            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-        }
-        return resultStr;
     }
 
     @RequestMapping("/isNameExistence")
@@ -270,5 +203,205 @@ public class UserRolesController extends BaseUIController {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
+    }
+
+    @RequestMapping("/configDialog")
+    public String configDialog(Model model, String obj, String dialogType) {
+        String dialogUrl = dialogType.equals("users")?"user/roles/rolesUsers":"user/roles/rolesFeature";
+        model.addAttribute("obj", obj);
+        model.addAttribute("contentPage", dialogUrl);
+        return "simpleView";
+    }
+
+    //用户角色组添加人员
+    @RequestMapping("/userCreate")
+    @ResponseBody
+    public Object roleUserCreate(String userId,String roleId) {
+        if(StringUtils.isEmpty(userId)){
+            return failed("人员id不能为空！");
+        }
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空！");
+        }
+        RoleUserModel model = new RoleUserModel();
+        model.setRoleId(Long.parseLong(roleId));
+        model.setUserId(userId);
+        try{
+            String url = ServiceApi.Roles.RoleUser;
+            Map<String,Object> params = new HashMap<>();
+            params.put("data_json",objectMapper.writeValueAsString(model));
+            String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //用户角色组删除人员
+    @RequestMapping("/userDelete")
+    @ResponseBody
+    public Object roleUserDelete(String userId,String roleId) {
+        if(StringUtils.isEmpty(userId)){
+            return failed("人员id不能为空！");
+        }
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空！");
+        }
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("user_id",userId);
+            params.put("role_id",roleId);
+            String url = ServiceApi.Roles.RoleUser;
+            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //用户角色组人员配置列表查询
+    @RequestMapping("/roleUserList")
+    @ResponseBody
+    public Object getRoleUserList(String searchNm,int page,int rows){
+        if(StringUtils.isEmpty(searchNm)){
+            return failed("角色组id不能为空");
+        }
+        try{
+            String url = ServiceApi.Roles.RoleUsers;
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters","roleId="+searchNm);
+            params.put("sorts","");
+            params.put("page",page);
+            params.put("size",rows);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //角色组权限配置（增加）
+    @RequestMapping("/featureCreate")
+    @ResponseBody
+    public Object roleFeatureCreate(String roleId,String featureId) {
+        if(StringUtils.isEmpty(featureId)){
+            return failed("人员id不能为空！");
+        }
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空！");
+        }
+        RoleFeatureRelationModel model = new RoleFeatureRelationModel();
+        model.setRoleId(Long.parseLong(roleId));
+        model.setFeatureId(Long.parseLong(featureId));
+        try{
+            String url = ServiceApi.Roles.RoleFeature;
+            Map<String,Object> params = new HashMap<>();
+            params.put("data_json",objectMapper.writeValueAsString(model));
+            String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //角色组权限配置（删除）
+    @RequestMapping("/featureDelete")
+    @ResponseBody
+    public Object roleFeatureDelete(String roleId,String featureId){
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空！");
+        }
+        if(StringUtils.isEmpty(featureId)){
+            return failed("权限id不能为空！");
+        }
+        try{
+            String url = ServiceApi.Roles.RoleFeature;
+            Map<String,Object> params = new HashMap<>();
+            params.put("role_id",roleId);
+            params.put("feature_id",featureId);
+            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch(Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //查找平台应用列表
+    @RequestMapping("/searchApps")
+    @ResponseBody
+    public Object getAppList(String searchNm, int page, int rows) {
+        URLQueryBuilder builder = new URLQueryBuilder();
+        builder.addFilter("sourceType","=","1","");
+        if (!StringUtils.isEmpty(searchNm)) {
+            builder.addFilter("name", "?", searchNm,"");
+        }
+        builder.setPageNumber(page)
+                .setPageSize(rows);
+        String param = builder.toString();
+        String url = "/apps";
+        String resultStr = "";
+        try {
+            RestTemplates template = new RestTemplates();
+            resultStr = template.doGet(comUrl+url+"?"+param);
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+        }
+        return resultStr;
+    }
+
+    @RequestMapping("/searchFeatrueTree")
+    @ResponseBody
+    public Object searchFeatrueTree(String treeType,String roleId){
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "";
+        String filters = "";
+        if (treeType.equals("configFeatrueTree")){
+            url = "/role_app_feature/no_paging";
+            params.put("role_id", roleId);
+        }else {
+            url = ServiceApi.AppFeature.FilterFeatureNoPage;
+            params.put("filters", filters);
+            params.put("roleId", roleId);
+        }
+        String resultStr = "";
+
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return envelop.getDetailModelList();
+    }
+
+    @RequestMapping("/updateFeatureConfig")
+    @ResponseBody
+    public String updateFeatureConfig(String userFeatureId,String roleId,boolean updateType){
+        Map<String, Object> params = new HashMap<>();
+        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
+        String resultStr = "";
+        try {
+            if (updateType){
+                RoleFeatureRelationModel Model = new RoleFeatureRelationModel();
+                Model.setFeatureId(Long.valueOf(userFeatureId));
+                Model.setRoleId(Long.valueOf(roleId));
+                params.put("data_json", toJson(Model));
+                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            }else{
+                params.put("feature_id", userFeatureId);
+                params.put("role_id", roleId);
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultStr;
     }
 }
