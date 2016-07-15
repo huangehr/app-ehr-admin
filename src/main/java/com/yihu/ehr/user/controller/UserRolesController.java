@@ -264,15 +264,15 @@ public class UserRolesController extends BaseUIController {
     //用户角色组人员配置列表查询
     @RequestMapping("/roleUserList")
     @ResponseBody
-    public Object getRoleUserList(String roleId,int page,int rows){
-        if(StringUtils.isEmpty(roleId)){
+    public Object getRoleUserList(String searchNm,int page,int rows){
+        if(StringUtils.isEmpty(searchNm)){
             return failed("角色组id不能为空");
         }
         try{
             String url = ServiceApi.Roles.RoleUsers;
             Map<String,Object> params = new HashMap<>();
             params.put("fields","");
-            params.put("filters","roleId="+roleId);
+            params.put("filters","roleId="+searchNm);
             params.put("sorts","");
             params.put("page",page);
             params.put("size",rows);
@@ -351,6 +351,56 @@ public class UserRolesController extends BaseUIController {
             resultStr = template.doGet(comUrl+url+"?"+param);
         } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+        }
+        return resultStr;
+    }
+
+    @RequestMapping("/searchFeatrueTree")
+    @ResponseBody
+    public Object searchFeatrueTree(String treeType,String roleId){
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "";
+        String filters = "";
+        if (treeType.equals("configFeatrueTree")){
+            url = "/role_app_feature/no_paging";
+            params.put("role_id", roleId);
+        }else {
+            url = ServiceApi.AppFeature.FilterFeatureNoPage;
+            params.put("filters", filters);
+            params.put("roleId", roleId);
+        }
+        String resultStr = "";
+
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return envelop.getDetailModelList();
+    }
+
+    @RequestMapping("/updateFeatureConfig")
+    @ResponseBody
+    public String updateFeatureConfig(String userFeatureId,String roleId,boolean updateType){
+        Map<String, Object> params = new HashMap<>();
+        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
+        String resultStr = "";
+        try {
+            if (updateType){
+                RoleFeatureRelationModel Model = new RoleFeatureRelationModel();
+                Model.setFeatureId(Long.valueOf(userFeatureId));
+                Model.setRoleId(Long.valueOf(roleId));
+                params.put("data_json", toJson(Model));
+                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            }else{
+                params.put("feature_id", userFeatureId);
+                params.put("role_id", roleId);
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return resultStr;
     }
