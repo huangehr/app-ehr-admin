@@ -28,8 +28,11 @@
 		/* *************************** 模块初始化 ***************************** */
 		dataInfo = {
 			appRolesGrid:null,
-			userFeaturesGrid:null,
+			appFeatureTree:null,
 			init: function () {
+				$('#div_feature_bottom').mCustomScrollbar({
+					axis:"y"
+				});
 				this.appRolesGrid = $("#div_app_roles_grid").ligerGrid($.LigerGridEx.config({
 					url: '${contextRoot}/user/appRoles',
 					columns: [
@@ -48,30 +51,29 @@
 					},
 					onSelectRow: function (row) {
 						appId = row.appId;
-						appRolesIds = row.roleId;
-						dataInfo.userFeaturesGrid.refreshTree('${contextRoot}/user/userAppFeatures?roleIds='+appRolesIds);
-					}
+						appRolesIds = row.roleId
+						dataInfo.appFeatureTree.options.parms = {'roleIds': appRolesIds};
+						dataInfo.appFeatureTree.reload();
+					},
 				}));
-				this.appRolesGrid.adjustToWidth();
-				this.userFeaturesGrid = $("#div_user_features_grid").ligerSearchTree({
+				this.appFeatureTree = $("#div_user_features_grid").ligerSearchTree({
 					url: '${contextRoot}/user/userAppFeatures',
-					parms:{roleIds: appRolesIds},
+					parms:{roleIds: ''},
 					idFieldName: 'id',
 					parentIDFieldName: 'parentId',
 					textFieldName: 'name',
 					isExpand: false,
 					async: false,
+					checkbox:false,
 					onSuccess: function (data) {
-						$("#div_function_featrue_grid li div span ,#div_api_featrue_grid li div span").css({
+						$("#div_user_features_grid li div span ,#div_api_featrue_grid li div span").css({
 							"line-height": "22px",
 							"height": "22px"
 						});
 					}
 				});
+				this.appRolesGrid.adjustToWidth();
 			},
-			bindEvents: function () {
-
-			}
 		};
 
 		/* *************************** 页面初始化 **************************** */

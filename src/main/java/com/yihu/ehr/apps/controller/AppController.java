@@ -55,14 +55,13 @@ public class AppController extends BaseUIController {
             if (mode.equals("new")){
                 app = new AppDetailModel();
                 ((AppDetailModel)app).setStatus("WaitingForApprove");
-                app = toJson(app);
             }else{
                 String url = "/apps/"+appId;
                 RestTemplates template = new RestTemplates();
                 result = template.doGet(comUrl+url);
                 Envelop envelop = getEnvelop(result);
                 if(envelop.isSuccessFlg()){
-                    app = result;
+                    app = envelop.getObj();
                 }
             }
         }
@@ -71,7 +70,7 @@ public class AppController extends BaseUIController {
             LogService.getLogger(AppController.class).error(ex.getMessage());
         }
 
-        model.addAttribute("app", app);
+        model.addAttribute("model", toJson(app));
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","/app/appInfoDialog");
         return "simpleView";

@@ -105,6 +105,47 @@ function initGrid(el, url, params, columns, opts){
     return grid;
 }
 
+
+/**
+ * 初始化grid
+ * @param el 元素
+ * @param url 数据接口
+ * @param params 参数
+ * @param columns 列配置
+ * @param opts 事件集合
+ * @returns {ligerGrid}
+ */
+function initGridDef(el, url, params, columns, opts){
+    var defaults = {
+        record: 'totalCount',
+        root: 'detailModelList',
+        pageSize:15,
+        pagesizeParmName: 'rows',
+        height:'100%',
+        heightDiff: -10,
+        rownumbers:true,
+        headerRowHeight: 40,
+        rowHeight: 40,
+        editorTopDiff: 41,
+        allowAdjustColWidth: true
+    };
+    opts = $.extend(
+        defaults,
+        {
+            url: url,
+            parms: params,
+            columns: columns,
+            selectRowButtonOnly: false,
+            checkbox: true,
+            allowHideColumn: false
+        },
+        opts
+    );
+    var grid = $(el).ligerGrid(opts);
+    //grid.adjustToWidth();
+    return grid;
+}
+
 /**
  * 重新加载grid
  * @param curPage 加载页面
