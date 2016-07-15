@@ -34,12 +34,8 @@
                     });
                     var ele = [self.$configAppInsertGrid, self.$appInsertGrid];
                     for (var i = 0; i < gridType.length; i++) {
-//                        var name = "name";
-//                        var checkboxBo = true;
                         var name = null;
                         var checkboxBo = null;
-                        debugger
-//                        var checkboxBo = Util.isStrEquals(i, 1) ? (true,name ="name"): (false,name="appName");
                         if (Util.isStrEquals(i, 1)){
                             name = "name";
                             checkboxBo = true;
@@ -84,7 +80,6 @@
                     self.clicks();
                 },
                 reloadAppInsetrGrid: function (value, grid, type) {
-                    debugger
                     value = {searchNm: value, gridType: type,appRoleId: obj.id};
                     reloadGrid.call(this, '${contextRoot}/appRole/searchInsertApps', value, grid, type);
                 },
