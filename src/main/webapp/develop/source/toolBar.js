@@ -268,3 +268,14 @@ function initTree($el, opts){
     opts = $.extend({}, defaultOpts, opts);
     return $el.ligerSearchTree(opts);
 }
+
+function ls2map(ls, code, val){
+    var rs = {};
+    for(var i in ls){
+        if(val)
+            rs[ls[i][code]] = ls[i][val];
+        else
+            rs[ls[i][code]] = ls[i];
+    }
+    return rs;
+}
