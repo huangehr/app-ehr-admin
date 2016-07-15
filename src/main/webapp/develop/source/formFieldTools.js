@@ -119,7 +119,10 @@ function saveForm(opts){
         success: function (data) {
             waittingDialog.close();
             if (data.successFlg) {
-                parent.closeDialog("保存成功!")
+                if(opts.onSuccess)
+                    opts.onSuccess(data);
+                else
+                    parent.closeDialog("保存成功!", data);
             } else {
                 if (data.errorMsg)
                     $.Notice.error(data.errorMsg);
