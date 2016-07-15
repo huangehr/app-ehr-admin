@@ -192,7 +192,8 @@
 
 					//人员、权限配置弹出页面
 					$.subscribe("roles:config:open",function(events,obj,type){
-						var title = Util.isStrEquals(type,'users')?'人员配置':'权限配置';
+						var model = JSON.parse(obj)
+						var title = Util.isStrEquals(type,'users')?'角色管理>'+model.name+'人员配置':'角色管理>'+model.name+'权限配置';
 						rolesMaster.roleRelationDialog = $.ligerDialog.open({
 							height: 600,
 							width: 800,
