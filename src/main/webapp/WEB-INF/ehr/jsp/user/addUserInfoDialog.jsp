@@ -29,8 +29,8 @@
 	<div class="m-form-group">
 		<label><spring:message code="lbl.user.sex"/><spring:message code="spe.colon"/></label>
 		<div class="u-checkbox-wrap m-form-control">
-			<input type="radio" value="Male" name="gender" data-attr-scan><spring:message code="lbl.male"/>
-			<input type="radio" value="Female" name="gender" data-attr-scan><spring:message code="lbl.female"/>
+			<input type="radio" value="1" name="gender" data-attr-scan><spring:message code="lbl.male"/>
+			<input type="radio" value="2" name="gender" data-attr-scan><spring:message code="lbl.female"/>
 		</div>
 	</div>
 	<div class="m-form-group">

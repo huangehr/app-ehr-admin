@@ -113,12 +113,10 @@
 							{display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
-//								var html ='<div class="grid_edit"    title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id,'modify') + '"></div>'
-//										+'<div class="grid_delete"   title="删除"' +
-//										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id,'delete') + '"></div>';
                                 var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id, 'modify') + '"></a>';
-                                    html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id, 'delete') + '"></a>';
-                                return html;
+                                    //html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id, 'delete') + '"></a>';
+									html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '"></a>';
+								return html;
 							}}
                         ],
                         enabledEdit: true,
@@ -224,8 +222,22 @@
                             }
                         });
 
-                    })
-
+                    });
+					//查看应用权限
+					$.subscribe('user:feature:open', function (event, userId) {
+						self.userInfoDialog = $.ligerDialog.open({
+							title:'查看权限',
+							height: 650,
+							width: 600,
+							isDrag:true,
+							isResize:true,
+							url: '${contextRoot}/user/appFeatureInitial',
+							load: true,
+							urlParms: {
+								userId: userId,
+							}
+						});
+					});
                 }
             };
 

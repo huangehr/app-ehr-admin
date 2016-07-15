@@ -1,0 +1,18 @@
+@charset "utf-8";
+.dr{position:absolute; width:200px; height:30px;left:0;top:0;bottom:0; right:0; margin:auto;}
+.linkage{position:absolute;width:240px;z-index:9101;height:235px;border:1px #ccc solid;background: #fff;}
+.linkage h3.qhuan{ height:35px; display:block; margin:0 auto; border-bottom:1px #ccc solid;background:#f0f0f0;}
+.linkage h3.qhuan a{ height:35px; float:left; display:inline; line-height:34px; padding:0 10px; border-right:1px #ccc solid; font-size:12px; color:#000000;}
+.linkage h3.qhuan a.on{height:36px; line-height:34px; background:#fff; color:#f60}
+.linkage div.qhuanx{display:block;float: left;width:100%;margin:0 auto;height: 197px;overflow-y:auto;}
+.linkage .loading{ width:100%; height:100%; position: absolute;top:0px; background: url(../images/app/loading01.gif) center center no-repeat #fff; opacity: 0.8; display: none;}
+.linkage div.qhuanx .addr{display: none;overflow-y: auto;margin:0 auto;height: 100%; font-size:12px; }
+.linkage div.qhuanx .addr dl { line-height: 2; clear: both; padding: 3px 0; margin: 0 }
+.linkage div.qhuanx .addr dl:after { display: block; clear: both; content: " ";  font-size: 0; height: 0; visibility: hidden }
+.linkage div.qhuanx .addr dt {display: inline-block;width: 35px;float: left;line-height: 25px;padding-right: 0px;font-weight: 700;text-align: right;}
+.linkage div.qhuanx .addr dd {display: inline;float: left;width: 185px;line-height: 25px;margin-left: 0;}
+.linkage div.qhuanx .addr a { display: inline-block; color: #4D4D4D; padding: 0 6px; outline: 0; text-decoration: none; white-space: nowrap; margin-right: 2px }
+.linkage div.qhuanx .addr a.on{    background-color: #f60;color: #fff;border-radius: 2px;}
+.linkage div.qhuanx .addr textarea{border: 1px #ddd solid;margin: 10px 10px 5px 10px;width: 218px;line-height: 22px;padding: 5px;}
+/*
+.linkage div.qhuanx .addr a:focus,.m-select-panel a:hover { background-color: #fff8f3; border-radius: 2px; color: #f60 }*/

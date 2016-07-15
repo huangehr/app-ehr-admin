@@ -47,7 +47,7 @@ public class SchemeAdaptDictController extends BaseUIController {
             return envelop;
         }
         if(StringUtils.isNotBlank(code)){
-            stringBuffer.append("srcDictCode=").append(code).append(";");
+            stringBuffer.append("srcDictCode=").append(code).append(" g1").append(";");
         }
         params.put("filters", "");
         params.put("page", page);

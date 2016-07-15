@@ -33,8 +33,8 @@
         <label>性别：</label>
 
         <div class="u-checkbox-wrap m-form-control">
-            <input type="radio" value="Male" name="gender" data-attr-scan>男
-            <input type="radio" value="Female" name="gender" data-attr-scan>女
+            <input type="radio" value="1" name="gender" data-attr-scan>男
+            <input type="radio" value="2" name="gender" data-attr-scan>女
         </div>
     </div>
     <div class="m-form-group ">

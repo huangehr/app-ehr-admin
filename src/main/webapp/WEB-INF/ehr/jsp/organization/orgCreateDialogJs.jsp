@@ -66,6 +66,7 @@
                 });
             },
             initForm: function () {
+                var self=this;
                 this.$orgCode.ligerTextBox({width: 240});
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
@@ -74,12 +75,19 @@
                 this.initDDL(settledWayDictId,this.$settledWay);
 
                 this.$form.attrScan();
+                /*todo 20160704 cyc*/
+               /*self.$location.click(function(){
+                    $(this).linkageCyc($(this));//toDO cyc 20160704
+
+                })*/
+
                 this.$location.addressDropdown({tabsData:[
                     {name: '省份',code:'id',value:'name',url: '${contextRoot}/address/getParent', params: {level:'1'}},
                     {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
                     {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
                     {name: '街道', maxlength: 200}
                 ]});
+
                 this.$admin.ligerTextBox({width: 240, height:28});
                 this.$tags.ligerTextBox({width: 240, height:28});
                 this.$tel.ligerTextBox({width: 240, height:28});
@@ -130,11 +138,15 @@
                     }
                 }});
                 this.$updateOrgBtn.click(function () {
+
                     var orgImgHtml = self.$orgImageShow.children().length;
                     if(validator.validate()){
                     	var dataModel = $.DataModel.init();
                     	self.$form.attrScan();
+                        /*TODO 20160706 cyc*/
+                        //var orgAddress=JSON.parse(self.$form.Fields.location.attr("data-arry"))
                     	var orgAddress = self.$form.Fields.location.getValue();
+
 						var orgModel = self.$form.Fields.getValues();
 						//标签字符串转化为数组
 						var tags = orgModel.tags;

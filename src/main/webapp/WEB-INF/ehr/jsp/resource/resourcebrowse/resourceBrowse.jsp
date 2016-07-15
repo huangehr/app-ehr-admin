@@ -19,7 +19,7 @@
         </div>
         <!--资源浏览详情-->
 
-        <div id="div_resource_browse_msg" class="div-resource-browse div-resource-treess" >
+        <div id="div_resource_browse_msg" class="div-resource-browse" >
             <!--添加动态查询-->
             <div class="f-mt10 f-ml10 div-search-height f-fl f-ml20 f-mw93" id="div-search-data-role-form">
                 <div id="div_new_search" class="f-mt10" data-role-form>

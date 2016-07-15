@@ -77,7 +77,7 @@
 					urlParms: {
 						searchNm: '',
 						page:1,
-						rows:15
+						rows:999
 					},
 					valueField: 'resourceInterface',
 					textField: 'name',
