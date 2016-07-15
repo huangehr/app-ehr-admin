@@ -1,6 +1,7 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
@@ -525,12 +526,15 @@ public class UserController extends BaseUIController {
     @RequestMapping("/appRoles")
     @ResponseBody
     public Object getAppRoles(){
-        //角色组类型：应用角色（type=0）/用户角色（type=1）
+        //角色组类型字典：应用角色（type="0"）/用户角色（type="1"）
+        //应用分类字典：平台应用（sourceType="1"）/接入应用（sourcetype="0")
         String type = "1";
+        String sourceType = "1";
         try {
-            String url = "/roles/platformAppRolesView";
+            String url = "/roles/app_user_roles";
             Map<String,Object> params = new HashMap<>();
             params.put("type",type);
+            params.put("source_type",sourceType);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
@@ -540,7 +544,6 @@ public class UserController extends BaseUIController {
     }
 
     //获取用户某个应用下的权限
-
     /**
      *
      * @param roleIds 用户所属角色组ids
@@ -553,10 +556,15 @@ public class UserController extends BaseUIController {
             return failed("角色组ids不能为空！");
         }
         try {
-            String url = "/role_app_feature/no_paging";
+            String url = "/users/user_features";
             Map<String,Object> params = new HashMap<>();
-            params.put("role_id",roleIds);
+            params.put("roles_ids",roleIds);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            envelop.getDetailModelList();
+            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
+                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), AppFeatureModel.class);
+            }
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());

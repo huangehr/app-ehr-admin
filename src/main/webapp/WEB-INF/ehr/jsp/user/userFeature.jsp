@@ -6,10 +6,10 @@
 	<div id="div_app_top" class="f-mt20">
 		<div id="div_app_roles_grid" ></div>
 	</div>
-	<div class="f-mt10 f-fs14 f-ml10 f-fl f-fwb f-mr10">
-		<span id="left_title">平台应用：</span>
+	<div class="f-mt10 f-fs14 f-ml10 f-fl f-fwb">
+		<span id="left_title">具体权限：</span>
 	</div>
-	<div id="div_feature_bottom">
-		<div id="div_user_features_grid" ></div>
+	<div id="div_feature_bottom" class="feature_bottom">
+		<div id="div_user_features_grid" class="features_grid" ></div>
 	</div>
 </div>
