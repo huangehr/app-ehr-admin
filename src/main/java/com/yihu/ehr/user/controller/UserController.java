@@ -471,7 +471,7 @@ public class UserController extends BaseUIController {
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {
-            LogService.getLogger(PatientController.class).error(e.getMessage());
+            LogService.getLogger(UserController.class).error(e.getMessage());
         } finally {
             if (outputStream != null)
                 outputStream.close();
@@ -498,5 +498,71 @@ public class UserController extends BaseUIController {
 
         return envelop;
     }
+
+    //查看权限页面初始化
+    @RequestMapping("/appFeatureInitial")
+    public Object appFeatureInitial(Model model,String userId){
+        model.addAttribute("contentPage","user/userFeature");
+        model.addAttribute("userId",userId);
+        //获取用户所属角色
+        Envelop envelop = new Envelop();
+        String en = "";
+        try {
+            en = objectMapper.writeValueAsString(envelop);
+            String url = "/roles/role_user/userRolesIds";
+            Map<String,Object> params = new HashMap<>();
+            params.put("user_id",userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            model.addAttribute("envelop", envelopStr);
+        } catch (Exception ex) {
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            model.addAttribute("envelop", en);
+        }
+        return "simpleView";
+    }
+
+    //获取应用-用户角色组关系列表
+    @RequestMapping("/appRoles")
+    @ResponseBody
+    public Object getAppRoles(){
+        //角色组类型：应用角色（type=0）/用户角色（type=1）
+        String type = "1";
+        try {
+            String url = "/roles/platformAppRolesView";
+            Map<String,Object> params = new HashMap<>();
+            params.put("type",type);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //获取用户某个应用下的权限
+
+    /**
+     *
+     * @param roleIds 用户所属角色组ids
+     * @return
+     */
+    @RequestMapping("/userAppFeatures")
+    @ResponseBody
+    public Object getUserAppFeatures(String roleIds){
+        if(StringUtils.isEmpty(roleIds)){
+            return failed("角色组ids不能为空！");
+        }
+        try {
+            String url = "/role_app_feature/no_paging";
+            Map<String,Object> params = new HashMap<>();
+            params.put("role_id",roleIds);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
 
 }
