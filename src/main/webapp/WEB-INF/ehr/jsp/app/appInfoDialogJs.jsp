@@ -16,9 +16,11 @@
             appInfoForm.init();
         }
         /* *************************** 模块初始化 ***************************** */
+        var trees;
         appInfoForm = {
 			$form: $("#div_app_info_form"),
 			$name: $("#inp_app_name"),
+            $code: $("#inp_app_code"),
 			$orgCode:$('#inp_org_code'),
 			$catalog: $("#inp_dialog_catalog"),
 			$status: $("#inp_dialog_status"),
@@ -29,17 +31,19 @@
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
-
+            $jryycyc:$("#jryycyc"),//cyctodo
             init: function () {
                 this.initForm();
                 this.bindEvents();
+                this.cycToDo()//复制完记得删掉阿亮
             },
             initForm: function () {
                 this.$name.ligerTextBox({width:240});
 				this.initDDL(catalogDictId, this.$catalog);
 				this.initDDL(statusDictId, this.$status);
 				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{})
-				this.$tags.ligerTextBox({width:240});
+                this.$tags.ligerTextBox({width:240});
+				this.$code.ligerTextBox({width:240});
 				this.$appId.ligerTextBox({width:240});
 				this.$secret.ligerTextBox({width:240});
 				this.$url.ligerTextBox({width:240, height: 50 });
@@ -58,8 +62,9 @@
 				}
                 this.$form.attrScan();
                 if(mode !='new'){
-                    var app = ${app}.obj;
+                    var app = ${model};
                     this.$form.Fields.fillValues({
+						sourceType: app.sourceType,
                         name:app.name,
                         catalog: app.catalog,
                         status:app.status,
@@ -83,7 +88,6 @@
                     textField: 'value'
                 });
             },
-
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
@@ -125,6 +129,64 @@
                 this.$btnCancel.click(function () {
 					win.closeDialog();
                 });
+            },
+            cycToDo:function(){
+                var self=this;
+                trees=self.$jryycyc.ligerComboBox({
+                    width : 240,
+                    selectBoxWidth: 238,
+                    selectBoxHeight: 500, textField: 'text', treeLeafOnly: false,
+                    tree: {data:[
+                        {id: 1, "text": "产品组", "children": [
+                            {id:4,pid:1,"text": "某某1" },
+                            {id:5,pid:1,"text": "某某2" },
+                            {id:6,pid:1,"text": "某某3"},
+                            {id:7,pid:1,"text": "某某4" }
+                        ]
+                        },
+                        { id: 2,"text": "运营组","children": []},
+                        {id: 3, "text": "运维组","children": [] },
+                        {id: 4, "text": "开发组","children": [] }
+                    ],idFieldName:'text',onClick:function(e){
+                        self.listTree(trees);
+                    }}
+                })
+
+                function removeSclBox(){
+                    setTimeout(function(){
+                        $(trees.tree).prev(".mCustomScrollBox").hide()
+                    },100)
+                }
+                self.$jryycyc.on("click", removeSclBox);
+                $('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
+                self.listTreeClick(trees);
+            },//树形结构todo
+            listTree:function(trees){
+                var self=this;
+                var dataAll=trees.treeManager.data//获取所有选中的值
+                var dateTreeEd=trees.treeManager.getChecked()//获取所有选中的值
+                var liHtml="";//li拼接
+                var obj=self.$jryycyc.closest(".m-form-group");//父容器
+                $.each(dateTreeEd,function(i,v){
+                    if(v.data.children==undefined){
+                        var  tit="";
+                        for(i=0;i<dataAll.length;i++){
+                            if(v.data.pid==dataAll[i].id){
+                                tit=dataAll[i].text+":"+v.data.text
+                            }
+                        }
+                        liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
+                    }
+                })
+                if(obj.find(".listree").length==0){
+                    obj.append('<div class="listree"></div>')
+                }
+                $(".listree").html(liHtml);
+
+            },listTreeClick:function(trees){
+                $("body").delegate(".listree a","click",function(){
+                    $("li#"+$(this).attr("data-id"), trees.tree).find(".l-checkbox").click()
+                })//删除操作
             }
         };
 
