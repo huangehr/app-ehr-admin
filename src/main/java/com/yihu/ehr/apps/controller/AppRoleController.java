@@ -5,8 +5,11 @@ import com.yihu.ehr.agModel.user.RoleAppRelationModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RolesModel;
 import com.yihu.ehr.api.ServiceApi;
+import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.user.controller.UserRolesController;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.jasper.tagplugins.jstl.Util;
 import org.springframework.beans.factory.annotation.Value;
@@ -238,7 +241,7 @@ public class AppRoleController extends BaseUIController {
         String url = "";
         String filters = "";
         if (treeType.equals("configapiTree")){
-            url = ServiceApi.Roles.RoleApisNoPage;
+            url = "/role_app_api/no_paging";
             params.put("filters", "roleId="+appRoleId);
         }else {
             url = ServiceApi.AppApi.AppApisNoPage;
@@ -307,6 +310,37 @@ public class AppRoleController extends BaseUIController {
         }
 
         return resultStr;
+    }
+
+    @RequestMapping("/isNameExistence")
+    @ResponseBody
+    public Object isNameExistence(String appId,String name){
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("id",appId);
+            params.put("name",name);
+            String url = ServiceApi.Roles.RoleNameExistence;
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+    @RequestMapping("/isCodeExistence")
+    @ResponseBody
+    public Object isCodeExistence(String appId,String code){
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("id",appId);
+            params.put("code",code);
+            String url = ServiceApi.Roles.RoleCodeExistence;
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
     }
 
 }
