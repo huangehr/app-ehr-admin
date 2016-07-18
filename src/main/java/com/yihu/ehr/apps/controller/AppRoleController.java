@@ -184,14 +184,13 @@ public class AppRoleController extends BaseUIController {
     @ResponseBody
     public String updateApiConfig(String apiFeatureId,String roleId,boolean updateType){
         Map<String, Object> params = new HashMap<>();
-//        String url = updateType?ServiceApi.Roles.RoleApi:ServiceApi.Roles.RoleApi;
         String resultStr = "";
-        RoleApiRelationModel roleApiRelationModel = new RoleApiRelationModel();
-        roleApiRelationModel.setApiId(Long.valueOf(apiFeatureId));
-        roleApiRelationModel.setRoleId(Long.valueOf(roleId));
-        params.put("data_json", toJson(roleApiRelationModel));
         try {
             if (updateType){
+                RoleApiRelationModel roleApiRelationModel = new RoleApiRelationModel();
+                roleApiRelationModel.setApiId(Long.valueOf(apiFeatureId));
+                roleApiRelationModel.setRoleId(Long.valueOf(roleId));
+                params.put("data_json", toJson(roleApiRelationModel));
                 resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
             }else{
                 params.put("api_id", apiFeatureId);
@@ -242,7 +241,7 @@ public class AppRoleController extends BaseUIController {
         String filters = "";
         if (treeType.equals("configapiTree")){
             url = "/role_app_api/no_paging";
-            params.put("filters", "roleId="+appRoleId);
+            params.put("role_id", appRoleId);
         }else {
             url = ServiceApi.AppApi.AppApisNoPage;
             params.put("filters", filters);
@@ -317,7 +316,7 @@ public class AppRoleController extends BaseUIController {
     public Object isNameExistence(String appId,String name){
         try{
             Map<String,Object> params = new HashMap<>();
-            params.put("id",appId);
+            params.put("app_id",appId);
             params.put("name",name);
             String url = ServiceApi.Roles.RoleNameExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
@@ -332,7 +331,7 @@ public class AppRoleController extends BaseUIController {
     public Object isCodeExistence(String appId,String code){
         try{
             Map<String,Object> params = new HashMap<>();
-            params.put("id",appId);
+            params.put("app_id",appId);
             params.put("code",code);
             String url = ServiceApi.Roles.RoleCodeExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);

@@ -55,26 +55,26 @@
                     var validator = new jValidation.Validation(this.$appRoleGroupForm, {
                         immediate: true, onSubmit: false,
                         onElementValidateForAjax: function (elm) {
-                            var appId = Util.isStrEquals(appRoleGroupModel.obj.id, '') ? appRoleGroupModel.obj : appRoleGroupModel.obj.appId;
+                            var appId = Util.isStrEmpty(appRoleGroupModel.obj.id) ? appRoleGroupModel.obj : appRoleGroupModel.obj.appId;
                             if (Util.isStrEquals($(elm).attr("id"), 'inp_appRole_groupId')) {
                                 var code = self.$appRoleGroupId.val();
                                 if (Util.isStrEmpty(codeCopy) || (!Util.isStrEmpty(codeCopy) && !Util.isStrEquals(code, codeCopy))) {
-                                    return checkUnique("${contextRoot}/appRole/isNameExistence",appId, code, "角色组id已被使用！");
+                                    return checkUnique("${contextRoot}/appRole/isCodeExistence",appId, code, "角色组id已被使用！");
                                 }
                             }
                             if (Util.isStrEquals($(elm).attr("id"), 'inp_appRole_groupName')) {
                                 var name = self.$appRoleGroupName.val();
                                 if (Util.isStrEmpty(nameCopy) || (!Util.isStrEmpty(nameCopy) && !Util.isStrEquals(name, nameCopy))) {
-                                    return checkUnique("${contextRoot}/appRole/isCodeExistence",appId, name, "角色组名称已被使用！");
+                                    return checkUnique("${contextRoot}/appRole/isNameExistence",appId, name, "角色组名称已被使用！");
                                 }
                             }
                         }
                     });
                     self.$roleGroupBtn.click(function () {
-                        if(!validator.validate)
-                            return;
                         if (Util.isStrEquals(this.id, 'div_cancel_roleGroup_btn'))
                             return win.parent.closeAppRoleGroupInfoDialog();
+                        if(!validator.validate())
+                            return;
                         var appGroupModel = self.$appRoleGroupForm.Fields.getValues();
                         var saveType = Util.isStrEquals(appGroupModel.id, '') ? ('add', appGroupModel.appId = appRoleGroupModel.obj) : 'update';
                         dataModel.updateRemote("${contextRoot}/appRole/saveAppRoleGroup", {
