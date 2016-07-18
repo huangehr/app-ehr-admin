@@ -47,7 +47,7 @@
                             url: '${contextRoot}/appRole/searchInsertApps',
                             parms: {searchNm: '', gridType: gridType[i], appRoleId: obj.id},
                             width: $(".f-mw50").width(),
-                            height: 400,
+                            height: 450,
                             isScroll: true,
                             checkbox: checkboxBo,
                             async: true,
@@ -77,6 +77,7 @@
                             }
                         }));
                     }
+                    self.$appInsertGrid.find('.l-grid-hd-cell-checkbox').removeClass('l-grid-hd-cell-checkbox');
                     self.clicks();
                 },
                 reloadAppInsetrGrid: function (value, grid, type) {
