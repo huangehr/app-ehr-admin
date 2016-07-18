@@ -39,7 +39,7 @@
                         url: '${contextRoot}/userRoles/roleUserList',
                         parms: {searchNm: obj.id},
                         width: $(".f-mw50").width(),
-                        height: 400,
+                        height: 450,
                         isScroll: true,
                         async: false,
                         columns: [{display: '姓名', name: 'userName', width: '100%'}],
@@ -52,7 +52,7 @@
                         url: '${contextRoot}/user/searchUsers',
                         parms: {searchNm: ''},
                         width: $(".f-mw50").width(),
-                        height: 400,
+                        height: 450,
                         isScroll: true,
                         async: true,
                         checkbox: true,
@@ -78,6 +78,7 @@
                             return bo;
                         }
                     }));
+                    self.$userGrid.find('.l-grid-hd-cell-checkbox').removeClass('l-grid-hd-cell-checkbox');
                     self.clicks();
                 },
                 reloadUserGrid: function (value, url, type) {
