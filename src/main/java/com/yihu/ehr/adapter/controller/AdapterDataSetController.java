@@ -29,7 +29,7 @@ public class AdapterDataSetController extends ExtendController<AdapterDataSetSer
         this.init(
                 "/adapter/adapterDataSet/grid",       //列表页面url
                 "/adapter/adapterDataSet/dialog"      //编辑页面url
-        );
+        ) ;
     }
 
     @RequestMapping("/dataSetList")

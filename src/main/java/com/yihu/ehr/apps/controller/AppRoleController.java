@@ -160,7 +160,7 @@ public class AppRoleController extends BaseUIController {
     @ResponseBody
     public String updateFeatureConfig(String AppFeatureId,String roleId,boolean updateType){
         Map<String, Object> params = new HashMap<>();
-        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
+//        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
         String resultStr = "";
         RoleFeatureRelationModel roleFeatureRelationModel = new RoleFeatureRelationModel();
         roleFeatureRelationModel.setFeatureId(Long.valueOf(AppFeatureId));
@@ -168,11 +168,11 @@ public class AppRoleController extends BaseUIController {
         params.put("data_json", toJson(roleFeatureRelationModel));
         try {
             if (updateType){
-                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
             }else{
                 params.put("feature_id", AppFeatureId);
                 params.put("role_id", roleId);
-                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+                resultStr = HttpClientUtil.doDelete(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,7 +184,7 @@ public class AppRoleController extends BaseUIController {
     @ResponseBody
     public String updateApiConfig(String apiFeatureId,String roleId,boolean updateType){
         Map<String, Object> params = new HashMap<>();
-        String url = updateType?ServiceApi.Roles.RoleApi:ServiceApi.Roles.RoleApi;
+//        String url = updateType?ServiceApi.Roles.RoleApi:ServiceApi.Roles.RoleApi;
         String resultStr = "";
         RoleApiRelationModel roleApiRelationModel = new RoleApiRelationModel();
         roleApiRelationModel.setApiId(Long.valueOf(apiFeatureId));
@@ -192,11 +192,11 @@ public class AppRoleController extends BaseUIController {
         params.put("data_json", toJson(roleApiRelationModel));
         try {
             if (updateType){
-                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
             }else{
                 params.put("api_id", apiFeatureId);
                 params.put("role_id", roleId);
-                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+                resultStr = HttpClientUtil.doDelete(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();

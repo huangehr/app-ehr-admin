@@ -19,6 +19,8 @@
 				functionFeatrueType[1].loadData(true);
 			}
 			master = {
+
+				$funFeatrueSearch: $("#inp_fun_featrue_search"),
 				$functionFeatrueTree: $("#div_function_featrue_grid"),
 				$configFeatrueTree: $("#div_configFun_featrue_grid"),
 				$apiFeatrueTree: $("#div_api_featrue_grid"),
@@ -28,9 +30,18 @@
 				$addRoleGroupBtn: $("#div_add_roleGroup_btn"),
 				funInit: function () {
 					var self = this;
-					var timeOutTree;
-					$(".lab-title-msg").html(obj.name+"权限");
 					self.$appRoleGridScrollbar.mCustomScrollbar({
+					});
+					self.$funFeatrueSearch.ligerTextBox({
+						width: 200, isSearch: true, search: function () {
+							var categoryName = self.$funFeatrueSearch.val();
+							functionFeatrueType[0].s_search(categoryName);
+							if (categoryName == '') {
+								functionFeatrueType[0].collapseAll();
+							} else {
+								functionFeatrueType[0].expandAll();
+							}
+						}
 					});
 					var funEle = [self.$functionFeatrueTree,self.$configFeatrueTree];
 					var functionType = ["featrue","configFeatrue"];
@@ -66,14 +77,13 @@
 										}else{
 											for(var j=0;j<data.length;j++){
 												if(data[i].parentId==data[j].id){
-													dataNew.push(data[i])
+													dataNew.push(data[i]);
 													break;
 												}else{
 													data[i]={};
 												}
 											}
 										}
-
 									}
 									functionFeatrueType[1].setData(dataNew);
 								}
@@ -89,7 +99,6 @@
 					}
 				},
 				reloadRoleGrid: function (appRoleId) {
-
 					var searchParams = {searchNm: '',treeType:'featrue',appRoleId:appRoleId};
 					reloadGrid.call(this, '${contextRoot}/appRole/searchFeatrueTree',searchParams);
 				},

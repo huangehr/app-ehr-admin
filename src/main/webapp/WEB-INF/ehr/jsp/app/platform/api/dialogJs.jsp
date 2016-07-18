@@ -1,0 +1,152 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+
+<script type="text/javascript">
+
+    (function ($, win) {
+        var urls = {
+            update: "${contextRoot}/app/api/update",
+            existence: "${contextRoot}/app/api/existence",
+            apiEdit: "${contextRoot}/app/api/edit",
+            list: "${contextRoot}/app/api/list",
+            appCombo: "${contextRoot}/app/searchApps"
+        }
+        var model = ${model};
+        var mode = '${mode}';
+        var extParms = parent.getEditParms();//其他信息
+        var hasChildType;
+        var getChild = function (){
+            if(mode=='modify' || extParms.upType==-1)
+                return;
+            $.ajax({
+                url: urls.list,
+                async: false,
+                data:{page: 1, rows: 1, filters: "parentId="+ extParms.upId},
+                success: function (data) {
+                    data = eval('('+ data +')');
+                    if(!data.successFlg){
+                        $.Notice.error("数据请求错误，请刷新页面或联系管理员！");
+                        throw new Error("数据请求错误，请刷新页面或联系管理员！");
+                        return;
+                    }
+                    if(data.detailModelList.length>0){
+                        hasChildType = data.detailModelList[0].type;
+                    }
+                },
+                error: function () {
+                    $.Notice.error("链接请求错误，请刷新页面或联系管理员！");
+                    throw new Error("链接请求错误，请刷新页面或联系管理员！");
+                }
+            })
+        }();
+
+        var $form =  $("#infoForm");
+        var validator;
+        function initValidation(){
+            validator = initValidate($form, function (elm) {
+                var field = $(elm).attr('id');
+                var val = $('#' + field).val();
+            });
+
+        }
+
+        var appCombo;
+        var initForm = function () {
+            var vo = [
+                {type: 'text', id: 'ipt_api_description'},
+                {type: 'select', id: 'ipt_api_type', dictId: 46, opts: {disabled: mode=='modify', onSuccess: function (data) {
+                        if(mode=='new'){
+                            var newData = [];
+                            switch (parseInt(extParms.upType)){
+                                case -1: $.each(data, function (i, v) {if(v.code==2) newData.push(v);}); break;
+                                case 0: ;
+                                case 2: $.each(data, function (i, v) {
+                                    if(!hasChildType){if(v.code==0 || v.code==1) newData.push(v);}
+                                    else if(hasChildType==v.code) newData.push(v);
+                                }); break;
+                                default: newData = data;
+                            }
+                            this.setData(newData);
+                            this.selectItemByIndex(0);
+                        }
+                    }, onSelected: function (v, t) {
+                        var version = $('#ipt_api_version').ligerGetTextBoxManager();
+                        var protocol = $('#ipt_api_protocol').ligerGetCheckBoxManager();
+                        var method = $('#ipt_api_method').ligerGetCheckBoxManager();
+                        if(v==1){
+                                $('.apiProto').addClass("essential").find('input').addClass('required');
+                                version.setEnabled(true);
+                                protocol.setEnabled(true);
+                                method.setEnabled(true);
+                            }
+                        else{
+                            $('.apiProto').removeClass("essential").find('input').removeClass('required');
+                            version.setDisabled(true);
+                            protocol.setDisabled(true);
+                            method.setDisabled(true);
+                            version.setValue('');
+                            protocol.setValue('');
+                            method.setValue('');
+                        }
+                        validator.reset();
+                    }
+                }},
+                {type: 'select', id: 'ipt_api_openLevel', dictId: 40},
+                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41},
+                {type: 'select', id: 'ipt_api_activityType', dictId: 43},
+                {type: 'text', id: 'ipt_api_version'},
+                {type: 'select', id: 'ipt_api_protocol', dictId: 44},
+                {type: 'select', id: 'ipt_api_method', dictId: 45}
+            ];
+
+            if(extParms.upType==-1 || model.type==2)
+                appCombo = $('#ipt_api_name').customCombo(
+                        urls.appCombo, {}, function (id, name) {
+                            $('#ipt_api_name').blur();
+                            $('#appId').val(appCombo.getLigerComboBox().getSelected().id);
+                        }, undefined, false, {selectBoxHeight: 280, valueField: 'name', disabled: mode='modify'});
+            else
+                vo.push({type: 'text', id: 'ipt_api_name'});
+            initFormFields(vo);
+        };
+
+        var initBtn = function () {
+            initValidation();
+            $('#btn_save').click(function () {
+                saveForm({url: urls.update, $form: $form, modelName: 'model', validator: validator,
+                    onSuccess: function (data) {
+                        if(data.obj.type==1){
+                            $.Notice.confirm("保存成功，是否继续编辑接口详细信息？", function (y) {
+                                if(y){
+                                    var url = urls.apiEdit + '?treePid=1&treeId=11';
+                                    parent.closeDialog();
+                                    $("#contentPage").empty();
+                                    $("#contentPage").load(url, data.obj);
+                                }else
+                                    parent.closeDialog(undefined, data);
+                            })
+                        }else
+                            parent.closeDialog("保存成功!", data);
+                    }});
+            });
+
+            $('#btn_cancel').click(function () {
+                parent.closeDialog();
+            });
+        };
+
+        var init = function () {
+            if(mode=='new'){
+                model.parentId = extParms.upId;
+                model.appId = extParms.appId;
+            }
+            initForm();
+            initBtn();
+            fillForm(model, $('#infoForm'));
+            if(mode=='modify' && appCombo){
+                orgCombo.setValueText(model.org, model.orgName);
+            }
+        }();
+
+    })(jQuery, window);
+</script>
