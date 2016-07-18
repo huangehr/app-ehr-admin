@@ -42,13 +42,14 @@ public class AppApiController extends ExtendController<AppApiService> {
     }
 
     @RequestMapping("/edit")
-    public String gotoEdit(Model model, AppApiModel apiModel){
+    public String gotoEdit(Model model, AppApiModel apiModel, String mode){
 
         try {
             model.addAttribute("paramTypes", service.searchSysDictEntries(47));
             model.addAttribute("dataTypes", service.searchSysDictEntries(48));
             model.addAttribute("requiredTypes", service.searchSysDictEntries(49));
 
+            model.addAttribute("mode", mode);
             model.addAttribute("model", toJson(apiModel));
             model.addAttribute("contentPage", "/app/platform/api/edit");
         } catch (Exception e) {

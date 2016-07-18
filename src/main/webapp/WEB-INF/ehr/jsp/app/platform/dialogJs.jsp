@@ -54,6 +54,10 @@
             fillForm(model, $('#infoForm'));
 
             orgCombo.setValueText(model.org, model.orgName);
+            if(mode=='view'){
+                $('#infoForm').addClass('m-form-readonly');
+                $('#btn_save').hide();
+            }
         }();
     })(jQuery, window);
 </script>

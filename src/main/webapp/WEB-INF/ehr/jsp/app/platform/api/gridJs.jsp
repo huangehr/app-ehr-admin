@@ -41,9 +41,11 @@
                     m.filters();
                     m.rendTreeGrid();
                 },
-                searchFun: function () {
+                searchFun: function (t) {
 
                     var name = $('#l_search_name').val();
+                    sessionStorage.setItem("appApiTreeParm", name);
+
                     var treeDom = master.tree.grid;
                     var allrow =  $('.l-grid-row', treeDom);
                     if(name==''){
@@ -56,6 +58,10 @@
 
                         var searchDoms = $('.l-grid-row-cell-inner[title*="'+ name +'"]', treeDom).parent().parent();
                         searchParent(searchDoms);
+                    }
+                    if(!t){
+                        $('.l-grid-body-inner', $('#rightGrid')).empty();
+                        $('.l-grid-body.l-grid-body1', $('#rightGrid')).empty();
                     }
                 },
                 filters: function(){
@@ -93,7 +99,29 @@
                             }
                         ],
                         onSelectRow: function (rowData, rowId, rowObj) {
+                            sessionStorage.setItem("appApiTreeSelId", rowData.id);
                             em.find(rowData.id);
+                        },
+                        onDblClickRow: function (rowData, rowId, rowObj) {
+                            if( rowData.id &&  rowData.id>0)
+                                em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
+                        },
+                        onAfterShowData: function () {
+                            if(p==1){
+                                var appApiEm = sessionStorage.getItem("appApiEm");
+                                if(appApiEm){
+                                    appApiEm = eval('('+appApiEm +')');
+                                    fillForm(appApiEm, $('#r_searchForm'));
+                                }
+
+                                $('#l_search_name').val(sessionStorage.getItem("appApiTreeParm") || '');
+                                master.searchFun(1);
+                                var selId = sessionStorage.getItem("appApiTreeSelId");
+                                if(selId){
+                                    var rowDom = $('#t_'+selId, master.tree.tree).parent().parent().parent().parent().parent();
+                                    master.tree.select(rowDom);
+                                }
+                            }
                         }
                     }));
                 }
@@ -132,7 +160,11 @@
                         rownumbers: true,
                         usePager: false,
                         heightDiff: 20,
-                        checkbox: false
+                        checkbox: false,
+                        onDblClickRow: function (rowData, rowId, rowObj) {
+                            if( rowData.id &&  rowData.id>0)
+                                em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
+                        }
                     });
                 },
                 //操作栏渲染器
@@ -149,9 +181,8 @@
                 //修改、新增点击事件
                 gotoModify: function (event, id, mode, type, frm, rowId, appId) {
                     if(type==1){
-                        debugger
                         var obj = em.grid.getRow(rowId);
-                        var url = urls.apiEdit + '?treePid=1&treeId=11';
+                        var url = urls.apiEdit + '?treePid=1&treeId=11&mode='+ mode;
                         $("#contentPage").empty();
                         $("#contentPage").load(url, obj);
                     }else{
@@ -220,14 +251,17 @@
                 },
                 //查询列表方法
                 find: function (parentId) {
-                    if(parentId>=0)
+                    if(parentId>=0 || parentId==-1)
                         $('#parentId').val(parentId);
                     var vo = [
                         {name: 'name', logic: '?'},
                         {name: 'openLevel', logic: '='},
                         {name: 'parentId', logic: '='}];
-
-                    var params = {filters: covertFilters(vo, $('#r_searchForm')), page: 1, rows: 999};
+                    var $form = $('#r_searchForm');
+                    $form.attrScan();
+                    em.params = $form.Fields.getValues();
+                    sessionStorage.setItem("appApiEm", JSON.stringify(em.params));
+                    var params = {filters: covertFilters(vo, $form), page: 1, rows: 999};
                     reloadGrid(em.grid, 1, params);
                 },
                 publishFunc: function () {
