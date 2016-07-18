@@ -9,10 +9,11 @@
             var master = null;
             var obj = ${jsonStr};
             var funAndApiTree = 'fun';
-            var apiTreeType = ['apiFeatrueTree', 'apiFeatrueTree'];
+            var apiTreeType = ['apiFeatrueTree', 'configApiFeatrueTree'];
             var functionFeatrueType = ['functionFeatrueTree', 'configFeatrueTree'];
             var apiFeatrueType = ['apiFeatrueTree', 'configapiTree'];
             var dataModel = $.DataModel.init();
+
             function pageInit() {
                 master.funInit();
                 master.clicks();
@@ -41,7 +42,7 @@
                     self.$funFeatrueSearch.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
                             var categoryName = self.$funFeatrueSearch.val();
-                            var treeType = Util.isStrEquals(funAndApiTree,'fun')?functionFeatrueType[0]:apiTreeType[0];
+                            var treeType = Util.isStrEquals(funAndApiTree, 'fun') ? functionFeatrueType[0] : apiTreeType[0];
                             treeType.s_search(categoryName);
                             if (categoryName == '') {
                                 treeType.collapseAll();
@@ -76,15 +77,6 @@
 //                                        },1);
                                         if (isReload === false)return;
                                         functionFeatrueType[1].reload();
-                                        /*if (data.successFlg){
-
-                                         //                                            functionFeatrueType[1].clear();
-                                         if(count==0) {
-                                         functionFeatrueType[1].reload();
-                                         }
-
-                                         }*/
-
                                     }
                                 })
                             },
@@ -136,20 +128,41 @@
                             checkbox: checkboxBo,
                             async: false,
                             onCheck: function (data, checked) {
-                                var isReload = treeCyc.CheckInit(data, functionFeatrueType[0]);
+                                var isReload = treeCyc.CheckInit(data, apiTreeType[0]);
                                 dataModel.updateRemote("${contextRoot}/appRole/updateApiConfig", {
-                                    data: {AppFeatureId: data.data.id, roleId: obj.id, updateType: checked},
+                                    data: {apiFeatureId: data.data.id, roleId: obj.id, updateType: checked},
                                     success: function (data) {
                                         if (isReload === false)return;
-                                        functionFeatrueType[1].reload();
+                                        apiTreeType[1].reload();
                                     }
                                 })
                             },
                             onSuccess: function (data) {
+                                if (Util.isStrEquals(this.id, 'div_configApi_featrue_grid')) {
+                                    var dataNew = [];
+                                    for (var i = 0; i < data.length; i++) {
+                                        if (data[i].parentId == 0) {
+                                            dataNew.push(data[i])
+                                        } else {
+                                            for (var j = 0; j < data.length; j++) {
+                                                if (data[i].parentId == data[j].id) {
+                                                    dataNew.push(data[i]);
+                                                    break;
+                                                } else {
+                                                    data[i] = {};
+                                                }
+                                            }
+                                        }
+                                    }
+                                    apiTreeType[1].setData(dataNew);
+                                }
                                 $("#div_api_featrue_grid li div span ,#div_configApi_featrue_grid li div span").css({
                                     "line-height": "22px",
                                     "height": "22px"
                                 });
+                            },
+                            onAfterAppend: function () {
+                                $(apiTreeType[0].element).find(".l-checkbox-incomplete").attr("class", "l-box l-checkbox l-checkbox-unchecked")
                             }
                         });
                     }
@@ -159,7 +172,6 @@
                     reloadGrid.call(this, '${contextRoot}/appRole/searchFeatrueTree', searchParams);
                 },
                 clicks: function () {
-                    //修改用户信息
                     var self = this;
                     self.$funFeatrueBtn.click(function () {
                         funAndApiTree = 'fun';
@@ -185,7 +197,25 @@
                         self.$apiFeatrueTree.show();
                         self.$configApiFeatrueTree.show();
                     });
-                }
+                },
+//                feaTrueChanges: function (type) {
+//                    var self = this;
+//                    var titleMsg = '功能权限';
+//                    if(Util.isStrEquals(type,'api')){
+//                        titleMsg = 'api权限';
+//                    }
+//                    $(".lab-title-msg").html(titleMsg);
+//                    $(this).removeClass('u-btn-cancel').addClass('u-btn-primary');
+//                    self.$funFeatrueBtn.removeClass('u-btn-primary').addClass('u-btn-cancel');
+//                    if (Util.isStrEquals(apiTreeType[0], 'apiFeatrueTree')) {
+//                        master.apiInit();
+//                    }
+//                    apiTreeType[1].reload();
+//                    self.$functionFeatrueTree.hide();
+//                    self.$configFeatrueTree.hide();
+//                    self.$apiFeatrueTree.show();
+//                    self.$configApiFeatrueTree.show();
+//                }
             };
             pageInit();
             //cyc
