@@ -3,10 +3,10 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
+import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.patient.controller.PatientController;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -564,6 +564,30 @@ public class UserController extends BaseUIController {
             envelop.getDetailModelList();
             if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
                 return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), AppFeatureModel.class);
+            }
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //获取所用平台应用下的角色组用于下拉框
+    @RequestMapping("/appRolesList")
+    @ResponseBody
+    public Object getAppRolesList(){
+        String roleType = "1";//用户角色类型字典值
+        String appSourceType = "1";//应用类型字典值
+        try {
+            String url = "/roles/platformAppRolesTree";
+            Map<String,Object> params = new HashMap<>();
+            params.put("type",roleType);
+            params.put("source_type",appSourceType);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            envelop.getDetailModelList();
+            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
+                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
             }
             return envelopStr;
         }catch (Exception ex){

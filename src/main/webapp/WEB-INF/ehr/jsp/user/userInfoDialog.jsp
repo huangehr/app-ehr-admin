@@ -84,6 +84,12 @@
             <input type="text" id="inp_major" class="max-length-150 validate-special-char" data-attr-scan="major"/>
         </div>
     </div>
+	<%--<div class="m-form-group" >--%>
+		<%--<label >角色组:</label>--%>
+		<%--<div id="roleDiv" class="l-text-wrapper m-form-control essential">--%>
+			<%--<input type="text" id="jryycyc" class=" f-h28 f-w240" data-type="select" placeholder="" data-attr-scan="org">--%>
+		<%--</div>--%>
+	<%--</div>--%>
 
     <div>
         <hr class="u-border">
