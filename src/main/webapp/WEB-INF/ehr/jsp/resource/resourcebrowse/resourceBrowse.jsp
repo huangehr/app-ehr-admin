@@ -23,7 +23,7 @@
             <!--添加动态查询-->
             <div class="f-mt10 f-ml10 div-search-height f-fl f-ml20 f-mw93" id="div-search-data-role-form">
                 <div id="div_new_search" class="f-mt10" data-role-form>
-                    <div class="f-fl f-mw100" id="div_default_search">
+                    <div class="f-fl f-mw100 div-model" id="div_default_search">
                         <div class="f-fl f-ml10 f-mr10 f-w-auto f-mw7">
                             <div class="f-fl f-ml10 f-mr10 f-dn">
                                 <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search"
@@ -68,7 +68,7 @@
                 <div id="div_resource_info_grid"></div>
             </div>
         </div>
-        <div class="f-fl f-mw100 f-mt10 f-ml60 dis-none div_search_model" data-role-form>
+        <div class="f-fl f-mw100 f-mt10 f-ml60 dis-none div-model div_search_model" data-role-form>
             <div>
                 <div class="f-fl f-ml10 f-mr10">
                     <input type="text" class="f-ml10 inp-reset inp-model0 inp-find-search" data-type="select"

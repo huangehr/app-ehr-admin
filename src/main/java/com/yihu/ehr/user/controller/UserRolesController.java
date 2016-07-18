@@ -140,7 +140,7 @@ public class UserRolesController extends BaseUIController {
         StringBuffer buffer = new StringBuffer();
         buffer.append("type=1;appId="+appId+";");
         if (!StringUtils.isEmpty(searchNm)) {
-            buffer.append("name?" + searchNm);
+            buffer.append("name?" + searchNm+" g0;code?"+searchNm+" g0");
         }
         String filters = buffer.toString();
         try {

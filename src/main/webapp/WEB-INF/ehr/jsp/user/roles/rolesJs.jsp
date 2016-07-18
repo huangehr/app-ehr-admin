@@ -36,8 +36,17 @@
 				$search:$('#inp_search'),
 				$searchNm:$('#inp_searchNm'),
 				init: function () {
-					this.$search.ligerTextBox({width:180});
-					this.$searchNm.ligerTextBox({width:240})
+					this.$search.ligerTextBox({width:200, isSearch: true, search: function () {
+						var appName = $("#inp_search").val();
+						appMaster.appGrid.setOptions({parms: {
+							searchNm: appName,
+							searchType: appName}
+						});
+						appMaster.appGrid.loadData(true);
+					}});
+					this.$searchNm.ligerTextBox({width:200, isSearch: true, search: function () {
+						rolesMaster.reloadRolesGrid();
+					}})
 				}
 			};
 			appMaster = {
@@ -47,7 +56,7 @@
 					this.appGrid = $("#div_std_app_grid").ligerGrid($.LigerGridEx.config({
 						url: '${contextRoot}/userRoles/searchApps',
 						parms: {
-							searchNm: appName,
+							searchNm: appName
 						},
 						columns: [
 							{display: 'id', name: 'id', hide: true},
@@ -134,9 +143,9 @@
 				},
 				bindEvents:function(){
 					//查询列表
-					$('#btn_roles_search').click(function () {
-						rolesMaster.reloadRolesGrid();
-					});
+//					$('#btn_roles_search').click(function () {
+//						rolesMaster.reloadRolesGrid();
+//					});
 					//新增、修改、查看角色组
 					$('#div_new_record').click(function () {
 						$.publish("roles:infoDialog:open",['','new',appId]);

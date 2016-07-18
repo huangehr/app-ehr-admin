@@ -1,5 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
+import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
@@ -121,7 +122,7 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/searchDictEntryList")
     @ResponseBody
-    public Object getDictEntryList(String dictId) {
+    public Object getDictEntryList(String dictId,String conditions) {
 
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -139,6 +140,15 @@ public class ResourceBrowseController extends BaseUIController {
                         params.put("size", 500);
                         params.put("fields", "");
                         params.put("sorts", "");
+                        url = "/dictionaries/entries";
+                        if (!StringUtils.isEmpty(conditions)){
+                            params.put("filters", "dictId=30 g0;code="+conditions+" g1");
+                            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                            envelop = toModel(resultStr,Envelop.class);
+                            envelop.getDetailModelList();
+                            SystemDictEntryModel systemDictEntryModel = toModel(toJson(toModel(resultStr,Envelop.class).getDetailModelList().get(0)),SystemDictEntryModel.class);
+                            params.put("filters", "dictId=" + dictId+" g0;value="+systemDictEntryModel.getCatalog()+" g1");
+                        }
                         url = "/dictionaries/entries";
                         resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
                         break;
