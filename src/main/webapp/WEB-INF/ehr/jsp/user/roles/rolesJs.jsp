@@ -36,8 +36,17 @@
 				$search:$('#inp_search'),
 				$searchNm:$('#inp_searchNm'),
 				init: function () {
-					this.$search.ligerTextBox({width:180});
-					this.$searchNm.ligerTextBox({width:240})
+					this.$search.ligerTextBox({width:200, isSearch: true, search: function () {
+						var appName = $("#inp_search").val();
+						appMaster.appGrid.setOptions({parms: {
+							searchNm: appName,
+							searchType: appName}
+						});
+						appMaster.appGrid.loadData(true);
+					}});
+					this.$searchNm.ligerTextBox({width:200, isSearch: true, search: function () {
+						rolesMaster.reloadRolesGrid();
+					}})
 				}
 			};
 			appMaster = {
@@ -47,7 +56,7 @@
 					this.appGrid = $("#div_std_app_grid").ligerGrid($.LigerGridEx.config({
 						url: '${contextRoot}/userRoles/searchApps',
 						parms: {
-							searchNm: appName,
+							searchNm: appName
 						},
 						columns: [
 							{display: 'id', name: 'id', hide: true},
@@ -134,9 +143,9 @@
 				},
 				bindEvents:function(){
 					//查询列表
-					$('#btn_roles_search').click(function () {
-						rolesMaster.reloadRolesGrid();
-					});
+//					$('#btn_roles_search').click(function () {
+//						rolesMaster.reloadRolesGrid();
+//					});
 					//新增、修改、查看角色组
 					$('#div_new_record').click(function () {
 						$.publish("roles:infoDialog:open",['','new',appId]);
@@ -192,7 +201,8 @@
 
 					//人员、权限配置弹出页面
 					$.subscribe("roles:config:open",function(events,obj,type){
-						var title = Util.isStrEquals(type,'users')?'人员配置':'权限配置';
+						var model = JSON.parse(obj)
+						var title = Util.isStrEquals(type,'users')?'角色管理>'+model.name+'人员配置':'角色管理>'+model.name+'权限配置';
 						rolesMaster.roleRelationDialog = $.ligerDialog.open({
 							height: 600,
 							width: 800,

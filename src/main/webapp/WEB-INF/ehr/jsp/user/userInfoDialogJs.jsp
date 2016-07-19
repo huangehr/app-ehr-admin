@@ -21,6 +21,7 @@
 
         var allData = ${allData};
         var user = allData.obj;
+		var trees;
 
 
         /* ************************** 变量定义结束 **************************** */
@@ -34,7 +35,6 @@
 
         /* *************************** 模块初始化 ***************************** */
         userInfo = {
-            /*----------yww--1217*/
             $idCardCopy: $('#idCardCopy'),
             $emailCopy: $('#emailCopy'),
 
@@ -69,11 +69,13 @@
             $affirmBtn: $('#div_affirm_btn'),
             $toolbar: $('#div_toolbar'),
             $imageShow: $('#div_file_list'),
+			$jryycyc:$("#jryycyc"),//cyctodo
 
             init: function () {
                 var self = this;
                 self.initForm();
                 self.bindEvents();
+				//this.cycToDo()//复制完记得删掉
                 //self.$uploader.webupload();
                 self.$uploader.instance = self.$uploader.webupload({
                     server: "${contextRoot}/user/updateUser",
@@ -189,7 +191,6 @@
                 self.$publicKeyMessage.val(user.publicKey);
                 self.$publicKeyValidTime.html(user.validTime);
                 self.$publicKeyStartTime.html(user.startTime);
-                /*---------yww*/
                 self.$idCardCopy.val(user.idCardNo);
                 self.$emailCopy.val(user.email);
 
@@ -259,7 +260,6 @@
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
-                        debugger
                         var organizationKeys = userModel.organization['keys'];
 
                         userModel.organization = organizationKeys[2];
@@ -365,7 +365,67 @@
                     publicKeyMsgDialog.close();
                 })
                 self.$userType.removeClass("l-text-focus")
-            }
+            },
+			cycToDo:function(){
+				var self=this;
+				trees=self.$jryycyc.ligerComboBox({
+					width : 240,
+					selectBoxWidth: 238,
+					selectBoxHeight: 500, textField: 'text', treeLeafOnly: false,
+					tree: {
+						url:'${contextRoot}/userRoles/searchApps',
+						data:[
+						{id: 1, "text": "产品组", "children": [
+							{id:4,pid:1,"text": "某某1" },
+							{id:5,pid:1,"text": "某某2" },
+							{id:6,pid:1,"text": "某某3"},
+							{id:7,pid:1,"text": "某某4" }
+						]
+						},
+						{ id: 2,"text": "运营组","children": []},
+						{id: 3, "text": "运维组","children": [] },
+						{id: 4, "text": "开发组","children": [] }
+					],idFieldName:'text',onClick:function(e){
+						self.listTree(trees);
+					}}
+				})
+
+				function removeSclBox(){
+					setTimeout(function(){
+						$(trees.tree).prev(".mCustomScrollBox").hide()
+					},100)
+				}
+				self.$jryycyc.on("click", removeSclBox);
+				$('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
+				self.listTreeClick(trees);
+			},//树形结构todo
+			listTree:function(trees){
+				var self=this;
+				var dataAll=trees.treeManager.data//获取所有选中的值
+				var dateTreeEd=trees.treeManager.getChecked()//获取所有选中的值
+				var liHtml="";//li拼接
+				var obj=self.$jryycyc.closest(".m-form-group");//父容器
+				$.each(dateTreeEd,function(i,v){
+					if(v.data.children==undefined){
+						var  tit="";
+						for(i=0;i<dataAll.length;i++){
+							if(v.data.pid==dataAll[i].id){
+								tit=dataAll[i].text+":"+v.data.text
+							}
+						}
+						liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
+					}
+				})
+				if(obj.find(".listree").length==0){
+					obj.append('<div class="listree"></div>')
+				}
+				$(".listree").html(liHtml);
+
+			},listTreeClick:function(trees){
+				$("body").delegate(".listree a","click",function(){
+					$("li#"+$(this).attr("data-id"), trees.tree).find(".l-checkbox").click()
+				})//删除操作
+			}
         };
 
         /* ************************* 模块初始化结束 ************************** */

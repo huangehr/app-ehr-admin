@@ -104,7 +104,7 @@ public class AppRoleController extends BaseUIController {
         String url = ServiceApi.Roles.Roles;
         String resultStr = "";
 
-        String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;name?"+searchNm+" g1;appId="+appRoleId+" g2";
+        String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;code?"+searchNm+" g1;name?"+searchNm+" g1;appId="+appRoleId+" g2";
         if(gridType.equals("appRole")){
             url = "/apps";
             filters = StringUtils.isEmpty(searchNm)?"sourceType=1":"sourceType=1 g0;name?"+searchNm+" g1";
@@ -160,7 +160,7 @@ public class AppRoleController extends BaseUIController {
     @ResponseBody
     public String updateFeatureConfig(String AppFeatureId,String roleId,boolean updateType){
         Map<String, Object> params = new HashMap<>();
-        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
+//        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
         String resultStr = "";
         RoleFeatureRelationModel roleFeatureRelationModel = new RoleFeatureRelationModel();
         roleFeatureRelationModel.setFeatureId(Long.valueOf(AppFeatureId));
@@ -168,11 +168,11 @@ public class AppRoleController extends BaseUIController {
         params.put("data_json", toJson(roleFeatureRelationModel));
         try {
             if (updateType){
-                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
             }else{
                 params.put("feature_id", AppFeatureId);
                 params.put("role_id", roleId);
-                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+                resultStr = HttpClientUtil.doDelete(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,19 +184,18 @@ public class AppRoleController extends BaseUIController {
     @ResponseBody
     public String updateApiConfig(String apiFeatureId,String roleId,boolean updateType){
         Map<String, Object> params = new HashMap<>();
-        String url = updateType?ServiceApi.Roles.RoleApi:ServiceApi.Roles.RoleApi;
         String resultStr = "";
-        RoleApiRelationModel roleApiRelationModel = new RoleApiRelationModel();
-        roleApiRelationModel.setApiId(Long.valueOf(apiFeatureId));
-        roleApiRelationModel.setRoleId(Long.valueOf(roleId));
-        params.put("data_json", toJson(roleApiRelationModel));
         try {
             if (updateType){
-                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+                RoleApiRelationModel roleApiRelationModel = new RoleApiRelationModel();
+                roleApiRelationModel.setApiId(Long.valueOf(apiFeatureId));
+                roleApiRelationModel.setRoleId(Long.valueOf(roleId));
+                params.put("data_json", toJson(roleApiRelationModel));
+                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
             }else{
                 params.put("api_id", apiFeatureId);
                 params.put("role_id", roleId);
-                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+                resultStr = HttpClientUtil.doDelete(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,16 +205,13 @@ public class AppRoleController extends BaseUIController {
 
     @RequestMapping("/searchFeatrueTree")
     @ResponseBody
-    public Object searchFeatrueTree(String treeType,String appRoleId){
+    public Object searchFeatrueTree(String treeType,String appRoleId,String appId){
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "";
-        String filters = "";
+        String filters = "appId="+appId;
         if (treeType.equals("configFeatrue")){
-//        if (treeType.equals("configFeatrueTree")){
             url = "/role_app_feature/no_paging";
-//            url = ServiceApi.Roles.RoleFeaturesNoPage;
-//            filters = "role_id="+appRoleId;
             params.put("role_id", appRoleId);
         }else {
             url = ServiceApi.AppFeature.FilterFeatureNoPage;
@@ -223,8 +219,6 @@ public class AppRoleController extends BaseUIController {
             params.put("roleId", appRoleId);
         }
         String resultStr = "";
-//        params.put("filters", filters);
-
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -235,14 +229,14 @@ public class AppRoleController extends BaseUIController {
     }
     @RequestMapping("/searchApiTree")
     @ResponseBody
-    public Object searchApiTree(String treeType,String appRoleId){
+    public Object searchApiTree(String treeType,String appRoleId,String appId){
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "";
-        String filters = "";
+        String filters = "appId="+appId;
         if (treeType.equals("configapiTree")){
             url = "/role_app_api/no_paging";
-            params.put("filters", "roleId="+appRoleId);
+            params.put("role_id", appRoleId);
         }else {
             url = ServiceApi.AppApi.AppApisNoPage;
             params.put("filters", filters);
@@ -294,7 +288,7 @@ public class AppRoleController extends BaseUIController {
         String resultStr = "";
         String filters = "";
         if (gridType.equals("appInsertGrid")){
-            filters = StringUtils.isEmpty(searchNm)?"sourceType=1":"sourceType=1 g0;name?"+searchNm+" g1";
+            filters = StringUtils.isEmpty(searchNm)?"sourceType=0":"sourceType=0 g0;name?"+searchNm+" g1";
         }else {
             filters = "roleId="+appRoleId;
         }
@@ -317,7 +311,7 @@ public class AppRoleController extends BaseUIController {
     public Object isNameExistence(String appId,String name){
         try{
             Map<String,Object> params = new HashMap<>();
-            params.put("id",appId);
+            params.put("app_id",appId);
             params.put("name",name);
             String url = ServiceApi.Roles.RoleNameExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
@@ -332,7 +326,7 @@ public class AppRoleController extends BaseUIController {
     public Object isCodeExistence(String appId,String code){
         try{
             Map<String,Object> params = new HashMap<>();
-            params.put("id",appId);
+            params.put("app_id",appId);
             params.put("code",code);
             String url = ServiceApi.Roles.RoleCodeExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);

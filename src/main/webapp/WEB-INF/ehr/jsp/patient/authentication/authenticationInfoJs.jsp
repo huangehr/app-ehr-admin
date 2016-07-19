@@ -26,7 +26,7 @@
 						id: info.id,
 						name: info.name,
 						idCard:info.idCard,
-						medicalCardType:info.medicalCardType,
+						medicalCardType:info.medicalCardTypeName,
 						telephone:info.telephone,
 						idCardEffective:info.idCardEffective,
 						medicalCardNo:info.medicalCardNo,

@@ -65,8 +65,8 @@
                         isScroll: true,
                         async: true,
                         columns: [
-                            {display: '应用组编码', name: 'code', width: '20%'},
-                            {display: '应用组明称', name: 'name', width: '20%'},
+                            {display: '角色组编码', name: 'code', width: '20%'},
+                            {display: '角色组名称', name: 'name', width: '20%'},
                             {display: '描述', name: 'description', width: '25%'},
                             {
                                 display: '操作', name: 'operator', width: '35%', render: function (row) {
@@ -101,10 +101,12 @@
                     $.subscribe('app:roles', function (event, jsonStr, type) {
                         switch (type) {
                             case 'featrueConfig':
-                                self.ligerDialogOpen(jsonStr, type, "权限配置", 600, 800);
+                                var model = JSON.parse(jsonStr);
+                                self.ligerDialogOpen(jsonStr, type, '应用角色>'+model.name+"权限配置", 600, 800);
                                 break;
                             case 'appInsert':
-                                self.ligerDialogOpen(jsonStr, type, "应用接入", 600, 800);
+                                var model = JSON.parse(jsonStr);
+                                self.ligerDialogOpen(jsonStr, type, '应用角色>'+model.name+"应用接入", 600, 800);
                                 break;
                             case 'delete':
                                 $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
@@ -117,7 +119,7 @@
                                                     $.Notice.success('删除成功。');
                                                     master.reloadAppRoleGrid('appRoleGroup', appRoleId, self.$appRoleGroupSearch.val());
                                                 } else {
-                                                    $.Notice.error('删除失败。');
+                                                    $.Notice.error(data.errorMsg);
                                                 }
                                             }
                                         });

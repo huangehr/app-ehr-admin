@@ -98,23 +98,23 @@
                     id: 121,
                     pid: 12,
                     level:3,
-                    text: '基本信息',
+                    text: '<spring:message code="title.patient.master.info"/>',
                     url: '${contextRoot}/patient/initial'
                 },
-                /*{
+                {
                  id: 122,
                  pid: 12,
                  level:3,
-                 text: '档案关联审核',
+                 text: '<spring:message code="title.correlation.audit"/>',
                  url: '${contextRoot}/correlation/initial'
                  },
                  {
                  id: 123,
                  pid: 12,
                  level:3,
-                 text: '身份认证',
+                 text: '<spring:message code="title.patient.apply"/>',
                  url: '${contextRoot}/authentication/initial'
-                 },*/
+                 },
                 //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
 
                 //2 - 标准规范中心
@@ -123,7 +123,7 @@
                     id: 21,
                     pid: 2,
                     level:2,
-                    text: '平台标准'
+                    text: '<spring:message code="title.ehr.std"/>',
                 },
                 {
                     id: 211,
@@ -157,48 +157,48 @@
                     id: 215,
                     pid: 21,
                     level:3,
-                    text: 'CDA类别',
+                    text: '<spring:message code="title.CDA.type"/>',
                     url: '${contextRoot}/cdatype/index'
                 },
                 {
                     id: 216,
                     pid: 21,
                     level:3,
-                    text: '标准版本管理',
+                    text: '<spring:message code="title.std.version.manage"/>',
                     url: '${contextRoot}/cdaVersion/initial'
                 },
                 {
                     id: 217,
                     pid: 21,
                     level:3,
-                    text: '特殊字典'
+                    text: '<spring:message code="title.std.special.dict"/>'
                 },
                 {
                     id: 2171,
                     pid:217,
                     level:4,
-                    text: '诊断字典',
+                    text: '<spring:message code="title.std.icd10.dict"/>',
                     url: '${contextRoot}/specialdict/icd10/initial'
                 },
                 {
                     id: 2172,
                     pid: 217,
                     level:4,
-                    text: '指标字典',
+                    text: '<spring:message code="title.std.indicator.dict"/>',
                     url: '${contextRoot}/specialdict/indicator/initial'
                 },
                 {
                     id: 2173,
                     pid: 217,
                     level:4,
-                    text: '药品字典',
+                    text: '<spring:message code="title.std.drug.dict"/>',
                     url: '${contextRoot}/specialdict/drug/initial'
                 },
                 {
                     id: 2174,
                     pid: 217,
                     level:4,
-                    text: '疾病字典',
+                    text: '<spring:message code="title.std.disease.dict"/>',
                     url: '${contextRoot}/specialdict/hp/initial'
                 },
                 {
@@ -232,25 +232,27 @@
                     text: '<spring:message code="title.app.manage"/>',
                     url: '${contextRoot}/app/initial'
                 },
-                /*{
-                 id: 32,
-                 level:2,
-                 pid: 3,
-                 text: '平台应用'
-                 },
-                 {
-                 id: 33,
-                 level:2,
-                 pid: 3,
-                 text: 'API管理'
-                 },*/
-                <%--{--%>
-                    <%--id: 34,--%>
-                    <%--level: 2,--%>
-                    <%--pid: 3,--%>
-                    <%--text: '应用角色',--%>
-                    <%--url: '${contextRoot}/appRole/initial'--%>
-                <%--},--%>
+                {
+                    id: 32,
+                    level:2,
+                    pid: 3,
+                    text:  '<spring:message code="title.ehr.app.manage"/>',
+                    url: '${contextRoot}/app/platform/initial'
+                },
+                {
+                    id: 33,
+                    level:2,
+                    pid: 3,
+                    text: '<spring:message code="title.api.manage"/>',
+                    url:'${contextRoot}/app/api/initial'
+                },
+                {
+                    id: 34,
+                    level: 2,
+                    pid: 3,
+                    text: '<spring:message code="title.app.role"/>',
+                    url: '${contextRoot}/appRole/initial'
+                },
                 //4 - 安全管理中心
                 {id: 4, level:1, text: '<spring:message code="title.security.manage.center"/>'},
                 {
@@ -260,13 +262,13 @@
                     text: '<spring:message code="title.user.manage"/>',
                     url: '${contextRoot}/user/initial'
                 },
-				<%--{--%>
-					<%--id: 42,--%>
-					<%--pid: 4,--%>
-					<%--level:2,--%>
-					<%--text: '角色管理',--%>
-					<%--url: '${contextRoot}/userRoles/initial'--%>
-				<%--},--%>
+				{
+					id: 42,
+					pid: 4,
+					level:2,
+					text:  '<spring:message code="title.role.manage"/>',
+					url: '${contextRoot}/userRoles/initial'
+				},
 
                 //5 - 资源管理中心
                 {id: 5, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
