@@ -13,66 +13,66 @@
     <input type="hidden" data-attr-scan="id">
     <input type="hidden" data-attr-scan="appId">
     <input type="hidden" data-attr-scan="parentId">
-    <div class="m-form-group">
+    <div id="div_name" class="m-form-group">
       <label>名称<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_name" class="required ajax"  data-attr-scan="name">
       </div>
     </div>
 
-    <div class="m-form-group">
-      <label>描述<spring:message code="spe.colon"/></label>
-      <div class="l-text-wrapper m-form-control essential">
-        <input type="text" id="ipt_api_description" class="required validate-code-char" data-attr-scan="description">
-      </div>
-    </div>
-
-    <div class="m-form-group">
+    <div id="div_audit" class="m-form-group">
       <label>审计程度<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_auditLevel" data-type="select" class="required" data-attr-scan="auditLevel">
       </div>
     </div>
 
-    <div class="m-form-group">
+    <div id="div_status" class="m-form-group">
       <label>状态<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_activityType" data-type="select" class="required" data-attr-scan="activityType">
       </div>
     </div>
 
-    <div class="m-form-group">
+    <div id="div_open" class="m-form-group">
       <label>开放程度<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_openLevel" data-type="select" class="required" data-attr-scan="openLevel">
       </div>
     </div>
 
-    <div class="m-form-group">
+    <div id="div_type" class="m-form-group">
       <label>类型<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_type" data-type="select" class="required" data-attr-scan="type">
       </div>
     </div>
 
-    <div class="m-form-group">
+    <div id="div_version" class="m-form-group">
       <label>版本<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_version" class="required"  data-attr-scan="version">
       </div>
     </div>
 
-    <div class="m-form-group">
+    <div id="div_protocol" class="m-form-group">
       <label>协议<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_protocol" data-type="select" class="required" data-attr-scan="protocol">
       </div>
     </div>
 
-    <div class="m-form-group">
+    <div id="div_method" class="m-form-group">
       <label>方法<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_method" data-type="select" class="required" data-attr-scan="method">
+      </div>
+    </div>
+
+    <div id="div_des" class="m-form-group" style="width: 100%">
+      <label>描述<spring:message code="spe.colon"/></label>
+      <div class="l-text-wrapper m-form-control essential">
+        <textarea id="ipt_api_description" class="required validate-code-char" data-attr-scan="description"></textarea>
       </div>
     </div>
 

@@ -50,15 +50,19 @@
             //初始化表格
             var rendGrid = function(){
                 var columns = [
-                    {display: '应用名称', name: 'name', width: '20%', align: 'left'},
+                    {display: 'APP ID', name: 'id', width: '10%', align: 'left'},
+                    {display: '应用名称', name: 'name', width: '15%', align: 'left'},
                     {display: '应用代码', name: 'code', width: '10%', align: 'left'},
                     {display: '应用密钥', name: 'secret', width: '10%', align: 'left'},
                     {display: '机构名称', name: 'orgName', width: '15%', align: 'left'},
                     {display: '应用类型', name: 'catalogName', width: '10%', align: 'left'},
-                    {display: '回调URL', name: 'url', width: '20%', align: 'left'},
+                    {display: '回调URL', name: 'url', width: '15%', align: 'left'},
                     {display: '操作', name: 'operator', width: '15%', render: opratorRender}];
 
-                grid = initGrid($('#gtGrid'), urls.list, {}, columns, {delayLoad: true, checkbox: false});
+                grid = initGrid($('#gtGrid'), urls.list, {}, columns, {delayLoad: true, checkbox: false,
+                    onDblClickRow: function (rowData, rowId, rowObj) {
+                        gotoModify(undefined, rowData.id, 'view');
+                    }});
                 searchFun();
             };
 

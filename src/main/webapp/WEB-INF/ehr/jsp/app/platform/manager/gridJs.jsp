@@ -66,6 +66,10 @@
                         ],
                         onSelectRow: function (rowData, rowId, rowObj) {
                             em.find(rowData.id);
+                        },
+                        onDblClickRow: function (rowData, rowId, rowObj) {
+                            if( rowData.id)
+                                em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
                         }
                     }));
                 }
@@ -96,7 +100,10 @@
                         rownumbers: true,
                         usePager: false,
                         heightDiff: 20,
-                        checkbox: false
+                        checkbox: false,
+                        onDblClickRow: function (rowData, rowId, rowObj) {
+                            em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
+                        }
                     });
                 },
                 //操作栏渲染器

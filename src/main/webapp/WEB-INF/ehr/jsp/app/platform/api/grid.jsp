@@ -18,7 +18,7 @@
                      class="m-retrieve-area f-h50 f-pr m-form-inline condition" data-role-form>
                     <div class="m-retrieve-inner m-form-group f-mt10 l-tools" style="margin-left: 10px;">
                         <div class="m-form-control">
-                            <input type="text" id="l_search_name" placeholder="请输入API分类关键词" class="f-ml10" data-attr-scan="name"/>
+                            <input type="text" id="l_search_name" placeholder="请输入关键词" class="f-ml10" data-attr-scan="name"/>
                         </div>
                     </div>
                 </div>

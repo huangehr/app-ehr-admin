@@ -69,6 +69,10 @@
             initForm();
             initBtn();
             fillForm(model, $('#infoForm'));
+            if(mode=='view'){
+                $('#infoForm').addClass('m-form-readonly');
+                $('#btn_save').hide();
+            }
         }();
 
     })(jQuery, window);

@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div id="div_app_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
-	<input type="hidden" id="inp_source_type"  data-attr-scan="sourceType">
+	<input type="hidden" id="inp_source_type"  data-attr-scan="sourceType" value="0">
 
 	<div class="m-form-group">
 		<label><spring:message code="lbl.designation"/><spring:message code="spe.colon"/></label>
@@ -68,7 +68,7 @@
 	<div class="m-form-group" >
 		<label >角色组:</label>
 		<div id="roleDiv" class="l-text-wrapper m-form-control essential">
-			<input type="text" id="jryycyc" class=" f-h28 f-w240" data-type="select" placeholder="" data-attr-scan="org">
+			<input style="color: #fff" type="text" id="jryycyc" class=" f-h28 f-w240" data-type="select" placeholder="" data-attr-scan="role">
 		</div>
 	</div>
 	<div class="m-form-group f-pr my-footer" align="right" hidden="hidden">
