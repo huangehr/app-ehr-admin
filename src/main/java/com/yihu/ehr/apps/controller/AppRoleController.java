@@ -104,7 +104,7 @@ public class AppRoleController extends BaseUIController {
         String url = ServiceApi.Roles.Roles;
         String resultStr = "";
 
-        String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;name?"+searchNm+" g1;appId="+appRoleId+" g2";
+        String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;code?"+searchNm+" g1;name?"+searchNm+" g1;appId="+appRoleId+" g2";
         if(gridType.equals("appRole")){
             url = "/apps";
             filters = StringUtils.isEmpty(searchNm)?"sourceType=1":"sourceType=1 g0;name?"+searchNm+" g1";
@@ -205,16 +205,13 @@ public class AppRoleController extends BaseUIController {
 
     @RequestMapping("/searchFeatrueTree")
     @ResponseBody
-    public Object searchFeatrueTree(String treeType,String appRoleId){
+    public Object searchFeatrueTree(String treeType,String appRoleId,String appId){
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "";
-        String filters = "";
+        String filters = "appId="+appId;
         if (treeType.equals("configFeatrue")){
-//        if (treeType.equals("configFeatrueTree")){
             url = "/role_app_feature/no_paging";
-//            url = ServiceApi.Roles.RoleFeaturesNoPage;
-//            filters = "role_id="+appRoleId;
             params.put("role_id", appRoleId);
         }else {
             url = ServiceApi.AppFeature.FilterFeatureNoPage;
@@ -222,8 +219,6 @@ public class AppRoleController extends BaseUIController {
             params.put("roleId", appRoleId);
         }
         String resultStr = "";
-//        params.put("filters", filters);
-
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -234,11 +229,11 @@ public class AppRoleController extends BaseUIController {
     }
     @RequestMapping("/searchApiTree")
     @ResponseBody
-    public Object searchApiTree(String treeType,String appRoleId){
+    public Object searchApiTree(String treeType,String appRoleId,String appId){
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "";
-        String filters = "";
+        String filters = "appId="+appId;
         if (treeType.equals("configapiTree")){
             url = "/role_app_api/no_paging";
             params.put("role_id", appRoleId);
@@ -293,7 +288,7 @@ public class AppRoleController extends BaseUIController {
         String resultStr = "";
         String filters = "";
         if (gridType.equals("appInsertGrid")){
-            filters = StringUtils.isEmpty(searchNm)?"sourceType=1":"sourceType=1 g0;name?"+searchNm+" g1";
+            filters = StringUtils.isEmpty(searchNm)?"sourceType=0":"sourceType=0 g0;name?"+searchNm+" g1";
         }else {
             filters = "roleId="+appRoleId;
         }

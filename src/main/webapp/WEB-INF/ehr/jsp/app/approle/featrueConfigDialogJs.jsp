@@ -58,7 +58,7 @@
                         var appRoleId = obj.id;
                         functionFeatrueType[i] = funEle[i].ligerSearchTree({
                             url: '${contextRoot}/appRole/searchFeatrueTree',
-                            parms: {searchNm: '', treeType: functionType[i], appRoleId: appRoleId},
+                            parms: {searchNm: '', treeType: functionType[i], appRoleId: appRoleId,appId:obj.appId},
                             idFieldName: 'id',
                             parentIDFieldName: 'parentId',
                             textFieldName: 'name',
@@ -119,7 +119,7 @@
                         var appRoleId = obj.id;
                         apiTreeType[j] = apiEle[j].ligerSearchTree({
                             url: '${contextRoot}/appRole/searchApiTree',
-                            parms: {searchNm: '', treeType: apiFeatrueType[j], appRoleId: appRoleId},
+                            parms: {searchNm: '', treeType: apiFeatrueType[j], appRoleId: appRoleId,appId:obj.appId},
                             idFieldName: 'id',
                             parentIDFieldName: 'parentId',
                             textFieldName: 'name',
@@ -168,7 +168,7 @@
                     }
                 },
                 reloadRoleGrid: function (appRoleId) {
-                    var searchParams = {searchNm: '', treeType: 'featrue', appRoleId: appRoleId};
+                    var searchParams = {searchNm: '', treeType: 'featrue', appRoleId: appRoleId,appId:obj.appId};
                     reloadGrid.call(this, '${contextRoot}/appRole/searchFeatrueTree', searchParams);
                 },
                 clicks: function () {

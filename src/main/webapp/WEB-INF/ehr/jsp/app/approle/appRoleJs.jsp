@@ -65,8 +65,8 @@
                         isScroll: true,
                         async: true,
                         columns: [
-                            {display: '应用组编码', name: 'code', width: '20%'},
-                            {display: '应用组明称', name: 'name', width: '20%'},
+                            {display: '角色组编码', name: 'code', width: '20%'},
+                            {display: '角色组名称', name: 'name', width: '20%'},
                             {display: '描述', name: 'description', width: '25%'},
                             {
                                 display: '操作', name: 'operator', width: '35%', render: function (row) {

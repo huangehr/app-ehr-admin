@@ -27,7 +27,7 @@
             <!--输入框-->
             <span class="f-fl f-lh30">应用角色组：</span>
             <div class="f-fl">
-                <input type="text" id="inp_appRole_group_search" placeholder="请输入角色组名称" class="f-ml10 inp_appRole_com_search"/>
+                <input type="text" id="inp_appRole_group_search" placeholder="请输入角色组编码或名称" class="f-ml10 inp_appRole_com_search"/>
             </div>
             <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar f-fr f-mr10" id="div_add_appRoleGroup_btn">
                 <span>新增</span>
