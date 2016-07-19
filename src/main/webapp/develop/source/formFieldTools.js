@@ -55,7 +55,14 @@ function initSelDom(el, url, params, opts){
         parms: params
     };
     opts = $.extend({}, defaultOpts, opts);
-
+    if(opts.initVal){
+        var onSucFun = opts.onSuccess;
+        opts.onSuccess = function(data){
+            this.selectValue(opts.initVal);
+            if(onSucFun)
+                this.call(onSucFun, data);
+        }
+    }
     return $(el).ligerComboBox(opts);
 }
 
@@ -75,6 +82,14 @@ function initSystemSelDom(el, dictId, opts){
         parms: {dictId: dictId, page: 1, rows: 500}
     };
     opts = $.extend({}, defaultOpts, opts);
+    if(opts.initVal){
+        var onSucFun = opts.onSuccess;
+        opts.onSuccess = function(data){
+            this.selectValue(opts.initVal);
+            if(onSucFun)
+                this.call(onSucFun, data);
+        }
+    }
     return $(el).ligerComboBox(opts);
 }
 

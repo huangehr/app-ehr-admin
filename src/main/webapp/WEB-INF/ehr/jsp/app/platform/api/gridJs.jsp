@@ -81,7 +81,9 @@
                             {
                                 display: '组织结构名称', name: 'name', id: 'name', align: 'left', width: '290',
                                 render: function (row) {
-                                    return '<div id="t_'+ row.id +'">'+ row.name +'</div>';
+                                    var iconUrl = row.iconUrl || 'develop/images/icon_Reg.png';
+                                    return '<img src="${contextRoot}/'+iconUrl+'" class="row-icon">'
+                                            +'<div id="t_'+ row.id +'">'+ row.name +'</div>';
                                 }
                             },
                             {
@@ -238,7 +240,7 @@
                         data: {filters: "parentId="+id},
                         success: function (data) {
                             if (data.successFlg) {
-                                if(!data.obj)
+                                if(data.detailModelList.length==0)
                                     del();
                                 else
                                     $.Notice.error("该删除项存在子项，请先删除子项！");
