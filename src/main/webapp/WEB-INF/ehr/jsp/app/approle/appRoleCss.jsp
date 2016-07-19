@@ -5,12 +5,14 @@
 
     .f-mw100{ width:100%; }
     .f-mw99{ width:99%; }
-    .f-mw25{ width: 25% }
+    .f-mw25{ width: 400px }
     .f-ds1{ border: 1px solid #D6D6D6; }
-    .div-app-role{ height:100%; width:74%; float:right;border: 1px solid #D6D6D6;}
+    .div-app-role{ height:100%; float:right;border: 1px solid #D6D6D6;}
+    /*.div-app-role{ height:100%; float:right;border: 1px solid #D6D6D6;}*/
+    /*.div-app-role{ height:100%; width:74%; float:right;border: 1px solid #D6D6D6;}*/
 
 
-    .div-result-msg{ border: 1px solid #D6D6D6; width: 100%;height: auto; float: left; }
+    .div-result-msg{ width: 100%;height: auto; float: left; }
     .f-mr279{ margin-right: 279px; }
     .f-pr0{ width: 238px;padding-right: 0; }
     .f-ds{ display: none; }

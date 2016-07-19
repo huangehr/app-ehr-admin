@@ -58,7 +58,7 @@
                         var appRoleId = obj.id;
                         functionFeatrueType[i] = funEle[i].ligerSearchTree({
                             url: '${contextRoot}/appRole/searchFeatrueTree',
-                            parms: {searchNm: '', treeType: functionType[i], appRoleId: appRoleId,appId:obj.appId},
+                            parms: {searchNm: '', treeType: functionType[i], appRoleId: appRoleId, appId: obj.appId},
                             idFieldName: 'id',
                             parentIDFieldName: 'parentId',
                             textFieldName: 'name',
@@ -75,29 +75,31 @@
 //                                        timeOutTree=setTimeout(function(){
 //                                            functionFeatrueType[1].reload();
 //                                        },1);
-                                        if (isReload === false)return;
+                                        if (isReload === false)
+                                            return;
                                         functionFeatrueType[1].reload();
                                     }
                                 })
                             },
                             onSuccess: function (data) {
                                 if (Util.isStrEquals(this.id, 'div_configFun_featrue_grid')) {
-                                    var dataNew = [];
+                                    var coun = [];
                                     for (var i = 0; i < data.length; i++) {
-                                        if (data[i].parentId == 0) {
-                                            dataNew.push(data[i])
-                                        } else {
-                                            for (var j = 0; j < data.length; j++) {
-                                                if (data[i].parentId == data[j].id) {
-                                                    dataNew.push(data[i]);
-                                                    break;
-                                                } else {
-                                                    data[i] = {};
-                                                }
+                                        var bo = true;
+                                        for (var j = 0; j < data.length; j++) {
+                                            if (Util.isStrEquals(data[i].parentId, data[j].id) || Util.isStrEquals(data[i].parentId, 0)) {
+                                                bo = false;
                                             }
                                         }
+                                        if (bo) {
+                                            coun.push(i);
+                                        }
+                                        delete data[i].children;
                                     }
-                                    functionFeatrueType[1].setData(dataNew);
+                                    for (var k = 0; k < coun.length; k++) {
+                                        data.splice([coun[k]], 1);
+                                    }
+                                    functionFeatrueType[1].setData(data);
                                 }
                                 $("#div_function_featrue_grid li div span ,#div_configFun_featrue_grid li div span").css({
                                     "line-height": "22px",
@@ -119,7 +121,7 @@
                         var appRoleId = obj.id;
                         apiTreeType[j] = apiEle[j].ligerSearchTree({
                             url: '${contextRoot}/appRole/searchApiTree',
-                            parms: {searchNm: '', treeType: apiFeatrueType[j], appRoleId: appRoleId,appId:obj.appId},
+                            parms: {searchNm: '', treeType: apiFeatrueType[j], appRoleId: appRoleId, appId: obj.appId},
                             idFieldName: 'id',
                             parentIDFieldName: 'parentId',
                             textFieldName: 'name',
@@ -139,22 +141,23 @@
                             },
                             onSuccess: function (data) {
                                 if (Util.isStrEquals(this.id, 'div_configApi_featrue_grid')) {
-                                    var dataNew = [];
+                                    var coun = [];
                                     for (var i = 0; i < data.length; i++) {
-                                        if (data[i].parentId == 0) {
-                                            dataNew.push(data[i])
-                                        } else {
-                                            for (var j = 0; j < data.length; j++) {
-                                                if (data[i].parentId == data[j].id) {
-                                                    dataNew.push(data[i]);
-                                                    break;
-                                                } else {
-                                                    data[i] = {};
-                                                }
+                                        var bo = true;
+                                        for (var j = 0; j < data.length; j++) {
+                                            if (Util.isStrEquals(data[i].parentId, data[j].id) || Util.isStrEquals(data[i].parentId, 0)) {
+                                                bo = false;
                                             }
                                         }
+                                        if (bo) {
+                                            coun.push(i);
+                                        }
+                                        delete data[i].children;
                                     }
-                                    apiTreeType[1].setData(dataNew);
+                                    for (var k = 0; k < coun.length; k++) {
+                                        data.splice([coun[k]], 1);
+                                    }
+                                    apiTreeType[1].setData(data);
                                 }
                                 $("#div_api_featrue_grid li div span ,#div_configApi_featrue_grid li div span").css({
                                     "line-height": "22px",
@@ -168,7 +171,7 @@
                     }
                 },
                 reloadRoleGrid: function (appRoleId) {
-                    var searchParams = {searchNm: '', treeType: 'featrue', appRoleId: appRoleId,appId:obj.appId};
+                    var searchParams = {searchNm: '', treeType: 'featrue', appRoleId: appRoleId, appId: obj.appId};
                     reloadGrid.call(this, '${contextRoot}/appRole/searchFeatrueTree', searchParams);
                 },
                 clicks: function () {
