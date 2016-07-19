@@ -14,9 +14,16 @@
   </div>
 
   <div class="m-form-group">
-    <label>描述<spring:message code="spe.colon"/></label>
+    <label>类别<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_api_description" class="required validate-code-char" data-attr-scan="description">
+      <input type="text" id="ipt_api_type" data-type="select" class="required" data-attr-scan="type">
+    </div>
+  </div>
+
+  <div class="m-form-group">
+    <label>开放程度<spring:message code="spe.colon"/></label>
+    <div class="l-text-wrapper m-form-control essential">
+      <input type="text" id="ipt_api_openLevel" data-type="select" class="required" data-attr-scan="openLevel">
     </div>
   </div>
 
@@ -31,20 +38,6 @@
     <label>状态<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
       <input type="text" id="ipt_api_activityType" data-type="select" class="required" data-attr-scan="activityType">
-    </div>
-  </div>
-
-  <div class="m-form-group">
-    <label>开放程度<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_api_openLevel" data-type="select" class="required" data-attr-scan="openLevel">
-    </div>
-  </div>
-
-  <div class="m-form-group">
-    <label>类型<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_api_type" data-type="select" class="required" data-attr-scan="type">
     </div>
   </div>
 
@@ -69,6 +62,15 @@
         <input type="text" id="ipt_api_method" data-type="select" class="required" data-attr-scan="method">
       </div>
     </div>
+
+    <div class="m-form-group">
+      <label>描述<spring:message code="spe.colon"/></label>
+      <div class="l-text-wrapper m-form-control essential">
+        <textarea id="ipt_api_description" class="required validate-code-char" data-attr-scan="description">
+          </textarea>
+      </div>
+    </div>
+
   </div>
   <div class="m-form-group f-pa update-footer">
     <div class="m-form-control">
