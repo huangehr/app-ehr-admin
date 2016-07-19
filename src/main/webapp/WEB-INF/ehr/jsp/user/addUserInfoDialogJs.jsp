@@ -17,6 +17,7 @@
         var dialog = frameElement.dialog;
 
         var source;
+		var trees;
 
 
         /* ************************** 变量定义结束 **************************** */
@@ -52,12 +53,14 @@
             $addUserBtn: $("#div_btn_add"),
             $cancelBtn: $("#div_cancel_btn"),
             $imageShow: $("#div_file_list"),
+			$jryycyc:$("#jryycyc"),//cyctodo
 
             init: function () {
                 var self = this;
                 self.$sex.eq(0).attr("checked", 'true');
                 self.initForm();
                 self.bindEvents();
+				//this.cycToDo()//复制完记得删掉
                 self.$uploader.instance = self.$uploader.webupload({
                     server: "${contextRoot}/user/updateUser",
                     pick: {id: '#div_file_picker'},
@@ -255,8 +258,66 @@
                 self.$cancelBtn.click(function () {
                     dialog.close();
                 });
-            }
+            },
+			cycToDo:function(){
+				var self=this;
+				trees=self.$jryycyc.ligerComboBox({
+					width : 240,
+					selectBoxWidth: 238,
+					selectBoxHeight: 500, textField: 'name', treeLeafOnly: false,
+					tree: {
+						url:"${contextRoot}/user/appRolesList",
+						idFieldName:'id',
+						textFieldName:'name',
+						autoCheckboxEven:false,
+						onClick:function(e){
+							self.listTree(trees);
+						},
+						onSuccess:function(data){
+							for(var item in data) {
+								$('#'+data[item].id).children('.l-body').children('.l-checkbox').hide();
+							}
+						}
+					}
+				})
 
+				function removeSclBox(){
+					setTimeout(function(){
+						$(trees.tree).prev(".mCustomScrollBox").hide()
+					},100)
+				}
+				self.$jryycyc.on("click", removeSclBox);
+				$('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
+				self.listTreeClick(trees);
+			},//树形结构todo
+			listTree:function(trees){
+				var self=this;
+				var dataAll=trees.treeManager.data//获取所有选中的值
+				var dateTreeEd=trees.treeManager.getChecked()//获取所有选中的值
+				var liHtml="";//li拼接
+				var obj=self.$jryycyc.closest(".m-form-group");//父容器
+				$.each(dateTreeEd,function(i,v){
+					if(v.data.children==undefined){
+						var  tit="";
+						for(i=0;i<dataAll.length;i++){
+							if(v.data.pid==dataAll[i].id){
+								tit=dataAll[i].text+":"+v.data.text
+							}
+						}
+						liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
+					}
+				})
+				if(obj.find(".listree").length==0){
+					obj.append('<div class="listree"></div>')
+				}
+				$(".listree").html(liHtml);
+
+			},
+			listTreeClick:function(trees){
+				$("body").delegate(".listree a","click",function(){
+					$("li#"+$(this).attr("data-id"), trees.tree).find(".l-checkbox").click()
+				})//删除操作
+			}
         };
 
         /* ************************* 模块初始化结束 ************************** */

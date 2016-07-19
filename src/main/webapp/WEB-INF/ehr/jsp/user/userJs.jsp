@@ -111,7 +111,7 @@
 							{display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
                             {display: '操作', name: 'operator', width: '12%', render: function (row) {
 								var html = '';
-//								html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';
+								html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';
 								html += '<a class="grid_edit" title="编辑" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id, 'modify') + '"></a>';
 								html += '<a class="grid_delete" title="删除" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id, 'delete') + '"></a>';
 								return html;

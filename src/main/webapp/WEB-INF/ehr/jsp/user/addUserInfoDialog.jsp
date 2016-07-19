@@ -76,6 +76,12 @@
 			<input type="text" id="inp_major" class="max-length-150 validate-special-char"  data-attr-scan="major"/>
 		</div>
 	</div>
+	<%--<div class="m-form-group" >--%>
+		<%--<label >角色组:</label>--%>
+		<%--<div id="roleDiv" class="l-text-wrapper m-form-control essential">--%>
+			<%--<input type="text" id="jryycyc" class=" f-h28 f-w240" data-type="select" placeholder="" data-attr-scan="role">--%>
+		<%--</div>--%>
+	<%--</div>--%>
 	<div class="m-form-control pane-attribute-toolbar">
 		<div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_btn_add">
 			<span><spring:message code="btn.save"/></span>
