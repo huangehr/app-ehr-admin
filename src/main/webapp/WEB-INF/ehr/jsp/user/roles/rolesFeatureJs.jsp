@@ -50,7 +50,7 @@
 						var appRoleId = obj.id;
 						functionFeatrueType[i] = funEle[i].ligerSearchTree({
 							url: '${contextRoot}/appRole/searchFeatrueTree',
-							parms:{searchNm: '',treeType:functionType[i],appRoleId:appRoleId},
+							parms:{searchNm: '',treeType:functionType[i],appRoleId:appRoleId,appId:obj.appId},
 							idFieldName: 'id',
 							parentIDFieldName: 'parentId',
 							textFieldName: 'name',
@@ -70,22 +70,39 @@
 							},
 							onSuccess: function (data) {
 								if (Util.isStrEquals(this.id,'div_configFun_featrue_grid')){
-									var dataNew=[];
-									for(var i=0;i<data.length;i++){
-										if(data[i].parentId==0 ){
-											dataNew.push(data[i])
-										}else{
-											for(var j=0;j<data.length;j++){
-												if(data[i].parentId==data[j].id){
-													dataNew.push(data[i]);
-													break;
-												}else{
-													data[i]={};
-												}
+//									var dataNew=[];
+//									for(var i=0;i<data.length;i++){
+//										if(data[i].parentId==0 ){
+//											dataNew.push(data[i])
+//										}else{
+//											for(var j=0;j<data.length;j++){
+//												if(data[i].parentId==data[j].id){
+//													dataNew.push(data[i]);
+//													break;
+//												}else{
+//													data[i]={};
+//												}
+//											}
+//										}
+//									}
+//									functionFeatrueType[1].setData(dataNew);
+									var coun = [];
+									for (var i = 0; i < data.length; i++) {
+										var bo = true;
+										for (var j = 0; j < data.length; j++) {
+											if (Util.isStrEquals(data[i].parentId, data[j].id) || Util.isStrEquals(data[i].parentId, 0)) {
+												bo = false;
 											}
 										}
+										if (bo) {
+											coun.push(i);
+										}
+										delete data[i].children;
 									}
-									functionFeatrueType[1].setData(dataNew);
+									for (var k = 0; k < coun.length; k++) {
+										data.splice([coun[k]], 1);
+									}
+									functionFeatrueType[1].setData(data);
 								}
 								$("#div_function_featrue_grid li div span ,#div_configFun_featrue_grid li div span").css({
 									"line-height": "22px",

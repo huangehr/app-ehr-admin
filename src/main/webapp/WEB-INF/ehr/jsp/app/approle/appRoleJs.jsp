@@ -33,9 +33,11 @@
                 $appRoleGroupGrid: $("#div_appRole_group_grid"),
                 $appRoleGroupSearch: $("#inp_appRole_group_search"),
                 $addAppRoleGroupBtn: $("#div_add_appRoleGroup_btn"),
+                $appBrowseMsg: $("#div_app_browse_msg"),
 
                 init: function () {
                     var self = this;
+                    self.$appBrowseMsg.width($(window).width()-630);
                     self.$appRoleComSearch.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
                             var inpEleType = this.find('input').attr('id');
@@ -82,6 +84,7 @@
                             $.publish('app:roles', [row.id, 'sel']);
                         }
                     }));
+                    appRoleGroupGrid.adjustToWidth();
                     self.clicks();
                 },
                 reloadAppRoleGrid: function (type, appRoleId, searchParams) {
