@@ -13,7 +13,8 @@
                 list: '${contextRoot}/app/platform/list',
                 del: '${contextRoot}/app/platform/delete',
                 gotoModify: '${contextRoot}/app/platform/gotoModify',
-                manager: '${contextRoot}/app/feature/initial'
+                manager: '${contextRoot}/app/feature/initial',
+                existence: '${contextRoot}/app/platform/exsit/apiMan'
             }
 
             //跳转新增修改
@@ -24,7 +25,15 @@
             }
 
             var del = function (event, id) {
-                batchDel(grid, find, urls.del, id);
+                var rs = $.ajax({
+                    dataType: 'json',
+                    url: urls.existence+ "?id=" + id,
+                    async: false
+                })
+                if(rs.successFlg)
+                    batchDel(grid, find, urls.del, id);
+                else
+                    $.Notice.warn(rs.errorMsg);
             }
 
             //跳转新增修改
@@ -36,15 +45,30 @@
 
             //初始化工具栏
             var barTools = function(){
-                var btn = [{type: 'edit', clkFun: gotoModify}];
+                var btn = [
+                    {type: 'edit', clkFun: gotoModify}];
                 initBarBtn($('.m-retrieve-inner'), btn);
             };
 
             function opratorRender(row){
                 var vo = [
                     {type: '功能管理', clkFun: "$.publish('app:platform:manager',['"+ row['id'] +"','"+ row['name'] +"'])"},
-                    {type: 'edit', clkFun: "$.publish('app:platform:modify',['"+ row['id'] +"', 'modify'])"}];
+                    {type: 'edit', clkFun: "$.publish('app:platform:modify',['"+ row['id'] +"', 'modify'])"},
+                    {type: 'del', clkFun: "$.publish('app:platform:del',['"+ row['id'] +"'])"}];
                 return initGridOperator(vo);
+            }
+
+            var del = function (event, id) {
+                var rs = $.ajax({
+                    url: urls.existence+ "?id="+ id,
+                    dataType: 'json',
+                    async: false
+                }).responseText;
+                rs = eval('('+ rs + ')');
+                if(rs.successFlg){
+                    uniqDel(grid, searchFun, urls.del, id, "id");
+                }else
+                    $.Notice.error(rs.errorMsg);
             }
 
             //初始化表格
@@ -87,11 +111,14 @@
                 if(dataModel=='1'){
                     dataModel = '0';
                     var cacheParms = eval('('+ sessionStorage.getItem("platformParms") +')');
-                    sessionStorage.removeItem("platformParms");
-                    params = cacheParms.params;
-                    curPage = cacheParms.curPage;
-                    $parmsForm.attrScan();
-                    $parmsForm.Fields.fillValues(cacheParms.parmsForm);
+                    if(cacheParms){
+                        params = cacheParms.params;
+                        curPage = cacheParms.curPage;
+                        $parmsForm.attrScan();
+                        $parmsForm.Fields.fillValues(cacheParms.parmsForm);
+                        reloadGrid(grid, curPage, params);
+                        return;
+                    }
                 }else{
                     var vo = [
                         {name: 'name', logic: '?'},
