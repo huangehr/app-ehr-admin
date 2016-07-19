@@ -33,9 +33,9 @@
 			$btnCancel: $("#btn_cancel"),
             $jryycyc:$("#jryycyc"),//cyctodo
             init: function () {
+                this.cycToDo()//复制完记得删掉阿亮
                 this.initForm();
                 this.bindEvents();
-                this.cycToDo()//复制完记得删掉阿亮
             },
             initForm: function () {
                 this.$name.ligerTextBox({width:240});
@@ -72,10 +72,17 @@
                         id:app.id,
                         secret:app.secret,
                         url:app.url,
-                        description:app.description
+                        description:app.description,
+                        code: app.code
                     });
 					$("#inp_org_code").ligerGetComboBoxManager().setValue(app.org);
 					$("#inp_org_code").ligerGetComboBoxManager().setText(app.orgName);
+                    if(app.roleJson){
+                        var roleArr = eval('('+ app.roleJson +')');
+                        for(var k in roleArr){
+                            $("#"+ k, trees.tree).find(".l-checkbox").click()
+                        }
+                    }
                 }
                 this.$form.show();
             },
@@ -96,8 +103,15 @@
                 });
                 this.$btnSave.click(function () {
                     if(validator.validate()){
+                        var role = '';
+                        var roleDom = $(".listree li a");
+                        $.each(roleDom, function (i, v) {
+                            role += ',' + $(v).attr('data-id');
+                        })
+                        role = role.length>0? role.substring(1) : role;
                         if('${mode}' == 'new'){
                             var values = self.$form.Fields.getValues();
+                            values.role = role;
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/createApp",{data: $.extend({}, values),
                                 success: function(data) {
@@ -110,6 +124,7 @@
                                 }});
                         }else{
                             var values = self.$form.Fields.getValues();
+                            values.role = role;
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/updateApp",{data: $.extend({}, values),
                                 success: function(data) {
@@ -131,23 +146,22 @@
                 });
             },
             cycToDo:function(){
+                var treeData;
+                $.ajax({
+                    dataType: 'json',
+                    async: false,
+                    url: '${contextRoot}/app/roles/tree',
+                    success: function (data) {
+                        treeData = data.detailModelList;
+                    }
+                })
                 var self=this;
                 trees=self.$jryycyc.ligerComboBox({
                     width : 240,
                     selectBoxWidth: 238,
                     selectBoxHeight: 500, textField: 'text', treeLeafOnly: false,
-                    tree: {data:[
-                        {id: 1, "text": "产品组", "children": [
-                            {id:4,pid:1,"text": "某某1" },
-                            {id:5,pid:1,"text": "某某2" },
-                            {id:6,pid:1,"text": "某某3"},
-                            {id:7,pid:1,"text": "某某4" }
-                        ]
-                        },
-                        { id: 2,"text": "运营组","children": []},
-                        {id: 3, "text": "运维组","children": [] },
-                        {id: 4, "text": "开发组","children": [] }
-                    ],idFieldName:'text',onClick:function(e){
+                    tree: {
+                        data: treeData, idFieldName:'id', textFieldName: 'name', onClick:function(e){
                         self.listTree(trees);
                     }}
                 })
@@ -168,13 +182,9 @@
                 var liHtml="";//li拼接
                 var obj=self.$jryycyc.closest(".m-form-group");//父容器
                 $.each(dateTreeEd,function(i,v){
-                    if(v.data.children==undefined){
-                        var  tit="";
-                        for(i=0;i<dataAll.length;i++){
-                            if(v.data.pid==dataAll[i].id){
-                                tit=dataAll[i].text+":"+v.data.text
-                            }
-                        }
+                    if((v.data.children==undefined || v.data.children.length<=0) &&  v.data.type!=0){
+                        var parentText = $(trees.treeManager.getParentTreeItem( trees.treeManager.getNodeDom(v))).find('.l-body:first').find('span').html();
+                        tit = parentText+":"+v.data.name
                         liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
                     }
                 })

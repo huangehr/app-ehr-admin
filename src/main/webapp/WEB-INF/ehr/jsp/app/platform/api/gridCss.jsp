@@ -41,4 +41,13 @@
     }
 
     .l-grid-row-hide{display: none !important}
+
+    .row-icon{
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-top: 10px;
+        margin-right: 10px;
+        margin-left: 5px;
+    }
 </style>

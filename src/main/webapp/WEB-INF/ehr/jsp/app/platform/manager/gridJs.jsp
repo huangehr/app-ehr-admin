@@ -47,7 +47,9 @@
                             {
                                 display: '组织结构名称', name: 'name', id: 'name', align: 'left', width: '290',
                                 render: function (row) {
-                                    return '<div id="t_'+ row.id +'">'+ row.name +'</div>';
+                                    var iconUrl = row.iconUrl || 'develop/images/icon_Reg.png';
+                                    return '<img src="${contextRoot}/'+iconUrl+'" class="row-icon">' +
+                                            '<div id="t_'+ row.id +'">'+ row.name +'</div>';
                                 }
                             },
                             {
@@ -66,6 +68,10 @@
                         ],
                         onSelectRow: function (rowData, rowId, rowObj) {
                             em.find(rowData.id);
+                        },
+                        onDblClickRow: function (rowData, rowId, rowObj) {
+                            if( rowData.id)
+                                em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
                         }
                     }));
                 }
@@ -96,7 +102,10 @@
                         rownumbers: true,
                         usePager: false,
                         heightDiff: 20,
-                        checkbox: false
+                        checkbox: false,
+                        onDblClickRow: function (rowData, rowId, rowObj) {
+                            em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
+                        }
                     });
                 },
                 //操作栏渲染器

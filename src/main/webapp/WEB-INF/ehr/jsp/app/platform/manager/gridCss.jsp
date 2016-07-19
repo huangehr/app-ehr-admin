@@ -2,7 +2,14 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <style>
-
+    .row-icon{
+        width: 20px;
+        height: 20px;
+        float: left;
+        margin-top: 10px;
+        margin-right: 10px;
+        margin-left: 5px;
+    }
     .image-create{
         display: inline-block;
         margin-left: -4px;

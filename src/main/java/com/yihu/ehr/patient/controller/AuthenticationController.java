@@ -154,7 +154,7 @@ public class AuthenticationController extends BaseUIController {
 
     //yyyy-MM-dd HH:mm:ss 转换为yyyy-MM-dd'T'HH:mm:ss'Z 格式
     public String changeToUtc(String datetime) throws Exception{
-        Date date = DateTimeUtil.simpleDateParse(datetime);
+        Date date = DateTimeUtil.simpleDateTimeParse(datetime);
         return DateTimeUtil.utcDateTimeFormat(date);
     }
 }

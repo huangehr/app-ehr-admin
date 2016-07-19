@@ -5,7 +5,7 @@
 <div id="infoForm" data-role-form class="m-form-inline f-mt20 " data-role-form>
   <input type="hidden" id="inp_source_type"  data-attr-scan="sourceType">
   <input type="hidden" id="inp_app_tags"  data-attr-scan="tags">
-  <input type="hidden" id="inp_app_id"  data-attr-scan="id">
+  <%--<input type="hidden" id="inp_app_id"  data-attr-scan="id">--%>
   <input type="hidden" id="inp_app_status"  data-attr-scan="status">
   <input type="hidden" id="inp_app_creator"  data-attr-scan="creator">
   <input type="hidden" id="inp_app_auditor"  data-attr-scan="auditor">
@@ -21,6 +21,13 @@
     <label >应用代码:</label>
     <div class="l-text-wrapper m-form-control essential">
       <input type="text" id="inp_app_code" class="required validate-code-char ajax f-h28 f-w240" data-attr-scan="code">
+    </div>
+  </div>
+
+  <div class="m-form-group">
+    <label>内码<spring:message code="spe.colon"/></label>
+    <div class="l-text-wrapper m-form-control u-ui-readonly">
+      <input type="text" id="inp_app_id"  data-attr-scan="id"/>
     </div>
   </div>
 

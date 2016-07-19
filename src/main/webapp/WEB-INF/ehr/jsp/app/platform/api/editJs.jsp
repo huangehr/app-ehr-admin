@@ -13,7 +13,7 @@
             apiResponseLs: "${contextRoot}/app/api/response/list"
         }
         var model = ${model};
-        var mode = 'modify';
+        var mode = '${mode}' || 'modify';
         var paramTypes = ${paramTypes}.detailModelList;
         var paramTypeMap = ls2map(paramTypes, 'code', 'value');
         var dataTypes = ${dataTypes}.detailModelList;
@@ -37,8 +37,13 @@
             initForm();
             parmGrid.init();
             resGrid.init();
-            initBtn();
+//            initBtn();
             fillForm(model, $('#infoContent'));
+            if(mode=='view'){
+                $('#infoContent').addClass('m-form-readonly');
+                $('#btn_save').hide();
+                $('.l-button').hide();
+            }
         };
 
         //数据验证
@@ -90,20 +95,22 @@
 
         var initForm = function () {
             var vo = [
-                {type: 'text', id: 'ipt_api_name'},
-                {type: 'text', id: 'ipt_api_description'},
-                {type: 'select', id: 'ipt_api_type', dictId: 46, opts: {disabled: true}},
-                {type: 'select', id: 'ipt_api_openLevel', dictId: 40},
-                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41},
-                {type: 'select', id: 'ipt_api_activityType', dictId: 43},
-                {type: 'text', id: 'ipt_api_version'},
-                {type: 'select', id: 'ipt_api_protocol', dictId: 44},
-                {type: 'select', id: 'ipt_api_method', dictId: 45}
+                {type: 'text', id: 'ipt_api_name', width: $('#div_name').width()-140},
+                {type: 'text', id: 'ipt_api_description', width: $('#div_des').width()-150},
+                {type: 'select', id: 'ipt_api_type', dictId: 46, opts: {disabled: true, width: $('#div_type').width()-140}},
+                {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{width: $('#div_open').width()-140}},
+                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41, opts: {width: $('#div_audit').width()-140}},
+                {type: 'select', id: 'ipt_api_activityType', dictId: 43, opts: { width: $('#div_status').width()-140}},
+                {type: 'text', id: 'ipt_api_version', width: $('#div_version').width()-140},
+                {type: 'select', id: 'ipt_api_protocol', dictId: 44, opts: {width: $('#div_protocol').width()-140}},
+                {type: 'select', id: 'ipt_api_method', dictId: 45, opts: {width: $('#div_method').width()-140}}
             ];
             initFormFields(vo);
         };
-
+        var i=0;
         var initBtn = function () {
+            if(i!=1) return;
+            i++;
             var $form =  $("#infoContent");
             var validator = initValidate($form, function (elm) {
                 var field = $(elm).attr('id');
@@ -189,12 +196,22 @@
                     }, editor: {type:"select", data: requiredTypes, valueField: 'code', textField: 'value',  reg: 'required'}},
                     {display: '默认值', name: 'defaultValue', width: '10%', align: 'left', editor: {type:"text"}},
                     {display: '说明', name: 'description', width: '20%', align: 'left', editor: {type:"text"}},
-                    {display: '备注', name: 'memo', width: '10%', align: 'left', editor: {type:"text"}},
-                    {display: '操作', name: 'operator', width: '10%', render: this.opratorRender}];
-
+                    {display: '备注', name: 'memo', width: mode=='view'?'20%':'10%', align: 'left', editor: {type:"text"}}];
+                if(mode!='view'){
+                    columns.push({display: '操作', name: 'operator', width: '10%', render: this.opratorRender});
+                }
                 this.grid = initGridDef($('#parmsGrid'), urls.apiParameterLs, {}, columns,
-                        {delayLoad: true, checkbox: false, usePager: false, height:70, rownumbers: false, enabledEdit: true, editorTopDiff: 0,
-                            onBeforeSubmitEdit: onBeforeSubmitEdit});
+                        {delayLoad: true, checkbox: false, usePager: false, height:70, rownumbers: false, enabledEdit: mode!='view', editorTopDiff: 0,
+                            onBeforeSubmitEdit: onBeforeSubmitEdit,
+                            onSuccess: function (data) {
+                                if(data.successFlg){
+                                    initBtn();
+                                    var g= parmGrid.grid;
+                                    g.setHeight(g.options.height+= 41*data.detailModelList.length);
+                                }else
+                                    $.Notice.error("参数列表加载失败！");
+                            }
+                        });
                 this.searchFun();
                 $('.l-scroll', $('#parmsGrid')).css('overflow', 'hidden');
             },
@@ -237,12 +254,21 @@
                         editor: {type:"select", data: dataTypes,  valueField: 'code', textField: 'value',  reg: 'required'}},
                     {display: '说明', name: 'description', width: '30%', align: 'left',
                         editor: {type:"text"}},
-                    {display: '备注', name: 'memo', width: '20%', align: 'left',
-                        editor: {type:"text"}},
-                    {display: '操作', name: 'operator', width: '10%', render: this.opratorRender}];
-
+                    {display: '备注', name: 'memo', width: mode=='view'?'30%':'20%', align: 'left',
+                        editor: {type:"text"}}
+                    ];
+                if(mode!='view'){
+                    columns.push({display: '操作', name: 'operator', width: '10%', render: this.opratorRender});
+                }
                 this.grid = initGridDef($('#responseGrid'), urls.apiResponseLs, {}, columns, {delayLoad: true, checkbox: false, usePager: false, height: 70,
-                    rownumbers: false, enabledEdit: true, editorTopDiff: 0, onBeforeSubmitEdit: onBeforeSubmitEdit});
+                    rownumbers: false, enabledEdit: mode!='view', editorTopDiff: 0, onBeforeSubmitEdit: onBeforeSubmitEdit, onSuccess: function (data) {
+                        if(data.successFlg){
+                            initBtn();
+                            var g= resGrid.grid;
+                            g.setHeight(g.options.height+= 41*data.detailModelList.length);
+                        }else
+                            $.Notice.error("返回值列表加载失败！");
+                    }});
                 this.searchFun();
                 $('.l-scroll', $('#responseGrid')).css('overflow', 'hidden');
             },

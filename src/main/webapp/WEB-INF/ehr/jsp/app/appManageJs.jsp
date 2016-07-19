@@ -80,7 +80,7 @@
                 grid: null,
                 init: function () {
                     this.grid = $("#div_app_info_grid").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/app/searchApps',
+                        url: '${contextRoot}/app/searchApps?sourceType=0',
                         parms: {
 							searchNm:searchParms.searchNm,
 							org: searchParms.org,
