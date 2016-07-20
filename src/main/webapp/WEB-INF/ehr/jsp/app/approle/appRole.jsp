@@ -21,7 +21,7 @@
         </div>
     </div>
     <!--应用角色组部分-->
-    <div id="div_resource_browse_msg" class="div-app-role ">
+    <div id="div_app_browse_msg" class="div-app-role" style="width: 70%">
 
         <div class="f-mt10 f-ml10 f-fl f-mb10 f-mw99">
             <!--输入框-->

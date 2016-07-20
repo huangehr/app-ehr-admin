@@ -9,14 +9,14 @@
             existence: "${contextRoot}/app/api/existence",
             apiEdit: "${contextRoot}/app/api/edit",
             list: "${contextRoot}/app/api/list",
-            appCombo: "${contextRoot}/app/searchApps"
+            appCombo: "${contextRoot}/app/platform/list"
         }
         var model = ${model};
         var mode = '${mode}';
         var extParms = parent.getEditParms();//其他信息
         var hasChildType;
         var getChild = function (){
-            if(mode=='modify' || extParms.upType==-1)
+            if(mode=='modify' || mode=='view' || extParms.upType==-1)
                 return;
             $.ajax({
                 url: urls.list,
@@ -53,7 +53,7 @@
         var appCombo;
         var initForm = function () {
             var vo = [
-                {type: 'text', id: 'ipt_api_description'},
+                {type: 'text', id: 'ipt_api_description', opts: {height: 100}},
                 {type: 'select', id: 'ipt_api_type', dictId: 46, opts: {disabled: mode=='modify', onSuccess: function (data) {
                         if(mode=='new'){
                             var newData = [];
@@ -101,10 +101,20 @@
 
             if(extParms.upType==-1 || model.type==2)
                 appCombo = $('#ipt_api_name').customCombo(
-                        urls.appCombo, {}, function (id, name) {
+                        urls.appCombo, {fields: 'id,name', filters: 'sourceType=1'}, function (id, name) {
                             $('#ipt_api_name').blur();
                             $('#appId').val(appCombo.getLigerComboBox().getSelected().id);
-                        }, undefined, false, {selectBoxHeight: 280, valueField: 'name', disabled: mode='modify'});
+                        }, undefined, false, {selectBoxHeight: 280, valueField: 'name', disabled: mode=='modify',
+                            conditionSearchClick: function(g){
+                                var searchParm = g.rules.length > 0 ? g.rules[0].value : '';
+                                var parms = g.grid.get("parms");
+                                parms.filters = 'sourceType=1;name?'+searchParm+' g1';
+                                g.grid.set({
+                                    parms: parms,
+                                    newPage: 1
+                                });
+                                g.grid.reload();
+                            }});
             else
                 vo.push({type: 'text', id: 'ipt_api_name'});
             initFormFields(vo);
@@ -118,7 +128,7 @@
                         if(data.obj.type==1){
                             $.Notice.confirm("保存成功，是否继续编辑接口详细信息？", function (y) {
                                 if(y){
-                                    var url = urls.apiEdit + '?treePid=1&treeId=11';
+                                    var url = urls.apiEdit + '?treePid=1&treeId=11&mode=modify';
                                     parent.closeDialog();
                                     $("#contentPage").empty();
                                     $("#contentPage").load(url, data.obj);
@@ -145,6 +155,10 @@
             fillForm(model, $('#infoForm'));
             if(mode=='modify' && appCombo){
                 orgCombo.setValueText(model.org, model.orgName);
+            }else if(mode=='view'){
+                $('#infoForm').addClass('m-form-readonly');
+                $('#btn_save').hide();
+
             }
         }();
 

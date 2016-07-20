@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="f-mw100">
-        <div class="f-mw50 f-ds1 f-fl div-appRole-grid-scrollbar" style="height: 450px">
+        <div class="f-mw50 f-ds1 f-fl f-ml10 div-appRole-grid-scrollbar" style="height: 450px">
             <div class="f-mw100 f-fl f-mt5 f-mb5">
                 <label class="f-lh30 f-ml10 f-fl lab-title-msg">功能权限：</label>
                 <div class="f-fl">
@@ -27,7 +27,7 @@
             <div id="div_function_featrue_grid"></div>
             <div id="div_api_featrue_grid" class="f-dn"></div>
         </div>
-        <div class="f-mw50 f-ds1 f-fr div-appRole-grid-scrollbar" style="height: 450px">
+        <div class="f-mw50 f-ds1 f-fr f-mr10 div-appRole-grid-scrollbar" style="height: 450px">
             <label class="f-mt10 f-ml10 f-mh26">已配置权限</label>
             <hr class="f-mt5 f-mb10">
             <div id="div_configFun_featrue_grid">

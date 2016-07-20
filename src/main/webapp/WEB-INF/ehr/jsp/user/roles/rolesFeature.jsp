@@ -18,7 +18,7 @@
 				<div class="f-mw100 f-fl f-mt5 f-mb5">
 					<label class="f-lh30 f-ml10 f-fl lab-title-msg">功能权限：</label>
 					<div class="f-fl">
-						<input type="text" id="inp_fun_featrue_search" placeholder="请输入接入应用的名称" class="f-ml10"/>
+						<input type="text" id="inp_fun_featrue_search" placeholder="请输入名称" class="f-ml10"/>
 					</div>
 				</div>
 				<hr class="f-mt5 f-mb10 f-mw100">
