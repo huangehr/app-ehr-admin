@@ -223,6 +223,12 @@
                     });
                     //新增系统字典明细弹出窗口点击事件
                     self.$addSystemDictEntity.click(function () {
+                        var systemDictId = master.$systemDictId.val();
+                        if (Util.isStrEquals(systemDictId,'30')){
+                            self.$systemDictEntityCatalog.addClass("mateDate-logic-conditions")
+                        }else{
+                            self.$systemDictEntityCatalog.removeClass("mateDate-logic-conditions")
+                        }
                         self.$systemDictEntityCode.val("");
                         self.$systemDictEntityValue.val("");
                         self.$systemDictEntitySort.val("");
@@ -251,6 +257,12 @@
                     //修改系统字典 详情 弹出窗口点击事件
                     $.subscribe('systemDictEntity:systemDictEntityInfoModifyDialog:update', function (event, code, value, sort, catalog) {
                         isSaveEntitySelectStatus = true;
+                        var systemDictId = master.$systemDictId.val();
+                        if (Util.isStrEquals(systemDictId,'30')){
+                            self.$updateSystemDictEntityCatalog.addClass("mateDate-logic-conditions")
+                        }else{
+                            self.$updateSystemDictEntityCatalog.removeClass("mateDate-logic-conditions")
+                        }
                         self.$updateSystemDictEntityCode.val(code);
                         self.$updateSystemDictEntityValue.val(value);
                         self.$updateSystemDictEntitySort.val(sort);
@@ -349,8 +361,10 @@
                             var value = self.$systemDictEntityValue.val();
                             var sort = self.$systemDictEntitySort.val();
                             var catalog = self.$systemDictEntityCatalog.val();
-
                             var systemDictId = master.$systemDictId.val();
+                            if (Util.isStrEquals(systemDictId,'30')){
+                                catalog = catalog.replace('，',',');
+                            }
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote('${contextRoot}/dict/createDictEntry', {
                                 data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
@@ -369,6 +383,7 @@
                     validateEntityAdd.reset();//还原
                 },
                 updateSystemEntityDialog: function () {
+
                     var self = this;
                     updateSystemDictEntityDialog = $.ligerDialog.open({
                         title: '修改字典详情',
@@ -385,8 +400,10 @@
                             var value = self.$updateSystemDictEntityValue.val();
                             var sort = self.$updateSystemDictEntitySort.val();
                             var catalog = self.$updateSystemDictEntityCatalog.val();
-
                             var systemDictId = master.$systemDictId.val();
+                            if (Util.isStrEquals(systemDictId,'30')){
+                                catalog = catalog.replace('，',',');
+                            }
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote('${contextRoot}/dict/updateDictEntry', {
                                 data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},

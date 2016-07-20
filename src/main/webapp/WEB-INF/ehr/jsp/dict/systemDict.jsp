@@ -84,7 +84,7 @@
             <div class="m-form-group">
                 <label>分类:</label>
                 <div class="l-text-wrapper m-form-control">
-                    <input type="text" id="inp_systemDictEntity_catalog" class="max-length-32" />
+                    <input type="text" id="inp_systemDictEntity_catalog" class="max-length-32 validate-logic-conditions" />
                 </div>
             </div>
             <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_addSystemDictEntity_btn">
@@ -115,7 +115,7 @@
             <div class="m-form-group">
                 <label>分类:</label>
                 <div class="l-text-wrapper m-form-control">
-                    <input type="text" id="inp_update_systemDictEntity_catalog" data-attr-scan="catalog"  />
+                    <input type="text" id="inp_update_systemDictEntity_catalog" data-attr-scan="catalog" class="validate-logic-conditions"  />
                 </div>
             </div>
             <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_update_SystemDictEntity_btn">
