@@ -190,13 +190,14 @@
                     }else{
                         var params;
                         if(mode == 'new'){
-                            em.params = {upType: type, upId: id, frm: frm, appId: p[0], rowId: rowId, appId: appId}
+                            em.params = {upType: type, upId: id, frm: frm, rowId: rowId, appId: appId}
                             params = {mode: mode}
                         }else{
                             em.params = {frm: frm,  rowId: rowId}
                             params = {id: id, mode: mode, rowId: rowId}
                         }
-                        em.dialog = openedDialog = openDialog(urls.gotoModify, mode == 'new'?'新增':'修改', 480, 600, params);
+                        em.dialog = openedDialog = openDialog(urls.gotoModify,
+                                mode == 'new'?'新增': mode == 'modify'? '修改': '查看', 480, 600, params);
                     }
                 },
                 del: function (event, id, frm, rowId, parentId, type) {
@@ -261,8 +262,7 @@
                         {name: 'parentId', logic: '='}];
                     var $form = $('#r_searchForm');
                     $form.attrScan();
-                    em.params = $form.Fields.getValues();
-                    sessionStorage.setItem("appApiEm", JSON.stringify(em.params));
+                    sessionStorage.setItem("appApiEm", JSON.stringify($form.Fields.getValues()));
                     var params = {filters: covertFilters(vo, $form), page: 1, rows: 999};
                     reloadGrid(em.grid, 1, params);
                 },

@@ -15,6 +15,7 @@
         var initForm = function () {
             var vo = [
                 {type: 'text', id: 'inp_app_name'},
+                {type: 'text', id: 'inp_app_id'},
                 {type: 'text', id: 'inp_app_code'},
                 {type: 'text', id: 'inp_app_secret', opts:{readonly: true}},
                 {type: 'select', id: 'inp_dialog_catalog', dictId: 1},
