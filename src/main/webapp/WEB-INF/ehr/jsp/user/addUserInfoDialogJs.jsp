@@ -60,7 +60,7 @@
                 self.$sex.eq(0).attr("checked", 'true');
                 self.initForm();
                 self.bindEvents();
-				//this.cycToDo()//复制完记得删掉
+				this.cycToDo()//复制完记得删掉
                 self.$uploader.instance = self.$uploader.webupload({
                     server: "${contextRoot}/user/updateUser",
                     pick: {id: '#div_file_picker'},
@@ -213,6 +213,8 @@
                 this.$addUserBtn.click(function () {
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
+					var roles = addUserInfo.roleIds(addUser.role);
+					addUser.role = roles;
                     if (validator.validate()) {
                         var organizationKeys = addUser.organization['keys'];
 
@@ -269,14 +271,15 @@
 						url:"${contextRoot}/user/appRolesList",
 						idFieldName:'id',
 						textFieldName:'name',
-						autoCheckboxEven:false,
+						//autoCheckboxEven:false,
+						isExpand:true,
 						onClick:function(e){
 							self.listTree(trees);
 						},
 						onSuccess:function(data){
-							for(var item in data) {
-								$('#'+data[item].id).children('.l-body').children('.l-checkbox').hide();
-							}
+//							for(var item in data) {
+//								$('#'+data[item].id).children('.l-body').children('.l-checkbox').hide();
+//							}
 						}
 					}
 				})
@@ -297,11 +300,11 @@
 				var liHtml="";//li拼接
 				var obj=self.$jryycyc.closest(".m-form-group");//父容器
 				$.each(dateTreeEd,function(i,v){
-					if(v.data.children==undefined){
+					if(v.data.children==null){
 						var  tit="";
 						for(i=0;i<dataAll.length;i++){
 							if(v.data.pid==dataAll[i].id){
-								tit=dataAll[i].text+":"+v.data.text
+								tit=dataAll[i].name+":"+v.data.name
 							}
 						}
 						liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
@@ -317,6 +320,19 @@
 				$("body").delegate(".listree a","click",function(){
 					$("li#"+$(this).attr("data-id"), trees.tree).find(".l-checkbox").click()
 				})//删除操作
+			},
+			roleIds:function(addUserRole){//得到的角色组ids过滤，去除应用id
+				if(!addUserRole){
+					return '';
+				}
+				var dateTreeEd=trees.treeManager.getChecked();
+				var roleArray = [];
+				for(var i in dateTreeEd){
+					if(!Util.isStrEquals(dateTreeEd[i].data.type,"0")){
+						roleArray.push(dateTreeEd[i].data.id)
+					}
+				}
+				return roleArray.join(",");
 			}
         };
 

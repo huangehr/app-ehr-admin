@@ -72,10 +72,10 @@
 			$jryycyc:$("#jryycyc"),//cyctodo
 
             init: function () {
-                var self = this;
+				var self = this;
+				this.cycToDo()//复制完记得删掉
                 self.initForm();
                 self.bindEvents();
-				//this.cycToDo()//复制完记得删掉
                 //self.$uploader.webupload();
                 self.$uploader.instance = self.$uploader.webupload({
                     server: "${contextRoot}/user/updateUser",
@@ -97,6 +97,36 @@
                     win.reloadMasterUpdateGrid();
                 });
             },
+			cycToDo:function(){
+				var self=this;
+				var treeData;
+				$.ajax({
+					dataType: 'json',
+					async: false,
+					url: '${contextRoot}/user/appRolesList',
+					success: function (data) {
+						treeData = data;
+					}
+				})
+				trees=self.$jryycyc.ligerComboBox({
+					width : 240,
+					selectBoxWidth: 238,
+					selectBoxHeight: 500, textField: '', treeLeafOnly: false,
+					tree: {
+						data: treeData, idFieldName:'id', textFieldName: 'name', onClick:function(e){
+							self.listTree(trees);
+						}},
+				})
+
+				function removeSclBox(){
+					setTimeout(function(){
+						$(trees.tree).prev(".mCustomScrollBox").hide()
+					},100)
+				}
+				self.$jryycyc.on("click", removeSclBox);
+				$('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
+				self.listTreeClick(trees);
+			},//树形结构todo
             initForm: function () {
                 var self = this;
                 this.$form.removeClass("m-form-readonly");
@@ -188,6 +218,12 @@
                     startTime: user.startTime,
                     sourceName:user.sourceName,
                 });
+				if(user.role){
+					var roleArr = user.role.split(",") ;
+					for(var k in roleArr){
+						$("#"+ roleArr[k], trees.tree).find(".l-checkbox").click()
+					}
+				}
                 self.$publicKeyMessage.val(user.publicKey);
                 self.$publicKeyValidTime.html(user.validTime);
                 self.$publicKeyStartTime.html(user.startTime);
@@ -260,8 +296,8 @@
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
+						userModel.role = userInfo.roleIds(userModel.role);
                         var organizationKeys = userModel.organization['keys'];
-
                         userModel.organization = organizationKeys[2];
                         if (userImgHtml == 0) {
                             updateUser(userModel);
@@ -366,39 +402,7 @@
                 })
                 self.$userType.removeClass("l-text-focus")
             },
-			cycToDo:function(){
-				var self=this;
-				trees=self.$jryycyc.ligerComboBox({
-					width : 240,
-					selectBoxWidth: 238,
-					selectBoxHeight: 500, textField: 'text', treeLeafOnly: false,
-					tree: {
-						url:'${contextRoot}/userRoles/searchApps',
-						data:[
-						{id: 1, "text": "产品组", "children": [
-							{id:4,pid:1,"text": "某某1" },
-							{id:5,pid:1,"text": "某某2" },
-							{id:6,pid:1,"text": "某某3"},
-							{id:7,pid:1,"text": "某某4" }
-						]
-						},
-						{ id: 2,"text": "运营组","children": []},
-						{id: 3, "text": "运维组","children": [] },
-						{id: 4, "text": "开发组","children": [] }
-					],idFieldName:'text',onClick:function(e){
-						self.listTree(trees);
-					}}
-				})
 
-				function removeSclBox(){
-					setTimeout(function(){
-						$(trees.tree).prev(".mCustomScrollBox").hide()
-					},100)
-				}
-				self.$jryycyc.on("click", removeSclBox);
-				$('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
-				self.listTreeClick(trees);
-			},//树形结构todo
 			listTree:function(trees){
 				var self=this;
 				var dataAll=trees.treeManager.data//获取所有选中的值
@@ -406,11 +410,11 @@
 				var liHtml="";//li拼接
 				var obj=self.$jryycyc.closest(".m-form-group");//父容器
 				$.each(dateTreeEd,function(i,v){
-					if(v.data.children==undefined){
+					if(v.data.children==null){
 						var  tit="";
 						for(i=0;i<dataAll.length;i++){
 							if(v.data.pid==dataAll[i].id){
-								tit=dataAll[i].text+":"+v.data.text
+								tit=dataAll[i].name+":"+v.data.name
 							}
 						}
 						liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
@@ -421,10 +425,24 @@
 				}
 				$(".listree").html(liHtml);
 
-			},listTreeClick:function(trees){
+			},
+			listTreeClick:function(trees){
 				$("body").delegate(".listree a","click",function(){
 					$("li#"+$(this).attr("data-id"), trees.tree).find(".l-checkbox").click()
 				})//删除操作
+			},
+			roleIds:function(addUserRole){//得到的角色组ids过滤，去除应用id
+				if(!addUserRole){
+					return '';
+				}
+				var dateTreeEd=trees.treeManager.getChecked();
+				var roleArray = [];
+				for(var i in dateTreeEd){
+					if(!Util.isStrEquals(dateTreeEd[i].data.type,"0")){
+						roleArray.push(dateTreeEd[i].data.id)
+					}
+				}
+				return roleArray.join(",");
 			}
         };
 
