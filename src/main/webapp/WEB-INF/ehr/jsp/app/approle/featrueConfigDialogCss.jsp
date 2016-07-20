@@ -4,7 +4,7 @@
 <style>
 
     .f-mw100{ width:100%; }
-    .f-mw50{ width:49%;}
+    .f-mw50{ width:48%;}
     .f-ds1{ border: 1px solid #D6D6D6; }
     .f-mh26{ height: 26px }
 </style>

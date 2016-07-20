@@ -178,10 +178,11 @@ public class UserRolesController extends BaseUIController {
 
     @RequestMapping("/isNameExistence")
     @ResponseBody
-    public Object isNameExistence(String name){
+    public Object isNameExistence(String appId,String name){
         try{
             Map<String,Object> params = new HashMap<>();
             params.put("name",name);
+            params.put("app_id",appId);
             String url = ServiceApi.Roles.RoleNameExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
@@ -192,10 +193,11 @@ public class UserRolesController extends BaseUIController {
     }
     @RequestMapping("/isCodeExistence")
     @ResponseBody
-    public Object isCodeExistence(String code){
+    public Object isCodeExistence(String appId,String code){
         try{
             Map<String,Object> params = new HashMap<>();
             params.put("code",code);
+            params.put("app_id",appId);
             String url = ServiceApi.Roles.RoleCodeExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;

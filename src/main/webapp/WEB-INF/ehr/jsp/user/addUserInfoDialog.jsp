@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <!--######用户管理页面 > 用户信息对话框模板页######-->
-<div id="div_addUser_form" data-role-form class="m-form-inline f-mt20 f-pb30 f-dn" style="overflow:auto">
+<div id="div_addUser_form" data-role-form class="m-form-inline f-mt20 f-pb10 f-dn" style="overflow:auto" >
 	<div id="div_user_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
 		<!--用来存放item-->
 		<div id="div_file_list" class="uploader-list"></div>
@@ -76,12 +76,12 @@
 			<input type="text" id="inp_major" class="max-length-150 validate-special-char"  data-attr-scan="major"/>
 		</div>
 	</div>
-	<%--<div class="m-form-group" >--%>
-		<%--<label >角色组:</label>--%>
-		<%--<div id="roleDiv" class="l-text-wrapper m-form-control essential">--%>
-			<%--<input type="text" id="jryycyc" class=" f-h28 f-w240" data-type="select" placeholder="" data-attr-scan="role">--%>
-		<%--</div>--%>
-	<%--</div>--%>
+	<div class="m-form-group" >
+		<label >角色组:</label>
+		<div id="roleDiv" class="l-text-wrapper m-form-control essential" >
+			<input type="text" id="jryycyc" class="required useTitle f-h28 f-w240 f-dn" required-title=<spring:message code="lbl.must.input"/> data-type="select" placeholder="请选择所属角色组" data-attr-scan="role">
+		</div>
+	</div>
 	<div class="m-form-control pane-attribute-toolbar">
 		<div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_btn_add">
 			<span><spring:message code="btn.save"/></span>
