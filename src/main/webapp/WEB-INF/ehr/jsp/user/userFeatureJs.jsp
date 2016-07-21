@@ -35,6 +35,7 @@
 				});
 				this.appRolesGrid = $("#div_app_roles_grid").ligerGrid($.LigerGridEx.config({
 					url: '${contextRoot}/user/appRoles',
+					parms:{userId:userId},
 					columns: [
 						{name: 'appId', hide: true, isAllowHide: false},
 						{name: 'roleId', hide: true, isAllowHide: false},

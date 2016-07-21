@@ -523,10 +523,10 @@ public class UserController extends BaseUIController {
         return "simpleView";
     }
 
-    //获取应用-用户角色组关系列表
+    //获取应用-用户角色组关系列表,用于查看权限
     @RequestMapping("/appRoles")
     @ResponseBody
-    public Object getAppRoles(){
+    public Object getAppRoles(String userId){
         //角色组类型字典：应用角色（type="0"）/用户角色（type="1"）
         //应用分类字典：平台应用（sourceType="1"）/接入应用（sourcetype="0")
         String type = "1";
@@ -536,6 +536,7 @@ public class UserController extends BaseUIController {
             Map<String,Object> params = new HashMap<>();
             params.put("type",type);
             params.put("source_type",sourceType);
+            params.put("user_id",userId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
