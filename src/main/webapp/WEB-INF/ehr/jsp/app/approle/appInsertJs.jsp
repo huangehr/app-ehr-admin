@@ -10,6 +10,7 @@
             var obj = ${jsonStr};
             var gridType = ['configAppInsertGrid', 'appInsertGrid'];
             var dataModel = $.DataModel.init();
+            var configAppInsertGrid = null;
 
             function pageInit() {
                 master.init();
@@ -36,12 +37,12 @@
                     for (var i = 0; i < gridType.length; i++) {
                         var name = null;
                         var checkboxBo = null;
-                        if (Util.isStrEquals(i, 1)){
+                        if (Util.isStrEquals(i, 1)) {
                             name = "name";
                             checkboxBo = true;
-                        }else{
+                        } else {
                             checkboxBo = false;
-                            name="appName";
+                            name = "appName";
                         }
                         gridType[i] = ele[i].ligerGrid($.LigerGridEx.config({
                             url: '${contextRoot}/appRole/searchInsertApps',
@@ -53,6 +54,7 @@
                             async: true,
                             columns: [{display: '应用名称', name: name, width: '100%'}],
                             onCheckRow: function (checked, data, rowid, rowdata) {
+                                configAppInsertGrid = null;
                                 dataModel.updateRemote("${contextRoot}/appRole/updateAppInsert", {
                                     data: {appInsertId: data.id, appRoleId: obj.id, updateType: checked},
                                     success: function (data) {
@@ -67,7 +69,16 @@
                                 if (Util.isStrEquals(i, 1)) {
                                     return;
                                 }
-                                var configAppInsertGrid = gridType[0].data.detailModelList;
+                                if (Util.isStrEmpty(configAppInsertGrid)) {
+                                    dataModel.updateRemote("${contextRoot}/appRole/searchInsertApps", {
+                                        data: {searchNm: '', gridType: "configAppInsertGrid", appRoleId: obj.id, page: 1, rows: gridType[0].data.totalCount},
+                                        async: false,
+                                        success: function (data) {
+                                            configAppInsertGrid = data.detailModelList;
+                                        }
+                                    });
+                                }
+//                                var configAppInsertGrid = gridType[0].data.detailModelList;
                                 for (var i = 0; i < configAppInsertGrid.length; i++) {
                                     if (Util.isStrEquals(row.id, configAppInsertGrid[i].appId)) {
                                         bo = true
@@ -81,7 +92,7 @@
                     self.clicks();
                 },
                 reloadAppInsetrGrid: function (value, grid, type) {
-                    value = {searchNm: value, gridType: type,appRoleId: obj.id};
+                    value = {searchNm: value, gridType: type, appRoleId: obj.id};
                     reloadGrid.call(this, '${contextRoot}/appRole/searchInsertApps', value, grid, type);
                 },
                 clicks: function () {
