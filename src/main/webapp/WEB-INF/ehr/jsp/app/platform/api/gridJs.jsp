@@ -307,6 +307,10 @@
                     }else{
                         var rowDom = em.grid.getRow(em.params.rowId);
                         em.grid.updateRow(rowDom, data.obj);
+                        if(data.obj.type!=1){
+                            rowDom = $('#t_'+ data.obj.id, $('#treeMenu')).parent().parent().parent().parent().parent();
+                            master.tree.updateRow(rowDom, data.obj);
+                        }
                     }
                 }
             }
