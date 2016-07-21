@@ -191,7 +191,7 @@
 											isFirstPage = false;
 											rolesMaster.reloadRolesGrid();
 										}else{
-											$.Notice.error('删除失败。');
+											$.Notice.error(data.errorMsg);
 										}
 									}
 								});
