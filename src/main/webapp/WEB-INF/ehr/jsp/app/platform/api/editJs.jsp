@@ -211,7 +211,13 @@
                         {delayLoad: true, checkbox: false, usePager: false, height:70, rownumbers: false, enabledEdit: mode!='view', editorTopDiff: 0,
                             onBeforeSubmitEdit: onBeforeSubmitEdit,
                             onSuccess: function (data) {
-                                if(data.successFlg) initBtn();
+                                if(data.successFlg) {
+                                    if(data.detailModelList.length==0) {
+                                        this.options.height = 70;
+                                        this.setHeight(this.options.height);
+                                    }
+                                    if(mode=='modify') initBtn();
+                                }
                                 else $.Notice.error("参数列表加载失败！");
                             },
                             onAfterShowData: onAfterShowData
@@ -265,7 +271,13 @@
                 this.grid = initGridDef($('#responseGrid'), urls.apiResponseLs, {}, columns, {delayLoad: true, checkbox: false, usePager: false, height: 70,
                     rownumbers: false, enabledEdit: mode!='view', editorTopDiff: 0, onBeforeSubmitEdit: onBeforeSubmitEdit,
                     onSuccess: function (data) {
-                        if(data.successFlg) initBtn();
+                        if(data.successFlg) {
+                            if(data.detailModelList.length==0) {
+                                this.options.height = 70;
+                                this.setHeight(this.options.height);
+                            }
+                            if(mode=='modify') initBtn();
+                        }
                         else $.Notice.error("返回值列表加载失败！");
                     },onAfterShowData: onAfterShowData
                 });
