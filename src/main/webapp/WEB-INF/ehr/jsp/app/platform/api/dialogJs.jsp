@@ -91,8 +91,8 @@
                         validator.reset();
                     }
                 }},
-                {type: 'select', id: 'ipt_api_openLevel', dictId: 40},
-                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41},
+                {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{initVal: '1'}},
+                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41, opts:{initVal: '1'}},
                 {type: 'select', id: 'ipt_api_activityType', dictId: 43},
                 {type: 'text', id: 'ipt_api_version'},
                 {type: 'select', id: 'ipt_api_protocol', dictId: 44},
@@ -102,13 +102,15 @@
             if(extParms.upType==-1 || model.type==2)
                 appCombo = $('#ipt_api_name').customCombo(
                         urls.appCombo, {fields: 'id,name', filters: 'sourceType=1'}, function (id, name) {
-                            $('#ipt_api_name').blur();
-                            $('#appId').val(appCombo.getLigerComboBox().getSelected().id);
+                            if(appCombo.getLigerComboBox().getSelected())
+                                $('#appId').val(appCombo.getLigerComboBox().getSelected().id);
                         }, undefined, false, {selectBoxHeight: 280, valueField: 'name', disabled: mode=='modify',
                             conditionSearchClick: function(g){
                                 var searchParm = g.rules.length > 0 ? g.rules[0].value : '';
                                 var parms = g.grid.get("parms");
-                                parms.filters = 'sourceType=1;name?'+searchParm+' g1';
+                                parms.filters = 'sourceType=1;';
+                                if(searchParm)
+                                    parms.filters += 'name?'+searchParm+' g1';
                                 g.grid.set({
                                     parms: parms,
                                     newPage: 1
@@ -154,11 +156,10 @@
             initBtn();
             fillForm(model, $('#infoForm'));
             if(mode=='modify' && appCombo){
-                orgCombo.setValueText(model.org, model.orgName);
+                appCombo.setValueText(model.appId, model.name);
             }else if(mode=='view'){
                 $('#infoForm').addClass('m-form-readonly');
                 $('#btn_save').hide();
-
             }
         }();
 

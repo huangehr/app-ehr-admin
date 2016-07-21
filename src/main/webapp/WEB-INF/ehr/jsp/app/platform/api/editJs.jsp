@@ -29,6 +29,7 @@
             $('#btn_back').click(back);
         }();
         var reInit= function () {
+            timer = 0;
             parmGrid.searchFun();
             resGrid.searchFun();
             fillForm(model, $('#infoContent'));
@@ -107,10 +108,10 @@
             ];
             initFormFields(vo);
         };
-        var i=0;
+        var timer=0;
         var initBtn = function () {
-            if(i!=1) return;
-            i++;
+            timer++;
+            if(timer!=2) return;
             var $form =  $("#infoContent");
             var validator = initValidate($form, function (elm) {
                 var field = $(elm).attr('id');
@@ -160,6 +161,13 @@
             });
         };
 
+        var onAfterShowData= function (data) {
+            var g= this;
+            var delData = g.getDeleted();
+            g.options.height = 70 + 41*(data.detailModelList.length - (delData? delData.length: 0));
+            g.setHeight(g.options.height);
+        }
+
         //参数列表
         var parmGrid = {
             grid: undefined,
@@ -171,7 +179,6 @@
                 var m = this;
                 var btn = [{type: 'edit', clkFun: function () {
                     m.grid.append({id:0, name: 'param', type: '0', dataType: 'DATE', required: '0', defaultValue: '', description: '', memo: ''});
-                    m.grid.setHeight(m.grid.options.height+=41);
                 }}];
                 initBarBtn($('#parmsForm'), btn);
             },
@@ -204,13 +211,16 @@
                         {delayLoad: true, checkbox: false, usePager: false, height:70, rownumbers: false, enabledEdit: mode!='view', editorTopDiff: 0,
                             onBeforeSubmitEdit: onBeforeSubmitEdit,
                             onSuccess: function (data) {
-                                if(data.successFlg){
-                                    initBtn();
-                                    var g= parmGrid.grid;
-                                    g.setHeight(g.options.height+= 41*data.detailModelList.length);
-                                }else
-                                    $.Notice.error("参数列表加载失败！");
-                            }
+                                if(data.successFlg) {
+                                    if(data.detailModelList.length==0) {
+                                        this.options.height = 70;
+                                        this.setHeight(this.options.height);
+                                    }
+                                    if(mode=='modify') initBtn();
+                                }
+                                else $.Notice.error("参数列表加载失败！");
+                            },
+                            onAfterShowData: onAfterShowData
                         });
                 this.searchFun();
                 $('.l-scroll', $('#parmsGrid')).css('overflow', 'hidden');
@@ -222,7 +232,6 @@
             del: function (e, id, rowId) {
                 var g= parmGrid.grid;
                 g.deleteRow(rowId);
-                g.setHeight(g.options.height-= 41);
             }
         }
 
@@ -237,7 +246,6 @@
                 var m = this;
                 var btn = [{type: 'edit', clkFun: function () {
                     m.grid.append({id: 0, name:"name", dataType: "DATE", description: "", memo: ""});
-                    m.grid.setHeight(m.grid.options.height+=41);
                 }}];
                 initBarBtn($('#responseForm'), btn);
             },
@@ -261,14 +269,18 @@
                     columns.push({display: '操作', name: 'operator', width: '10%', render: this.opratorRender});
                 }
                 this.grid = initGridDef($('#responseGrid'), urls.apiResponseLs, {}, columns, {delayLoad: true, checkbox: false, usePager: false, height: 70,
-                    rownumbers: false, enabledEdit: mode!='view', editorTopDiff: 0, onBeforeSubmitEdit: onBeforeSubmitEdit, onSuccess: function (data) {
-                        if(data.successFlg){
-                            initBtn();
-                            var g= resGrid.grid;
-                            g.setHeight(g.options.height+= 41*data.detailModelList.length);
-                        }else
-                            $.Notice.error("返回值列表加载失败！");
-                    }});
+                    rownumbers: false, enabledEdit: mode!='view', editorTopDiff: 0, onBeforeSubmitEdit: onBeforeSubmitEdit,
+                    onSuccess: function (data) {
+                        if(data.successFlg) {
+                            if(data.detailModelList.length==0) {
+                                this.options.height = 70;
+                                this.setHeight(this.options.height);
+                            }
+                            if(mode=='modify') initBtn();
+                        }
+                        else $.Notice.error("返回值列表加载失败！");
+                    },onAfterShowData: onAfterShowData
+                });
                 this.searchFun();
                 $('.l-scroll', $('#responseGrid')).css('overflow', 'hidden');
             },
@@ -276,10 +288,9 @@
                 var params = {filters: "appApiId="+ model.id , page: 1, rows: 999}
                 reloadGrid(resGrid.grid, 1, params);
             },
-            del: function (id, rowId) {
+            del: function (e, id, rowId) {
                 var g= resGrid.grid;
                 g.deleteRow(rowId);
-                g.setHeight(g.options.height-= 41);
             }
         }
 

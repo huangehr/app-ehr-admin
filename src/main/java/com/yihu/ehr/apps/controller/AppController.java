@@ -194,6 +194,7 @@ public class AppController extends BaseUIController {
                 appUpdate.setTags(appDetailModel.getTags());
                 appUpdate.setUrl(appDetailModel.getUrl());
                 appUpdate.setDescription(appDetailModel.getDescription());
+                appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
                 //更新
                 MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
