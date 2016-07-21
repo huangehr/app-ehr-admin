@@ -54,6 +54,7 @@
                             async: true,
                             columns: [{display: '应用名称', name: name, width: '100%'}],
                             onCheckRow: function (checked, data, rowid, rowdata) {
+                                configAppInsertGrid = null;
                                 dataModel.updateRemote("${contextRoot}/appRole/updateAppInsert", {
                                     data: {appInsertId: data.id, appRoleId: obj.id, updateType: checked},
                                     success: function (data) {
