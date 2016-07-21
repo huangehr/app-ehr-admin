@@ -102,8 +102,8 @@
             if(extParms.upType==-1 || model.type==2)
                 appCombo = $('#ipt_api_name').customCombo(
                         urls.appCombo, {fields: 'id,name', filters: 'sourceType=1'}, function (id, name) {
-                            $('#ipt_api_name').blur();
-                            $('#appId').val(appCombo.getLigerComboBox().getSelected().id);
+                            if(appCombo.getLigerComboBox().getSelected())
+                                $('#appId').val(appCombo.getLigerComboBox().getSelected().id);
                         }, undefined, false, {selectBoxHeight: 280, valueField: 'name', disabled: mode=='modify',
                             conditionSearchClick: function(g){
                                 var searchParm = g.rules.length > 0 ? g.rules[0].value : '';

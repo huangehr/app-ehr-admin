@@ -121,7 +121,7 @@
                                 var selId = sessionStorage.getItem("appApiTreeSelId");
                                 if(selId){
                                     var rowDom = $('#t_'+selId, master.tree.tree).parent().parent().parent().parent().parent();
-                                    master.tree.select(rowDom);
+                                    master.tree.select(rowDom.attr('id').split('|')[2]);
                                 }
                             }
                         }
@@ -307,6 +307,10 @@
                     }else{
                         var rowDom = em.grid.getRow(em.params.rowId);
                         em.grid.updateRow(rowDom, data.obj);
+                        if(data.obj.type!=1){
+                            rowDom = master.tree.getRow($('#t_'+ data.obj.id, $('#treeMenu')).parent().parent().parent().parent().attr('id').split('|')[2]);
+                            master.tree.updateRow(rowDom, data.obj);
+                        }
                     }
                 }
             }
