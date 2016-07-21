@@ -160,6 +160,7 @@
 								html += '<a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.viewUrl,row.code) + '">浏览</a>';
 								html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a>';
 								html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a>';
+//								html += '<a class="grid_delete" title="默认参数" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:param:list:open", row.id,row.code) + '"></a>';
 								return html;
 							}}
 						],
@@ -233,6 +234,19 @@
 								});
 							}
 						})
+					});
+					$.subscribe("rs:param:list:open",function(event,resourcesId,resourcesCode){
+						master.rsParamDialog = $.ligerDialog.open({
+							height:500,
+							width:600,
+							title:"配置默认参数",
+							url:'${contextRoot}/resource/rsDefaultParam/initial',
+							urlParms:{
+								resourcesId:resourcesId,
+								resourcesCode:resourcesCode,
+							},
+							load:true
+						});
 					});
 					//配置、浏览、授权页面跳转
 					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url,resourceCode){
