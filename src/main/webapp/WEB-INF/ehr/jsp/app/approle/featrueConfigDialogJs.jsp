@@ -34,6 +34,7 @@
                 $roleGroupbtn: $(".div-roleGroup-btn"),
                 $apiFeatrueBtn: $("#div_api_featrue_btn"),
                 $funFeatrueBtn: $("#div_fun_featrue_btn"),
+                $featrueSaveBtn: $("#div_featrue_save_btn"),
 
                 funInit: function () {
                     var self = this;
@@ -67,19 +68,19 @@
                             checkbox: checkboxBo,
                             async: false,
                             onCheck: function (data, checked) {
-                                var isReload = treeCyc.CheckInit(data, functionFeatrueType[0]);
-                                dataModel.updateRemote("${contextRoot}/appRole/updateFeatureConfig", {
-                                    data: {AppFeatureId: data.data.id, roleId: obj.id, updateType: checked},
-                                    success: function (data) {
-//                                        clearTimeout(timeOutTree)
-//                                        timeOutTree=setTimeout(function(){
-//                                            functionFeatrueType[1].reload();
-//                                        },1);
-                                        if (isReload === false)
-                                            return;
-                                        functionFeatrueType[1].reload();
-                                    }
-                                })
+                                <%--var isReload = treeCyc.CheckInit(data, functionFeatrueType[0]);--%>
+                                <%--dataModel.updateRemote("${contextRoot}/appRole/updateFeatureConfig", {--%>
+                                    <%--data: {AppFeatureId: data.data.id, roleId: obj.id, updateType: checked},--%>
+                                    <%--success: function (data) {--%>
+<%--//                                        clearTimeout(timeOutTree)--%>
+<%--//                                        timeOutTree=setTimeout(function(){--%>
+<%--//                                            functionFeatrueType[1].reload();--%>
+<%--//                                        },1);--%>
+                                        <%--if (isReload === false)--%>
+                                            <%--return;--%>
+                                        <%--functionFeatrueType[1].reload();--%>
+                                    <%--}--%>
+                                <%--})--%>
                             },
                             onSuccess: function (data) {
                                 if (Util.isStrEquals(this.id, 'div_configFun_featrue_grid')) {
@@ -130,14 +131,14 @@
                             checkbox: checkboxBo,
                             async: false,
                             onCheck: function (data, checked) {
-                                var isReload = treeCyc.CheckInit(data, apiTreeType[0]);
-                                dataModel.updateRemote("${contextRoot}/appRole/updateApiConfig", {
-                                    data: {apiFeatureId: data.data.id, roleId: obj.id, updateType: checked},
-                                    success: function (data) {
-                                        if (isReload === false)return;
-                                        apiTreeType[1].reload();
-                                    }
-                                })
+                                <%--var isReload = treeCyc.CheckInit(data, apiTreeType[0]);--%>
+                                <%--dataModel.updateRemote("${contextRoot}/appRole/updateApiConfig", {--%>
+                                    <%--data: {apiFeatureId: data.data.id, roleId: obj.id, updateType: checked},--%>
+                                    <%--success: function (data) {--%>
+                                        <%--if (isReload === false)return;--%>
+                                        <%--apiTreeType[1].reload();--%>
+                                    <%--}--%>
+                                <%--})--%>
                             },
                             onSuccess: function (data) {
                                 if (Util.isStrEquals(this.id, 'div_configApi_featrue_grid')) {
@@ -200,7 +201,29 @@
                         self.$apiFeatrueTree.show();
                         self.$configApiFeatrueTree.show();
                     });
-                },
+
+                    self.$featrueSaveBtn.click(function () {
+                        var url = "${contextRoot}/appRole/updateFeatureConfig";
+                        var gridType = functionFeatrueType[1];
+                        var datas = functionFeatrueType[0].getChecked();
+                        if (Util.isStrEquals(funAndApiTree,'api')){
+                            url = "${contextRoot}/appRole/updateApiConfig";
+                            gridType = apiTreeType[1];
+                            datas = apiTreeType[0].getChecked();
+                        }
+                        var featureIds = '';
+                        $.each(datas,function (key,value) {
+                            featureIds += value.data.id+","
+                        });
+                        dataModel.updateRemote(url, {
+                            data: {featureIds: featureIds, roleId: obj.id},
+                            success: function (data) {
+                                gridType.reload();
+                            }
+                        })
+                    })
+                }
+
 //                feaTrueChanges: function (type) {
 //                    var self = this;
 //                    var titleMsg = '功能权限';

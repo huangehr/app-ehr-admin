@@ -74,7 +74,7 @@
                                 }
                                 if (Util.isStrEmpty(configAppInsertGrid)) {
                                     dataModel.updateRemote("${contextRoot}/appRole/searchInsertApps", {
-                                        data: {searchNm: '', gridType: "configAppInsertGrid", appRoleId: obj.id, page: 1, rows: gridType[0].data.totalCount},
+                                        data: {searchNm: '', gridType: "configAppInsertGrid", appRoleId: obj.id, page: 1, rows: Util.isStrEquals(gridType[0].data.totalCount,0)?15:gridType[0].data.totalCount},
                                         async: false,
                                         success: function (data) {
                                             configAppInsertGrid = data.detailModelList;
@@ -105,9 +105,7 @@
                     //修改用户信息
                     var self = this;
                 }
-
             };
-
             pageInit();
         })
     })(jQuery, window)
