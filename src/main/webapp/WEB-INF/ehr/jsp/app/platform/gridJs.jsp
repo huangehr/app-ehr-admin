@@ -21,7 +21,7 @@
             var gotoModify = function (event, id, mode) {
                 mode = mode || 'new';
                 id = id || '';
-                editDialog = openDialog(urls.gotoModify, mode=='new'?'新增':'修改', 500, 560, {id: id, mode: mode});
+                editDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 500, 580, {id: id, mode: mode});
             }
 
             var del = function (event, id) {

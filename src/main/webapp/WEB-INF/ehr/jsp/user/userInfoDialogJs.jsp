@@ -417,7 +417,11 @@
 								tit=dataAll[i].name+":"+v.data.name
 							}
 						}
-						liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
+						if('${mode}' != 'view'){
+							liHtml+='<li ><a href="javascript:void(0);" data-id="'+v.data.id+'"  data-index="'+v.data.treedataindex+'" >X</a>'+tit+'</li>';
+						}else{
+							liHtml+='<li >'+tit+'</li>';
+						}
 					}
 				})
 				if(obj.find(".listree").length==0){
