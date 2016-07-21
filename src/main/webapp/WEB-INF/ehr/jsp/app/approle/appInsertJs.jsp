@@ -17,6 +17,9 @@
             }
 
             function reloadGrid(url, value, grid, type) {
+                if (Util.isStrEquals(type,'appInsertGrid')){
+                    grid.options.newPage = 1;
+                }
                 grid.setOptions({parms: value});
                 grid.loadData(true);
             }
@@ -79,6 +82,9 @@
                                     });
                                 }
 //                                var configAppInsertGrid = gridType[0].data.detailModelList;
+                                if (Util.isStrEmpty(configAppInsertGrid)){
+                                    return false;
+                                }
                                 for (var i = 0; i < configAppInsertGrid.length; i++) {
                                     if (Util.isStrEquals(row.id, configAppInsertGrid[i].appId)) {
                                         bo = true
