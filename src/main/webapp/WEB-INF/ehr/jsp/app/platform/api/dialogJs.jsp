@@ -94,8 +94,8 @@
                         validator.reset();
                     }
                 }},
-                {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{initVal: '1'}},
-                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41, opts:{initVal: '1'}},
+                {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{initVal: mode=='new'? '1': undefined}},
+                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41, opts:{initVal: mode=='new'? '1': undefined}},
                 {type: 'select', id: 'ipt_api_activityType', dictId: 43},
                 {type: 'text', id: 'ipt_api_version'},
                 {type: 'select', id: 'ipt_api_protocol', dictId: 44},

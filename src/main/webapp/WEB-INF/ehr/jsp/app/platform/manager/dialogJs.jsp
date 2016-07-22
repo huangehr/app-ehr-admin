@@ -31,8 +31,8 @@
                         }
                     }
                 }},
-                {type: 'select', id: 'ipt_af_open', dictId: 40, opts: {initVal: '1'}},
-                {type: 'select', id: 'ipt_af_audit', dictId: 41, opts: {initVal: '1'}},
+                {type: 'select', id: 'ipt_af_open', dictId: 40, opts: {initVal: mode=='new'? '1': undefined}},
+                {type: 'select', id: 'ipt_af_audit', dictId: 41, opts: {initVal: mode=='new'? '1': undefined}},
                 {type: 'text', id: 'ipt_af_icon_url'},
                 {type: 'text', id: 'ipt_af_url', opts:{height:60}},
                 {type: 'text', id: 'ipt_af_description', opts:{height:100}}
