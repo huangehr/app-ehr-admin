@@ -29,10 +29,10 @@
     </div>
   </div>
 
-  <div class="m-form-group">
+  <div class="m-form-group" style="display: none">
     <label>开放程度<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
-      <input type="text" id="ipt_af_open" data-type="select" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="openLevel">
+      <input type="text" id="ipt_af_open" data-type="select" class="" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="openLevel">
     </div>
   </div>
 

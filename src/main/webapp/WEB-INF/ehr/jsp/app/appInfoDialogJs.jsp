@@ -34,6 +34,7 @@
             $jryycyc:$("#jryycyc"),//cyctodo
             init: function () {
                 this.cycToDo()//复制完记得删掉阿亮
+                $('.listree a').hide();
                 this.initForm();
                 this.bindEvents();
             },

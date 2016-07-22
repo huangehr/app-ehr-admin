@@ -197,7 +197,7 @@
                             params = {id: id, mode: mode, rowId: rowId}
                         }
                         em.dialog = openedDialog = openDialog(urls.gotoModify,
-                                mode == 'new'?'新增': mode == 'modify'? '修改': '查看', 480, 600, params);
+                                mode == 'new'?'新增': mode == 'modify'? '修改': '查看', 480, 650, params);
                     }
                 },
                 del: function (event, id, frm, rowId, parentId, type) {

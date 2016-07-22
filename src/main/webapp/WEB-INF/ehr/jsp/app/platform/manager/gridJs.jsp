@@ -203,12 +203,11 @@
 
                 $('#treeMenuWrap').height(contentH - 104);
                 $('#treeMenu').height(contentH - 64);
-            }();
+            };
 
+            resizeContent();
             //窗体改变大小事件
-            $(window).bind('resize', function () {
-                resizeContent();
-            });
+            $(window).bind('resize', resizeContent);
 
             em.init();
             master.init();
