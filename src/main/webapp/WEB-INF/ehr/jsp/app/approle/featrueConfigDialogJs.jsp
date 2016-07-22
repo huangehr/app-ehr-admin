@@ -59,15 +59,29 @@
                         var appRoleId = obj.id;
                         functionFeatrueType[i] = funEle[i].ligerSearchTree({
                             url: '${contextRoot}/appRole/searchFeatrueTree',
-                            parms: {searchNm: '', treeType: functionType[i], appRoleId: appRoleId, appId: obj.appId},
+                            parms: {searchNm: '', treeType: functionType[0], appRoleId: appRoleId, appId: obj.appId},
                             idFieldName: 'id',
                             parentIDFieldName: 'parentId',
                             textFieldName: 'name',
-                            isExpand: false,
-                            autoCheckboxEven: false,
+                            isExpand: true,
                             checkbox: checkboxBo,
+//                            enabledCompleteCheckbox:false,
                             async: false,
+//                            render:function(data,ele,t,r){
+//                                debugger
+//                                functionFeatrueType[1]
+//                                debugger
+//                            },
                             onCheck: function (data, checked) {
+                                setTimeout(function(){
+                                    var html= $("#div_function_featrue_grid").html()
+                                    $("#div_configFun_featrue_grid").html(html)
+                                    $("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
+                                    $("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide()
+                                },300)
+
+                                //functionFeatrueType[1].setData(functionFeatrueType[0].nodes);
+                                //$("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").remove()
                                 <%--var isReload = treeCyc.CheckInit(data, functionFeatrueType[0]);--%>
                                 <%--dataModel.updateRemote("${contextRoot}/appRole/updateFeatureConfig", {--%>
                                     <%--data: {AppFeatureId: data.data.id, roleId: obj.id, updateType: checked},--%>
@@ -83,33 +97,54 @@
                                 <%--})--%>
                             },
                             onSuccess: function (data) {
-                                if (Util.isStrEquals(this.id, 'div_configFun_featrue_grid')) {
-                                    var coun = [];
-                                    for (var i = 0; i < data.length; i++) {
-                                        var bo = true;
-                                        for (var j = 0; j < data.length; j++) {
-                                            if (Util.isStrEquals(data[i].parentId, data[j].id) || Util.isStrEquals(data[i].parentId, 0)) {
-                                                bo = false;
-                                            }
-                                        }
-                                        if (bo) {
-                                            coun.push(i);
-                                        }
-                                        delete data[i].children;
-                                    }
-                                    for (var k = 0; k < coun.length; k++) {
-                                        data.splice([coun[k]], 1);
-                                    }
-                                    functionFeatrueType[1].setData(data);
+//                                console.log(functionFeatrueType[0]);
+                                $("#div_configFun_featrue_grid").hide()
+                                if (Util.isStrEquals(this.id, 'div_function_featrue_grid')) {
+                                    debugger
+                                    setTimeout(function () {
+                                        debugger
+                                        var html = $("#div_function_featrue_grid").html()
+                                        $("#div_configFun_featrue_grid").html(html).show();
+                                        $("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
+                                        $("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide()
+                                    }, 300)
                                 }
+//                                if (Util.isStrEquals(this.id, 'div_configFun_featrue_grid')) {
+//                                    var eleHtmls = $("#div_configFun_featrue_grid .l-body");
+//                                    $.each(eleHtmls,function (key,value) {
+//
+//                                        if (!data.ischecked){
+//                                            //$(eleHtmls).css({"display":"none"})
+//                                        }
+//                                    })
+//
+////                                        $("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").remove()
+////                                    var coun = [];
+////                                    for (var i = 0; i < data.length; i++) {
+////                                        var bo = true;
+////                                        for (var j = 0; j < data.length; j++) {
+////                                            if (Util.isStrEquals(data[i].parentId, data[j].id) || Util.isStrEquals(data[i].parentId, 0)) {
+////                                                bo = false;
+////                                            }
+////                                        }
+////                                        if (bo) {
+////                                            coun.push(i);
+////                                        }
+////                                        delete data[i].children;
+////                                    }
+////                                    for (var k = 0; k < coun.length; k++) {
+////                                        data.splice([coun[k]], 1);
+////                                    }
+////                                    functionFeatrueType[1].setData(data);
+//                                }
                                 $("#div_function_featrue_grid li div span ,#div_configFun_featrue_grid li div span").css({
                                     "line-height": "22px",
                                     "height": "22px"
                                 });
                             },
-                            onAfterAppend: function () {
-                                $(functionFeatrueType[0].element).find(".l-checkbox-incomplete").attr("class", "l-box l-checkbox l-checkbox-unchecked")
-                            }
+//                            onAfterAppend: function () {
+////                                $(functionFeatrueType[0].element).find(".l-checkbox-incomplete").attr("class", "l-box l-checkbox l-checkbox-unchecked")
+//                            }
                         });
                     }
                 },
@@ -127,7 +162,7 @@
                             parentIDFieldName: 'parentId',
                             textFieldName: 'name',
                             isExpand: false,
-                            autoCheckboxEven: false,
+//                            autoCheckboxEven: false,
                             checkbox: checkboxBo,
                             async: false,
                             onCheck: function (data, checked) {
@@ -141,32 +176,32 @@
                                 <%--})--%>
                             },
                             onSuccess: function (data) {
-                                if (Util.isStrEquals(this.id, 'div_configApi_featrue_grid')) {
-                                    var coun = [];
-                                    for (var i = 0; i < data.length; i++) {
-                                        var bo = true;
-                                        for (var j = 0; j < data.length; j++) {
-                                            if (Util.isStrEquals(data[i].parentId, data[j].id) || Util.isStrEquals(data[i].parentId, 0)) {
-                                                bo = false;
-                                            }
-                                        }
-                                        if (bo) {
-                                            coun.push(i);
-                                        }
-                                        delete data[i].children;
-                                    }
-                                    for (var k = 0; k < coun.length; k++) {
-                                        data.splice([coun[k]], 1);
-                                    }
-                                    apiTreeType[1].setData(data);
-                                }
+//                                if (Util.isStrEquals(this.id, 'div_configApi_featrue_grid')) {
+//                                    var coun = [];
+//                                    for (var i = 0; i < data.length; i++) {
+//                                        var bo = true;
+//                                        for (var j = 0; j < data.length; j++) {
+//                                            if (Util.isStrEquals(data[i].parentId, data[j].id) || Util.isStrEquals(data[i].parentId, 0)) {
+//                                                bo = false;
+//                                            }
+//                                        }
+//                                        if (bo) {
+//                                            coun.push(i);
+//                                        }
+//                                        delete data[i].children;
+//                                    }
+//                                    for (var k = 0; k < coun.length; k++) {
+//                                        data.splice([coun[k]], 1);
+//                                    }
+//                                    apiTreeType[1].setData(data);
+//                                }
                                 $("#div_api_featrue_grid li div span ,#div_configApi_featrue_grid li div span").css({
                                     "line-height": "22px",
                                     "height": "22px"
                                 });
                             },
                             onAfterAppend: function () {
-                                $(apiTreeType[0].element).find(".l-checkbox-incomplete").attr("class", "l-box l-checkbox l-checkbox-unchecked")
+//                                $(apiTreeType[0].element).find(".l-checkbox-incomplete").attr("class", "l-box l-checkbox l-checkbox-unchecked")
                             }
                         });
                     }

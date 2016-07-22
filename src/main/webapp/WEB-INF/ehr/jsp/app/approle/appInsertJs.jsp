@@ -54,7 +54,7 @@
                             height: 450,
                             isScroll: true,
                             checkbox: checkboxBo,
-                            async: true,
+                            async: false,
                             columns: [{display: '应用名称', name: name, width: '100%'}],
                             onCheckRow: function (checked, data, rowid, rowdata) {
                                 configAppInsertGrid = null;
@@ -94,6 +94,8 @@
                             }
                         }));
                     }
+                    $("#div_appInsert_grid .l-bar-message").css({"left":"56%"}).html("共"+gridType[1].data.totalCount+"条");
+                    $("#div_config_appInsert_grid .l-bar-message").css({"left":"56%"}).html("共"+gridType[0].data.totalCount+"条");
                     self.$appInsertGrid.find('.l-grid-hd-cell-checkbox').removeClass('l-grid-hd-cell-checkbox');
                     self.clicks();
                 },
