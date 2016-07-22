@@ -73,20 +73,23 @@
                         var version = $('#ipt_api_version').ligerGetTextBoxManager();
                         var protocol = $('#ipt_api_protocol').ligerGetCheckBoxManager();
                         var method = $('#ipt_api_method').ligerGetCheckBoxManager();
+                        var methodName = $('#ipt_api_methodName').ligerGetTextBoxManager();
                         if(v==1){
                                 $('.apiProto').addClass("essential").find('input').addClass('required');
                                 version.setEnabled(true);
                                 protocol.setEnabled(true);
                                 method.setEnabled(true);
-                            }
-                        else{
+                                methodName.setEnabled(true);
+                        } else{
                             $('.apiProto').removeClass("essential").find('input').removeClass('required');
                             version.setDisabled(true);
                             protocol.setDisabled(true);
                             method.setDisabled(true);
+                            methodName.setDisabled(true);
                             version.setValue('');
                             protocol.setValue('');
                             method.setValue('');
+                            methodName.setValue('');
                         }
                         validator.reset();
                     }
@@ -96,12 +99,15 @@
                 {type: 'select', id: 'ipt_api_activityType', dictId: 43},
                 {type: 'text', id: 'ipt_api_version'},
                 {type: 'select', id: 'ipt_api_protocol', dictId: 44},
-                {type: 'select', id: 'ipt_api_method', dictId: 45}
+                {type: 'select', id: 'ipt_api_method', dictId: 45},
+                {type: 'text', id: 'ipt_api_methodName'}
             ];
 
             if(extParms.upType==-1 || model.type==2)
                 appCombo = $('#ipt_api_name').customCombo(
                         urls.appCombo, {fields: 'id,name', filters: 'sourceType=1'}, function (id, name) {
+                            if(mode=='new')
+                                $('#ipt_api_name').blur();
                             if(appCombo.getLigerComboBox().getSelected())
                                 $('#appId').val(appCombo.getLigerComboBox().getSelected().id);
                         }, undefined, false, {selectBoxHeight: 280, valueField: 'name', disabled: mode=='modify',

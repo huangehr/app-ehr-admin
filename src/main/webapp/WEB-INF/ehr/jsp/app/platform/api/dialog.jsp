@@ -13,6 +13,13 @@
     </div>
   </div>
 
+  <div id="methodNameDiv" class="m-form-group">
+    <label>方法名<spring:message code="spe.colon"/></label>
+    <div class="l-text-wrapper m-form-control essential apiProto">
+      <input type="text" id="ipt_api_methodName" class="required"  data-attr-scan="methodName">
+    </div>
+  </div>
+
   <div class="m-form-group">
     <label>类别<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
@@ -66,7 +73,7 @@
     <div class="m-form-group">
       <label>描述<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
-        <textarea id="ipt_api_description" class="required validate-code-char" data-attr-scan="description">
+        <textarea id="ipt_api_description" class="required" data-attr-scan="description">
           </textarea>
       </div>
     </div>

@@ -47,9 +47,9 @@
                 var val = $('#' + field).val();
                 var type = $('#ipt_af_type').ligerGetComboBoxManager().getValue();
                 if(field=='ipt_af_name' && val!=model.name)
-                    return uniqValid(urls.existence, "name="+val+" g1;type="+type+";appId="+model.appId, "该类型下名称已存在！");
+                    return uniqValid(urls.existence, "name="+val+" g1;type="+type+";parentId="+model.parentId+";appId="+model.appId, "该类型下名称已存在！");
                 else if(field=='ipt_af_code' && val!=model.code)
-                    return uniqValid(urls.existence, "code="+val+" g1;type="+type+";appId="+model.appId, "该类型下编码已存在！");
+                    return uniqValid(urls.existence, "code="+val+" g1;type="+type+";parentId="+model.parentId+";appId="+model.appId, "该类型下编码已存在！");
             });
 
             $('#btn_save').click(function () {

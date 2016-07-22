@@ -39,7 +39,7 @@
                     <div class="m-retrieve-inner m-form-group f-mt10 r-tools" style="margin-left: 10px;">
                         <input type="hidden" id="parentId" data-attr-scan="parentId">
                         <div class="m-form-control">
-                            <input type="text" id="r_search_name" placeholder="请输入API名称" class="f-ml10" data-attr-scan="name"/>
+                            <input type="text" id="r_search_name" placeholder="请输入名称" class="f-ml10" data-attr-scan="name"/>
                         </div>
                         <div class="m-form-control f-ml10">
                             <input type="text" id="r_search_open_lv"  placeholder="开放程度" data-type="select" data-attr-scan="openLevel">

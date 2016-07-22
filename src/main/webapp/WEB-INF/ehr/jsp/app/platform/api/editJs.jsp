@@ -97,6 +97,7 @@
         var initForm = function () {
             var vo = [
                 {type: 'text', id: 'ipt_api_name', width: $('#div_name').width()-140},
+                {type: 'text', id: 'ipt_api_methodName', width: $('#div_methodName').width()-140},
                 {type: 'text', id: 'ipt_api_description', width: $('#div_des').width()-150},
                 {type: 'select', id: 'ipt_api_type', dictId: 46, opts: {disabled: true, width: $('#div_type').width()-140}},
                 {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{width: $('#div_open').width()-140}},
