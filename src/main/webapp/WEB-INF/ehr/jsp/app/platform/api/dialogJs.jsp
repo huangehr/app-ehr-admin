@@ -46,6 +46,9 @@
             validator = initValidate($form, function (elm) {
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
+                if(field=='ipt_api_name' && val!=model.name){
+                    return uniqValid4List(urls.existence, "name="+val+" g1;parentId="+ model.parentId, "该应用代码已存在！");
+                }
             });
 
         }

@@ -37,6 +37,7 @@
                 },
                 rendTreeGrid: function () {
                     this.tree = $("#treeMenu").ligerGrid($.LigerGridEx.config({
+                        rownumbers: false,
                         allowAdjustColWidth: false,
                         usePager: false,
                         height: contentH - 12,
@@ -47,13 +48,19 @@
                             {
                                 display: '组织结构名称', name: 'name', id: 'name', align: 'left', width: '290',
                                 render: function (row) {
-                                    var iconUrl = row.iconUrl || 'develop/images/icon_Reg.png';
-                                    return '<img src="${contextRoot}/'+iconUrl+'" class="row-icon">' +
+                                    var iconName = "";
+                                    switch (parseInt(row.type)){
+                                        case 0: iconName= '1ji_icon'; break;
+                                        case 1: iconName= '2ji_icon'; break;
+                                        case 2: iconName= '3ji_icon'; break;
+                                        default : iconName= '3ji_icon';
+                                    }
+                                    return '<img src="${contextRoot}/develop/images/'+ iconName +'.png" class="row-icon">' +
                                             '<div id="t_'+ row.id +'">'+ row.name +'</div>';
                                 }
                             },
                             {
-                                display: '操作', name: 'operator', align: 'left', width: '80', render: function (row) {
+                                display: '操作', name: 'operator', align: 'left', width: '70', render: function (row) {
                                     var html =
                                             '<a class="image-create" href="#" title="新增" ' +
                                             'onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}', '{5}'])", "app:plf:man:modify", row.id, 'new', row.type, 0, row.__id) + '"></a>';

@@ -117,8 +117,9 @@
             var validator = initValidate($form, function (elm) {
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
-//                if(field=='ipt_af_name' && val!=model.name)
-//                    return uniqValid(urls.existence, "name="+val+" g1;type=1;appId="+model.appId, "该类型下名称已存在！");
+                if(field=='ipt_api_name' && val!=model.name){
+                    return uniqValid4List(urls.existence, "name="+val+" g1;parentId="+ model.parentId, "该应用代码已存在！");
+                }
             });
 
             $('#btn_save').click(function () {

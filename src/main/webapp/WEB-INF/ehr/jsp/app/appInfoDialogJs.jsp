@@ -34,7 +34,6 @@
             $jryycyc:$("#jryycyc"),//cyctodo
             init: function () {
                 this.cycToDo()//复制完记得删掉阿亮
-                $('.listree a').hide();
                 this.initForm();
                 this.bindEvents();
             },
@@ -83,6 +82,8 @@
                         for(var k in roleArr){
                             $("#"+ k, trees.tree).find(".l-checkbox").click()
                         }
+                        if(mode=='view')
+                            $('.listree a').hide();
                     }
                 }
                 this.$form.show();
