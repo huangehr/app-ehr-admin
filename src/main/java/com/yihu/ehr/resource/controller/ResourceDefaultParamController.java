@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,20 @@ public class ResourceDefaultParamController extends BaseUIController {
         model.addAttribute("contentPage","/resource/rsdefaultparam/defaultParam");
         model.addAttribute("resourcesId",resourcesId);
         model.addAttribute("resourcesCode",resourcesCode);
+        Envelop envelop = new Envelop();
+        String en = "";
+        try {
+            en = objectMapper.writeValueAsString(envelop);
+            String url = "/dictionaries/entries";
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","dictId="+51);
+            params.put("page",1);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            model.addAttribute("paramKeys", envelopStr);
+        } catch (Exception ex) {
+            LogService.getLogger(ResourceDefaultParamModel.class).error(ex.getMessage());
+            model.addAttribute("paramKeys", en);
+        }
         return "simpleView";
     }
 
