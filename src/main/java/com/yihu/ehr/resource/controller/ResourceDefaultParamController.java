@@ -82,8 +82,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             }
             String url = ServiceApi.Resources.Param;
             Map<String,Object> params = new HashMap<>();
-            params.put("data_json",dataJson);
-            if(mode == "new"){
+            params.put("json_data",dataJson);
+            if(StringUtils.equalsIgnoreCase(mode,"new")){
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
                 return envelopStr;
             }
