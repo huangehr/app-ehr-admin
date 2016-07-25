@@ -97,6 +97,7 @@
         var initForm = function () {
             var vo = [
                 {type: 'text', id: 'ipt_api_name', width: $('#div_name').width()-140},
+                {type: 'text', id: 'ipt_api_methodName', width: $('#div_methodName').width()-140},
                 {type: 'text', id: 'ipt_api_description', width: $('#div_des').width()-150},
                 {type: 'select', id: 'ipt_api_type', dictId: 46, opts: {disabled: true, width: $('#div_type').width()-140}},
                 {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{width: $('#div_open').width()-140}},
@@ -116,8 +117,9 @@
             var validator = initValidate($form, function (elm) {
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
-//                if(field=='ipt_af_name' && val!=model.name)
-//                    return uniqValid(urls.existence, "name="+val+" g1;type=1;appId="+model.appId, "该类型下名称已存在！");
+                if(field=='ipt_api_name' && val!=model.name){
+                    return uniqValid4List(urls.existence, "name="+val+" g1;parentId="+ model.parentId, "该应用代码已存在！");
+                }
             });
 
             $('#btn_save').click(function () {

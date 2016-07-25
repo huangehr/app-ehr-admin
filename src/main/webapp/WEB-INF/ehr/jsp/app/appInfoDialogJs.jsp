@@ -82,6 +82,8 @@
                         for(var k in roleArr){
                             $("#"+ k, trees.tree).find(".l-checkbox").click()
                         }
+                        if(mode=='view')
+                            $('.listree a').hide();
                     }
                 }
                 this.$form.show();
