@@ -24,18 +24,6 @@
                 editDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 500, 580, {id: id, mode: mode});
             }
 
-            var del = function (event, id) {
-                var rs = $.ajax({
-                    dataType: 'json',
-                    url: urls.existence+ "?id=" + id,
-                    async: false
-                })
-                if(rs.successFlg)
-                    batchDel(grid, find, urls.del, id);
-                else
-                    $.Notice.warn(rs.errorMsg);
-            }
-
             //跳转新增修改
             var manager = function (event, id, name) {
                 var url = urls.manager + '?treePid=1&treeId=11';
@@ -66,7 +54,7 @@
                 }).responseText;
                 rs = eval('('+ rs + ')');
                 if(rs.successFlg){
-                    uniqDel(grid, searchFun, urls.del, id, "id");
+                    uniqDel(grid, searchFun, urls.del, id, "id", "id");
                 }else
                     $.Notice.error(rs.errorMsg);
             }
