@@ -20,8 +20,8 @@
             <!--   属性菜单 -->
             <div id="div_left" style=" width:360px;float: left;">
                 <div id="treeMenuWrap" style="border: 1px solid #D6D6D6; width: 360px; height: 100px; overflow: hidden">
-                    <div style="width: 390px">
-                        <div id="treeMenu" style="margin-top: -42px; margin-left: -30px; "></div>
+                    <div style="width: 360px">
+                        <div id="treeMenu" style="margin-top: -42px;  "></div>
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@
     var Util = $.Util;
     var gridOpts = {
         columns: [
-            {display : '名称', name :'name',width : 210}
+            {display : '名称', name :'name',width : 210, align: 'left'}
         ],
         allowAdjustColWidth : true,
         editorTopDiff : 41,

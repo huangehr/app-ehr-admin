@@ -21,6 +21,7 @@ public class PlatformAppService extends ExtendService<AppModel> {
                 "/apps/{id}"        //deleteUrl
         );
         existenceUrl = "/apps/filterList"; //存在
+        deleteUniqUrl = "/apps/{id}";
     }
 
 }

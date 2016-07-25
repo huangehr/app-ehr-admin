@@ -51,7 +51,7 @@
                         url: url+'searchAppRole',
                         parms: {searchNm: '', gridType: 'appRole'},
                         isScroll: true,
-                        async: true,
+                        async: false,
                         columns: [{display: '应用名称', name: 'name', width: '100%'}],
                         onSelectRow: function (data) {
                             self.reloadAppRoleGrid("appRoleGroup", appRoleId = data.id, "");
@@ -65,7 +65,7 @@
                         url: url+'searchAppRole',
                         parms: {searchNm: '', gridType: 'appRoleGroup', appRoleId: appRoleId},
                         isScroll: true,
-                        async: true,
+                        <%--async: false,--%>
                         columns: [
                             {display: '角色组编码', name: 'code', width: '20%'},
                             {display: '角色组名称', name: 'name', width: '20%'},
@@ -84,6 +84,8 @@
                             $.publish('app:roles', [row.id, 'sel']);
                         }
                     }));
+
+                    $("#div_appRole_grid .l-bar-message").css({"left":"56%"}).html("共"+appRoleGrid.data.totalCount+"条");
                     appRoleGroupGrid.adjustToWidth();
                     self.clicks();
                 },

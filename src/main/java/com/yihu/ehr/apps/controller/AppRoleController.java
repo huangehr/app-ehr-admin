@@ -158,22 +158,25 @@ public class AppRoleController extends BaseUIController {
 
     @RequestMapping("/updateFeatureConfig")
     @ResponseBody
-    public String updateFeatureConfig(String AppFeatureId,String roleId,boolean updateType){
+//    public String updateFeatureConfig(String AppFeatureId,String roleId,boolean updateType){
+    public String updateFeatureConfig(String featureIds,String roleId){
         Map<String, Object> params = new HashMap<>();
 //        String url = updateType?ServiceApi.Roles.RoleFeature:ServiceApi.Roles.RoleFeature;
         String resultStr = "";
-        RoleFeatureRelationModel roleFeatureRelationModel = new RoleFeatureRelationModel();
-        roleFeatureRelationModel.setFeatureId(Long.valueOf(AppFeatureId));
-        roleFeatureRelationModel.setRoleId(Long.valueOf(roleId));
-        params.put("data_json", toJson(roleFeatureRelationModel));
+//        RoleFeatureRelationModel roleFeatureRelationModel = new RoleFeatureRelationModel();
+//        roleFeatureRelationModel.setFeatureId(Long.valueOf(AppFeatureId));
+//        roleFeatureRelationModel.setRoleId(Long.valueOf(roleId));
+        params.put("AppFeature_ids", featureIds);
+        params.put("role_id", roleId);
         try {
-            if (updateType){
-                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
-            }else{
-                params.put("feature_id", AppFeatureId);
-                params.put("role_id", roleId);
-                resultStr = HttpClientUtil.doDelete(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
-            }
+            resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
+//            if (updateType){
+//                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
+//            }else{
+//                params.put("feature_id", AppFeatureId);
+//                params.put("role_id", roleId);
+//                resultStr = HttpClientUtil.doDelete(comUrl + ServiceApi.Roles.RoleFeature, params, username, password);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -182,21 +185,25 @@ public class AppRoleController extends BaseUIController {
 
     @RequestMapping("/updateApiConfig")
     @ResponseBody
-    public String updateApiConfig(String apiFeatureId,String roleId,boolean updateType){
+//    public String updateApiConfig(String apiFeatureId,String roleId,boolean updateType){
+    public String updateApiConfig(String featureIds,String roleId){
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         try {
-            if (updateType){
-                RoleApiRelationModel roleApiRelationModel = new RoleApiRelationModel();
-                roleApiRelationModel.setApiId(Long.valueOf(apiFeatureId));
-                roleApiRelationModel.setRoleId(Long.valueOf(roleId));
-                params.put("data_json", toJson(roleApiRelationModel));
-                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
-            }else{
-                params.put("api_id", apiFeatureId);
+                params.put("api_ids", featureIds);
                 params.put("role_id", roleId);
-                resultStr = HttpClientUtil.doDelete(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
-            }
+                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
+//            if (updateType){
+//                RoleApiRelationModel roleApiRelationModel = new RoleApiRelationModel();
+//                roleApiRelationModel.setApiId(Long.valueOf(apiFeatureId));
+//                roleApiRelationModel.setRoleId(Long.valueOf(roleId));
+//                params.put("data_json", toJson(roleApiRelationModel));
+//                resultStr = HttpClientUtil.doPost(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
+//            }else{
+//                params.put("api_id", apiFeatureId);
+//                params.put("role_id", roleId);
+//                resultStr = HttpClientUtil.doDelete(comUrl + ServiceApi.Roles.RoleApi, params, username, password);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

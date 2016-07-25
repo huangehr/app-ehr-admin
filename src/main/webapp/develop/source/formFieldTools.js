@@ -180,3 +180,26 @@ function uniqValid(url, filters, errorMsg) {
     });
     return result;
 }
+
+function uniqValid4List(url, filters, errorMsg) {
+    var result = new $.jValidation.ajax.Result();
+    var dataModel = $.DataModel.init();
+    dataModel.fetchRemote(url, {
+        data: {filters: filters},
+        async: false,
+        success: function (data) {
+            if(data.successFlg){
+                if (data.detailModelList && data.detailModelList.length>0) {
+                    result.setResult(false);
+                    result.setErrorMsg(errorMsg);
+                } else {
+                    result.setResult(true);
+                }
+            } else {
+                result.setResult(false);
+                result.setErrorMsg("验证出错，请刷新页面或联系管理员！");
+            }
+        }
+    });
+    return result;
+}

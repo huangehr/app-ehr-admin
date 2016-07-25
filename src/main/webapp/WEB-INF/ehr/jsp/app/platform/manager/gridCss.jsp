@@ -3,10 +3,10 @@
 
 <style>
     .row-icon{
-        width: 20px;
-        height: 20px;
+        width: 16px;
+        height: 16px;
         float: left;
-        margin-top: 10px;
+        margin-top: 12px;
         margin-right: 10px;
         margin-left: 5px;
     }
