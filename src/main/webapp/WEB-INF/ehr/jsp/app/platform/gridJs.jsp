@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
@@ -34,15 +35,23 @@
             //初始化工具栏
             var barTools = function(){
                 var btn = [
-                    {type: 'edit', clkFun: gotoModify}];
+                    <sec:authorize url="/app/platform/update">
+                    {type: 'edit', clkFun: gotoModify}
+                    </sec:authorize>
+                ];
                 initBarBtn($('.m-retrieve-inner'), btn);
             };
 
             function opratorRender(row){
                 var vo = [
                     {type: '功能管理', clkFun: "$.publish('app:platform:manager',['"+ row['id'] +"','"+ row['name'] +"'])"},
+                    <sec:authorize url="/app/platform/update">
                     {type: 'edit', clkFun: "$.publish('app:platform:modify',['"+ row['id'] +"', 'modify'])"},
-                    {type: 'del', clkFun: "$.publish('app:platform:del',['"+ row['id'] +"'])"}];
+                    </sec:authorize>
+                    <sec:authorize url="/app/platform/delete">
+                    {type: 'del', clkFun: "$.publish('app:platform:del',['"+ row['id'] +"'])"}
+                    </sec:authorize>
+                ];
                 return initGridOperator(vo);
             }
 
@@ -84,12 +93,14 @@
 
             //初始化过滤
             var filters = function(){
+                <sec:authorize url="/app/platform/list">
                 var vo = [
                     {type: 'text', id: 'ipt_search'},
                     {type: 'select', id: 'ipt_search_type', opts:{width: 140}, dictId: 1},
                     {type: 'searchBtn', id: 'search_btn', searchFun: searchFun}
                 ];
                 initFormFields(vo, $('.m-retrieve-inner'));
+                </sec:authorize>
             };
 
             //查询列表

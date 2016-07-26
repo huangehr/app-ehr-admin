@@ -67,7 +67,7 @@
 
                                     if(row.id>0){
                                         html +=  '<a class="grid_delete" href="#" style="width: 30px; margin-left:4px" title="删除" ' +
-                                                'onclick="javascript:' + Util.format("$.publish('{0}',['{1}', '{2}', '{3}'])", "app:plf:man:del", row.id, 0, row.__id) + '"></a>';
+                                                'onclick="javascript:' + Util.format("$.publish('{0}',['{1}', '{2}', '{3}', '{4}'])", "app:plf:man:del", row.id, 0, row.__id, undefined, undefined, row.url) + '"></a>';
                                     }
                                     return html;
                                 }
@@ -122,7 +122,8 @@
                             type: 'edit',
                             clkFun: "$.publish('app:plf:man:modify',['" + row['id'] + "', 'modify', '" + row['type'] + "', '1', '"+ row.__id +"'])"
                         },
-                        {type: 'del', clkFun: "$.publish('app:plf:man:del',['" + row['id'] + "', 1, '" + row.__id + "', '" + row.parentId + "', '" + row.type + "'])"}
+                        {type: 'del',
+                            clkFun: "$.publish('app:plf:man:del',['" + row['id'] + "', 1, '" + row.__id + "', '" + row.parentId + "', '" + row.type + "', '" + row.url + "'])"}
                     ];
                     return initGridOperator(vo);
                 },
@@ -138,15 +139,16 @@
                     }
                     em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 600, params);
                 },
-                del: function (event, id, frm, rowId, parentId, type) {
+                del: function (event, id, frm, rowId, parentId, type, url) {
 
                     function del(){
                         $.ligerDialog.confirm("确定删除?", function (yes) {
                             if (yes){
                                 var dialog = $.ligerDialog.waitting('正在处理中,请稍候...');
                                 var dataModel = $.DataModel.init();
+                                var extParms = {url: url};
                                 dataModel.updateRemote(urls.del, {
-                                    data: {ids: id, idField: "id", type: "uniq"},
+                                    data: {ids: id, idField: "id", type: "uniq", extParms: JSON.stringify(extParms)},
                                     success: function (data) {
                                         if (data.successFlg) {
                                             $.Notice.success('删除成功！');

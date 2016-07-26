@@ -1,5 +1,6 @@
 package com.yihu.ehr.apps.controller;
 
+import com.yihu.ehr.Filter.RoleCache;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
@@ -7,6 +8,8 @@ import com.yihu.ehr.apps.model.AppFeatureTree;
 import com.yihu.ehr.apps.service.AppFeatureService;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.util.rest.Envelop;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +27,9 @@ import java.util.Map;
 @Controller
 @RequestMapping("/app/feature")
 public class AppFeatureController extends ExtendController<AppFeatureService> {
+
+    @Autowired
+    RoleCache roleCache;
 
     public AppFeatureController() {
         this.init(
@@ -64,5 +70,33 @@ public class AppFeatureController extends ExtendController<AppFeatureService> {
             ex.printStackTrace();
             return systemError();
         }
+    }
+
+    @Override
+    public Object afterDel(String rs, Map<String, Object> params) {
+        Envelop envelop = getEnvelop(rs);
+        if(envelop.isSuccessFlg()){
+            Object obj = params.get("url");
+            if(obj!=null){
+                roleCache.removeRes(obj.toString());
+            }
+        }
+        return super.afterDel(rs, params);
+    }
+
+    @Override
+    public String afterUpdate(String rs, String id, String model, Map<String, Object> params) {
+        Envelop envelop = getEnvelop(rs);
+        if(envelop.isSuccessFlg()){
+            if(params.get("oldUrl")!=null){
+                roleCache.removeRes(params.get("oldUrl").toString());
+            }
+
+            AppFeatureModel appFeatureModel = toModel(model, AppFeatureModel.class);
+            if(!StringUtils.isEmpty(appFeatureModel.getUrl())){
+                roleCache.addRes(appFeatureModel.getUrl());
+            }
+        }
+        return rs;
     }
 }
