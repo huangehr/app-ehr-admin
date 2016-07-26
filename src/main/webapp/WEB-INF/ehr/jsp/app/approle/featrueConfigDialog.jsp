@@ -34,8 +34,7 @@
         <div class="f-mw50 f-ds1 f-fr f-mr10 div-appRole-grid-scrollbar" style="height: 450px">
             <label class="f-mt10 f-ml10 f-mh26">已配置权限</label>
             <hr class="f-mt5 f-mb10">
-            <div id="div_configFun_featrue_grid">
-            </div>
+            <div id="div_configFun_featrue_grid"></div>
             <div id="div_configApi_featrue_grid" class="f-dn"></div>
         </div>
     </div>

@@ -28,6 +28,7 @@
 				$appRoleGridScrollbar: $(".div-appRole-grid-scrollbar"),
 				$roleGroupbtn: $(".div-roleGroup-btn"),
 				$addRoleGroupBtn: $("#div_add_roleGroup_btn"),
+                $featrueSaveBtn: $("#div_featrue_save_btn"),
 				funInit: function () {
 					var self = this;
 					self.$appRoleGridScrollbar.mCustomScrollbar({
@@ -49,61 +50,34 @@
 						var checkboxBo = Util.isStrEquals(i,0)?true:false;
 						var appRoleId = obj.id;
 						functionFeatrueType[i] = funEle[i].ligerSearchTree({
+                            nodeWidth: 200,
 							url: '${contextRoot}/appRole/searchFeatrueTree',
 							parms:{searchNm: '',treeType:functionType[i],appRoleId:appRoleId,appId:obj.appId},
 							idFieldName: 'id',
 							parentIDFieldName: 'parentId',
 							textFieldName: 'name',
-							isExpand: false,
-							autoCheckboxEven:false,
+//							isExpand: false,
+                            enabledCompleteCheckbox:false,
 							checkbox: checkboxBo,
 							async: false,
 							onCheck:function (data,checked) {
-								var isReload = treeCyc.CheckInit(data,functionFeatrueType[0]);
-								dataModel.updateRemote("${contextRoot}/appRole/updateFeatureConfig", {
-									data: {AppFeatureId: data.data.id,roleId:obj.id,updateType:checked},
-									success: function (data) {
-										if(isReload===false)return;
-										functionFeatrueType[1].reload();
-									}
-								})
+                                setTimeout(function(){
+                                    var html= $("#div_function_featrue_grid").html();
+                                    $("#div_configFun_featrue_grid").html(html);
+                                    $("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
+                                    $("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide()
+                                },300)
 							},
 							onSuccess: function (data) {
-								if (Util.isStrEquals(this.id,'div_configFun_featrue_grid')){
-//									var dataNew=[];
-//									for(var i=0;i<data.length;i++){
-//										if(data[i].parentId==0 ){
-//											dataNew.push(data[i])
-//										}else{
-//											for(var j=0;j<data.length;j++){
-//												if(data[i].parentId==data[j].id){
-//													dataNew.push(data[i]);
-//													break;
-//												}else{
-//													data[i]={};
-//												}
-//											}
-//										}
-//									}
-//									functionFeatrueType[1].setData(dataNew);
-									var coun = [];
-									for (var i = 0; i < data.length; i++) {
-										var bo = true;
-										for (var j = 0; j < data.length; j++) {
-											if (Util.isStrEquals(data[i].parentId, data[j].id) || Util.isStrEquals(data[i].parentId, 0)) {
-												bo = false;
-											}
-										}
-										if (bo) {
-											coun.push(i);
-										}
-										delete data[i].children;
-									}
-									for (var k = 0; k < coun.length; k++) {
-										data.splice([coun[k]], 1);
-									}
-									functionFeatrueType[1].setData(data);
-								}
+                                $("#div_configFun_featrue_grid").hide();
+                                if (Util.isStrEquals(this.id, 'div_function_featrue_grid')) {
+                                    setTimeout(function () {
+                                        var html = $("#div_function_featrue_grid").html();
+                                        $("#div_configFun_featrue_grid").html(html).show();
+                                        $("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
+                                        $("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide()
+                                    }, 300)
+                                }
 								$("#div_function_featrue_grid li div span ,#div_configFun_featrue_grid li div span").css({
 									"line-height": "22px",
 									"height": "22px"
@@ -122,41 +96,27 @@
 				clicks: function () {
 					//修改用户信息
 					var self = this;
+                    self.$featrueSaveBtn.click(function () {
+                        var url = "${contextRoot}/appRole/updateFeatureConfig";
+                        var gridType = functionFeatrueType[1];
+                        var datas = functionFeatrueType[0].getChecked();
+                        var featureIds = '';
+                        $.each(datas,function (key,value) {
+                            featureIds += Util.isStrEquals(datas.length-1,key)?value.data.id:value.data.id + ",";
+                        });
+                        dataModel.updateRemote(url, {
+                            data: {featureIds: featureIds, roleId: obj.id},
+                            success: function (data) {
+                                if (data.successFlg)
+                                    $.Notice.success('保存成功');
+                                else
+                                    $.Notice.error('保存失败');
+                            }
+                        })
+                    })
 				}
 			};
 			pageInit();
-			//cyc
-			var treeCyc={
-				CheckInit:function(e,tree){
-					var self=this;
-					var obj=$(e.target);//当前对象
-					var objlevel=obj.attr("outlinelevel");//当前对象的层级
-					var objCheckbox= $(obj.find(".l-body")[0]).find(".l-checkbox")//当前对象的复选框
-					return self.treeClick(obj,objlevel,objCheckbox,tree)
-				},//点击事件初始化
-				treeClick:function(obj,objlevel,objCheckbox,tree){//当前对象、当前对象的层级、当前对象的复选框
-					var self=this;
-					var parentItemCyc;//父节点
-					parentItemCyc=$(tree.getParentTreeItem(obj, objlevel-1))//父节点
-					parentItemCheckboxCyc=$(parentItemCyc.find(".l-body")[0]).find(".l-checkbox")//父节点的复选框
-					if(objCheckbox.hasClass("l-checkbox-checked")){//选中事件
-						if(self.isRrotherly(parentItemCyc,objlevel) && parentItemCheckboxCyc.hasClass("l-checkbox-unchecked")){//如果没有被选中的同级就对父级进行选中操作
-							parentItemCheckboxCyc.click();
-							return false;
-						}
-						return true;
-					}
-				},//点击事件处理
-				isRrotherly:function(parentItemCyc,objlevel){//父节点对象 和当前点击节点的 outlinelevel
-					var parentItemCyc=parentItemCyc;
-					var self=this;
-					if(parentItemCyc.find("li[outlinelevel="+objlevel+"] > div .l-checkbox-checked").length==1){//如果同级未有被选中 则返回true
-						return true
-					}else{
-						return false
-					}
-				},//是否有被选中的同级
-			}
 		})
 	})(jQuery, window)
 </script>
