@@ -208,7 +208,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
             else
                 rs = service.delete(params);
 
-            return afterDel(rs);
+            return afterDel(rs, params);
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();
@@ -237,7 +237,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
             else
                 resultStr = service.update(params);
 
-            return afterUpdate(resultStr);
+            return afterUpdate(resultStr, id, model, params);
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();
@@ -264,7 +264,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
         return params;
     }
 
-    public Object afterDel(String rs){
+    public Object afterDel(String rs,  Map<String, Object> params){
 
         return rs;
     }
@@ -274,7 +274,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
         return params;
     }
 
-    public String afterUpdate(String rs){
+    public String afterUpdate(String rs, String id, String model, Map<String, Object> params){
 
         return rs;
     }

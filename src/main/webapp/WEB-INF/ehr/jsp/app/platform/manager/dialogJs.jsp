@@ -53,7 +53,16 @@
             });
 
             $('#btn_save').click(function () {
-                saveForm({url: urls.update, $form: $form, modelName: 'model', validator: validator});
+                if(!validator.validate())
+                    return;
+
+                $form.attrScan();
+                var newModel = $form.Fields.getValues();
+                var id = newModel.id || '';
+                var extParms = {oldUrl: model.url};
+                var parms = {model: JSON.stringify(newModel), modelName: 'model', id: id , extParms:  JSON.stringify(extParms)}
+
+                saveForm({url: urls.update, $form: $form, parms: parms, validator: validator});
             });
 
             $('#btn_cancel').click(function () {
