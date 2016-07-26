@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,20 @@ public class ResourceDefaultParamController extends BaseUIController {
         model.addAttribute("contentPage","/resource/rsdefaultparam/defaultParam");
         model.addAttribute("resourcesId",resourcesId);
         model.addAttribute("resourcesCode",resourcesCode);
+        Envelop envelop = new Envelop();
+        String en = "";
+        try {
+            en = objectMapper.writeValueAsString(envelop);
+            String url = "/dictionaries/entries";
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","dictId="+51);
+            params.put("page",1);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            model.addAttribute("paramKeys", envelopStr);
+        } catch (Exception ex) {
+            LogService.getLogger(ResourceDefaultParamModel.class).error(ex.getMessage());
+            model.addAttribute("paramKeys", en);
+        }
         return "simpleView";
     }
 
@@ -67,8 +82,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             }
             String url = ServiceApi.Resources.Param;
             Map<String,Object> params = new HashMap<>();
-            params.put("data_json",dataJson);
-            if(mode == "new"){
+            params.put("json_data",dataJson);
+            if(StringUtils.equalsIgnoreCase(mode,"new")){
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
                 return envelopStr;
             }

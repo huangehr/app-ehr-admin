@@ -18,7 +18,7 @@
 			var searchParms = {
 				startTime:backParams.startTime || '',
 				endTime:backParams.endTime || '',
-				status:backParams.status || '',
+				status:backParams.status || '0',
 				name:backParams.name || '',
 				page:backParams.page || 1,
 				pageSize:backParams.pageSize || 15,
@@ -49,6 +49,8 @@
 				$searchBtn: $('#btn_search'),
 				statusBox : null,
 				init: function () {
+					this.$element.attrScan();
+					//window.form = this.$element;
 					this.statusBox = this.$status.ligerComboBox({
 						url: "${contextRoot}/dict/searchDictEntryList",
 						dataParmName: 'detailModelList',
@@ -58,8 +60,6 @@
 						width: 120,
 						value:"0"
 					});
-					this.$element.attrScan();
-					window.form = this.$element;
 					this.$name.ligerTextBox({width:120});
 					this.$startTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
 					this.$endTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
