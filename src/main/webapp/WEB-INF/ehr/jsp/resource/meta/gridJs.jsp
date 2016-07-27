@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
@@ -39,7 +40,9 @@
             var barTools = function(){
 
                 var btn = [
+					<sec:authorize url="/resource/meta/gotoModify">
                     {type: 'edit', clkFun: gotoModify}
+					</sec:authorize>
                 ];
                 initBarBtn($('.m-retrieve-inner'), btn)
 
@@ -56,11 +59,15 @@
 
 
             function opratorRender(row){
-                var vo = [{type: 'edit', clkFun: "$.publish('meta:modify',['"+ row['id'] +"', 'modify'])"}];
-                if(row.valid==1)
-                    vo.push({type: 'lock', clkFun: "$.publish('meta:del',['"+ row['id'] +"'])"});
+                var vo = [
+					<sec:authorize url="/resource/meta/gotoModify">
+					{type: 'edit', clkFun: "$.publish('meta:modify',['"+ row['id'] +"', 'modify'])"}
+					</sec:authorize>
+				];
+					if(row.valid==1)
+                    vo.push(<sec:authorize url="/resource/meta/delete">{type: 'lock', clkFun: "$.publish('meta:del',['"+ row['id'] +"'])"}</sec:authorize>);
                 else
-                    vo.push({type: 'active', clkFun: "$.publish('meta:active',['"+ row['id'] +"'])"});
+                    vo.push(<sec:authorize url="/resource/meta/active">{type: 'active', clkFun: "$.publish('meta:active',['"+ row['id'] +"'])"}</sec:authorize>);
                 return initGridOperator(vo);
             }
 

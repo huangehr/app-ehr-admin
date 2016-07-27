@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script>
 
     (function ($, win) {
@@ -118,9 +119,9 @@
                             {display: '说明', name: 'description', width: '25%', align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '15%', render: function (row) {
-                                var html = '<a class="label_a" title="适配" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterScheme:adapter", row.id, row.adapterVersion) + '">适配</a>';
-								html += '<a class="grid_edit" title="编辑" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}',])", "adapter:adapterScheme:open", row.id, 'modify') + '"></a>' +
-								'<a class="grid_delete" title="删除" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterScheme:delete",row.id,row.status) + '"></a>';
+                                var html = '<sec:authorize url="/schemeAdaptDataSet/initial"><a class="label_a" title="适配" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterScheme:adapter", row.id, row.adapterVersion) + '">适配</a></sec:authorize>';
+								html += '<sec:authorize url="/schemeAdapt/gotoModify"><a class="grid_edit" title="编辑" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}',])", "adapter:adapterScheme:open", row.id, 'modify') + '"></a></sec:authorize>' +
+								'<sec:authorize url="/schemeAdapt/delete"><a class="grid_delete" title="删除" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterScheme:delete",row.id,row.status) + '"></a></sec:authorize>';
 								return html;
                             }
                             }
