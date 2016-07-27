@@ -111,7 +111,7 @@
 				trees=self.$jryycyc.ligerComboBox({
 					width : 240,
 					selectBoxWidth: 238,
-					selectBoxHeight: 500, textField: '', treeLeafOnly: false,
+					selectBoxHeight: 500, textField: 'name', treeLeafOnly: false,
 					tree: {
 						data: treeData, idFieldName:'id', textFieldName: 'name', onClick:function(e){
 							self.listTree(trees);

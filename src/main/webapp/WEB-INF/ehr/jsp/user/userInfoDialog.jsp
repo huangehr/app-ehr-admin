@@ -87,7 +87,7 @@
 	<div class="m-form-group" >
 		<label >角色组:</label>
 		<div id="roleDiv" class="l-text-wrapper m-form-control essential">
-			<input type="text" id="jryycyc" class="required useTitle f-h28 f-w240 f-dn" required-title=<spring:message code="lbl.must.input"/> data-type="select" placeholder="" data-attr-scan="role">
+			<input type="text" style="color: #fff" id="jryycyc" class="required f-h28 f-w240 " data-type="select" data-attr-scan="role">
 		</div>
 	</div>
 
