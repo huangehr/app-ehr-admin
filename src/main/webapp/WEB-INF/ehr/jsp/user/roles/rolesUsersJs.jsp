@@ -42,7 +42,7 @@
                         height: 450,
                         isScroll: true,
                         async: false,
-                        columns: [{display: '姓名', name: 'userName', width: '100%'}],
+                        columns: [{display: '姓s名', name: 'userName', width: '100%'}],
                         onAfterShowData: function (data) {
                             configModel = data.detailModelList;
                         }
@@ -54,7 +54,7 @@
                         width: $(".f-mw50").width(),
                         height: 450,
                         isScroll: true,
-                        async: true,
+                        async: false,
                         checkbox: true,
                         columns: [{display: '姓名', name: 'realName', width: '100%'}],
                         onCheckRow: function (checked, data, rowid, rowdata) {
@@ -63,6 +63,7 @@
                                 data: {userId: data.id, roleId: obj.id},
                                 success: function (data) {
                                     self.reloadUserGrid(obj.id, 'userRoles/roleUserList', 'configUser');
+                                    self.changeTotalCount();
                                 }
                             });
                         },
@@ -79,10 +80,17 @@
                         }
                     }));
                     self.$userGrid.find('.l-grid-hd-cell-checkbox').removeClass('l-grid-hd-cell-checkbox');
+                    self.changeTotalCount();
                     self.clicks();
+                },
+                changeTotalCount:function () {
+                    debugger
+                    $("#div_user_grid .l-bar-message").css({"left":"56%"}).html("共"+userGrid.data.totalCount+"条");
+                    $("#div_config_user_grid .l-bar-message").css({"left":"56%"}).html("共"+configUserGrid.data.totalCount+"条");
                 },
                 reloadUserGrid: function (value, url, type) {
                     reloadGrid.call(this, '${contextRoot}/' + url, value, type);
+                    master.changeTotalCount();
                 },
                 clicks: function () {
                     //修改用户信息

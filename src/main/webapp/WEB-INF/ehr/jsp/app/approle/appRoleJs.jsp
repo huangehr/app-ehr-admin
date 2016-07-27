@@ -65,7 +65,6 @@
                         url: url+'searchAppRole',
                         parms: {searchNm: '', gridType: 'appRoleGroup', appRoleId: appRoleId},
                         isScroll: true,
-                        <%--async: false,--%>
                         columns: [
                             {display: '角色组编码', name: 'code', width: '20%'},
                             {display: '角色组名称', name: 'name', width: '20%'},
@@ -85,7 +84,6 @@
                         }
                     }));
 
-                    $("#div_appRole_grid .l-bar-message").css({"left":"56%"}).html("共"+appRoleGrid.data.totalCount+"条");
                     appRoleGroupGrid.adjustToWidth();
                     self.clicks();
                 },
@@ -96,6 +94,7 @@
                         searchParams = {searchNm: searchParams, gridType: type, appRoleId: appRoleId}
                     }
                     reloadGrid.call(this, url+'searchAppRole', type, appRoleId, searchParams);
+                    $("#div_appRole_grid .l-bar-message").css({"left":"56%"}).html("共"+appRoleGrid.data.totalCount+"条");
                 },
                 clicks: function () {
                     var self = this;
@@ -163,6 +162,9 @@
                 master.reloadAppRoleGrid("appRoleGroup", appRoleId, "");
             };
             pageInit();
+            $(window).resize(function(){
+                master.$appBrowseMsg.width($(window).width()-630);
+            });
 
         })
     })(jQuery, window)
