@@ -79,7 +79,7 @@
 							{display: '查询消息', name: 'message', width: '10%', resizable: true,align:'left'},
 							{
 								display: '操作', name: 'operator', width: '10%', render: function (row) {
-								var html = ' ';
+								var html = '';
 								<sec:authorize url="/esb/sqlTask/delete">
 								html = '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "his:hisInfoDialog:del", row.id) + '"></a>';
 								</sec:authorize>

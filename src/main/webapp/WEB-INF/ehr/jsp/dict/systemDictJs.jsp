@@ -124,7 +124,7 @@
                             {display: '字典名称', name: 'name', width: '70%', align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '30%', render: function (row) {
-                                var html = ' ';
+                                var html = '';
                                 <sec:authorize url='/dict/updateDict'>
                                 html += '<a class="grid_edit" href="javascript:void(0)" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDict:systemInfoModifyDialog:update", row.id, row.name) + '"></a>';
                                 </sec:authorize>
@@ -186,7 +186,7 @@
                             {display: '值', name: 'value', width: '45%'},
                             {
                                 display: '操作', name: 'operator', width: '15%', render: function (row) {
-                                var html = ' ';
+                                var html = '';
                                 <sec:authorize url="/dict/updateDictEntry">
                                 html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:update", row.code, row.value, row.sort, row.catalog) + '"></a>';
                                 </sec:authorize>
