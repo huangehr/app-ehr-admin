@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">数据集管理</div>
@@ -15,20 +16,29 @@
     </div>
     <div style="height: 34px">
 
+        <sec:authorize url="/template/平台标准数据集导入模版.xls">
         <a href="<%=request.getContextPath()%>/template/平台标准数据集导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
            style="">
             下载模版
         </a>
+        </sec:authorize>
+
+        <sec:authorize url="/std/dataset/import">
         <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
+        </sec:authorize>
 
     <%--<div id="div_upload" class="f-mr100" data-alone-file=true align="right">--%>
         <!--用来存放item-->
         <%--<div id="div_file_list" class="uploader-list f-mr100 f-h30"></div>--%>
         <%--<div id="div_file_picker" class="f-mt10" style="margin-top: -30px;">导入数据集</div>--%>
     <%--</div>--%>
+
+        <sec:authorize url="/std/dataset/exportToExcel">
         <div>
             <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="margin-top: 0px;height: 30px">全部导出</button>
         </div>
+        </sec:authorize>
+
     </div>
     <div style="width: 100%" id="grid_content">
         <!--######CDA信息表######-->
@@ -42,8 +52,9 @@
 
                         <input type="text" id="searchNm" placeholder="<spring:message code="lbl.input.placehold"/>">
 
-                        <div title="新增" id="btn_create" class="image-create">
-                        </div>
+                        <sec:authorize url="/std/dataset/setupdate">
+                        <div title="新增" id="btn_create" class="image-create"></div>
+                        </sec:authorize>
                     </li>
                 </ul>
             </div>
@@ -61,14 +72,19 @@
                         <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>"
                                class="f-ml10">
 
+                        <sec:authorize url="/std/dataset/deleteMetaData">
                         <a id="btn_Delete_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr20"
                            style="  margin-right: 20px;margin-top: -26px;">
                             批量删除
                         </a>
+                        </sec:authorize>
+
+                        <sec:authorize url="/std/dataset/elementupdate">
                         <a id="btn_add_element" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
                            style="  margin-right: 20px;margin-top: -26px;">
                             新增
                         </a>
+                        </sec:authorize>
                     </li>
                 </ul>
             </div>

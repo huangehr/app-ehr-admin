@@ -136,6 +136,7 @@
             $('#btn_save').click(function () {
                 saveForm({url: urls.update, $form: $form, modelName: 'model', validator: validator,
                     onSuccess: function (data) {
+                        data.obj.openLevelName = $('#ipt_api_openLevel').ligerGetComboBoxManager().findTextByValue(data.obj.openLevel);
                         if(data.obj.type==1){
                             $.Notice.confirm("保存成功，是否继续编辑接口详细信息？", function (y) {
                                 if(y){
