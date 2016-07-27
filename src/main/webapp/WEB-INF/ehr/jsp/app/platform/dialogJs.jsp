@@ -34,7 +34,7 @@
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
                 if(field=='inp_app_code' && val!=model.code){
-                    return uniqValid(urls.existence, "code="+val+" g1;", "该应用代码已存在！");
+                    return uniqValid(urls.existence, "code="+val+" g1;sourceType=1", "该平台应用代码已存在！");
                 }
             });
 

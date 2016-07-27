@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
@@ -29,7 +30,11 @@
                 },
                 //初始化工具栏
                 rendBarTools : function(){
-                    var btn = [{type: 'edit', clkFun: master.gotoModify, imgClz: 'image-create'}];
+                    var btn = [
+						<sec:authorize url="/resource/dict/gotoModify">
+						{type: 'edit', clkFun: master.gotoModify, imgClz: 'image-create'}
+						</sec:authorize>
+					];
                     initBarBtn($('#retrieve_inner'), btn)
                 },
                 //初始化过滤
@@ -76,8 +81,12 @@
                 //操作栏渲染器
                 opratorRender: function (row){
                     var vo = [
+						<sec:authorize url="/resource/dict/gotoModify">
                         {type: 'edit', clkFun: "$.publish('dict:modify',['"+ row['id'] +"', 'modify'])"},
+						</sec:authorize>
+						<sec:authorize url="/resource/dict/delete">
                         {type: 'del', clkFun: "$.publish('dict:del',['"+ row['id'] +"'])"}
+						</sec:authorize>
                     ];
                     return initGridOperator(vo);
                 },
@@ -131,7 +140,11 @@
                 },
                 //初始化工具栏
                 rendBarTools : function(){
-                    var btn = [{type: 'edit', clkFun: this.gotoModify}];
+                    var btn = [
+						<sec:authorize url="/resource/dict/entry/gotoModify">
+						{type: 'edit', clkFun: this.gotoModify}
+						</sec:authorize>
+					];
                     initBarBtn($('#entry_retrieve_inner'), btn);
 
                     function onUploadSuccess(g, result){
@@ -170,8 +183,12 @@
                 //操作栏渲染器
                 opratorRender: function (row){
                     var vo = [
+						<sec:authorize url="/resource/dict/entry/gotoModify">
                         {type: 'edit', clkFun: "$.publish('dict:entry:modify',['"+ row['id'] +"', 'modify'])"},
+						</sec:authorize>
+						<sec:authorize url="/resource/dict/entry/delete">
                         {type: 'del', clkFun: "$.publish('dict:entry:del',['"+ row['id'] +"'])"}
+						</sec:authorize>
                     ];
                     return initGridOperator(vo);
                 },

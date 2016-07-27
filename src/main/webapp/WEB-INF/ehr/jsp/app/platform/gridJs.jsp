@@ -44,7 +44,9 @@
 
             function opratorRender(row){
                 var vo = [
+					<sec:authorize url="/app/feature/initial">
                     {type: '功能管理', clkFun: "$.publish('app:platform:manager',['"+ row['id'] +"','"+ row['name'] +"'])"},
+					</sec:authorize>
                     <sec:authorize url="/app/platform/update">
                     {type: 'edit', clkFun: "$.publish('app:platform:modify',['"+ row['id'] +"', 'modify'])"},
                     </sec:authorize>

@@ -11,6 +11,7 @@
         var jValidation = $.jValidation;
 		var catalogDictId = 1;
 		var statusDictId = 2;
+        var app = {};
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
             appInfoForm.init();
@@ -62,7 +63,7 @@
 				}
                 this.$form.attrScan();
                 if(mode !='new'){
-                    var app = ${model};
+                    app = ${model};
                     this.$form.Fields.fillValues({
 						sourceType: app.sourceType,
                         name:app.name,
@@ -101,6 +102,12 @@
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
                     onElementValidateForAjax:function(elm){
+                        var field = $(elm).attr('id');
+                        var val = $('#' + field).val();
+
+                        if(field=='inp_app_code' && val!=app.code){
+                            return uniqValid("${contextRoot}/app/platform/existence", "code="+val+" g1;sourceType=0", "该接入应用代码已存在！");
+                        }
                     }
                 });
                 this.$btnSave.click(function () {
@@ -161,10 +168,11 @@
                 trees=self.$jryycyc.ligerComboBox({
                     width : 240,
                     selectBoxWidth: 238,
-                    selectBoxHeight: 500, textField: 'text', treeLeafOnly: false,
+                    selectBoxHeight: 500, textField: 'name', treeLeafOnly: false,
                     tree: {
                         data: treeData, idFieldName:'id', textFieldName: 'name', onClick:function(e){
-                        self.listTree(trees);
+                            $('#jryycyc').blur();
+                            self.listTree(trees);
                     }}
                 })
 
