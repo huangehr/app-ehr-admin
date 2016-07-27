@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 	(function($,win){
 		$(function(){
@@ -66,9 +67,9 @@
 							{
 								display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
 								var html = '';
-								html += '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hpIcd10:relation:info:open", row.id) + '">关联诊断</a>';
-								html += '<a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "hp:info:open", row.id,'modify') + '"></a>';
-								html += '<a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hp:info:delete", row.id) + '"></a>';
+								html += '<sec:authorize url="/specialdict/hp/hpIcd10Relation/initial"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hpIcd10:relation:info:open", row.id) + '">关联诊断</a></sec:authorize>';
+								html += '<sec:authorize url="/specialdict/hp/dialog/hp"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "hp:info:open", row.id,'modify') + '"></a></sec:authorize>';
+								html += '<sec:authorize url="/specialdict/hp/deletes"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hp:info:delete", row.id) + '"></a></sec:authorize>';
 								return html;
 							}},
 						],

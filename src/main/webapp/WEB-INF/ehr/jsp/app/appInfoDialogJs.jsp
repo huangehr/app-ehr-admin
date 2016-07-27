@@ -42,7 +42,7 @@
                 this.$name.ligerTextBox({width:240});
 				this.initDDL(catalogDictId, this.$catalog);
 				this.initDDL(statusDictId, this.$status);
-				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{})
+				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{filters: "activityFlag=1;"})
                 this.$tags.ligerTextBox({width:240});
 				this.$code.ligerTextBox({width:240});
 				this.$appId.ligerTextBox({width:240});
