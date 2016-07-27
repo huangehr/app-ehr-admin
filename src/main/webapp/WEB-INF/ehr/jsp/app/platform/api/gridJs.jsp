@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
@@ -95,12 +96,12 @@
                             {
                                 display: '操作', name: 'operator', align: 'left', width: '70', render: function (row) {
                                     var html =
-                                            '<a class="image-create" href="#" title="新增" ' +
-                                            'onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}', '{5}', '{6}'])", "app:plf:api:modify", row.id, 'new', row.type, 0, row.__id, row.appId) + '"></a>';
+                                            '<sec:authorize url="/app/api/create"><a class="image-create" href="#" title="新增" ' +
+                                            'onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}', '{5}', '{6}'])", "app:plf:api:modify", row.id, 'new', row.type, 0, row.__id, row.appId) + '"></a></sec:authorize>';
 
                                     if(row.id>0){
-                                        html +=  '<a class="grid_delete" href="#" style="width: 30px; margin-left:4px" title="删除" ' +
-                                                'onclick="javascript:' + Util.format("$.publish('{0}',['{1}', '{2}', '{3}'])", "app:plf:api:del", row.id, 0, row.__id) + '"></a>';
+                                        html +=  '<sec:authorize url="/app/api/delete"><a class="grid_delete" href="#" style="width: 30px; margin-left:4px" title="删除" ' +
+                                                'onclick="javascript:' + Util.format("$.publish('{0}',['{1}', '{2}', '{3}'])", "app:plf:api:del", row.id, 0, row.__id) + '"></a></sec:authorize>';
                                     }
                                     return html;
                                 }
@@ -178,12 +179,16 @@
                 //操作栏渲染器
                 opratorRender: function (row) {
                     var vo = [
+						<sec:authorize url="/app/api/update">
                         {
                             type: 'edit',
                             clkFun: "$.publish('app:plf:api:modify',['" + row['id'] + "', 'modify', '" + row['type'] + "', '1', '"+ row.__id +"'])"
                         },
+						</sec:authorize>
+						<sec:authorize url="/app/api/delete">
                         {type: 'del', clkFun: "$.publish('app:plf:api:del',['" + row['id'] + "', 1, '" + row.__id + "', '" + row.parentId + "', '" + row.type + "'])"}
-                    ];
+						</sec:authorize>
+					];
                     return initGridOperator(vo);
                 },
                 //修改、新增点击事件

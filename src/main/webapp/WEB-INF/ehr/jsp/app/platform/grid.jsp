@@ -11,7 +11,7 @@
   <div id="searchForm" class="m-retrieve-area f-h50 f-pr m-form-inline condition" data-role-form>
     <div class="m-retrieve-inner m-form-group f-mt10">
       <input type="hidden" value="1" data-attr-scan="sourceType"/>
-      <sec:authorize url="/app/platform/list">
+      <%--<sec:authorize url="/app/platform/list">--%>
       <div class="m-form-control">
         <input type="text" id="ipt_search" placeholder="请输入应用名称" class="f-ml10" data-attr-scan="name"/>
       </div>
@@ -19,7 +19,7 @@
       <div class="m-form-control f-ml10">
         <input type="text" id="ipt_search_type"  placeholder="请选择应用类型" data-type="select" data-attr-scan="catalog">
       </div>
-      </sec:authorize>
+      <%--</sec:authorize>--%>
     </div>
   </div>
 
