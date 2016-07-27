@@ -156,9 +156,9 @@ public class OrganizationController extends BaseUIController {
      */
     @RequestMapping("/orgCodes")
     @ResponseBody
-    public Object searchOrgCodes(String searchParm,int page,int rows){
+    public Object searchOrgCodes(String filters, String searchParm,int page,int rows){
         Envelop envelop = new Envelop();
-        String filters = "";
+        filters = filters==null? "": filters;
         try{
             if (!org.apache.commons.lang.StringUtils.isEmpty(searchParm)){
                 filters += "orgCode?"+searchParm+" g1;fullName?"+searchParm+" g1;";
