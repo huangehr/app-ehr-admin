@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -90,10 +91,10 @@
 							{display: '状态', name: 'status', hide:true},
 							{display: '状态', name: 'statusName', width: '15%', minColumnWidth: 20,},
 							{display: '操作', name: 'operator', width: '25%', render: function (row) {
-								var html = '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:info:open", row.id,row.status) + '">详情</a>';
+								var html = '<sec:authorize url="/authentication/infoInitial"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:info:open", row.id,row.status) + '">详情</a></sec:authorize>';
 								if(row.status == "0"){
-									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '1') + '">同意</a>';
-									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '2') + '">拒绝</a>';
+									html += '<sec:authorize url="/authentication/agree"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '1') + '">同意</a></sec:authorize>';
+									html += '<sec:authorize url="/authentication/reject"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '2') + '">拒绝</a></sec:authorize>';
 								}
 								return html;
 							}}

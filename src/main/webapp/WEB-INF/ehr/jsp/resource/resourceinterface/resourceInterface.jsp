@@ -8,6 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div class="f-dn" data-head-title="true">资源接口</div>
 <div id="div_wrapper" >
 	<!-- ####### 查询条件部分 ####### -->
@@ -24,9 +25,11 @@
 				</div>
 			</div>
 			<div class="m-form-control m-form-control-fr">
+				<sec:authorize url="/resource/resourceInterface/infoInitial">
 				<div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
 					<span><spring:message code="btn.create"/></span>
 				</div>
+				</sec:authorize>
 			</div>
 		</div>
 	</div>
