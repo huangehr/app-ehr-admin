@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <div class="f-dn" data-head-title="true">资源类别</div>
@@ -11,11 +12,14 @@
                     <input type="text" id="inp_search" name="inp_search" placeholder="请输入名称"
                            class="f-ml10" >
                 </div>
+
+                <sec:authorize url="/rscategory/typeupdate">
                 <div style="float: right; width: 250px; margin-top: -5px;">
                     <a id="btn_Update_relation" class="btn btn-primary J_add-btn f-fr f-mr10">
                         新增
                     </a>
                 </div>
+                </sec:authorize>
             </li>
         </ul>
     </div>

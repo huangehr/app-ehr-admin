@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
@@ -86,7 +87,7 @@
                     });
                 },
                 //初始化工具栏
-               rendBarTools : function(){
+                rendBarTools : function(){
                     function onUploadSuccess(g, result){
                         if(result=='suc')
                             $.Notice.success("导入成功");
@@ -167,8 +168,14 @@
                                 {display: '字典名称', name: 'name', width: '34%', isAllowHide: false, align: 'left'},
                                 {
                                     display: '操作', name: 'operator', width: '33%', render: function (row) {
-                                    var html = '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "stddict:dictInfo:open", row.id, 'modify') + '"></a>' +
-                                            '<a class="grid_delete" href="#" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "stddict:dictInfoGrid:delete", row.id) + '"></a>';
+                                    var html = '';
+                                    <sec:authorize url="/cdadict/saveDict">
+                                    html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "stddict:dictInfo:open", row.id, 'modify') + '"></a>';
+                                    </sec:authorize>
+
+                                    <sec:authorize url="/cdadict/deleteDict">
+                                    html +=  '<a class="grid_delete" href="#" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "stddict:dictInfoGrid:delete", row.id) + '"></a>';
+                                    </sec:authorize>
                                     return html;
                                 }
                                 }
@@ -305,11 +312,14 @@
                             {
                                 display: '操作', name: 'operator', width: '33%', render: function (row) {
 
-//				  var html ='<div class="grid_edit"  style="" title="" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "entry:dictInfo:open", row.id,row.dictId,'modify') + '"></div>'
-//						  +'<div class="grid_delete"  style="" title=""' +
-//						  ' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "entry:dictInfoGrid:delete", row.id) + '"></div>';
-                                var html = '<a class="grid_edit" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "entry:dictInfo:open", row.id, row.dictId, 'modify') + '"></a>' +
-                                        '<a class="grid_delete" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "entry:dictInfoGrid:delete", row.id) + '"></a>';
+                                var html = '';
+                                <sec:authorize url="/cdadict/saveDictEntry">
+                                html += '<a class="grid_edit" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "entry:dictInfo:open", row.id, row.dictId, 'modify') + '"></a>';
+                                </sec:authorize>
+
+                                <sec:authorize url="/cdadict/deleteDictEntryList">
+                                html += '<a class="grid_delete" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "entry:dictInfoGrid:delete", row.id) + '"></a>';
+                                </sec:authorize>
                                 return html;
                             }
                             }

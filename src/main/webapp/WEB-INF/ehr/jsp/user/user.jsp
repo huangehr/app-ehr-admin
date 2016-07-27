@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true"><spring:message code="title.user.manage"/></div>
@@ -16,17 +17,21 @@
                 <!--下拉框-->
                 <input type="text" id="inp_select_searchType" placeholder=<spring:message code="lbl.select.userType"/> data-type="select" data-attr-scan="searchType">
             </div>
+            <sec:authorize url="/user/searchUsers">
             <div class="m-form-control f-ml20">
                 <!--按钮:查询 & 新增-->
                 <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
                     <span><spring:message code="btn.search"/></span>
                 </div>
             </div>
+            </sec:authorize>
+            <sec:authorize url="/user/updateUser">
             <div class="m-form-control m-form-control-fr">
                 <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
                     <span><spring:message code="btn.create"/></span>
                 </div>
             </div>
+            </sec:authorize>
         </div>
     </div>
     <!--######用户信息表######-->

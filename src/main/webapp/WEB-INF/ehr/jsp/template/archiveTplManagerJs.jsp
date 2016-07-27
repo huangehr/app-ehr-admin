@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 
@@ -132,14 +133,22 @@
                                 width: '10%',
                                 minColumnWidth: 20,
                                 render: function (row) {
-                                    var html = '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplUpload:open", row.id, 'pc') + '">PC</a> / ' +
-                                            '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplUpload:open", row.id, 'mobile') + '">移动</a>';
+                                    var html = ''
+                                            <sec:authorize url="/template/update_tpl_content">
+                                            + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplUpload:open", row.id, 'pc') + '">PC</a> / '
+                                            + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplUpload:open", row.id, 'mobile') + '">移动</a>';
+                                            </sec:authorize>
                                     return html;
                                 }
                             },
                             {
                                 display: '复制模版', name: 'operator', width: '10%', render: function (row) {
-                                var html = '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'copy') + '">复制</a>';
+
+                                var html = ''
+                                        <sec:authorize url="/template/update">
+                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'copy') + '">复制</a>';
+                                        </sec:authorize>
+
                                 return html;
                             }
                             },
@@ -148,8 +157,12 @@
                                 name: 'checkStatus',
                                 width: '10%',
                                 minColumnWidth: 20,
+
                                 render: function (row) {
-                                    var html = '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'modify') + '">修改</a>';
+                                    var html = ''
+                                            <sec:authorize url="/template/update">
+                                            + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'modify') + '">修改</a>';
+                                            </sec:authorize>
                                     return html;
                                 }
                             }

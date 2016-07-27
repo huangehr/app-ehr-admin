@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <div class="f-dn" data-head-title="true">补采任务配置</div>
 <div id="div_wrapper" >
@@ -27,11 +28,13 @@
 					<span><spring:message code="btn.search"/></span>
 				</div>
 			</div>
+			<sec:authorize url="/esb/acqTask/acqInfoDialog">
 			<div class="m-form-control m-form-control-fr">
 				<div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
 					<span><spring:message code="btn.create"/></span>
 				</div>
 			</div>
+			</sec:authorize>
 		</div>
 		<div class="m-form-group f-mt10">
 			<div class="m-form-control">

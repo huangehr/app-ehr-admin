@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -33,13 +34,20 @@
           <span><spring:message code="btn.search"/></span>
         </div>
       </div>
+
       <div class="m-form-control m-form-control-fr">
+        <sec:authorize url="/adapterorg/addAdapterOrg">
         <div id="btn_add" onclick="javascript:$.publish('adapter:adapterInfo:open',['','new'])" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
           <span><spring:message code="btn.create"/></span>
         </div>
+        </sec:authorize>
+
+        <sec:authorize url="/adapterorg/delAdapterOrg">
         <div id="btn_multiDel" onclick="javascript:$.publish('adapter:adapterInfo:del',[''])" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml10" >
           <span><spring:message code="btn.multi.delete"/></span>
         </div>
+        </sec:authorize>
+
       </div>
     </div>
   </div>

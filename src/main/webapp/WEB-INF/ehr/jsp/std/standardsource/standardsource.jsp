@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -19,6 +20,7 @@
                 <!--类别-->
                 <input type="text" id="ipt_search_type" placeholder="请选择类型" data-type="select" data-attr-scan="searchType">
             </div>
+
             <div class="m-form-control f-ml10">
                 <!--按钮:搜索-->
                 <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
@@ -27,17 +29,21 @@
             </div>
 
             <!--按钮: 新增 & 批量删除-->
+            <sec:authorize url="/standardsource/delStdSource">
             <div class="m-form-control m-form-control-fr">
                 <div onclick="javascript:$.publish('stdInfo:stdInfoGrid:delete',[''])" id="btn_del" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
                     <span ><spring:message code="btn.multi.delete"/></span>
                 </div>
             </div>
+            </sec:authorize>
 
+            <sec:authorize url="/standardsource/updateStdSource">
             <div class="m-form-control m-form-control-fr-10">
                 <div onclick="javascript:$.publish('std:stdInfo:open',['','new'])" id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
                     <span ><spring:message code="btn.create"/></span>
                 </div>
             </div>
+            </sec:authorize>
         </div>
     </div>
 

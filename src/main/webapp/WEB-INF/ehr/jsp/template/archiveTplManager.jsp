@@ -1,5 +1,6 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
@@ -35,11 +36,14 @@
                 <input type="text" id="inp_searchOrgName" placeholder="请输入模板或医疗机构" class="f-ml10 " data-attr-scan="orgName"/>
             </div>
 
+            <sec:authorize url="/template/update">
             <div class="m-form-control m-form-control-fr f-ml10" style="float: right;">
                 <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" onclick="javascript:$.publish('tpl:tplInfo:open',['','new'])" >
                     <span><spring:message code="btn.create"/></span>
                 </div>
             </div>
+            </sec:authorize>
+
         </div>
     </div>
 
