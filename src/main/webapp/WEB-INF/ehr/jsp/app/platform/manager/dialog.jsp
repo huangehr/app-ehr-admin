@@ -53,7 +53,7 @@
   <div class="m-form-group">
     <label>URL<spring:message code="spe.colon"/></label>
     <div class="m-form-control ">
-      <textarea id="ipt_af_url" class="f-w240 max-length-200" data-attr-scan="url" maxlength="500"></textarea>
+      <textarea id="ipt_af_url" class="ajax f-w240 max-length-200" data-attr-scan="url" maxlength="500"></textarea>
     </div>
   </div>
 
