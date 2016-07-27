@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -102,11 +103,11 @@
 							{display: '操作',name: 'operator', width:'10%', align:'center',render: function (row) {
 								var html="";
 								if(row.status==0){
-								 html = '<a href="javascript:void(0)" title="审核" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:update", row.status,row.id) + '">审核</a>';
+								 html = '<sec:authorize url="/correlation/validateAudit"><a href="javascript:void(0)" title="审核" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:update", row.status,row.id) + '">审核</a></sec:authorize>';
 								}else if(row.status==1){
-								 html = '<a href="javascript:void(0)" title="查看" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:success", row.status,row.id) + '">查看</a>';
+								 html = '<sec:authorize url="/correlation/msgDialog"><a href="javascript:void(0)" title="查看" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:success", row.status,row.id) + '">查看</a></sec:authorize>';
 								}else{
-								 html = '<a  href="javascript:void(0)" title="查看" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:error", row.status,row.id) + '">查看</a>';
+								 html = '<sec:authorize url="/correlation/msgDialog"><a  href="javascript:void(0)" title="查看" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:error", row.status,row.id) + '">查看</a></sec:authorize>';
 								}
 								return html;
 							}}

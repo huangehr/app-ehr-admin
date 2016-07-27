@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!--######资源浏览页面Title设置######-->
 <div class="f-dn" data-head-title="true">资源浏览</div>
 <div id="div_wrapper" class="f-mt20">
@@ -19,7 +19,7 @@
         </div>
         <!--资源浏览详情-->
 
-        <div id="div_resource_browse_msg" class="div-resource-browse" >
+        <div id="div_resource_browse_msg" class="div-resource-browse">
             <!--添加动态查询-->
             <div class="f-mt10 f-ml10 div-search-height f-fl f-ml20 f-mw93" id="div-search-data-role-form">
                 <div id="div_new_search" class="f-mt10" data-role-form>
@@ -54,14 +54,16 @@
                 <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_reset_btn">
                     <span>重置</span>
                 </div>
-                <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam save-toolbar"
-                     id="div_out_sel_excel_btn">
-                    <span>导出选中结果</span>
-                </div>
-                <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar"
-                     id="div_out_all_excel_btn">
-                    <span>导出查询结果</span>
-                </div>
+                <sec:authorize url="/resourceBrowse/outExcel">
+                    <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam save-toolbar"
+                         id="div_out_sel_excel_btn">
+                        <span>导出选中结果</span>
+                    </div>
+                    <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar"
+                         id="div_out_all_excel_btn">
+                        <span>导出查询结果</span>
+                    </div>
+                </sec:authorize>
             </div>
 
             <div class="div-result-msg f-mt10">
