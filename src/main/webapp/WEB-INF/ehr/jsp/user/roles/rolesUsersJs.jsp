@@ -32,7 +32,7 @@
                     var self = this;
                     self.$userSearch.ligerTextBox({
                         width: 240, isSearch: true, search: function () {
-                            self.reloadUserGrid(self.$userSearch.val(), 'user/searchUsers', 'user');
+                            self.reloadUserGrid(self.$userSearch.val(), 'userRoles/searchUsers', 'user');
                         }
                     });
                     configUserGrid = self.$configUserGrid.ligerGrid($.LigerGridEx.config({
@@ -49,7 +49,7 @@
                     }));
 
                     userGrid = self.$userGrid.ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/user/searchUsers',
+                        url: '${contextRoot}/userRoles/searchUsers',
                         parms: {searchNm: ''},
                         width: $(".f-mw50").width(),
                         height: 450,
