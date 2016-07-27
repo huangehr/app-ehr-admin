@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 
 <div id="div_app_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
 	<input type="hidden" id="inp_source_type"  data-attr-scan="sourceType" value="0">

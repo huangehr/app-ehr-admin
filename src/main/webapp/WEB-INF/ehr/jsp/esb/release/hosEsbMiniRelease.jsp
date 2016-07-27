@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true"><spring:message code="title.dict.manage"/></div>
 <div id="div_wrapper" >
@@ -11,9 +12,11 @@
           <div class="m-form-control f-fs12">
             <input type="text" id="systemCode" placeholder="<spring:message code="lbl.hosRelease.searchSystemCode"/>">
           </div>
+          <sec:authorize url='/esb/hosRelease/releaseInfo'>
           <div class="f-pt5 f-fr f-mr10" >
             <div title="<spring:message code="btn.create"/>" id="btn_create" class="image-create"  onclick="javascript:$.publish('hosRelease:releaseInfo:open',['','new'])"></div>
           </div>
+          </sec:authorize>
         </div>
       </div>
       <div id="div_hosRelease_grid" >

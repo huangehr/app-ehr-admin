@@ -79,6 +79,16 @@
                         onDblClickRow: function (rowData, rowId, rowObj) {
                             if( rowData.id)
                                 em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
+                        },
+                        onAfterShowData:function(currentData){
+                            var modules = currentData.detailModelList[0].children;
+                            if(modules && modules.length>0)
+                                for(var i=0;i<modules.length;i++){
+                                    var row = modules[i];
+                                    if(row.children.length>0){
+                                        this.collapse(row);
+                                    }
+                                }
                         }
                     }));
                 }

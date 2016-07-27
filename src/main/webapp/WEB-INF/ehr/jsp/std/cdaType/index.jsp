@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <div class="f-dn" data-head-title="true">CDA类别</div>
@@ -22,9 +23,11 @@
                     <%--<a id="btn_Delete_relation" class="btn btn-primary J_add-btn f-fr f-mr10">--%>
                         <%--批量删除--%>
                     <%--</a>--%>
+                    <sec:authorize url="/cdatype/SaveCdaType">
                     <a id="btn_Update_relation" class="btn btn-primary J_add-btn f-fr f-mr10">
                         新增
                     </a>
+                    </sec:authorize>
                 </div>
             </li>
         </ul>
