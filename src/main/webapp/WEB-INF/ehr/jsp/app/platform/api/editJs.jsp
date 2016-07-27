@@ -141,7 +141,7 @@
                         if (data.successFlg) {
                             $.Notice.confirm("保存成功, 是否继续新增？", function (y) {
                                 if(y){
-                                    model = {id: 0, appId: model.appId, type: "1", name: "", description:"",auditLevel:"", method: "",
+                                    model = {id: 0, appId: model.appId, type: "1", name: "", description:"",auditLevel:"", method: "", methodName: "",
                                         activityType:"",openLevel:"",parameterDemo:"",responseDemo:"", version: "", protocol: "", parentId: model.parentId};
                                     mode = 'new';
                                     reInit();

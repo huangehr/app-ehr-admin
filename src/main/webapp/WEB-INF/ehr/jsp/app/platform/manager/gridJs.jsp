@@ -98,10 +98,9 @@
                     var m = em;
                     var columns = [
                         {display: 'ID', name: 'id', hide: true},
-                        {display: '名称', name: 'name', width: '15%', align: 'left'},
-                        {display: '编码', name: 'code', width: '15%', align: 'left'},
+                        {display: '名称', name: 'name', width: '20%', align: 'left'},
+                        {display: '编码', name: 'code', width: '20%', align: 'left'},
                         {display: 'URL', name: 'url', width: '40%', align: 'left'},
-                        {display: '开放程度', name: 'openLevelName', width: '10%', align: 'left'},
                         {display: '操作', name: 'operator', width: '20%', render: m.opratorRender}];
 
                     m.grid = initGrid($('#rightGrid'), urls.list, {}, columns, {
