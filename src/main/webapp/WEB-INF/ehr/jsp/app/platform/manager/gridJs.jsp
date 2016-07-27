@@ -93,12 +93,6 @@
                             var modules = currentData.detailModelList[0].children;
                             if(modules && modules.length>0)
                                 collapse(this, modules);
-//                                for(var i=0;i<modules.length;i++){
-//                                    var row = modules[i];
-//                                    if(row.children.length>0){
-//                                        this.collapse(row);
-//                                    }
-//                                }
                         }
                     }));
                 }
