@@ -27,6 +27,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //取消jfame的安全验证
+        http.headers().frameOptions().disable();
         // 设置拦截规则
         http.authorizeRequests().accessDecisionManager(accessDecisionManager())
                 .expressionHandler(webSecurityExpressionHandler())
