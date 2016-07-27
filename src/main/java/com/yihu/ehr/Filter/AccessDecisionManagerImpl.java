@@ -6,7 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 
 import java.util.Collection;
@@ -54,27 +54,18 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
             if("anonymous".equals(ca.toString()) || "permitAll".equals(ca.toString())){
                 return;
             }
-
-            if(ca.toString().indexOf("ROLE_BTN")!=-1){
-                url = url.substring(0, url.lastIndexOf(".btn"));
-            }else {
-                index = url.indexOf("?");
-                if(index!=-1)
-                    url = url.substring(0, index);
-                url.replaceAll("/+", "/");
-            }
-
-            //ga 为用户所被赋予的权限
-            for (GrantedAuthority ga : authentication.getAuthorities()) {
-                if(!roleCache.contains(url))
-                    return;
-
-                if(ga.getAuthority().equals(url))
-                    return;
-//                if(roleCache.hasRole(url, ga.getAuthority()))
-//                    return;
-            }
         }
+
+        index = url.indexOf("?");
+        if(index!=-1)
+            url = url.substring(0, index);
+        url.replaceAll("/+", "/");
+
+        if(!roleCache.contains(url))
+            return;
+        //ga 为用户所被赋予的权限
+        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority(url)))
+            return;
 
         throw new AccessDeniedException("没有权限！");
 
