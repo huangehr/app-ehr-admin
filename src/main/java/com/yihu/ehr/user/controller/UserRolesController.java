@@ -263,6 +263,36 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
+    //获取所有有效用户列表
+    @RequestMapping("/searchUsers")
+    @ResponseBody
+    public Object searchUsers(String searchNm,int page, int rows) {
+        String url = "/users";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(searchNm)) {
+            stringBuffer.append("realName?" + searchNm + ";");
+        }
+        stringBuffer.append("activated=true;");
+        String filters = stringBuffer.toString();
+        params.put("fields","");
+        params.put("sorts","");
+        params.put("filters", filters);
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+
+    }
+
     //用户角色组人员配置列表查询
     @RequestMapping("/roleUserList")
     @ResponseBody
