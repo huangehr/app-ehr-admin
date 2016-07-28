@@ -69,7 +69,7 @@
 	<div class="m-form-group" >
 		<label >角色组:</label>
 		<div id="roleDiv" class="l-text-wrapper m-form-control essential">
-			<input style="color: #fff" type="text" id="jryycyc" class="required f-h28 f-w240" data-type="select" data-attr-scan="role">
+			<input style="color: #fff" type="text" id="jryycyc" class="ajax f-h28" data-type="select" data-attr-scan="role">
 		</div>
 	</div>
 	<div class="m-form-group f-pr my-footer" align="right" hidden="hidden">
