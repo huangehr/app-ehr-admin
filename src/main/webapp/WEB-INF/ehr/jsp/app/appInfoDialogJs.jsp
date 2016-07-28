@@ -107,6 +107,15 @@
 
                         if(field=='inp_app_code' && val!=app.code){
                             return uniqValid("${contextRoot}/app/platform/existence", "code="+val+" g1;sourceType=0", "该接入应用代码已存在！");
+                        }else if(field=='jryycyc'){
+                            var result = new $.jValidation.ajax.Result();
+                            if(!val || val.replace(/;/g, "")==""){
+                                result.setResult(false);
+                                result.setErrorMsg("该项为必填项！");
+                            }else{
+                                result.setResult(true);
+                            }
+                            return result;
                         }
                     }
                 });
@@ -166,6 +175,7 @@
                 })
                 var self=this;
                 trees=self.$jryycyc.ligerComboBox({
+                    cancelable: false,
                     width : 240,
                     selectBoxWidth: 238,
                     selectBoxHeight: 500, textField: 'name', treeLeafOnly: false,
@@ -173,14 +183,19 @@
                         data: treeData, idFieldName:'id', textFieldName: 'name', onClick:function(e){
                             $('#jryycyc').blur();
                             self.listTree(trees);
-                    }}
+                    }},
+                    onAfterShowData: function () {
+                        $('#jryycyc').width(216);
+                    }
                 })
 
                 function removeSclBox(){
+                    $('.l-box-select-inner.mCustomScrollbar',this.tree).height(240);
                     setTimeout(function(){
-                        $(trees.tree).prev(".mCustomScrollBox").hide()
+                        $(trees.tree).prev(".mCustomScrollBox").hide();
                     },100)
                 }
+
                 self.$jryycyc.on("click", removeSclBox);
                 $('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
                 self.listTreeClick(trees);

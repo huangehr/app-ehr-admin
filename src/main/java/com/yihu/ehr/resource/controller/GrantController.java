@@ -143,7 +143,7 @@ public class GrantController extends ExtendController<GrantService>{
             Map map = new HashMap<>();
             map.put("data", data);
             map.put("valid", valid);
-            String resultStr = service.doPut(url, map);
+            String resultStr = service.doLargePost(url, map);
             if("true".equals(resultStr))
                 return success("");
             else
