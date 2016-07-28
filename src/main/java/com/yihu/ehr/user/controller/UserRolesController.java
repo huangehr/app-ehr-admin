@@ -271,18 +271,15 @@ public class UserRolesController extends BaseUIController {
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName?" + searchNm + " g1;organization?" + searchNm + " g1;");
-            stringBuffer.append("activated=1");
+            stringBuffer.append("realName?" + searchNm + ";");
         }
-        params.put("filters", "");
+        stringBuffer.append("activated=true;");
         String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-
+        params.put("fields","");
+        params.put("sorts","");
+        params.put("filters", filters);
         params.put("page", page);
         params.put("size", rows);
         try {
