@@ -16,7 +16,7 @@
 </head>
 <body>
     <div data-content-page>
-        <tiles:insertAttribute name="contentPage" />
+        <tiles:insertAttribute name="contentPage" ignore="true"/>
     </div>
     <tiles:insertAttribute name="footer"/>
     <tiles:insertAttribute name="pageJs" ignore="true"/>

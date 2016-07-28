@@ -27,18 +27,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //取消jfame的安全验证
-        http.headers().frameOptions().disable();
         // 设置拦截规则
         http.authorizeRequests().accessDecisionManager(accessDecisionManager())
                 .expressionHandler(webSecurityExpressionHandler())
                 .antMatchers("/login").permitAll()
                 .antMatchers("/login/**").permitAll()
-//                .antMatchers("*.btn").hasRole("BTN")
                 .antMatchers("/**").hasRole("USER")
-//                .antMatchers("/**/*.jsp").hasRole("ADMIN")
                 .and()
-                .exceptionHandling().accessDeniedHandler(accessDeniedHandler());
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler())
+                .and()
+                .headers().frameOptions().disable();//取消jfame的安全验证
 
         // 自定义登录页面
         http.csrf().disable().formLogin().loginPage("/login").permitAll();
