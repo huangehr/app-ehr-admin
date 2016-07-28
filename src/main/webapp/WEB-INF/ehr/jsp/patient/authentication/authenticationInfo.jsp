@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <div id="conditionArea"align="right">
 	<div class="body-head f-h30 f-pb10" align="left">
@@ -50,10 +51,14 @@
 		<%--操作按钮--%>
 		<div id="div_btn" class="f-db" style="width: 100%;height: 50px;">
 			<div class="m-form-control f-tac">
+				<sec:authorize url="/authentication/agree">
 				<input type="button" value="同意" id="btn_approve" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr30" />
+				</sec:authorize>
+				<sec:authorize url="/authentication/reject">
 				<div id="btn_refuse" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
 					<span>拒绝</span>
 				</div>
+				</sec:authorize>
 			</div>
 		</div>
 	</div>
