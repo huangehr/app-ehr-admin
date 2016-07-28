@@ -63,6 +63,7 @@
                                     success: function (data) {
                                         if (data.successFlg) {
                                             self.reloadAppInsetrGrid('', gridType[0], 'configAppInsertGrid');
+                                            self.changeTotalCount();
                                         }
                                     }
                                 });
@@ -81,7 +82,6 @@
                                         }
                                     });
                                 }
-//                                var configAppInsertGrid = gridType[0].data.detailModelList;
                                 if (Util.isStrEmpty(configAppInsertGrid)){
                                     return false;
                                 }
@@ -94,14 +94,18 @@
                             }
                         }));
                     }
-                    $("#div_appInsert_grid .l-bar-message").css({"left":"56%"}).html("共"+gridType[1].data.totalCount+"条");
-                    $("#div_config_appInsert_grid .l-bar-message").css({"left":"56%"}).html("共"+gridType[0].data.totalCount+"条");
+                    self.changeTotalCount();
                     self.$appInsertGrid.find('.l-grid-hd-cell-checkbox').removeClass('l-grid-hd-cell-checkbox');
                     self.clicks();
+                },
+                changeTotalCount:function () {
+                    $("#div_appInsert_grid .l-bar-message").css({"left":"56%"}).html("共"+gridType[1].data.totalCount+"条");
+                    $("#div_config_appInsert_grid .l-bar-message").css({"left":"56%"}).html("共"+gridType[0].data.totalCount+"条");
                 },
                 reloadAppInsetrGrid: function (value, grid, type) {
                     value = {searchNm: value, gridType: type, appRoleId: obj.id};
                     reloadGrid.call(this, '${contextRoot}/appRole/searchInsertApps', value, grid, type);
+                    master.changeTotalCount();
                 },
                 clicks: function () {
                     //修改用户信息
