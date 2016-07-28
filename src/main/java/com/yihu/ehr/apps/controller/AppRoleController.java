@@ -218,7 +218,7 @@ public class AppRoleController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "";
-        String filters = "appId="+appId;
+        String filters = "appId="+appId+" g0;openLevel=1 g1";
         if (treeType.equals("configapiTree")){
             url = "/role_app_api/no_paging";
             params.put("role_id", appRoleId);

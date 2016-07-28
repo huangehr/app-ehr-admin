@@ -140,6 +140,7 @@
 						searchNm:rolesName,
 					};
 					reloadRolesGrid.call(this,values);
+                    $("#div_std_app_grid .l-bar-message").css({"left":"56%"}).html("共"+appMaster.appGrid.data.totalCount+"条");
 				},
 				bindEvents:function(){
 					//查询列表
