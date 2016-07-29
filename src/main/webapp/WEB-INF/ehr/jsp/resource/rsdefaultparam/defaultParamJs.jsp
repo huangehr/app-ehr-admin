@@ -75,7 +75,7 @@
 						})
 					});
 					$.subscribe("resource:param:delete",function(event,id,rowIndex){
-						$.ligerDialog.confirm('确认删除？<br>删除该行配置信息后，已填写的默认参数信息将丢失。',function(yes){
+						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
 							if(yes){
 								var dataModel = $.DataModel.init();
 								dataModel.createRemote("${contextRoot}/resource/rsDefaultParam/delete",{

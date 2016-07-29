@@ -85,8 +85,7 @@
 				}
 				//新增、修改
 				self.$updateBtn.click(function () {
-//					if(validator.validate()){
-					if(true){
+					if(validator.validate()){
 						var dataModel = $.DataModel.init();
 						self.$form.attrScan();
 						var model = self.$form.Fields.getValues();
