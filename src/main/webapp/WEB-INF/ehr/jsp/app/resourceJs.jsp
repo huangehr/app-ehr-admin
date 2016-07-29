@@ -329,10 +329,9 @@
 				//减50px的检索条件div高度
 				$('#div_tree').height(contentH-50);
 				$('#div_right').width(contentW-leftW-20);
-			}();
-			$(window).bind('resize', function() {
-				resizeContent();
-			});
+			};
+			resizeContent();
+			$(window).bind('resize', resizeContent);
 			win.reloadMasterUpdateGrid = function () {
 				master.reloadGrid();
 			};
