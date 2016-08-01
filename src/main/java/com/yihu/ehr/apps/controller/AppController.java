@@ -277,6 +277,7 @@ public class AppController extends BaseUIController {
         } catch (Exception ex) {
             LogService.getLogger(AppController.class).error(ex.getMessage());
         }
+        envelop.setSuccessFlg(true);
         envelop.setDetailModelList(list);
         return envelop;
     }

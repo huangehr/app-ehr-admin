@@ -198,7 +198,7 @@
 					var dataModel = $.DataModel.init();
 					dataModel.updateRemote("${contextRoot}/app/resourceIds",{
 						data:{appId:appId},
-						async:true,
+						async:false,
 						success: function(data) {
 							if(data.successFlg){
 								appRsIds = data.detailModelList;
@@ -247,6 +247,7 @@
 									data:{appId:appId,resourceIds:ids},
 									success:function(data){
 										if(data.successFlg){
+											appRsIds = [];
 											isFirstPage = false;
 											$.Notice.success( '授权成功！');
 											master.loadResourceIds();
@@ -273,7 +274,7 @@
 							}
 							for(var i=0;i<rows.length;i++){
 								//只删除已授权的资源（排除未授权资源的ids)
-								if(appRsIds.indexOf(rows[i].id)>0){
+								if(appRsIds.indexOf(rows[i].id)>=0){
 									ids += ',' + rows[i].id;
 								}
 							}
@@ -290,6 +291,7 @@
 									data:{appId:appId,resourceIds:ids},
 									success:function(data){
 										if(data.successFlg){
+											appRsIds = [];
 											isFirstPage = false;
 											$.Notice.success( '取消授权成功！');
 											master.loadResourceIds();
