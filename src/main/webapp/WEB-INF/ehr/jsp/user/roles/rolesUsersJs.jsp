@@ -54,6 +54,7 @@
 								data: {roleId: obj.id},
 								async: false,
 								success: function (data) {
+									debugger
 									configModel = data.detailModelList;
 								}
 							});
@@ -81,7 +82,7 @@
                         },
                         isChecked: function (row) {
                             var bo = false;
-                            var configModel = Util.isStrEmpty(configUserGrid.data.detailModelList)?configModel:configUserGrid.data.detailModelList;
+                            //var configModel = Util.isStrEmpty(configUserGrid.data.detailModelList)?configModel:configUserGrid.data.detailModelList;
                             if (Util.isStrEmpty(configModel))return;
                             for (var i = 0; i < configModel.length; i++) {
                                 if (Util.isStrEquals(row.id, configModel[i].userId)) {
