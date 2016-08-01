@@ -316,6 +316,25 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
+    //获取用户角色组配置的所有人员
+    @RequestMapping("/roleUsersByRoleId")
+    @ResponseBody
+    public Object getRoleUserListNoPage(String roleId){
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空");
+        }
+        try{
+            String url = ServiceApi.Roles.RoleUsersNoPage;
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","roleId="+roleId);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
     //角色组权限配置（增加）
     @RequestMapping("/featureCreate")
     @ResponseBody

@@ -11,8 +11,8 @@
             var configUserGrid = null;
             var configModel = null;
             var obj = ${obj};
-
-            var dataModel = $.DataModel.init();
+			var isFirstPage = false;
+			var dataModel = $.DataModel.init();
 
             function pageInit() {
                 master.configInit();
@@ -20,8 +20,12 @@
 
             function reloadGrid(url, value, type) {
                 var grid = Util.isStrEquals(type, 'user') ? userGrid : configUserGrid;
+				if(isFirstPage && Util.isStrEquals(type, 'user')){
+					grid.options.newPage = 1
+				}
                 grid.setOptions({parms: {searchNm: value}});
                 grid.loadData(true);
+				isFirstPage = false;
             }
 
             master = {
@@ -32,6 +36,7 @@
                     var self = this;
                     self.$userSearch.ligerTextBox({
                         width: 240, isSearch: true, search: function () {
+							isFirstPage = true;
                             self.reloadUserGrid(self.$userSearch.val(), 'userRoles/searchUsers', 'user');
                         }
                     });
@@ -42,9 +47,16 @@
                         height: 450,
                         isScroll: true,
                         async: false,
-                        columns: [{display: '姓s名', name: 'userName', width: '100%'}],
+                        columns: [{display: '姓名', name: 'userName', width: '100%'}],
                         onAfterShowData: function (data) {
-                            configModel = data.detailModelList;
+							//获取角色组所有配置的人员
+							dataModel.updateRemote("${contextRoot}/userRoles/roleUsersByRoleId", {
+								data: {roleId: obj.id},
+								async: false,
+								success: function (data) {
+									configModel = data.detailModelList;
+								}
+							});
                         }
                     }));
 
@@ -84,7 +96,6 @@
                     self.clicks();
                 },
                 changeTotalCount:function () {
-                    debugger
                     $("#div_user_grid .l-bar-message").css({"left":"56%"}).html("共"+userGrid.data.totalCount+"条");
                     $("#div_config_user_grid .l-bar-message").css({"left":"56%"}).html("共"+configUserGrid.data.totalCount+"条");
                 },
