@@ -119,7 +119,7 @@
         </div>
         <div class="m-form-group f-mt20" id="reset_password">
             <hr class="u-border">
-            <div class="f-pr u-bd">
+            <div class="f-pr u-bd" style="display: none">
                 <div class="f-pa f-w40 f-wtl">
                     高级
                 </div>

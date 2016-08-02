@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <script>
 
@@ -170,15 +171,31 @@
                             },
                             {
                                 display: '操作', name: 'operator', width: '19%', render: function (row) {
-                                var html = '<a class="label_a" title="定制" style="margin-left:0px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterInfo:customize", row.id, row.version) + '">定制</a>' +
-                                        '<a class="label_a" title="适配" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterInfo:adapter", row.id, 'modify') + '">适配</a>';
-                                var text = "发布";
+                                var html = '';
 
+                                <sec:authorize url="/adapter/getAdapterCustomize">
+                                html += '<a class="label_a" title="定制" style="margin-left:0px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterInfo:customize", row.id, row.version) + '">定制</a>';
+                                </sec:authorize>
+
+                                <sec:authorize url="/adapterDataSet/initial">
+                                html += '<a class="label_a" title="适配" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterInfo:adapter", row.id, 'modify') + '">适配</a>';
+                                </sec:authorize>
+
+                                <sec:authorize url="/adapter/adapterDispatch">
+                                var text = "发布";
 								if (row.status != 1) {
 									html += '<a class="label_a" title="'+text+'" style="margin-left:5px; href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "adapter:adapterInfo:release", row.org, row.version,text,row.id) + '">' + text + '</a>';
 								}
-								html += '<a class="grid_edit" title="编辑" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}',])", "adapter:adapterInfo:open", row.id, 'modify') + '"></a>' +
-								'<a class="grid_delete" title="删除" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterInfo:delete",row.id,row.status) + '"></a>';
+                                </sec:authorize>
+
+                                <sec:authorize url="/adapter/update">
+								html += '<a class="grid_edit" title="编辑" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}',])", "adapter:adapterInfo:open", row.id, 'modify') + '"></a>'
+                                </sec:authorize>
+
+                                <sec:authorize url="/adapter/delete">
+                                html += '<a class="grid_delete" title="删除" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterInfo:delete",row.id,row.status) + '"></a>';
+                                </sec:authorize>
+
 								return html;
                             }
                             }

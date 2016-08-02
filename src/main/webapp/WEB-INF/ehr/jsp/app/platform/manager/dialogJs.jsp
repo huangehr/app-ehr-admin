@@ -31,8 +31,8 @@
                         }
                     }
                 }},
-                {type: 'select', id: 'ipt_af_open', dictId: 40, opts: {initVal: '1'}},
-                {type: 'select', id: 'ipt_af_audit', dictId: 41, opts: {initVal: '1'}},
+                {type: 'select', id: 'ipt_af_open', dictId: 40, opts: {initVal: mode=='new'? '1': undefined}},
+                {type: 'select', id: 'ipt_af_audit', dictId: 41, opts: {initVal: mode=='new'? '1': undefined}},
                 {type: 'text', id: 'ipt_af_icon_url'},
                 {type: 'text', id: 'ipt_af_url', opts:{height:60}},
                 {type: 'text', id: 'ipt_af_description', opts:{height:100}}
@@ -47,13 +47,24 @@
                 var val = $('#' + field).val();
                 var type = $('#ipt_af_type').ligerGetComboBoxManager().getValue();
                 if(field=='ipt_af_name' && val!=model.name)
-                    return uniqValid(urls.existence, "name="+val+" g1;type="+type+";appId="+model.appId, "该类型下名称已存在！");
+                    return uniqValid(urls.existence, "name="+val+" g1;type="+type+";parentId="+model.parentId+";appId="+model.appId, "该类型下名称已存在！");
                 else if(field=='ipt_af_code' && val!=model.code)
-                    return uniqValid(urls.existence, "code="+val+" g1;type="+type+";appId="+model.appId, "该类型下编码已存在！");
+                    return uniqValid(urls.existence, "code="+val+" g1;type="+type+";parentId="+model.parentId+";appId="+model.appId, "该类型下编码已存在！");
+                else if(val && field=='ipt_af_url' && val!=model.url)
+                    return uniqValid(urls.existence, "url="+val+" g1;appId="+model.appId, "该应用下url已存在！");
             });
 
             $('#btn_save').click(function () {
-                saveForm({url: urls.update, $form: $form, modelName: 'model', validator: validator});
+                if(!validator.validate())
+                    return;
+
+                $form.attrScan();
+                var newModel = $form.Fields.getValues();
+                var id = newModel.id || '';
+                var extParms = {oldUrl: model.url};
+                var parms = {model: JSON.stringify(newModel), modelName: 'model', id: id , extParms:  JSON.stringify(extParms)}
+
+                saveForm({url: urls.update, $form: $form, parms: parms, validator: validator});
             });
 
             $('#btn_cancel').click(function () {

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <script>
 	(function($,win){
@@ -61,8 +62,14 @@
 							{display: '状态码', name: 'inStage', align: 'left',hide: true},
 							{display: '状态', name: 'inStage', width: '15%', align: 'center',
 								render:function(row){
-									var html ='<a class="label_a" name="delete_click"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "cdaVersion:commitVersion", row.version,row.inStage,0) + '">发布</a>'
-									return row.inStage !=true?'已发布':html;
+									var html = '未发布';
+									if(row.inStage ==false){
+										return '已发布';
+									}
+									<sec:authorize url="/cdaVersion/commitVersion">
+									html ='<a class="label_a" name="delete_click"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "cdaVersion:commitVersion", row.version,row.inStage,0) + '">发布</a>'
+									</sec:authorize>
+									return html;
 								}
 							},
 							{
@@ -78,8 +85,11 @@
 //											' onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "cdaVersion:del", row.version,row.inStage,0) + '"></div>';
 //								}
 								//html ='<a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "cdaVersion:commitVersion", row.version,row.inStage,0) + '"></a>'
-								html ='<a class="grid_delete" name="delete_click" style="" title="删除"' +
+								var html = '';
+								<sec:authorize url="/cdaVersion/deleteStageVersion">
+								html = '<a class="grid_delete" name="delete_click" style="" title="删除"' +
 											' onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "cdaVersion:del", row.version,row.inStage,0) + '"></a>';
+								</sec:authorize>
 								return html;
 								}
 							},

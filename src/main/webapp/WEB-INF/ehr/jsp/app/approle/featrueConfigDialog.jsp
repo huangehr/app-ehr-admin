@@ -11,7 +11,11 @@
             </div>
             <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn"
                  id="div_api_featrue_btn">
-                <span>api权限</span>
+                <span>API权限</span>
+            </div>
+            <div class="f-fr f-mr10 l-button u-btn u-btn-primary u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn"
+                 id="div_featrue_save_btn">
+                <span>保存</span>
             </div>
         </div>
     </div>
@@ -30,8 +34,7 @@
         <div class="f-mw50 f-ds1 f-fr f-mr10 div-appRole-grid-scrollbar" style="height: 450px">
             <label class="f-mt10 f-ml10 f-mh26">已配置权限</label>
             <hr class="f-mt5 f-mb10">
-            <div id="div_configFun_featrue_grid">
-            </div>
+            <div id="div_configFun_featrue_grid"></div>
             <div id="div_configApi_featrue_grid" class="f-dn"></div>
         </div>
     </div>

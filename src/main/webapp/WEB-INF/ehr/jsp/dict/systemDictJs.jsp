@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script>
     (function ($, win) {
         $(function () {
@@ -123,11 +124,13 @@
                             {display: '字典名称', name: 'name', width: '70%', align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '30%', render: function (row) {
-//								var html ='<div class="grid_edit"  style=""  title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDict:systemInfoModifyDialog:update", row.id,row.name) + '"></div>'
-//										+'<div class="grid_delete"  style="" title="删除"' +
-//										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "systemDict:systemInfoModifyDialog:delete", row.id) + '"></div>';
-                                var html = '<a class="grid_edit" href="javascript:void(0)" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDict:systemInfoModifyDialog:update", row.id, row.name) + '"></a>' +
-                                        '<a class="grid_delete" href="javascript:void(0)" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "systemDict:systemInfoModifyDialog:delete", row.id) + '"></a>';
+                                var html = '';
+                                <sec:authorize url='/dict/updateDict'>
+                                html += '<a class="grid_edit" href="javascript:void(0)" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDict:systemInfoModifyDialog:update", row.id, row.name) + '"></a>';
+                                </sec:authorize>
+                                <sec:authorize url='/dict/deleteDict'>
+                                html += '<a class="grid_delete" href="javascript:void(0)" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "systemDict:systemInfoModifyDialog:delete", row.id) + '"></a>';
+                                </sec:authorize>
                                 return html;
                             }
                             }
@@ -183,11 +186,13 @@
                             {display: '值', name: 'value', width: '45%'},
                             {
                                 display: '操作', name: 'operator', width: '15%', render: function (row) {
-//								var html ='<div class="grid_edit"  style=""  title="修改" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:update", row.code,row.value,row.sort,row.catalog) + '"></div>'
-//										+'<div class="grid_delete"  style="" title="删除"' +
-//										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:delete", row.code) + '"></div>';
-                                var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:update", row.code, row.value, row.sort, row.catalog) + '"></a>' +
-                                        '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:delete", row.code) + '"></a> ';
+                                var html = '';
+                                <sec:authorize url="/dict/updateDictEntry">
+                                html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:update", row.code, row.value, row.sort, row.catalog) + '"></a>';
+                                </sec:authorize>
+                                <sec:authorize url="/dict/deleteDictEntry">
+                                html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:delete", row.code) + '"></a> ';
+                                </sec:authorize>
                                 return html;
                             }
                             }

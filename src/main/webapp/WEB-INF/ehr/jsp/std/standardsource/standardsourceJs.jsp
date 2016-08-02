@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <script>
 
@@ -97,8 +98,14 @@
 //								var html ='<div class="grid_edit"  style="" title="修改" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "std:stdInfo:open", row.id,'modify') + '"></div>'
 //										+'<div class="grid_delete"  style="" title="删除"' +
 //										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "stdInfo:stdInfoGrid:delete", row.id) + '"></div>';
-								var html = '<a class="grid_edit" title="编辑" href="#" onclick="javascript:'+Util.format("$.publish('{0}',['{1}','{2}'])","std:stdInfo:open", row.id,'modify')+'"></a>' +
-                                        '<a class="grid_delete" title="删除" href="#" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","stdInfo:stdInfoGrid:delete", row.id)+'"></a>';
+								var html = '';
+                                <sec:authorize url="/standardsource/updateStdSource">
+                                html += '<a class="grid_edit" title="编辑" href="#" onclick="javascript:'+Util.format("$.publish('{0}',['{1}','{2}'])","std:stdInfo:open", row.id,'modify')+'"></a>';
+                                </sec:authorize>
+
+                                <sec:authorize url="/standardsource/delStdSource">
+                                html += '<a class="grid_delete" title="删除" href="#" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","stdInfo:stdInfoGrid:delete", row.id)+'"></a>';
+                                </sec:authorize>
                                 return html;
                             }}
                         ],

@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,31 @@ public class ResourceDefaultParamController extends BaseUIController {
         return "simpleView";
     }
 
+    @RequestMapping("/infoInitial")
+    public String rsDefaultParamInfoInitial(Model model,String id,String resourcesId,String resourcesCode,String mode,String rowIndex){
+        model.addAttribute("contentPage","/resource/rsdefaultparam/defaultParamDialog");
+        model.addAttribute("mode",mode);
+        model.addAttribute("resourcesId",resourcesId);
+        model.addAttribute("resourcesCode",resourcesCode);
+        model.addAttribute("rowIndex",rowIndex);
+        Envelop envelop = new Envelop();
+        String en = "";
+        try {
+            en = objectMapper.writeValueAsString(envelop);
+            if(StringUtils.equals(mode,"new")){
+                model.addAttribute("info", en);
+                return "simpleView";
+            }
+            String url = "/resources/param/"+id;
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
+            model.addAttribute("info", envelopStr);
+        } catch (Exception ex) {
+            LogService.getLogger(ResourceDefaultParamModel.class).error(ex.getMessage());
+            model.addAttribute("info", en);
+        }
+        return "simpleView";
+    }
+
     //新增、修改
     @RequestMapping("/update")
     @ResponseBody
@@ -56,9 +82,9 @@ public class ResourceDefaultParamController extends BaseUIController {
             if(StringUtils.isEmpty(model.getResourcesId())){
                 return failed("资源id不能为空！");
             }
-//            if(StringUtils.isEmpty(model.getResourcesCode())){
-//                return failed("资源编码不能为空！");
-//            }
+            if(StringUtils.isEmpty(model.getResourcesCode())){
+                return failed("资源编码不能为空！");
+            }
             if(StringUtils.isEmpty(model.getParamKey())){
                 return failed("默认参数名不能为空！");
             }
@@ -67,8 +93,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             }
             String url = ServiceApi.Resources.Param;
             Map<String,Object> params = new HashMap<>();
-            params.put("data_json",dataJson);
-            if(mode == "new"){
+            params.put("json_data",dataJson);
+            if(StringUtils.equalsIgnoreCase(mode,"new")){
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
                 return envelopStr;
             }
@@ -124,7 +150,7 @@ public class ResourceDefaultParamController extends BaseUIController {
         try{
             String url = ServiceApi.Resources.ParamKeyValueExistence;
             Map<String,Object> params = new HashMap<>();
-            params.put("resourcesId",resourcesId);
+            params.put("resources_id",resourcesId);
             params.put("param_key",paramKey);
             params.put("param_value",paramValue);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);

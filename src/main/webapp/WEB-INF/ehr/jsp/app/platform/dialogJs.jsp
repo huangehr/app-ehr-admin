@@ -25,7 +25,7 @@
 
             initFormFields(vo);
             orgCombo = $('#inp_org_code').customCombo(
-                    urls.orgCombo, {}, undefined, undefined, false, {selectBoxHeight: 280, valueField: 'id'});
+                    urls.orgCombo, {filters: "activityFlag=1;"}, undefined, undefined, false, {selectBoxHeight: 280, valueField: 'id'});
         };
 
         var initBtn = function () {
@@ -34,7 +34,7 @@
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
                 if(field=='inp_app_code' && val!=model.code){
-                    return uniqValid(urls.existence, "code="+val+" g1;", "该应用代码已存在！");
+                    return uniqValid(urls.existence, "code="+val+" g1;sourceType=1", "该平台应用代码已存在！");
                 }
             });
 

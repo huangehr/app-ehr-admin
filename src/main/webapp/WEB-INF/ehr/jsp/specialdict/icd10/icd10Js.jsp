@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 	(function($,win){
 		$(function(){
@@ -76,16 +77,15 @@
 							}},
 							{display: '数据关联', name: '', width: '15%', align: 'center',
 								render:function(row){
-									var html = '<a class="label_a" style="margin-left:0px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "indicatorIcd10:grid:open", row.id) + '">指标</a>' +
-											' / <a class="label_a" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "drugIcd10:grid:open", row.id) + '">药品</a>';
+									var html = '<sec:authorize url="/specialdict/icd10/indicator/initial"><a class="label_a" style="margin-left:0px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "indicatorIcd10:grid:open", row.id) + '">指标</a> /</sec:authorize>';
+                                    html += '<sec:authorize url="/specialdict/icd10/drugRelaInfo/initial"><a class="label_a" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "drugIcd10:grid:open", row.id) + '">药品</a></sec:authorize>';
 									return html;
 								}
 							},
 							{
 								display: '操作', name: 'operator', width: '10%', align: 'center',render: function(row){
-								html ='<a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "icd10:info:open", row.id,'modify') + '"></a>'
-										+'<a class="grid_delete" name="delete_click" style="" title="删除"' +
-										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "icd10:info:delete", row.id) + '"></a>';
+								var html ='<sec:authorize url="/specialdict/icd10/update"><a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "icd10:info:open", row.id,'modify') + '"></a></sec:authorize>'
+										+'<sec:authorize url="/specialdict/icd10/deletes"><a class="grid_delete" name="delete_click" style="" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "icd10:info:delete", row.id) + '"></a></sec:authorize>';
 								return html;
 							}},
 						],

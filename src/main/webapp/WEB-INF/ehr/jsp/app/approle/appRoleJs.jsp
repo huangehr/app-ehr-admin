@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script>
     (function ($, win) {
         $(function () {
@@ -51,7 +52,7 @@
                         url: url+'searchAppRole',
                         parms: {searchNm: '', gridType: 'appRole'},
                         isScroll: true,
-                        async: true,
+                        async: false,
                         columns: [{display: '应用名称', name: 'name', width: '100%'}],
                         onSelectRow: function (data) {
                             self.reloadAppRoleGrid("appRoleGroup", appRoleId = data.id, "");
@@ -65,17 +66,16 @@
                         url: url+'searchAppRole',
                         parms: {searchNm: '', gridType: 'appRoleGroup', appRoleId: appRoleId},
                         isScroll: true,
-                        async: true,
                         columns: [
                             {display: '角色组编码', name: 'code', width: '20%'},
                             {display: '角色组名称', name: 'name', width: '20%'},
                             {display: '描述', name: 'description', width: '25%'},
                             {
                                 display: '操作', name: 'operator', width: '35%', render: function (row) {
-                                var html = '<a class="label_a" title="权限配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'featrueConfig') + '>权限配置</a>&nbsp;&nbsp;';
-                                html += '<a class="label_a" title="接入应用" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appInsert') + '>应用接入</a>';
-                                html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'edit') + '"></a>';
-                                html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'delete') + '"></a>';
+                                var html = '<sec:authorize url="/appRole/feature"><a class="label_a" title="权限配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'featrueConfig') + '>权限配置</a>&nbsp;&nbsp;</sec:authorize>';
+                                html += '<sec:authorize url="/appRole/app"><a class="label_a" title="接入应用" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appInsert') + '>应用接入</a></sec:authorize>';
+                                html += '<sec:authorize url="/appRole/saveAppRoleGroup"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'edit') + '"></a></sec:authorize>';
+                                html += '<sec:authorize url="/appRole/deleteAppRoleGroup"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'delete') + '"></a></sec:authorize>';
                                 return html;
                             }
                             }
@@ -84,6 +84,7 @@
                             $.publish('app:roles', [row.id, 'sel']);
                         }
                     }));
+
                     appRoleGroupGrid.adjustToWidth();
                     self.clicks();
                 },
@@ -94,6 +95,7 @@
                         searchParams = {searchNm: searchParams, gridType: type, appRoleId: appRoleId}
                     }
                     reloadGrid.call(this, url+'searchAppRole', type, appRoleId, searchParams);
+                    $("#div_appRole_grid .l-bar-message").css({"left":"56%"}).html("共"+appRoleGrid.data.totalCount+"条");
                 },
                 clicks: function () {
                     var self = this;
@@ -161,6 +163,9 @@
                 master.reloadAppRoleGrid("appRoleGroup", appRoleId, "");
             };
             pageInit();
+            $(window).resize(function(){
+                master.$appBrowseMsg.width($(window).width()-630);
+            });
 
         })
     })(jQuery, window)

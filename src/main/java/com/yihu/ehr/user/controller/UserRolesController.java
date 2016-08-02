@@ -263,6 +263,36 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
+    //获取所有有效用户列表
+    @RequestMapping("/searchUsers")
+    @ResponseBody
+    public Object searchUsers(String searchNm,int page, int rows) {
+        String url = "/users";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(searchNm)) {
+            stringBuffer.append("realName?" + searchNm + ";");
+        }
+        stringBuffer.append("activated=true;");
+        String filters = stringBuffer.toString();
+        params.put("fields","");
+        params.put("sorts","");
+        params.put("filters", filters);
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+
+    }
+
     //用户角色组人员配置列表查询
     @RequestMapping("/roleUserList")
     @ResponseBody
@@ -278,6 +308,25 @@ public class UserRolesController extends BaseUIController {
             params.put("sorts","");
             params.put("page",page);
             params.put("size",rows);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //获取用户角色组配置的所有人员
+    @RequestMapping("/roleUsersByRoleId")
+    @ResponseBody
+    public Object getRoleUserListNoPage(String roleId){
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空");
+        }
+        try{
+            String url = ServiceApi.Roles.RoleUsersNoPage;
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","roleId="+roleId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){

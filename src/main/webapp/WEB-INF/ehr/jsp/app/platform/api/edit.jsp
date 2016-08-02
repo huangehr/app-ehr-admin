@@ -20,6 +20,13 @@
       </div>
     </div>
 
+    <div id="div_methodName" class="m-form-group">
+      <label>方法名<spring:message code="spe.colon"/></label>
+      <div class="l-text-wrapper m-form-control essential">
+        <input type="text" id="ipt_api_methodName" class="required"  data-attr-scan="methodName">
+      </div>
+    </div>
+
     <div id="div_audit" class="m-form-group">
       <label>审计程度<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
@@ -72,7 +79,7 @@
     <div id="div_des" class="m-form-group" style="width: 100%">
       <label>描述<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
-        <textarea id="ipt_api_description" class="required validate-code-char" data-attr-scan="description"></textarea>
+        <textarea id="ipt_api_description" class="required" data-attr-scan="description"></textarea>
       </div>
     </div>
 

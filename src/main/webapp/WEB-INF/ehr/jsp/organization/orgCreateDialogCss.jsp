@@ -24,4 +24,5 @@
 	.u-bd{ border: 1px solid #c8c8c8;height: 100px;margin-left: 10px;margin-right: 10px; }
 	.f-wtl{ width:40px;top: -10px;left: 10px;background: #fff;text-align: center; }
 	.div-aptitude-manager{ margin-top: 40px;width: 70px; }
+	.m-form-inline div{font-size: 15px}
 </style>

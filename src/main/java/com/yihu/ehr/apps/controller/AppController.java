@@ -277,6 +277,7 @@ public class AppController extends BaseUIController {
         } catch (Exception ex) {
             LogService.getLogger(AppController.class).error(ex.getMessage());
         }
+        envelop.setSuccessFlg(true);
         envelop.setDetailModelList(list);
         return envelop;
     }
@@ -447,7 +448,7 @@ public class AppController extends BaseUIController {
             String url = comUrl + "/roles/platformAppRolesTree";
             Map<String,Object> params = new HashMap<>();
             params.put("type", 0);
-            params.put("source_type", 0);
+            params.put("source_type", 1);
             String envelopStr = HttpClientUtil.doGet(url,params,username,password);
             return envelopStr;
         } catch (Exception e) {

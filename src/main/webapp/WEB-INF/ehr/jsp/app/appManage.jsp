@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <!-- ####### Title设置 ####### -->
 <div class="f-dn" data-head-title="true"><spring:message code="title.app.manage"/></div>
 <!-- ####### 页面部分 ####### -->
@@ -25,14 +26,16 @@
             </div>
             <div class="m-form-control f-ml10">
                 <!--按钮:查询 & 新增-->
-                <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
-                    <span><spring:message code="btn.search"/></span>
-                </div>
+					<div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+						<span><spring:message code="btn.search"/></span>
+					</div>
             </div>
             <div class="m-form-control m-form-control-fr">
-                <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
-                    <span ><spring:message code="btn.create"/></span>
-                </div>
+				<sec:authorize url="/app/template/appInfo">
+					<div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+						<span ><spring:message code="btn.create"/></span>
+					</div>
+				</sec:authorize>
             </div>
         </div>
     </div>

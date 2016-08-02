@@ -36,7 +36,17 @@
                     m.rendTreeGrid();
                 },
                 rendTreeGrid: function () {
+                    function collapse(grid, data){
+                        for(var i=0;i<data.length;i++){
+                            var row = data[i];
+                            if(row.children && row.children.length>0){
+                                grid.collapse(row);
+                                collapse(grid, row.children)
+                            }
+                        }
+                    }
                     this.tree = $("#treeMenu").ligerGrid($.LigerGridEx.config({
+                        rownumbers: false,
                         allowAdjustColWidth: false,
                         usePager: false,
                         height: contentH - 12,
@@ -47,20 +57,26 @@
                             {
                                 display: '组织结构名称', name: 'name', id: 'name', align: 'left', width: '290',
                                 render: function (row) {
-                                    var iconUrl = row.iconUrl || 'develop/images/icon_Reg.png';
-                                    return '<img src="${contextRoot}/'+iconUrl+'" class="row-icon">' +
+                                    var iconName = "";
+                                    switch (parseInt(row.type)){
+                                        case 0: iconName= '1ji_icon'; break;
+                                        case 1: iconName= '2ji_icon'; break;
+                                        case 2: iconName= '3ji_icon'; break;
+                                        default : iconName= '3ji_icon';
+                                    }
+                                    return '<img src="${contextRoot}/develop/images/'+ iconName +'.png" class="row-icon">' +
                                             '<div id="t_'+ row.id +'">'+ row.name +'</div>';
                                 }
                             },
                             {
-                                display: '操作', name: 'operator', align: 'left', width: '80', render: function (row) {
+                                display: '操作', name: 'operator', align: 'left', width: '70', render: function (row) {
                                     var html =
                                             '<a class="image-create" href="#" title="新增" ' +
                                             'onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}', '{5}'])", "app:plf:man:modify", row.id, 'new', row.type, 0, row.__id) + '"></a>';
 
                                     if(row.id>0){
                                         html +=  '<a class="grid_delete" href="#" style="width: 30px; margin-left:4px" title="删除" ' +
-                                                'onclick="javascript:' + Util.format("$.publish('{0}',['{1}', '{2}', '{3}'])", "app:plf:man:del", row.id, 0, row.__id) + '"></a>';
+                                                'onclick="javascript:' + Util.format("$.publish('{0}',['{1}', '{2}', '{3}', '{4}'])", "app:plf:man:del", row.id, 0, row.__id, undefined, undefined, row.url) + '"></a>';
                                     }
                                     return html;
                                 }
@@ -72,6 +88,11 @@
                         onDblClickRow: function (rowData, rowId, rowObj) {
                             if( rowData.id)
                                 em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
+                        },
+                        onAfterShowData:function(currentData){
+                            var modules = currentData.detailModelList[0].children;
+                            if(modules && modules.length>0)
+                                collapse(this, modules);
                         }
                     }));
                 }
@@ -91,10 +112,9 @@
                     var m = em;
                     var columns = [
                         {display: 'ID', name: 'id', hide: true},
-                        {display: '名称', name: 'name', width: '15%', align: 'left'},
-                        {display: '编码', name: 'code', width: '15%', align: 'left'},
+                        {display: '名称', name: 'name', width: '20%', align: 'left'},
+                        {display: '编码', name: 'code', width: '20%', align: 'left'},
                         {display: 'URL', name: 'url', width: '40%', align: 'left'},
-                        {display: '开放程度', name: 'openLevelName', width: '10%', align: 'left'},
                         {display: '操作', name: 'operator', width: '20%', render: m.opratorRender}];
 
                     m.grid = initGrid($('#rightGrid'), urls.list, {}, columns, {
@@ -115,7 +135,8 @@
                             type: 'edit',
                             clkFun: "$.publish('app:plf:man:modify',['" + row['id'] + "', 'modify', '" + row['type'] + "', '1', '"+ row.__id +"'])"
                         },
-                        {type: 'del', clkFun: "$.publish('app:plf:man:del',['" + row['id'] + "', 1, '" + row.__id + "', '" + row.parentId + "', '" + row.type + "'])"}
+                        {type: 'del',
+                            clkFun: "$.publish('app:plf:man:del',['" + row['id'] + "', 1, '" + row.__id + "', '" + row.parentId + "', '" + row.type + "', '" + row.url + "'])"}
                     ];
                     return initGridOperator(vo);
                 },
@@ -131,15 +152,16 @@
                     }
                     em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 600, params);
                 },
-                del: function (event, id, frm, rowId, parentId, type) {
+                del: function (event, id, frm, rowId, parentId, type, url) {
 
                     function del(){
                         $.ligerDialog.confirm("确定删除?", function (yes) {
                             if (yes){
                                 var dialog = $.ligerDialog.waitting('正在处理中,请稍候...');
                                 var dataModel = $.DataModel.init();
+                                var extParms = {url: url};
                                 dataModel.updateRemote(urls.del, {
-                                    data: {ids: id, idField: "id", type: "uniq"},
+                                    data: {ids: id, idField: "id", type: "uniq", extParms: JSON.stringify(extParms)},
                                     success: function (data) {
                                         if (data.successFlg) {
                                             $.Notice.success('删除成功！');
@@ -203,12 +225,11 @@
 
                 $('#treeMenuWrap').height(contentH - 104);
                 $('#treeMenu').height(contentH - 64);
-            }();
+            };
 
+            resizeContent();
             //窗体改变大小事件
-            $(window).bind('resize', function () {
-                resizeContent();
-            });
+            $(window).bind('resize', resizeContent);
 
             em.init();
             master.init();

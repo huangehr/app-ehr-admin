@@ -108,7 +108,7 @@
 						if(!ids){
 							var rows = infoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要删除的数据行！');
+								$.Notice.warn('请选择要解除关联的数据行！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){

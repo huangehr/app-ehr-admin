@@ -11,6 +11,7 @@
         var jValidation = $.jValidation;
 		var catalogDictId = 1;
 		var statusDictId = 2;
+        var app = {};
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
             appInfoForm.init();
@@ -41,7 +42,7 @@
                 this.$name.ligerTextBox({width:240});
 				this.initDDL(catalogDictId, this.$catalog);
 				this.initDDL(statusDictId, this.$status);
-				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{})
+				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{filters: "activityFlag=1;"})
                 this.$tags.ligerTextBox({width:240});
 				this.$code.ligerTextBox({width:240});
 				this.$appId.ligerTextBox({width:240});
@@ -62,7 +63,7 @@
 				}
                 this.$form.attrScan();
                 if(mode !='new'){
-                    var app = ${model};
+                    app = ${model};
                     this.$form.Fields.fillValues({
 						sourceType: app.sourceType,
                         name:app.name,
@@ -82,6 +83,8 @@
                         for(var k in roleArr){
                             $("#"+ k, trees.tree).find(".l-checkbox").click()
                         }
+                        if(mode=='view')
+                            $('.listree a').hide();
                     }
                 }
                 this.$form.show();
@@ -99,6 +102,21 @@
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
                     onElementValidateForAjax:function(elm){
+                        var field = $(elm).attr('id');
+                        var val = $('#' + field).val();
+
+                        if(field=='inp_app_code' && val!=app.code){
+                            return uniqValid("${contextRoot}/app/platform/existence", "code="+val+" g1;sourceType=0", "该接入应用代码已存在！");
+                        }else if(field=='jryycyc'){
+                            var result = new $.jValidation.ajax.Result();
+                            if(!val || val.replace(/;/g, "")==""){
+                                result.setResult(false);
+                                result.setErrorMsg("该项为必填项！");
+                            }else{
+                                result.setResult(true);
+                            }
+                            return result;
+                        }
                     }
                 });
                 this.$btnSave.click(function () {
@@ -157,20 +175,27 @@
                 })
                 var self=this;
                 trees=self.$jryycyc.ligerComboBox({
+                    cancelable: false,
                     width : 240,
                     selectBoxWidth: 238,
-                    selectBoxHeight: 500, textField: 'text', treeLeafOnly: false,
+                    selectBoxHeight: 500, textField: 'name', treeLeafOnly: false,
                     tree: {
                         data: treeData, idFieldName:'id', textFieldName: 'name', onClick:function(e){
-                        self.listTree(trees);
-                    }}
+                            $('#jryycyc').blur();
+                            self.listTree(trees);
+                    }},
+                    onAfterShowData: function () {
+                        $('#jryycyc').width(216);
+                    }
                 })
 
                 function removeSclBox(){
+                    $('.l-box-select-inner.mCustomScrollbar',this.tree).height(240);
                     setTimeout(function(){
-                        $(trees.tree).prev(".mCustomScrollBox").hide()
+                        $(trees.tree).prev(".mCustomScrollBox").hide();
                     },100)
                 }
+
                 self.$jryycyc.on("click", removeSclBox);
                 $('#roleDiv div.l-trigger-icon').on("click",removeSclBox);
                 self.listTreeClick(trees);

@@ -46,6 +46,9 @@
             validator = initValidate($form, function (elm) {
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
+                if(field=='ipt_api_name' && val!=model.name){
+                    return uniqValid4List(urls.existence, "name="+val+" g1;parentId="+ model.parentId, "该应用代码已存在！");
+                }
             });
 
         }
@@ -73,35 +76,41 @@
                         var version = $('#ipt_api_version').ligerGetTextBoxManager();
                         var protocol = $('#ipt_api_protocol').ligerGetCheckBoxManager();
                         var method = $('#ipt_api_method').ligerGetCheckBoxManager();
+                        var methodName = $('#ipt_api_methodName').ligerGetTextBoxManager();
                         if(v==1){
                                 $('.apiProto').addClass("essential").find('input').addClass('required');
                                 version.setEnabled(true);
                                 protocol.setEnabled(true);
                                 method.setEnabled(true);
-                            }
-                        else{
+                                methodName.setEnabled(true);
+                        } else{
                             $('.apiProto').removeClass("essential").find('input').removeClass('required');
                             version.setDisabled(true);
                             protocol.setDisabled(true);
                             method.setDisabled(true);
+                            methodName.setDisabled(true);
                             version.setValue('');
                             protocol.setValue('');
                             method.setValue('');
+                            methodName.setValue('');
                         }
                         validator.reset();
                     }
                 }},
-                {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{initVal: '1'}},
-                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41, opts:{initVal: '1'}},
+                {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{initVal: mode=='new'? '1': undefined}},
+                {type: 'select', id: 'ipt_api_auditLevel', dictId: 41, opts:{initVal: mode=='new'? '1': undefined}},
                 {type: 'select', id: 'ipt_api_activityType', dictId: 43},
                 {type: 'text', id: 'ipt_api_version'},
                 {type: 'select', id: 'ipt_api_protocol', dictId: 44},
-                {type: 'select', id: 'ipt_api_method', dictId: 45}
+                {type: 'select', id: 'ipt_api_method', dictId: 45},
+                {type: 'text', id: 'ipt_api_methodName'}
             ];
 
             if(extParms.upType==-1 || model.type==2)
                 appCombo = $('#ipt_api_name').customCombo(
                         urls.appCombo, {fields: 'id,name', filters: 'sourceType=1'}, function (id, name) {
+                            if(mode=='new')
+                                $('#ipt_api_name').blur();
                             if(appCombo.getLigerComboBox().getSelected())
                                 $('#appId').val(appCombo.getLigerComboBox().getSelected().id);
                         }, undefined, false, {selectBoxHeight: 280, valueField: 'name', disabled: mode=='modify',
@@ -127,6 +136,7 @@
             $('#btn_save').click(function () {
                 saveForm({url: urls.update, $form: $form, modelName: 'model', validator: validator,
                     onSuccess: function (data) {
+                        data.obj.openLevelName = $('#ipt_api_openLevel').ligerGetComboBoxManager().findTextByValue(data.obj.openLevel);
                         if(data.obj.type==1){
                             $.Notice.confirm("保存成功，是否继续编辑接口详细信息？", function (y) {
                                 if(y){

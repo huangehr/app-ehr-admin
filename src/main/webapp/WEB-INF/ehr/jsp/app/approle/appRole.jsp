@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <!--######应用角色页面Title设置######-->
 <div class="f-dn" data-head-title="true">应用角色</div>
 <div id="div_wrapper">
@@ -29,9 +29,11 @@
             <div class="f-fl">
                 <input type="text" id="inp_appRole_group_search" placeholder="请输入角色组编码或名称" class="f-ml10 inp_appRole_com_search"/>
             </div>
-            <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar f-fr f-mr10" id="div_add_appRoleGroup_btn">
-                <span>新增</span>
-            </div>
+			<sec:authorize url="/appRole/saveAppRoleGroup">
+				<div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar f-fr f-mr10" id="div_add_appRoleGroup_btn">
+					<span>新增</span>
+				</div>
+			</sec:authorize>
 
         </div>
 
