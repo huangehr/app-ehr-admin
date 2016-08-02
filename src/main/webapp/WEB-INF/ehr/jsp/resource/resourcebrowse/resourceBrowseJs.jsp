@@ -85,7 +85,6 @@
                 init: function () {
                     var self = this;
                     self.$resourceBrowseMsg.height(windowHeight - 170);
-
                     var width = $(".f-of-hd").width();
                     var searchs = self.$search.ligerTextBox({
                         width: width / 1.4, isSearch: true, search: function () {
@@ -98,7 +97,6 @@
                             }
                         }
                     });
-
                     self.initDDL(1, self.$defaultCondition, defaultWidth);
                     self.initDDL(2, self.$logicalRelationship, defaultWidthAndOr);
                     self.initDDL('', self.$defualtParam, defaultWidth);
@@ -109,7 +107,6 @@
                     self.$resourceBrowse.mCustomScrollbar({
                         axis: "y"
                     });
-//                    $($("#div_resource_browse_msg").children('div').children('div')[0]).css('margin-right', '0');
                     $(self.$resourceBrowseMsg.children('div').children('div')[0]).css('margin-right', '0');
                     self.$resourceTree.height(windowHeight - 240);
                     $(".f-w-auto").width($(".div-and-or").width());
@@ -129,8 +126,11 @@
                         onSelected: function (value) {
                             var dataModels = this.data;
                             var eleType = $(this.element).parents('#div_default_search');
+                            if (Util.isStrEquals(this.id, 'inp_default_condition')) {
+                                changeCondition(this.getSelected(), $(this.element));
+                            }
                             for (var i = 0; i < dataModels.length; i++) {
-                                //判断这个对象的值存不存在字典和判断类型
+                                //判断这个对象的值存不存在字典和类型
                                 if (Util.isStrEquals(dataModels[i].code, value)) {
                                     if (Util.isStrEquals(this.element.id, 'inp_logical_relationship')) {
                                         conditionBo = Util.isStrEquals(this.selectedValue, 'RANGE') || Util.isStrEquals(this.selectedValue, 'NOTRANGE');
@@ -163,7 +163,6 @@
                         onSelect: function (data) {
                             resourceInfoGrid.options.newPage = 1;
                             resetSearch();
-
                             resourceCategoryName = data.data.name;
                             resourceCategoryId = data.data.resourceIds;
                             resourcesCode = data.data.resourceCode;  //根据resourcesCode查询表结构
@@ -268,6 +267,9 @@
                                 onSelected: function (value) {
                                     var dataModels = this.data;
                                     var eleType = $(this.element).parents('.div_search_model');
+                                    if (Util.isStrEquals($(this.element).attr('data-attr-scan'), 'field')) {
+                                        changeCondition(this.getSelected(), $(this.element));
+                                    }
                                     var $inpSearchType = $(this.element).parents('.div_search_model').find('.div-new-change-search');
                                     var eleClass_model0 = $(this.element).attr('class').split('inp-model0');
 //                                    var eleClass_model2 = $(this.element).attr('class').split('inp-model2');
@@ -454,8 +456,8 @@
                             textField: 'name',
                             width: defaultWidth,
                             dataParmName: 'detailModelList',
-                            onSelected: function (value) {
-                            }
+//                            onSelected: function (value) {
+//                            }
                         });
                         break;
                     case 'ligerTextBox':
@@ -482,6 +484,15 @@
                     value = Util.isStrEmpty(obj.dict) ? obj.type : 'dict';
                 }
                 return value;
+            }
+
+            function changeCondition(data, ele) {
+                if (Util.isStrEmpty(data))
+                    return;
+
+                var eleCondition = ele.parents('.div-model').find('[data-attr-scan="condition"]');
+                eleCondition.liger().options.urlParms.conditions = data.type;
+                eleCondition.liger().reload();
             }
 
             function resetSearch() {

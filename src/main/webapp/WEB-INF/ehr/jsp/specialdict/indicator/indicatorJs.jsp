@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 	(function($,win){
 		$(function(){
@@ -68,9 +69,9 @@
 							{display: '正常值下限', name: 'lowerLimit', width: '10%', align: 'center'},
 							{
 								display: '操作', name: 'operator', width: '10%', align: 'center',render: function(row){
-								html ='<a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "indicator:info:open", row.id,'modify') + '"></a>'
-										+'<a class="grid_delete" name="delete_click" style="" title="删除"' +
-										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "indicator:info:delete", row.id) + '"></a>';
+								html ='<sec:authorize url="/specialdict/indicator/update"><a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "indicator:info:open", row.id,'modify') + '"></a></sec:authorize>'
+										+'<sec:authorize url="/specialdict/indicator/deletes"><a class="grid_delete" name="delete_click" style="" title="删除"' +
+										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "indicator:info:delete", row.id) + '"></a></sec:authorize>';
 								return html;
 							}},
 						],

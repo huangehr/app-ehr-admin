@@ -1,11 +1,12 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
+import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.patient.controller.PatientController;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -224,6 +225,7 @@ public class UserController extends BaseUIController {
                 userModel.setOrganization(userDetailModel.getOrganization());
                 userModel.setMajor("");
                 userModel.setImgLocalPath("");
+                userModel.setRole(userDetailModel.getRole());
                 if(userDetailModel.getUserType().equals("Doctor")){
                     userModel.setMajor(userDetailModel.getMajor());
                 }
@@ -471,7 +473,7 @@ public class UserController extends BaseUIController {
             outputStream.write(bytes);
             outputStream.flush();
         } catch (IOException e) {
-            LogService.getLogger(PatientController.class).error(e.getMessage());
+            LogService.getLogger(UserController.class).error(e.getMessage());
         } finally {
             if (outputStream != null)
                 outputStream.close();
@@ -498,5 +500,103 @@ public class UserController extends BaseUIController {
 
         return envelop;
     }
+
+    //查看权限页面初始化
+    @RequestMapping("/appFeatureInitial")
+    public Object appFeatureInitial(Model model,String userId){
+        model.addAttribute("contentPage","user/userFeature");
+        model.addAttribute("userId",userId);
+        //获取用户所属角色
+        Envelop envelop = new Envelop();
+        String en = "";
+        try {
+            en = objectMapper.writeValueAsString(envelop);
+            String url = "/roles/role_user/userRolesIds";
+            Map<String,Object> params = new HashMap<>();
+            params.put("user_id",userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            model.addAttribute("envelop", envelopStr);
+        } catch (Exception ex) {
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            model.addAttribute("envelop", en);
+        }
+        return "simpleView";
+    }
+
+    //获取应用-用户角色组关系列表,用于查看权限
+    @RequestMapping("/appRoles")
+    @ResponseBody
+    public Object getAppRoles(String userId){
+        //角色组类型字典：应用角色（type="0"）/用户角色（type="1"）
+        //应用分类字典：平台应用（sourceType="1"）/接入应用（sourcetype="0")
+        String type = "1";
+        String sourceType = "1";
+        try {
+            String url = "/roles/app_user_roles";
+            Map<String,Object> params = new HashMap<>();
+            params.put("type",type);
+            params.put("source_type",sourceType);
+            params.put("user_id",userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //获取用户某个应用下的权限
+    /**
+     *
+     * @param roleIds 用户所属角色组ids
+     * @return
+     */
+    @RequestMapping("/userAppFeatures")
+    @ResponseBody
+    public Object getUserAppFeatures(String roleIds){
+        if(StringUtils.isEmpty(roleIds)){
+            return failed("角色组ids不能为空！");
+        }
+        try {
+            String url = "/users/user_features";
+            Map<String,Object> params = new HashMap<>();
+            params.put("roles_ids",roleIds);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            envelop.getDetailModelList();
+            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
+                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), AppFeatureModel.class);
+            }
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //获取所用平台应用下的角色组用于下拉框
+    @RequestMapping("/appRolesList")
+    @ResponseBody
+    public Object getAppRolesList(){
+        String roleType = "1";//用户角色类型字典值
+        String appSourceType = "1";//应用类型字典值
+        try {
+            String url = "/roles/platformAppRolesTree";
+            Map<String,Object> params = new HashMap<>();
+            params.put("type",roleType);
+            params.put("source_type",appSourceType);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            envelop.getDetailModelList();
+            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
+                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
+            }
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
 
 }

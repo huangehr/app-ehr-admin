@@ -55,14 +55,13 @@ public class AppController extends BaseUIController {
             if (mode.equals("new")){
                 app = new AppDetailModel();
                 ((AppDetailModel)app).setStatus("WaitingForApprove");
-                app = toJson(app);
             }else{
                 String url = "/apps/"+appId;
                 RestTemplates template = new RestTemplates();
                 result = template.doGet(comUrl+url);
                 Envelop envelop = getEnvelop(result);
                 if(envelop.isSuccessFlg()){
-                    app = result;
+                    app = envelop.getObj();
                 }
             }
         }
@@ -71,7 +70,7 @@ public class AppController extends BaseUIController {
             LogService.getLogger(AppController.class).error(ex.getMessage());
         }
 
-        model.addAttribute("app", app);
+        model.addAttribute("model", toJson(app));
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","/app/appInfoDialog");
         return "simpleView";
@@ -86,8 +85,11 @@ public class AppController extends BaseUIController {
 
     @RequestMapping("/searchApps")
     @ResponseBody
-    public Object getAppList(String searchNm,String org, String catalog, String status, int page, int rows) {
+    public Object getAppList(String sourceType, String searchNm,String org, String catalog, String status, int page, int rows) {
         URLQueryBuilder builder = new URLQueryBuilder();
+        if(!StringUtils.isEmpty(sourceType)){
+            builder.addFilter("sourceType", "=", sourceType, null);
+        }
         if (!StringUtils.isEmpty(searchNm)) {
             builder.addFilter("id", "?", searchNm, "g1");
             builder.addFilter("name", "?", searchNm, "g1");
@@ -192,7 +194,8 @@ public class AppController extends BaseUIController {
                 appUpdate.setTags(appDetailModel.getTags());
                 appUpdate.setUrl(appDetailModel.getUrl());
                 appUpdate.setDescription(appDetailModel.getDescription());
-
+                appUpdate.setCode(appDetailModel.getCode());
+                appUpdate.setRole(appDetailModel.getRole());
                 //更新
                 MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
                 conditionMap.add("app", toJson(appUpdate));
@@ -274,6 +277,7 @@ public class AppController extends BaseUIController {
         } catch (Exception ex) {
             LogService.getLogger(AppController.class).error(ex.getMessage());
         }
+        envelop.setSuccessFlg(true);
         envelop.setDetailModelList(list);
         return envelop;
     }
@@ -435,5 +439,22 @@ public class AppController extends BaseUIController {
 //    }
 
     //-------------------------------------------------------应用----资源----数据元--管理结束--------------
+
+
+    @RequestMapping("/roles/tree")
+    @ResponseBody
+    public Object getRoleArr(){
+        try {
+            String url = comUrl + "/roles/platformAppRolesTree";
+            Map<String,Object> params = new HashMap<>();
+            params.put("type", 0);
+            params.put("source_type", 1);
+            String envelopStr = HttpClientUtil.doGet(url,params,username,password);
+            return envelopStr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failedSystem();
+        }
+    }
 
 }

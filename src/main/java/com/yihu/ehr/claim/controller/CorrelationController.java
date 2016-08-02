@@ -145,10 +145,10 @@ public class CorrelationController extends BaseUIController {
             queryBuffer.append("applyDate<=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
         }
         if (StringUtils.isNotBlank(status)) {
-            queryBuffer.append("status=" + status);
+            queryBuffer.append("status=" + status+ ";");
         }
         if (StringUtils.isNotBlank(name)) {
-            queryBuffer.append("name?" + name);
+            queryBuffer.append("name?" + name+ ";");
         }
         String filters = queryBuffer.toString();
         if(filters.lastIndexOf(";")>0){

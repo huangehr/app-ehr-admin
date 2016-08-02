@@ -4,17 +4,19 @@
 
 <div id="div_roles_info_form" data-role-form class="m-form-inline f-mt20 f-ml30" data-role-form>
 	<input type="hidden" id="rolesId" data-attr-scan="id"/>
-	<input type="hidden" id="stdAppId" data-attr-scan="stdAppId"/>
+	<input type="hidden" id="appId" data-attr-scan="appId"/>
+	<input type="hidden" id="roleType" data-attr-scan="type"/>
+
 	<div class="m-form-group">
 		<label class="label_title" style="width:120px">角色组编码<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_roles_code" class="required useTitle f-w240 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="rolesCode"/>
+			<input type="text" id="inp_roles_code" class="required useTitle ajax f-w240 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="code"/>
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label class="label_title" style="width:120px">角色组名称<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_roles_name" class="required useTitle f-w240 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="rolesName"/>
+			<input type="text" id="inp_roles_name" class="required useTitle ajax f-w240 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="name"/>
 		</div>
 	</div>
 

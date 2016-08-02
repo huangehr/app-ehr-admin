@@ -1,18 +1,27 @@
 package com.yihu.ehr.login.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.ObjectMapperUtil;
 import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.web.RestTemplates;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -110,6 +119,23 @@ public class LoginController extends BaseUIController {
                     conditionMap.add("user_json_data", toJson(userDetailModel));
                     RestTemplates templates = new RestTemplates();
                     resultStr = templates.doPut(comUrl + url, conditionMap);
+
+
+                    //获取用户角色信息
+                    List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
+                    Collection<GrantedAuthority> gas = new ArrayList<>();
+                    if(features!=null){
+                        for(AppFeatureModel feature: features){
+                            if(!StringUtils.isEmpty(feature.getUrl()))
+                                gas.add(new SimpleGrantedAuthority(feature.getUrl()));
+                        }
+                    }
+                    //生成认证token
+                    Authentication token = new UsernamePasswordAuthenticationToken(userName, password, gas);
+                    //将信息存放到SecurityContext
+                    SecurityContextHolder.getContext().setAuthentication(token);
+
+
                     return "redirect:/index";
                 }
 
@@ -129,7 +155,17 @@ public class LoginController extends BaseUIController {
         }
     }
 
-
+    private List<AppFeatureModel> getUserFeatures(String userId) throws Exception {
+        Map params = new HashMap<>();
+        params.put("user_id", userId);
+        String resultStr = HttpClientUtil.doGet(comUrl + "/roles/user/features", params, username, this.password);
+        EnvelopExt<AppFeatureModel> envelopExt =
+                (EnvelopExt<AppFeatureModel>) ObjectMapperUtil.toModel(resultStr, new TypeReference<EnvelopExt<AppFeatureModel>>() {
+                });
+        if(envelopExt.isSuccessFlg())
+            return envelopExt.getDetailModelList();
+        throw new Exception(envelopExt.getErrorMsg());
+    }
     //todo:暂时没用到
 //    @RequestMapping(value = "activeValidateCode")
 //    public String activeValidateCode(String loginCode, String validateCode, Model model) {

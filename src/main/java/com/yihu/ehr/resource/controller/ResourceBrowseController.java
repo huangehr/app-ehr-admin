@@ -1,5 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
+import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
@@ -17,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by wq on 2016/5/17.
@@ -121,7 +119,7 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/searchDictEntryList")
     @ResponseBody
-    public Object getDictEntryList(String dictId) {
+    public Object getDictEntryList(String dictId, String conditions) {
 
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -139,6 +137,10 @@ public class ResourceBrowseController extends BaseUIController {
                         params.put("size", 500);
                         params.put("fields", "");
                         params.put("sorts", "");
+                        String con = changeConditions(conditions);
+                        if (!StringUtils.isEmpty(con)) {
+                            params.put("filters", "dictId=" + dictId + " g0;value=" + con + " g1");
+                        }
                         url = "/dictionaries/entries";
                         resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
                         break;
@@ -238,5 +240,40 @@ public class ResourceBrowseController extends BaseUIController {
             envelop.setErrorMsg("获取表结构信息失败");
         }
         return toJson(envelop);
+    }
+
+    public String changeConditions(String conditions) {
+
+        String value = "";
+        if (StringUtils.isEmpty(conditions)) {
+            return value;
+        }
+        Map<String, Object> params = new HashMap<>();
+        String condition = "";
+        String conditionAll = "";
+
+        String url = "/dictionaries/entries";
+        params.put("filters", "dictId=30 g0;code=" + conditions + " g1");
+        params.put("page", 1);
+        params.put("size", 999);
+        params.put("fields", "");
+        params.put("sorts", "");
+        try {
+            condition = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            params.put("filters", "dictId=34");
+            conditionAll = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            SystemDictEntryModel systemDictEntryModel = toModel(toJson(toModel(condition, Envelop.class).getDetailModelList().get(0)), SystemDictEntryModel.class);
+            List<SystemDictEntryModel> systemDictEntryModelAll = toModel(conditionAll, Envelop.class).getDetailModelList();
+            String[] cs = systemDictEntryModel.getCatalog().split(",");
+            for (int i = 0; i < systemDictEntryModelAll.size(); i++) {
+                SystemDictEntryModel sde = toModel(toJson(systemDictEntryModelAll.get(i)), SystemDictEntryModel.class);
+                if (Arrays.asList(cs).contains(sde.getCode())) {
+                    value += sde.getValue() + ",";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return value;
     }
 }

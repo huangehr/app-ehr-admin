@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <!--######用户管理页面 > 用户信息对话框模板页######-->
-<div id="div_addUser_form" data-role-form class="m-form-inline f-mt20 f-pb30 f-dn" style="overflow:auto">
+<div id="div_addUser_form" data-role-form class="m-form-inline f-mt20 f-pb10 f-dn" style="overflow:auto" >
 	<div id="div_user_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
 		<!--用来存放item-->
 		<div id="div_file_list" class="uploader-list"></div>
@@ -74,6 +75,12 @@
 		<label><spring:message code="lbl.specialized.belong"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_major" class="max-length-150 validate-special-char"  data-attr-scan="major"/>
+		</div>
+	</div>
+	<div class="m-form-group" >
+		<label >角色组:</label>
+		<div id="roleDiv" class="l-text-wrapper m-form-control essential" >
+			<input type="text" style="color: #fff" id="jryycyc" class="required useTitle f-h28 f-w240 " required-title=<spring:message code="lbl.must.input"/> data-type="select" data-attr-scan="role">
 		</div>
 	</div>
 	<div class="m-form-control pane-attribute-toolbar">

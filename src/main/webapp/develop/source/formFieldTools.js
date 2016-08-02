@@ -55,7 +55,14 @@ function initSelDom(el, url, params, opts){
         parms: params
     };
     opts = $.extend({}, defaultOpts, opts);
-
+    if(opts.initVal){
+        var onSucFun = opts.onSuccess;
+        opts.onSuccess = function(data){
+            this.selectValue(opts.initVal);
+            if(onSucFun)
+                this.call(onSucFun, data);
+        }
+    }
     return $(el).ligerComboBox(opts);
 }
 
@@ -75,6 +82,14 @@ function initSystemSelDom(el, dictId, opts){
         parms: {dictId: dictId, page: 1, rows: 500}
     };
     opts = $.extend({}, defaultOpts, opts);
+    if(opts.initVal){
+        var onSucFun = opts.onSuccess;
+        opts.onSuccess = function(data){
+            this.selectValue(opts.initVal);
+            if(onSucFun)
+                this.call(onSucFun, data);
+        }
+    }
     return $(el).ligerComboBox(opts);
 }
 
@@ -119,7 +134,10 @@ function saveForm(opts){
         success: function (data) {
             waittingDialog.close();
             if (data.successFlg) {
-                parent.closeDialog("保存成功!")
+                if(opts.onSuccess)
+                    opts.onSuccess(data);
+                else
+                    parent.closeDialog("保存成功!", data);
             } else {
                 if (data.errorMsg)
                     $.Notice.error(data.errorMsg);
@@ -149,6 +167,29 @@ function uniqValid(url, filters, errorMsg) {
         success: function (data) {
             if(data.successFlg){
                 if (data.obj) {
+                    result.setResult(false);
+                    result.setErrorMsg(errorMsg);
+                } else {
+                    result.setResult(true);
+                }
+            } else {
+                result.setResult(false);
+                result.setErrorMsg("验证出错，请刷新页面或联系管理员！");
+            }
+        }
+    });
+    return result;
+}
+
+function uniqValid4List(url, filters, errorMsg) {
+    var result = new $.jValidation.ajax.Result();
+    var dataModel = $.DataModel.init();
+    dataModel.fetchRemote(url, {
+        data: {filters: filters},
+        async: false,
+        success: function (data) {
+            if(data.successFlg){
+                if (data.detailModelList && data.detailModelList.length>0) {
                     result.setResult(false);
                     result.setErrorMsg(errorMsg);
                 } else {

@@ -20,9 +20,23 @@
         return XMLHttpRequest.getResponseHeader("sessionStatus") == "timeOut";
     }
 
+    function isNoPermission(XMLHttpRequest){
+        return XMLHttpRequest.getResponseHeader("noPermission") == "true";
+    }
+
+    function showMsg(){
+        $.Notice.error("您没有权限进行该操作！");
+        throw new Error("no permission！");
+    }
+
     function gotoIndex(){
         sessionCheckOut();
-        throw new error("time out！");
+        throw new Error("time out！");
+    }
+
+    function checkSession(XMLHttpRequest){
+        if(isTimeOut(XMLHttpRequest)) gotoIndex();
+        else if(isNoPermission(XMLHttpRequest)) showMsg();
     }
 
     var _ajax = $.ajax;
@@ -32,33 +46,22 @@
             success: function(data, textStatus, XMLHttpRequest){},
             error: function(XMLHttpRequest, textStatus, errorThrown){}
         }
-        if(opt.complete){
-            fn.complete = opt.complete;
-        }
-        if(opt.success){
-            fn.success = opt.success;
-        }
-        if(opt.error){
-            fn.error = opt.error;
-        }
+        if(opt.complete) fn.complete = opt.complete;
+        if(opt.success) fn.success = opt.success;
+        if(opt.error) fn.error = opt.error;
+
         var _opt = $.extend(opt,{
             complete:function(XMLHttpRequest, textStatus, errorThrown){
-                if(isTimeOut(XMLHttpRequest)){
-                    gotoIndex();
-                }else
-                    fn.complete(XMLHttpRequest, textStatus, errorThrown);
+                checkSession(XMLHttpRequest);
+                fn.complete(XMLHttpRequest, textStatus, errorThrown);
             },
             success: function(data, textStatus, XMLHttpRequest){
-                if(isTimeOut(XMLHttpRequest)){
-                    gotoIndex();
-                }else
-                    fn.success(data, textStatus, XMLHttpRequest);
+                checkSession(XMLHttpRequest);
+                fn.success(data, textStatus, XMLHttpRequest);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown){
-                if(isTimeOut(XMLHttpRequest)){
-                    gotoIndex();
-                }else
-                    fn.error(XMLHttpRequest, textStatus, errorThrown);
+                checkSession(XMLHttpRequest);
+                fn.error(XMLHttpRequest, textStatus, errorThrown);
             },
         });
         return _ajax(_opt);

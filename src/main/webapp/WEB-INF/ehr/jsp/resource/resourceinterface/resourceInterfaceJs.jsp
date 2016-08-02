@@ -8,6 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -62,8 +63,8 @@
 							{display: '响应结果格式', name: 'resultDescription', width: '25%', resizable: true,align:'left',hide:true},
 							{
 								display: '操作', name: 'operator', width: '10%', render: function (row) {
-								var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:infoDialog:open", row.id, 'modify') + '"></a>';
-								html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:confirmDialog:del", row.id) + '"></a>';
+								var html = '<sec:authorize url="/resource/resourceInterface/infoInitial"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:infoDialog:open", row.id, 'modify') + '"></a></sec:authorize>';
+								html+= '<sec:authorize url="/resource/resourceInterface/delete"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:confirmDialog:del", row.id) + '"></a></sec:authorize>';
 								return html;
 							}},
 						],

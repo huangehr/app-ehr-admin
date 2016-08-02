@@ -4,17 +4,19 @@
 <div id="div_appRole_group_form" data-role-form class="m-form-inline f-mt20 f-pb30">
 
     <input type="text" class="f-dn" data-attr-scan="id"/>
+    <input type="text" class="f-dn" data-attr-scan="appId"/>
+    <input type="text" class="f-dn" data-attr-scan="type" value="0"/>
     <div class="m-form-group">
         <label>角色组ID</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="inp_appRole_groupId" class="required useTitle" placeholder="请输入角色组ID"
+            <input type="text" id="inp_appRole_groupId" class="required ajax useTitle" placeholder="请输入角色组ID"
                    required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
         </div>
     </div>
     <div class="m-form-group">
         <label>角色组名称</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="inp_appRole_groupName" class="required useTitle" placeholder="请输入角色组名称" data-attr-scan="name"/>
+            <input type="text" id="inp_appRole_groupName" class="required ajax useTitle" placeholder="请输入角色组名称" data-attr-scan="name"/>
         </div>
     </div>
     <div class="m-form-group">

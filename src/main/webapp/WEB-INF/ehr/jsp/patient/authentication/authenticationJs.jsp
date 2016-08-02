@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -18,7 +19,7 @@
 			var searchParms = {
 				startTime:backParams.startTime || '',
 				endTime:backParams.endTime || '',
-				status:backParams.status || '',
+				status:backParams.status || '0',
 				name:backParams.name || '',
 				page:backParams.page || 1,
 				pageSize:backParams.pageSize || 15,
@@ -49,6 +50,8 @@
 				$searchBtn: $('#btn_search'),
 				statusBox : null,
 				init: function () {
+					this.$element.attrScan();
+					//window.form = this.$element;
 					this.statusBox = this.$status.ligerComboBox({
 						url: "${contextRoot}/dict/searchDictEntryList",
 						dataParmName: 'detailModelList',
@@ -58,8 +61,6 @@
 						width: 120,
 						value:"0"
 					});
-					this.$element.attrScan();
-					window.form = this.$element;
 					this.$name.ligerTextBox({width:120});
 					this.$startTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
 					this.$endTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
@@ -90,10 +91,10 @@
 							{display: '状态', name: 'status', hide:true},
 							{display: '状态', name: 'statusName', width: '15%', minColumnWidth: 20,},
 							{display: '操作', name: 'operator', width: '25%', render: function (row) {
-								var html = '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:info:open", row.id,row.status) + '">详情</a>';
+								var html = '<sec:authorize url="/authentication/infoInitial"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:info:open", row.id,row.status) + '">详情</a></sec:authorize>';
 								if(row.status == "0"){
-									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '1') + '">同意</a>';
-									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '2') + '">拒绝</a>';
+									html += '<sec:authorize url="/authentication/agree"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '1') + '">同意</a></sec:authorize>';
+									html += '<sec:authorize url="/authentication/reject"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "authentication:status", row.id, '2') + '">拒绝</a></sec:authorize>';
 								}
 								return html;
 							}}

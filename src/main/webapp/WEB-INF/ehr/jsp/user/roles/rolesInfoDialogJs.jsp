@@ -11,7 +11,9 @@
 		var mode = '${mode}';
 		var nameCopy = '';
 		var codeCopy = '';
-		var stdAppId = '${stdAppId}'
+		var appId = '${appId}';
+		//用户角色组类型为"1"
+		$('#roleType').val('1');
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
 			rolesInfo.init();
@@ -20,13 +22,10 @@
 		rolesInfo = {
 			$form: $("#div_roles_info_form"),
 
+			$type:$('#roleType'),
 			$code: $("#inp_roles_code"),
 			$name: $("#inp_roles_name"),
 			$description: $("#inp_description"),
-
-			$btnSave: $("#btn_save"),
-			$btnCancel: $("#btn_cancel"),
-
 			init: function () {
 				this.$code.ligerTextBox({width:240});
 				this.$name.ligerTextBox({width:240});
@@ -38,25 +37,22 @@
 				}
 				this.$form.attrScan();
 				if(mode !='new'){
-					//var info = ${envelop}.obj;
-					var info = {
-						id:'1122112',
-						stdAppId:'3323223',
-						code: 'wwcs',
-						name: 'yww',
-						description:'用户角色组模拟数据'
-					}
+					var info = ${envelop}.obj;
 					nameCopy = info.name;
 					codeCopy = info.code;
 					this.$form.Fields.fillValues({
 						id:info.id,
-						stdAppId:info.id,
-						rolesCode:info.code,
-						rolesName:info.name,
-						description:info.description,
+						appId:info.appId,
+						code:info.code,
+						name:info.name,
+						description:info.description
 					});
 				}
+				if(mode == 'new'){
+					$('#appId').val(appId);
+				}
 				this.$form.show();
+				this.bindEvents();
 			},
 			bindEvents: function () {
 				var self = this;
@@ -65,23 +61,23 @@
 						if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_name')) {
 							var name = $("#inp_roles_name").val();
 							if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
-								return checkUnique("${contextRoot}/resource/resourceManage/isExistName",name,"资源名称不能重复！");
+								return checkUnique("${contextRoot}/userRoles/isNameExistence",appId,name,"角色组名称已被使用！");
 							}
 						}
 						if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {
 							var code = $("#inp_roles_code").val();
 							if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){
-								return checkUnique("${contextRoot}/resource/resourceManage/isExistCode",code,"资源编码不能重复！");
+								return checkUnique("${contextRoot}/userRoles/isCodeExistence",appId,code,"角色组编码已被使用！");
 							}
 						}
 					}
 				});
 				//验证编码、名字不可重复
-				function checkUnique(url, value, errorMsg) {
+				function checkUnique(url,appId, value, errorMsg) {
 					var result = new jValidation.ajax.Result();
 					var dataModel = $.DataModel.init();
 					dataModel.fetchRemote(url, {
-						data: {name:value,code:value},
+						data: {appId:appId,name:value,code:value},
 						async: false,
 						success: function (data) {
 							if (data.successFlg) {
@@ -95,14 +91,14 @@
 					return result;
 				}
 
-				this.$btnSave.click(function () {
+				$("#btn_save").click(function () {
 					if(validator.validate() == false){return}
 					var values = self.$form.Fields.getValues();
 					update(values)
 				});
 				function update(values){
 					var dataModel = $.DataModel.init();
-					dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
+					dataModel.updateRemote("${contextRoot}/userRoles/update", {
 						data:{dataJson:JSON.stringify(values),mode:mode},
 						success: function(data) {
 							if (data.successFlg) {
@@ -115,8 +111,7 @@
 						}
 					});
 				}
-				this.$btnCancel.click(function () {
-					debugger
+				$("#btn_cancel").click(function () {
 					win.closeRolesInfoDialog();
 				});
 			}

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<script>
+<script><%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
     (function ($, win) {
         $(function () {
             /* ************************** 全局变量定义 **************************** */
@@ -74,9 +74,15 @@
                                 {display: '发布时间', name: 'releaseDate', width: '20%', isAllowHide: false, align: 'left'},
                                 {
                                     display: '操作', name: 'operator', width: '20%', render: function (row) {
-                                    var html = '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "hosRelease:releaseInfo:open", row.id, 'modify') + '"></a>' +
-                                               '<a class="grid_delete" href="#" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hosRelease:releaseInfoGrid:delete", row.id) + '"></a>';
-                                    return html;
+                                    debugger
+                                        var html = '';
+                                        <sec:authorize url="/esb/hosRelease/releaseInfo">
+                                        html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "hosRelease:releaseInfo:open", row.id, 'modify') + '"></a>';
+                                        </sec:authorize>
+                                        <sec:authorize url='/esb/hosRelease/deleteReleaseInfo'>
+                                        html += '<a class="grid_delete" href="#" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hosRelease:releaseInfoGrid:delete", row.id) + '"></a>';
+                                        </sec:authorize>
+                                        return html;
                                 }
                                 }
                             ],

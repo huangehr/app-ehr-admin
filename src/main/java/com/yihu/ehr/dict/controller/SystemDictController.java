@@ -444,7 +444,7 @@ public class SystemDictController extends BaseUIController {
     @ResponseBody
     public Object autoSearchDictEntryList(Long dictId,String key){
 
-        return null;
+        return null  ;
     }
 
 }

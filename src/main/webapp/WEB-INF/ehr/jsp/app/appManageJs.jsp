@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script>
 
     (function ($, win) {
@@ -80,7 +81,7 @@
                 grid: null,
                 init: function () {
                     this.grid = $("#div_app_info_grid").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/app/searchApps',
+                        url: '${contextRoot}/app/searchApps?sourceType=0',
                         parms: {
 							searchNm:searchParms.searchNm,
 							org: searchParms.org,
@@ -98,23 +99,24 @@
                             { display: '回调URL', name: 'url', width: '15%',align:'left'},
 							{ display: '审核', name: 'checkStatus', width: '8%',minColumnWidth: 20,render: function (row){
 								if(Util.isStrEquals( row.status,'WaitingForApprove')) {
-									return '<a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:approved", row.id)+'">'+'通过'+'</a> /' +
-											' <a class="veto label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:reject", row.id)+'">'+'否决'+'</a>'
+									return '<sec:authorize url="/app/check"><a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:approved", row.id)+'">'+'通过'+'</a>/' +
+											'<a class="veto label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:reject", row.id)+'">'+'否决'+'</a></sec:authorize>'
 								} else if(Util.isStrEquals( row.status,'Approved')){
-									return '<a data-toggle="model"  class="Forbidden label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:forbidden", row.id)+'">'+'禁用'+'</a>'
+									return '<sec:authorize url="/app/check"><a data-toggle="model"  class="Forbidden label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:forbidden", row.id)+'">'+'禁用'+'</a></sec:authorize>'
 								}else if(Util.isStrEquals( row.status,'Forbidden')){
-									return '<a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:open", row.id)+'">'+'开启'+'</a>'
+									return '<sec:authorize url="/app/check"><a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:open", row.id)+'">'+'开启'+'</a></sec:authorize>'
 								}else if(Util.isStrEquals( row.status,'Reject')){
 									return '无'
 								}
 							}},
-							{ display: '已授权资源', name: 'resourceNames', width: '10%',align:'left'},
-							{ display: '操作', name: 'operator', width: '10%', render: function (row) {
+							{ display: '已授权资源', name: 'resourceNames', width: '8%',align:'left'},
+							{ display: '操作', name: 'operator', width: '12%', render: function (row) {
 								var html = '';
 								if(Util.isStrEquals( row.status,'WaitingForApprove') || Util.isStrEquals( row.status,'Approved')){
-									html += '<a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a>';
+									html += '<sec:authorize url="/app/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
 								}
-								html += '<a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a>';
+								html += '<sec:authorize url="/app/template/appInfo"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
+								html += '<sec:authorize url="/app/deleteApp"><a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:appInfo:delete", row.id) + '"></a></sec:authorize>';
 								return html;
                             }}
                         ],
@@ -189,6 +191,28 @@
 							load:true
                         });
                     });
+
+					//删除
+					$.subscribe('app:appInfo:delete',function(event,appId){
+						isFirstPage = false;
+						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+							if (yes) {
+								var dataModel = $.DataModel.init();
+								dataModel.updateRemote('${contextRoot}/app/deleteApp', {
+									data: {appId: appId},
+									success: function (data) {
+										if (data.successFlg) {
+											$.Notice.success('操作成功。');
+											master.reloadGrid();
+										} else {
+											$.Notice.open({type: 'error', msg: '操作失败。'});
+										}
+									}
+								});
+							}
+						});
+					});
+
                     $.subscribe('appInfo:appInfoGrid:approved',function(event,id) {
                         var status = "Approved";
                         master.check(id,status);

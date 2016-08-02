@@ -1,7 +1,9 @@
 package com.yihu.ehr.patient.controller;
 
 import com.yihu.ehr.agModel.patient.AuthenticationModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.datetime.DateTimeUtil;
@@ -14,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -90,7 +93,7 @@ public class AuthenticationController extends BaseUIController {
             Map<String,Object> params = new HashMap<>();
             params.put("fields","");
             params.put("filters",filters);
-            params.put("sorts","");
+            params.put("sorts","+applyDate");
             params.put("page",page);
             params.put("size",rows);
             String url = "/patient/authentications";
@@ -106,7 +109,8 @@ public class AuthenticationController extends BaseUIController {
     //认证状态修改
     @RequestMapping("/updateStatus")
     @ResponseBody
-    public Object updateStatus(String id,String status){
+    public Object updateStatus(String id,String status,HttpServletRequest request){
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         Envelop envelop = new Envelop();
         try{
             String urlGet = "/patient/Authentication/"+id;
@@ -114,6 +118,8 @@ public class AuthenticationController extends BaseUIController {
             envelop = getEnvelop(envelopStrGet);
             if(envelop.isSuccessFlg()){
                 AuthenticationModel modelUpdate = getEnvelopModel(envelop.getObj(), AuthenticationModel.class);
+                modelUpdate.setAuditor(userDetailModel.getId());
+                modelUpdate.setAuditDate(DateTimeUtil.utcDateTimeFormat(new Date()));
                 modelUpdate.setApplyDate(changeToUtc(modelUpdate.getApplyDate()));
                 modelUpdate.setStatus(status);
                 String url = "/patient/authentications";
@@ -154,7 +160,7 @@ public class AuthenticationController extends BaseUIController {
 
     //yyyy-MM-dd HH:mm:ss 转换为yyyy-MM-dd'T'HH:mm:ss'Z 格式
     public String changeToUtc(String datetime) throws Exception{
-        Date date = DateTimeUtil.simpleDateParse(datetime);
+        Date date = DateTimeUtil.simpleDateTimeParse(datetime);
         return DateTimeUtil.utcDateTimeFormat(date);
     }
 }

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -82,8 +83,13 @@
 							{display: '查询消息', name: 'message', width: '15%', resizable: true,align:'left'},
 							{
 								display: '操作', name: 'operator', width: '10%', render: function (row) {
-								var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "acq:acqInfo:open", row.id, 'modify') + '"></a>';
-								html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "acq:acqInfo:del", row.id) + '"></a>';
+								var html = '';
+								<sec:authorize url="/esb/acqTask/acqInfoDialog">
+									html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "acq:acqInfo:open", row.id, 'modify') + '"></a>';
+								</sec:authorize>
+								<sec:authorize url="/esb/acqTask/delete">
+									html += '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "acq:acqInfo:del", row.id) + '"></a>';
+								</sec:authorize>
 								return html;
 							}}
 						],

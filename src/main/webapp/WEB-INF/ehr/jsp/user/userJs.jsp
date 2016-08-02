@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script>
     (function ($, win) {
         $(function () {
@@ -98,26 +99,32 @@
                             {display: '所属机构', name: 'organizationName', width: '15%',align:'left'},
                             {display: '联系方式', name: 'telephone',width: '10%',align:'left'},
                             {display: '用户邮箱', name: 'email', width: '13%', resizable: true,align:'left'},
-                            {display: '是否生/失效', name: 'activated', width: '10%', minColumnWidth: 20,render:function(row){
-								var html ='';
+
+                            {display: '是否生/失效', name: 'activated', width: '8%', minColumnWidth: 20,render:function(row){
+                                var html = Util.isStrEquals(row.activated,true) ? "生效" : "失效";
+                                <sec:authorize url='User_Actived'>
 								if(Util.isStrEquals(row.activated,true)){
-//										html +='<div class="grid_on"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:failure", row.id,0) + '"></div>';
-									html+= '<a class="grid_on" href="javascript:void(0)" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,0,"失效") + '"></a>';
+									html = '<a class="grid_on" href="javascript:void(0)" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,0,"失效") + '"></a>';
 								}else if(Util.isStrEquals(row.activated,false)){
-//										html +='<div class="grid_off" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:failure", row.id,1) + '"></div>';
-									html+='<a class="grid_off" href="javascript:void(0)" title="已失效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,1,"生效") + '"></a>';
+									html ='<a class="grid_off" href="javascript:void(0)" title="已失效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,1,"生效") + '"></a>';
 								}
+                                </sec:authorize>
 								return html;
+
                             }},
 //                            {display:'用户来源',name:'sourceName',width:'10%'},
 							{display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
-                            {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
-//								var html ='<div class="grid_edit"    title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id,'modify') + '"></div>'
-//										+'<div class="grid_delete"   title="删除"' +
-//										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id,'delete') + '"></div>';
-                                var html = '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id, 'modify') + '"></a>';
-                                    html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id, 'delete') + '"></a>';
+                            {display: '操作', name: 'operator', width: '12%', render: function (row) {
+								var html = '';
+                                <sec:authorize url="/user/appFeatureInitial">
+								html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';
+                                </sec:authorize>
+                                <sec:authorize url="/user/updateUser">
+                                html += '<a class="grid_edit" title="编辑" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id, 'modify') + '"></a>';
+                                </sec:authorize>
+                                <sec:authorize url="/user/deleteUser">
+                                html += '<a class="grid_delete" title="删除" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id, 'delete') + '"></a>';
+                                </sec:authorize>
                                 return html;
 							}}
                         ],
@@ -224,8 +231,22 @@
                             }
                         });
 
-                    })
-
+                    });
+					//查看应用权限
+					$.subscribe('user:feature:open', function (event, userId) {
+						self.userInfoDialog = $.ligerDialog.open({
+							title:'查看权限',
+							height: 650,
+							width: 600,
+							isDrag:true,
+							isResize:true,
+							url: '${contextRoot}/user/appFeatureInitial',
+							load: true,
+							urlParms: {
+								userId: userId,
+							}
+						});
+					});
                 }
             };
 
