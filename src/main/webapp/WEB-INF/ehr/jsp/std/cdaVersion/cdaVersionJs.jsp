@@ -62,7 +62,10 @@
 							{display: '状态码', name: 'inStage', align: 'left',hide: true},
 							{display: '状态', name: 'inStage', width: '15%', align: 'center',
 								render:function(row){
-									var html = row.inStage !=true?'已发布': '未发布';
+									var html = '未发布';
+									if(row.inStage ==false){
+										return '已发布';
+									}
 									<sec:authorize url="/cdaVersion/commitVersion">
 									html ='<a class="label_a" name="delete_click"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "cdaVersion:commitVersion", row.version,row.inStage,0) + '">发布</a>'
 									</sec:authorize>
