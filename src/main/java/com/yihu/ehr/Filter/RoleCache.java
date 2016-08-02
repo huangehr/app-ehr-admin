@@ -1,17 +1,16 @@
 package com.yihu.ehr.Filter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.ObjectMapperUtil;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -21,7 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 /**
- * »º´æ½ÇÉ«ÐÅÏ¢
+ * ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½Ï¢
  */
 @Service("roleCache")
 public class RoleCache {
@@ -61,7 +60,7 @@ public class RoleCache {
     }
 
     /**
-     * ³õÊ¼»¯Ìí¼ÓÈ¨ÏÞÐÅÏ¢
+     * ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½Ï¢
      */
     private void loadRole() throws Exception {
         List<AppFeatureModel> appFeatureModelList = getAppFeatures();
@@ -92,18 +91,18 @@ public class RoleCache {
     }
 
 //    /**
-//     * »ñÈ¡¿É·ÃÎÊkey×ÊÔ´µÄ½ÇÉ«
-//     * @param key ×ÊÔ´
-//     * @return ½ÇÉ«×é
+//     * ï¿½ï¿½È¡ï¿½É·ï¿½ï¿½ï¿½keyï¿½ï¿½Ô´ï¿½Ä½ï¿½É«
+//     * @param key ï¿½ï¿½Ô´
+//     * @return ï¿½ï¿½É«ï¿½ï¿½
 //     */
 //    public CopyOnWriteArrayList getConfigAttributes(String key){
 //        return resourceMap.get(key);
 //    }
 
 //    /**
-//     * ÅÐ¶ÏÊÇ·ñcaÊÇ·ñ±»¸³Óèkey·ÃÎÊÈ¨ÏÞ
-//     * @param key ×ÊÔ´ÐÅÏ¢
-//     * @param ca  ½ÇÉ«
+//     * ï¿½Ð¶ï¿½ï¿½Ç·ï¿½caï¿½Ç·ñ±»¸ï¿½ï¿½ï¿½keyï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½
+//     * @param key ï¿½ï¿½Ô´ï¿½ï¿½Ï¢
+//     * @param ca  ï¿½ï¿½É«
 //     * @return
 //     */
 //    public boolean hasRole(String key, String ca){
@@ -114,9 +113,9 @@ public class RoleCache {
 //    }
 //
 //    /**
-//     * ÅÐ¶ÏÊÇ·ñcaÊÇ·ñ±»¸³Óèkey·ÃÎÊÈ¨ÏÞ
-//     * @param key ×ÊÔ´ÐÅÏ¢
-//     * @param c  ½ÇÉ«×é
+//     * ï¿½Ð¶ï¿½ï¿½Ç·ï¿½caï¿½Ç·ñ±»¸ï¿½ï¿½ï¿½keyï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½
+//     * @param key ï¿½ï¿½Ô´ï¿½ï¿½Ï¢
+//     * @param c  ï¿½ï¿½É«ï¿½ï¿½
 //     * @return
 //     */
 //    public boolean hasRole(String key, Collection<String> c) {
@@ -129,9 +128,9 @@ public class RoleCache {
 //    }
 //
 //    /**
-//     * Ìí¼ÓÈ¨ÏÞÐÅÏ¢
-//     * @param key ×ÊÔ´ÐÅÏ¢
-//     * @param ca  ½ÇÉ«
+//     * ï¿½ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½Ï¢
+//     * @param key ï¿½ï¿½Ô´ï¿½ï¿½Ï¢
+//     * @param ca  ï¿½ï¿½É«
 //     */
 //    public void addCache(String key, String ca){
 //        if(resourceMap.get(key)==null){
@@ -141,9 +140,9 @@ public class RoleCache {
 //    }
 //
 //    /**
-//     * É¾³ýÈ¨ÏÞÐÅÏ¢
-//     * @param key ×ÊÔ´ÐÅÏ¢
-//     * @param ca ½ÇÉ«
+//     * É¾ï¿½ï¿½È¨ï¿½ï¿½ï¿½ï¿½Ï¢
+//     * @param key ï¿½ï¿½Ô´ï¿½ï¿½Ï¢
+//     * @param ca ï¿½ï¿½É«
 //     */
 //    public void removeCache(String key, String ca){
 //        if(resourceMap.get(key)!=null){
