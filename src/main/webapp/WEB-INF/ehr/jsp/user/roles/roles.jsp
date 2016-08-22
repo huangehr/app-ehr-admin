@@ -42,13 +42,14 @@
 							<%--<span><spring:message code="btn.search"/></span>--%>
 						<%--</div>--%>
 					<%--</div>--%>
-					<sec:authorize url="">
+					<sec:authorize url="/userRoles/update">
 					<div class="m-form-control f-mr20" style="float: right">
 						<div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
 							<span><spring:message code="btn.create"/></span>
 						</div>
 					</div>
 					</sec:authorize>
+
 				</div>
 			</div>
 			<div id="div_roles_grid" ></div>
