@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">用户角色管理</div>
 <div id="div_wrapper" >

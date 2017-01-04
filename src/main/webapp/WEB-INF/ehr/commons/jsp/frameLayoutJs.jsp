@@ -299,7 +299,7 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize url="/template/initial">
+                <sec:authorize url="EHR_template_manager">
                 {
                     id: 24,
                     pid: 2,
