@@ -29,6 +29,13 @@
         </div>
     </div>
     <div class="m-form-group">
+        <label><spring:message code="lbl.user.birthday"/><spring:message code="spe.colon"/></label>
+        <div class="m-form-control">
+            <input type="text" id="inp_birthday" class="validate-date l-text-field validate-date"  placeholder="输入日期 格式(2016-04-15)"
+                   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="birthday"/>
+        </div>
+    </div>
+    <div class="m-form-group">
         <label><spring:message code="lbl.identity.card"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" id="inp_idCard" class="required useTitle ajax validate-id-number"  required-title=<spring:message code="lbl.must.input"/> validate-id-number-title=<spring:message code="lbl.input.true.idCard"/> data-attr-scan="idCardNo"/>
@@ -48,6 +55,12 @@
         </div>
     </div>
     <div class="m-form-group">
+        <label><spring:message code="lbl.user.status.fertility"/><spring:message code="spe.colon"/></label>
+        <div class="m-form-control">
+            <input type="text" id="inp_fertilityStatus" data-type="select" data-attr-scan="fertilityStatus">
+        </div>
+    </div>
+    <div class="m-form-group">
         <label><spring:message code="lbl.user.mail"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" id="inp_userEmail" class="required useTitle ajax validate-email max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/> validate-email-title=<spring:message code="lbl.input.true.email"/> data-attr-scan="email"/>
@@ -57,6 +70,12 @@
         <label><spring:message code="lbl.user.tel"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" id="inp_userTel" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="telephone"/>
+        </div>
+    </div>
+    <div class="m-form-group">
+        <label><spring:message code="lbl.user.tel2"/><spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control essential">
+            <input type="text" id="inp_userTel2" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="secondPhone"/>
         </div>
     </div>
     <div class="m-form-group">
@@ -91,26 +110,11 @@
 		</div>
 	</div>
 
-
-            <div class="m-form-group">
-                <label><spring:message code="lbl.user.status.fertility"/><spring:message code="spe.colon"/></label>
-                <div class="m-form-control">
-                    <input type="text" id="inp_fertilityStatus" data-type="select" data-attr-scan="fertilityStatus">
-                </div>
-            </div>
-
             <div class="m-form-group">
                 <label><spring:message code="lbl.user.flag.realname"/><spring:message code="spe.colon"/></label>
                 <div class="u-checkbox-wrap m-form-control">
                     <input type="radio" value="0" name="realnameFlag" data-attr-scan><spring:message code="lbl.realname.certified.no"/>
                     <input type="radio" value="1" name="realnameFlag" data-attr-scan><spring:message code="lbl.realname.certified.ok"/>
-                </div>
-            </div>
-
-            <div class="m-form-group">
-                <label><spring:message code="lbl.user.tel2"/><spring:message code="spe.colon"/></label>
-                <div class="l-text-wrapper m-form-control essential">
-                    <input type="text" id="inp_userTel2" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="secondPhone"/>
                 </div>
             </div>
 

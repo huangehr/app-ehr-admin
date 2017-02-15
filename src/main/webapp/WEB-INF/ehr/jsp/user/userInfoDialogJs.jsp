@@ -43,6 +43,7 @@
             $micard: $('#inp_micard'),
             $ssid: $('#inp_ssid'),
             $realnameFlag: $('input[name="realnameFlag"]', this.$form),
+            $birthday: $("#inp_birthday"),
 
             $form: $("#div_user_info_form"),
             $loginCode: $("#inp_loginCode"),
@@ -145,6 +146,7 @@
                 this.$micard.ligerTextBox({width: 240});
                 this.$ssid.ligerTextBox({width: 240});
                 this.$tel2.ligerTextBox({width: 240});
+                this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
 
                 this.$org.addressDropdown({
                     tabsData: [
@@ -250,6 +252,7 @@
                     qq:user.qq,
                     ssid:user.ssid,
                     realnameFlag:user.realnameFlag,
+                    birthday:user.birthday,
 
                 });
 				if(user.role){
