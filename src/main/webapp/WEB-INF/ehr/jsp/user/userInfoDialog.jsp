@@ -91,6 +91,50 @@
 		</div>
 	</div>
 
+
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.status.fertility"/><spring:message code="spe.colon"/></label>
+                <div class="m-form-control">
+                    <input type="text" id="inp_fertilityStatus" data-type="select" data-attr-scan="fertilityStatus">
+                </div>
+            </div>
+
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.flag.realname"/><spring:message code="spe.colon"/></label>
+                <div class="u-checkbox-wrap m-form-control">
+                    <input type="radio" value="0" name="realnameFlag" data-attr-scan><spring:message code="lbl.realname.certified.no"/>
+                    <input type="radio" value="1" name="realnameFlag" data-attr-scan><spring:message code="lbl.realname.certified.ok"/>
+                </div>
+            </div>
+
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.tel2"/><spring:message code="spe.colon"/></label>
+                <div class="l-text-wrapper m-form-control essential">
+                    <input type="text" id="inp_userTel2" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="secondPhone"/>
+                </div>
+            </div>
+
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.micard"/><spring:message code="spe.colon"/></label>
+                <div class="l-text-wrapper m-form-control essential">
+                    <input type="text" id="inp_micard" class="required useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="micard"/>
+                </div>
+            </div>
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.ssid"/><spring:message code="spe.colon"/></label>
+                <div class="l-text-wrapper m-form-control essential">
+                    <input type="text" id="inp_ssid" class="required useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="ssid"/>
+                </div>
+            </div>
+
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.qq"/><spring:message code="spe.colon"/></label>
+                <div class="l-text-wrapper m-form-control essential">
+                    <input type="text" id="inp_qq" class="required useTitle max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="qq"/>
+                </div>
+            </div>
+
+
     <div>
         <hr class="u-border">
         <div class="f-pr u-bd">
@@ -126,6 +170,7 @@
             </div>
         </div>
     </div>
+
     <div id="div_public_manage" class="u-public-manage">
         <div class="l-button u-btn u-btn-small u-btn-cancel f-ib f-vam u-btn-color f-mb10" id="div_allot_publicKey">
             <span>分配公钥</span>
