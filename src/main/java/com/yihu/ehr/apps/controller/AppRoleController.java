@@ -1,9 +1,6 @@
 package com.yihu.ehr.apps.controller;
 
-import com.yihu.ehr.agModel.user.RoleApiRelationModel;
 import com.yihu.ehr.agModel.user.RoleAppRelationModel;
-import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
-import com.yihu.ehr.agModel.user.RolesModel;
 import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
@@ -11,7 +8,6 @@ import com.yihu.ehr.user.controller.UserRolesController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import org.apache.jasper.tagplugins.jstl.Util;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -86,6 +80,10 @@ public class AppRoleController extends BaseUIController {
             case "addAppRoleGroup":
                 contentPage = "/app/approle/appRoleDialog";
 //                model.addAttribute("appRoleGroupModel", jsonStr);
+                break;
+            case "appUsers":
+                contentPage = "/app/approle/appRoleUsers";
+                model.addAttribute("obj", jsonStr);
                 break;
             default:
                 contentPage = "/app/approle/appRoleDialog";
