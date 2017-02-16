@@ -37,9 +37,6 @@
             $name: $('#inp_name'),
             $sex: $('input[name="sex"]', this.$form),
             $uploader: $("#div_doctor_img_upload"),
-            $addBtn: $("#div_btn_add"),
-            $cancelBtn: $("#div_cancel_btn"),
-            $imageShow: $("#div_file_list"),
             $skill:$("#inp_skill"),
             $portal:$("#inp_portal"),
             $email:$("#inp_email"),
@@ -52,6 +49,7 @@
             $lczc:$("#inp_lczc"),
             $xlzc:$("#inp_xlzc"),
             $zxzc:$("#inp_zxzc"),
+            $filePicker: $("#div_file_picker"),
             $imageShow: $("#div_file_list"),
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
@@ -127,6 +125,8 @@
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");
                     this.$cancelBtn.hide();
+                    this.$updateDtn.hide();
+                    this.$filePicker.hide();
                 }
             },
 

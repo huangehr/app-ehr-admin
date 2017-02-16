@@ -108,7 +108,26 @@
                                     return html;
                                 }
                             }
-                        ]
+                        ],
+                       enabledEdit: true,
+                       validate: true,
+                       unSetValidateAttr: false,
+                       onDblClickRow : function (row){
+                           var mode = 'view';
+                           $.ligerDialog.open({
+                               height: 870,
+                               width: 600,
+                               isDrag:true,
+                               //isResize:true,
+                               title:'医生基本信息',
+                               url: '${contextRoot}/doctor/getDoctor',
+                               load: true,
+                               urlParms: {
+                                   doctorId: row.id,
+                                   mode:mode
+                               }
+                           });
+                       }
                     }));
                     grid.adjustToWidth();
                     this.bindEvents();
