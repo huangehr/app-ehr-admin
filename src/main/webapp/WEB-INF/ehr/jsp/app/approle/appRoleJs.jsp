@@ -73,6 +73,7 @@
                             {
                                 display: '操作', name: 'operator', width: '35%', render: function (row) {
                                 var html = '<sec:authorize url="/appRole/feature"><a class="label_a" title="权限配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'featrueConfig') + '>权限配置</a>&nbsp;&nbsp;</sec:authorize>';
+                                html += '<sec:authorize url="/appRole/appUser"><a class="label_a" title="人员配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appUsers') + '>人员配置</a>&nbsp;&nbsp;</sec:authorize>';
                                 html += '<sec:authorize url="/appRole/app"><a class="label_a" title="接入应用" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appInsert') + '>应用接入</a></sec:authorize>';
                                 html += '<sec:authorize url="/appRole/saveAppRoleGroup"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'edit') + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/appRole/deleteAppRoleGroup"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'delete') + '"></a></sec:authorize>';
@@ -108,6 +109,10 @@
                             case 'featrueConfig':
                                 var model = JSON.parse(jsonStr);
                                 self.ligerDialogOpen(jsonStr, type, '应用角色>'+model.name+"权限配置", 600, 800);
+                                break;
+                            case 'appUsers':
+                                var model = JSON.parse(jsonStr);
+                                self.ligerDialogOpen(jsonStr, type, '应用角色>'+model.name+"人员配置", 600, 800);
                                 break;
                             case 'appInsert':
                                 var model = JSON.parse(jsonStr);

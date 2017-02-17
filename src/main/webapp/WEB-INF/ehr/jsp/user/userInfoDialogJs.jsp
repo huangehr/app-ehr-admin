@@ -37,6 +37,13 @@
         userInfo = {
             $idCardCopy: $('#idCardCopy'),
             $emailCopy: $('#emailCopy'),
+            $tel2: $('#inp_userTel2'),
+            $fertilityStatus: $('#inp_fertilityStatus'),
+            $qq: $('#inp_qq'),
+            $micard: $('#inp_micard'),
+            $ssid: $('#inp_ssid'),
+            $realnameFlag: $('input[name="realnameFlag"]', this.$form),
+            $birthday: $("#inp_birthday"),
 
             $form: $("#div_user_info_form"),
             $loginCode: $("#inp_loginCode"),
@@ -135,6 +142,12 @@
                 this.$idCard.ligerTextBox({width: 240});
                 this.$email.ligerTextBox({width: 240});
                 this.$tel.ligerTextBox({width: 240});
+                this.$qq.ligerTextBox({width: 240});
+                this.$micard.ligerTextBox({width: 240});
+                this.$ssid.ligerTextBox({width: 240});
+                this.$tel2.ligerTextBox({width: 240});
+                this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
+
                 this.$org.addressDropdown({
                     tabsData: [
                         {name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
@@ -167,6 +180,19 @@
                     }
                 });
 
+                this.$fertilityStatus.ligerComboBox({
+                    url: '${contextRoot}/dict/searchDictEntryList',
+                    valueField: 'code',
+                    textField: 'value',
+                    dataParmName: 'detailModelList',
+                    urlParms: {
+                        dictId: 54
+                    },
+                    onSuccess: function () {
+                        self.$form.Fields.fillValues({fertilityStatus: user.fertilityStatus});
+                    }
+                });
+
                 this.$userType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
                     valueField: 'code',
@@ -187,6 +213,8 @@
                             $('#inp_major_div').hide();
                     }
                 });
+
+
 
 
                 <%--this.$source.ligerComboBox({--%>
@@ -217,6 +245,15 @@
                     validTime: user.validTime,
                     startTime: user.startTime,
                     sourceName:user.sourceName,
+                    fertilityStatus:user.fertilityStatus,
+                    secondPhone:user.secondPhone,
+                    birthday:user.birthday,
+                    micard:user.micard,
+                    qq:user.qq,
+                    ssid:user.ssid,
+                    realnameFlag:user.realnameFlag,
+                    birthday:user.birthday,
+
                 });
 				if(user.role){
 					var roleArr = user.role.split(",") ;
