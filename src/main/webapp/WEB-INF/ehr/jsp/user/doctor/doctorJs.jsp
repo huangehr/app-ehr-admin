@@ -70,10 +70,7 @@
                         pageSize:20,
                         parms: {
                             searchNm: '',
-                            searchType: '',
-                            province:'',
-                            city:'',
-                            district:''
+                            searchType: ''
                         },
                        allowHideColumn:false,
                         columns: [

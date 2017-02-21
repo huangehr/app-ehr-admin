@@ -143,6 +143,16 @@
                     url: '${contextRoot}/doctor/initial'
                 },
                 </sec:authorize>
+
+                <sec:authorize url="/portalNotice/initial">
+                {
+                    id: 14,
+                    pid: 1,
+                    level:2,
+                    text: '<spring:message code="title.portal.notice"/>',
+                    url: '${contextRoot}/portalNotice/initial'
+                },
+                </sec:authorize>
                 //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
 
                 <sec:authorize url="Ehr_Standard_Centre">

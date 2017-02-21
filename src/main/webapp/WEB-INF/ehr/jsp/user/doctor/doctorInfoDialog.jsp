@@ -76,7 +76,7 @@
     <div class="m-form-group" id="inp_introduction_div">
         <label><spring:message code="lbl.doctor.introduction"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control">
-            <input type="text" id="inp_introduction" class="max-length-256 validate-special-char"  data-attr-scan="introduction"/>
+            <textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="introduction" ></textarea>
         </div>
     </div>
     <div class="m-form-group">
