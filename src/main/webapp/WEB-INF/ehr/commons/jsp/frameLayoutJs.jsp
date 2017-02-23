@@ -85,6 +85,7 @@
                     {id: 1,level:1, text: '<spring:message code="title.register.manage.center"/>'},
                 </sec:authorize>
 
+                // 1-1 - 机构管理
                 <sec:authorize url="/organization/initial">
                 {
                     id: 11,
@@ -95,6 +96,7 @@
                 },
                 </sec:authorize>
 
+                // 1-2 - 人口管理
                 <sec:authorize url="Ehr_Patients">
                 {
                     id: 12,
@@ -104,6 +106,7 @@
                 },
                 </sec:authorize>
 
+                // 1-2-1 - 人口管理 - 基础信息管理
                 <sec:authorize url="/patient/initial">
                 {
                     id: 121,
@@ -114,6 +117,7 @@
                 },
                 </sec:authorize>
 
+                // 1-2-2 - 人口管理 - 档案关联审核
                 <sec:authorize url="/correlation/initial">
                 {
                     id: 122,
@@ -124,6 +128,7 @@
                 },
                 </sec:authorize>
 
+                // 1-2-3 - 人口管理 - 身份认证
                 <sec:authorize url="/authentication/initial">
                 {
                     id: 123,
@@ -134,6 +139,7 @@
                 },
                 </sec:authorize>
 
+                // 1-3 - 医生管理
                 <sec:authorize url="/doctor/initial">
                 {
                     id: 13,
@@ -144,22 +150,14 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize url="/portalNotice/initial">
-                {
-                    id: 14,
-                    pid: 1,
-                    level:2,
-                    text: '<spring:message code="title.portal.notice"/>',
-                    url: '${contextRoot}/portalNotice/initial'
-                },
-                </sec:authorize>
                 //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
 
-                <sec:authorize url="Ehr_Standard_Centre">
                 //2 - 标准规范中心
+                <sec:authorize url="Ehr_Standard_Centre">
                 {id: 2,level:1, text: '<spring:message code="title.data.manage.center"/>'},
                 </sec:authorize>
 
+                // 2-1 - 平台标准
                 <sec:authorize url="Ehr_Platform_Std">
                 {
                     id: 21,
@@ -169,6 +167,7 @@
                 },
                 </sec:authorize>
 
+                // 2-1-1 - 平台标准 - 标准来源
                 <sec:authorize url="/standardsource/initial">
                 {
                     id: 211,
@@ -179,6 +178,7 @@
                 },
                 </sec:authorize>
 
+                // 2-1-2 - 平台标准 - 标准字典
                 <sec:authorize url="/cdadict/initial">
                 {
                     id: 212,
@@ -189,16 +189,7 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize url="/cdadict/initial">
-                {
-                    id: 212,
-                    pid: 21,
-                    level:3,
-                    text: '<spring:message code="title.dict.manage"/>',
-                    url: '${contextRoot}/cdadict/initial'
-                },
-                </sec:authorize>
-
+                // 2-1-3 - 平台标准 - 标准数据集
                 <sec:authorize url="/std/dataset/initial">
                 {
                     id: 213,
@@ -209,6 +200,7 @@
                 },
                 </sec:authorize>
 
+                // 2-1-4 - 平台标准 - CDA文档
                 <sec:authorize url="/cda/initial">
                 {
                     id: 214,
@@ -219,6 +211,7 @@
                 },
                 </sec:authorize>
 
+                // 2-1-5 - 平台标准 - CDA类别
                 <sec:authorize url="/cdatype/index">
                 {
                     id: 215,
@@ -229,6 +222,7 @@
                 },
                 </sec:authorize>
 
+                // 2-1-6 - 平台标准 - 标准版本管理
                 <sec:authorize url="/cdaVersion/initial">
                 {
                     id: 216,
@@ -239,6 +233,7 @@
                 },
                 </sec:authorize>
 
+                // 2-1-7 - 平台标准 - 特殊字典
                 <sec:authorize url="Ehr_Specialdict">
                 {
                     id: 217,
@@ -248,6 +243,7 @@
                 },
                 </sec:authorize>
 
+                // 2-1-7-1 - 平台标准 - 特殊字典 - 诊断字典
                 <sec:authorize url="/specialdict/icd10/initial">
                 {
                     id: 2171,
@@ -258,6 +254,7 @@
                 },
                 </sec:authorize>
 
+                // 特殊字典 - 指标字典
                 <sec:authorize url="/specialdict/indicator/initial">
                 {
                     id: 2172,
@@ -268,16 +265,7 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize url="/specialdict/indicator/initial">
-                {
-                    id: 2172,
-                    pid: 217,
-                    level:4,
-                    text: '<spring:message code="title.std.indicator.dict"/>',
-                    url: '${contextRoot}/specialdict/indicator/initial'
-                },
-                </sec:authorize>
-
+                // 特殊字典 - 药品字典
                 <sec:authorize url="/specialdict/drug/initial">
                 {
                     id: 2173,
@@ -288,6 +276,7 @@
                 },
                 </sec:authorize>
 
+                // 特殊字典 - 疾病字典
                 <sec:authorize url="/specialdict/hp/initial">
                 {
                     id: 2174,
@@ -298,6 +287,7 @@
                 },
                 </sec:authorize>
 
+                // 2-2 - 第三方标准
                 <sec:authorize url="/adapterorg/initial">
                 {
                     id: 22,
@@ -308,6 +298,7 @@
                 },
                 </sec:authorize>
 
+                // 2-3 - 标准适配
                 <sec:authorize url="/adapter/initial">
                 {
                     id: 23,
@@ -318,6 +309,7 @@
                 },
                 </sec:authorize>
 
+                // 2-4 - 模版管理
                 <sec:authorize url="EHR_template_manager">
                 {
                     id: 24,
@@ -328,11 +320,12 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize url="Ehr_Public_Centre">
                 //3 - 开放中心
+                <sec:authorize url="Ehr_Public_Centre">
                 {id: 3,level:1, text: '<spring:message code="title.open.hub.manage.center"/>'},
                 </sec:authorize>
 
+                // 开放中心 - 接入应用
                 <sec:authorize url="/app/initial">
                 {
                     id: 31,
@@ -343,6 +336,7 @@
                 },
                 </sec:authorize>
 
+                // 开放中心 - 平台应用
                 <sec:authorize url="/app/platform/initial">
                 {
                     id: 32,
@@ -353,6 +347,7 @@
                 },
                 </sec:authorize>
 
+                // 开放中心 - API管理
                 <sec:authorize url="/app/api/initial">
                 {
                     id: 33,
@@ -363,6 +358,7 @@
                 },
                 </sec:authorize>
 
+                // 开放中心 - 应用角色
                 <sec:authorize url="/appRole/initial">
                 {
                     id: 34,
@@ -373,11 +369,33 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize url="Ehr_Security_Centre">
+                // 开放中心 - 云门户管理
+                <sec:authorize url="/portal/manager">
+                {
+                    id: 35,
+                    pid: 3,
+                    level:2,
+                    text: '云门户管理',
+                },
+                </sec:authorize>
+
+                // 云门户管理 - 通知公告管理
+                <sec:authorize url="/portalNotice/initial">
+                {
+                    id: 351,
+                    pid: 35,
+                    level:2,
+                    text: '<spring:message code="title.portal.notice"/>',
+                    url: '${contextRoot}/portalNotice/initial'
+                },
+                </sec:authorize>
+
                 //4 - 安全管理中心
+                <sec:authorize url="Ehr_Security_Centre">
                 {id: 4, level:1, text: '<spring:message code="title.security.manage.center"/>'},
                 </sec:authorize>
 
+                // 安全管理中心 - 用户管理
                 <sec:authorize url="/user/initial">
                 {
                     id: 41,
@@ -388,6 +406,7 @@
                 },
                 </sec:authorize>
 
+                // 安全管理中心 - 角色管理
                 <sec:authorize url="/userRoles/initial">
                 {
                     id: 42,
@@ -398,11 +417,12 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize url="Ehr_Resource_Centre">
                 //5 - 资源管理中心
+                <sec:authorize url="Ehr_Resource_Centre">
                 {id: 5, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
                 </sec:authorize>
 
+                // 资源管理中心 - 资源标准
                 <sec:authorize url="Ehr_Resource_Std">
                 {
                     id: 51,
@@ -412,6 +432,7 @@
                 },
                 </sec:authorize>
 
+                // 资源管理中心 - 资源标准 - 数据元
                 <sec:authorize url="/resource/meta/initial">
                 {
                     id: 511,
@@ -422,6 +443,7 @@
                 },
                 </sec:authorize>
 
+                // 资源管理中心 - 资源标准 - 字典
                 <sec:authorize url="/resource/dict/initial">
                 {
                     id: 512,
@@ -432,6 +454,7 @@
                 },
                 </sec:authorize>
 
+                // 资源管理中心 - 资源标准 - 适配方案
                 <sec:authorize url="/schemeAdapt/initial">
                 {
                     id: 513,
@@ -442,6 +465,7 @@
                 },
                 </sec:authorize>
 
+                // 资源管理中心 - 资源分类
                 <sec:authorize url="/rscategory/index">
                 {
                     id: 52,
@@ -452,6 +476,7 @@
                 },
                 </sec:authorize>
 
+                // 资源管理中心 - 资源注册
                 <sec:authorize url="/resource/resourceManage/initial">
                 {
                     id: 53,
@@ -462,6 +487,7 @@
                 },
                 </sec:authorize>
 
+                // 资源管理中心 - 资源浏览
                 <sec:authorize url="/resource/resourceManage/initial">
                 {
                     id: 54,
@@ -472,6 +498,7 @@
                 },
                 </sec:authorize>
 
+                // 资源管理中心 - 资源接口
                 <sec:authorize url="/resource/resourceInterface/initial">
                 {
                     id: 55,
@@ -482,11 +509,12 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize url="Ehr_Operating_Centre">
                 //6 - 运营中心
+                <sec:authorize url="Ehr_Operating_Centre">
                 {id: 6, level:1, text: '<spring:message code="title.operating.center"/>'},
                 </sec:authorize>
 
+                // 运营中心 - ESB管理
                 <sec:authorize url="Ehr_Operating_Esb">
                 {
                     id: 61,
@@ -496,6 +524,7 @@
                 },
                 </sec:authorize>
 
+                // 运营中心 - ESB管理 - LOG管理
                 <sec:authorize url="/hosLogs/initial">
                 {
                     id: 611,
@@ -506,6 +535,7 @@
                 },
                 </sec:authorize>
 
+                // 运营中心 - ESB管理 - 系统版本管理
                 <sec:authorize url="/esb/hosRelease/initial">
                 {
                     id: 612,
@@ -516,6 +546,7 @@
                 },
                 </sec:authorize>
 
+                // 运营中心 - ESB管理 - 机构更新管理
                 <sec:authorize url="/esb/installLog/initial">
                 {
                     id: 613,
@@ -526,6 +557,7 @@
                 },
                 </sec:authorize>
 
+                // 运营中心 - ESB管理 - His穿透
                 <sec:authorize url="/esb/sqlTask/initial">
                 {
                     id: 614,
@@ -536,6 +568,7 @@
                 },
                 </sec:authorize>
 
+                // 运营中心 - ESB管理 - 补采任务配置
                 <sec:authorize url="/esb/acqTask/initial">
                 {
                     id: 615,
@@ -546,14 +579,15 @@
                 },
                 </sec:authorize>
 
-                //7 - 服务管理中心
+                // 7 - 服务管理中心
                 //{id: 7, text: '<spring:message code="title.server.manage.center"/>'},
 
+                // 8 - 配置管理中心
                 <sec:authorize url="Ehr_Setting_Centre">
-                //8 - 配置管理中心
                 {id: 8,level:1,text: '<spring:message code="title.setting.manage.center"/>'},
                 </sec:authorize>
 
+                // 配置管理中心 - 系统字典
                 <sec:authorize url="/dict/initial">
                 {
                     id: 81,
