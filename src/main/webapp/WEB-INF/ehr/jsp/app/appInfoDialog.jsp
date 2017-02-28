@@ -12,6 +12,21 @@
 			<input type="text" id="inp_app_name" class="required useTitle max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
 		</div>
 	</div>
+	<%--增加图标 查看单个应用不需要图标--%>
+	<div class="m-form-group">
+		<label>应用图标:</label>
+		<div class="l-text-wrapper m-form-control essential">
+			<input type="text" id="inp_app_icon" class="required useTitle max-length-50 validate-special-char" placeholder="请选择应用图标" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="icon"/>
+		</div>
+	</div>
+	<%--增加在线状态--%>
+	<div class="m-form-group">
+		<label>是否在线:</label>
+		<div class="l-text-wrapper m-form-control essential">
+			<input type="radio"  class="releaseFlag" name="releaseFlag" checked="checked" value="1" data-attr-scan="releaseFlag">是
+			<input type="radio"  class="releaseFlag" name="releaseFlag" value="2" data-attr-scan="releaseFlag">否
+		</div>
+	</div>
 	<div class="m-form-group">
 		<label>应用代码<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">

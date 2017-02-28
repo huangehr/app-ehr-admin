@@ -33,6 +33,8 @@
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
             $jryycyc:$("#jryycyc"),//cyctodo
+            $icon:$("#inp_app_icon"),
+            $releaseFlag: $('input[name="releaseFlag"]', this.$form),
             init: function () {
                 this.cycToDo()//复制完记得删掉阿亮
                 this.initForm();
@@ -45,6 +47,9 @@
 				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{filters: "activityFlag=1;"})
                 this.$tags.ligerTextBox({width:240});
 				this.$code.ligerTextBox({width:240});
+
+				this.$icon.ligerTextBox({width:240});
+                var ttt = this.$releaseFlag.ligerRadio();
 				this.$appId.ligerTextBox({width:240});
 				this.$secret.ligerTextBox({width:240});
 				this.$url.ligerTextBox({width:240, height: 50 });
@@ -59,7 +64,8 @@
                     $(".m-form-control .l-text-trigger-cancel").remove();
 					$("#btn_save").hide();
 					$("#btn_cancel").hide();
-					//$("input,select", this.$form).prop('disabled', false);
+                    $('.releaseFlag').attr("disabled","disabled");
+                 //$("input,select", this.$form).prop('disabled', false);
 				}
                 this.$form.attrScan();
                 if(mode !='new'){
@@ -67,6 +73,8 @@
                     this.$form.Fields.fillValues({
 						sourceType: app.sourceType,
                         name:app.name,
+                        icon:app.icon,
+                        //releaseFlag:app.releaseFlag,
                         catalog: app.catalog,
                         status:app.status,
                         tags:app.tags,
@@ -78,6 +86,15 @@
                     });
 					$("#inp_org_code").ligerGetComboBoxManager().setValue(app.org);
 					$("#inp_org_code").ligerGetComboBoxManager().setText(app.orgName);
+//                    $("input[name='releaseFlag'][value="+app.releaseFlag+"]").attr("checked",true);
+                    ttt.setValue('2');
+//                    if(app.releaseFlag=='1'){
+//                        $(".releaseFlag").ligerGetComboBoxManager().setValue("1");
+//                    }else{
+//                        $(".releaseFlag").attr("checked",true);
+//                    }
+                    //$(".releaseFlag").ligerGetComboBoxManager().setText(app.releaseFlag);
+                    //$(".releaseFlag").value  =  "0";
                     if(app.roleJson){
                         var roleArr = eval('('+ app.roleJson +')');
                         for(var k in roleArr){
@@ -130,6 +147,7 @@
                         if('${mode}' == 'new'){
                             var values = self.$form.Fields.getValues();
                             values.role = role;
+//                            debugger;
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/createApp",{data: $.extend({}, values),
                                 success: function(data) {

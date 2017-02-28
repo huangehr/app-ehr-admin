@@ -93,6 +93,14 @@
 							{ display: 'APP ID',name: 'id', width: '10%',isAllowHide: false},
 							{ display: 'APP Secret', name: 'secret', width: '10%', minColumnWidth: 60,},
                             { display: '应用名称', name: 'name',width: '10%', isAllowHide: false,align:'left' },
+                            { display: '是否在线', name: 'releaseFlag',width: '10%',isAllowHide: false,render:function(row){
+                                if (Util.isStrEquals(row.releaseFlag,'1')) {
+                                    return '是';
+                                } else {
+                                    return '否';
+                                }
+                            }
+                            },
 							{ display: '机构代码', name: 'org',width: '8%',align:'left'},
 							{ display: '机构名称', name: 'orgName',width: '11%',align:'left'},
 							{ display: '类型', name: 'catalogName', width: '8%'},

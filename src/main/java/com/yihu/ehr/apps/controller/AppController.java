@@ -84,6 +84,9 @@ public class AppController extends BaseUIController {
     }
 
     @RequestMapping("/searchApps")
+    /**
+     * 应用列表及特定查询
+     */
     @ResponseBody
     public Object getAppList(String sourceType, String searchNm,String org, String catalog, String status, int page, int rows) {
         URLQueryBuilder builder = new URLQueryBuilder();
