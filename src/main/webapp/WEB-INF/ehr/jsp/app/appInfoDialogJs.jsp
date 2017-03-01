@@ -49,7 +49,7 @@
 				this.$code.ligerTextBox({width:240});
 
 				this.$icon.ligerTextBox({width:240});
-                var ttt = this.$releaseFlag.ligerRadio();
+                this.$releaseFlag.ligerRadio();
 				this.$appId.ligerTextBox({width:240});
 				this.$secret.ligerTextBox({width:240});
 				this.$url.ligerTextBox({width:240, height: 50 });
@@ -64,7 +64,6 @@
                     $(".m-form-control .l-text-trigger-cancel").remove();
 					$("#btn_save").hide();
 					$("#btn_cancel").hide();
-                    $('.releaseFlag').attr("disabled","disabled");
                  //$("input,select", this.$form).prop('disabled', false);
 				}
                 this.$form.attrScan();
@@ -74,7 +73,7 @@
 						sourceType: app.sourceType,
                         name:app.name,
                         icon:app.icon,
-                        //releaseFlag:app.releaseFlag,
+                        releaseFlag:app.releaseFlag+'',
                         catalog: app.catalog,
                         status:app.status,
                         tags:app.tags,
@@ -86,15 +85,6 @@
                     });
 					$("#inp_org_code").ligerGetComboBoxManager().setValue(app.org);
 					$("#inp_org_code").ligerGetComboBoxManager().setText(app.orgName);
-//                    $("input[name='releaseFlag'][value="+app.releaseFlag+"]").attr("checked",true);
-                    ttt.setValue('2');
-//                    if(app.releaseFlag=='1'){
-//                        $(".releaseFlag").ligerGetComboBoxManager().setValue("1");
-//                    }else{
-//                        $(".releaseFlag").attr("checked",true);
-//                    }
-                    //$(".releaseFlag").ligerGetComboBoxManager().setText(app.releaseFlag);
-                    //$(".releaseFlag").value  =  "0";
                     if(app.roleJson){
                         var roleArr = eval('('+ app.roleJson +')');
                         for(var k in roleArr){
