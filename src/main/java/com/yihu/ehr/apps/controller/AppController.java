@@ -84,6 +84,9 @@ public class AppController extends BaseUIController {
     }
 
     @RequestMapping("/searchApps")
+    /**
+     * 应用列表及特定查询
+     */
     @ResponseBody
     public Object getAppList(String sourceType, String searchNm,String org, String catalog, String status, int page, int rows) {
         URLQueryBuilder builder = new URLQueryBuilder();
@@ -196,6 +199,9 @@ public class AppController extends BaseUIController {
                 appUpdate.setDescription(appDetailModel.getDescription());
                 appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
+//                ========================
+                appUpdate.setIcon(appDetailModel.getIcon());
+                appUpdate.setReleaseFlag(appDetailModel.getReleaseFlag());
                 //更新
                 MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
                 conditionMap.add("app", toJson(appUpdate));
