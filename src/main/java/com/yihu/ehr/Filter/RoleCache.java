@@ -35,7 +35,7 @@ public class RoleCache {
     private List<AppFeatureModel> getAppFeatures() throws Exception {
         Map parms = new HashMap<>();
         parms.put("filters", "appId=zkGuSIm2Fg");
-        String rs = HttpClientUtil.doGet("http://localhost:10000/api/v1.0/admin/filterFeatureNoPage", parms,
+        String rs = HttpClientUtil.doGet("http://sdw2:10000/api/v1.0/admin/filterFeatureNoPage", parms,
                 "user", "eureka");
 //        ObjectMapperUtil objectMapperUtil = new ObjectMapperUtil();
         EnvelopExt<AppFeatureModel> envelopExt = (EnvelopExt<AppFeatureModel>)
