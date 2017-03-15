@@ -8,10 +8,10 @@
         /* ************************** 变量定义 ******************************** */
         // 通用工具类库
         var Util = $.Util;
-        var noticeInfo = null;
+        var messageRemindInfo = null;
 
         //修改变量
-        var noticeModel = null;
+        var messageRemindModel = null;
 
         var dialog = null;
 
@@ -19,74 +19,71 @@
         var jValidation = $.jValidation;
 
         var allData = ${allData};
-        var notice = allData.obj;
+        var messageRemind = allData.obj;
 
         /* ************************** 变量定义结束 **************************** */
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
-            noticeInfo.init();
+            messageRemindInfo.init();
         }
 
         /* ************************** 函数定义结束 **************************** */
 
         /* *************************** 模块初始化 ***************************** */
-        noticeInfo = {
+        messageRemindInfo = {
             $form: $("#div_info_form"),
-            $selectType: $("#inp_select_type"),
-            $title:$("#inp_title"),
+            $appId:$("#inp_appId"),
+            $appName:$("#inp_appName"),
+            $selectType:$("#inp_typeId"),
+            $fromUserId:$("#inp_fromUserId"),
+            $toUserId:$("#inp_toUserId"),
+            $workUri:$("#inp_workUri"),
             $content:$("#inp_content"),
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
 
             init: function () {
-				var self = this;
-
+                var self = this;
                 self.initForm();
                 self.bindEvents();
             },//树形结构todo
             initForm: function () {
                 var self = this;
                 this.$form.removeClass("m-form-readonly");
-                this.$title.ligerTextBox({width: 240});
-                this.$content.ligerTextBox({width:240,height:150 });
+                this.$appId.ligerTextBox({width: 240});
+                this.$appName.ligerTextBox({width: 240});
+                this.$fromUserId.ligerTextBox({width: 240});
+                this.$toUserId.ligerTextBox({width: 240});
+                this.$workUri.ligerTextBox({width: 240,height:50});
+                this.$content.ligerTextBox({width:240,height:50 });
+
                 var selectType = this.$selectType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
                     valueField: 'code',
                     textField: 'value',
                     dataParmName: 'detailModelList',
                     urlParms: {
-                        dictId: 55
+                        dictId: 59
                     },
                     autocomplete: true,
                     onSuccess: function (data) {
                         if (data.length > 0) {
-                            self.$form.Fields.fillValues({type: notice.type});
-                        }
-                    }
-                });
-
-                var selectPortalType = this.$selectPortalType.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 56
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            selectPortalType.setValue(data[0].code);
+                            selectType.setValue(data[0].code);
                         }
                     }
                 });
 
                 this.$form.attrScan();
                 this.$form.Fields.fillValues({
-                    id: notice.id,
-                    title: notice.title,
-                    content: notice.content
+                    id: messageRemind.id,
+                    appId: messageRemind.appId,
+                    appName: messageRemind.appName,
+                    typeId: messageRemind.typeId,
+                    fromUserId: messageRemind.fromUserId,
+                    toUserId: messageRemind.toUserId,
+                    workUri: messageRemind.workUri,
+                    content: messageRemind.content
                 });
 
                 if ('${mode}' == 'view') {
@@ -106,22 +103,23 @@
 
                 //修改的点击事件
                 this.$updateDtn.click(function () {
+
                     if (validator.validate()) {
-                        noticeModel = self.$form.Fields.getValues();
-                        update(noticeModel);
+                        messageRemindModel = self.$form.Fields.getValues();
+                        update(messageRemindModel);
                     } else {
                         return;
                     }
                 });
 
-                function update(noticeModel) {
-                    var noticeModelJsonData = JSON.stringify(noticeModel);
+                function update(messageRemindModel) {
+                    var messageRemindModelJsonData = JSON.stringify(messageRemindModel);
                     var dataModel = $.DataModel.init();
-                    dataModel.updateRemote("${contextRoot}/portalNotice/updatePortalNotice", {
-                        data: {portalNoticeModelJsonData: noticeModelJsonData},
+                    dataModel.updateRemote("${contextRoot}/messageRemind/updateMessageRemind", {
+                        data: {messageRemindModelJsonData: messageRemindModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.closeNoticeInfoDialog();
+                                win.closeMessageInfoDialog();
                                 win.reloadMasterUpdateGrid();
                                 $.Notice.success('修改成功');
                             } else {
@@ -132,7 +130,7 @@
                 }
 
                 this.$cancelBtn.click(function () {
-                    win.closeNoticeInfoDialog();
+                    win.closeMessageInfoDialog();
                 });
             }
 

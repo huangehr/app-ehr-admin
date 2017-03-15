@@ -82,7 +82,7 @@
             data: [
                 // 1 - 基础数据中心
                 <sec:authorize url="Ehr_Master_Centre">
-                    {id: 1,level:1, text: '<spring:message code="title.register.manage.center"/>'},
+                {id: 1,level:1, text: '<spring:message code="title.register.manage.center"/>'},
                 </sec:authorize>
 
                 // 1-1 - 机构管理
@@ -147,6 +147,17 @@
                     level:2,
                     text: '<spring:message code="title.doctor.manage"/>',
                     url: '${contextRoot}/doctor/initial'
+                },
+                </sec:authorize>
+
+                // 1-4 - 资源上传管理
+                <sec:authorize url="/portalResources/initial">
+                {
+                    id: 14,
+                    pid: 1,
+                    level:2,
+                    text: '<spring:message code="title.portal.resources"/>',
+                    url: '${contextRoot}/portalResources/initial'
                 },
                 </sec:authorize>
 
@@ -387,6 +398,17 @@
                     level:2,
                     text: '<spring:message code="title.portal.notice"/>',
                     url: '${contextRoot}/portalNotice/initial'
+                },
+                </sec:authorize>
+
+                //消息提醒
+                <sec:authorize url="/messageRemind/initial">
+                {
+                    id: 352,
+                    pid: 35,
+                    level:2,
+                    text: '<spring:message code="title.portal.messageRemind"/>',
+                    url: '${contextRoot}/messageRemind/initial'
                 },
                 </sec:authorize>
 

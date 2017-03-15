@@ -41,13 +41,13 @@
             retrieve = {
                 $element: $(".m-retrieve-area"),
                 $searchBtn: $('#btn_search'),
-                $searchPortalNotice: $("#inp_search"),
-                $newPortalNotice: $("#div_new_portalNotice"),
+                $searchMessageRemind: $("#inp_search"),
+                $newMessageRemind: $("#div_new_messageRemind"),
                 init: function () {
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
-                    this.$searchPortalNotice.ligerTextBox({width: 240 });
+                    this.$searchMessageRemind.ligerTextBox({width: 240 });
                     this.bindEvents();
                 },
                 bindEvents: function () {
@@ -56,50 +56,52 @@
             };
 
             master = {
-                noticeInfoDialog: null,
-                addNoticeInfoDialog:null,
+                messageInfoDialog: null,
+                addMessageInfoDialog:null,
                 init: function () {
-                   grid = $("#div_portalNotice_info_dialog").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/portalNotice/searchPortalNotices',
+                    grid = $("#div_messageRemind_info_dialog").ligerGrid($.LigerGridEx.config({
+                        url: '${contextRoot}/messageRemind/searchMessageReminds',
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
                             searchNm: ''
                         },
-                       allowHideColumn:false,
+                        allowHideColumn:false,
                         columns: [
-                            {display: '标题', name: 'title', width: '15%',align: 'left'},
-                            {display: '类型', name: 'typeName', width: '5%'},
-                            {display: '门户类型', name: 'portalTypeName', width: '5%'},
-                            {display: '内容', name: 'content', width: '55%', resizable: true,align: 'left'},
-                            {display: '发布日期', name: 'releaseDate', width: '15%', resizable: true,align: 'center'},
+                            {display: '应用ID', name: 'appId', width: '8%',align: 'left'},
+                            {display: '应用名称', name: 'appName', width: '8%'},
+                            {display: '发起用户', name: 'fromUserId', width: '8%'},
+                            {display: '对象用户', name: 'toUserId', width: '8%'},
+                            {display: '内容', name: 'content', width: '15%', resizable: true,align: 'left'},
+                            {display: '消息类型', name: 'typeName', width: '5%'},
+                            {display: '工作应用链接', name: 'workUri', width: '15%'},
+                            {display: '发布日期', name: 'createDate', width: '15%', resizable: true,align: 'center'},
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
-                                    var html = '<sec:authorize url="/portalNotice/updatePortalNotice"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalNotice:noticeInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
-                                    html += '<sec:authorize url="/portalNotice/deletePortalNotice"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalNotice:noticeInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
-                                    return html;
-                                }
+                                var html = '<sec:authorize url="/messageRemind/updateMessageRemind"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "messageRemind:messageInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
+                                html += '<sec:authorize url="/messageRemind/deleteMessageRemind"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "messageRemind:messageInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
+                                return html;
+                            }
                             }
                         ],
-                       enabledEdit: true,
-                       validate: true,
-                       unSetValidateAttr: false,
-                       onDblClickRow : function (row){
-                           var mode = 'view';
-                           $.ligerDialog.open({
-                               height: 800,
-                               width: 600,
-                               isDrag:true,
-                               //isResize:true,
-                               title:'公告基本信息',
-                               url: '${contextRoot}/portalNotice/getPortalNotice',
-                               load: true,
-                               urlParms: {
-                                   portalNoticeId: row.id,
-                                   mode:mode
-                               }
-                           });
-                       }
+                        enabledEdit: true,
+                        validate: true,
+                        unSetValidateAttr: false,
+                        onDblClickRow : function (row){
+                            var mode = 'view';
+                            $.ligerDialog.open({
+                                height: 800,
+                                width: 600,
+                                isDrag:true,
+                                title:'消息提醒基本信息',
+                                url: '${contextRoot}/messageRemind/getMessageRemind',
+                                load: true,
+                                urlParms: {
+                                    messageRemindId: row.id,
+                                    mode:mode
+                                }
+                            });
+                        }
                     }));
                     grid.adjustToWidth();
                     this.bindEvents();
@@ -107,7 +109,7 @@
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
-                    reloadGrid.call(this, '${contextRoot}/portalNotice/searchPortalNotice', values);
+                    reloadGrid.call(this, '${contextRoot}/messageRemind/searchMessageRemind', values);
                 },
                 bindEvents: function () {
                     var self = this;
@@ -116,40 +118,40 @@
                         master.reloadGrid();
                     });
 
-                    //新增通知公告信息
-                    retrieve.$newPortalNotice.click(function(){
-                        self.addNoticeInfoDialog = $.ligerDialog.open({
-                            height: 400,
-                            width: 450,
-                            title: '新增通知公告信息',
-                            url: '${contextRoot}/portalNotice/addNoticeInfoDialog?'+ $.now()
+                    //新增消息提醒信息
+                    retrieve.$newMessageRemind.click(function(){
+                        self.addMessageInfoDialog = $.ligerDialog.open({
+                            height: 600,
+                            width: 550,
+                            title: '新增消息提醒信息',
+                            url: '${contextRoot}/messageRemind/addMessageRemindInfoDialog?'+ $.now()
                         })
                     });
-                    //修改通知公告信息
-                    $.subscribe('portalNotice:noticeInfoModifyDialog:open', function (event, portalNoticeId, mode) {
-                        self.noticeInfoDialog = $.ligerDialog.open({
+                    //修改消息提醒信息
+                    $.subscribe('messageRemind:messageInfoModifyDialog:open', function (event, messageRemindId, mode) {
+                        self.messageInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 400,
-                            width: 450,
+                            height: 600,
+                            width: 550,
                             isDrag:true,
                             isResize:true,
-                            url: '${contextRoot}/portalNotice/getPortalNotice',
+                            url: '${contextRoot}/messageRemind/getMessageRemind',
                             load: true,
                             urlParms: {
-                                portalNoticeId: portalNoticeId,
+                                messageRemindId: messageRemindId,
                                 mode:mode
                             }
                         });
                     });
-                    //删除通知公告
-                    $.subscribe('portalNotice:noticeInfoModifyDialog:del', function (event, portalNoticeId) {
+                    //删除消息提醒
+                    $.subscribe('messageRemind:messageInfoModifyDialog:del', function (event, messageRemindId) {
                         $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
                             if(yes){
                                 var dataModel = $.DataModel.init();
-                                dataModel.updateRemote("${contextRoot}/portalNotice/deletePortalNotice",{
-                                    data:{portalNoticeId:portalNoticeId},
+                                dataModel.updateRemote("${contextRoot}/messageRemind/deleteMessageRemind",{
+                                    data:{messageRemindId:messageRemindId},
                                     async:true,
                                     success: function(data) {
                                         if(data.successFlg){
@@ -172,21 +174,21 @@
             win.reloadMasterUpdateGrid = function () {
                 master.reloadGrid();
             };
-            win.closeAddPortalNoticeInfoDialog = function (callback) {
+            win.closeAddMessageRemindInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
                     master.reloadGrid();
                 }
-                master.addNoticeInfoDialog.close();
+                master.addMessageInfoDialog.close();
             };
-            win.closeNoticeInfoDialog = function (callback) {
+            win.closeMessageInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
                     master.reloadGrid();
                 }
-                master.noticeInfoDialog.close();
+                master.messageInfoDialog.close();
             };
             /* ************************* Dialog页面回调接口结束 ************************** */
             /* *************************** 页面初始化 **************************** */

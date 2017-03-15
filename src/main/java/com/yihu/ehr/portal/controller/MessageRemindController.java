@@ -1,8 +1,7 @@
 package com.yihu.ehr.portal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.agModel.portal.PortalNoticeDetailModel;
-import com.yihu.ehr.agModel.user.DoctorDetailModel;
+import com.yihu.ehr.agModel.portal.MessageRemindModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -27,12 +26,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by yeshijie on 2017/2/13.
+ * Created by zhoujie on 2017/3/13.
  */
 @Controller
-@RequestMapping("/portalNotice")
+@RequestMapping("/messageRemind")
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class PortalNoticesController extends BaseUIController {
+public class MessageRemindController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -47,7 +46,7 @@ public class PortalNoticesController extends BaseUIController {
      */
     @RequestMapping("initial")
     public String patientInitial(Model model) {
-        model.addAttribute("contentPage", "/portal/notice/portalNotice");
+        model.addAttribute("contentPage", "/portal/message/messageRemind");
         return "pageView";
     }
 
@@ -56,23 +55,23 @@ public class PortalNoticesController extends BaseUIController {
      * @param model
      * @return
      */
-    @RequestMapping("addNoticeInfoDialog")
-    public String addNotice(Model model) {
-        model.addAttribute("contentPage", "portal/notice/addPortalNoticeDialog");
+    @RequestMapping("addMessageRemindInfoDialog")
+    public String addMessageRemind(Model model) {
+        model.addAttribute("contentPage", "portal/message/addMessageRemindDialog");
         return "generalView";
     }
 
     /**
-     * 查找通知
+     * 查找消息
      * @param searchNm
      * @param page
      * @param rows
      * @return
      */
-    @RequestMapping("searchPortalNotices")
+    @RequestMapping("searchMessageReminds")
     @ResponseBody
     public Object searchDoctor(String searchNm, int page, int rows) {
-        String url = "/portalNotices";
+        String url = "/messageRemindList";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -80,7 +79,7 @@ public class PortalNoticesController extends BaseUIController {
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("title=" + searchNm );
+            stringBuffer.append("appName=" + searchNm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
@@ -100,38 +99,41 @@ public class PortalNoticesController extends BaseUIController {
 
     /**
      * 新增修改
-     * @param portalNoticeModelJsonData
+     * @param messageRemindModelJsonData
      * @param request
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updatePortalNotice", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updateMessageRemind", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updatePortalNotice(String portalNoticeModelJsonData, HttpServletRequest request) throws IOException{
+    public Object updateMessageRemind(String messageRemindModelJsonData, HttpServletRequest request) throws IOException{
 
-        String url = "/portalNotice/";
+        String url = "/messageRemind/";
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        String[] strings = URLDecoder.decode(portalNoticeModelJsonData, "UTF-8").split(";");
-        PortalNoticeDetailModel detailModel = toModel(strings[0], PortalNoticeDetailModel.class);
+        String[] strings = URLDecoder.decode(messageRemindModelJsonData, "UTF-8").split(";");
+        MessageRemindModel detailModel = toModel(strings[0], MessageRemindModel.class);
         RestTemplates templates = new RestTemplates();
 
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
-                Long portalNoticeId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/portalNotices/admin/" + portalNoticeId);
+                Long messageRemindId = detailModel.getId();
+                resultStr = templates.doGet(comUrl + "/messageRemind/admin/" + messageRemindId);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
-                    PortalNoticeDetailModel updateNotice = getEnvelopModel(envelop.getObj(), PortalNoticeDetailModel.class);
+                    MessageRemindModel updateMessageRemind = getEnvelopModel(envelop.getObj(), MessageRemindModel.class);
 
-                    updateNotice.setTitle(detailModel.getTitle());
-                    updateNotice.setContent(detailModel.getContent());
-                    updateNotice.setType(detailModel.getType());
-
-                    params.add("portalNotice_json_data", toJson(updateNotice));
+                    updateMessageRemind.setAppId(detailModel.getAppId());
+                    updateMessageRemind.setAppName(detailModel.getAppName());
+                    updateMessageRemind.setContent(detailModel.getContent());
+                    updateMessageRemind.setFromUserId(userDetailModel.getId());
+//                    updateMessageRemind.setReaded(detailModel.getReaded());
+                    updateMessageRemind.setTypeId(detailModel.getTypeId());
+                    updateMessageRemind.setWorkUri(detailModel.getWorkUri());
+                    params.add("messageRemind_json_data", toJson(updateMessageRemind));
 
                     resultStr = templates.doPut(comUrl + url, params);
                 } else {
@@ -140,8 +142,9 @@ public class PortalNoticesController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setReleaseAuthor(userDetailModel.getId());
-                params.add("portalNotice_json_data", toJson(detailModel));
+                detailModel.setReaded(0);
+                detailModel.setFromUserId(userDetailModel.getId());
+                params.add("messageRemind_json_data", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
         } catch (Exception e) {
@@ -153,20 +156,20 @@ public class PortalNoticesController extends BaseUIController {
     }
 
     /**
-     * 删除通知
-     * @param portalNoticeId
+     * 删除消息
+     * @param messageRemindId
      * @return
      */
-    @RequestMapping("deletePortalNotice")
+    @RequestMapping("deleteMessageRemind")
     @ResponseBody
-    public Object deletePortalNotice(Long portalNoticeId) {
-        String url = "/portalNotices/admin/" + portalNoticeId;
+    public Object deleteMessageRemind(Long messageRemindId) {
+        String url = "/messageRemind/admin/" + messageRemindId;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
-        params.put("portalNoticeId", portalNoticeId);
+        params.put("messageRemindId", messageRemindId);
         try {
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             result = mapper.readValue(resultStr, Envelop.class);
@@ -185,31 +188,29 @@ public class PortalNoticesController extends BaseUIController {
     }
 
     /**
-     * 根据id获取通知
+     * 根据id获取消息
      * @param model
-     * @param portalNoticeId
+     * @param messageRemindId
      * @param mode
      * @return
      */
-    @RequestMapping("getPortalNotice")
-    public Object getPortalNotice(Model model, Long portalNoticeId, String mode) {
-        String url = "/portalNotices/admin/"+portalNoticeId;
+    @RequestMapping("getMessageRemind")
+    public Object getMessageRemind(Model model, Long messageRemindId, String mode) {
+        String url = "/messageRemind/admin/"+messageRemindId;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
-        params.put("portalNoticeId", portalNoticeId);
+        params.put("messageRemindId", messageRemindId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
 
             Envelop ep = getEnvelop(resultStr);
-            DoctorDetailModel detailModel = toModel(toJson(ep.getObj()),DoctorDetailModel.class);
-
-
+            MessageRemindModel detailModel = toModel(toJson(ep.getObj()),MessageRemindModel.class);
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
-            model.addAttribute("contentPage", "portal/notice/portalNoticeInfoDialog");
+            model.addAttribute("contentPage", "portal/message/messageRemindInfoDialog");
             return "simpleView";
         } catch (Exception e) {
             envelop.setSuccessFlg(false);

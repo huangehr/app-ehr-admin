@@ -8,10 +8,10 @@
         /* ************************** 变量定义 ******************************** */
         // 通用工具类库
         var Util = $.Util;
-        var noticeInfo = null;
+        var resourcesInfo = null;
 
         //修改变量
-        var noticeModel = null;
+        var resourcesModel = null;
 
         var dialog = null;
 
@@ -19,75 +19,96 @@
         var jValidation = $.jValidation;
 
         var allData = ${allData};
-        var notice = allData.obj;
+        var resources = allData.obj;
 
         /* ************************** 变量定义结束 **************************** */
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
-            noticeInfo.init();
+            resourcesInfo.init();
         }
 
         /* ************************** 函数定义结束 **************************** */
 
         /* *************************** 模块初始化 ***************************** */
-        noticeInfo = {
+        resourcesInfo = {
             $form: $("#div_info_form"),
-            $selectType: $("#inp_select_type"),
-            $title:$("#inp_title"),
-            $content:$("#inp_content"),
+            $imageShow: $("#div_file_list"),
+            $uploader: $("#div_resources_img_upload"),
+            $name:$("#inp_name"),
+            $version:$("#inp_version"),
+            $description:$("#inp_description"),
+            $selectPlatformType: $("#inp_select_platform_type"),
+            $selectDevelopLanType: $("#inp_select_portal_develop_lan"),
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
 
             init: function () {
 				var self = this;
-
                 self.initForm();
                 self.bindEvents();
+                self.$uploader.instance = self.$uploader.webupload({
+                            server: "${contextRoot}/portalResources/updatePortalResources",
+                            pick: {id: '#div_file_picker'},
+//                    accept: {
+//                        title: 'Images',
+//                        extensions: 'gif,jpg,jpeg,bmp,png',
+//                        mimeTypes: 'image/*'
+//                    },
+                            auto: false
+                });
             },//树形结构todo
             initForm: function () {
                 var self = this;
-                this.$form.removeClass("m-form-readonly");
-                this.$title.ligerTextBox({width: 240});
-                this.$content.ligerTextBox({width:240,height:150 });
-                var selectType = this.$selectType.ligerComboBox({
+                this.$name.ligerTextBox({width: 240});
+                this.$version.ligerTextBox({width:240 });
+                this.$description.ligerTextBox({width:240,height:50 });
+
+                var platformType = this.$selectPlatformType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
                     valueField: 'code',
                     textField: 'value',
                     dataParmName: 'detailModelList',
                     urlParms: {
-                        dictId: 55
+                        dictId: 57
                     },
                     autocomplete: true,
                     onSuccess: function (data) {
                         if (data.length > 0) {
-                            self.$form.Fields.fillValues({type: notice.type});
+                            platformType.setValue(data[0].code);
                         }
                     }
                 });
 
-                var selectPortalType = this.$selectPortalType.ligerComboBox({
+                var developLanType = this.$selectDevelopLanType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
                     valueField: 'code',
                     textField: 'value',
                     dataParmName: 'detailModelList',
                     urlParms: {
-                        dictId: 56
+                        dictId: 58
                     },
                     autocomplete: true,
                     onSuccess: function (data) {
                         if (data.length > 0) {
-                            selectPortalType.setValue(data[0].code);
+                            developLanType.setValue(data[0].code);
                         }
                     }
                 });
-
                 this.$form.attrScan();
                 this.$form.Fields.fillValues({
-                    id: notice.id,
-                    title: notice.title,
-                    content: notice.content
+                    id: resources.id,
+                    name: resources.name,
+                    version: resources.version,
+                    platformType: resources.platformType,
+                    developLan: resources.developLan,
+                    description: resources.description
                 });
+
+                var picUrl = resources.picUrl;
+                if (!Util.isStrEmpty(picUrl)) {
+                    self.$imageShow.html('<img src="${contextRoot}/portalResources/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
+                }
 
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");
@@ -106,22 +127,36 @@
 
                 //修改的点击事件
                 this.$updateDtn.click(function () {
+
+                    var imgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
-                        noticeModel = self.$form.Fields.getValues();
-                        update(noticeModel);
+                        resourcesModel = self.$form.Fields.getValues();
+                        if (imgHtml == 0) {
+                            update(resourcesModel);
+                        } else {
+                            var upload = self.$uploader.instance;
+                            var image = upload.getFiles().length;
+                            if (image) {
+                                upload.options.formData.portalResourcesModelJsonData = encodeURIComponent(JSON.stringify(resourcesModel));
+                                upload.upload();
+                                win.reloadMasterUpdateGrid();
+                            } else {
+                                update(resourcesModel);
+                            }
+                        }
                     } else {
                         return;
                     }
                 });
 
-                function update(noticeModel) {
-                    var noticeModelJsonData = JSON.stringify(noticeModel);
+                function update(resourcesModel) {
+                    var resourcesModelJsonData = JSON.stringify(resourcesModel);
                     var dataModel = $.DataModel.init();
-                    dataModel.updateRemote("${contextRoot}/portalNotice/updatePortalNotice", {
-                        data: {portalNoticeModelJsonData: noticeModelJsonData},
+                    dataModel.updateRemote("${contextRoot}/portalResources/updatePortalResources", {
+                        data: {portalResourcesModelJsonData: resourcesModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.closeNoticeInfoDialog();
+                                win.closeResourcesInfoDialog();
                                 win.reloadMasterUpdateGrid();
                                 $.Notice.success('修改成功');
                             } else {
@@ -132,7 +167,7 @@
                 }
 
                 this.$cancelBtn.click(function () {
-                    win.closeNoticeInfoDialog();
+                    win.closeResourcesInfoDialog();
                 });
             }
 

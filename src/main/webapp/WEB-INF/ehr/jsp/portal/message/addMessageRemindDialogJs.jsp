@@ -12,12 +12,12 @@
         // 表单校验工具类
         var jValidation = $.jValidation;
 
-        var addNoticeInfo = null;
+        var addMessageRemindInfo = null;
 
         var dialog = frameElement.dialog;
 
         var source;
-		var trees;
+        var trees;
 
 
         /* ************************** 变量定义结束 **************************** */
@@ -28,21 +28,23 @@
          * @type {Function}
          */
         function pageInit() {
-            addNoticeInfo.init();
-            $("#div_addNotice_form").show();
+            addMessageRemindInfo.init();
+            $("#div_addMessageRemind_form").show();
         }
 
         /* ************************** 函数定义结束 **************************** */
 
         /* *************************** 模块初始化 ***************************** */
 
-        addNoticeInfo = {
-            $form: $("#div_addNotice_form"),
+        addMessageRemindInfo = {
+            $form: $("#div_addMessageRemind_form"),
             $addBtn: $("#div_btn_add"),
             $cancelBtn: $("#div_cancel_btn"),
-            $selectType: $("#inp_select_type"),
-            $selectPortalType: $("#inp_select_portal_type"),
-            $title:$("#inp_title"),
+            $appId:$("#inp_appId"),
+            $appName:$("#inp_appName"),
+            $selectType:$("#inp_typeId"),
+            $toUserId:$("#inp_toUserId"),
+            $workUri:$("#inp_workUri"),
             $content:$("#inp_content"),
 
             init: function () {
@@ -51,8 +53,11 @@
                 self.bindEvents();
             },
             initForm: function () {
-                this.$title.ligerTextBox({width: 240});
-                this.$content.ligerTextBox({width:240,height:150 });
+                this.$appId.ligerTextBox({width: 240});
+                this.$appName.ligerTextBox({width: 240});
+                this.$toUserId.ligerTextBox({width: 240});
+                this.$workUri.ligerTextBox({width: 240,height:50});
+                this.$content.ligerTextBox({width:240,height:50 });
 
                 var selectType = this.$selectType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
@@ -60,28 +65,12 @@
                     textField: 'value',
                     dataParmName: 'detailModelList',
                     urlParms: {
-                        dictId: 55
+                        dictId: 59
                     },
                     autocomplete: true,
                     onSuccess: function (data) {
                         if (data.length > 0) {
                             selectType.setValue(data[0].code);
-                        }
-                    }
-                });
-
-                var selectPortalType = this.$selectPortalType.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 56
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            selectPortalType.setValue(data[0].code);
                         }
                     }
                 });
@@ -98,22 +87,22 @@
 
                 //新增的点击事件
                 this.$addBtn.click(function () {
-                    var addNotice = self.$form.Fields.getValues();
+                    var addMessageRemind = self.$form.Fields.getValues();
                     if (validator.validate()) {
-                        update(addNotice);
+                        update(addMessageRemind);
                     } else {
                         return;
                     }
                 });
 
-                function update(noticeModel) {
-                    var modelJsonData = JSON.stringify(noticeModel);
+                function update(messageRemindModel) {
+                    var modelJsonData = JSON.stringify(messageRemindModel);
                     var dataModel = $.DataModel.init();
-                    dataModel.updateRemote("${contextRoot}/portalNotice/updatePortalNotice", {
-                        data: {portalNoticeModelJsonData: modelJsonData},
+                    dataModel.updateRemote("${contextRoot}/messageRemind/updateMessageRemind", {
+                        data: {messageRemindModelJsonData: modelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddPortalNoticeInfoDialog(function () {
+                                win.parent.closeAddMessageRemindInfoDialog(function () {
                                     win.parent.$.Notice.success('新增成功');
                                 });
                             } else {
