@@ -44,6 +44,13 @@
             $description:$("#inp_description"),
             $selectPlatformType: $("#inp_select_platform_type"),
             $selectDevelopLanType: $("#inp_select_portal_develop_lan"),
+            $apkUrl:$("#apkUrl"),
+            $androidUrl:$("#androidUrl"),
+            $iosUrl:$("#iosUrl"),
+
+            $uploadApk: $("#apkUploadButton"),
+            $uploadAndroid: $("#androidUploadButton"),
+            $uploadIos: $("#iosUploadButton"),
 
             init: function () {
                 var self = this;
@@ -136,7 +143,7 @@
 
                     } else {
                         return;
-                    }
+                    };
                 });
 
                 function update(ResourcesModel) {
@@ -156,10 +163,24 @@
                     })
                 }
 
-                function doUpload() {
-                    var formData = new FormData($( "#div_addResources_form" )[0]);
+
+                this.$uploadApk.click(function () {
+                    var url = '${contextRoot}/portalResources/portalResourcesFileUpload';
+                    doUpload(url);
+                });
+                this.$uploadAndroid.click(function () {
+                  var url = '${contextRoot}/portalResources/portalResourcesFileUploadAndriod';
+                    doUpload(url);
+                });
+                this.$uploadIos.click(function () {
+                  var url = '${contextRoot}/portalResources/portalResourcesFileUploadIos';
+                    doUpload(url);
+                });
+
+                function doUpload(url) {
+                    var formData = new FormData($( "#uploadForm" )[0]);
                     $.ajax({
-                        url: '${contextRoot}/portalResources/portalResourcesFileUpload' ,
+                        url: url ,
                         type: 'POST',
                         data: formData,
                         async: false,
@@ -167,7 +188,13 @@
                         contentType: false,
                         processData: false,
                         success: function (returndata) {
-                            alert("上传成功");
+                            if(returndata != "fail"){
+                                alert(returndata);
+                                self.$apkUrl.val(returndata);
+                                alert("上传成功");
+                            }else{
+                                alert("上传失败");
+                            }
                         },
                         error: function (returndata) {
                             alert("上传失败");

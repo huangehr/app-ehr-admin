@@ -41,13 +41,13 @@
             retrieve = {
                 $element: $(".m-retrieve-area"),
                 $searchBtn: $('#btn_search'),
-                $searchPortalResources: $("#inp_search"),
-                $newPortalResources: $("#div_new_portalResources"),
+                $searchPortalSetting: $("#inp_search"),
+                $newPortalSetting: $("#div_new_portalSetting"),
                 init: function () {
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
-                    this.$searchPortalResources.ligerTextBox({width: 240 });
+                    this.$searchPortalSetting.ligerTextBox({width: 240 });
                     this.bindEvents();
                 },
                 bindEvents: function () {
@@ -56,11 +56,11 @@
             };
 
             master = {
-                ResourcesInfoDialog: null,
-                addResourcesInfoDialog:null,
+                messageInfoDialog: null,
+                addMessageInfoDialog:null,
                 init: function () {
-                    grid = $("#div_portalResources_info_dialog").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/portalResources/searchPortalResources',
+                    grid = $("#div_portalSetting_info_dialog").ligerGrid($.LigerGridEx.config({
+                        url: '${contextRoot}/portalSetting/searchPortalSettings',
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
@@ -68,21 +68,39 @@
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '名称', name: 'name', width: '15%',align: 'center'},
-                            {display: '版本', name: 'version', width: '5%'},
-                            {display: '平台类别', name: 'platformTypeName', width: '8%', resizable: true,align: 'left'},
-                            {display: '应用开发环境', name: 'developLanName', width: '8%', resizable: true,align: 'left'},
-                            {display: '描述', name: 'description', width: '25%', resizable: true,align: 'left'},
-                            {display: '上传日期', name: 'uploadTime', width: '15%', resizable: true,align: 'left'},
+                            {display: '机构ID', name: 'orgId', width: '8%'},
+                            {display: '应用ID', name: 'appId', width: '8%',align: 'center'},
+                            {display: '推送栏目地址', name: 'columnUri', width: '18%'},
+                            {display: '栏目名称', name: 'columnName', width: '8%'},
+                            {display: '栏目请求方式', name: 'columnRequestTypeName', width: '15%', resizable: true,align: 'left'},
+                            {display: 'API编号', name: 'appApiId', width: '5%'},
+                            {display: '状态', name: 'status', width: '15%'},
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
-                                var html = '<sec:authorize url="/portalResources/updatePortalResources"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
-                                html += '<sec:authorize url="/portalResources/deletePortalResources"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
-                                html += '<sec:authorize url="/portalResources/downLoadPortalResources"><a class="label_a" style="margin-left:10px" title="下载" href="row.id" >下载</a></sec:authorize>';
+                                var html = '<sec:authorize url="/portalSetting/updatePortalSetting"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalSetting:messageInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
+                                html += '<sec:authorize url="/portalSetting/deletePortalSetting"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalSetting:messageInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                 return html;
                             }
                             }
-                        ]
+                        ],
+                        enabledEdit: true,
+                        validate: true,
+                        unSetValidateAttr: false,
+                        onDblClickRow : function (row){
+                            var mode = 'view';
+                            $.ligerDialog.open({
+                                height: 800,
+                                width: 600,
+                                isDrag:true,
+                                title:'门户配置提醒基本信息',
+                                url: '${contextRoot}/portalSetting/getPortalSetting',
+                                load: true,
+                                urlParms: {
+                                    portalSettingId: row.id,
+                                    mode:mode
+                                }
+                            });
+                        }
                     }));
                     grid.adjustToWidth();
                     this.bindEvents();
@@ -90,7 +108,7 @@
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
-                    reloadGrid.call(this, '${contextRoot}/portalResources/searchPortalResources', values);
+                    reloadGrid.call(this, '${contextRoot}/portalSetting/searchPortalSettings', values);
                 },
                 bindEvents: function () {
                     var self = this;
@@ -99,41 +117,40 @@
                         master.reloadGrid();
                     });
 
-                    //新增资源信息
-                    retrieve.$newPortalResources.click(function(){
-                        self.addResourcesInfoDialog = $.ligerDialog.open({
-                            height: 550,
-                            width: 600,
-                            title: '新增资源信息',
-                            url:'${contextRoot}/portalResources/addResourcesInfoDialog?'+ $.now()
+                    //新增门户配置提醒信息
+                    retrieve.$newPortalSetting.click(function(){
+                        self.addMessageInfoDialog = $.ligerDialog.open({
+                            height: 600,
+                            width: 550,
+                            title: '新增门户配置提醒信息',
+                            url: '${contextRoot}/portalSetting/addPortalSettingInfoDialog?'+ $.now()
                         })
                     });
-
-                    //修改资源信息
-                    $.subscribe('portalResources:ResourcesInfoModifyDialog:open', function (event, portalResourcesId, mode) {
-                        self.ResourcesInfoDialog = $.ligerDialog.open({
+                    //修改门户配置提醒信息
+                    $.subscribe('portalSetting:messageInfoModifyDialog:open', function (event, portalSettingId, mode) {
+                        self.messageInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 550,
-                            width: 600,
+                            height: 600,
+                            width: 550,
                             isDrag:true,
                             isResize:true,
-                            url: '${contextRoot}/portalResources/getPortalResources',
+                            url: '${contextRoot}/portalSetting/getPortalSetting',
                             load: true,
                             urlParms: {
-                                portalResourcesId: portalResourcesId,
+                                portalSettingId: portalSettingId,
                                 mode:mode
                             }
                         });
                     });
-                    //删除资源
-                    $.subscribe('portalResources:ResourcesInfoModifyDialog:del', function (event, portalResourcesId) {
+                    //删除门户配置提醒
+                    $.subscribe('portalSetting:messageInfoModifyDialog:del', function (event, portalSettingId) {
                         $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
                             if(yes){
                                 var dataModel = $.DataModel.init();
-                                dataModel.updateRemote("${contextRoot}/portalResources/deletePortalResources",{
-                                    data:{portalResourcesId:portalResourcesId},
+                                dataModel.updateRemote("${contextRoot}/portalSetting/deletePortalSetting",{
+                                    data:{portalSettingId:portalSettingId},
                                     async:true,
                                     success: function(data) {
                                         if(data.successFlg){
@@ -156,21 +173,21 @@
             win.reloadMasterUpdateGrid = function () {
                 master.reloadGrid();
             };
-            win.closeAddPortalResourcesInfoDialog = function (callback) {
+            win.closeAddPortalSettingInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
                     master.reloadGrid();
                 }
-                master.addResourcesInfoDialog.close();
+                master.addMessageInfoDialog.close();
             };
-            win.closeResourcesInfoDialog = function (callback) {
+            win.closeMessageInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
                     master.reloadGrid();
                 }
-                master.ResourcesInfoDialog.close();
+                master.messageInfoDialog.close();
             };
             /* ************************* Dialog页面回调接口结束 ************************** */
             /* *************************** 页面初始化 **************************** */
