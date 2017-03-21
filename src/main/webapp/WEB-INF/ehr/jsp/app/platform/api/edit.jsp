@@ -9,7 +9,7 @@
   </div>
 
   <!-- 基础信息-->
-  <div id="apiForm" class="m-form-inline"  >
+  <div id="apiForm" style="height: 270px;" class="m-form-inline"  >
     <input type="hidden" data-attr-scan="id">
     <input type="hidden" data-attr-scan="appId">
     <input type="hidden" data-attr-scan="parentId">
@@ -65,7 +65,7 @@
     </div>
 
     <div id="div_msMethodName" class="m-form-group">
-      <label>微服务方法名<spring:message code="spe.colon"/></label>
+      <label>内部方法<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
         <input type="text" id="ipt_api_msMethodName" data-type="select" class="required" data-attr-scan="msMethodName">
       </div>

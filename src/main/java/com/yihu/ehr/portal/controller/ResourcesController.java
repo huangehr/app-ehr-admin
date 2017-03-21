@@ -3,7 +3,6 @@ package com.yihu.ehr.portal.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.portal.PortalResourcesModel;
-import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -13,9 +12,6 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.web.RestTemplates;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -24,19 +20,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
@@ -171,7 +163,7 @@ public class ResourcesController extends BaseUIController {
 
                     imageId = fileUpload(String.valueOf(portalResourcesId),restStream,imageName);
                     if (!StringUtils.isEmpty(imageId))
-                        updateResources.setPicUrl(restStream);
+                        updateResources.setPicUrl(imageId);
 
                     params.add("portalResources_json_data", toJson(updateResources));
 
@@ -189,7 +181,7 @@ public class ResourcesController extends BaseUIController {
                 PortalResourcesModel portalResourcesModel = toModel(toJson(result.getObj()),PortalResourcesModel.class);
                 imageId = fileUpload(String.valueOf(portalResourcesModel.getId()),restStream,imageName);
                 if (!StringUtils.isEmpty(imageId))
-                    detailModel.setPicUrl(restStream);
+                    detailModel.setPicUrl(imageId);
 
                 String resourcesModelData = templates.doGet(comUrl + "/portalResources/admin/"+portalResourcesModel.getId());
                 result = mapper.readValue(resourcesModelData,Envelop.class);
@@ -223,7 +215,6 @@ public class ResourcesController extends BaseUIController {
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
-
         params.put("portalResourcesId", portalResourcesId);
         try {
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
@@ -357,11 +348,54 @@ public class ResourcesController extends BaseUIController {
      */
     @RequestMapping("portalResourcesFileUpload")
     @ResponseBody
-    public Object portalResourcesFileUpload( HttpServletRequest request) throws IOException{
+    public Object portalResourcesFileUpload(
+            @RequestParam("apkFile") MultipartFile file) throws IOException{
+        Envelop result = new Envelop();
+        InputStream inputStream = file.getInputStream();
+        String fileName = file.getOriginalFilename(); //获取文件名
+        if (!file.isEmpty()) {
+            return  uploadFile(inputStream,fileName);
+        }
+        return "fail";
+    }
 
-        request.setCharacterEncoding("UTF-8");
-        InputStream inputStream = request.getInputStream();
-        String imageName = request.getParameter("name");
+    /**
+     * 资源文件上传
+     * @param
+     * @return
+     */
+    @RequestMapping("portalResourcesFileUploadAndriod")
+    @ResponseBody
+    public Object portalResourcesFileUploadAndriod(
+            @RequestParam("androidFile") MultipartFile file) throws IOException{
+        Envelop result = new Envelop();
+        InputStream inputStream = file.getInputStream();
+        String fileName = file.getOriginalFilename(); //获取文件名
+        if (!file.isEmpty()) {
+            return  uploadFile(inputStream,fileName);
+        }
+        return "fail";
+    }
+
+    /**
+     * 资源文件上传
+     * @param
+     * @return
+     */
+    @RequestMapping("portalResourcesFileUploadIos")
+    @ResponseBody
+    public Object portalResourcesFileUploadIos(
+            @RequestParam("iosFile") MultipartFile file) throws IOException{
+        Envelop result = new Envelop();
+        InputStream inputStream = file.getInputStream();
+        String fileName = file.getOriginalFilename(); //获取文件名
+        if (!file.isEmpty()) {
+            return  uploadFile(inputStream,fileName);
+        }
+        return "fail";
+    }
+
+    public String uploadFile(InputStream inputStream,String fileName){
         try {
             //读取文件流，将文件输入流转成 byte
             int temp = 0;
@@ -373,12 +407,19 @@ public class ResourcesController extends BaseUIController {
             }
             inputStream.close();
             String restStream = Base64.getEncoder().encodeToString(fileBuffer);
+            String imageId = "";
+            imageId = fileUpload("",restStream,fileName);
+            if (!StringUtils.isEmpty(imageId)){
+                System.out.println("上传成功");
+                return imageId;
+            }else{
+                System.out.println("上传失败");
+            }
+
         } catch (Exception e) {
+            return "fail";
         }
-        return "success";
+        return "fail";
     }
-
-
-
 
 }

@@ -412,6 +412,17 @@
                 },
                 </sec:authorize>
 
+                //资源配置
+                <sec:authorize url="/portalSetting/initial">
+                {
+                    id: 352,
+                    pid: 35,
+                    level:2,
+                    text: '<spring:message code="title.portal.portalSetting"/>',
+                    url: '${contextRoot}/portalSetting/initial'
+                },
+                </sec:authorize>
+
                 //4 - 安全管理中心
                 <sec:authorize url="Ehr_Security_Centre">
                 {id: 4, level:1, text: '<spring:message code="title.security.manage.center"/>'},
