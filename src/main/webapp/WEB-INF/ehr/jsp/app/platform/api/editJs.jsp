@@ -96,6 +96,11 @@
 
         var initForm = function () {
             var vo = [
+                {type: 'text', id: 'ipt_api_http', width: $('#div_http').width()-140},
+                {type: 'text', id: 'ipt_api_port', width: $('#div_port').width()-140},
+                {type: 'text', id: 'ipt_api_msMethodName', width: $('#div_msMethodName').width()-140},
+                {type: 'text', id: 'ipt_api_microServiceName', width: $('#div_microServiceName').width()-140},
+
                 {type: 'text', id: 'ipt_api_name', width: $('#div_name').width()-140},
                 {type: 'text', id: 'ipt_api_methodName', width: $('#div_methodName').width()-140},
                 {type: 'text', id: 'ipt_api_description', width: $('#div_des').width()-150},
