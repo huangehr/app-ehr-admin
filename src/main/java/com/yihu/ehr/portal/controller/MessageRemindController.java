@@ -70,7 +70,7 @@ public class MessageRemindController extends BaseUIController {
      */
     @RequestMapping("searchMessageReminds")
     @ResponseBody
-    public Object searchDoctor(String searchNm, int page, int rows) {
+    public Object searchMessageReminds(String searchNm, int page, int rows) {
         String url = "/messageRemindList";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -79,7 +79,7 @@ public class MessageRemindController extends BaseUIController {
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("appName=" + searchNm );
+            stringBuffer.append("appName?" + searchNm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
@@ -130,7 +130,6 @@ public class MessageRemindController extends BaseUIController {
                     updateMessageRemind.setAppName(detailModel.getAppName());
                     updateMessageRemind.setContent(detailModel.getContent());
                     updateMessageRemind.setFromUserId(userDetailModel.getId());
-//                    updateMessageRemind.setReaded(detailModel.getReaded());
                     updateMessageRemind.setTypeId(detailModel.getTypeId());
                     updateMessageRemind.setWorkUri(detailModel.getWorkUri());
                     params.add("messageRemind_json_data", toJson(updateMessageRemind));

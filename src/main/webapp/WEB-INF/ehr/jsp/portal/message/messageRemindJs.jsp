@@ -64,14 +64,17 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            searchNm: ''
+                            searchNm: '',
+                            page:1,
+                            rows:15
                         },
                         allowHideColumn:false,
                         columns: [
                             {display: '应用ID', name: 'appId', width: '8%',align: 'left'},
                             {display: '应用名称', name: 'appName', width: '8%'},
-                            {display: '发起用户', name: 'fromUserId', width: '8%'},
+                            {display: '发起用户', name: 'fromUserName', width: '8%'},
                             {display: '对象用户', name: 'toUserId', width: '8%'},
+                            {display: '对象用户', name: 'toUserName', width: '8%'},
                             {display: '内容', name: 'content', width: '15%', resizable: true,align: 'left'},
                             {display: '消息类型', name: 'typeName', width: '5%'},
                             {display: '工作应用链接', name: 'workUri', width: '15%'},

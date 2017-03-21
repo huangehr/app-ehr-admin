@@ -71,7 +71,7 @@ public class PortalNoticesController extends BaseUIController {
      */
     @RequestMapping("searchPortalNotices")
     @ResponseBody
-    public Object searchDoctor(String searchNm, int page, int rows) {
+    public Object searchPortalNotices(String searchNm, int page, int rows) {
         String url = "/portalNotices";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -80,7 +80,7 @@ public class PortalNoticesController extends BaseUIController {
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("title=" + searchNm );
+            stringBuffer.append("title?" + searchNm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {

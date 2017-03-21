@@ -70,7 +70,7 @@ public class PortalSettingController extends BaseUIController {
      */
     @RequestMapping("searchPortalSettings")
     @ResponseBody
-    public Object searchDoctor(String searchNm, int page, int rows) {
+    public Object searchPortalSettings(String searchNm, int page, int rows) {
         String url = "/portalSetting";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -79,7 +79,7 @@ public class PortalSettingController extends BaseUIController {
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("appId=" + searchNm );
+            stringBuffer.append("appId?" + searchNm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {

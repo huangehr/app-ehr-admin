@@ -64,7 +64,9 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            searchNm: ''
+                            searchNm: '',
+                            page:1,
+                            rows:15
                         },
                         allowHideColumn:false,
                         columns: [

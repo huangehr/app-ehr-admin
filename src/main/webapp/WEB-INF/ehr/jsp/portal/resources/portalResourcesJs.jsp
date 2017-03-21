@@ -64,7 +64,9 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            searchNm: ''
+                            searchNm: '',
+                            page:1,
+                            rows:15
                         },
                         allowHideColumn:false,
                         columns: [
@@ -75,10 +77,10 @@
                             {display: '描述', name: 'description', width: '25%', resizable: true,align: 'left'},
                             {display: '上传日期', name: 'uploadTime', width: '15%', resizable: true,align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', width: '15%', render: function (row) {
                                 var html = '<sec:authorize url="/portalResources/updatePortalResources"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/portalResources/deletePortalResources"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
-                                html += '<sec:authorize url="/portalResources/downLoadPortalResources"><a class="label_a" style="margin-left:10px" title="下载" href="row.id" >下载</a></sec:authorize>';
+                                html += '<sec:authorize url="/appportalResources/uploadFile"><a data-toggle="model"  class="label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","portalResources:uploadFile", row.url)+'">'+'下载'+'</a></sec:authorize>'
                                 return html;
                             }
                             }
@@ -149,6 +151,17 @@
                         });
 
                     });
+
+
+                    $.subscribe('portalResources:uploadFile',function(event,url) {
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote("${contextRoot}/portalResources/uploadFile",{data:{filePath:url},
+                            success: function(data) {
+                                $.Notice.error('下载成功。');
+                            }});
+                    });
+
+
                 }
             };
 

@@ -79,7 +79,7 @@ public class ResourcesController extends BaseUIController {
      */
     @RequestMapping("searchPortalResources")
     @ResponseBody
-    public Object searchDoctor(String searchNm, int page, int rows) {
+    public Object searchPortalResources(String searchNm, int page, int rows) {
         String url = "/portalResources";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -88,7 +88,7 @@ public class ResourcesController extends BaseUIController {
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("name=" + searchNm );
+            stringBuffer.append("name?" + searchNm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
@@ -280,37 +280,7 @@ public class ResourcesController extends BaseUIController {
     }
 
 
-    /**
-     * 图片上传
-     * @param portalResourcesId
-     * @param inputStream
-     * @param fileName
-     * @return
-     */
-    public String fileUpload(String portalResourcesId,String inputStream,String fileName){
 
-        RestTemplates templates = new RestTemplates();
-        Map<String, Object> params = new HashMap<>();
-
-        String fileId = null;
-        if (!StringUtils.isEmpty(inputStream)) {
-
-            //mime  参数 doctor 需要改变  --  需要从其他地方配置
-            FileResourceModel fileResourceModel = new FileResourceModel(portalResourcesId,"doctor","");
-            String fileResourceModelJsonData = toJson(fileResourceModel);
-
-            params.put("file_str", inputStream);
-            params.put("file_name", fileName);
-            params.put("json_data",fileResourceModelJsonData);
-            try {
-                fileId = HttpClientUtil.doPost(comUrl + "/files", params,username,password);
-                return fileId;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        return fileId;
-    }
 
     /**
      * 显示图片
@@ -407,11 +377,11 @@ public class ResourcesController extends BaseUIController {
             }
             inputStream.close();
             String restStream = Base64.getEncoder().encodeToString(fileBuffer);
-            String imageId = "";
-            imageId = fileUpload("",restStream,fileName);
-            if (!StringUtils.isEmpty(imageId)){
+            String url = "";
+            url = fileUpload("",restStream,fileName);
+            if (!StringUtils.isEmpty(url)){
                 System.out.println("上传成功");
-                return imageId;
+                return url;
             }else{
                 System.out.println("上传失败");
             }
@@ -421,5 +391,60 @@ public class ResourcesController extends BaseUIController {
         }
         return "fail";
     }
+
+    /**
+     * 图片上传
+     * @param portalResourcesId
+     * @param inputStream
+     * @param fileName
+     * @return
+     */
+    public String fileUpload(String portalResourcesId,String inputStream,String fileName){
+
+        RestTemplates templates = new RestTemplates();
+        Map<String, Object> params = new HashMap<>();
+
+        String url = null;
+        if (!StringUtils.isEmpty(inputStream)) {
+
+            //mime  参数 doctor 需要改变  --  需要从其他地方配置
+            FileResourceModel fileResourceModel = new FileResourceModel(portalResourcesId,"doctor","");
+            String fileResourceModelJsonData = toJson(fileResourceModel);
+
+            params.put("file_str", inputStream);
+            params.put("file_name", fileName);
+            params.put("json_data",fileResourceModelJsonData);
+            try {
+                url = HttpClientUtil.doPost(comUrl + "/filesReturnUrl", params,username,password);
+                return url;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return url;
+    }
+
+    @RequestMapping("/uploadFile")
+    @ResponseBody
+    public void uploadFile(String filePath,HttpServletResponse response) throws Exception {
+        OutputStream outputStream = null;
+        try {
+            Map<String,Object> params = new HashMap<>();
+            params.put("storagePath",filePath);
+            String imageOutStream = HttpClientUtil.doGet(comUrl + "/image_view",params,username, password);
+            response.setContentType("text/html; charset=UTF-8");
+//            response.setContentType("image/jpeg");
+            outputStream = response.getOutputStream();
+            byte[] bytes = Base64.getDecoder().decode(imageOutStream);
+            outputStream.write(bytes);
+            outputStream.flush();
+        } catch (IOException e) {
+            LogService.getLogger(ResourcesController.class).error(e.getMessage());
+        } finally {
+            if (outputStream != null)
+                outputStream.close();
+        }
+    }
+
 
 }
