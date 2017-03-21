@@ -74,15 +74,15 @@
                         },
                        allowHideColumn:false,
                         columns: [
-                            {display: '医生姓名', name: 'name', width: '10%',align: 'left'},
-                            {display: '性别', name: 'sex', width: '2%'},
-                            {display: '手机主号码', name: 'phone', width: '8%', resizable: true,align: 'left'},
-                            {display: '手机备用号码', name: 'secondPhone', width: '8%', resizable: true,align: 'left'},
-                            {display: '办公电话(固话)', name: 'officeTel', width: '8%', resizable: true,align: 'left'},
-                            {display: '邮箱', name: 'email', width: '8%', resizable: true,align: 'left'},
-                            {display: '医生简介', name: 'introduction', width: '22%', minColumnWidth: 20,align: 'left'},
+                            {display: '姓名', name: 'name', width: '10%',align: 'left'},
+                            {display: '性别', name: 'sex', width: '5%'},
+                            {display: '专长', name: 'skill', width: '10%', resizable: true,align: 'left'},
+                            {display: '职称', name: 'lczc', width: '10%', resizable: true,align: 'left'},
+                            {display: '手机号码', name: 'phone', width: '10%', resizable: true,align: 'left'},
+                            {display: '邮箱', name: 'email', width: '13%', resizable: true,align: 'left'},
+                            {display: '医生主页', name: 'workPortal', width: '18%', resizable: true,align: 'left'},
                             {
-                                display: '是否生/失效',
+                                display: '生/失效',
                                 name: 'status',
                                 width: '8%',
                                 isAllowHide: false,
@@ -96,10 +96,9 @@
                                     return html;
                                 }
                             },
-                            {display: '插入时间', name: 'insertTime', width: '8%', minColumnWidth: 20,align: 'left'},
-                            {display: '更新时间', name: 'updateTime', width: '8%', minColumnWidth: 20,align: 'left'},
+                            {display: '注册时间', name: 'insertTime', width: '8%', minColumnWidth: 20,align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', width: '8%', render: function (row) {
                                     var html = '<sec:authorize url="/doctor/updateDoctor"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "doctor:doctorInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/doctor/deleteDoctor"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "doctor:doctorInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                     return html;

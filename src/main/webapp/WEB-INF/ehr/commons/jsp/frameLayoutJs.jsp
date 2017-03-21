@@ -150,17 +150,6 @@
                 },
                 </sec:authorize>
 
-                // 1-4 - 资源上传管理
-                <sec:authorize url="/portalResources/initial">
-                {
-                    id: 14,
-                    pid: 1,
-                    level:2,
-                    text: '<spring:message code="title.portal.resources"/>',
-                    url: '${contextRoot}/portalResources/initial'
-                },
-                </sec:authorize>
-
                 //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
 
                 //2 - 标准规范中心
@@ -395,7 +384,7 @@
                 {
                     id: 351,
                     pid: 35,
-                    level:2,
+                    level:3,
                     text: '<spring:message code="title.portal.notice"/>',
                     url: '${contextRoot}/portalNotice/initial'
                 },
@@ -406,18 +395,29 @@
                 {
                     id: 352,
                     pid: 35,
-                    level:2,
+                    level:3,
                     text: '<spring:message code="title.portal.messageRemind"/>',
                     url: '${contextRoot}/messageRemind/initial'
                 },
                 </sec:authorize>
 
-                //资源配置
+                // 1-4 - 资源上传管理
+                <sec:authorize url="/portalResources/initial">
+                {
+                    id: 353,
+                    pid: 35,
+                    level:3,
+                    text: '<spring:message code="title.portal.resources"/>',
+                    url: '${contextRoot}/portalResources/initial'
+                },
+                </sec:authorize>
+
+                // 1-4 - 页面展示管理
                 <sec:authorize url="/portalSetting/initial">
                 {
-                    id: 352,
+                    id: 354,
                     pid: 35,
-                    level:2,
+                    level:3,
                     text: '<spring:message code="title.portal.portalSetting"/>',
                     url: '${contextRoot}/portalSetting/initial'
                 },
