@@ -45,8 +45,8 @@
             $columnUri:$("#inp_columnUri"),
             $columnName:$("#inp_columnName"),
             $appApiId:$("#inp_appApiId"),
-//            $status: $('inp_status'),
-            $columnRequestType: $('inp_columnRequestType'),
+            $status:$("#inp_status"),
+            $columnRequestType: $("#inp_columnRequestType"),
 
             init: function () {
                 var self = this;
@@ -60,21 +60,37 @@
                 this.$columnName.ligerTextBox({width: 240});
                 this.$appApiId.ligerTextBox({width: 240});
 
-                <%--var columnType = this.$columnRequestType.ligerComboBox({--%>
-                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
-                    <%--valueField: 'code',--%>
-                    <%--textField: 'value',--%>
-                    <%--dataParmName: 'detailModelList',--%>
-                    <%--urlParms: {--%>
-                        <%--dictId: 60--%>
-                    <%--},--%>
-                    <%--autocomplete: true,--%>
-                    <%--onSuccess: function (data) {--%>
-                        <%--if (data.length > 0) {--%>
-                            <%--columnType.setValue(data[0].code);--%>
-                        <%--}--%>
-                    <%--}--%>
-                <%--});--%>
+                var columnType = this.$columnRequestType.ligerComboBox({
+                    url: '${contextRoot}/dict/searchDictEntryList',
+                    valueField: 'code',
+                    textField: 'value',
+                    dataParmName: 'detailModelList',
+                    urlParms: {
+                        dictId: 60
+                    },
+                    autocomplete: true,
+                    onSuccess: function (data) {
+                        if (data.length > 0) {
+                            columnType.setValue(data[0].code);
+                        }
+                    }
+                });
+
+                var stausType = this.$status.ligerComboBox({
+                    url: '${contextRoot}/dict/searchDictEntryList',
+                    valueField: 'code',
+                    textField: 'value',
+                    dataParmName: 'detailModelList',
+                    urlParms: {
+                        dictId: 61
+                    },
+                    autocomplete: true,
+                    onSuccess: function (data) {
+                        if (data.length > 0) {
+                            stausType.setValue(data[0].code);
+                        }
+                    }
+                });
 
                 this.$form.attrScan();
             },

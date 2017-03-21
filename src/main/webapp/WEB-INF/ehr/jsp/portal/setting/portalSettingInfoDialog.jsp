@@ -34,26 +34,22 @@
 
     <div class="m-form-group">
         <label><spring:message code="lbl.portalSetting.columnRequestType"/><spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control ">
-            <input type="text" id="inp_columnRequestType" data-type="select" data-attr-scan="columnRequestType"  />
+        <div class="l-text-wrapper  m-form-control">
+            <input type="text" id="inp_columnRequestType" data-type="select" data-attr-scan="columnRequestType">
         </div>
     </div>
 
     <div class="m-form-group">
         <label><spring:message code="lbl.portalSetting.appApiId"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control " >
-            <input id="inp_appApiId"   data-attr-scan="appApiId" class=" f-w240 description  max-length-56 validate-special-char"/>
+            <input id="inp_appApiId"   data-attr-scan="appApiId" class="validate-number  max-length-10"/>
         </div>
     </div>
 
     <div class="m-form-group">
         <label><spring:message code="lbl.portalSetting.status"/><spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control ">
-            <%--<input type="text" id="inp_status" data-type="select" data-attr-scan="status"  />--%>
-            <select name="status" id="inp_status" data-attr-scan="status" style=" width: 150px;height: 25px;" >
-                <option value="0" />有效
-                <option value="1" />无效
-            </select>
+        <div class="l-text-wrapper  m-form-control">
+            <input type="text" id="inp_status" data-type="select" data-attr-scan="status">
         </div>
     </div>
 

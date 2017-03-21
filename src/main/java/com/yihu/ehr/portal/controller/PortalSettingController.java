@@ -79,7 +79,7 @@ public class PortalSettingController extends BaseUIController {
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("appName=" + searchNm );
+            stringBuffer.append("appId=" + searchNm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {

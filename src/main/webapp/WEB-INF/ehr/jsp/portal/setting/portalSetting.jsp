@@ -7,7 +7,7 @@
         <div class="m-form-group">
             <div class="m-form-control">
                 <!--输入框-->
-                <input type="text" id="inp_search" placeholder="请输入应用名称" class="f-ml10" data-attr-scan="searchNm"/>
+                <input type="text" id="inp_search" placeholder="请输入应用ID" class="f-ml10" data-attr-scan="searchNm"/>
             </div>
 
 

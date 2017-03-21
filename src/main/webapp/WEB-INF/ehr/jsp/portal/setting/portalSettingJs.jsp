@@ -69,12 +69,21 @@
                         allowHideColumn:false,
                         columns: [
                             {display: '机构ID', name: 'orgId', width: '8%'},
+                            {display: '机构名称', name: 'orgName', width: '8%'},
                             {display: '应用ID', name: 'appId', width: '8%',align: 'center'},
+                            {display: '应用名称', name: 'appName', width: '8%',align: 'center'},
                             {display: '推送栏目地址', name: 'columnUri', width: '18%'},
                             {display: '栏目名称', name: 'columnName', width: '8%'},
                             {display: '栏目请求方式', name: 'columnRequestTypeName', width: '15%', resizable: true,align: 'left'},
                             {display: 'API编号', name: 'appApiId', width: '5%'},
-                            {display: '状态', name: 'status', width: '15%'},
+                            { display: '状态', name: 'status',width: '10%',isAllowHide: false,render:function(row){
+                                    if (Util.isStrEquals(row.status,'0')) {
+                                        return '有效';
+                                    } else {
+                                        return '失效';
+                                    }
+                               }
+                            },
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
                                 var html = '<sec:authorize url="/portalSetting/updatePortalSetting"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalSetting:messageInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';

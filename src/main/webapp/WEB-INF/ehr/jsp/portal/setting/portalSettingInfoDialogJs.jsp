@@ -38,8 +38,8 @@
             $columnUri:$("#inp_columnUri"),
             $columnName:$("#inp_columnName"),
             $appApiId:$("#inp_appApiId"),
-            $status: $('inp_status'),
-            $columnRequestType: $('inp_columnRequestType'),
+            $status: $("#inp_status"),
+            $columnRequestType: $("#inp_columnRequestType"),
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
 
@@ -57,7 +57,7 @@
                 this.$columnName.ligerTextBox({width: 240});
                 this.$appApiId.ligerTextBox({width: 240});
 
-                var columnRequestType = this.$columnRequestType.ligerComboBox({
+                var columnType = this.$columnRequestType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
                     valueField: 'code',
                     textField: 'value',
@@ -68,7 +68,23 @@
                     autocomplete: true,
                     onSuccess: function (data) {
                         if (data.length > 0) {
-                            columnRequestType.setValue(data[0].code);
+                            columnType.setValue(data[0].code);
+                        }
+                    }
+                });
+
+                var stausType = this.$status.ligerComboBox({
+                    url: '${contextRoot}/dict/searchDictEntryList',
+                    valueField: 'code',
+                    textField: 'value',
+                    dataParmName: 'detailModelList',
+                    urlParms: {
+                        dictId: 61
+                    },
+                    autocomplete: true,
+                    onSuccess: function (data) {
+                        if (data.length > 0) {
+                            stausType.setValue(data[0].code);
                         }
                     }
                 });
@@ -101,14 +117,13 @@
                 });
 
                 //修改的点击事件
-
-                if (validator.validate()) {
-                    portalSettingModel = self.$form.Fields.getValues();
-                    update(portalSettingModel);
-                } else {
-                    return;
-                }
                 this.$updateDtn.click(function () {
+                    if (validator.validate()) {
+                        portalSettingModel = self.$form.Fields.getValues();
+                        update(portalSettingModel);
+                    } else {
+                        return;
+                    }
                 });
 
                 function update(portalSettingModel) {
