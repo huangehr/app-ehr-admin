@@ -6,8 +6,10 @@ import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.ObjectMapperUtil;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,22 +27,31 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service("roleCache")
 public class RoleCache {
 //    private final static Map<String, CopyOnWriteArrayList<String>> resourceMap = new ConcurrentHashMap<>();
+    @Value("${service-gateway.username}")
+    private String username;
+    @Value("${service-gateway.password}")
+    private String password;
+    @Value("${service-gateway.url}")
+    private String comUrl;
+    @Value("${service-gateway.clientId}")
+    private String clientId;
 
     private final static CopyOnWriteArrayList<String> resourceList = new CopyOnWriteArrayList<>();
 //    private final static Set<String> resourceList = Collections.synchronizedSet(new HashSet<String>());
     public RoleCache() throws Exception {
-        loadRole();
+        //loadRole();
     }
 
     private List<AppFeatureModel> getAppFeatures() throws Exception {
         Map parms = new HashMap<>();
-        parms.put("filters", "appId=zkGuSIm2Fg");
-        String rs = HttpClientUtil.doGet("http://sdw2:10000/api/v1.0/admin/filterFeatureNoPage", parms,
-                "user", "eureka");
+        String url = "/filterFeatureNoPage";
+        parms.put("filters", "appId="+clientId);
+        String rs = HttpClientUtil.doGet(comUrl + url, parms,username,password);
 //        ObjectMapperUtil objectMapperUtil = new ObjectMapperUtil();
         EnvelopExt<AppFeatureModel> envelopExt = (EnvelopExt<AppFeatureModel>)
                 ObjectMapperUtil.toModel(rs, new TypeReference<EnvelopExt<AppFeatureModel>>() {});
         return envelopExt.getDetailModelList();
+        //return null;
     }
 
     public boolean contains(String url){
@@ -62,6 +73,7 @@ public class RoleCache {
     /**
      * ��ʼ�����Ȩ����Ϣ
      */
+    @PostConstruct
     private void loadRole() throws Exception {
         List<AppFeatureModel> appFeatureModelList = getAppFeatures();
         for(AppFeatureModel feature: appFeatureModelList){

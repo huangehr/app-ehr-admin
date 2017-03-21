@@ -69,9 +69,9 @@
                        allowHideColumn:false,
                         columns: [
                             {display: '标题', name: 'title', width: '15%',align: 'left'},
-                            {display: '类型', name: 'typeName', width: '5%'},
-                            {display: '门户类型', name: 'portalTypeName', width: '5%'},
-                            {display: '内容', name: 'content', width: '55%', resizable: true,align: 'left'},
+                            {display: '类型', name: 'typeName', width: '7%'},
+                            {display: '门户类型', name: 'portalTypeName', width: '8%'},
+                            {display: '内容', name: 'content', width: '45%', resizable: true,align: 'left'},
                             {display: '发布日期', name: 'releaseDate', width: '15%', resizable: true,align: 'center'},
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
