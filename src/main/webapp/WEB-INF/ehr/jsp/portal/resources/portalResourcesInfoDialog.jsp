@@ -5,11 +5,39 @@
 <div id="div_info_form" data-role-form class="m-form-inline f-mt20 f-pb10" style="overflow:auto">
     <input data-attr-scan="id" hidden="hidden"/>
     <%--保存初始数据------%>
+    <form id ="uploadForm" enctype="multipart/form-data">
 
-    <div id="div_resources_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
-        <div id="div_file_list" class="uploader-list"></div>
-        <div id="div_file_picker" class="f-mt10"><spring:message code="btn.file.choose"/></div>
-    </div>
+        <div id="div_resources_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
+            <div id="div_file_list" class="uploader-list"></div>
+            <div id="div_file_picker" class="f-mt10"><spring:message code="btn.file.choose"/></div>
+        </div>
+
+        <div class="m-form-group">
+            <label>apkUrl</label>
+            <div class="l-text-wrapper m-form-control essential">
+                <input type="hidden"   id="apkUrl" data-attr-scan="url" >
+                <input type="file" id="inp_file_apk" name="apkFile" >
+                <input type="button" value="上传" id="apkUploadButton"  />
+            </div>
+        </div>
+
+        <div class="m-form-group">
+            <label>AndroidUrl</label>
+            <div class="l-text-wrapper m-form-control essential">
+                <input type="hidden"   id="androidUrl" data-attr-scan="androidQrCodeUrl" >
+                <input type="file" id="inp_file_android" name="androidFile" >
+                <input type="button" value="上传" id="androidUploadButton"  />
+            </div>
+        </div>
+
+        <div class="m-form-group">
+            <label>IOSUrl</label>
+            <div class="l-text-wrapper m-form-control essential">
+                <input type="hidden"   id="iosUrl" data-attr-scan="iosQrCodeUrl" >
+                <input type="file" id="inp_file_iosUrl" name="iosFile">
+                <input type="button" value="上传" id="iosUploadButton"  />
+            </div>
+        </div>
 
     <div class="m-form-group">
         <label><spring:message code="lbl.portalResources.name"/><spring:message code="spe.colon"/></label>
@@ -58,5 +86,5 @@
             <span><spring:message code="btn.close"/></span>
         </div>
     </div>
-
+</form>
 </div>

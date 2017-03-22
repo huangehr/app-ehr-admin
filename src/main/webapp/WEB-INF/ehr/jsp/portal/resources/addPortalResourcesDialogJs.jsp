@@ -189,7 +189,6 @@
                         processData: false,
                         success: function (returndata) {
                             if(returndata != "fail"){
-                                alert(returndata);
                                 self.$apkUrl.val(returndata);
                                 alert("上传成功");
                             }else{

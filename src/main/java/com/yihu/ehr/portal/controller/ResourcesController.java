@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -160,6 +161,8 @@ public class ResourcesController extends BaseUIController {
                     updateResources.setDescription(detailModel.getDescription());
                     updateResources.setUrl(detailModel.getUrl());
                     updateResources.setPakageType(detailModel.getPakageType());
+                    updateResources.setPlatformType(detailModel.getPlatformType());
+                    updateResources.setDevelopLan(detailModel.getDevelopLan());
 
                     imageId = fileUpload(String.valueOf(portalResourcesId),restStream,imageName);
                     if (!StringUtils.isEmpty(imageId))
@@ -426,25 +429,30 @@ public class ResourcesController extends BaseUIController {
 
     @RequestMapping("/uploadFile")
     @ResponseBody
-    public void uploadFile(String filePath,HttpServletResponse response) throws Exception {
-        OutputStream outputStream = null;
-        try {
-            Map<String,Object> params = new HashMap<>();
-            params.put("storagePath",filePath);
-            String imageOutStream = HttpClientUtil.doGet(comUrl + "/image_view",params,username, password);
-            response.setContentType("text/html; charset=UTF-8");
-//            response.setContentType("image/jpeg");
-            outputStream = response.getOutputStream();
-            byte[] bytes = Base64.getDecoder().decode(imageOutStream);
-            outputStream.write(bytes);
-            outputStream.flush();
-        } catch (IOException e) {
-            LogService.getLogger(ResourcesController.class).error(e.getMessage());
-        } finally {
-            if (outputStream != null)
-                outputStream.close();
-        }
+    public void uploadFile(String storagePath,HttpServletResponse response) throws Exception {
+       if(org.apache.commons.lang3.StringUtils.isNotEmpty(storagePath)){
+           OutputStream outputStream = null;
+           try {
+               Map<String,Object> params = new HashMap<>();
+               storagePath = URLEncoder.encode(storagePath, "ISO8859-1");
+               String fileName = System.currentTimeMillis() + storagePath.substring(storagePath.indexOf(".")-1);
+               params.put("storagePath",storagePath);
+               String imageOutStream = HttpClientUtil.doGet(comUrl + "/image_view",params,username, password);
+               response.setContentType("application/octet-stream");
+               response.setHeader("Content-Disposition", "attachment;fileName="+fileName);
+               outputStream = response.getOutputStream();
+               byte[] bytes = Base64.getDecoder().decode(imageOutStream);
+               outputStream.write(bytes);
+               outputStream.flush();
+           } catch (IOException e) {
+               LogService.getLogger(ResourcesController.class).error(e.getMessage());
+           } finally {
+               if (outputStream != null)
+                   outputStream.close();
+           }
+       }
     }
+
 
 
 }

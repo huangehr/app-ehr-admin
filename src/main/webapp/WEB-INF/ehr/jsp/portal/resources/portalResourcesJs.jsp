@@ -80,7 +80,7 @@
                                 display: '操作', name: 'operator', width: '15%', render: function (row) {
                                 var html = '<sec:authorize url="/portalResources/updatePortalResources"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/portalResources/deletePortalResources"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
-                                html += '<sec:authorize url="/appportalResources/uploadFile"><a data-toggle="model"  class="label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","portalResources:uploadFile", row.url)+'">'+'下载'+'</a></sec:authorize>'
+                                html += '<sec:authorize url="/appportalResources/uploadFile"><a data-toggle="model"  class="label_a" target="_blank" href="${contextRoot}/portalResources/uploadFile?storagePath='+ row.url + ' " >'+'下载'+'</a></sec:authorize>'
                                 return html;
                             }
                             }
@@ -151,16 +151,6 @@
                         });
 
                     });
-
-
-                    $.subscribe('portalResources:uploadFile',function(event,url) {
-                        var dataModel = $.DataModel.init();
-                        dataModel.updateRemote("${contextRoot}/portalResources/uploadFile",{data:{filePath:url},
-                            success: function(data) {
-                                $.Notice.error('下载成功。');
-                            }});
-                    });
-
 
                 }
             };
