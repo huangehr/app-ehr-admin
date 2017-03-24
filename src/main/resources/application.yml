@@ -26,6 +26,7 @@ spring:
 service-gateway:
   username: user
   password: eureka
+  portalurl: http://localhost:444/api/v1.0/portal
   url: http://localhost:10000/api/v1.0/admin
   stdurl: http://localhost:10000/api/v1.0/admin/std
   versionurl: http://localhost:10000/api/v1.0/admin/version
@@ -45,6 +46,7 @@ spring:
 service-gateway:
   username: user
   password: eureka
+  portalurl: http://localhost:444/api/v1.0/portal
   url: http://localhost:10000/api/v1.0/admin
   stdurl: http://localhost:10000/api/v1.0/admin/std
   versionurl: http://localhost:10000/api/v1.0/admin/version
@@ -63,6 +65,7 @@ spring:
 service-gateway:
   username: user
   password: eureka
+  portalurl: http://localhost:444/api/v1.0/portal
   url: http://172.19.103.73:10000/api/v1.0/admin
   stdurl: http://172.19.103.73:10000/api/v1.0/admin/std
   versionurl: http://172.19.103.73:10000/api/v1.0/admin/version
@@ -82,6 +85,7 @@ spring:
 service-gateway:
   username: user
   password: eureka
+  portalurl: http://localhost:444/api/v1.0/portal
   url: http://11.1.2.21:10000/api/v1.0/admin
   stdurl: http://11.1.2.21:10000/api/v1.0/admin/std
   versionurl: http://11.1.2.21:10000/api/v1.0/admin/version
