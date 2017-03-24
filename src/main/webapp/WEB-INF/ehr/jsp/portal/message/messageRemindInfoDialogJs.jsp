@@ -36,7 +36,6 @@
             $appId:$("#inp_appId"),
             $appName:$("#inp_appName"),
             $selectType:$("#inp_typeId"),
-            $fromUserId:$("#inp_fromUserId"),
             $toUserId:$("#inp_toUserId"),
             $workUri:$("#inp_workUri"),
             $content:$("#inp_content"),
@@ -53,7 +52,6 @@
                 this.$form.removeClass("m-form-readonly");
                 this.$appId.ligerTextBox({width: 240});
                 this.$appName.ligerTextBox({width: 240});
-                this.$fromUserId.ligerTextBox({width: 240});
                 this.$toUserId.ligerTextBox({width: 240});
                 this.$workUri.ligerTextBox({width: 240,height:50});
                 this.$content.ligerTextBox({width:240,height:50 });
@@ -80,7 +78,6 @@
                     appId: messageRemind.appId,
                     appName: messageRemind.appName,
                     typeId: messageRemind.typeId,
-                    fromUserId: messageRemind.fromUserId,
                     toUserId: messageRemind.toUserId,
                     workUri: messageRemind.workUri,
                     content: messageRemind.content

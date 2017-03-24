@@ -12,28 +12,28 @@
 
 	<div class="m-form-group">
 		<label>apkUrl</label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control ">
 			<input type="hidden"   id="apkUrl" data-attr-scan="url" >
-			<input type="file" id="inp_file_apk" name="apkFile" >
-			<input type="button" value="上传" id="apkUploadButton"  />
+			<input type="file" id="inp_file_apk" name="apkFile" class="file" >
+			<input type="button" value="上传" id="apkUploadButton" class="uploadBtn"  />
 		</div>
 	</div>
 
 	<div class="m-form-group">
 		<label>AndroidUrl</label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control ">
 			<input type="hidden"   id="androidUrl" data-attr-scan="androidQrCodeUrl" >
-			<input type="file" id="inp_file_android" name="androidFile" >
-			<input type="button" value="上传" id="androidUploadButton"  />
+			<input type="file" id="inp_file_android" name="androidFile"  class="file">
+			<input type="button" value="上传" id="androidUploadButton"  class="uploadBtn"/>
 		</div>
 	</div>
 
 	<div class="m-form-group">
 		<label>IOSUrl</label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control ">
 			<input type="hidden"   id="iosUrl" data-attr-scan="iosQrCodeUrl" >
-			<input type="file" id="inp_file_iosUrl" name="iosFile">
-			<input type="button" value="上传" id="iosUploadButton"  />
+			<input type="file" id="inp_file_iosUrl" name="iosFile" class="file">
+			<input type="button" value="上传" id="iosUploadButton" class="uploadBtn" />
 		</div>
 	</div>
 

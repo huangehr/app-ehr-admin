@@ -10,8 +10,10 @@
         var organizationInfo = null;
         var orgModel = null;
 
-        var settledWayDictId = 8;
         var orgTypeDictId =  7;
+        var settledWayDictId = 8;
+        var hosTypeDictId =  62;
+        var ascriptionTypeDictId =  63;
         // 表单校验工具类
         var jValidation = $.jValidation;
 
@@ -40,6 +42,20 @@
             $cancelBtn: $("#btn_cancel"),
             $uploader:$("#div_aptitude_img_upload"),
             $orgImageShow:$("#div_file_list"),
+
+            $traffic: $("#traffic"),
+            $ing: $("#ing"),
+            $lat: $("#lat"),
+            $hosType:$("#hosType"),
+            $ascriptionType:$("#ascriptionType"),
+            $phone:$("#phone"),
+            $introduction:$("#introduction"),
+            $levelId:$("#levelId"),
+            $legalPerson:$("#legalPerson"),
+            $logoUrlButton:$("#logoUrlButton"),
+            $logoUrl:$("#logoUrl"),
+            $parentHosId:$("#parentHosId"),
+            $zxy:$("#zxy"),
 
             init: function () {
 
@@ -71,8 +87,25 @@
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
                 this.$location.ligerComboBox({width: 240});
+
+                this.$traffic.ligerTextBox({width: 240});
+                this.$ing.ligerTextBox({width: 240});
+                this.$lat.ligerTextBox({width: 240});
+                this.$hosType.ligerComboBox({width: 240});
+                this.$ascriptionType.ligerComboBox({width: 240});
+                this.$phone.ligerTextBox({width: 240});
+                this.$introduction.ligerTextBox({width: 240,height:100});
+                this.$levelId.ligerTextBox({width: 240});
+                this.$legalPerson.ligerTextBox({width: 240});
+                this.$parentHosId.ligerTextBox({width: 240});
+                this.$zxy.ligerTextBox({width: 240});
+
+
+
                 this.initDDL(orgTypeDictId,this.$orgType);
                 this.initDDL(settledWayDictId,this.$settledWay);
+                this.initDDL(hosTypeDictId,this.$hosType);
+                this.initDDL(ascriptionTypeDictId,this.$ascriptionType);
 
                 this.$form.attrScan();
                 /*todo 20160704 cyc*/
@@ -191,6 +224,38 @@
                         return;
                     }
                 });
+
+                this.$logoUrlButton.click(function () {
+                    var url = '${contextRoot}/organization/orgLogoFileUpload';
+                    doUpload(url);
+                });
+
+                function doUpload(url) {
+                    var formData = new FormData($( "#uploadForm" )[0]);
+                    $.ajax({
+                        url: url ,
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (returndata) {
+                            if(returndata != "fail"){
+                                self.$logoUrl.val(returndata);
+                                alert("上传成功");
+                            }else{
+                                alert("上传失败");
+                            }
+                        },
+                        error: function (returndata) {
+                            alert("上传失败");
+                        }
+                    });
+                }
+
+
+
                 self.$cancelBtn.click(function(){
                     dialog.close();
                 })

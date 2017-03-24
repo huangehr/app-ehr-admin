@@ -34,4 +34,35 @@
     .m-combo-tab.f-dn.on { top: 28px;  bottom: 35px;  border-bottom: 1px #ddd solid;}
     #filelist .file-panel{ height: 30px !important;}
     .m-form-readonly textarea{pointer-events: auto}
+
+
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 10px;
+        top: 0;
+        /*opacity: 0;*/
+    }
+    .file:hover {
+        background: #AADFFD;
+        border-color: #78C3F3;
+        color: #004974;
+        text-decoration: none;
+    }
+
+    .uploadBtn{
+        position: relative;
+        display: inline-block;
+        background: #D0EEFF;
+        border: 1px solid #99D3F5;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+
+
 </style>

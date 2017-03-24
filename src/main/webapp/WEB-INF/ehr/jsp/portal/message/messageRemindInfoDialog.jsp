@@ -25,12 +25,6 @@
     </div>
 
     <div class="m-form-group">
-        <label><spring:message code="lbl.messageRemind.fromUser"/><spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control ">
-            <input type="text" id="inp_fromUserId" data-attr-scan="fromUserId"  />
-        </div>
-    </div>
-    <div class="m-form-group">
         <label><spring:message code="lbl.messageRemind.toUser"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control ">
             <input type="text" id="inp_toUserId"    data-attr-scan="toUserId"   />

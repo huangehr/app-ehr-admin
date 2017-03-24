@@ -39,6 +39,30 @@
     </div>
 
     <div class="m-form-group">
+        <label>交通路线</label>
+        <div class="l-text-wrapper m-form-control ">
+            <input type="text" id="traffic" class="useTitle f-w240 max-length-20 validate-special-char"
+                    data-attr-scan="traffic"/>
+        </div>
+    </div>
+
+    <div class="m-form-group">
+        <label>经度</label>
+        <div class="l-text-wrapper m-form-control ">
+            <input type="text" id="ing" class="useTitle f-w240 max-length-20 validate-special-char"
+                   data-attr-scan="ing"/>
+        </div>
+    </div>
+
+    <div class="m-form-group">
+        <label>纬度</label>
+        <div class="l-text-wrapper m-form-control ">
+            <input type="text" id="lat" class="useTitle f-w240 max-length-100 validate-special-char"
+                   data-attr-scan="lat"/>
+        </div>
+    </div>
+
+    <div class="m-form-group">
         <label><spring:message code="lbl.join.mode"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" id="settled_way" class="required" data-type="select" data-attr-scan="settledWay">
@@ -67,6 +91,76 @@
         </div>
         <spring:message code="spe.colon"/>
     </div>
+
+
+    <!-- 医院关系信息    -->
+
+    <div class="m-form-group">
+        <label>医院类型<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" id="hosType" data-type="select"  class="f-w240 "  data-attr-scan="hosTypeId"/>
+        </div>
+    </div>
+
+    <div class="m-form-group">
+        <label>医院归属<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control ">
+            <input type="text" id="ascriptionType" data-type="select"  class="f-w240"   data-attr-scan="ascriptionType"/>
+        </div>
+    </div>
+
+    <div class="m-form-group">
+        <label>医院联系电话<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" id="phone" class="useTitle f-w240 max-length-20 "  data-attr-scan="phone"/>
+        </div>
+    </div>
+
+    <div class="m-form-group">
+        <label>医院简介<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control ">
+            <textarea type="text" id="introduction" class="f-w240 description  max-length-256 validate-special-char"    data-attr-scan="introduction" ></textarea>
+        </div>
+    </div>
+    <div class="m-form-group">
+        <label>医院等级<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" id="levelId" data-type="select"  class="useTitle  f-w240"  data-attr-scan="levelId"/>
+        </div>
+    </div>
+
+    <div class="m-form-group">
+        <label>医院法人<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control ">
+            <input type="text" id="legalPerson" class=" useTitle  f-w240"    data-attr-scan="legalPerson"/>
+        </div>
+    </div>
+
+    <form  id ="uploadForm" enctype="multipart/form-data">
+        <div class="m-form-group">
+            <label>医院LOGO</label>
+            <div class="l-text-wrapper m-form-control ">
+                <input type="hidden" id="logoUrl"  data-attr-scan="logoUrl" >
+                <input type="file"  name="logoFileUrl" class="file" >
+                <input type="button" value="上传" id="logoUrlButton" class="uploadBtn"  />
+            </div>
+        </div>
+    </form>
+
+    <div class="m-form-group">
+        <label>上级医院ID<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control ">
+            <input type="text" id="parentHosId" class="useTitle  f-w240"    data-attr-scan="parentHosId"/>
+        </div>
+    </div>
+    <div class="m-form-group">
+        <label>中西医标识<spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control ">
+            <input type="text" id="zxy" class=" useTitle  f-w240"    data-attr-scan="zxy"/>
+        </div>
+    </div>
+    <!--     -->
+
 
     <div class="m-form-group">
         <label><spring:message code="lbl.tip"/><spring:message code="spe.colon"/></label>

@@ -1,6 +1,7 @@
 package com.yihu.ehr.organization.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
@@ -20,6 +21,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -300,6 +302,26 @@ public class OrganizationController extends BaseUIController {
                 orgForUpdate.setOrgType(org.getOrgType());
                 orgForUpdate.setTags(org.getTags());
                 orgForUpdate.setImgLocalPath("");
+
+                orgForUpdate.setCode(org.getCode());
+                orgForUpdate.setTraffic(org.getTraffic());
+                orgForUpdate.setPhoto(org.getPhoto());
+                orgForUpdate.setHosTypeId(org.getHosTypeId());
+                orgForUpdate.setPhone(org.getPhone());
+                orgForUpdate.setHosPhoto(org.getHosPhoto());
+                orgForUpdate.setAscriptionType(org.getAscriptionType());
+                orgForUpdate.setIntroduction(org.getIntroduction());
+                orgForUpdate.setLegalPerson(org.getLegalPerson());
+                orgForUpdate.setLevelId(org.getLevelId());
+                orgForUpdate.setLogoUrl(org.getLogoUrl());
+                orgForUpdate.setSortNo(org.getSortNo());
+                orgForUpdate.setParentHosId(org.getParentHosId());
+                orgForUpdate.setIng(org.getIng());
+                orgForUpdate.setLat(org.getLat());
+                orgForUpdate.setZxy(org.getZxy());
+
+
+
                 String mOrgUpdateJson = objectMapper.writeValueAsString(orgForUpdate);
                 params.add("mOrganizationJsonDatas", mOrgUpdateJson);
                 envelopStr = templates.doPost(comUrl + "/organization", params);
@@ -397,6 +419,30 @@ public class OrganizationController extends BaseUIController {
                 outputStream.close();
         }
     }
+
+    @RequestMapping("/showImageLogo")
+    @ResponseBody
+    public void showImageLogo(String imgPath,HttpServletResponse response) throws Exception {
+        OutputStream outputStream = null;
+        try {
+            Map<String,Object> params = new HashMap<>();
+            params.put("storagePath",imgPath);
+            String imageOutStream = HttpClientUtil.doGet(comUrl + "/image_view",params,username, password);
+            response.setContentType("text/html; charset=UTF-8");
+            response.setContentType("image/jpeg");
+            outputStream = response.getOutputStream();
+            byte[] bytes = Base64.getDecoder().decode(imageOutStream);
+            outputStream.write(bytes);
+            outputStream.flush();
+        } catch (IOException e) {
+            LogService.getLogger(PatientController.class).error(e.getMessage());
+        } finally {
+            if (outputStream != null)
+                outputStream.close();
+        }
+    }
+
+
     @RequestMapping("/upload2")
     @ResponseBody
     public String upload2(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException,
@@ -421,6 +467,83 @@ public class OrganizationController extends BaseUIController {
         }
 
         return "";
+    }
+
+
+    /**
+     * 资源文件上传
+     * @param
+     * @return
+     */
+    @RequestMapping("orgLogoFileUpload")
+    @ResponseBody
+    public Object orgLogoFileUpload(
+            @RequestParam("logoFileUrl") MultipartFile file) throws IOException{
+        Envelop result = new Envelop();
+        InputStream inputStream = file.getInputStream();
+        String fileName = file.getOriginalFilename(); //获取文件名
+        if (!file.isEmpty()) {
+            return  uploadFile(inputStream,fileName);
+        }
+        return "fail";
+    }
+
+    public String uploadFile(InputStream inputStream,String fileName){
+        try {
+            //读取文件流，将文件输入流转成 byte
+            int temp = 0;
+            int bufferSize = 1024;
+            byte tempBuffer[] = new byte[bufferSize];
+            byte[] fileBuffer = new byte[0];
+            while ((temp = inputStream.read(tempBuffer)) != -1) {
+                fileBuffer = ArrayUtils.addAll(fileBuffer, ArrayUtils.subarray(tempBuffer, 0, temp));
+            }
+            inputStream.close();
+            String restStream = Base64.getEncoder().encodeToString(fileBuffer);
+            String url = "";
+            url = fileUpload(restStream,fileName);
+            if (!StringUtils.isEmpty(url)){
+                System.out.println("上传成功");
+                return url;
+            }else{
+                System.out.println("上传失败");
+            }
+
+        } catch (Exception e) {
+            return "fail";
+        }
+        return "fail";
+    }
+
+    /**
+     * 图片上传
+     * @param inputStream
+     * @param fileName
+     * @return
+     */
+    public String fileUpload(String inputStream,String fileName){
+
+        RestTemplates templates = new RestTemplates();
+        Map<String, Object> params = new HashMap<>();
+
+        String url = null;
+        if (!StringUtils.isEmpty(inputStream)) {
+
+            //mime  参数 doctor 需要改变  --  需要从其他地方配置
+            FileResourceModel fileResourceModel = new FileResourceModel("","org","");
+            String fileResourceModelJsonData = toJson(fileResourceModel);
+
+            params.put("file_str", inputStream);
+            params.put("file_name", fileName);
+            params.put("json_data",fileResourceModelJsonData);
+            try {
+                url = HttpClientUtil.doPost(comUrl + "/filesReturnUrl", params,username,password);
+                return url;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return url;
     }
 
 }

@@ -12,6 +12,8 @@
 
         var settledWayDictId = 8;
         var orgTypeDictId = 7;
+        var hosTypeDictId =  62;
+        var ascriptionTypeDictId =  63;
 
         // 表单校验工具类
         var jValidation = $.jValidation;
@@ -40,6 +42,21 @@
             $tel: $('#tel'),
             $orgType: $('#org_type'),
             $tags: $("#tags"),
+
+            $traffic: $("#traffic"),
+            $ing: $("#ing"),
+            $lat: $("#lat"),
+            $hosType:$("#hosType"),
+            $ascriptionType:$("#ascriptionType"),
+            $phone:$("#phone"),
+            $introduction:$("#introduction"),
+            $levelId:$("#levelId"),
+            $legalPerson:$("#legalPerson"),
+            $logoUrl:$("#logoUrl"),
+            $parentHosId:$("#parentHosId"),
+            $zxy:$("#zxy"),
+            $logoImageShow: $('#logoImage'),
+
             $keyReadBtn: $("#keyReadBtn"),
             $footer: $("#div_footer"),
             $updateOrgBtn: $("#div_update_btn"),
@@ -93,8 +110,24 @@
                     ]
                 });
 
+                this.$traffic.ligerTextBox({width: 240});
+                this.$ing.ligerTextBox({width: 240});
+                this.$lat.ligerTextBox({width: 240});
+                this.$hosType.ligerComboBox({width: 240});
+                this.$ascriptionType.ligerComboBox({width: 240});
+                this.$phone.ligerTextBox({width: 240});
+                this.$introduction.ligerTextBox({width: 240,height:100});
+                this.$levelId.ligerTextBox({width: 240});
+                this.$legalPerson.ligerTextBox({width: 240});
+                this.$logoUrl.ligerTextBox({width: 240});
+                this.$parentHosId.ligerTextBox({width: 240});
+                this.$zxy.ligerTextBox({width: 240});
+
                 this.initDDL(orgTypeDictId, this.$orgType);
                 this.initDDL(settledWayDictId, this.$settledWay);
+                this.initDDL(hosTypeDictId,this.$hosType);
+                this.initDDL(ascriptionTypeDictId,this.$ascriptionType);
+
                 this.$form.attrScan();
                 var tags = '';
                 for (var i = 0; i < org.tags.length; i++) {
@@ -111,6 +144,19 @@
                     admin: org.admin,
                     tel: org.tel,
                     tags: tags,
+
+                    traffic:org.traffic,
+                    ing:org.ing,
+                    lat:org.lat,
+                    hosTypeId:org.hosTypeId,
+                    ascriptionType:org.ascriptionType,
+                    phone:org.phone,
+                    introduction:org.introduction,
+                    levelId:org.levelId,
+                    legalPerson:org.legalPerson,
+                    parentHosId:org.parentHosId,
+                    zxy:org.zxy,
+
                     publicKey: org.publicKey,
                     validTime: org.validTime,
                     startTime: org.startTime
@@ -141,6 +187,12 @@
                 if (!Util.isStrEmpty(pic)) {
                     this.$orgImageShow.html('<img src="${contextRoot}/organization/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w70 f-h70"></img>');
                 }
+
+                var logoPic = org.logoUrl;
+                if (!Util.isStrEmpty(logoPic)) {
+                    this.$logoImageShow.html('<img src="${contextRoot}/organization/showImageLogo?imgPath='+logoPic+'" ></img>');
+                }
+
             },
             initDDL: function (dictId, target) {
                 target.ligerComboBox({
@@ -304,7 +356,7 @@
                         if(data.successFlg){
                             $("#WU_FILE_"+$(_this).attr("imgnum")).remove();
                         }else{
-                             $.Notice.error("删除失败！");
+                            $.Notice.error("删除失败！");
                         }
                     }
                 });
@@ -312,22 +364,22 @@
         }
 
         function doGetImg(index,storagePath){
-                $.ajax({
-                    type: 'get',
-                    url: '${contextRoot}/file/view/image?storagePath='+storagePath ,
-                    dataType: "json",
-                    async:true,
-                    success: function (data) {
-                        if(data.successFlg){
-                            $("#imageview"+index).attr("src",data.obj);
-                        }
+            $.ajax({
+                type: 'get',
+                url: '${contextRoot}/file/view/image?storagePath='+storagePath ,
+                dataType: "json",
+                async:true,
+                success: function (data) {
+                    if(data.successFlg){
+                        $("#imageview"+index).attr("src",data.obj);
                     }
-                });
-              if(index<imgLop.detailModelList.length){
+                }
+            });
+            if(index<imgLop.detailModelList.length){
                 setTimeout(function(){
                     doGetImg((index+1),imgLop.detailModelList[index])
-                 },200);
-              }
+                },200);
+            }
         }
 
 
