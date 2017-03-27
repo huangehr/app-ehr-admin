@@ -166,19 +166,20 @@
 
                 this.$uploadApk.click(function () {
                     var url = '${contextRoot}/portalResources/portalResourcesFileUpload';
-                    doUpload(url);
+                    self.$apkUrl.val(doUpload(url));
                 });
                 this.$uploadAndroid.click(function () {
                   var url = '${contextRoot}/portalResources/portalResourcesFileUploadAndriod';
-                    doUpload(url);
+                    self.$androidUrl.val(doUpload(url));
                 });
                 this.$uploadIos.click(function () {
                   var url = '${contextRoot}/portalResources/portalResourcesFileUploadIos';
-                    doUpload(url);
+                    self.$iosUrl.val( doUpload(url));
                 });
 
                 function doUpload(url) {
                     var formData = new FormData($( "#uploadForm" )[0]);
+                    var fileUrl;
                     $.ajax({
                         url: url ,
                         type: 'POST',
@@ -189,8 +190,8 @@
                         processData: false,
                         success: function (returndata) {
                             if(returndata != "fail"){
-                                self.$apkUrl.val(returndata);
                                 alert("上传成功");
+                                fileUrl = returndata;
                             }else{
                                 alert("上传失败");
                             }
@@ -199,6 +200,7 @@
                             alert("上传失败");
                         }
                     });
+                    return fileUrl;
                 }
 
                 self.$cancelBtn.click(function () {

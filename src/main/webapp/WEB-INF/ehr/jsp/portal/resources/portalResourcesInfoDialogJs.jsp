@@ -43,6 +43,14 @@
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
 
+            $apkUrl:$("#apkUrl"),
+            $androidUrl:$("#androidUrl"),
+            $iosUrl:$("#iosUrl"),
+
+            $uploadApk: $("#apkUploadButton"),
+            $uploadAndroid: $("#androidUploadButton"),
+            $uploadIos: $("#iosUploadButton"),
+
             init: function () {
 				var self = this;
                 self.initForm();
@@ -164,6 +172,45 @@
                             }
                         }
                     })
+                }
+
+                this.$uploadApk.click(function () {
+                    var url = '${contextRoot}/portalResources/portalResourcesFileUpload';
+                    self.$apkUrl.val(doUpload(url));
+                });
+                this.$uploadAndroid.click(function () {
+                    var url = '${contextRoot}/portalResources/portalResourcesFileUploadAndriod';
+                    self.$androidUrl.val(doUpload(url));
+                });
+                this.$uploadIos.click(function () {
+                    var url = '${contextRoot}/portalResources/portalResourcesFileUploadIos';
+                    self.$iosUrl.val( doUpload(url));
+                });
+
+                function doUpload(url) {
+                    var formData = new FormData($( "#uploadForm" )[0]);
+                    var fileUrl;
+                    $.ajax({
+                        url: url ,
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (returndata) {
+                            if(returndata != "fail"){
+                                alert("上传成功");
+                                fileUrl = returndata;
+                            }else{
+                                alert("上传失败");
+                            }
+                        },
+                        error: function (returndata) {
+                            alert("上传失败");
+                        }
+                    });
+                    return fileUrl;
                 }
 
                 this.$cancelBtn.click(function () {
