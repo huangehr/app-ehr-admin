@@ -406,7 +406,7 @@
                 {
                     id: 353,
                     pid: 35,
-                    level:3,
+                    level: 3,
                     text: '<spring:message code="title.portal.resources"/>',
                     url: '${contextRoot}/portalResources/initial'
                 },
@@ -417,7 +417,7 @@
                 {
                     id: 354,
                     pid: 35,
-                    level:3,
+                    level: 3,
                     text: '<spring:message code="title.portal.portalSetting"/>',
                     url: '${contextRoot}/portalSetting/initial'
                 },
