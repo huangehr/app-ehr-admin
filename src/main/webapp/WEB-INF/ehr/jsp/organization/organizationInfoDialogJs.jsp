@@ -190,7 +190,7 @@
 
                 var logoPic = org.logoUrl;
                 if (!Util.isStrEmpty(logoPic)) {
-                    this.$logoImageShow.html('<img src="${contextRoot}/organization/showImageLogo?imgPath='+logoPic+'" ></img>');
+                    this.$logoImageShow.html('<img style="width:150px;height:80px;" src="${contextRoot}/organization/showImageLogo?storagePath='+logoPic+'" ></img>');
                 }
 
             },

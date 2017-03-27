@@ -422,23 +422,27 @@ public class OrganizationController extends BaseUIController {
 
     @RequestMapping("/showImageLogo")
     @ResponseBody
-    public void showImageLogo(String imgPath,HttpServletResponse response) throws Exception {
-        OutputStream outputStream = null;
-        try {
-            Map<String,Object> params = new HashMap<>();
-            params.put("storagePath",imgPath);
-            String imageOutStream = HttpClientUtil.doGet(comUrl + "/image_view",params,username, password);
-            response.setContentType("text/html; charset=UTF-8");
-            response.setContentType("image/jpeg");
-            outputStream = response.getOutputStream();
-            byte[] bytes = Base64.getDecoder().decode(imageOutStream);
-            outputStream.write(bytes);
-            outputStream.flush();
-        } catch (IOException e) {
-            LogService.getLogger(PatientController.class).error(e.getMessage());
-        } finally {
-            if (outputStream != null)
-                outputStream.close();
+    public void showImageLogo(String storagePath,HttpServletResponse response) throws Exception {
+        if(org.apache.commons.lang3.StringUtils.isNotEmpty(storagePath)){
+            OutputStream outputStream = null;
+            try {
+                Map<String,Object> params = new HashMap<>();
+                storagePath = URLEncoder.encode(storagePath, "ISO8859-1");
+                String fileName = System.currentTimeMillis() + storagePath.substring(storagePath.indexOf(".")-1);
+                params.put("storagePath",storagePath);
+                String imageOutStream = HttpClientUtil.doGet(comUrl + "/image_view",params,username, password);
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment;fileName="+fileName);
+                outputStream = response.getOutputStream();
+                byte[] bytes = Base64.getDecoder().decode(imageOutStream);
+                outputStream.write(bytes);
+                outputStream.flush();
+            } catch (IOException e) {
+                LogService.getLogger(OrganizationController.class).error(e.getMessage());
+            } finally {
+                if (outputStream != null)
+                    outputStream.close();
+            }
         }
     }
 
