@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<div class="l-page-top m-logo">
+<div id="div_top" class="l-page-top m-logo">
     <div class="f-fr usr_msg">
         欢迎登录：${current_user.realName}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/user/initialChangePassword"
                                                                  class="f-color-0">修改密码</a><br>

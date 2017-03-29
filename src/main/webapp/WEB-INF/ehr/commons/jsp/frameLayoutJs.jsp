@@ -60,7 +60,12 @@
             $breadcrumbBar: $('#div_nav_breadcrumb_bar'),
             $breadcrumbContent: $('#span_nav_breadcrumb_content'),
             init: function () {
-
+                //判断是否内嵌登录
+                var hash = window.location.hash;
+                if(hash.indexOf("#signin")>=0)
+                {
+                    $("#div_top").hide();
+                }
                 //判断用户是否初始密码
                 bo = Util.isStrEmpty(${defaultPassWord})?false:true;
 

@@ -108,6 +108,13 @@ public class HttpClientUtil {
     }
 
     /**
+     * 发送 POST 请求（HTTP），不带输入数据 不加密
+     */
+    public static String doPost(String url, Map<String, Object> params) throws Exception {
+        return doPost(url, params, "", "");
+    }
+
+    /**
      *  httpClient的post请求方式
      * @param url
      * @param params
