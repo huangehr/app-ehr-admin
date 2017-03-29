@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.AccessToken;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ErrorCode;
@@ -15,6 +16,7 @@ import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.web.RestTemplates;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,10 +29,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +38,7 @@ import java.io.InputStream;
 import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 
 
 /**
@@ -55,12 +55,78 @@ public class LoginController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Value("${service-gateway.portalurl}")
+    private String portalUrl;
+    @Value("${service-gateway.clientId}")
+    private String clientId;
 
     @RequestMapping(value = "")
     public String login(Model model) {
         model.addAttribute("contentPage", "login/login");
         model.addAttribute("successFlg", true);
         return "generalView";
+    }
+
+    @RequestMapping(value = "signin")
+    public String signin(Model model) {
+        model.addAttribute("contentPage", "login/signin");
+        model.addAttribute("successFlg", true);
+        return "generalView";
+    }
+
+    /*
+     自动登录
+      */
+    @RequestMapping(value = "autoLogin",method = RequestMethod.POST)
+    @ResponseBody
+    public Envelop autoLogin(Model model,
+                            HttpServletRequest request,
+                            @ApiParam(name = "token")
+                            @RequestParam String token) throws Exception
+    {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("clientId", clientId);
+            params.put("accessToken", token);
+
+            String response = HttpClientUtil.doPost(portalUrl + "/oauth/validToken", params);
+            Map<String,Object> map = objectMapper.readValue(response,Map.class);
+
+            if ((Boolean) map.get("successFlg")) {
+                AccessToken accessToken = objectMapper.readValue(objectMapper.writeValueAsString(map.get("data")),AccessToken.class);
+                String loginName = accessToken.getUser();
+
+                //验证通过。赋值session中的用户信息
+                String userInfo = HttpClientUtil.doGet(comUrl + "/users/"+loginName, params);
+                Envelop envelop = (Envelop)this.objectMapper.readValue(userInfo, Envelop.class);
+                String ex = this.objectMapper.writeValueAsString(envelop.getObj());
+                UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+                request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+
+                //获取用户角色信息
+                List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
+                Collection<GrantedAuthority> gas = new ArrayList<>();
+                if(features!=null){
+                    for(AppFeatureModel feature: features){
+                        if(!StringUtils.isEmpty(feature.getUrl()))
+                            gas.add(new SimpleGrantedAuthority(feature.getUrl()));
+                    }
+                }
+                //生成认证token
+                Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(loginName,"", gas);
+                //将信息存放到SecurityContext
+                SecurityContextHolder.getContext().setAuthentication(AuthenticationToken);
+
+                return success(accessToken);
+            } else {
+                String msg = String.valueOf(map.get("message"));
+                return failed(msg);
+            }
+        }
+        catch (Exception e)
+        {
+            return failed(e.getMessage());
+        }
     }
 
     @RequestMapping(value = "validate", method = RequestMethod.POST)
