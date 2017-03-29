@@ -14,12 +14,15 @@
         var messageRemindModel = null;
 
         var dialog = null;
+        var searchUser;
 
         // 表单校验工具类
         var jValidation = $.jValidation;
 
         var allData = ${allData};
         var messageRemind = allData.obj;
+        var firstInit = true;
+        var toUserData;
 
         /* ************************** 变量定义结束 **************************** */
 
@@ -28,19 +31,17 @@
             messageRemindInfo.init();
         }
 
-        /* ************************** 函数定义结束 **************************** */
-
         /* *************************** 模块初始化 ***************************** */
         messageRemindInfo = {
             $form: $("#div_info_form"),
             $appId:$("#inp_appId"),
             $appName:$("#inp_appName"),
             $selectType:$("#inp_typeId"),
-            $toUserId:$("#inp_toUserId"),
             $workUri:$("#inp_workUri"),
             $content:$("#inp_content"),
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
+            $searchUser: $('#ipt_search_user'),
 
             init: function () {
                 var self = this;
@@ -52,9 +53,9 @@
                 this.$form.removeClass("m-form-readonly");
                 this.$appId.ligerTextBox({width: 240});
                 this.$appName.ligerTextBox({width: 240});
-                this.$toUserId.ligerTextBox({width: 240});
                 this.$workUri.ligerTextBox({width: 240,height:50});
                 this.$content.ligerTextBox({width:240,height:50 });
+                this.$searchUser.customCombo('${contextRoot}/messageRemind/getUserList');
 
                 var selectType = this.$selectType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
@@ -63,12 +64,6 @@
                     dataParmName: 'detailModelList',
                     urlParms: {
                         dictId: 59
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            selectType.setValue(data[0].code);
-                        }
                     }
                 });
 
@@ -78,10 +73,13 @@
                     appId: messageRemind.appId,
                     appName: messageRemind.appName,
                     typeId: messageRemind.typeId,
-                    toUserId: messageRemind.toUserId,
                     workUri: messageRemind.workUri,
                     content: messageRemind.content
                 });
+
+                $("#ipt_search_user").ligerGetComboBoxManager().setValue(messageRemind.toUserId);
+                $("#ipt_search_user").ligerGetComboBoxManager().setText(messageRemind.toUserName);
+
 
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");

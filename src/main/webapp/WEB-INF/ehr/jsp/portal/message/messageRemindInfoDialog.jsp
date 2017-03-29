@@ -27,7 +27,7 @@
     <div class="m-form-group">
         <label><spring:message code="lbl.messageRemind.toUser"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control ">
-            <input type="text" id="inp_toUserId"    data-attr-scan="toUserId"   />
+            <input type="text" id="ipt_search_user"  placeholder="请选择对象用户" data-type="select" data-attr-scan="toUserId">
         </div>
     </div>
 

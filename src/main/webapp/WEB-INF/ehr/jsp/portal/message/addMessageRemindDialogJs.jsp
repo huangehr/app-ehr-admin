@@ -15,7 +15,7 @@
         var addMessageRemindInfo = null;
 
         var dialog = frameElement.dialog;
-
+        var searchUser;
         var source;
         var trees;
 
@@ -43,21 +43,25 @@
             $appId:$("#inp_appId"),
             $appName:$("#inp_appName"),
             $selectType:$("#inp_typeId"),
-            $toUserId:$("#inp_toUserId"),
             $workUri:$("#inp_workUri"),
             $content:$("#inp_content"),
+            $chooseUserBtn:$("#chooseUserBtn"),
+
+            $searchUser: $("#ipt_search_user"),
 
             init: function () {
                 var self = this;
                 self.initForm();
                 self.bindEvents();
             },
+
+
             initForm: function () {
                 this.$appId.ligerTextBox({width: 240});
                 this.$appName.ligerTextBox({width: 240});
-                this.$toUserId.ligerTextBox({width: 240});
                 this.$workUri.ligerTextBox({width: 240,height:50});
                 this.$content.ligerTextBox({width:240,height:50 });
+                this.$searchUser.customCombo('${contextRoot}/messageRemind/getUserList');
 
                 var selectType = this.$selectType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
@@ -114,6 +118,10 @@
 
                 self.$cancelBtn.click(function () {
                     dialog.close();
+                });
+
+                self.$chooseUserBtn.click(function () {
+                    $.ligerDialog.open({ target: $("#div_mutil_dialog_content"), width: 300 ,height:300});
                 });
             }
         };

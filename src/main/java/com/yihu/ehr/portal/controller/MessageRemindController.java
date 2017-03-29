@@ -1,6 +1,9 @@
 package com.yihu.ehr.portal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.adapter.controller.ExtendController;
+import com.yihu.ehr.adapter.service.OrgAdapterPlanService;
+import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.portal.MessageRemindModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
@@ -23,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +35,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/messageRemind")
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class MessageRemindController extends BaseUIController {
+public class MessageRemindController extends ExtendController<OrgAdapterPlanService> {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -44,8 +48,8 @@ public class MessageRemindController extends BaseUIController {
      * @param model
      * @return
      */
-    @RequestMapping("initial")
-    public String patientInitial(Model model) {
+    @RequestMapping("initialMessageRemind")
+    public String messageRemindInitial(Model model) {
         model.addAttribute("contentPage", "/portal/message/messageRemind");
         return "pageView";
     }
@@ -129,7 +133,7 @@ public class MessageRemindController extends BaseUIController {
                     updateMessageRemind.setAppId(detailModel.getAppId());
                     updateMessageRemind.setAppName(detailModel.getAppName());
                     updateMessageRemind.setContent(detailModel.getContent());
-                    updateMessageRemind.setFromUserId(userDetailModel.getId());
+                    updateMessageRemind.setToUserId(detailModel.getToUserId());
                     updateMessageRemind.setTypeId(detailModel.getTypeId());
                     updateMessageRemind.setWorkUri(detailModel.getWorkUri());
                     params.add("messageRemind_json_data", toJson(updateMessageRemind));
@@ -217,5 +221,24 @@ public class MessageRemindController extends BaseUIController {
             return envelop;
         }
     }
+
+    @RequestMapping("/getUserList")
+    @ResponseBody
+    public Object getUserList(String type, String version, String mode, String searchParm, int page, int rows) {
+        try {
+            String adapterOrgs = "";
+            String url = "/users";
+            PageParms pageParms = new PageParms(rows, page)
+                    .addEqualNotNull("type", type)
+                    .addNotEqualNotNull("org", adapterOrgs.length()>0 ? adapterOrgs.substring(1) : "")
+                    .addLikeNotNull("realName", searchParm);
+            String resultStr = service.search(url, pageParms);
+            return formatComboData(resultStr, "id", "realName");
+        } catch (Exception e) {
+            return systemError();
+        }
+    }
+
+
 
 }

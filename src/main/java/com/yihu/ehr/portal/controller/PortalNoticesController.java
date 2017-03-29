@@ -130,6 +130,7 @@ public class PortalNoticesController extends BaseUIController {
                     updateNotice.setTitle(detailModel.getTitle());
                     updateNotice.setContent(detailModel.getContent());
                     updateNotice.setType(detailModel.getType());
+                    updateNotice.setPortalType(detailModel.getPortalType());
 
                     params.add("portalNotice_json_data", toJson(updateNotice));
 

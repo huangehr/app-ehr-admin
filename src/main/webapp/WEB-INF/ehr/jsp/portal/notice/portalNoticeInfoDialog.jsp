@@ -11,6 +11,14 @@
             <input type="text" id="inp_select_type" data-type="select" data-attr-scan="type">
         </div>
     </div>
+
+    <div class="m-form-group">
+        <label><spring:message code="lbl.portalNotice.portal.type"/><spring:message code="spe.colon"/></label>
+        <div class="m-form-control">
+            <input type="text" id="inp_select_portal_type" data-type="select" data-attr-scan="portalType">
+        </div>
+    </div>
+
     <div class="m-form-group">
         <label><spring:message code="lbl.portalNotice.title"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">

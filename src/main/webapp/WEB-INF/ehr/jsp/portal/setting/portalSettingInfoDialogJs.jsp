@@ -64,12 +64,6 @@
                     dataParmName: 'detailModelList',
                     urlParms: {
                         dictId: 60
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            columnType.setValue(data[0].code);
-                        }
                     }
                 });
 
@@ -80,12 +74,6 @@
                     dataParmName: 'detailModelList',
                     urlParms: {
                         dictId: 61
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            stausType.setValue(data[0].code);
-                        }
                     }
                 });
 

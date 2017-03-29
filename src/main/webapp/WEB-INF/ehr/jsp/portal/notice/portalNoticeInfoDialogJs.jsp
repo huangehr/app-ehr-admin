@@ -34,6 +34,7 @@
         noticeInfo = {
             $form: $("#div_info_form"),
             $selectType: $("#inp_select_type"),
+            $selectPortalType: $("#inp_select_portal_type"),
             $title:$("#inp_title"),
             $content:$("#inp_content"),
             $updateDtn: $("#div_update_btn"),
@@ -57,12 +58,6 @@
                     dataParmName: 'detailModelList',
                     urlParms: {
                         dictId: 55
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            self.$form.Fields.fillValues({type: notice.type});
-                        }
                     }
                 });
 
@@ -73,12 +68,6 @@
                     dataParmName: 'detailModelList',
                     urlParms: {
                         dictId: 56
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            selectPortalType.setValue(data[0].code);
-                        }
                     }
                 });
 
@@ -86,9 +75,10 @@
                 this.$form.Fields.fillValues({
                     id: notice.id,
                     title: notice.title,
+                    type: notice.type,
+                    portalType: notice.portalType,
                     content: notice.content
                 });
-
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");
                     this.$cancelBtn.hide();

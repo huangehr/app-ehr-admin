@@ -391,13 +391,13 @@
                 </sec:authorize>
 
                 //消息提醒
-                <sec:authorize url="/messageRemind/initial">
+                <sec:authorize url="/messageRemind/initialMessageRemind">
                 {
                     id: 352,
                     pid: 35,
                     level:3,
                     text: '<spring:message code="title.portal.messageRemind"/>',
-                    url: '${contextRoot}/messageRemind/initial'
+                    url: '${contextRoot}/messageRemind/initialMessageRemind'
                 },
                 </sec:authorize>
 

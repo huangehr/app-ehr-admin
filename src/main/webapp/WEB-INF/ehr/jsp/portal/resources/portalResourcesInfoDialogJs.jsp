@@ -79,12 +79,6 @@
                     dataParmName: 'detailModelList',
                     urlParms: {
                         dictId: 57
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            platformType.setValue(data[0].code);
-                        }
                     }
                 });
 
@@ -95,12 +89,6 @@
                     dataParmName: 'detailModelList',
                     urlParms: {
                         dictId: 58
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            developLanType.setValue(data[0].code);
-                        }
                     }
                 });
                 this.$form.attrScan();
