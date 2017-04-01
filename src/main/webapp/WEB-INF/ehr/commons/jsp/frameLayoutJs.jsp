@@ -91,13 +91,34 @@
                 </sec:authorize>
 
                 // 1-1 - 机构管理
-                <sec:authorize url="/organization/initial">
+                <sec:authorize url="Ehr_Patients">
                 {
                     id: 11,
                     pid: 1,
                     level:2,
+                    text: '<spring:message code="title.org.manage"/>'
+                },
+                </sec:authorize>
+
+                // 1-1-1 - 机构管理 - 机构管理
+                <sec:authorize url="/organization/Initial">
+                {
+                    id: 111,
+                    pid: 11,
+                    level:3,
                     text: '<spring:message code="title.org.manage"/>',
                     url: '${contextRoot}/organization/initial'
+                },
+                </sec:authorize>
+
+                // 1-1-2 - 机构管理 - 部门与人员管理
+                <sec:authorize url="/deptMember/initialDeptMember">
+                {
+                    id: 112,
+                    pid: 11,
+                    level:3,
+                    text: '<spring:message code="title.org.deptMember"/>',
+                    url: '${contextRoot}/deptMember/initialDeptMember'
                 },
                 </sec:authorize>
 
