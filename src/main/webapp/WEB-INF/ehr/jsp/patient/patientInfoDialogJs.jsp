@@ -107,6 +107,7 @@
                 }
             })
         }
+
         function cardInfoRefresh(){
             var searchNm = cardFormInit.$cardSearch.val();
             var cardType = cardFormInit.$selectCardType.ligerComboBox().getValue();
