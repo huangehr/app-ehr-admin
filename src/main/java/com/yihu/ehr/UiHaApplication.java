@@ -13,14 +13,16 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 //@SpringBootApplication
 public class UiHaApplication extends SpringBootServletInitializer {
-	static {
+	/*static {
 		try{
-			String log4jPath = UiHaApplication.class.getClassLoader().getResource("").getPath()+"log4j.properties";
-			PropertyConfigurator.configure(log4jPath);
+			//String log4jPath = UiHaApplication.class.getClassLoader().getResource("").getPath()+"log4j.properties";
+			PropertyConfigurator.configure("classpath:log4j.properties");
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-	}public static void main(String[] args) {
+	}*/
+
+	public static void main(String[] args) {
 		SpringApplication.run(UiHaApplication.class, args);
 	}
 
