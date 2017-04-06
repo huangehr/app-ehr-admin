@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<style>
+    .i-text{width: 185px;height: 30px;line-height: 30px;padding-right: 17px;color: #555555;padding-left: 5px;vertical-align: middle;}
+    .uploadBtn{position: relative;vertical-align: middle;overflow: hidden;}
+    .uploadBtn .file{width: 50px;height: 30px;position: absolute;top: 0;left: 0;opacity: 0;z-index: 999;}
+</style>
 <!--######资源管理页面 > 资源信息对话框模板页######-->
 <div id="div_info_form" data-role-form class="m-form-inline f-mt20 f-pb10" style="overflow:auto">
     <input data-attr-scan="id" hidden="hidden"/>
@@ -15,27 +20,33 @@
         <div class="m-form-group">
             <label>apkUrl</label>
             <div class="l-text-wrapper m-form-control essential">
-                <input type="hidden"   id="apkUrl" data-attr-scan="url" >
-                <input type="file" id="inp_file_apk" name="apkFile" class="file">
-                <input type="button" value="上传" id="apkUploadButton" class="uploadBtn"  />
+                <input type="text" class="i-text" id="apkUrl" data-attr-scan="url" data-attr-scan="apkUrl" readonly="readonly" />
+                <div class="uploadBtn">上传
+                    <input type="file" id="inp_file_apk" name="apkFile" class="file">
+                </div>
+                <%--<input type="button" value="上传" id="apkUploadButton" class="uploadBtn"  />--%>
             </div>
         </div>
 
         <div class="m-form-group">
             <label>AndroidUrl</label>
             <div class="l-text-wrapper m-form-control essential">
-                <input type="hidden"   id="androidUrl" data-attr-scan="androidQrCodeUrl" >
-                <input type="file" id="inp_file_android" name="androidFile" class="file" >
-                <input type="button" value="上传" id="androidUploadButton" class="uploadBtn" />
+                <input type="text" class="i-text" id="androidUrl" data-attr-scan="androidQrCodeUrl" value="" readonly="readonly" />
+                <div class="uploadBtn">上传
+                    <input type="file" id="inp_file_android" name="androidFile" class="file" >
+                </div>
+                <%--<input type="button" value="上传" id="androidUploadButton" class="uploadBtn" />--%>
             </div>
         </div>
 
         <div class="m-form-group">
             <label>IOSUrl</label>
             <div class="l-text-wrapper m-form-control essential">
-                <input type="hidden"   id="iosUrl" data-attr-scan="iosQrCodeUrl" >
-                <input type="file" id="inp_file_iosUrl" name="iosFile" class="file">
-                <input type="button" value="上传" id="iosUploadButton" class="uploadBtn"  />
+                <input type="text" class="i-text" id="iosUrl" data-attr-scan="iosQrCodeUrl" value="" readonly="readonly" />
+                <div class="uploadBtn">上传
+                    <input type="file" id="inp_file_iosUrl" name="iosFile" class="file">
+                </div>
+                <%--<input type="button" value="上传" id="iosUploadButton" class="uploadBtn"  />--%>
             </div>
         </div>
 

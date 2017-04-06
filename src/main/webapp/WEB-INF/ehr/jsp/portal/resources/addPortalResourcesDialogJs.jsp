@@ -2,6 +2,8 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <script type="text/javascript">
+$(function () {
+    
 
     (function ($, win) {
 
@@ -48,9 +50,16 @@
             $androidUrl:$("#androidUrl"),
             $iosUrl:$("#iosUrl"),
 
-            $uploadApk: $("#apkUploadButton"),
-            $uploadAndroid: $("#androidUploadButton"),
-            $uploadIos: $("#iosUploadButton"),
+//            $uploadApk: $("#apkUploadButton"),
+
+            $inpFileAndroid: $('#inp_file_android'),
+            $inpFileIosUrl: $('#inp_file_iosUrl'),
+            $inpFileApk: $("#inp_file_apk"),
+
+
+//
+//            $uploadAndroid: $("#androidUploadButton"),
+//            $uploadIos: $("#iosUploadButton"),
 
             init: function () {
                 var self = this;
@@ -164,18 +173,38 @@
                 }
 
 
-                this.$uploadApk.click(function () {
+                //change事件
+                this.$inpFileApk.on( 'change', function () {
                     var url = '${contextRoot}/portalResources/portalResourcesFileUpload';
                     self.$apkUrl.val(doUpload(url));
                 });
-                this.$uploadAndroid.click(function () {
-                  var url = '${contextRoot}/portalResources/portalResourcesFileUploadAndriod';
+                this.$inpFileAndroid.on( 'change', function () {
+                    var url = '${contextRoot}/portalResources/portalResourcesFileUploadAndriod';
                     self.$androidUrl.val(doUpload(url));
                 });
-                this.$uploadIos.click(function () {
-                  var url = '${contextRoot}/portalResources/portalResourcesFileUploadIos';
+                this.$inpFileIosUrl.on( 'change',function () {
+                    var url = '${contextRoot}/portalResources/portalResourcesFileUploadIos';
                     self.$iosUrl.val( doUpload(url));
                 });
+
+
+
+
+
+
+
+                <%--this.$uploadApk.click(function () {--%>
+                    <%--var url = '${contextRoot}/portalResources/portalResourcesFileUpload';--%>
+                    <%--self.$apkUrl.val(doUpload(url));--%>
+                <%--});--%>
+                <%--this.$uploadAndroid.click(function () {--%>
+                  <%--var url = '${contextRoot}/portalResources/portalResourcesFileUploadAndriod';--%>
+                    <%--self.$androidUrl.val(doUpload(url));--%>
+                <%--});--%>
+                <%--this.$uploadIos.click(function () {--%>
+                  <%--var url = '${contextRoot}/portalResources/portalResourcesFileUploadIos';--%>
+                    <%--self.$iosUrl.val( doUpload(url));--%>
+                <%--});--%>
 
                 function doUpload(url) {
                     var formData = new FormData($( "#uploadForm" )[0]);
@@ -222,4 +251,5 @@
         /* ************************* 页面初始化结束 ************************** */
 
     })(jQuery, window);
+});
 </script>
