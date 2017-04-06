@@ -133,4 +133,47 @@ public class ImageUploadController extends BaseUIController {
             return envelop;
         }
     }
+
+
+
+    @RequestMapping("/upload/EditorImage")
+    @ResponseBody
+    public Object uploadEditorImage(HttpServletRequest request,String mime,String objectId,String purpose){
+        Map<String,Object> param = new HashMap<String,Object>();
+        try {
+            CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+            if (multipartResolver.isMultipart(request)) {
+                MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+                Iterator<String> iter = multiRequest.getFileNames();
+                while (iter.hasNext()) {
+                    MultipartFile file = multiRequest.getFile(iter.next());
+                    String fileBase64 =  new String(Base64.getEncoder().encode(file.getBytes()));
+                    Map<String, Object> params = new HashMap<>();
+                    JSONObject jsonData = new JSONObject();
+                    jsonData.put("mime","editor");
+                    jsonData.put("objectId",new Date().getTime());
+                    jsonData.put("purpose",purpose);
+                    params.put("file_str", fileBase64);
+                    params.put("file_name", new Date().getTime()+file.getName());
+                    params.put("json_data", jsonData.toJSONString());
+                    String url = HttpClientUtil.doPost(comUrl + "/filesReturnHttpUrl", params, username, password);
+
+                    param.put("state","上传成功");
+                    param.put("url","E:\\103.jpg");
+                    param.put("size",file.getSize());
+                    param.put("original",file.getOriginalFilename());
+                    param.put("title",file.getName());
+                    param.put("type",file.getContentType());
+                }
+                return  param;
+            }else{
+                throw new RuntimeException("未检测到图片！");
+            }
+
+        }catch (IOException o){
+            throw new RuntimeException("图片转换BASE64错误");
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

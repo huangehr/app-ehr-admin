@@ -1,5 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<style>
+    #div_addNotice_form{
+        overflow: hidden;
+    }
+    .m-form-group{
+        overflow: hidden;
+    }
+    #inp_content_div{
+        height: 317px;
+    }
+    .pane-attribute-toolbar{
+        position: relative;
+    }
+</style>
+
+<link href="${contextRoot}/develop/lib/ueditor/themes/default/css/ueditor.css" type="text/css" rel="stylesheet">
 <!--######医生管理页面 > 医生信息对话框模板页######-->
 <div id="div_info_form" data-role-form class="m-form-inline f-mt20 f-pb10" style="overflow:auto">
     <input data-attr-scan="id" hidden="hidden"/>
@@ -27,8 +43,8 @@
     </div>
     <div class="m-form-group" id="inp_content_div">
         <label><spring:message code="lbl.portalNotice.content"/><spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control essential">
-            <textarea id="inp_content" class="required f-w240 description  max-length-256 validate-special-char" data-attr-scan="content" required-title=<spring:message code="lbl.must.input"/>></textarea>
+        <div class="l-text-wrapper m-form-control">
+            <textarea  id="inp_content" data-attr-scan="content" ></textarea>
         </div>
     </div>
 

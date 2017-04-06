@@ -121,8 +121,8 @@
                     //新增通知公告信息
                     retrieve.$newPortalNotice.click(function(){
                         self.addNoticeInfoDialog = $.ligerDialog.open({
-                            height: 400,
-                            width: 450,
+                            height: 600,
+                            width: 850,
                             title: '新增通知公告信息',
                             url: '${contextRoot}/portalNotice/addNoticeInfoDialog?'+ $.now()
                         })
@@ -133,8 +133,8 @@
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 400,
-                            width: 450,
+                            height: 600,
+                            width: 850,
                             isDrag:true,
                             isResize:true,
                             url: '${contextRoot}/portalNotice/getPortalNotice',

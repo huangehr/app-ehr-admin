@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/ueditor.all.js"></script>
+<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/dialogs/image/image.js"></script>--%>
+
+<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/lang/zh-cn/zh-cn.js"></script>--%>
 <script type="text/javascript">
 
     (function ($, win) {
@@ -16,8 +21,20 @@
 
         var dialog = frameElement.dialog;
 
-        var source;
-		var trees;
+        // 编辑器
+        var ue = UE.getEditor('inp_content',{
+            serverUrl: '${contextRoot}/develop/lib/ueditor/jsp/config.json'
+        });
+
+        UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
+        UE.Editor.prototype.getActionUrl = function (a) {
+            if (a === 'uploadimage') {
+                return '${contextRoot}/file/upload/EditorImage'
+            } else {
+                return this._bkGetActionUrl.call(this,a);
+            }
+        };
+
 
 
         /* ************************** 变量定义结束 **************************** */
@@ -52,7 +69,7 @@
             },
             initForm: function () {
                 this.$title.ligerTextBox({width: 240});
-                this.$content.ligerTextBox({width:240,height:150 });
+                this.$content.ligerTextBox({width:840,height:150 });
 
                 var selectType = this.$selectType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
@@ -99,18 +116,23 @@
                 //新增的点击事件
                 this.$addBtn.click(function () {
                     var addNotice = self.$form.Fields.getValues();
+                    var ue = UE.getEditor('inp_content');
+                    var ueditContent  = ue.getContent();
                     if (validator.validate()) {
-                        update(addNotice);
+                        update(addNotice,ueditContent);
                     } else {
                         return;
                     }
                 });
 
-                function update(noticeModel) {
+                function update(noticeModel,ueditContent) {
                     var modelJsonData = JSON.stringify(noticeModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/portalNotice/updatePortalNotice", {
-                        data: {portalNoticeModelJsonData: modelJsonData},
+                        data: {
+                            portalNoticeModelJsonData: modelJsonData,
+                            ueditContent:ueditContent
+                        },
                         success: function (data) {
                             if (data.successFlg) {
                                 win.parent.closeAddPortalNoticeInfoDialog(function () {

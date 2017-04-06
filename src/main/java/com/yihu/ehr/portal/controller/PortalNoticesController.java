@@ -2,7 +2,6 @@ package com.yihu.ehr.portal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.portal.PortalNoticeDetailModel;
-import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -101,13 +100,15 @@ public class PortalNoticesController extends BaseUIController {
     /**
      * 新增修改
      * @param portalNoticeModelJsonData
+     * @param ueditContent
      * @param request
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "updatePortalNotice", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updatePortalNotice(String portalNoticeModelJsonData, HttpServletRequest request) throws IOException{
+    public Object updatePortalNotice(String portalNoticeModelJsonData,String ueditContent,
+                                     HttpServletRequest request) throws IOException{
 
         String url = "/portalNotice/";
         String resultStr = "";
@@ -128,9 +129,11 @@ public class PortalNoticesController extends BaseUIController {
                     PortalNoticeDetailModel updateNotice = getEnvelopModel(envelop.getObj(), PortalNoticeDetailModel.class);
 
                     updateNotice.setTitle(detailModel.getTitle());
-                    updateNotice.setContent(detailModel.getContent());
                     updateNotice.setType(detailModel.getType());
                     updateNotice.setPortalType(detailModel.getPortalType());
+                    if( ! StringUtils.isEmpty(ueditContent)){
+                        updateNotice.setContent(ueditContent);
+                    }
 
                     params.add("portalNotice_json_data", toJson(updateNotice));
 
@@ -142,6 +145,9 @@ public class PortalNoticesController extends BaseUIController {
                 }
             } else {
                 detailModel.setReleaseAuthor(userDetailModel.getId());
+                if( ! StringUtils.isEmpty(ueditContent)){
+                    detailModel.setContent(ueditContent);
+                }
                 params.add("portalNotice_json_data", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
@@ -199,15 +205,11 @@ public class PortalNoticesController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
-
         params.put("portalNoticeId", portalNoticeId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-
             Envelop ep = getEnvelop(resultStr);
-            DoctorDetailModel detailModel = toModel(toJson(ep.getObj()),DoctorDetailModel.class);
-
-
+            PortalNoticeDetailModel detailModel = toModel(toJson(ep.getObj()),PortalNoticeDetailModel.class);
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "portal/notice/portalNoticeInfoDialog");
