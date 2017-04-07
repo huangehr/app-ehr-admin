@@ -1,10 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/ueditor.config.js"></script>--%>
-<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/ueditor.all.js"></script>--%>
-<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/lang/zh-cn/zh-cn.js" defer="defer"></script>--%>
-
 <script type="text/javascript" src="${contextRoot}/develop/editor/kindeditor-min.js"></script>
 
 <script type="text/javascript">
@@ -26,29 +22,14 @@
         var allData = ${allData};
         var notice = allData.obj;
 
-        <%--// 编辑器--%>
-        <%--var ue = UE.getEditor('inp_content', {--%>
-            <%--serverUrl: '${contextRoot}/develop/lib/ueditor/jsp/config.json',--%>
-            <%--initialFrameWidth:'100%',--%>
-            <%--initialFrameHeight:'150px'--%>
-        <%--});--%>
 
-        <%--UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;--%>
-        <%--UE.Editor.prototype.getActionUrl = function (a) {--%>
-            <%--if (a === 'uploadimage') {--%>
-                <%--return '${contextRoot}/file/upload/EditorImage'--%>
-            <%--} else {--%>
-                <%--return this._bkGetActionUrl.call(this,a);--%>
-            <%--}--%>
-        <%--};--%>
-
-        var domainName = 'http://localhost:8080/ehr';
+        var domainName = 'http://localhost:8080';
         editor = KindEditor.create('#inp_content', {
             resizeType : 0,
-            uploadJson : domainName+'/file/upload/EditorImage',
+            uploadJson : '/ehr/file/upload/EditorImage',
             filterMode : false,
             formatUploadUrl:false,
-            width : '700',
+            width : '500',
             height : '270',
             afterBlur: function(){this.sync();},
             items : [
@@ -86,7 +67,7 @@
                 var self = this;
                 this.$form.removeClass("m-form-readonly");
                 this.$title.ligerTextBox({width: 240});
-                this.$content.ligerTextBox({width: 840, height: 250});
+//                this.$content.ligerTextBox({width: 840, height: 250});
 
                 var selectType = this.$selectType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',

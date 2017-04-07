@@ -3,8 +3,6 @@
 
 <script type="text/javascript" src="${contextRoot}/develop/editor/kindeditor-min.js"></script>
 
-<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/dialogs/image/image.js"></script>--%>
-<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/lang/zh-cn/zh-cn.js"></script>--%>
 <script type="text/javascript">
 
     (function ($, win) {
@@ -20,35 +18,20 @@
 
         var dialog = frameElement.dialog;
 
-
-        // 编辑器
-        <%--var ue = UE.getEditor('inp_content',{--%>
-            <%--serverUrl: '${contextRoot}/develop/lib/ueditor/jsp/config.json'--%>
-        <%--});--%>
-
-        <%--UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;--%>
-        <%--UE.Editor.prototype.getActionUrl = function (a) {--%>
-            <%--if (a === 'uploadimage') {--%>
-                <%--return '${contextRoot}/file/upload/EditorImage'--%>
-            <%--} else {--%>
-                <%--return this._bkGetActionUrl.call(this,a);--%>
-            <%--}--%>
-        <%--};--%>
-
-            var domainName = 'http://localhost:8080/ehr';
-            editor = KindEditor.create('#inp_content', {
-                resizeType : 0,
-                uploadJson : domainName+'/file/upload/EditorImage',
-                filterMode : false,
-                formatUploadUrl:false,
-                width : '700',
-                height : '270',
-                afterBlur: function(){this.sync();},
-                items : [
-                    'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-                    'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                    'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
-            });
+        var domainName = 'http://localhost:8080/ehr';
+        editor = KindEditor.create('#inp_content', {
+            resizeType : 0,
+            uploadJson :  '/ehr/file/upload/EditorImage',
+            filterMode : false,
+            formatUploadUrl:false,
+            width : '580',
+            height : '270',
+            afterBlur: function(){this.sync();},
+            items : [
+                'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
+        });
 
 
 
@@ -85,7 +68,7 @@
             },
             initForm: function () {
                 this.$title.ligerTextBox({width: 240});
-                this.$content.ligerTextBox({width:840,height:150 });
+//                this.$content.ligerTextBox({width:840,height:150 });
 
                 var selectType = this.$selectType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
