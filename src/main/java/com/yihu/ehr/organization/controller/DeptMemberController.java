@@ -122,22 +122,15 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
     }
 
     @RequestMapping("/infoInitial")
-    public String OrgDeptMembersInfoInitial(Model model,String id,String mode,String categoryId){
+    public String OrgDeptMembersInfoInitial(Model model,String id,String mode,String categoryId,String categoryOrgId){
         model.addAttribute("mode",mode);
         model.addAttribute("categoryId",categoryId);
+        model.addAttribute("categoryOrgId",categoryOrgId);
         model.addAttribute("contentPage","/organization/deptMember/deptMemberInfoDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
         String categoryName = "";
         try{
-            if(!StringUtils.isEmpty(categoryId)) {
-//                String url = "/orgDeptMember/admin/"+categoryId;
-//                String envelopStrGet = HttpClientUtil.doGet(comUrl + url, username, password);
-//                Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
-//                if(envelopGet.isSuccessFlg()){
-//                    categoryName = getEnvelopModel(envelopGet.getObj(),RsCategoryModel.class).getName();
-//                }
-            }
             model.addAttribute("categoryName",categoryName);
             if (!StringUtils.isEmpty(id)) {
                  String url = "/orgDeptMember/admin/"+id;
@@ -270,6 +263,21 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                     .addLikeNotNull("realName", searchParm);
             String resultStr = service.search(url, pageParms);
             return formatComboData(resultStr, "id", "realName");
+        } catch (Exception e) {
+            return systemError();
+        }
+    }
+
+    @RequestMapping("/getOrgMemberList")
+    @ResponseBody
+    public Object getOrgMemberList( String searchParm,int page, int rows,String orgId) {
+        try {
+            String url = "/orgDeptMember/list";
+            PageParms pageParms = new PageParms(rows, page)
+                    .addEqual("orgId",orgId)
+                    .addLikeNotNull("userName", searchParm);
+            String resultStr = service.doPost(comUrl + url, pageParms);
+            return formatComboData(resultStr, "id", "userName");
         } catch (Exception e) {
             return systemError();
         }

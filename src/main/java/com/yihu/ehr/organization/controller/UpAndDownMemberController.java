@@ -67,31 +67,17 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
                 list = (List<MOrgMemberRelation>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),MOrgMemberRelation.class);
             }
         }catch (Exception ex){
-            LogService.getLogger(DeptMemberController.class).error(ex.getMessage());
+            LogService.getLogger(UpAndDownMemberController.class).error(ex.getMessage());
         }
         return list;
     }
 
 
-    @RequestMapping("/getOrgMemberList")
-    @ResponseBody
-    public Object getOrgMemberList( String searchParm, int page, int rows,String orgId) {
-        try {
-            String url = "/orgDeptMember/list";
-            PageParms pageParms = new PageParms(rows, page)
-                    .addEqual("orgId",orgId)
-                    .addLikeNotNull("userName", searchParm);
-            String resultStr = service.search(url, pageParms);
-            return formatComboData(resultStr, "id", "realName");
-        } catch (Exception e) {
-            return systemError();
-        }
-    }
-
     @RequestMapping("/infoInitial")
-    public String OrgDeptMembersInfoInitial(Model model,String mode,String categoryId,String type){
+    public String OrgDeptMembersInfoInitial(Model model,String mode,String categoryId,String categoryOrgId,String type){
         model.addAttribute("mode",mode);
         model.addAttribute("categoryId",categoryId);
+        model.addAttribute("categoryOrgId",categoryOrgId);
         model.addAttribute("type",type);
         model.addAttribute("contentPage","/organization/upAndDownMember/upAndDownMemberInfoDialog");
         return "simpleView";

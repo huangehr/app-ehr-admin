@@ -122,6 +122,28 @@
                 },
                 </sec:authorize>
 
+                // 1-1-3 - 机构管理 - 人员上下级关系管理
+                <sec:authorize url="/upAndDownMember/initialUpAndDownMember">
+                {
+                    id: 113,
+                    pid: 11,
+                    level:3,
+                    text: '<spring:message code="title.org.upAndDownMember"/>',
+                    url: '${contextRoot}/upAndDownMember/initialUpAndDownMember'
+                },
+                </sec:authorize>
+
+                // 1-1-4 - 机构管理 - 机构上下级关系管理
+                <sec:authorize url="/upAndDownMember/initialUpAndDownMember">
+                {
+                    id: 114,
+                    pid: 11,
+                    level:3,
+                    text: '<spring:message code="title.org.upAndDownOrg"/>',
+                    url: '${contextRoot}/upAndDownMember/initialUpAndDownMember'
+                },
+                </sec:authorize>
+
                 // 1-2 - 人口管理
                 <sec:authorize url="Ehr_Patients">
                 {

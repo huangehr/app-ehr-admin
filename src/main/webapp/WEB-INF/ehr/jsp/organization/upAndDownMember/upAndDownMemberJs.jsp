@@ -12,6 +12,7 @@
 			var isFirstPage = true;
 			var categoryId = '';
 			var categoryName = '';
+			var categoryOrgId = '';
 			var typeTree = null;
 
 
@@ -102,13 +103,15 @@
 						checkbox: false,
 						idFieldName: 'id',
 						parentIDFieldName :'parentUserId',
-						textFieldName: 'parentUserName',
+						textFieldName: 'userName',
 						isExpand: false,
 						childIcon:null,
 						parentIcon:null,
 						onSelect: function (e) {
 							categoryId = e.data.id;
 							categoryName = e.data.userName;
+							categoryOrgId = e.data.orgId;
+							$('#categoryOrgId').text(categoryOrgId);
 							$('#categoryName').text(categoryName);
 							$('#categoryId').text(categoryId);
 							master.reloadGrid();
@@ -172,15 +175,19 @@
 					var self = this;
 					//新增修改
 					$('#btn_addUp').click(function(){
-						$.publish("rs:info:open",['','newUp',categoryId],1);
+						$.publish("rs:info:open",['','newUp',categoryId,categoryOrgId],1);
 					});
 					$('#btn_addDown').click(function(){
-						$.publish("rs:info:open",['','newDown',categoryId],2);
+						$.publish("rs:info:open",['','newDown',categoryId,categoryOrgId],2);
 					});
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,type){
 						var title = "";
-						if(mode == "newUp"){title = "修改上级";}
-						if(mode == "newDown"){title = "新增下级";}
+						if(categoryId == ''){
+							$.Notice.error('请在坐边选中一个成员');
+							return ;
+						}
+						if(mode == "newUp"){title = "新增上级成员";}
+						if(mode == "newDown"){title = "新增下级成员";}
 						master.rsInfoDialog = $.ligerDialog.open({
 							height:550,
 							width:500,
@@ -190,6 +197,7 @@
 								id:resourceId,
 								mode:mode,
 								categoryId:categoryId,
+								categoryOrgId:categoryOrgId,
 								type:type
 							},
 							load:true

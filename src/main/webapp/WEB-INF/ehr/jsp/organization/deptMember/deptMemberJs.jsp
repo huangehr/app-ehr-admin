@@ -13,6 +13,7 @@
 			var isFirstPage = true;
 			var categoryId = '';
 			var categoryName='';
+			var categoryOrgId = '';
 			var typeTree = null;
 
 
@@ -137,7 +138,9 @@
 						onSelect: function (e) {
 							categoryId = e.data.id;
 							categoryName = e.data.name;
+							categoryOrgId = e.data.orgId;
 							$('#categoryId').text(categoryId);
+							$('#categoryOrgId').text(categoryOrgId);
 							$('#categoryName').text(categoryName);
 							master.reloadGrid();
 						},
@@ -235,15 +238,15 @@
 					var self = this;
 					//新增修改
 					$('#btn_add').click(function(){
-						$.publish("rs:info:open",['','new',categoryId]);
+						$.publish("rs:info:open",['','new',categoryId,categoryOrgId]);
 					});
-					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
+					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId){
 						var title = "";
 						if(mode == "modify"){title = "修改成员";}
 						if(mode == "new"){
 							title = "新增成员";
 							if(categoryId == ''){
-								$.Notice.error('请在右边选中一个机构');
+								$.Notice.error('请在坐边选中一个机构');
 								return ;
 							}
 						}
@@ -256,6 +259,7 @@
 								id:resourceId,
 								mode:mode,
 								categoryId:categoryId,
+								categoryOrgId:categoryOrgId
 							},
 							load:true
 						});

@@ -22,14 +22,17 @@
         <!--成员浏览详情-->
         <div id="div_right" class="div-resource-browse">
             <div class="right-retrieve">
-                <div class="f-db f-pt10 f-pb10 f-ml10">
-                    <span id="categoryName"></span>
-                    <input type="hidden" id="categoryId" />
-                    <select id="level">
+                <span id="categoryName" style="font-size: 16px;font-weight:900"></span>
+                <input type="hidden" id="categoryId" />
+                <input type="hidden" id="categoryOrgId" />
+                <div class="m-form-control  f-ml10">
+                    <select id="level" style="width: 60px;height: 30px;">
                         <option value=""></option>
                         <option value="1">上级</option>
                         <option value="2">下级</option>
                     </select>
+                </div>
+                <div class="f-db f-pt10 f-pb10 f-ml10">
                     <!--输入框-->
                     <input type="text" id="inp_searchNm" placeholder="请输入成员名称" class="f-ml10 f-h28 f-w240"
                     data-attr-scan="searchNm"/>

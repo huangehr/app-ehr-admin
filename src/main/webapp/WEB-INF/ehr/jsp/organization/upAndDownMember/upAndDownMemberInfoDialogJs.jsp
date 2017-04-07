@@ -11,6 +11,7 @@
 		var mode = '${mode}';
 
 		var categoryIdOld = '${categoryId}';
+		var categoryOrgId = '${categoryOrgId}';
 		var type = '${type}'
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
@@ -31,11 +32,9 @@
 				this.bindEvents();
 			},
 			initForm: function () {
-
-				this.$userId.customCombo('${contextRoot}/upAndDownMember/getOrgMemberList');
-
+				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
+				this.$userId.customCombo(url);
 				var mode = '${mode}';
-
 				this.$form.attrScan();
 				this.$form.show();
 			},

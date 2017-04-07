@@ -10,8 +10,8 @@
 		var jValidation = $.jValidation;
 		var mode = '${mode}';
 
-		var categoryIdOld = '${categoryId}'
-
+		var categoryIdOld = '${categoryId}';
+		var categoryOrgId = '${categoryOrgId}';
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
 			rsInfoForm.init();
@@ -41,7 +41,8 @@
 				this.$dutyName.ligerTextBox({width:240});
 				this.$remark.ligerTextBox({width:240, height: 120 });
 				this.$userId.customCombo('${contextRoot}/deptMember/getUserList');
-				this.$parentUserId.customCombo('${contextRoot}/deptMember/getUserList');
+				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
+				this.$parentUserId.customCombo(url);
 				this.$deptId.customCombo('${contextRoot}/deptMember/getDeptList');
 
 				var mode = '${mode}';
@@ -72,7 +73,7 @@
 					$("#inp_deptId").ligerGetComboBoxManager().setValue(info.deptId);
 					$("#inp_deptId").ligerGetComboBoxManager().setText(info.deptName);
 				}
-				this.$orgIdstr.val(categoryIdOld);
+				this.$orgIdstr.val(categoryOrgId);
 				this.$form.show();
 			},
 

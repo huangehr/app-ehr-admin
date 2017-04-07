@@ -44,9 +44,10 @@
         <!--资源浏览详情-->
         <div id="div_right" class="div-resource-browse ">
             <div class="right-retrieve">
+                <span id="categoryName" style="font-size: 16px;font-weight:900"></span>
+                <input type="hidden" id="categoryId" />
+                <input type="hidden" id="categoryOrgId" />
                 <div class="m-form-control  f-ml10">
-                    <span id="categoryName"></span>
-                    <input type="hidden" id="categoryId" />
                     <!--下拉框-->
                     <input type="text" id="inp_status" class="f-h28 f-w160" placeholder="请选择状态" data-type="select"
                            data-attr-scan="status">
