@@ -1,7 +1,7 @@
 <%--
   Created by IntelliJ IDEA.
   User: janseny
-  Date: 2017/7/30
+  Date: 2017/3/30
   Time: 10:55
   To change this template use File | Settings | File Templates.
 --%>
@@ -26,6 +26,8 @@
             <div class="right-retrieve">
                 <div class="f-db f-pt10 f-pb10 f-ml10">
                     <!--下拉框-->
+                    <span id="categoryName"></span>
+                    <input type="hidden" id="categoryId" />
                     <input type="text" id="inp_status" class="f-h28 f-w160" placeholder="请选择状态" data-type="select"
                            data-attr-scan="status">
                     <!--输入框-->

@@ -22,7 +22,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import sun.misc.BASE64Encoder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -137,9 +139,9 @@ public class ImageUploadController extends BaseUIController {
 
 
     @RequestMapping("/upload/EditorImage")
-    @ResponseBody
-    public Object uploadEditorImage(HttpServletRequest request,String mime,String objectId,String purpose){
+    public String uploadEditorImage(HttpServletRequest request, HttpServletResponse response,String mime,String objectId,String purpose){
         Map<String,Object> param = new HashMap<String,Object>();
+        Map<String,Object> rmap = new HashMap<String,Object>();
         try {
             CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
             if (multipartResolver.isMultipart(request)) {
@@ -158,14 +160,22 @@ public class ImageUploadController extends BaseUIController {
                     params.put("json_data", jsonData.toJSONString());
                     String url = HttpClientUtil.doPost(comUrl + "/filesReturnHttpUrl", params, username, password);
 
+                    param.put("url",url);
                     param.put("state","上传成功");
-                    param.put("url","E:\\103.jpg");
                     param.put("size",file.getSize());
                     param.put("original",file.getOriginalFilename());
                     param.put("title",file.getName());
                     param.put("type",file.getContentType());
+
+                    rmap.put("error", 0);
+                    rmap.put("url", url);
                 }
-                return  param;
+                response.setContentType("text/html"); // 设置字符编码为UTF-8, 这样支持汉字显示
+                response.setCharacterEncoding("UTF-8");
+                PrintWriter out = response.getWriter();
+
+
+                out.print(JSONObject.toJSONString(rmap));
             }else{
                 throw new RuntimeException("未检测到图片！");
             }
@@ -175,5 +185,6 @@ public class ImageUploadController extends BaseUIController {
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
+        return  null;
     }
 }

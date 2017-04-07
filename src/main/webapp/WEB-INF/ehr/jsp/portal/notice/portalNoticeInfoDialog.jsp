@@ -44,7 +44,7 @@
     <div class="m-form-group" id="inp_content_div">
         <label><spring:message code="lbl.portalNotice.content"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control">
-            <textarea  id="inp_content" data-attr-scan="content" ></textarea>
+            <textarea  id="inp_content" data-attr-scan="content" > ${notice.content}</textarea>
         </div>
     </div>
 

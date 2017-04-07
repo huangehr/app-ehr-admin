@@ -100,14 +100,13 @@ public class PortalNoticesController extends BaseUIController {
     /**
      * 新增修改
      * @param portalNoticeModelJsonData
-     * @param ueditContent
      * @param request
      * @return
      * @throws IOException
      */
     @RequestMapping(value = "updatePortalNotice", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updatePortalNotice(String portalNoticeModelJsonData,String ueditContent,
+    public Object updatePortalNotice(String portalNoticeModelJsonData,
                                      HttpServletRequest request) throws IOException{
 
         String url = "/portalNotice/";
@@ -131,9 +130,7 @@ public class PortalNoticesController extends BaseUIController {
                     updateNotice.setTitle(detailModel.getTitle());
                     updateNotice.setType(detailModel.getType());
                     updateNotice.setPortalType(detailModel.getPortalType());
-                    if( ! StringUtils.isEmpty(ueditContent)){
-                        updateNotice.setContent(ueditContent);
-                    }
+                    updateNotice.setContent(detailModel.getContent());
 
                     params.add("portalNotice_json_data", toJson(updateNotice));
 
@@ -145,9 +142,6 @@ public class PortalNoticesController extends BaseUIController {
                 }
             } else {
                 detailModel.setReleaseAuthor(userDetailModel.getId());
-                if( ! StringUtils.isEmpty(ueditContent)){
-                    detailModel.setContent(ueditContent);
-                }
                 params.add("portalNotice_json_data", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }

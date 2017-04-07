@@ -1,10 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/ueditor.config.js"></script>
-<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/ueditor.all.js"></script>
-<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/dialogs/image/image.js"></script>--%>
+<script type="text/javascript" src="${contextRoot}/develop/editor/kindeditor-min.js"></script>
 
+<%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/dialogs/image/image.js"></script>--%>
 <%--<script type="text/javascript" src="${contextRoot}/develop/lib/ueditor/lang/zh-cn/zh-cn.js"></script>--%>
 <script type="text/javascript">
 
@@ -21,19 +20,36 @@
 
         var dialog = frameElement.dialog;
 
-        // 编辑器
-        var ue = UE.getEditor('inp_content',{
-            serverUrl: '${contextRoot}/develop/lib/ueditor/jsp/config.json'
-        });
 
-        UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
-        UE.Editor.prototype.getActionUrl = function (a) {
-            if (a === 'uploadimage') {
-                return '${contextRoot}/file/upload/EditorImage'
-            } else {
-                return this._bkGetActionUrl.call(this,a);
-            }
-        };
+        // 编辑器
+        <%--var ue = UE.getEditor('inp_content',{--%>
+            <%--serverUrl: '${contextRoot}/develop/lib/ueditor/jsp/config.json'--%>
+        <%--});--%>
+
+        <%--UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;--%>
+        <%--UE.Editor.prototype.getActionUrl = function (a) {--%>
+            <%--if (a === 'uploadimage') {--%>
+                <%--return '${contextRoot}/file/upload/EditorImage'--%>
+            <%--} else {--%>
+                <%--return this._bkGetActionUrl.call(this,a);--%>
+            <%--}--%>
+        <%--};--%>
+
+            var domainName = 'http://localhost:8080/ehr';
+            editor = KindEditor.create('#inp_content', {
+                resizeType : 0,
+                uploadJson : domainName+'/file/upload/EditorImage',
+                filterMode : false,
+                formatUploadUrl:false,
+                width : '700',
+                height : '270',
+                afterBlur: function(){this.sync();},
+                items : [
+                    'source', '|', 'undo', 'redo', '|','fontname', 'fontsize', '|','forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                    'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                    'insertunorderedlist', '|', 'image', 'link','hr','|','fullscreen','preview' ]
+            });
+
 
 
 
@@ -116,22 +132,19 @@
                 //新增的点击事件
                 this.$addBtn.click(function () {
                     var addNotice = self.$form.Fields.getValues();
-                    var ue = UE.getEditor('inp_content');
-                    var ueditContent  = ue.getContent();
                     if (validator.validate()) {
-                        update(addNotice,ueditContent);
+                        update(addNotice);
                     } else {
                         return;
                     }
                 });
 
-                function update(noticeModel,ueditContent) {
+                function update(noticeModel) {
                     var modelJsonData = JSON.stringify(noticeModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/portalNotice/updatePortalNotice", {
                         data: {
-                            portalNoticeModelJsonData: modelJsonData,
-                            ueditContent:ueditContent
+                            portalNoticeModelJsonData: modelJsonData
                         },
                         success: function (data) {
                             if (data.successFlg) {

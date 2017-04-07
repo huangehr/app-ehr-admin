@@ -10,7 +10,8 @@
 		var jValidation = $.jValidation;
 		var mode = '${mode}';
 
-		<%--var categoryIdOld = '${categoryId}'--%>
+		var categoryIdOld = '${categoryId}'
+
 		/* *************************** 函数定义 ******************************* */
 		function pageInit() {
 			rsInfoForm.init();
@@ -27,6 +28,8 @@
 
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
+
+			$orgIdstr: $("#orgIdstr"),
 
 			init: function () {
 				var self = this;
@@ -50,6 +53,7 @@
 
 				this.$form.attrScan();
 
+
 				if(mode !='new'){
 					var info = ${envelop}.obj;
 					this.$form.Fields.fillValues({
@@ -68,6 +72,7 @@
 					$("#inp_deptId").ligerGetComboBoxManager().setValue(info.deptId);
 					$("#inp_deptId").ligerGetComboBoxManager().setText(info.deptName);
 				}
+				this.$orgIdstr.val(categoryIdOld);
 				this.$form.show();
 			},
 

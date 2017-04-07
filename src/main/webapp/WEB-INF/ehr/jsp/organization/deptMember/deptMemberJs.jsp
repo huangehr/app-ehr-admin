@@ -11,6 +11,7 @@
 			var master = null;
 			var isFirstPage = true;
 			var categoryId = '';
+			var categoryName='';
 			var typeTree = null;
 
 
@@ -109,7 +110,7 @@
 
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
-						var status = $('#inp_status').val()
+						var status = $('#inp_status').val();
 						var parms = {
 							'searchNm':searchNm,
 							'status':status,
@@ -134,6 +135,9 @@
 						parentIcon:null,
 						onSelect: function (e) {
 							categoryId = e.data.id;
+							categoryName = e.data.name;
+							$('#categoryId').text(categoryId);
+							$('#categoryName').text(categoryName);
 							master.reloadGrid();
 						},
 						onSuccess: function (data) {
@@ -162,7 +166,7 @@
 						url: '${contextRoot}/deptMember/searchOrgDeptMembers',
 						parms: {
 							searchNm: $('#inp_searchNm').val(),
-							status:$('#inp_status').val(),
+							status:$('#inp_status').text(),
 							categoryId: categoryId
 						},
 						columns: [
@@ -178,10 +182,10 @@
 								render: function (row) {
 									var html = '';
 									if (row.status == 0) {
-										html += '<sec:authorize url="/deptMember/activity"><a class="grid_on" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "deptMember:deptMemberDialog:status", row.orgCode, '1','失效') + '"></a></sec:authorize>';
+										html += '<sec:authorize url="/deptMember/activity"><a class="grid_on" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "deptMember:deptMemberDialog:status", row.id, '1','失效') + '"></a></sec:authorize>';
 
 									} else {
-										html += '<sec:authorize url="/deptMember/activity"><a class="grid_off" title="未生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "deptMember:deptMemberDialog:status", row.orgCode, '0','生效') + '"></a></sec:authorize>';
+										html += '<sec:authorize url="/deptMember/activity"><a class="grid_off" title="未生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "deptMember:deptMemberDialog:status", row.id, '0','生效') + '"></a></sec:authorize>';
 
 									}
 									return html;
@@ -199,9 +203,9 @@
 						validate : true,
 						unSetValidateAttr:false,
 						allowHideColumn: false,
-						onDblClickRow : function (row){
-							$.publish("rs:info:open",[row.id,'view'])
-						}
+//						onDblClickRow : function (row){
+//							$.publish("rs:info:open",[row.id,'view'])
+//						}
 					}));
 					this.resourceInfoGrid.adjustToWidth();
 					this.bindEvents();
@@ -213,6 +217,7 @@
 						data: {id: id, status: status},
 						success: function (data) {
 							if (data.successFlg) {
+								$.Notice.success('操作成功。');
 								master.reloadGrid();
 							}
 						}
@@ -234,7 +239,13 @@
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
 						var title = "";
 						if(mode == "modify"){title = "修改成员";}
-						if(mode == "new"){title = "新增成员";}
+						if(mode == "new"){
+							title = "新增成员";
+							if(categoryId == ''){
+								$.Notice.error('请在右边选中一个机构');
+								return ;
+							}
+						}
 						master.rsInfoDialog = $.ligerDialog.open({
 							height:550,
 							width:500,

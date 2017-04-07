@@ -4,6 +4,7 @@
 
 <div id="div_rs_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
 	<input type="hidden" id="id" data-attr-scan="id"/>
+	<input type="hidden" id="orgIdstr" data-attr-scan="orgId"/>
 
 
 	<div class="m-form-group">

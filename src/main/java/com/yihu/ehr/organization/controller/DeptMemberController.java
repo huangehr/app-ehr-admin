@@ -88,15 +88,22 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("userName?" + searchNm );
+            stringBuffer.append("userName?" + searchNm + ";" );
         }
         if (!StringUtils.isEmpty(categoryId)) {
-            stringBuffer.append("deptId=" + categoryId );
+            stringBuffer.append("deptId=" + categoryId + ";" );
+        }else{
+            stringBuffer.append("deptId=-0;" );
         }
         if (!StringUtils.isEmpty(status)) {
-            stringBuffer.append("status=" + status );
+            if(status.equals("有效")){
+                stringBuffer.append("status=0;");
+            }
+            if(status.equals("无效")){
+                stringBuffer.append("status=1;" );
+            }
         }else {
-            stringBuffer.append("status=" + 0 );
+            stringBuffer.append("status=0;" );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
@@ -205,8 +212,8 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("memberRelationId",id);
-        params.put("status",status);
+        params.put("memberRelationId",Integer.valueOf(id));
+        params.put("status",Integer.valueOf(status));
         try {
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             if (Boolean.parseBoolean(resultStr)) {

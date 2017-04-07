@@ -70,10 +70,10 @@
                         },
                        allowHideColumn:false,
                         columns: [
-                            {display: '标题', name: 'title', width: '15%',align: 'left'},
+                            {display: '标题', name: 'title', width: '25%',align: 'left'},
                             {display: '类型', name: 'typeName', width: '7%'},
                             {display: '门户类型', name: 'portalTypeName', width: '8%'},
-                            {display: '内容', name: 'content', width: '45%', resizable: true,align: 'left'},
+//                            {display: '内容', name: 'content', width: '45%', resizable: true,align: 'left'},
                             {display: '发布日期', name: 'releaseDate', width: '15%', resizable: true,align: 'center'},
                             {
                                 display: '操作', name: 'operator', width: '10%', render: function (row) {
@@ -122,7 +122,7 @@
                     retrieve.$newPortalNotice.click(function(){
                         self.addNoticeInfoDialog = $.ligerDialog.open({
                             height: 600,
-                            width: 850,
+                            width: 750,
                             title: '新增通知公告信息',
                             url: '${contextRoot}/portalNotice/addNoticeInfoDialog?'+ $.now()
                         })
@@ -134,7 +134,7 @@
                             isHidden: false,
                             title:'修改基本信息',
                             height: 600,
-                            width: 850,
+                            width: 750,
                             isDrag:true,
                             isResize:true,
                             url: '${contextRoot}/portalNotice/getPortalNotice',
