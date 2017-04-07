@@ -2,6 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
+<script src="${contextRoot}/develop/lib/plugin/mousepop/mouse_pop.js"></script>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -343,6 +344,59 @@
 			/* *************************** 页面初始化 **************************** */
 			pageInit();
 			/* ************************* 页面初始化结束 ************************** */
+			console.log($MousePop);
+            $MousePop.init({
+                //添加子类
+                setAddChildFun: function ( id, me) {
+                    me.showPopWin(me,function () {
+                        //确认按钮回调：返回true关闭窗口
+                        console.log(id);
+                        console.log(me.$popWim.find('#name').val());
+                        return true;
+                    },{title:'添加子部门',name:''});
+                },
+                //修改名称
+                setEditNameFun: function ( id, me) {
+                    me.showPopWin(me,function () {
+                        //确认按钮回调：返回true关闭窗口
+                        console.log(id);
+                        return true;
+                    },{title:'修改名称',name:'aaa'});
+                },
+                //删除
+                setDelFun: function ( id, me) {
+                    var url = '';
+                    if (!confirm('确定要删除吗？')){
+                        return false;
+                    }
+                    me.res( url, {}, function (data) {
+
+                    });
+                },
+                //上移
+                setUpFun: function ( id, me) {
+                    var url = '';
+                    me.res( url, {}, function (data) {
+
+                    });
+                },
+                //下移
+                setDownFun: function ( id, me) {
+                    var url = '';
+                    me.res( url, {}, function (data) {
+
+                    });
+                },
+                //添加父类
+                setAddParentFun: function ( id, me) {
+                    me.showPopWin(me,function () {
+                        //确认按钮回调：返回true关闭窗口
+                        console.log(id);
+                        return true;
+                    },{title:'添加跟部门',name:''});
+                }
+            });
+
 		});
 	})(jQuery, window);
 </script>
