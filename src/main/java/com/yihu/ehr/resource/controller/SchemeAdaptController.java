@@ -2,7 +2,7 @@ package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.esb.HosAcqTaskModel;
-import com.yihu.ehr.api.ServiceApi;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.model.esb.MHosEsbMiniRelease;
 import com.yihu.ehr.model.resource.MRsAdapterSchema;

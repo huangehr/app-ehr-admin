@@ -1,7 +1,7 @@
 package com.yihu.ehr.resource.controller;
 
 
-import com.yihu.ehr.api.ServiceApi;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.model.resource.MRsAdapterMetadata;
 import com.yihu.ehr.model.resource.MRsAdapterSchema;

@@ -1,7 +1,7 @@
 package com.yihu.ehr.claim.controller;
 
 import com.yihu.ehr.agModel.patient.ArApplyModel;
-import com.yihu.ehr.api.ServiceApi;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.model.patient.MArApply;
 import com.yihu.ehr.util.DateTimeUtils;
