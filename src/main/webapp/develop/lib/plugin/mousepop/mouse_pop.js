@@ -1,7 +1,7 @@
 ;(function ( W, $, u) {
     var MousePop = {
         es: ['contextmenu','mousedown','mouseover','click'],
-        childShowHtml: ['<div class="pop-item"><a class="add-child-btn" data-id="{{id}}" href="javascript:;">添加子部门</a></div>',
+        childShowHtml: ['<div class="pop-item"><a class="add-child-btn" data-id="{{id}}" data-category-name="{{categoryName}}" href="javascript:;">添加子部门</a></div>',
             '<div class="pop-item"><a class="edit-name-btn" data-id="{{id}}" href="javascript:;">修改名称</a></div>',
             '<div class="pop-item"><a class="del-btn" data-id="{{id}}" href="javascript:;">删除</a></div>',
             '<div class="pop-item"><a class="up-btn" data-id="{{id}}" href="javascript:;">上移</a></div>',
@@ -24,7 +24,6 @@
         $b: $('body'),
         ops: null,
         init: function (options) {
-            console.log('aaa');
             var me = this;
             if (!!options && typeof options === 'object') {
                 me.ops = options;
@@ -50,11 +49,20 @@
                 var id = $(e.target).parent().parent().attr('id'),
                     htmlStr = '<div class="mouse-pop-win" data-id="' + id + '">',
                     x = e.pageX,
-                    y = e.pageY;
+                    y = e.pageY,
+                    categoryName = (function () {
+                        var isDom = (/<[^>]+>/g).test($(e.target).html());
+                        if (isDom) {
+                            str = $($(e.target).html()).next('span').html();
+                        } else {
+                            str = $(e.target).html();
+                        }
+                        return str;
+                    })();
                 if (id === 'div_tree') {
-                    htmlStr += me.render(me.parentShowHtml,{'id' : id});
+                    htmlStr += me.render(me.parentShowHtml,{ 'id' : id, categoryName:categoryName});
                 } else {
-                    htmlStr += me.render(me.childShowHtml,{'id' : id});
+                    htmlStr += me.render(me.childShowHtml,{ 'id' : id , categoryName:categoryName});
                 }
                 htmlStr += '</div>';
                 me.$htmlStrDom = $(htmlStr);
@@ -75,14 +83,15 @@
             });
             me.bindEvents( me.$htmlStrDom, me.es[3], function (e) {
                 var id = $(this).attr('data-id'),
+                    categoryName = $(e.target).attr('data-category-name'),
                     className = $(e.target).attr('class');
                 me.closeMousePop(me);
                 switch (className) {
                     case 'add-child-btn':
-                        me.ops.setAddChildFun && me.ops.setAddChildFun.call( this, id, me);
+                        me.ops.setAddChildFun && me.ops.setAddChildFun.call( this, id, me, categoryName);
                         break;
                     case 'edit-name-btn':
-                        me.ops.setEditNameFun && me.ops.setEditNameFun.call( this, id, me);
+                        me.ops.setEditNameFun && me.ops.setEditNameFun.call( this, id, me, categoryName);
                         break;
                     case 'del-btn':
                         me.ops.setDelFun && me.ops.setDelFun.call( this, id, me);
@@ -94,7 +103,7 @@
                         me.ops.setDownFun && me.ops.setDownFun.call( this, id, me);
                         break;
                     case 'add-parent-btn':
-                        me.ops.setAddParentFun && me.ops.setAddParentFun.call( this, id, me);
+                        me.ops.setAddParentFun && me.ops.setAddParentFun.call( this, id, me, '');
                         break;
                 }
             });

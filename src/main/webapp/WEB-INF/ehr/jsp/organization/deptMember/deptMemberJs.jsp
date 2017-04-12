@@ -351,21 +351,24 @@
 			console.log($MousePop);
             $MousePop.init({
                 //添加子类
-                setAddChildFun: function ( id, me) {
+                setAddChildFun: function ( id, me, categoryName) {
                     me.showPopWin(me,function () {
                         //确认按钮回调：返回true关闭窗口
                         console.log(id);
                         console.log(me.$popWim.find('#name').val());
+						me.res( url, {}, function (data) {
+
+						});
                         return true;
-                    },{title:'添加子部门',name:''});
+                    },{title: (!!categoryName ? categoryName + ' > 添加子部门' : '添加子部门'),name:''});
                 },
                 //修改名称
-                setEditNameFun: function ( id, me) {
+                setEditNameFun: function ( id, me, categoryName) {
                     me.showPopWin(me,function () {
                         //确认按钮回调：返回true关闭窗口
                         console.log(id);
                         return true;
-                    },{title:'修改名称',name:'aaa'});
+                    },{title:(!!categoryName ? categoryName + ' > 修改名称' : '修改名称'),name:'aaa'});
                 },
                 //删除
                 setDelFun: function ( id, me) {
@@ -397,7 +400,7 @@
                         //确认按钮回调：返回true关闭窗口
                         console.log(id);
                         return true;
-                    },{title:'添加跟部门',name:''});
+                    },{title:'添加根部门',name:''});
                 }
             });
 
