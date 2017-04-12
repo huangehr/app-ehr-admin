@@ -2,16 +2,20 @@
     var MousePop = {
         es: ['contextmenu','mousedown','mouseover','click'],
         childShowHtml: ['<div class="pop-item"><a class="add-child-btn" data-id="{{id}}" data-category-name="{{categoryName}}" href="javascript:;">添加子部门</a></div>',
-            '<div class="pop-item"><a class="edit-name-btn" data-id="{{id}}" href="javascript:;">修改名称</a></div>',
+            '<div class="pop-item"><a class="edit-name-btn" data-id="{{id}}" data-category-name="{{categoryName}}" href="javascript:;">修改名称</a></div>',
             '<div class="pop-item"><a class="del-btn" data-id="{{id}}" href="javascript:;">删除</a></div>',
-            '<div class="pop-item"><a class="up-btn" data-id="{{id}}" href="javascript:;">上移</a></div>',
-            '<div class="pop-item"><a class="down-btn" data-id="{{id}}" href="javascript:;">下移</a></div>'].join(''),
-        parentShowHtml: '<div class="pop-item"><a class="add-parent-btn" data-id="{{id}}" href="javascript:;">添加根部门</a></div>',
+            '<div class="pop-item {{prevClass}}"><a class="up-btn" data-id="{{id}}" href="javascript:;">上移</a></div>',
+            '<div class="pop-item {{nextClass}}"><a class="down-btn" data-id="{{id}}" href="javascript:;">下移</a></div>'].join(''),
+        parentShowHtml: '<div class="pop-item"><a class="add-parent-btn" data-category-name="{{categoryName}}" data-id="{{id}}" href="javascript:;">添加根部门</a></div>',
         popWin:['<div class="pop-win">',
                     '<h3 class="pop-tit">{{title}}</h3>',
-                    '<div class="pop-form">',
+                    '<div class="pop-form {{className}}">',
                         '<label for="name">名称：</label>',
                         '<input id="name" class="name" type="text" value="{{name}}" />',
+                    '</div>',
+                    '<div class="pop-form {{classCode}}">',
+                        '<label for="code">编码：</label>',
+                        '<input id="code" class="code" type="text" value="" />',
                     '</div>',
                     '<div class="btns">',
                         '<a class="btn sure-btn" id="sureBtn" href="javascript:;">确定</a>',
@@ -23,6 +27,8 @@
         $popWim: null,
         $b: $('body'),
         ops: null,
+        prevId: '',
+        nextId: '',
         init: function (options) {
             var me = this;
             if (!!options && typeof options === 'object') {
@@ -46,7 +52,8 @@
                 me.closeMousePop(me);
             }
             if (e.which === 3) {
-                var id = $(e.target).parent().parent().attr('id'),
+                var parentDom = $(e.target).parent().parent(),
+                    id = parentDom.attr('id'),
                     htmlStr = '<div class="mouse-pop-win" data-id="' + id + '">',
                     x = e.pageX,
                     y = e.pageY,
@@ -59,10 +66,16 @@
                         }
                         return str;
                     })();
+                me.prevId = parentDom.prev().attr('id');
+                me.nextId = parentDom.next().attr('id');
                 if (id === 'div_tree') {
-                    htmlStr += me.render(me.parentShowHtml,{ 'id' : id, categoryName:categoryName});
+                    htmlStr += me.render(me.parentShowHtml,{ 'id' : id, categoryName:categoryName, prevId: me.prevId},function ( data, $1) {
+                        me.checkNPData( data, $1);
+                    });
                 } else {
-                    htmlStr += me.render(me.childShowHtml,{ 'id' : id , categoryName:categoryName});
+                    htmlStr += me.render(me.childShowHtml,{ 'id' : id , categoryName:categoryName, nextId: me.nextId},function ( data, $1) {
+                        me.checkNPData( data, $1);
+                    });
                 }
                 htmlStr += '</div>';
                 me.$htmlStrDom = $(htmlStr);
@@ -72,6 +85,15 @@
                 });
                 me.$b.append(me.$htmlStrDom);
                 me.setHtmlStrDomEvent(me);
+            }
+        },
+        checkNPData: function ( data, $1){
+            var me = this;
+            if ($1 === 'prevClass') {
+                data[$1] = !!me.prevId ? '' : 'pop-f-hide';
+            }
+            if ($1 === 'nextClass') {
+                data[$1] = !!me.nextId ? '' : 'pop-f-hide';
             }
         },
         setHtmlStrDomEvent: function (me) {
@@ -97,10 +119,10 @@
                         me.ops.setDelFun && me.ops.setDelFun.call( this, id, me);
                         break;
                     case 'up-btn':
-                        me.ops.setUpFun && me.ops.setUpFun.call( this, id, me);
+                        me.ops.setUpFun && me.ops.setUpFun.call( this, id, me, me.prevId);
                         break;
                     case 'down-btn':
-                        me.ops.setDownFun && me.ops.setDownFun.call( this, id, me);
+                        me.ops.setDownFun && me.ops.setDownFun.call( this, id, me, me.nextId);
                         break;
                     case 'add-parent-btn':
                         me.ops.setAddParentFun && me.ops.setAddParentFun.call( this, id, me, '');
@@ -112,7 +134,9 @@
             if (me.$popWim !== null) {
                 me.removePopWin(me);
             }
-            me.$popWim = $(me.render( me.popWin, d));
+            me.$popWim = $(me.render( me.popWin, d, function ( data, $1) {
+                data[$1] = data[$1] || '';
+            }));
             me.$b.append(me.$popWim);
             me.bindEvents( me.$popWim, me.es[3], function (e) {
                 var className = $(e.target).attr('id');
@@ -145,8 +169,9 @@
         bindEvents: function ( d, ev, cb, nd) {
             cb && d.on( ev, nd, cb);
         },
-        render: function(tmpl, data){
+        render: function(tmpl, data, cb){
             return tmpl.replace(/\{\{(\w+)\}\}/g, function(m, $1){
+                cb && cb.call( this, data, $1);
                 return data[$1];
             });
         },

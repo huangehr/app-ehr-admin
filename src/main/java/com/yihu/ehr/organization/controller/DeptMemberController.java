@@ -297,4 +297,122 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }
     }
 
+
+    //添加子部门和更新部门名称
+    @RequestMapping("/updateOrgDept")
+    @ResponseBody
+    public Object updateOrgDept(String id,String mode,String code,String name){
+        Envelop envelop = new Envelop();
+        envelop.setSuccessFlg(false);
+        try{
+            if (StringUtils.isEmpty(id)){
+                envelop.setErrorMsg("数据有误！");
+                return envelop;
+            }
+            if (StringUtils.isEmpty(name)){
+                envelop.setErrorMsg("名称不能为空！");
+                return envelop;
+            }
+
+            if("new".equals(mode)){
+                String urlGet = "/orgDept/detail";
+                Map<String,Object> params = new HashMap<>();
+                params.put("deptId",id);//上级部门id
+                String envelopGetStr = HttpClientUtil.doPost(comUrl + urlGet, params, username, password);
+                Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
+                if (!envelopGet.isSuccessFlg()){
+                    envelop.setErrorMsg("上级部门信息获取失败！");
+                }
+
+                OrgDeptModel  parentpModel = getEnvelopModel(envelopGet.getObj(),OrgDeptModel.class);
+                OrgDeptModel sunorgDeptModel = new OrgDeptModel();
+                sunorgDeptModel.setCode(code);
+                sunorgDeptModel.setName(name);
+                sunorgDeptModel.setParentDeptId(Integer.valueOf(id));
+                sunorgDeptModel.setOrgId(parentpModel.getOrgId());
+                Map<String,Object> args = new HashMap<>();
+                args.put("orgDeptsJsonData",objectMapper.writeValueAsString(sunorgDeptModel));
+                String addUrl = "/orgDept";
+                String envelopStr = HttpClientUtil.doPost(comUrl+addUrl,args,username,password);
+                return envelopStr;
+            } else if("modify".equals(mode)){
+                Map<String,Object> params = new HashMap<>();
+                params.put("deptId",Integer.valueOf(id) );
+                params.put("name",name);
+                String updateUrl = "/orgDept/resetName";
+                String envelopStr = HttpClientUtil.doPost(comUrl + updateUrl, params, username, password);
+                return envelopStr;
+            }
+        }catch (Exception ex){
+            LogService.getLogger(DeptMemberController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
+
+    /**
+     * 删除部门
+     * @param orgDeptId
+     * @return
+     */
+    @RequestMapping("delOrgDept")
+    @ResponseBody
+    public Object delOrgDept(int orgDeptId) {
+        String url = "/orgDept/delete";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("deptId", orgDeptId);
+        try {
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+            }
+            return result;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+
+    /**
+     * 上下移动部门
+     * @param preDeptId
+     * @param  afterDeptId
+     * @return
+     */
+    @RequestMapping("changeSortOrgDept")
+    @ResponseBody
+    public Object changeSortOrgDept(int preDeptId,int afterDeptId) {
+        String url = "/orgDept/changeSort";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("preDeptId", preDeptId);
+        params.put("afterDeptId", afterDeptId);
+
+        try {
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.SystemError.toString());
+            }
+            return result;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
 }
