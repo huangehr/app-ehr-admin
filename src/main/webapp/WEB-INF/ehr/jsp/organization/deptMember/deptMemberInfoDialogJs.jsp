@@ -23,7 +23,7 @@
 			$userId: $("#inp_userId"),
 			$dutyName: $("#inp_dutyName"),
 			$remark: $("#inp_remark"),
-			$deptId: $("#inp_deptId"),
+//			$deptId: $("#inp_deptId"),
 			$parentUserId: $("#inp_parentUserId"),
 
 			$btnSave: $("#btn_save"),
@@ -43,7 +43,7 @@
 				this.$userId.customCombo('${contextRoot}/deptMember/getUserList');
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
 				this.$parentUserId.customCombo(url);
-				this.$deptId.customCombo('${contextRoot}/deptMember/getDeptList');
+				<%--this.$deptId.customCombo('${contextRoot}/deptMember/getDeptList');--%>
 
 				var mode = '${mode}';
 				if(mode == 'view'){
@@ -70,8 +70,8 @@
 					$("#inp_parentUserId").ligerGetComboBoxManager().setText(info.parentUserName);
 
 
-					$("#inp_deptId").ligerGetComboBoxManager().setValue(info.deptId);
-					$("#inp_deptId").ligerGetComboBoxManager().setText(info.deptName);
+//					$("#inp_deptId").ligerGetComboBoxManager().setValue(info.deptId);
+//					$("#inp_deptId").ligerGetComboBoxManager().setText(info.deptName);
 				}
 				this.$orgIdstr.val(categoryOrgId);
 				this.$form.show();
@@ -91,25 +91,24 @@
 						return
 					}
 					var values = self.$form.Fields.getValues();
-					var deptId = values.deptId;
+					var deptId = categoryIdOld;
 //					if(Util.isStrEquals(categoryIdOld,deptId)){
-						update(values)
+						update(values,deptId)
 						return
 //					}
-					update(values,deptId);
 				});
 
-				function update(values,deptIdNew){
+				function update(values,deptId){
 					var dataModel = $.DataModel.init();
 					dataModel.updateRemote("${contextRoot}/deptMember/updateOrgDeptMember", {
-						data:{dataJson:JSON.stringify(values),mode:mode},
+						data:{dataJson:JSON.stringify(values),deptId:deptId,mode:mode},
 						success: function(data) {
 							if (data.successFlg) {
-								parent.reloadMasterUpdateGrid(deptIdNew);
+								parent.reloadMasterUpdateGrid(deptId);
 								$.Notice.success('操作成功');
 								win.closeRsInfoDialog();
 							} else {
-								$.Notice.error('操作失败！');
+								$.Notice.error(data.errorMsg);
 							}
 						}
 					});

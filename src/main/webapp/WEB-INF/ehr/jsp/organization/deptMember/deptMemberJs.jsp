@@ -14,6 +14,7 @@
 			var categoryId = '';
 			var categoryName='';
 			var categoryOrgId = '';
+			var status = '';
 			var typeTree = null;
 
 
@@ -112,11 +113,11 @@
 
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
-						var status = $('#inp_status').val();
+						status = $('#inp_status').val();
 						var parms = {
 							'searchNm':searchNm,
 							'status':status,
-							'categoryId':categoryId,
+							'categoryId':categoryId
 						};
 						reloadGrid(parms);
 					}});
@@ -231,7 +232,7 @@
 
 				reloadGrid: function () {
 					var searchNm = $('#inp_searchNm').val();
-					reloadGrid.call(this,{'searchNm':searchNm,'categoryId': categoryId});
+					reloadGrid.call(this,{'searchNm':searchNm,'status':status,'categoryId': categoryId});
 				},
 
 				bindEvents: function () {
@@ -473,8 +474,9 @@
                 },
                 //添加父类
                 setAddParentFun: function ( id, me, categoryName) {
-                    var html = ['<div style="padding-left: 81px;" class="pop-form">',
-                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w240 validate-special-char" data-type="select" placeholder="请选择部门"/>',
+                    var html = ['<div class="pop-form">',
+									'<label for="name">机构：</label>',
+                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w150 validate-special-char" data-type="select" placeholder="请选择部门"/>',
                                 '</div>'].join('');
                     me.showPopWin(me,function () {
 						var url = "${contextRoot}/deptMember/updateOrgDept",
@@ -497,7 +499,13 @@
 						return true;
                     },{title:'添加根部门'});
                     me.$popWim.append(html);
-                    $("#inp_deptId").customCombo('${contextRoot}/deptMember/getDeptList');
+					inpD.customCombo('${contextRoot}/deptMember/getDeptList');
+					inpD.parent().css({
+						width:'185'
+					}).parent().css({
+						display:'inline-block',
+						width:'185px'
+					});
                 }
             });
 

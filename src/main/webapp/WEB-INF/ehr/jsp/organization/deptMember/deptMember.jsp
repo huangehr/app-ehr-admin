@@ -16,7 +16,7 @@
 
     .pop-item a{display: block;color: #555a5f;}
     .pop-item a:hover{background: #00a0e9;color: #fff;}
-    .pop-win{width: 400px;/*height: 200px;*/position: fixed;left:50%;top: 50%;-webkit-transform: translate(-50%,-50%);-moz-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);-o-transform: translate(-50%,-50%);transform: translate(-50%,-50%);z-index: 999;background: #fff;border: 1px solid #ccc;padding-bottom: 75px;}
+    .pop-win{width: 400px;/*height: 200px;*/position: fixed;left:50%;top: 50%;-webkit-transform: translate(-50%,-50%);-moz-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);-o-transform: translate(-50%,-50%);transform: translate(-50%,-50%);z-index: 999;background: #fff;border: 1px solid #ccc;padding-bottom: 74px;}
     .pop-form{padding: 17px 0 0 0;}
     .pop-form label{display: block;position: relative;float: left;width: 130px;height: 30px;line-height: 30px;text-align: right;min-height: 1px;padding-right: 10px;padding-left: 10px;font-weight: normal;}
     .pop-form input{height: 28px;line-height: 28px;padding: 0 10px;vertical-align: middle;background-color: #fff;width: 185px;margin: 0;outline: none;color: #555555;}

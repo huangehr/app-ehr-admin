@@ -21,13 +21,13 @@
 		</div>
 	</div>
 
-	<div class="m-form-group">
-		<label>部门<spring:message code="spe.colon"/></label>
-		<div class="m-form-control essential ">
-			<input id="inp_deptId" class="required useTitle f-h28 f-w240 validate-special-char" data-type="select"
-				   placeholder="请选择部门"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="deptId"/>
-		</div>
-	</div>
+	<%--<div class="m-form-group">--%>
+		<%--<label>部门<spring:message code="spe.colon"/></label>--%>
+		<%--<div class="m-form-control essential ">--%>
+			<%--<input id="inp_deptId" class="required useTitle f-h28 f-w240 validate-special-char" data-type="select"--%>
+				   <%--placeholder="请选择部门"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="deptId"/>--%>
+		<%--</div>--%>
+	<%--</div>--%>
 
 	<div class="m-form-group">
 		<label>上级用户<spring:message code="spe.colon"/></label>
