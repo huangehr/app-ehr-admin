@@ -10,7 +10,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
-    .m-form-control{display: inline-block;vertical-align: middle;padding: 20px 5px;}
+    .m-form-control{display: inline-block;vertical-align: middle;}
     .mouse-pop-win{width: 140px;position: fixed;left:0;top: 0;z-index: 10;background: #fff;border: 1px solid #ccc;}
     .pop-item{line-height: 35px;text-align: center;}
 

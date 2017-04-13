@@ -350,14 +350,14 @@
 			pageInit();
 			/* ************************* 页面初始化结束 ************************** */
             $MousePop.init({
-                //添加子类
-                setAddChildFun: function ( id, me, categoryName) {
+				//添加子类
+				setAddChildFun: function ( id, me, categoryName) {
 					console.log(categoryName);
-                    me.showPopWin(me,function () {
-                        //确认按钮回调：返回true关闭窗口
+					me.showPopWin(me,function () {
+						//确认按钮回调：返回true关闭窗口
 						var url = "${contextRoot}/deptMember/updateOrgDept",
-							name = me.$popWim.find('.name').val(),
-							code = me.$popWim.find('.code').val();
+								name = me.$popWim.find('.name').val(),
+								code = me.$popWim.find('.code').val();
 						if(name =='' || name == undefined){
 							$.Notice.error('名称不能为空');
 							return false;
@@ -372,25 +372,26 @@
 									mode:'new',
 									code:code,
 									name:name
-						        },
+								},
 								function (data) {
 									if(data.successFlg){
-										$.Notice.success('添加成功');
-										location.reload();
-										return true;
+										$.Notice.success('添加成功',function () {
+											location.reload();
+											return true;
+										});
 									}else{
-										$.Notice.error('添加失败');
+										$.Notice.error(data.errorMsg);
 										return false;
 									}
-						        }
+								}
 						);
 
-                    },{title: (!!categoryName ? categoryName + ' > 添加子部门' : '添加子部门')});
-                },
-                //修改名称
-                setEditNameFun: function ( id, me, categoryName) {
-                    me.showPopWin(me,function () {
-                        //确认按钮回调：返回true关闭窗口
+					},{title: (!!categoryName ? categoryName + ' > 添加子部门' : '添加子部门')});
+				},
+				//修改名称
+				setEditNameFun: function ( id, me, categoryName) {
+					me.showPopWin(me,function () {
+						//确认按钮回调：返回true关闭窗口
 						var url = "${contextRoot}/deptMember/updateOrgDept",
 								name = me.$popWim.find('.name').val();
 						if(name =='' || name == undefined){
@@ -404,58 +405,62 @@
 									name:name
 								},
 								function (data) {
-									console.log(data);
 									if(data.successFlg){
-										$.Notice.success('修改成功');
-										location.reload();
-										return true;
+										$.Notice.success('修改成功',function () {
+											location.reload();
+											return true;
+										});
 									}else{
-										$.Notice.error('修改失败');
+										$.Notice.error(data.errorMsg);
 										return false;
 									}
 								}
 						);
-                    },{title:(!!categoryName ? categoryName + ' > 修改名称' : '修改名称'),name:categoryName,classCode:'pop-f-hide'});
-                },
-                //删除
-                setDelFun: function ( id, me) {
-                    var url = '';
-                    if (!confirm('确定要删除吗？')){
-                        return false;
-                    }
+					},{title:(!!categoryName ? categoryName + ' > 修改名称' : '修改名称'),name:categoryName,className:'pt',classCode:'pop-f-hide'});
+				},
+				//删除
+				setDelFun: function ( id, me) {
+					var url = '';
+					if (!confirm('确定要删除吗？')){
+						return false;
+					}
 					var url = "${contextRoot}/deptMember/delOrgDept";
 					me.res( url,{orgDeptId:id},
 							function (data) {
 								if(data.successFlg){
-									$.Notice.success('删除成功');
-									location.reload();
+									$.Notice.success('删除成功',function () {
+										location.reload();
+										return true;
+									});
 								}else{
 									$.Notice.error('删除失败');
 									return false;
 								}
 							}
 					);
-                },
-                //上移
-                setUpFun: function ( id, me, pId) {
-                    var url = '${contextRoot}/deptMember/changeSortOrgDept';
-                    me.res( url,
+				},
+				//上移
+				setUpFun: function ( id, me, pId) {
+					var url = '${contextRoot}/deptMember/changeSortOrgDept';
+					me.res( url,
 							{   preDeptId:id,
 								afterDeptId:pId
 							},
 							function (data) {
 								if(data.successFlg){
-									$.Notice.success('操作成功');
-									location.reload();
+									$.Notice.success('操作成功',function () {
+										location.reload();
+										return true;
+									});
 								}else{
 									$.Notice.error('操作失败');
 									return false;
 								}
 							}
 					);
-                },
-                //下移
-                setDownFun: function ( id, me, nId) {
+				},
+				//下移
+				setDownFun: function ( id, me, nId) {
 					var url = '${contextRoot}/deptMember/changeSortOrgDept';
 					me.res( url,
 							{   preDeptId:id,
@@ -463,8 +468,10 @@
 							},
 							function (data) {
 								if(data.successFlg){
-									$.Notice.success('操作成功');
-									location.reload();
+									$.Notice.success('操作成功',function () {
+										location.reload();
+										return true;
+									});
 								}else{
 									$.Notice.error('操作失败');
 									return false;
@@ -499,6 +506,7 @@
 						return true;
                     },{title:'添加根部门'});
                     me.$popWim.append(html);
+					var inpD = $('#inp_deptId');
 					inpD.customCombo('${contextRoot}/deptMember/getDeptList');
 					inpD.parent().css({
 						width:'185'
