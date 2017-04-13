@@ -9,7 +9,7 @@
         parentShowHtml: '<div class="pop-item"><a class="add-parent-btn" data-category-name="{{categoryName}}" data-id="{{id}}" href="javascript:;">添加根部门</a></div>',
         popWin:['<div class="pop-win">',
                     '<h3 class="pop-tit">{{title}}</h3>',
-                    '<div class="pop-form {{className}}">',
+                    '<div class="pop-form">',
                         '<label for="name">名称：</label>',
                         '<input id="name" class="name" type="text" value="{{name}}" />',
                     '</div>',

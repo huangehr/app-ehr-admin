@@ -414,7 +414,7 @@
 									}
 								}
 						);
-                    },{title:(!!categoryName ? categoryName + ' > 修改名称' : '修改名称'),name:categoryName,className:'pt',classCode:'pop-f-hide'});
+                    },{title:(!!categoryName ? categoryName + ' > 修改名称' : '修改名称'),name:categoryName,classCode:'pop-f-hide'});
                 },
                 //删除
                 setDelFun: function ( id, me) {
@@ -473,6 +473,9 @@
                 },
                 //添加父类
                 setAddParentFun: function ( id, me, categoryName) {
+                    var html = ['<div style="padding-left: 81px;" class="pop-form">',
+                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w240 validate-special-char" data-type="select" placeholder="请选择部门"/>',
+                                '</div>'].join('');
                     me.showPopWin(me,function () {
 						var url = "${contextRoot}/deptMember/updateOrgDept",
 								name = me.$popWim.find('.name').val(),
@@ -493,6 +496,8 @@
 						);
 						return true;
                     },{title:'添加根部门'});
+                    me.$popWim.append(html);
+                    $("#inp_deptId").customCombo('${contextRoot}/deptMember/getDeptList');
                 }
             });
 
