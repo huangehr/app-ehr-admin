@@ -32,7 +32,7 @@
 				this.bindEvents();
 			},
 			initForm: function () {
-				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
+				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId + '&userId=' + categoryIdOld;
 				this.$userId.customCombo(url);
 				var mode = '${mode}';
 				this.$form.attrScan();
@@ -53,6 +53,11 @@
 						return
 					}
 					var values = self.$form.Fields.getValues();
+					var userId = values.userId;
+					if(userId == categoryIdOld){
+						$.Notice.error('不能选择自己作为下级！');
+						return;
+					}
 					update(values);
 				});
 
@@ -61,15 +66,14 @@
 					dataModel.updateRemote("${contextRoot}/upAndDownMember/updateOrgDeptMember", {
 						data:{
 							dataJson:JSON.stringify(values),
-							type:type,
-							userId:categoryIdOld
+							pUserId:categoryIdOld
 						},
 						success: function(data) {
 							if (data.successFlg) {
-								$.Notice.success('操作成功');
+								$.Notice.success('添加成功');
 								win.closeRsInfoDialog();
 							} else {
-								$.Notice.error('操作失败！');
+								$.Notice.error('添加失败！');
 							}
 						}
 					});

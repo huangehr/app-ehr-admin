@@ -487,18 +487,37 @@
                                 '</div>'].join('');
                     me.showPopWin(me,function () {
 						var url = "${contextRoot}/deptMember/updateOrgDept",
-								name = me.$popWim.find('.name').val(),
-								code = me.$popWim.find('.code').val();
+							name = me.$popWim.find('.name').val(),
+							code = me.$popWim.find('.code').val(),
+							orgId = me.$popWim.find('#inp_deptId').val();
+						alert(orgId);
+						if(name =='' || name == undefined){
+							$.Notice.error('名称不能为空');
+							return false;
+						}
+						if(code =='' || code == undefined){
+							$.Notice.error('编码不能为空');
+							return false;
+						}
+						if(orgId =='' || orgId == undefined){
+							$.Notice.error('机构不能为空');
+							return false;
+						}
 						me.res( url,
 								{
+									id:1111111,
+									mode:'addRoot',
 									code:code,
-									mode:'new',
 									name:name
 								},
 								function (data) {
-									if(data.successFlg == true){
-										return true;
+									if(data.successFlg){
+										$.Notice.success('操作成功',function () {
+											location.reload();
+											return true;
+										});
 									}else{
+										$.Notice.error('操作失败');
 										return false;
 									}
 								}

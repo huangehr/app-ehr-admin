@@ -83,12 +83,15 @@
 						axis:"yx"
 					});
 
+					this.$search.customCombo('${contextRoot}/deptMember/getDeptList');
+
+
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
-						var status = $('#inp_status').val()
 						var parms = {
 							'searchNm':searchNm,
-							'categoryId':categoryId,
+							'userId':$('#categoryId').text(),
+							'orgId':categoryOrgId
 						};
 						reloadGrid(parms);
 					}});
@@ -142,7 +145,8 @@
 						url: '${contextRoot}/upAndDownMember/searchUpAndDownMembers',
 						parms: {
 							searchNm: $('#inp_searchNm').val(),
-							categoryId: categoryId
+							userId:categoryId,
+							orgId:categoryOrgId
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
@@ -152,7 +156,7 @@
 							{display: '描述', name: 'remark', width: '23%', align: 'left'},
 							{display: '操作', name: 'operator', width: '32%', render: function (row) {
 								var html = '';
-								html += '<sec:authorize url="/upAndDownMember/deleteUpAndDownMember"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "deptMember:deptMemberDialog:del", row.id) + '"></a></sec:authorize>';
+								html += '<sec:authorize url="/upAndDownMember/deleteUpAndDownDelMember"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "deptMember:deptMemberDialog:del", row.id) + '"></a></sec:authorize>';
 								return html;
 							}}
 						],
@@ -168,28 +172,24 @@
 
 				reloadGrid: function () {
 					var searchNm = $('#inp_searchNm').val();
-					reloadGrid.call(this,{'searchNm':searchNm,'categoryId': categoryId});
+					reloadGrid.call(this,{'searchNm':searchNm,'userId':categoryId,'orgId': categoryOrgId});
 				},
 
 				bindEvents: function () {
 					var self = this;
 					//新增修改
-					$('#btn_addUp').click(function(){
-						$.publish("rs:info:open",['','newUp',categoryId,categoryOrgId],1);
-					});
 					$('#btn_addDown').click(function(){
-						$.publish("rs:info:open",['','newDown',categoryId,categoryOrgId],2);
+						$.publish("rs:info:open",['','newDown',categoryId,categoryOrgId]);
 					});
-					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,type){
+					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId){
 						var title = "";
 						if(categoryId == ''){
 							$.Notice.error('请在坐边选中一个成员');
 							return ;
 						}
-						if(mode == "newUp"){title = "新增上级成员";}
 						if(mode == "newDown"){title = "新增下级成员";}
 						master.rsInfoDialog = $.ligerDialog.open({
-							height:550,
+							height:350,
 							width:500,
 							title:title,
 							url:'${contextRoot}/upAndDownMember/infoInitial',
@@ -198,7 +198,6 @@
 								mode:mode,
 								categoryId:categoryId,
 								categoryOrgId:categoryOrgId,
-								type:type
 							},
 							load:true
 						});
@@ -207,7 +206,7 @@
 
 
 					$.subscribe('deptMember:deptMemberDialog:del',function(event,id){
-						$.ligerDialog.confirm("确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
+						$.ligerDialog.confirm("确认删除该条信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
 							if(yes){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote("${contextRoot}/upAndDownMember/deleteOrgDeptMember",{
@@ -215,11 +214,13 @@
 									async:true,
 									success: function(data) {
 										if(data.successFlg){
-											$.Notice.success('删除成功。');
-											isFirstPage = false;
-											master.reloadGrid();
+											$.Notice.success('删除成功',function () {
+												location.reload();
+												return true;
+											});
 										}else{
-											$.Notice.error(data.errorMsg);
+											$.Notice.error('删除失败');
+											return false;
 										}
 									}
 								});
