@@ -53,14 +53,14 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
     //成员上下级树目录数据
     @RequestMapping("/categories")
     @ResponseBody
-    public Object getCategories(){
+    public Object getCategories(int orgId){
         List<MOrgMemberRelation> list = new ArrayList<>();
         try{
             String filters = "";
             String envelopStr = "";
             String url = "/orgDeptMember/getAllOrgDeptMember";
             Map<String,Object> params = new HashMap<>();
-            filters = "orgId=1111111";
+            filters = "orgId=" +orgId;
             params.put("filters",filters);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);

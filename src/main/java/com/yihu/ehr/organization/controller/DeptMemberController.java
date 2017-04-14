@@ -280,35 +280,6 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }
     }
 
-    @RequestMapping("/getOrgMemberList")
-    @ResponseBody
-    public Object getOrgMemberList( String searchParm,int page, int rows,String orgId,String userId) {
-        try {
-            String url = "/orgDeptMember/list";
-            PageParms pageParms = new PageParms(rows, page)
-                    .addEqual("orgId", orgId)
-                    .addLikeNotNull("userName", searchParm);
-            String resultStr = service.doPost(comUrl + url, pageParms);
-            Envelop envelop = formatComboData(resultStr, "id", "userName");
-            return envelop;
-        } catch (Exception e) {
-            return systemError();
-        }
-    }
-
-    @RequestMapping("/getDeptList")
-    @ResponseBody
-    public Object getDeptList(String searchParm, int page, int rows) {
-        try {
-            String url = "/orgDept/getAllOrgDepts";
-            PageParms pageParms = new PageParms(rows, page)
-                    .addLikeNotNull("name", searchParm);
-            String resultStr = service.search(url, pageParms);
-            return formatComboData(resultStr, "id", "name");
-        } catch (Exception e) {
-            return systemError();
-        }
-    }
 
 
     //添加子部门和更新部门名称
@@ -450,4 +421,48 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }
     }
 
+    @RequestMapping("/getOrgList")
+    @ResponseBody
+    public Object getOrgList( String searchParm,int page, int rows) {
+        try {
+            String url = "/organizations";
+            PageParms pageParms = new PageParms(rows, page)
+                    .addLikeNotNull("fullName", searchParm);
+            String resultStr = service.doGet(comUrl + url, pageParms);
+            Envelop envelop = formatComboData(resultStr, "id", "fullName");
+            return envelop;
+        } catch (Exception e) {
+            return systemError();
+        }
+    }
+
+    @RequestMapping("/getOrgMemberList")
+    @ResponseBody
+    public Object getOrgMemberList( String searchParm,int page, int rows,String orgId,String userId) {
+        try {
+            String url = "/orgDeptMember/list";
+            PageParms pageParms = new PageParms(rows, page)
+                    .addEqual("orgId", orgId)
+                    .addLikeNotNull("userName", searchParm);
+            String resultStr = service.doPost(comUrl + url, pageParms);
+            Envelop envelop = formatComboData(resultStr, "id", "userName");
+            return envelop;
+        } catch (Exception e) {
+            return systemError();
+        }
+    }
+
+    @RequestMapping("/getDeptList")
+    @ResponseBody
+    public Object getDeptList(String searchParm, int page, int rows) {
+        try {
+            String url = "/orgDept/getAllOrgDepts";
+            PageParms pageParms = new PageParms(rows, page)
+                    .addLikeNotNull("name", searchParm);
+            String resultStr = service.search(url, pageParms);
+            return formatComboData(resultStr, "id", "name");
+        } catch (Exception e) {
+            return systemError();
+        }
+    }
 }

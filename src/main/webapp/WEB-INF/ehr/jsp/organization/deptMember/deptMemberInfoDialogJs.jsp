@@ -5,6 +5,7 @@
 
 	(function ($, win) {
 		/* ************************** 变量定义 ******************************** */
+		console.log('aa');
 		var Util = $.Util;
 		var rsInfoForm = null;
 		var jValidation = $.jValidation;

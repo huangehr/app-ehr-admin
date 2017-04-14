@@ -483,14 +483,13 @@
                 setAddParentFun: function ( id, me, categoryName) {
                     var html = ['<div class="pop-form">',
 									'<label for="name">机构：</label>',
-                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w150 validate-special-char" data-type="select" placeholder="请选择部门"/>',
+                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w150 validate-special-char" data-type="select" placeholder="请选择机构"/>',
                                 '</div>'].join('');
                     me.showPopWin(me,function () {
 						var url = "${contextRoot}/deptMember/updateOrgDept",
 							name = me.$popWim.find('.name').val(),
 							code = me.$popWim.find('.code').val(),
-							orgId = me.$popWim.find('#inp_deptId').val();
-						alert(orgId);
+							orgId = me.$popWim.find('#inp_deptId_val').val();
 						if(name =='' || name == undefined){
 							$.Notice.error('名称不能为空');
 							return false;
@@ -505,7 +504,7 @@
 						}
 						me.res( url,
 								{
-									id:1111111,
+									id:orgId,
 									mode:'addRoot',
 									code:code,
 									name:name
@@ -526,7 +525,7 @@
                     },{title:'添加根部门'});
                     me.$popWim.append(html);
 					var inpD = $('#inp_deptId');
-					inpD.customCombo('${contextRoot}/deptMember/getDeptList');
+					inpD.customCombo('${contextRoot}/deptMember/getOrgList');
 					inpD.parent().css({
 						width:'185'
 					}).parent().css({

@@ -83,7 +83,7 @@
 						axis:"yx"
 					});
 
-					this.$search.customCombo('${contextRoot}/deptMember/getDeptList');
+					this.$search.customCombo('${contextRoot}/deptMember/getOrgList');
 
 
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
@@ -102,7 +102,7 @@
 				getResourceBrowseTree: function () {
 					typeTree = this.$resourceBrowseTree.ligerSearchTree({
 						nodeWidth: 240,
-						url: '${contextRoot}/upAndDownMember/categories',
+						url: '${contextRoot}/upAndDownMember/categories?orgId='+categoryOrgId,
 						checkbox: false,
 						idFieldName: 'id',
 						parentIDFieldName :'parentUserId',
