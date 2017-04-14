@@ -60,6 +60,7 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
             String envelopStr = "";
             String url = "/orgDeptMember/getAllOrgDeptMember";
             Map<String,Object> params = new HashMap<>();
+            filters = "orgId=1111111";
             params.put("filters",filters);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
@@ -72,13 +73,54 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
         return list;
     }
 
+    /**
+     * 查找下级成员
+     * @param searchNm
+     * @param page
+     * @param rows
+     * @return
+     */
+    @RequestMapping("searchUpAndDownMembers")
+    @ResponseBody
+    public Object searchUpAndDownMembers(String searchNm,String userId,String orgId, int page, int rows) {
+        String url = "/orgDeptMember/list";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("filters", "");
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(searchNm)) {
+            stringBuffer.append("userName?" + searchNm + ";" );
+        }
+        stringBuffer.append("status=0;" );
+        if (!StringUtils.isEmpty(userId)) {
+            stringBuffer.append("parentUserId=" + userId + ";" );
+        }
+        if (!StringUtils.isEmpty(orgId)) {
+            stringBuffer.append("orgId=" + orgId + ";" );
+        }
+        String filters = stringBuffer.toString();
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
 
     @RequestMapping("/infoInitial")
-    public String OrgDeptMembersInfoInitial(Model model,String mode,String categoryId,String categoryOrgId,String type){
+    public String OrgDeptMembersInfoInitial(Model model,String mode,String categoryId,String categoryOrgId){
         model.addAttribute("mode",mode);
         model.addAttribute("categoryId",categoryId);
         model.addAttribute("categoryOrgId",categoryOrgId);
-        model.addAttribute("type",type);
         model.addAttribute("contentPage","/organization/upAndDownMember/upAndDownMemberInfoDialog");
         return "simpleView";
     }
@@ -86,42 +128,42 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
     //更新
     @RequestMapping("/updateOrgDeptMember")
     @ResponseBody
-    public Object updateOrgDeptMember(String dataJson,String type,String userId){
+    public Object updateOrgDeptMember(String dataJson,String pUserId){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
-        String url = "/orgDeptMember";
         try{
             OrgDeptMemberModel model = objectMapper.readValue(dataJson, OrgDeptMemberModel.class);
             if(StringUtils.isEmpty(model.getUserId())){
                 envelop.setErrorMsg("用户不能为空！");
                 return envelop;
             }
-            String urlGet = "";
-            OrgDeptMemberModel  updateModel = new OrgDeptMemberModel();
-            if(type.equals("1")){//增加上级成员
-                urlGet = "/orgDeptMember/admin/" + userId;
-                String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
-                Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
-                updateModel = getEnvelopModel(envelopGet.getObj(),OrgDeptMemberModel.class);
-                if (!envelopGet.isSuccessFlg()){
-                    envelop.setErrorMsg("原成员息获取失败！");
-                }
-                updateModel.setParentUserId(model.getUserId());
-            }else if(type.equals("2")){//增加下级成员
-                urlGet = "/orgDeptMember/admin/" + model.getUserId();
-                String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
-                Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
-                updateModel = getEnvelopModel(envelopGet.getObj(),OrgDeptMemberModel.class);
-                if (!envelopGet.isSuccessFlg()){
-                    envelop.setErrorMsg("原成员息获取失败！");
-                }
-                updateModel.setParentUserId(userId);
-            }
+            //过滤已添加的成员 TODO
 
-            String updateModelJson = objectMapper.writeValueAsString(updateModel);
-            Map<String,Object> params = new HashMap<>();
+
+            String urlGet = "";
+            String envelopStr ="";
+            OrgDeptMemberModel  updateModel = new OrgDeptMemberModel();
+            urlGet = "/orgDeptMember/admin/" + pUserId;
+            Map<String, Object> params = new HashMap<>();
+            params.put("memRelationId", pUserId);
+            String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet , params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
+            updateModel = getEnvelopModel(envelopGet.getObj(),OrgDeptMemberModel.class);
+            if (!envelopGet.isSuccessFlg()){
+                envelop.setErrorMsg("原成员息获取失败！");
+            }
+            model.setParentUserId(pUserId);
+            model.setParentUserName(updateModel.getParentUserName());
+            model.setDeptId(updateModel.getDeptId());
+            model.setDeptName(updateModel.getDeptName());
+            model.setOrgId(updateModel.getOrgId());
+            model.setOrgName(updateModel.getOrgName());
+
+            String url = "/orgDeptMember";
+            params.clear();
+            String updateModelJson = objectMapper.writeValueAsString(model);
             params.put("memberRelationJsonData",updateModelJson);
-            String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
+            envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return envelopStr;
 
         }catch (Exception ex){
@@ -141,7 +183,22 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
     @RequestMapping("deleteOrgDeptMember")
     @ResponseBody
     public Object deleteOrgDeptMember(int memberRelationId) {
-       return "";
+        Envelop envelop = new Envelop();
+        envelop.setSuccessFlg(false);
+        try {
+            Map<String, Object> params = new HashMap<>();
+            String url = "/orgDeptMember/updateStatus";
+            params.clear();
+            params.put("memberRelationId",memberRelationId);
+            params.put("status",1);
+            String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+            if(envelopStr.equals("true")){
+                envelop.setSuccessFlg(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return envelop;
     }
 
 

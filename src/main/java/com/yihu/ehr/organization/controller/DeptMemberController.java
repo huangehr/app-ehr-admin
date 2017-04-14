@@ -146,19 +146,30 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
     //更新
     @RequestMapping("/updateOrgDeptMember")
     @ResponseBody
-    public Object updateOrgDeptMember(String dataJson,String mode){
+    public Object updateOrgDeptMember(String dataJson,String deptId,String mode){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         String url = "/orgDeptMember";
         try{
             OrgDeptMemberModel model = objectMapper.readValue(dataJson, OrgDeptMemberModel.class);
+            model.setDeptId(Integer.valueOf(deptId));
             if(StringUtils.isEmpty(model.getUserId())){
                 envelop.setErrorMsg("姓名不能为空！");
                 return envelop;
             }
-            if (model.getDeptId() == null){
-                envelop.setErrorMsg("部门不能为空！");
-                return envelop;
+//            if (model.getDeptId() == null){
+//                envelop.setErrorMsg("部门不能为空！");
+//                return envelop;
+//            }
+            Map<String,Object> params = new HashMap<>();
+            String urlGet = "/orgDept/checkUser";
+            params.clear();
+            params.put("orgId",model.getOrgId());
+            params.put("userId",model.getUserId());
+            String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
+            Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
+            if (!envelopGet2.isSuccessFlg()){
+                return envelopGetStr2;
             }
 
             if("new".equals(mode)){
@@ -167,7 +178,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
-                String urlGet = "/orgDeptMember/admin/" + model.getId();
+                urlGet = "/orgDeptMember/admin/" + model.getId();
                 String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
                 if (!envelopGet.isSuccessFlg()){
@@ -180,7 +191,8 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 updateModel.setParentUserId(model.getParentUserId());
                 updateModel.setRemark(model.getRemark());
                 String updateModelJson = objectMapper.writeValueAsString(updateModel);
-                Map<String,Object> params = new HashMap<>();
+
+                params.clear();
                 params.put("memberRelationJsonData",updateModelJson);
                 String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
                 return envelopStr;
@@ -270,14 +282,15 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
 
     @RequestMapping("/getOrgMemberList")
     @ResponseBody
-    public Object getOrgMemberList( String searchParm,int page, int rows,String orgId) {
+    public Object getOrgMemberList( String searchParm,int page, int rows,String orgId,String userId) {
         try {
             String url = "/orgDeptMember/list";
             PageParms pageParms = new PageParms(rows, page)
-                    .addEqual("orgId",orgId)
+                    .addEqual("orgId", orgId)
                     .addLikeNotNull("userName", searchParm);
             String resultStr = service.doPost(comUrl + url, pageParms);
-            return formatComboData(resultStr, "id", "userName");
+            Envelop envelop = formatComboData(resultStr, "id", "userName");
+            return envelop;
         } catch (Exception e) {
             return systemError();
         }
@@ -314,17 +327,29 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 return envelop;
             }
 
+            Map<String,Object> params = new HashMap<>();
+
             if("new".equals(mode)){
                 String urlGet = "/orgDept/detail";
-                Map<String,Object> params = new HashMap<>();
+                params.clear();
                 params.put("deptId",id);//上级部门id
                 String envelopGetStr = HttpClientUtil.doPost(comUrl + urlGet, params, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
                 if (!envelopGet.isSuccessFlg()){
                     envelop.setErrorMsg("上级部门信息获取失败！");
+                    return envelop;
+                }
+                OrgDeptModel  parentpModel = getEnvelopModel(envelopGet.getObj(),OrgDeptModel.class);
+                urlGet = "/orgDept/checkDeptName";
+                params.clear();
+                params.put("orgId",parentpModel.getOrgId());
+                params.put("name",name);
+                String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
+                Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
+                if (!envelopGet2.isSuccessFlg()){
+                    return envelopGetStr2;
                 }
 
-                OrgDeptModel  parentpModel = getEnvelopModel(envelopGet.getObj(),OrgDeptModel.class);
                 OrgDeptModel sunorgDeptModel = new OrgDeptModel();
                 sunorgDeptModel.setCode(code);
                 sunorgDeptModel.setName(name);
@@ -336,11 +361,21 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 String envelopStr = HttpClientUtil.doPost(comUrl+addUrl,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
-                Map<String,Object> params = new HashMap<>();
+                params.clear();
                 params.put("deptId",Integer.valueOf(id) );
                 params.put("name",name);
                 String updateUrl = "/orgDept/resetName";
                 String envelopStr = HttpClientUtil.doPost(comUrl + updateUrl, params, username, password);
+                return envelopStr;
+            }else if("addRoot".equals(mode)){
+                OrgDeptModel rootDeptModel = new OrgDeptModel();
+                rootDeptModel.setCode(code);
+                rootDeptModel.setName(name);
+                rootDeptModel.setOrgId(id);
+                Map<String,Object> args = new HashMap<>();
+                args.put("orgDeptsJsonData",objectMapper.writeValueAsString(rootDeptModel));
+                String addUrl = "/orgDept";
+                String envelopStr = HttpClientUtil.doPost(comUrl+addUrl,args,username,password);
                 return envelopStr;
             }
         }catch (Exception ex){
