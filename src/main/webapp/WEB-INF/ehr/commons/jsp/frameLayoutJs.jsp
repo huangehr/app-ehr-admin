@@ -134,13 +134,13 @@
                 </sec:authorize>
 
                 // 1-1-4 - 机构管理 - 机构上下级关系管理
-                <sec:authorize url="/upAndDownMember/initialUpAndDownMember">
+                <sec:authorize url="/initialUpAndDownOrg/initialUpAndDownOrg">
                 {
                     id: 114,
                     pid: 11,
                     level:3,
                     text: '<spring:message code="title.org.upAndDownOrg"/>',
-                    url: '${contextRoot}/upAndDownMember/initialUpAndDownMember'
+                    url: '${contextRoot}/upAndDownOrg/initialUpAndDownOrg'
                 },
                 </sec:authorize>
 
