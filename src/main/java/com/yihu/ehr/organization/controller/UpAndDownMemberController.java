@@ -137,20 +137,36 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
                 envelop.setErrorMsg("用户不能为空！");
                 return envelop;
             }
-            //过滤已添加的成员 TODO
-
-
+            Map<String, Object> params = new HashMap<>();
             String urlGet = "";
             String envelopStr ="";
             OrgDeptMemberModel  updateModel = new OrgDeptMemberModel();
             urlGet = "/orgDeptMember/admin/" + pUserId;
-            Map<String, Object> params = new HashMap<>();
+            params.clear();
             params.put("memRelationId", pUserId);
             String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet , params,username,password);
             Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
             updateModel = getEnvelopModel(envelopGet.getObj(),OrgDeptMemberModel.class);
             if (!envelopGet.isSuccessFlg()){
                 envelop.setErrorMsg("原成员息获取失败！");
+                return envelop;
+            }
+            //是否已添加的成员
+            String resultStr = "";
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append("status=0;" );
+            stringBuffer.append("userId=" + pUserId + ";" );
+            stringBuffer.append("orgId=" + updateModel.getOrgId() + ";" );
+            String filters = stringBuffer.toString();
+            params.put("filters", filters);
+            params.put("page", 1);
+            params.put("size", 10);
+            String url = "/orgDeptMember/list";
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            Envelop envelopResult = objectMapper.readValue(resultStr,Envelop.class);
+            if(envelopResult.getDetailModelList()!=null && envelopResult.getDetailModelList().size()>0){
+                envelop.setErrorMsg("该成员已添加！");
+                return envelop;
             }
             model.setParentUserId(pUserId);
             model.setParentUserName(updateModel.getParentUserName());
@@ -159,7 +175,7 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
             model.setOrgId(updateModel.getOrgId());
             model.setOrgName(updateModel.getOrgName());
 
-            String url = "/orgDeptMember";
+            url = "/orgDeptMember";
             params.clear();
             String updateModelJson = objectMapper.writeValueAsString(model);
             params.put("memberRelationJsonData",updateModelJson);

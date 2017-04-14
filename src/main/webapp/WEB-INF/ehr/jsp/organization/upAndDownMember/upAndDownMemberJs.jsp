@@ -217,7 +217,7 @@
 									success: function(data) {
 										if(data.successFlg){
 											$.Notice.success('删除成功',function () {
-												location.reload();
+												master.reloadGrid();
 												return true;
 											});
 										}else{

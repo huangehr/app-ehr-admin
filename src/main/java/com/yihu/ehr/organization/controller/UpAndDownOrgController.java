@@ -74,9 +74,9 @@ public class UpAndDownOrgController extends ExtendController<OrgAdapterPlanServi
      * @param rows
      * @return
      */
-    @RequestMapping("searchupAndDownOrgs")
+    @RequestMapping("searchUpAndDownOrgs")
     @ResponseBody
-    public Object searchupAndDownOrgs(String searchNm,String orgId, int page, int rows) {
+    public Object searchUpAndDownOrgs(String searchNm,String orgId, int page, int rows) {
         String url = "/organizations";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -85,7 +85,11 @@ public class UpAndDownOrgController extends ExtendController<OrgAdapterPlanServi
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("fullName?" + searchNm + ";" );
         }
-        stringBuffer.append("parentHosId=" + orgId + ";" );
+        if(StringUtils.isEmpty(orgId)){
+            stringBuffer.append("parentHosId=-0;");
+        }else{
+            stringBuffer.append("parentHosId=" + orgId + ";" );
+        }
 
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
@@ -122,32 +126,39 @@ public class UpAndDownOrgController extends ExtendController<OrgAdapterPlanServi
                 envelop.setErrorMsg("机构不能为空！");
                 return envelop;
             }
-            //过滤已添加的成员 TODO
-
-            String urlGet = "";
             String envelopStr ="";
-            urlGet = "/organizations/getOrgById/" + orgId;
+            String urlGet = "";
             Map<String, Object> params = new HashMap<>();
+            urlGet = "/organizations/getOrgById/" + orgId;
+            params.clear();
             params.put("org_id", orgId);
-            String envelopGetStr = HttpClientUtil.doPut(comUrl+urlGet , params,username,password);
+            String envelopGetStr = HttpClientUtil.doGet(comUrl + urlGet, params, username, password);
             Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
             OrgDetailModel  updateModel = new OrgDetailModel();
             updateModel = getEnvelopModel(envelopGet.getObj(),OrgDetailModel.class);
             if (!envelopGet.isSuccessFlg()){
                 envelop.setErrorMsg("原成员息获取失败！");
+                return envelop;
             }
             if(mode.equals("del")){
                 updateModel.setParentHosId(null);
             }else if(mode.equals("modify")){
+                urlGet = "/organizations/checkSunOrg";
+                params.put("org_pId", String.valueOf(pOrgId));
+                params.put("org_id", orgId);
+                String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
+                if(envelopGetStr2.equals("true")){
+                    envelop.setErrorMsg("该机构已添加！");
+                    return envelop;
+                }
                 updateModel.setParentHosId(pOrgId);
             }
-            String url = "/organization";
-            params.clear();
             String updateModelJson = objectMapper.writeValueAsString(updateModel);
+            params.clear();
             params.put("mOrganizationJsonDatas",updateModelJson);
+            String url = "/organizations/update";
             envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
-            return envelopStr;
-
+            envelop = objectMapper.readValue(envelopStr,Envelop.class);
         }catch (Exception ex){
             LogService.getLogger(UpAndDownOrgController.class).error(ex.getMessage());
             envelop.setErrorMsg(ErrorCode.SystemError.toString());

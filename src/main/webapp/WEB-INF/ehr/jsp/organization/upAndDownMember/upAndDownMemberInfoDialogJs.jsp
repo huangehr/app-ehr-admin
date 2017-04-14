@@ -70,10 +70,11 @@
 						},
 						success: function(data) {
 							if (data.successFlg) {
+								parent.reloadMasterUpdateGrid(categoryIdOld);
 								$.Notice.success('添加成功');
 								win.closeRsInfoDialog();
 							} else {
-								$.Notice.error('添加失败！');
+								$.Notice.error(data.errorMsg);
 							}
 						}
 					});

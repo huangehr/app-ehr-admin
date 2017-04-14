@@ -58,13 +58,14 @@
 				function update(orgId){
 					var dataModel = $.DataModel.init();
 					dataModel.updateRemote("${contextRoot}/upAndDownOrg/updateOrgDeptMember", {
-						data:{orgId:orgId,pOrgId:categoryIdOld,mode:'del'},
+						data:{orgId:orgId,pOrgId:categoryIdOld,mode:'modify'},
 						success: function(data) {
 							if (data.successFlg) {
+								parent.reloadMasterUpdateGrid(categoryIdOld);
 								$.Notice.success('添加成功');
 								win.closeRsInfoDialog();
 							} else {
-								$.Notice.error('添加失败！');
+								$.Notice.error(data.errorMsg);
 							}
 						}
 					});

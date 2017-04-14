@@ -7,7 +7,7 @@
 		<label>机构<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_orgId"  data-type="select"  class="required useTitle ajax f-h28 f-w240"
-				   placeholder="请选择机构" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="userId">
+				   placeholder="请选择机构" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="orgId">
 		</div>
 	</div>
 

@@ -135,10 +135,10 @@
 				resourceInfoGrid:null,
 				init: function () {
 					this.resourceInfoGrid = $("#div_resource_info_grid").ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/upAndDownOrg/searchUpAndDownMembers',
+						url: '${contextRoot}/upAndDownOrg/searchUpAndDownOrgs',
 						parms: {
 							searchNm: $('#inp_searchNm').val(),
-							orgId:categoryOrgId
+							orgId:categoryId
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
@@ -166,16 +166,16 @@
 
 				reloadGrid: function () {
 					var searchNm = $('#inp_searchNm').val();
-					reloadGrid.call(this,{'searchNm':searchNm,'orgId': categoryOrgId});
+					reloadGrid.call(this,{'searchNm':searchNm,'orgId': categoryId});
 				},
 
 				bindEvents: function () {
 					var self = this;
 					//新增
 					$('#btn_addDown').click(function(){
-						$.publish("rs:info:open",['','newDown',categoryId,categoryOrgId]);
+						$.publish("rs:info:open",['',categoryId]);
 					});
-					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId){
+					$.subscribe("rs:info:open",function(event,resourceId,categoryId){
 						var title = "新增下级机构";
 						if(categoryId == ''){
 							$.Notice.error('请在坐边选中一个机构');
@@ -200,12 +200,12 @@
 							if(yes){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote("${contextRoot}/upAndDownOrg/updateOrgDeptMember",{
-									data:{orgId:id,pOrgId:'',mode:'del'},
+									data:{orgId:id,pOrgId:0,mode:'del'},
 									async:true,
 									success: function(data) {
 										if(data.successFlg){
 											$.Notice.success('删除成功',function () {
-												location.reload();
+												master.reloadGrid();
 												return true;
 											});
 										}else{
@@ -248,7 +248,7 @@
 				isFirstPage = false;
 				master.rsInfoDialog.close();
 			};
-			//新增、修改（成员分类有修改情况）定位
+
 			win.locationTree = function(callbackParams){
 				if(!callbackParams){
 					master.reloadGrid();

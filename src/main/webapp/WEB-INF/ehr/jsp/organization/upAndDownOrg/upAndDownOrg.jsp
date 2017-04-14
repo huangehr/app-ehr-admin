@@ -23,8 +23,6 @@
             <div class="right-retrieve">
                 <span id="categoryName" style="font-size: 16px;font-weight:900"></span>
                 <input type="hidden" id="categoryId" />
-                <input type="hidden" id="categoryOrgId" />
-
                 <div class="f-db f-fr f-pt10 f-mr10">
                     <sec:authorize url="/upAndDownorg/infoInitial">
                         <div id="btn_addDown" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
