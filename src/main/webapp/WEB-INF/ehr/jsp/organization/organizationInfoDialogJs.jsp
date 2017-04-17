@@ -56,6 +56,7 @@
             $parentHosId:$("#parentHosId"),
             $zxy:$("#zxy"),
             $logoImageShow: $('#logoImage'),
+            $logoUrlButton:$("#logoUrlButton"),
 
             $keyReadBtn: $("#keyReadBtn"),
             $footer: $("#div_footer"),
@@ -119,7 +120,6 @@
                 this.$introduction.ligerTextBox({width: 240,height:100});
                 this.$levelId.ligerTextBox({width: 240});
                 this.$legalPerson.ligerTextBox({width: 240});
-                this.$logoUrl.ligerTextBox({width: 240});
                 this.$parentHosId.ligerTextBox({width: 240});
                 this.$zxy.ligerTextBox({width: 240});
 
@@ -279,6 +279,36 @@
                             }
                         }
                     })
+                }
+
+                this.$logoUrlButton.on('change',function () {
+                    var url = '${contextRoot}/organization/orgLogoFileUpload';
+                    doUpload(url);
+                });
+
+                function doUpload(url) {
+                    var formData = new FormData($( "#uploadForm" )[0]);
+                    $.ajax({
+                        url: url ,
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (returndata) {
+                            if(returndata != "fail"){
+                                $('#logoUrl').val(returndata);
+                                self.$logoUrl.val(returndata);
+                                alert("上传成功");
+                            }else{
+                                alert("上传失败");
+                            }
+                        },
+                        error: function (returndata) {
+                            alert("上传失败");
+                        }
+                    });
                 }
 
                 self.$cancelBtn.click(function () {

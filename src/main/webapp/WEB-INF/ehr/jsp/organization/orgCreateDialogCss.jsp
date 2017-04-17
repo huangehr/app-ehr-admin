@@ -26,6 +26,21 @@
 	.div-aptitude-manager{ margin-top: 40px;width: 70px; }
 	.m-form-inline div{font-size: 15px}
 
+	.file {
+		position: relative;
+		display: inline-block;
+		background: #D0EEFF;
+		background: rgb(255, 255, 255);
+		border: 1px solid #99D3F5;
+		border-radius: 4px;
+		padding: 4px 12px;
+		overflow: hidden;
+		color: #1E88C7;
+		text-decoration: none;
+		text-indent: 0;
+		line-height: 20px;
+		width: 180px;
+	}
 	.file input {
 		position: absolute;
 		font-size: 100px;

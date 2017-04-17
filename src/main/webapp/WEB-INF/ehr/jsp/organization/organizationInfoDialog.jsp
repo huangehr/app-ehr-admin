@@ -1,6 +1,32 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<style>
+    .i-text{
+        width: 185px;
+        height: 30px;
+        line-height: 30px;
+        padding-right: 17px;
+        color: #555555;
+        padding-left: 5px;
+        vertical-align: middle;
+        border: 1px solid #ccc;
+    }
+    .uploadBtn{
+        position: relative;
+        vertical-align: middle;
+        overflow: hidden;
+    }
+    .uploadBtn .file{
+        width: 50px;
+        height: 30px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: 999;
+    }
+</style>
 <!--######机构管理页面 > 机构信息对话框模板页######-->
 <div id="div_organization_info_form" class="m-form-inline" data-role-form="" style="overflow:auto">
     <input data-attr-scan="id" hidden="hidden"/>
@@ -125,15 +151,18 @@
         </div>
     </div>
 
+
     <form  id ="uploadForm" enctype="multipart/form-data">
         <div class="m-form-group">
             <label>医院LOGO</label>
             <div class="l-text-wrapper m-form-control ">
-                <input type="hidden"   data-attr-scan="logoUrl" >
                 <%--<img src="${contextRoot}/authentication/showImage?imgPath" id="logoImage" />--%>
+                <%--<input type="hidden" id="logoUrl"  data-attr-scan="logoUrl" >--%>
                 <div id="logoImage"></div>
-                <input type="file" id="logoUrl" name="logoFileUrl" class="file" >
-                <input type="button" value="上传" id="logoUrlButton" class="uploadBtn"  />
+                <input type="text" class="i-text" id="logoUrl" data-attr-scan="logoUrl" readonly="readonly" />
+                <div class="uploadBtn">上传
+                    <input type="file" id="logoUrlButton" name="logoFileUrl" class="file" value="" />
+                </div>
             </div>
         </div>
     </form>

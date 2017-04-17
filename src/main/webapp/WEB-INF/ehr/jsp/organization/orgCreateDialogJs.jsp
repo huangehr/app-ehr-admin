@@ -225,7 +225,7 @@
                     }
                 });
 
-                this.$logoUrlButton.click(function () {
+                this.$logoUrlButton.on('change',function () {
                     var url = '${contextRoot}/organization/orgLogoFileUpload';
                     doUpload(url);
                 });
@@ -242,6 +242,7 @@
                         processData: false,
                         success: function (returndata) {
                             if(returndata != "fail"){
+                                $('#logoUrl').val(returndata);
                                 self.$logoUrl.val(returndata);
                                 alert("上传成功");
                             }else{
