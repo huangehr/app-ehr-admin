@@ -5,6 +5,13 @@
   Time: 10:55
   To change this template use File | Settings | File Templates.
 --%>
+<style>
+    .l-text {
+        width: 160px;
+    }
+
+</style>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -13,9 +20,9 @@
     <!-- ####### 查询条件部分 ####### -->
     <div id="div_content" class="f-ww contentH">
         <div id="div_left" class="f-w240 f-bd f-of-hd">
-            <div class="f-mt10 f-mb10 f-ml10 f-w200 " style="width: 120px">
+            <div class="f-mt10 f-mb10 f-ml10 f-w200">
               <input type="text" id="inp_search" data-type="select"  placeholder="请选择机构" class="f-ml10 f-h28"/>
-                <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                <div id="btn_search" class="l-button u-btn u-btn-primary f-ib f-vam" >
                     <span><spring:message code="btn.search"/></span>
                 </div>
             </div>

@@ -1,7 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<style>
+	.l-text {
+		width: 220px;
+	}
 
+</style>
 <div id="div_rs_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
 	<div class="m-form-group">
 		<label>姓名<spring:message code="spe.colon"/></label>
