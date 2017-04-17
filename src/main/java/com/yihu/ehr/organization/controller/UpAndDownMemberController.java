@@ -98,6 +98,8 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
         }
         if (!StringUtils.isEmpty(orgId)) {
             stringBuffer.append("orgId=" + orgId + ";" );
+        }else{
+            stringBuffer.append("orgId=-0;" );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {

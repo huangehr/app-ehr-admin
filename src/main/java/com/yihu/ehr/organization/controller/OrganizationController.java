@@ -324,7 +324,7 @@ public class OrganizationController extends BaseUIController {
 
                 String mOrgUpdateJson = objectMapper.writeValueAsString(orgForUpdate);
                 params.add("mOrganizationJsonDatas", mOrgUpdateJson);
-                envelopStr = templates.doPost(comUrl + "/organization", params);
+                envelopStr = templates.doPost(comUrl + "/organizations/update", params);
             }
             return envelopStr;
         } catch (Exception e) {
