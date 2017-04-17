@@ -198,6 +198,18 @@
                 },
                 </sec:authorize>
 
+                // 1-4- 就诊卡管理
+                <sec:authorize url="/medicalCards/initial">
+                {
+                    id: 14,
+                    pid: 1,
+                    level:2,
+                    text: '<spring:message code="title.card.manage"/>',
+                    url: '${contextRoot}/medicalCards/initial'
+                },
+                </sec:authorize>
+
+
                 //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
 
                 //2 - 标准规范中心
