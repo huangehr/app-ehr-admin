@@ -34,20 +34,23 @@
 	</div>
 	<div class="m-form-group">
 		<label>发卡时间<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control ">
-			<input type="text" id="inp_release_date"  data-attr-scan="releaseDate">
+		<div class="m-form-control">
+			<input type="text" id="inp_release_date" class="validate-date  l-text-field " placeholder="输入发卡时间 格式(2017-04-15)"
+				    data-attr-scan="releaseDate"/>
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label>有效期起始时间<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control u-ui-readonly">
-			<input type="text" id="inp_validity_date_begin" data-type="date"  data-attr-scan="validityDateBegin">
+		<div class="m-form-control">
+			<input type="text" id="inp_validity_date_begin" class="validate-date  l-text-field " placeholder="输入起始时间 格式(2017-04-15)"
+				   data-attr-scan="validityDateBegin"/>
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label>有效期截止时间<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control u-ui-readonly">
-			<input type="text" id="inp_validity_date_end" data-type="date"  data-attr-scan="validityDateEnd">
+		<div class="m-form-control">
+			<input type="text" id="inp_validity_date_end" class="validate-date  l-text-field " placeholder="输入截止时间 格式(2017-04-15)"
+				   data-attr-scan="validityDateEnd"/>
 		</div>
 	</div>
 
@@ -60,8 +63,8 @@
 
 	<div class="m-form-group">
 		<label>卡状态<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_status" data-type="select"  data-attr-scan="status"/>
+		<div class="l-text-wrapper m-form-control essential">
+			<input type="text" id="inp_status" data-type="select" class="required" data-attr-scan="status"/>
 		</div>
 	</div>
 

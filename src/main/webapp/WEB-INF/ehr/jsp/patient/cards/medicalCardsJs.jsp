@@ -69,19 +69,19 @@
                         url: '${contextRoot}/medicalCards/searchMedicalCardss',
                         parms: {
                             searchNm: '',
-                            status: 1,
+                            status: '',
                             page:1,
                             rows:15
                         },
                         columns: [
 							{ display: '卡号',name: 'cardNo', width: '10%',isAllowHide: false},
-                            { display: '卡类别',name: 'cardTypeName', width: '10%',isAllowHide: false},
+                            { display: '卡类别',name: 'cardTypeName', width: '8%',isAllowHide: false},
 							{ display: '发卡机构', name: 'releaseOrg', width: '10%', minColumnWidth: 60,},
-                            { display: '发卡时间', name: 'releaseDate',width: '10%', isAllowHide: false,align:'left' },
-                            { display: '有效期起始时间', name: 'validityDateBegin',width: '10%',isAllowHide: false,align:'left'},
-                            { display: '有效期截止时间', name: 'validityDateEnd',width: '10%', isAllowHide: false,align:'left' },
-                            { display: '描述', name: 'description',width: '20%', isAllowHide: false,align:'left' },
-                            { display: '状态', name: 'status',width: '8%',isAllowHide: false,render:function(row){
+                            { display: '发卡时间', name: 'releaseDate',width: '10%', align:'left' },
+                            { display: '有效期起始时间', name: 'validityDateBegin',width: '10%',align:'left'},
+                            { display: '有效期截止时间', name: 'validityDateEnd',width: '10%', align:'left' },
+                            { display: '描述', name: 'description',width: '10%', align:'left' },
+                            { display: '状态', name: 'status',width: '8%',render:function(row){
                                 if (Util.isStrEquals(row.status,'1')) {
                                     return '有效';
                                 } else {

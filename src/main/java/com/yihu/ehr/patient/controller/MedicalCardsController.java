@@ -59,12 +59,12 @@ public class MedicalCardsController extends BaseUIController {
         String envelopStr = "";
         try{
             if (!StringUtils.isEmpty(id)) {
-                String url = "/medicalCards/"+id+"/get";
+                String url = "/medicalCards/get";
                 Map<String, Object> par = new HashMap<>();
                 par.put("id", id);
                 envelopStr = HttpClientUtil.doGet(comUrl + url,par, username, password);
             }
-            model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
+            model.addAttribute("allData",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
         }catch (Exception ex){
             LogService.getLogger(MedicalCardsController.class).error(ex.getMessage());
         }
@@ -80,7 +80,7 @@ public class MedicalCardsController extends BaseUIController {
      */
     @RequestMapping("searchMedicalCardss")
     @ResponseBody
-    public Object searchMedicalCardss(String searchNm,int status ,int page, int rows) {
+    public Object searchMedicalCardss(String searchNm,String status ,int page, int rows) {
         String url = "/getMedicalCards";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -88,7 +88,9 @@ public class MedicalCardsController extends BaseUIController {
         params.put("search", searchNm);
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("status=" + status );
+        if (!StringUtils.isEmpty(status)) {
+            stringBuffer.append("status=" + status + ";");
+        }
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("cardNo?" + searchNm );
         }
@@ -115,50 +117,76 @@ public class MedicalCardsController extends BaseUIController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updateMedicalCards", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updateMedicalCards")
     @ResponseBody
-    public Object updateMedicalCards(String medicalCardsModelJsonData, HttpServletRequest request) throws IOException{
+    public Object updateMedicalCards(String medicalCardsModelJsonData,String oldCardNo, HttpServletRequest request) throws IOException{
 
-        String url = "/medicalCards/save";
+
         String resultStr = "";
-        System.out.println();
         Envelop result = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        String[] strings = URLDecoder.decode(medicalCardsModelJsonData, "UTF-8").split(";");
-        MedicalCardsModel detailModel = toModel(strings[0], MedicalCardsModel.class);
+        MedicalCardsModel detailModel = objectMapper.readValue(medicalCardsModelJsonData, MedicalCardsModel.class);
         RestTemplates templates = new RestTemplates();
-
         try {
-            if (!StringUtils.isEmpty(detailModel.getId())) {
+            if(!StringUtils.isEmpty(detailModel.getCardNo()) && !oldCardNo.equals(detailModel.getCardNo())){
+                Map<String, Object> par = new HashMap<>();
+                par.put("cardNo", detailModel.getCardNo());
+                resultStr = HttpClientUtil.doPut(comUrl + "/medicalCards/checkCardNo", par, username, password);
+                Envelop re = getEnvelop(resultStr);
+                if(re.isSuccessFlg()){
+                    result.setSuccessFlg(false);
+                    result.setErrorMsg("卡号已存在");
+                    return result;
+                }
+            }
+
+            String url = "/medicalCards/save";
+            if (detailModel.getId()!=0) {
                 Long id = detailModel.getId();
                 Map<String, Object> par = new HashMap<>();
                 par.put("id", id);
-                resultStr = templates.doGet(comUrl +  "/medicalCards/"+id+"/get",par);
+                resultStr = HttpClientUtil.doGet(comUrl + "/medicalCards/get",par, username, password);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     MedicalCardsModel updateMedicalCards = getEnvelopModel(envelop.getObj(), MedicalCardsModel.class);
-                    updateMedicalCards.setUserId(detailModel.getUserId());
                     updateMedicalCards.setCardType(detailModel.getCardType());
                     updateMedicalCards.setCardNo(detailModel.getCardNo());
                     updateMedicalCards.setReleaseOrg(detailModel.getReleaseOrg());
-                    updateMedicalCards.setReleaseDate(detailModel.getReleaseDate());
-                    updateMedicalCards.setValidityDateBegin(detailModel.getValidityDateBegin());
-                    updateMedicalCards.setValidityDateEnd(detailModel.getValidityDateEnd());
+
+                    if(!StringUtils.isEmpty(detailModel.getReleaseDate())){
+                        updateMedicalCards.setReleaseDate(detailModel.getReleaseDate() + " 00:00:00");
+                    }
+                    if(!StringUtils.isEmpty(detailModel.getValidityDateBegin())){
+                        updateMedicalCards.setValidityDateBegin(detailModel.getValidityDateBegin() + " 00:00:00");
+                    }
+                    if(!StringUtils.isEmpty(detailModel.getValidityDateEnd())){
+                        updateMedicalCards.setValidityDateEnd(detailModel.getValidityDateEnd() + " 00:00:00");
+                    }
                     updateMedicalCards.setDescription(detailModel.getDescription());
                     updateMedicalCards.setCreater(detailModel.getCreater());
                     updateMedicalCards.setStatus(detailModel.getStatus());
-                    params.add("medicalCards_json_data", toJson(updateMedicalCards));
-
-                    resultStr = templates.doPut(comUrl + url, params);
+                    params.add("data", toJson(updateMedicalCards));
+                    params.add("operator", toJson(userDetailModel.getId()));
+                    resultStr = templates.doPost(comUrl + url, params, username, password);
                 } else {
                     result.setSuccessFlg(false);
                     result.setErrorMsg(envelop.getErrorMsg());
                     return result;
                 }
             } else {
-                params.add("medicalCards_json_data", toJson(detailModel));
-                resultStr = templates.doPost(comUrl + url, params);
+                if(!StringUtils.isEmpty(detailModel.getReleaseDate())){
+                    detailModel.setReleaseDate(detailModel.getReleaseDate() + " 00:00:00");
+                }
+                if(!StringUtils.isEmpty(detailModel.getValidityDateBegin())){
+                    detailModel.setValidityDateBegin(detailModel.getValidityDateBegin() + " 00:00:00");
+                }
+                if(!StringUtils.isEmpty(detailModel.getValidityDateEnd())){
+                    detailModel.setValidityDateEnd(detailModel.getValidityDateEnd() + " 00:00:00");
+                }
+                params.add("data", toJson(detailModel));
+                params.add("operator", toJson(userDetailModel.getId()));
+                resultStr = templates.doPost(comUrl + url, params, username, password);
             }
         } catch (Exception e) {
             result.setSuccessFlg(false);
@@ -198,37 +226,5 @@ public class MedicalCardsController extends BaseUIController {
             return result;
         }
     }
-
-    /**
-     * 根据id获取就诊卡
-     * @param model
-     * @param medicalCardsId
-     * @param mode
-     * @return
-     */
-//    @RequestMapping("getMedicalCards")
-//    public Object getMedicalCards(Model model, Long medicalCardsId, String mode) {
-//        String url = ""/medicalCards/"+medicalCardsId+"/get";
-//        String resultStr = "";
-//        Envelop envelop = new Envelop();
-//        Map<String, Object> params = new HashMap<>();
-//        ObjectMapper mapper = new ObjectMapper();
-//
-//        params.put("medicalCardsId", medicalCardsId);
-//        try {
-//            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//
-//            Envelop ep = getEnvelop(resultStr);
-//            MedicalCardsModel detailModel = toModel(toJson(ep.getObj()),MedicalCardsModel.class);
-//            model.addAttribute("allData", resultStr);
-//            model.addAttribute("mode", mode);
-//            model.addAttribute("contentPage", "patient/cards/medicalCardsInfoDialog");
-//            return "simpleView";
-//        } catch (Exception e) {
-//            envelop.setSuccessFlg(false);
-//            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-//            return envelop;
-//        }
-//    }
 
 }

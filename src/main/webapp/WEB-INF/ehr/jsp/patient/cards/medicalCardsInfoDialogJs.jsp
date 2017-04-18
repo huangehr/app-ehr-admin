@@ -9,11 +9,10 @@
         var appInfoForm = null;
         // 表单校验工具类
         var jValidation = $.jValidation;
-		var dictId = 2;
+		var dictId = 43;
         var typeDictId=66;
-        var medicalCards ='${envelop}';
         var mode = '${mode}';
-
+        var oldCardNo = '';
 
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -45,10 +44,10 @@
 				this.initDDL(dictId, this.$status);
                 this.initDDL(typeDictId, this.$cardType);
 
-				this.$releaseOrg.ligerTextBox({width:240});
-				this.$releaseDate.ligerTextBox({width:240});
-				this.$validityDateBegin.ligerTextBox({width:240});
-				this.$validityDateEnd.ligerTextBox({width:240 });
+                this.$releaseOrg.ligerTextBox({width:240});
+                this.$releaseDate.ligerDateEditor({format: "yyyy-MM-dd"});
+                this.$validityDateBegin.ligerDateEditor({format: "yyyy-MM-dd"});
+                this.$validityDateEnd.ligerDateEditor({format: "yyyy-MM-dd"});
                 this.$description.ligerTextBox({width:240, height: 120 });
 
 
@@ -62,14 +61,15 @@
 					$("#btn_cancel").hide();
 				}
                 this.$form.attrScan();
-                if(mode !='new'){
+                if(mode != 'new'){
+                    var medicalCards =${allData}.obj;
                     this.$form.Fields.fillValues({
                         id:medicalCards.id,
                         cardNo: medicalCards.cardNo,
                         releaseOrg:medicalCards.releaseOrg,
-                        releaseDate:medicalCards.releaseDate,
-                        validityDateBegin:medicalCards.validityDateBegin,
-                        validityDateEnd:medicalCards.validityDateEnd,
+                        releaseDate:medicalCards.releaseDate.substring(0,10),
+                        validityDateBegin:medicalCards.validityDateBegin.substring(0,10),
+                        validityDateEnd:medicalCards.validityDateEnd.substring(0,10),
                         description:medicalCards.description
                     });
 					$("#inp_status").ligerGetComboBoxManager().setValue(medicalCards.status);
@@ -81,10 +81,11 @@
 
                     $("#inp_card_type").ligerGetComboBoxManager().setValue(medicalCards.cardType);
                     $("#inp_card_type").ligerGetComboBoxManager().setText(medicalCards.cardTypeName);
-
+                    oldCardNo = medicalCards.cardNo;
                 }
                 this.$form.show();
             },
+
             initDDL: function (dictId, target) {
                 target.ligerComboBox({
                     url: "${contextRoot}/dict/searchDictEntryList",
@@ -94,40 +95,31 @@
                     textField: 'value'
                 });
             },
+
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
-                    onElementValidateForAjax:function(elm){
-                        var field = $(elm).attr('id');
-                        var val = $('#' + field).val();
-
-                        if(field=='inp_app_code' && val!=medicalCards.code){
-                            return uniqValid("${contextRoot}/app/platform/existence", "code="+val+" g1;sourceType=0", "该接入应用代码已存在！");
-                        }else if(field=='jryycyc'){
-                            var result = new $.jValidation.ajax.Result();
-                            if(!val || val.replace(/;/g, "")==""){
-                                result.setResult(false);
-                                result.setErrorMsg("该项为必填项！");
-                            }else{
-                                result.setResult(true);
-                            }
-                            return result;
-                        }
-                    }
                 });
                 this.$btnSave.click(function () {
                     if(validator.validate()){
                         var values = self.$form.Fields.getValues();
                         var dataModel = $.DataModel.init();
-                        dataModel.updateRemote("${contextRoot}/medicalCards/updateMedicalCards",{data: $.extend({}, values),
+                        dataModel.updateRemote("${contextRoot}/medicalCards/updateMedicalCards", {
+                            data:{
+                                medicalCardsModelJsonData:JSON.stringify(values),
+                                oldCardNo:oldCardNo
+                            },
+
                             success: function(data) {
                                 if (data.successFlg) {
-                                    win.parent.closeDialog(function () {
-                                    });
+                                    $.Notice.success('操作成功');
+                                    win.reloadMasterGrid();
+                                    win.closeDialog();
                                 } else {
-                                    window.top.$.Notice.error(data.errorMsg);
+                                    $.Notice.error(data.errorMsg);
                                 }
-                            }});
+                            }
+                        });
                     }else{
                         return;
                     }
