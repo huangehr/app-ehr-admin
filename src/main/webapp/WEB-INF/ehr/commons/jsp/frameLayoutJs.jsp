@@ -199,13 +199,13 @@
                 </sec:authorize>
 
                 // 1-4- 就诊卡管理
-                <sec:authorize url="/medicalCards/initial">
+                <sec:authorize url="/medicalCards/initialPageView">
                 {
                     id: 14,
                     pid: 1,
                     level:2,
                     text: '<spring:message code="title.card.manage"/>',
-                    url: '${contextRoot}/medicalCards/initial'
+                    url: '${contextRoot}/medicalCards/initialPageView'
                 },
                 </sec:authorize>
 

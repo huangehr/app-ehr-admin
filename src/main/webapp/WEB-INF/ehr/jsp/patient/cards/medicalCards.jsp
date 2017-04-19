@@ -24,24 +24,33 @@
                 <input type="text" data-type="select" id="ipt_status" placeholder="状态" data-attr-scan="status">
             </div>
 
-
-            <div class="m-form-control f-ml10">
-                <!--按钮:查询 & 新增-->
-					<div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
-						<span><spring:message code="btn.search"/></span>
-					</div>
+            <!--按钮:查询 & 新增-->
+            <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+                <span><spring:message code="btn.search"/></span>
             </div>
 
-            <div class="m-form-control m-form-control-fr">
-				<sec:authorize url="/app/patient/MedicalCardsInfo">
-					<div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
-						<span ><spring:message code="btn.create"/></span>
-					</div>
-				</sec:authorize>
-            </div>
+            <sec:authorize url="/ehr/template">
+                <a href="<%=request.getContextPath()%>/template/资源就诊卡导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+                   style="">
+                    下载模版
+                </a>
+            </sec:authorize>
+
+            <sec:authorize url="/medicalCards/import">
+                <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
+            </sec:authorize>
+
+            <sec:authorize url="/app/patient/MedicalCardsInfo">
+                <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+                    <span ><spring:message code="btn.create"/></span>
+                </div>
+            </sec:authorize>
+
         </div>
-    </div>
 
-    <!--###### 查询明细列表 ######-->
-    <div id="div_medicalCards_info_grid" ></div>
+    </div>
+</div>
+
+<!--###### 查询明细列表 ######-->
+<div id="div_medicalCards_info_grid" ></div>
 </div>
