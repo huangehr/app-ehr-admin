@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+
 <script>
 
     (function ($, win) {
@@ -13,10 +18,31 @@
             var dictId = 43;
 			var isFirstPage = true;
 
+            var barTools = function(){
+                function onUploadSuccess(g, result){
+                    if(result==undefined)
+                        $.Notice.success("导入成功");
+                    else{
+                        result = eval('(' + result + ')')
+                        if(result.maxMsg !=undefined){
+                            $.Notice.error(result.maxMsg);
+                        }else{
+                            var url = "${contextRoot}/medicalCards/downLoadErrInfo?f="+ result.eFile[1] + "&datePath=" + result.eFile[0];
+                            $.ligerDialog.open({
+                                height: 80,
+                                content: "请下载&nbsp;<a target='diframe' href='"+ url +"'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
+                            });
+                        }
+                    }
+                }
+                $('#upd').uploadFile({url: "${contextRoot}/medicalCards/import", onUploadSuccess: onUploadSuccess});
+            };
+
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 retrieve.init();
                 master.init();
+                barTools();
             }
 			function reloadGrid (params) {
 				if (isFirstPage){

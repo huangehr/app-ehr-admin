@@ -1,12 +1,24 @@
 package com.yihu.ehr.patient.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.agModel.patient.MedicalCardsModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.model.patient.MedicalCards;
+import com.yihu.ehr.patient.model.RsMedicalCardModel;
+import com.yihu.ehr.patient.service.MedicalCardsService;
+import com.yihu.ehr.resource.model.RsMetaMsgModel;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.excel.AExcelReader;
+import com.yihu.ehr.util.excel.ObjectFileRW;
+import com.yihu.ehr.util.excel.TemPath;
+import com.yihu.ehr.util.excel.read.RsMedicalCardModelReader;
+import com.yihu.ehr.util.excel.read.RsMedicalCardModelWriter;
+import com.yihu.ehr.util.excel.read.RsMetaMsgModelReader;
+import com.yihu.ehr.util.excel.read.RsMetaMsgModelWriter;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.web.RestTemplates;
@@ -19,12 +31,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhoujie on 2017/4/17
@@ -32,7 +49,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/medicalCards")
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class MedicalCardsController extends BaseUIController {
+public class MedicalCardsController  extends ExtendController<MedicalCardsService> {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -40,12 +57,14 @@ public class MedicalCardsController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
 
+    static final String parentFile = "medicalCards";
+
     /**
      * 列表页
      * @param model
      * @return
      */
-    @RequestMapping("initial")
+    @RequestMapping("initialPageView")
     public String patientInitial(Model model) {
         model.addAttribute("contentPage", "/patient/cards/medicalCards");
         return "pageView";
@@ -226,5 +245,93 @@ public class MedicalCardsController extends BaseUIController {
             return result;
         }
     }
+
+
+    @RequestMapping(value = "import")
+    @ResponseBody
+    public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        try {
+            writerResponse(response, 1+"", "l_upd_progress");//进度条
+            request.setCharacterEncoding("UTF-8");
+            AExcelReader excelReader = new RsMedicalCardModelReader();
+            excelReader.read(file.getInputStream());
+            List<RsMedicalCardModel> errorLs = excelReader.getErrorLs();
+            List<RsMedicalCardModel> correctLs = excelReader.getCorrectLs();
+            writerResponse(response, 25 + "", "l_upd_progress");
+
+            Map rs = new HashMap<>();
+            if(errorLs.size()>0){
+                String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
+                new RsMedicalCardModelWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
+                rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
+            }
+
+            if(correctLs.size()>0 && correctLs.size()<=50){
+                String cardNoStr = "";
+                for(RsMedicalCardModel rsMedicalCardModel : correctLs){
+                    cardNoStr = cardNoStr + rsMedicalCardModel.getCardNo() + ",";
+                }
+                Map<String, Object> par = new HashMap<>();
+                par.put("cardNoStr", cardNoStr.substring(0,cardNoStr.length()-1));
+                String resultStr = HttpClientUtil.doPut(comUrl + "/medicalCards/getMutiCard", par, username, password);
+                Envelop re = getEnvelop(resultStr);
+                List<MedicalCardsModel> muCards = new ArrayList<>();
+                getEnvelopList(re.getDetailModelList(),muCards,MedicalCardsModel.class);
+                for(RsMedicalCardModel rsMedicalCardModel :correctLs){
+                    for(MedicalCardsModel medicalCardsModel :muCards){
+                        if(medicalCardsModel.getCardNo().equals(rsMedicalCardModel.getCardNo())){
+                            rsMedicalCardModel.addErrorMsg("cardNo","此卡号已添加");
+                            errorLs.add(rsMedicalCardModel);
+                            break;
+                        }
+                    }
+
+                }
+                if(errorLs.size()>0){
+                    String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
+                    new RsMedicalCardModelWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
+                    rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
+                }else{
+                    saveMedicalCard(toJson(correctLs),String.valueOf(user.getId()) );
+                }
+            }else{
+                rs.put("maxMsg","一次最多不能超过50条");
+                writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
+            }
+
+            if(rs.size()>0)
+                writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
+            else
+                writerResponse(response, 100 + "", "l_upd_progress");
+        } catch (Exception e) {
+            e.printStackTrace();
+            writerResponse(response, "-1", "l_upd_progress");
+        }
+    }
+
+    private List saveMedicalCard(String medicalCars,String operator) throws Exception {
+        Map map = new HashMap<>();
+        map.put("medicalCars", medicalCars);
+        map.put("operator", operator);
+        EnvelopExt<RsMedicalCardModel> envelop = getEnvelopExt(service.doPost(service.comUrl + "/medicalCards/batch", map), RsMedicalCardModel.class);
+        if(envelop.isSuccessFlg())
+            return envelop.getDetailModelList();
+        throw new Exception("保存失败！");
+    }
+
+    @RequestMapping("/downLoadErrInfo")
+    public void downLoadErrInfo(String f, String datePath,  HttpServletResponse response) throws IOException {
+
+        try{
+            f = datePath + TemPath.separator + f;
+            downLoadFile(TemPath.getFullPath(f, parentFile), response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 }
