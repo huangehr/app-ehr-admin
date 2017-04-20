@@ -198,14 +198,35 @@
                 },
                 </sec:authorize>
 
-                // 1-4- 就诊卡管理
-                <sec:authorize url="/medicalCards/initialPageView">
+
+                // 1-4 -  就诊卡管理
+                <sec:authorize url="Ehr_cards">
                 {
                     id: 14,
                     pid: 1,
                     level:2,
                     text: '<spring:message code="title.card.manage"/>',
+                },
+                </sec:authorize>
+
+                // 1-4-1 就诊卡管理
+                <sec:authorize url="/medicalCards/initialPageView">
+                {
+                    id: 141,
+                    pid: 14,
+                    level:3,
+                    text: '<spring:message code="title.card.manage"/>',
                     url: '${contextRoot}/medicalCards/initialPageView'
+                },
+                </sec:authorize>
+                // 1-4-2 就诊卡关联审核
+                <sec:authorize url="/userCards/initial">
+                {
+                    id: 142,
+                    pid: 14,
+                    level:3,
+                    text: '<spring:message code="title.card.medicalCardsAudit"/>',
+                    url: '${contextRoot}/userCards/initial'
                 },
                 </sec:authorize>
 
