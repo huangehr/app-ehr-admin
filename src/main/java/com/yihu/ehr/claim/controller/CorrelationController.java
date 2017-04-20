@@ -60,11 +60,12 @@ public class CorrelationController extends BaseUIController {
         return "pageView";
     }
 
-    @RequestMapping("msgDialog")
+    @RequestMapping("arApplyDialog")
     public String msgDialog(Model model,String status,String id) {
         try{
-            String url = "/archive/applications/"+id+"/archive_info";
+            String url = "/patientArchive/apply";
             Map<String, Object> params = new HashMap<>();
+            params.put("id",id);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop result = getEnvelop(resultStr);
             if(result.getObj()!=null){
@@ -78,26 +79,26 @@ public class CorrelationController extends BaseUIController {
             //审核失败的查看，
             if("view".equals(status)){
                 model.addAttribute("contentPage", "/claim/correlationRejectDialog");
-            }else if("-1".equals(status)){//及无内容的展示
-                model.addAttribute("contentPage", "/claim/correlationValidateDialog");
-                model.addAttribute("msg","数据库中未查找到相关档案列表，建议审核不通过，原因为“未查找到相关就诊机构，请您核对就诊机构信息后重新提交申请!");
-            }else if("2".equals(status)){//无机构导致无内容
-                model.addAttribute("contentPage", "/claim/correlationValidateDialog");
-                model.addAttribute("msg","数据库中未查找到相关就诊机构，建议审核不通过，原因为“未查找到相关就诊机构，请您核对就诊机构信息后重新提交申请!");
-            }else if("3".equals(status)){//无医生导致无内容
-                model.addAttribute("contentPage", "/claim/correlationValidateDialog");
-                model.addAttribute("msg","数据库中未查找到相关医生，建议审核不通过，原因为“未查找到就诊医生，请您核对就诊医生信息后重新提交申请!");
-            }else if("4".equals(status)){//在就诊时间内，无相应就诊人就诊导致无内容
-                model.addAttribute("contentPage", "/claim/correlationValidateDialog");
-                model.addAttribute("msg","该时间段内未查找到相关档案，建议审核不通过，原因为“未查找到相关档案，请您核对相关信息后重新提交申请!");
             }else if("success".equals(status)){//查看预关联
                 model.addAttribute("contentPage", "/claim/correlationAuditDialog");
                 if(result.getDetailModelList()!=null&&result.getDetailModelList().size()==1){
                     Object list =  result.getDetailModelList().get(0);
                     model.addAttribute("archives",toJson(list));
                 }else{
-                    model.addAttribute("archives",toJson(new ArApplyModel()));
+                    String relaUrl = "/patientArchive/" + id + "/getArRelation";
+                    Map<String, Object> relaParams = new HashMap<>();
+                    /*relaParams.put("applyId",id);*/
+                    String relaResultStr = HttpClientUtil.doGet(comUrl + relaUrl, relaParams, username, password);
+                    Envelop relaResult = getEnvelop(relaResultStr);
+                    if(relaResult.getObj()!=null){
+                        Object obj =  relaResult.getObj();
+                        model.addAttribute("archives",toJson(obj));
+                    }else{
+                        model.addAttribute("archives",toJson(new ArApplyModel()));
+                    }
                 }
+            }else if("audit".equals(status)){
+
             }
         }catch (Exception e){
             LogService.getLogger(CorrelationController.class).error(e.getMessage());

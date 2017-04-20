@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <!--######资源浏览页面Title设置######-->
-<div class="f-dn" data-head-title="true">不通过的原意</div>
+<div class="f-dn" data-head-title="true">不通过的原因</div>
 <div id="div_audit" class="f-mt10 f-audit-fw100">
     <div class=" f-ml20 u-public-manage m-form-inline" id="div_unrelevance_form" data-role-form>
         <div class="f-mt10 f-mb10">

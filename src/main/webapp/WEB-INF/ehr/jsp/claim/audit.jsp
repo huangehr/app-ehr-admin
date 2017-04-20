@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <!--######资源浏览页面Title设置######-->
-<div class="f-dn" data-head-title="true">申请审核</div>
+<div class="f-dn" data-head-title="true">档案申请审核</div>
 <div id="div_audit" class="f-mt10 f-audit-fw100">
     <!-- ####### 查询条件部分 ####### -->
     <div class="">

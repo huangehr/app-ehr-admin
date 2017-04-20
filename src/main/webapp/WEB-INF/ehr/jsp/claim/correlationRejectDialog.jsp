@@ -3,15 +3,27 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div id="div_std_info_form" data-role-form class="m-form-inline f-mt20 f-ml26" data-role-form>
-    <h3 style="margin:0px 0 18px 35%;font-weight: bold;font-size:35px;">审批未通过</h3>
+    <h3 style="margin:0px 0 18px 35%;font-weight: bold;font-size:35px;">明细 - 审批未通过</h3>
     <div class="div-apply-msg f-audit-fw50">
         <fieldset class="fie-bd">
             <legend class="f-pl10 f-pr10"><b>申请信息</b></legend>
             <div id="div_apply_form" data-role-form class="m-form-inline">
                 <div class="m-form-group m-form-readonly">
+                    <label>申请人姓名:</label>
+                    <div class="l-text-wrapper m-form-control">
+                        <input type="text" id="inp_name" class="f-matching-bd" data-attr-scan="name"/>
+                    </div>
+                </div>
+                <div class="m-form-group m-form-readonly">
+                    <label>身份证号:</label>
+                    <div class="l-text-wrapper m-form-control">
+                        <input type="text" id="inp_idCard" class="f-matching-bd" data-attr-scan="idCard"/>
+                    </div>
+                </div>
+                <div class="m-form-group m-form-readonly">
                     <label>就诊时间:</label>
                     <div class="l-text-wrapper m-form-control">
-                        <input type="text" id="inp_apply_analyse_time" class="f-matching-bd" data-attr-scan="applyDate"/>
+                        <input type="text" id="inp_apply_analyse_time" class="f-matching-bd" data-attr-scan="visDate"/>
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly">
@@ -27,7 +39,7 @@
                     </div>
                 </div>
                 <div class="m-form-group m-form-readonly">
-                    <label>卡号:</label>
+                    <label>医疗卡号:</label>
                     <div class="l-text-wrapper m-form-control">
                         <input type="text"  id="inp_apply_card_nmuber" class="f-matching-bd" data-attr-scan="cardNo"/>
                     </div>

@@ -10,6 +10,8 @@
         var mode = eval("(" + '${mode}' + ")");
         rejectForm = {
             $btnOk: $("#btn_ok"),
+            $applyUserName: $("#inp_name"),
+            $applyIdCard: $("#inp_idCard"),
             $applyAnalyseTime: $("#inp_apply_analyse_time"),
             $applyAnalyseOrg: $("#inp_apply_analyse_org"),
             $applyAnalyseDoctor: $("#inp_apply_analyse_doctor"),
@@ -21,6 +23,8 @@
             $auditReason:$("#audit_reason"),
             $form:$("#div_std_info_form"),
             init: function () {
+                rejectForm.$applyUserName.ligerTextBox({width: 240, height: 25});
+                rejectForm.$applyIdCard.ligerTextBox({width: 240, height: 25});
                 rejectForm.$applyAnalyseTime.ligerTextBox({width: 240, height: 25});
                 rejectForm.$applyAnalyseOrg.ligerTextBox({width: 240, height: 25});
                 rejectForm.$applyAnalyseDoctor.ligerTextBox({width: 240, height: 25});
@@ -36,7 +40,9 @@
                     mode.auditReason="找不到对应的档案列表！";
                 }
                 rejectForm.$form.Fields.fillValues({
-                    applyDate:mode.applyDate,
+                    name:mode.name,
+                    idCard:mode.idCard,
+                    visDate:mode.visDate,
                     visOrg:mode.visOrg,
                     visDoctor:mode.visDoctor,
                     cardNo:mode.cardNo,

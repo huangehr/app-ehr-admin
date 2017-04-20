@@ -22,7 +22,7 @@
 			 */
 			function pageInit() {
 				retrieve.init();
-				master.init();
+				master.searchList();
 			}
 			//多条件查询参数设置
 			function reloadGrid (params) {
@@ -89,17 +89,20 @@
 			};
 			master = {
 				validateDialog:null,
-				init: function () {
+				searchList: function () {
 					var values =  retrieve.$element.Fields.getValues();
 					archiveGrid = $("#div_correlation_audit_grid").ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/correlation/getCorrelationModeList',
-						// 传给服务器的ajax 参数
+						url: '${contextRoot}/patient/arApply/getApplyList',
 						parms:values,
 						columns: [
-							{name: 'id', hide: true, isAllowHide: false},
-							{display: '申请时间', name: 'applyDate', width: '30%',align:'left'},
-							{display: '申请人', name: 'name', width: '30%',align:'left'},
-							{display: '状态', name: 'statusName', width: '30%',align:'left'},
+							{display: '审核状态', name: 'statusName', width: '10%', resizable: true,align: 'left'},
+							{display: '申请人', name: 'name', width: '10%',align: 'left'},
+							{display: '身份证号', name: 'idCard', width: '25%'},
+							{display: '申请时间', name: 'applyDate', width: '15%', resizable: true,align: 'left'},
+							{display: '审核人', name: 'auditor', width: '15%', resizable: true,align: 'left'},
+							{display: '审核时间', name: 'auditDate', width: '15%', resizable: true,align: 'left'},
+							{display: '', name: 'id', hide: true},
+							{display: '', name: 'userId', hide: true},
 							{display: '操作',name: 'operator', width:'10%', align:'center',render: function (row) {
 								var html="";
 								if(row.status==0){
@@ -120,24 +123,13 @@
 					this.bindEvents();
 				},
 				reloadGrid: function () {
-					var values =  retrieve.$element.Fields.getValues();
-					reloadGrid.call(this, values);
+					this.searchList();
 				},
-				validateResult:function(result,id){
-					if(result=="1"){
-						var url = '${contextRoot}/audit/initial?claimId=' + id;
-						$("#contentPage").empty();
-						$("#contentPage").load(url);
-					}else if("-1"==result){
-						master.openViewMsgDialog(result,id);
-					}else{
-						master.openErrMsgDialog(result,id);
-					}
-				},openErrMsgDialog:function(status,id){
+				openErrMsgDialog:function(status,id){
 					master.validateDialog = $.ligerDialog.open({
 						height:700,
 						width: 500,
-						url: '${contextRoot}/correlation/msgDialog',
+						url: '${contextRoot}/correlation/arApplyDialog',
 						urlParms: {
 							status: status,
 							id:id
@@ -146,24 +138,26 @@
 						opener: true,
 						load:true
 					});
-				},openSucMsgDialog:function(status,id){
-				master.validateDialog = $.ligerDialog.open({
-					height:540,
-					width: 920,
-					url: '${contextRoot}/correlation/msgDialog',
-					urlParms: {
-						status: status,
-						id:id
-					},
-					isHidden: false,
-					opener: true,
-					load:true
-				});
-			    },openViewMsgDialog:function(status,id){
+				},
+				openSucMsgDialog:function(status,id){
+					master.validateDialog = $.ligerDialog.open({
+						height:540,
+						width: 920,
+						url: '${contextRoot}/correlation/arApplyDialog',
+						urlParms: {
+							status: status,
+							id:id
+						},
+						isHidden: false,
+						opener: true,
+						load:true
+					});
+			    },
+				openViewMsgDialog:function(status,id){
 					master.validateDialog = $.ligerDialog.open({
 						height:240,
 						width: 260,
-						url: '${contextRoot}/correlation/msgDialog',
+						url: '${contextRoot}/correlation/arApplyDialog',
 						urlParms: {
 							status: status,
 							id:id
@@ -184,7 +178,7 @@
 						dataModel.updateRemote("${contextRoot}/correlation/validateAudit",
 						{   data:{id:id},
 							success: function(result) {
-								master.validateResult(result,id);
+
 							},
 							error: function () {
 								$.Notice.error( '审核校验失败！请联系管理员！');
