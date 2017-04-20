@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -270,18 +271,40 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
             if(correctLs.size()>0 && correctLs.size()<=50){
                 String cardNoStr = "";
                 for(RsMedicalCardModel rsMedicalCardModel : correctLs){
-                    cardNoStr = cardNoStr +"'" + rsMedicalCardModel.getCardNo() + "',";
+                    cardNoStr = cardNoStr + rsMedicalCardModel.getCardNo() + ",";
                 }
                 Map<String, Object> par = new HashMap<>();
-                par.put("cardNo", cardNoStr);
+                par.put("cardNoStr", cardNoStr.substring(0,cardNoStr.length()-1));
                 String resultStr = HttpClientUtil.doPut(comUrl + "/medicalCards/getMutiCard", par, username, password);
                 Envelop re = getEnvelop(resultStr);
-                List<MedicalCards> medicalCardses =  re.getDetailModelList();
-                //------------------
+                List<MedicalCardsModel> muCards = new ArrayList<>();
+                getEnvelopList(re.getDetailModelList(),muCards,MedicalCardsModel.class);
+                for(RsMedicalCardModel rsMedicalCardModel :correctLs){
+                    for(MedicalCardsModel medicalCardsModel :muCards){
+                        if(medicalCardsModel.getCardNo().equals(rsMedicalCardModel.getCardNo())){
+                            rsMedicalCardModel.addErrorMsg("cardNo","此卡号已添加");
+                            errorLs.add(rsMedicalCardModel);
+                            break;
+                        }
+                    }
 
-                saveMedicalCard(toJson(correctLs),String.valueOf(user.getId()) );
+                }
+                if(errorLs.size()>0){
+                    String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
+                    new RsMedicalCardModelWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
+                    rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
+                }else{
+                    saveMedicalCard(toJson(correctLs),String.valueOf(user.getId()) );
+                }
             }else{
-                writerResponse(response, 100  + ",'" +"一次最多不能超过50条" + "'", "l_upd_progress");
+                String data = "一次最多不能超过50条";
+                response.resetBuffer();
+                response.setContentType("text/html;charset=UTF-8");
+                ServletOutputStream out = response.getOutputStream();
+                out.write(data.getBytes("UTF-8"));
+                out.flush();
+                out.close();
+//                writerResponse(response, 100  + ",'" +"一次最多不能超过50条" + "'", "l_upd_progress");
             }
 
             if(rs.size()>0)
