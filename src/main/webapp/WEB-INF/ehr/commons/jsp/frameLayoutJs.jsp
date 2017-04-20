@@ -187,6 +187,18 @@
                 },
                 </sec:authorize>
 
+                // 1-4- 就诊卡管理
+                <sec:authorize url="/medicalCards/initialPageView">
+                {
+                    id: 124,
+                    pid: 12,
+                    level:3,
+                    text: '<spring:message code="title.card.manage"/>',
+                    url: '${contextRoot}/medicalCards/initialPageView'
+                },
+                </sec:authorize>
+
+
                 // 1-3 - 医生管理
                 <sec:authorize url="/doctor/initial">
                 {
@@ -198,16 +210,7 @@
                 },
                 </sec:authorize>
 
-                // 1-4- 就诊卡管理
-                <sec:authorize url="/medicalCards/initialPageView">
-                {
-                    id: 14,
-                    pid: 1,
-                    level:2,
-                    text: '<spring:message code="title.card.manage"/>',
-                    url: '${contextRoot}/medicalCards/initialPageView'
-                },
-                </sec:authorize>
+
 
 
                 //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
