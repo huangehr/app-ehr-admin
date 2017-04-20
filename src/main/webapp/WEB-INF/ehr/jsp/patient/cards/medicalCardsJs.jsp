@@ -20,17 +20,19 @@
 
             var barTools = function(){
                 function onUploadSuccess(g, result){
-                    console.log(result);
-                    alert(result);
                     if(result==undefined)
                         $.Notice.success("导入成功");
                     else{
                         result = eval('(' + result + ')')
-                        var url = "${contextRoot}/medicalCards/downLoadErrInfo?f="+ result.eFile[1] + "&datePath=" + result.eFile[0];
-                        $.ligerDialog.open({
-                            height: 80,
-                            content: "请下载&nbsp;<a target='diframe' href='"+ url +"'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
-                        });
+                        if(result.maxMsg !=undefined){
+                            $.Notice.error(result.maxMsg);
+                        }else{
+                            var url = "${contextRoot}/medicalCards/downLoadErrInfo?f="+ result.eFile[1] + "&datePath=" + result.eFile[0];
+                            $.ligerDialog.open({
+                                height: 80,
+                                content: "请下载&nbsp;<a target='diframe' href='"+ url +"'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
+                            });
+                        }
                     }
                 }
                 $('#upd').uploadFile({url: "${contextRoot}/medicalCards/import", onUploadSuccess: onUploadSuccess});
