@@ -297,14 +297,8 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
                     saveMedicalCard(toJson(correctLs),String.valueOf(user.getId()) );
                 }
             }else{
-                String data = "一次最多不能超过50条";
-                response.resetBuffer();
-                response.setContentType("text/html;charset=UTF-8");
-                ServletOutputStream out = response.getOutputStream();
-                out.write(data.getBytes("UTF-8"));
-                out.flush();
-                out.close();
-//                writerResponse(response, 100  + ",'" +"一次最多不能超过50条" + "'", "l_upd_progress");
+                rs.put("maxMsg","一次最多不能超过50条");
+                writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
             }
 
             if(rs.size()>0)
