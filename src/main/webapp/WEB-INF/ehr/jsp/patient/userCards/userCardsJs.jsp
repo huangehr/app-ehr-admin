@@ -112,9 +112,9 @@
                             {display: '操作', name: 'operator', width: '8%', render: function (row) {
                                 var html = '';
                                 if(row.auditStatus == "0"){
-                                    html += '<sec:authorize url="/userCards/agree"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "userCards:info:open", row.id ,row.auditStatus) + '">审核</a></sec:authorize>';
+                                    html += '<sec:authorize url="/userCards/agree"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "userCards:info:open", row.id ,1) + '">审核</a></sec:authorize>';
                                 }else{
-                                    html = '<sec:authorize url="/userCards/getUserDetail"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "userCards:info:open", row.id,row.auditStatus) + '">详情</a></sec:authorize>';
+                                    html = '<sec:authorize url="/userCards/getUserDetail"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "userCards:info:open", row.id,2) + '">详情</a></sec:authorize>';
                                 }
                                 return html;
                             }}
