@@ -74,6 +74,48 @@ public class PatientArchiveController extends BaseUIController {
         }
     }
 
+    /**
+     * 辅助档案审核,查询按姓名，身份证号，及就诊卡号查询关联的档案列表
+     * @param name
+     * @param idCardNo
+     * @param cardNo
+     * @param page
+     * @param rows
+     * @return
+     */
+    @RequestMapping("getArRelaListForAudit")
+    @ResponseBody
+    public Object getApplyListForAudit(String name,String idCardNo, String cardNo,int page, int rows) {
+        String url = "/patientArchive/getArRelationList";
+        String resultStr = "";
+        String filters = "";
+        if (!StringUtils.isEmpty(name)) {
+            filters += "name?" + name + ";";
+        }
+        if (!StringUtils.isEmpty(idCardNo)) {
+            filters += "idCardNo=" + idCardNo + ";";
+        }
+        if (!StringUtils.isEmpty(cardNo)) {
+            filters += "cardNo=" + cardNo + ";";
+        }
+
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("fields", "");
+        params.put("filters", filters);
+        params.put("size", rows);
+        params.put("page", page);
+        params.put("sorts", "");
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
     @RequestMapping("getArApplyList")
     @ResponseBody
     public Object getArApplyList(String status, int page, int rows) {
