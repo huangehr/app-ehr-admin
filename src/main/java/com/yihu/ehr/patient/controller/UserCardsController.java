@@ -204,10 +204,30 @@ public class UserCardsController extends BaseUIController {
         userCardsModel.setValidityDateEnd(userCardsModel.getValidityDateEnd() == null ? "" :userCardsModel.getValidityDateEnd().substring(0, 10) );
         userCardsModel.setAuditDate(userCardsModel.getAuditDate() == null ? "" : userCardsModel.getAuditDate().substring(0, 10));
 
+        model.addAttribute("auditStatus",auditStatus);
         model.addAttribute("userCards",userCardsModel);
         model.addAttribute("contentPage", "/patient/userCards/userCardsDetail");
         return "simpleView";
     }
 
+
+    @RequestMapping(value = "audit")
+    @ResponseBody
+    public boolean auditUserCards(long id,String auditStatus,String reason , HttpServletRequest request)throws Exception {
+
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        boolean result = true;
+        String url = "/patientCards/manager/verify";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", Long.valueOf(id));
+        params.put("auditor", userDetailModel.getId());
+        params.put("status", auditStatus);
+        params.put("auditReason", reason);
+        String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+        Envelop envelop = getEnvelop(resultStr);
+        result = envelop.isSuccessFlg();
+
+        return result;
+    }
 
 }
