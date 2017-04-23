@@ -7,8 +7,6 @@
         /* ************************** 变量定义 ******************************** */
         var Util = $.Util;
         var userCardInfo = null;
-        var mode = '${mode}';
-
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
             userCardInfo.init();
@@ -17,6 +15,7 @@
         userCardInfo = {
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
+            $btnRelative: $("#btn_relative"),
             $audit: $("#audit"),
 
             init: function () {
@@ -33,75 +32,118 @@
                     }
                     if(auditVal==1){
                         $("#refuseReasonGroup").css('display','none');
-                        $("#otherGroup").css('display','none');
+//                        $("#otherGroup").css('display','none');
                     }
-
-
                 });
-
 
                 $("#reason").change(function(){
                     var val = $("#reason").val();
                     if(val==0){
-                        $("#otherGroup").css('display','block');
+//                        $("#otherGroup").css('display','block');
                     }
-
-
                 });
 
+                $("#btn_relative").click(function(){
+                    var cardNo =   $("#cardNo").val();
+                    var name =  $("#ownerName").val();
+                    var idCardNo = $("#idCardNo").val(); ;
+                    userCardInfo.$btnRelative = $.ligerDialog.open({
+                        height:540,
+                        width: 1100,
+                        title : "关联档案",
+                        url: '${contextRoot}/userCards/archiveRelationInitial',
+                        urlParms: {
+                            cardNo: cardNo,
+                            name:name,
+                            idCardNo:idCardNo,
+                            mode:'show',
+                            id:'',
+                            auditStatus:'',
+                            reason:''
+                        },
+                        isHidden: false,
+                        opener: true,
+                        load:true,
+                        isResize:true
+                    });
+                });
+
+
                 this.$btnSave.click(function () {
-                    debugger
                     var id = $("#id").val();
-                    var auditVal =$("#audit").val();
+                    var auditVal = $("#audit").val();
                     var reasonTxt='';
                     var reasonVal = $("#reason").val();
                     var otherResonVal = $("#otherReason").val();
+                    reasonTxt = otherResonVal;
                     if(auditVal=='' || auditVal==undefined){
                         $.Notice.error('审核不能为空');
                         return;
                     }else if(auditVal=='2'){
                         if(reasonVal==''){
-                            $.Notice.error('不通过原因不能为空');
+                            $.Notice.error('拒绝原因不能为空');
                             return;
                         }else if(reasonVal=='0'){
                             if(otherResonVal=='' || otherResonVal==undefined){
-                                $.Notice.error('其他原因不能为空');
+                                $.Notice.error('原因不能为空');
                                 return;
-                            }else{
-                                reasonTxt = otherResonVal;
                             }
                         }else{
                             reasonTxt = $("#reason").text();
                         }
                     }
 
-                    var dataModel = $.DataModel.init();
-                    dataModel.updateRemote("${contextRoot}/userCards/audit", {
-                        data:{
-                            id:id,
-                            auditStatus:auditVal,
-                            reason:reasonTxt
-                        },
-
-                        success: function(data) {
-                            if (data) {
-                                $.Notice.success('审核成功');
-                                win.reloadMasterGrid();
-                                win.closeDialog();
-                            } else {
-                                $.Notice.error("审核失败");
+                    if(auditVal=='2'){
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote("${contextRoot}/userCards/audit", {
+                            data:{
+                                id:id,
+                                auditStatus:auditVal,
+                                reason:reasonTxt,
+                                archiveRelationIds:''
+                            },
+                            success: function(data) {
+                                if (data.successFlg) {
+                                    $.Notice.success('审核成功');
+                                    win.closeDialog();
+                                } else {
+                                    $.Notice.error(data.errorMsg);
+                                }
                             }
-                        }
-                    });
+                        });
+                    }else{//通过
+                        var cardNo =   $("#cardNo").val();
+                        var name =  $("#ownerName").val();
+                        var idCardNo = $("#idCardNo").val(); ;
+                        userCardInfo.$btnRelative = $.ligerDialog.open({
+                            height:540,
+                            width: 1100,
+                            title : "关联档案保存",
+                            url: '${contextRoot}/userCards/archiveRelationInitial',
+                            urlParms: {
+                                name:name,
+                                idCardNo:idCardNo,
+                                cardNo: cardNo,
+                                mode:'save',
+                                id:id,
+                                auditStatus:auditVal,
+                                reason:reasonTxt
+                            },
+                            isHidden: false,
+                            opener: true,
+                            load:true,
+                            isResize:true
+                        });
+                        win.closeDialog();
+                    }
+
                 });
 
                 this.$btnCancel.click(function () {
                     win.closeDialog();
                 });
 
-                this.$btnCancel.click(function () {
-					win.closeDialog();
-                });
+
             }
 
         };

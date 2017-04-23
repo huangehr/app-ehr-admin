@@ -53,7 +53,7 @@ public class UserCardsController extends BaseUIController {
     }
 
     @RequestMapping("/infoInitial")
-    public String OrgDeptMembersInfoInitial(Model model,String mode,String id){
+    public String infoInitial(Model model,String mode,String id){
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","patient/userCards/userCardsInfoDialog");
         Envelop envelop = new Envelop();
@@ -81,7 +81,7 @@ public class UserCardsController extends BaseUIController {
      */
     @RequestMapping("searchUserCards")
     @ResponseBody
-    public Object searchUserCardss(String cardNo,String name ,String auditStatus ,int page, int rows) {
+    public Object searchUserCards(String cardNo,String name ,String auditStatus ,int page, int rows) {
         String url = "/getUserCards";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -213,21 +213,36 @@ public class UserCardsController extends BaseUIController {
 
     @RequestMapping(value = "audit")
     @ResponseBody
-    public boolean auditUserCards(long id,String auditStatus,String reason , HttpServletRequest request)throws Exception {
+    public Object auditUserCards(long id,String auditStatus,String reason ,String archiveRelationIds, HttpServletRequest request)throws Exception {
 
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         boolean result = true;
-        String url = "/patientCards/manager/verify";
+        String url = "/patientArchive/manager/verify";
         Map<String, Object> params = new HashMap<>();
         params.put("id", Long.valueOf(id));
         params.put("auditor", userDetailModel.getId());
         params.put("status", auditStatus);
         params.put("auditReason", reason);
-        String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
-        Envelop envelop = getEnvelop(resultStr);
-        result = envelop.isSuccessFlg();
+        params.put("archiveRelationIds", archiveRelationIds);
 
-        return result;
+        String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        Envelop envelop = getEnvelop(resultStr);
+        return envelop;
     }
+
+
+    @RequestMapping("/archiveRelationInitial")
+    public String archiveRelationInitial(Model model,String name,String idCardNo,String cardNo,String mode,String id,String auditStatus, String reason ){
+        model.addAttribute("name",name);
+        model.addAttribute("idCardNo",idCardNo);
+        model.addAttribute("cardNo",cardNo);
+        model.addAttribute("mode",mode);
+        model.addAttribute("id",id);
+        model.addAttribute("auditStatus",auditStatus);
+        model.addAttribute("reason",reason);
+        model.addAttribute("contentPage","patient/userCards/userCardsRelative");
+        return "simpleView";
+    }
+
 
 }

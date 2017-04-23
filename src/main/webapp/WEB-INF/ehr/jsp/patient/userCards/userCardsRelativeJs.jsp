@@ -1,0 +1,176 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
+<%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+
+<script>
+
+    (function ($, win) {
+        $(function () {
+
+            /* ************************** 全局变量定义 **************************** */
+            var Util = $.Util;
+            var retrieve = null;
+            var master = null;
+			var isFirstPage = true;
+            var name='${name}';
+            var idCardNo='${idCardNo}';
+            var cardNo ='${cardNo}';
+            var mode= '${mode}';
+            var checkFlag=true;
+            if (Util.isStrEquals(mode,'show')) {
+                checkFlag= false;
+            }
+
+            var id= '${id}';
+            var auditStatus= '${auditStatus}';
+            var reason= '${reason}';
+            /* *************************** 函数定义 ******************************* */
+            function pageInit() {
+                retrieve.init();
+                master.init();
+//                retrieve.after();
+            }
+
+			function reloadGrid (params) {
+				if (isFirstPage){
+					this.grid.options.newPage = 1;
+				}
+				this.grid.setOptions({parms: params});
+				this.grid.loadData(true);
+				isFirstPage = true;
+			}
+
+            /* *************************** 模块初始化 ***************************** */
+            retrieve = {
+//                $div_wrapper: $("#div_wrapper"),
+                $btnSave: $("#btn_save"),
+                init: function () {
+
+                },
+                after:function(){
+                    if(!checkFlag){
+//                        this.$div_wrapper.css('display','none');
+                    }
+                },
+
+
+        };
+
+            master = {
+                userCardsRelativeDialog: null,
+                grid: null,
+                init: function () {
+                    this.grid = $("#div_userCardsRelative_info_grid").ligerGrid($.LigerGridEx.config({
+                        url: '${contextRoot}/patient/arApply/getArRelaListForAudit',
+                        parms: {
+                            name: name,
+                            idCardNo: idCardNo,
+                            cardNo: cardNo,
+                            page:1,
+                            rows:15
+                        },
+                        columns: [
+							{ display: '机构编码',name: 'orgCode', width: '8%',isAllowHide: false},
+                            { display: '机构名称',name: 'orgName', width: '8%',isAllowHide: false},
+                            { display: '姓名', name: 'name', width: '5%', minColumnWidth: 60,},
+                            { display: '身份证号码', name: 'idCardNo', width: '12%', minColumnWidth: 60,},
+                            { display: '就诊卡类别',name: 'cardTypeName', width: '5%',isAllowHide: false},
+                            { display: '卡号',name: 'cardNo', width: '8%',isAllowHide: false},
+                            { display: '就诊事件号',name: 'eventNo', width: '8%',isAllowHide: false},
+                            { display: '就诊时间',name: 'eventDate', width: '8%',isAllowHide: false},
+                            { display: '就诊类型', name: 'eventType',width: '5%',render:function(row){
+                                if (Util.isStrEquals(row.eventType,'0')) {
+                                    return '门诊';
+                                } else if (Util.isStrEquals(row.eventType,'1')) {
+                                    return '住院';
+                                }else if (Util.isStrEquals(row.eventType,'2')) {
+                                    return '体检';
+                                }else{
+                                    return '未审核';
+                                }
+                            }
+                            },
+                            { display: '关联档案号', name: 'profileId',width: '8%', align:'left' },
+//                            { display: '创建时间', name: 'createDate',width: '8%',align:'left'},
+                            { display: '关联档案ID', name: 'applyId',width: '8%', align:'left' },
+                            { display: '关联状态', name: 'status',width: '8%',render:function(row){
+                                if (Util.isStrEquals(row.status,'0')) {
+                                    return '未关联';
+                                } else {
+                                    return '已关联';
+                                }
+                            }
+                            }
+                        ],
+						pageSize:20,
+						enabledSort:true,
+                        enabledEdit: true,
+                        validate : true,
+                        checkbox: checkFlag,
+                        unSetValidateAttr:false,
+                        allowHideColumn: false
+
+                    }));
+                    this.grid.adjustToWidth();
+                    this.bindEvents();
+                },
+
+                reloadGrid: function () {
+                    var values = retrieve.$element.Fields.getValues();
+					reloadGrid.call(this, values);
+                },
+
+                bindEvents: function () {
+                    retrieve.$btnSave.click(function () {
+                        var rows = master.grid.getSelectedRows();
+                        if (rows.length == 0) {
+                            $.Notice.warn('请选择要关联的数据行！');
+                            return;
+                        }
+                        var archiveRelationIds = '';
+                        for (var i = 0; i < rows.length; i++) {
+                            archiveRelationIds += ',' + rows[i].id;
+                        }
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote("${contextRoot}/userCards/audit", {
+                            data:{
+                                id:id,
+                                auditStatus:auditStatus,
+                                reason:reason,
+                                archiveRelationIds:archiveRelationIds.substr(1)
+                            },
+                            success: function(data) {
+                                if (data.successFlg) {
+                                    $.Notice.success('审核成功');
+                                    win.closeDialog();
+                                } else {
+                                    $.Notice.error(data.errorMsg);
+                                }
+                            }
+                        });
+                    });
+                }
+
+
+            };
+
+
+
+
+            /* ******************Dialog页面回调接口****************************** */
+            win.reloadMasterGrid = function () {
+                master.reloadGrid();
+            };
+            win.closeDialog = function (callback) {
+                if(callback){
+                    callback.call(win);
+                    master.reloadGrid();
+                }
+                master.userCardsRelativeDialog.close();
+            };
+            /* *************************** 页面功能 **************************** */
+            /* *************************** 页面功能 **************************** */
+            pageInit();
+        });
+    })(jQuery, window);
+
+</script>

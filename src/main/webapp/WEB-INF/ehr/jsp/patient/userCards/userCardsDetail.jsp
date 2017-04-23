@@ -10,6 +10,9 @@
 
 <div id="div_cards_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
 	<input type="hidden" id="id"  value="${userCards.id}">
+	<input type="hidden" id="cardNo"  value="${userCards.cardNo}">
+	<input type="hidden" id="ownerName"  value="${userCards.ownerName}">
+	<input type="hidden" id="idCardNo"  value="${userCards.ownerIdcard}">
 
 	<div class="m-form-group">
 		<label>卡类别：</label>
@@ -123,7 +126,6 @@
 		</div>
 	</c:if>
 
-	<c:if test="${auditStatus == '1'}">
 
 		<c:if test="${userCards.auditStatus == '0'}">
 			<div class="m-form-group">
@@ -136,6 +138,9 @@
 							<option value="2">拒绝</option>
 						</select>
 					</label>
+				</div>
+				<div id="btn_relative" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+					<span>辅助审核查看</span>
 				</div>
 			</div>
 
@@ -153,8 +158,8 @@
 				</div>
 			</div>
 
-			<div class="m-form-group" id="otherGroup" style="display: none">
-				<label>其他原因：</label>
+			<div class="m-form-group" id="otherGroup">
+				<label>原因：</label>
 				<div class="m-form-control ">
 					<label class="col">
 						<textarea id="otherReason" class="f-w240 max-length-500 validate-special-char"  maxlength="500"></textarea>
@@ -165,17 +170,16 @@
 			<div class="m-form-group f-pr my-footer">
 				<div class="m-form-control f-pa" style="right: 10px">
 					<div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
-						<span><spring:message code="btn.save"/></span>
+						<span><spring:message code="btn.confirm"/></span>
 					</div>
 					<div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
-						<span><spring:message code="btn.close"/></span>
+						<span><spring:message code="btn.cancel"/></span>
 					</div>
 				</div>
 			</div>
 
 		</c:if>
 
-	</c:if>
 
 
 
