@@ -213,18 +213,28 @@ public class UserCardsController extends BaseUIController {
 
     @RequestMapping(value = "audit")
     @ResponseBody
-    public Object auditUserCards(long id,String auditStatus,String reason ,String archiveRelationIds, HttpServletRequest request)throws Exception {
+    public Object auditUserCards(long id,String auditStatus,String reason, HttpServletRequest request)throws Exception {
 
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        boolean result = true;
-        String url = "/patientArchive/manager/verify";
+        String url = "/patientCards/manager/verify";
         Map<String, Object> params = new HashMap<>();
         params.put("id", Long.valueOf(id));
         params.put("auditor", userDetailModel.getId());
         params.put("status", auditStatus);
         params.put("auditReason", reason);
-        params.put("archiveRelationIds", archiveRelationIds);
 
+        String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+        Envelop envelop = getEnvelop(resultStr);
+        return envelop;
+    }
+
+    @RequestMapping(value = "archiveSave")
+    @ResponseBody
+    public Object archiveSave(long id,String archiveRelationIds)throws Exception {
+        String url = "/patientCards/manager/archiveRelation";
+        Map<String, Object> params = new HashMap<>();
+        params.put("cardId", Long.valueOf(id));
+        params.put("archiveRelationIds", archiveRelationIds);
         String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
         Envelop envelop = getEnvelop(resultStr);
         return envelop;

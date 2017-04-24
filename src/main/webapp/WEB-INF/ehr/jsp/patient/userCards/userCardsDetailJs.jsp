@@ -7,9 +7,19 @@
         /* ************************** 变量定义 ******************************** */
         var Util = $.Util;
         var userCardInfo = null;
+        var master = null;
+        var isFirstPage = true;
+        var name='${userCards.ownerName}';
+        var idCardNo='${userCards.ownerIdcard}';
+        var cardNo ='${userCards.cardNo}';
+        var relativeCount = 0;
+
+
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
             userCardInfo.init();
+            master.init();
+            $("#btn_relative").hide();
         }
         /* *************************** 模块初始化 ***************************** */
         userCardInfo = {
@@ -24,7 +34,6 @@
 
             bindEvents: function () {
                 var self = this;
-
                 this.$audit.change(function(){
                     var auditVal = this.value;
                     if(auditVal==2){
@@ -32,42 +41,8 @@
                     }
                     if(auditVal==1){
                         $("#refuseReasonGroup").css('display','none');
-//                        $("#otherGroup").css('display','none');
                     }
                 });
-
-                $("#reason").change(function(){
-                    var val = $("#reason").val();
-                    if(val==0){
-//                        $("#otherGroup").css('display','block');
-                    }
-                });
-
-                $("#btn_relative").click(function(){
-                    var cardNo =   $("#cardNo").val();
-                    var name =  $("#ownerName").val();
-                    var idCardNo = $("#idCardNo").val(); ;
-                    userCardInfo.$btnRelative = $.ligerDialog.open({
-                        height:540,
-                        width: 1100,
-                        title : "关联档案",
-                        url: '${contextRoot}/userCards/archiveRelationInitial',
-                        urlParms: {
-                            cardNo: cardNo,
-                            name:name,
-                            idCardNo:idCardNo,
-                            mode:'show',
-                            id:'',
-                            auditStatus:'',
-                            reason:''
-                        },
-                        isHidden: false,
-                        opener: true,
-                        load:true,
-                        isResize:true
-                    });
-                });
-
 
                 this.$btnSave.click(function () {
                     var id = $("#id").val();
@@ -93,49 +68,24 @@
                         }
                     }
 
-                    if(auditVal=='2'){
-                        var dataModel = $.DataModel.init();
-                        dataModel.updateRemote("${contextRoot}/userCards/audit", {
-                            data:{
-                                id:id,
-                                auditStatus:auditVal,
-                                reason:reasonTxt,
-                                archiveRelationIds:''
-                            },
-                            success: function(data) {
-                                if (data.successFlg) {
-                                    $.Notice.success('审核成功');
-                                    win.closeDialog();
-                                } else {
-                                    $.Notice.error(data.errorMsg);
-                                }
+                    var dataModel = $.DataModel.init();
+                    dataModel.updateRemote("${contextRoot}/userCards/audit", {
+                        data:{
+                            id:id,
+                            auditStatus:auditVal,
+                            reason:reasonTxt
+                        },
+                        success: function(data) {
+                            if (data.successFlg) {
+                                $.Notice.success('审核成功');
+                                $("#btn_save").hide();
+                                $("#btn_relative").show();
+                            } else {
+                                $.Notice.error(data.errorMsg);
                             }
-                        });
-                    }else{//通过
-                        var cardNo =   $("#cardNo").val();
-                        var name =  $("#ownerName").val();
-                        var idCardNo = $("#idCardNo").val(); ;
-                        userCardInfo.$btnRelative = $.ligerDialog.open({
-                            height:540,
-                            width: 1100,
-                            title : "关联档案保存",
-                            url: '${contextRoot}/userCards/archiveRelationInitial',
-                            urlParms: {
-                                name:name,
-                                idCardNo:idCardNo,
-                                cardNo: cardNo,
-                                mode:'save',
-                                id:id,
-                                auditStatus:auditVal,
-                                reason:reasonTxt
-                            },
-                            isHidden: false,
-                            opener: true,
-                            load:true,
-                            isResize:true
-                        });
-                        win.closeDialog();
-                    }
+                        }
+                    });
+
 
                 });
 
@@ -147,6 +97,109 @@
             }
 
         };
+
+
+        master = {
+            $btnRelative: $("#btn_relative"),
+            userCardsRelativeDialog: null,
+            grid: null,
+            init: function () {
+                this.grid = $("#div_userCardsRelative_info_grid").ligerGrid($.LigerGridEx.config({
+                    url: '${contextRoot}/patient/arApply/getArRelaListForAudit',
+                    parms: {
+                        name: name,
+                        idCardNo: idCardNo,
+                        cardNo: cardNo,
+                        page:1,
+                        rows:15
+                    },
+                    columns: [
+                        { display: '机构编码',name: 'orgCode', width: '8%',isAllowHide: false},
+                        { display: '机构名称',name: 'orgName', width: '8%',isAllowHide: false},
+                        { display: '姓名', name: 'name', width: '5%', minColumnWidth: 60,},
+                        { display: '身份证号码', name: 'idCardNo', width: '12%', minColumnWidth: 60,},
+                        { display: '就诊卡类别',name: 'cardTypeName', width: '5%',isAllowHide: false},
+                        { display: '卡号',name: 'cardNo', width: '8%',isAllowHide: false},
+                        { display: '就诊事件号',name: 'eventNo', width: '8%',isAllowHide: false},
+                        { display: '就诊时间',name: 'eventDate', width: '8%',isAllowHide: false},
+                        { display: '就诊类型', name: 'eventType',width: '5%',render:function(row){
+                            if (Util.isStrEquals(row.eventType,'0')) {
+                                return '门诊';
+                            } else if (Util.isStrEquals(row.eventType,'1')) {
+                                return '住院';
+                            }else if (Util.isStrEquals(row.eventType,'2')) {
+                                return '体检';
+                            }else{
+                                return '未审核';
+                            }
+                        }
+                        },
+                        { display: '关联档案号', name: 'profileId',width: '8%', align:'left' },
+                        { display: '关联档案ID', name: 'applyId',width: '8%', align:'left' },
+                        { display: '关联状态', name: 'status',width: '8%',render:function(row){
+                            if (Util.isStrEquals(row.status,'0')) {
+                                return '未关联';
+                            } else {
+                                return '已关联';
+                            }
+                        }
+                        }
+                    ],
+                    pageSize:20,
+                    enabledSort:true,
+                    enabledEdit: true,
+                    validate : true,
+                    checkbox: true,
+                    unSetValidateAttr:false,
+                    allowHideColumn: false
+
+                }));
+                this.grid.adjustToWidth();
+                this.bindEvents();
+                relativeCount = this.grid.rows.length;
+                console.log(relativeCount);
+            },
+
+            reloadGrid: function () {
+                var values = retrieve.$element.Fields.getValues();
+                reloadGrid.call(this, values);
+            },
+
+            bindEvents: function () {
+
+                this.$btnRelative.click(function(){
+                    var id =  $("#id").val();
+                    var rows = master.grid.getSelectedRows();
+                    if (rows.length == 0) {
+                        $.Notice.warn('请选择要关联的数据行！');
+                        return;
+                    }
+                    var archiveRelationIds = '';
+                    for (var i = 0; i < rows.length; i++) {
+                        archiveRelationIds += ',' + rows[i].id;
+                    }
+                    var dataModel = $.DataModel.init();
+                    dataModel.updateRemote("${contextRoot}/userCards/archiveSave", {
+                        data:{
+                            id:id,
+                            archiveRelationIds:archiveRelationIds.substr(1)
+                        },
+                        success: function(data) {
+                            if (data.successFlg) {
+                                $.Notice.success('关联成功');
+                                win.closeDialog();
+                                win.reloadMasterGrid();
+                            } else {
+                                $.Notice.error(data.errorMsg);
+                            }
+                        }
+                    });
+                });
+            }
+
+
+        };
+
 
         /* *************************** 页面初始化 **************************** */
         pageInit();

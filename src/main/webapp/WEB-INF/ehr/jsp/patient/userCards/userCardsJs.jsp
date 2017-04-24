@@ -176,7 +176,7 @@
                         if(auditStatus == '0'){title = '用户口认证审核';};
                         master.userCardsInfoDialog = $.ligerDialog.open({
                             height:640,
-                            width: 600,
+                            width: 1100,
                             title : title,
                             url: '${contextRoot}/userCards/getUserDetail',
                             urlParms: {
