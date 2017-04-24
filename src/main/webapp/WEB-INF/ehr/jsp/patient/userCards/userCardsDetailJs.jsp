@@ -105,7 +105,7 @@
             grid: null,
             init: function () {
                 this.grid = $("#div_userCardsRelative_info_grid").ligerGrid($.LigerGridEx.config({
-                    url: '${contextRoot}/patient/arApply/getArRelaListForAudit',
+                    url: '${contextRoot}/archive/apply/getArRelaListForAudit',
                     parms: {
                         name: name,
                         idCardNo: idCardNo,

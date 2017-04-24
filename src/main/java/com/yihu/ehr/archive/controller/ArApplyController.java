@@ -1,7 +1,9 @@
 package com.yihu.ehr.archive.controller;
 
 import com.yihu.ehr.agModel.patient.ArApplyModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
@@ -14,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -224,25 +227,25 @@ public class ArApplyController extends BaseUIController {
      * 更新档案关联申请的审核状态（ArApply），并批量更新档案关联的关联状态(ArRela)
      * @param applyId
      * @param status
-     * @param auditor
      * @param auditReason
      * @param archiveRelationIds
      * @return
      */
     @RequestMapping("arApplyAudit")
     @ResponseBody
-    public Object arApplyAudit(String applyId,String status ,String auditor,String auditReason,String archiveRelationIds) {
+    public Object arApplyAudit(String applyId,String status ,String auditReason,String archiveRelationIds, HttpServletRequest request) {
         String url = "/patientArchive/manager/verify";
         String resultStr = "";
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", applyId);
         params.put("status", status);
-        params.put("auditor", auditor);
+        params.put("auditor", userDetailModel.getId());
         params.put("auditReason", auditReason);
         params.put("archiveRelationIds", archiveRelationIds);
         try {
-            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
             result.setSuccessFlg(false);

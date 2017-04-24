@@ -62,7 +62,18 @@
                 <textarea type="text" id="inp_apply_reason"  class="f-matching-bd"  data-attr-scan="auditReason"/>
             </div>
         </div>
+
+        <div class="m-form-group" style="margin:10px 0px 10px 100px;">
+                <div id="btn_audit" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam"  >
+                    <span>通过</span>
+                </div>
+                <div id="btn_refuse" class="l-button u-btn u-btn-primary  u-btn-large f-ib f-vam"  >
+                    <span>拒绝</span>
+                </div>
+        </div>
+
     </div>
+
 
     <!--######辅助审核档案信息列表######-->
     <div id="div_archive_audit_grid">
@@ -71,23 +82,7 @@
 
 
 
-    <div class="m-form-group f-pa" style="bottom: 10px;right: 10px;">
-        <div class="m-form-control">
-            <div id="btn_audit" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
-                <span>通过</span>
-            </div>
-        </div>
-        <div class="m-form-control">
-            <div id="btn_reject" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
-                <span>拒绝</span>
-            </div>
-        </div>
-        <div class="m-form-control">
-            <div id="btn_help" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
-                <span>辅助审核</span>
-            </div>
-        </div>
-    </div>
+
 
 
 </div>

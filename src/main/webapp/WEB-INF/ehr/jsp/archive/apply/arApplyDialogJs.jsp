@@ -1,11 +1,18 @@
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
     (function ($, win) {
+        var Util = $.Util;
         var objectForm = null;
         var archiveGrid = null;
+        var master = null;
+        var mode = eval("(" + '${mode}' + ")");
+        var name = mode.name;
+        var idCardNo = mode.idCard;
+        var cardNo = mode.cardNo;
+        var id = mode.id;
 
         //多条件查询参数设置
         function reloadGrid (params) {
@@ -21,9 +28,9 @@
 
         function pageInit() {
             objectForm.init();
-            objectForm.searchList();
+            master.init();
         }
-        var mode = eval("(" + '${mode}' + ")");
+
         objectForm = {
             $btnAudit: $("#btn_audit"),
             $btnFefuse: $("#btn_refuse"),
@@ -40,7 +47,8 @@
             $applyRemark: $("#inp_apply_remark"),
             $auditReason:$("#inp_apply_reason"),
             $form:$("#div_std_info_form"),
-            $arRelaList:$("#div_archive_audit_grid"),
+
+
             init: function () {
                 objectForm.$applyUserName.ligerTextBox({width: 150, height: 25});
                 objectForm.$applyIdCard.ligerTextBox({width: 150, height: 25});
@@ -75,51 +83,139 @@
                     memo:mode.memo,
                     auditReason:mode.auditReason
                 });
-            },
-            searchList: function () {
-                var values =  objectForm.$form.Fields.getValues();
-                archiveGrid = $("#div_correlation_audit_grid").ligerGrid($.LigerGridEx.config({
-                    url: '${contextRoot}/archive/apply/getArRelaListForAudit',
-                    parms:{
-                        "name": values.name,
-                        "idCardNo": values.idCardNo,
-                        "cardNo": values.cardNo
-                    },
-                    columns: [
-                        {display: '审核状态', name: 'statusName', width: '10%', resizable: true,align: 'left'},
-                        {display: '姓名', name: 'name', width: '10%',align: 'left'},
-                        {display: '身份证号', name: 'idCardNo', width: '15%'},
-                        {display: '就诊卡号', name: 'cardNo', width: '15%', resizable: true,align: 'left'},
-                        {display: '就诊时间', name: 'eventDate', width: '15%', resizable: true,align: 'left'},
-                        {display: '机构名称', name: 'orgName', width: '25%', resizable: true,align: 'left'},
-                        {display: '', name: 'id', hide: true},
-                        {display: '操作',name: 'operator', width:'10%', align:'center',render: function (row) {
-                            var html="";
-                            if(row.status==0){
-                                html = '<sec:authorize url="/correlation/validateAudit"><a href="javascript:void(0)" title="档案关联" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:rela", row.status,row.id) + '">关联</a></sec:authorize>';
-                            }else{
-                                html = '<sec:authorize url="/correlation/msgDialog"><a href="javascript:void(0)" title="" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:view", row.status,row.id) + '">查看</a></sec:authorize>';
-                            }
-                            return html;
-                        }}
-                    ]
-                }));
-                // 自适应宽度
-                archiveGrid.adjustToWidth();
-                this.bindEvents();
+
             },
             bindEvents: function () {
                 this.$btnAudit.click(function () {
-                    win.closeDialog();
+                    var reason = $("#inp_apply_reason").val();
+                    var rows = master.grid.getSelectedRows();
+                    if (rows.length == 0) {
+                        $.Notice.warn('请在下方勾选要关联的数据行！');
+                        return;
+                    }
+                    var archiveRelationIds = '';
+                    for (var i = 0; i < rows.length; i++) {
+                        archiveRelationIds += ',' + rows[i].id;
+                    }
+                    var dataModel = $.DataModel.init();
+                    dataModel.updateRemote("${contextRoot}/archive/apply/arApplyAudit", {
+                        data:{
+                            applyId:id,
+                            status:1,
+                            auditReason:reason,
+                            archiveRelationIds:archiveRelationIds
+                        },
+                        success: function(data) {
+                            if (data.successFlg) {
+                                $.Notice.success('审核成功');
+                                win.closeDialog();
+                                win.reloadMasterGrid();
+                            } else {
+                                $.Notice.error(data.errorMsg);
+                            }
+                        }
+                    });
                 });
                 this.$btnFefuse.click(function () {
-                    win.closeDialog();
-                });
-                this.$btnHelp.click(function () {
-                    win.closeDialog();
+                    var reason = $("#inp_apply_reason").val();
+                    if(reason=='' || reason==undefined){
+                        $.Notice.error('理由不能为空');
+                        return;
+                    }
+                    var dataModel = $.DataModel.init();
+                    dataModel.updateRemote("${contextRoot}/archive/apply/arApplyAudit", {
+                        data:{
+                            applyId:id,
+                            status:2,
+                            auditReason:reason,
+                            archiveRelationIds:''
+                        },
+                        success: function(data) {
+                            if (data.successFlg) {
+                                $.Notice.success('审核成功');
+                                win.closeDialog();
+                                win.reloadMasterGrid();
+                            } else {
+                                $.Notice.error(data.errorMsg);
+                            }
+                        }
+                    });
+
                 });
             }
         };
+
+        master = {
+            userCardsRelativeDialog: null,
+            grid: null,
+            init: function () {
+                this.grid = $("#div_archive_audit_grid").ligerGrid($.LigerGridEx.config({
+                    url: '${contextRoot}/archive/apply/getArRelaListForAudit',
+                    parms: {
+                        name: name,
+                        idCardNo: idCardNo,
+                        cardNo: cardNo,
+                        page:1,
+                        rows:15
+                    },
+                    columns: [
+                        { display: '机构编码',name: 'orgCode', width: '8%',isAllowHide: false},
+                        { display: '机构名称',name: 'orgName', width: '8%',isAllowHide: false},
+                        { display: '姓名', name: 'name', width: '5%', minColumnWidth: 60,},
+                        { display: '身份证号码', name: 'idCardNo', width: '12%', minColumnWidth: 60,},
+                        { display: '就诊卡类别',name: 'cardTypeName', width: '5%',isAllowHide: false},
+                        { display: '卡号',name: 'cardNo', width: '8%',isAllowHide: false},
+                        { display: '就诊事件号',name: 'eventNo', width: '8%',isAllowHide: false},
+                        { display: '就诊时间',name: 'eventDate', width: '8%',isAllowHide: false},
+                        { display: '就诊类型', name: 'eventType',width: '5%',render:function(row){
+                            if (Util.isStrEquals(row.eventType,'0')) {
+                                return '门诊';
+                            } else if (Util.isStrEquals(row.eventType,'1')) {
+                                return '住院';
+                            }else if (Util.isStrEquals(row.eventType,'2')) {
+                                return '体检';
+                            }else{
+                                return '未审核';
+                            }
+                        }
+                        },
+                        { display: '关联档案号', name: 'profileId',width: '8%', align:'left' },
+                        { display: '关联档案ID', name: 'applyId',width: '8%', align:'left' },
+                        { display: '关联状态', name: 'status',width: '8%',render:function(row){
+                            if (Util.isStrEquals(row.status,'0')) {
+                                return '未关联';
+                            } else {
+                                return '已关联';
+                            }
+                        }
+                        }
+                    ],
+                    pageSize:20,
+                    enabledSort:true,
+                    enabledEdit: true,
+                    validate : true,
+                    checkbox: true,
+                    unSetValidateAttr:false,
+                    allowHideColumn: false
+
+                }));
+                this.grid.adjustToWidth();
+                this.bindEvents();
+            },
+
+            reloadGrid: function () {
+                var values = retrieve.$element.Fields.getValues();
+                reloadGrid.call(this, values);
+            },
+
+            bindEvents: function () {
+
+            }
+
+
+        };
+
+
         pageInit();
 
     })(jQuery, window);

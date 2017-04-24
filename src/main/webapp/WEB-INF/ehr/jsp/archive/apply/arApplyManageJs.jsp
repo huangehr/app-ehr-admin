@@ -127,8 +127,8 @@
 				},
 				openMsgDialog:function(status,id){
 					master.validateDialog = $.ligerDialog.open({
-						height:540,
-						width: 920,
+						height:640,
+						width: 1000,
 						url: '${contextRoot}/archive/apply/arApplyDialog',
 						urlParms: {
 							status: status,
