@@ -1,8 +1,10 @@
-package com.yihu.ehr.patient.controller;
+package com.yihu.ehr.archive.controller;
 
+import com.yihu.ehr.agModel.patient.ArApplyModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +21,8 @@ import java.util.Map;
  * Created by zqb on 2015/8/14.
  */
 @Controller
-@RequestMapping("/patient/arApply")
-public class PatientArchiveController extends BaseUIController {
+@RequestMapping("/archive/apply")
+public class ArApplyController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -28,12 +30,58 @@ public class PatientArchiveController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
 
-    public PatientArchiveController() {
+    public ArApplyController() {
     }
 
     @RequestMapping("initial")
-    public String patientInitial(Model model) {
-        model.addAttribute("contentPage", "/patient/arApply/arApply");
+    public String userInitial(Model model) {
+        model.addAttribute("contentPage", "/archive/apply/arApplyManage");
+        return "pageView";
+    }
+
+    @RequestMapping("arApplyDialog")
+    public String msgDialog(Model model,String status,String id) {
+        try{
+            //根据ID获取申请信息
+            String url = "/patientArchive/apply";
+            Map<String, Object> params = new HashMap<>();
+            params.put("id",id);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop result = getEnvelop(resultStr);
+            if(result.getObj()!=null){
+                Object list =  result.getObj();
+                model.addAttribute("mode",toJson(list));
+            }else{
+                ArApplyModel arApplyModel =  new ArApplyModel();
+                arApplyModel.setId(Integer.parseInt(id));
+                model.addAttribute("mode",toJson(arApplyModel));
+            }
+            if("view".equals(status)){
+                model.addAttribute("contentPage", "/archive/apply/arApplyRejectDialog");
+            }else if("success".equals(status)){//查看预关联
+                model.addAttribute("contentPage", "/archive/apply/arApplyPassDialog");
+                if(result.getDetailModelList()!=null&&result.getDetailModelList().size()==1){
+                    Object list =  result.getDetailModelList().get(0);
+                    model.addAttribute("archives",toJson(list));
+                }else{
+                    String relaUrl = "/patientArchive/" + id + "/getArRelation";
+                    Map<String, Object> relaParams = new HashMap<>();
+                    /*relaParams.put("applyId",id);*/
+                    String relaResultStr = HttpClientUtil.doGet(comUrl + relaUrl, relaParams, username, password);
+                    Envelop relaResult = getEnvelop(relaResultStr);
+                    if(relaResult.getObj()!=null){
+                        Object obj =  relaResult.getObj();
+                        model.addAttribute("archives",toJson(obj));
+                    }else{
+                        model.addAttribute("archives",toJson(new ArApplyModel()));
+                    }
+                }
+            }else if("audit".equals(status)){
+                model.addAttribute("contentPage", "/archive/apply/arApplyDialog");
+            }
+        }catch (Exception e){
+            LogService.getLogger(ArApplyController.class).error(e.getMessage());
+        }
         return "pageView";
     }
 
@@ -138,7 +186,7 @@ public class PatientArchiveController extends BaseUIController {
 
     @RequestMapping("getArApply")
     @ResponseBody
-    public Object searchPatient(String id) {
+    public Object getArApply(String id) {
         String url = "/patientArchive/apply";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -157,7 +205,7 @@ public class PatientArchiveController extends BaseUIController {
 
     @RequestMapping("deleteArApply")
     @ResponseBody
-    public Object deletePatient(String id) {
+    public Object deleteArApply(String id) {
         String url = "/patientArchive/apply";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -171,4 +219,37 @@ public class PatientArchiveController extends BaseUIController {
             return result;
         }
     }
+
+    /**
+     * 更新档案关联申请的审核状态（ArApply），并批量更新档案关联的关联状态(ArRela)
+     * @param applyId
+     * @param status
+     * @param auditor
+     * @param auditReason
+     * @param archiveRelationIds
+     * @return
+     */
+    @RequestMapping("arApplyAudit")
+    @ResponseBody
+    public Object arApplyAudit(String applyId,String status ,String auditor,String auditReason,String archiveRelationIds) {
+        String url = "/patientArchive/manager/verify";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", applyId);
+        params.put("status", status);
+        params.put("auditor", auditor);
+        params.put("auditReason", auditReason);
+        params.put("archiveRelationIds", archiveRelationIds);
+        try {
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+
 }

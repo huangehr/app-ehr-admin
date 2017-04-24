@@ -92,7 +92,7 @@
 				searchList: function () {
 					var values =  retrieve.$element.Fields.getValues();
 					archiveGrid = $("#div_correlation_audit_grid").ligerGrid($.LigerGridEx.config({
-						url: '${contextRoot}/patient/arApply/getApplyList',
+						url: '${contextRoot}/archive/apply/getApplyList',
 						parms:values,
 						columns: [
 							{display: '审核状态', name: 'statusName', width: '10%', resizable: true,align: 'left'},
@@ -125,25 +125,11 @@
 				reloadGrid: function () {
 					this.searchList();
 				},
-				openErrMsgDialog:function(status,id){
-					master.validateDialog = $.ligerDialog.open({
-						height:700,
-						width: 500,
-						url: '${contextRoot}/correlation/arApplyDialog',
-						urlParms: {
-							status: status,
-							id:id
-						},
-						isHidden: false,
-						opener: true,
-						load:true
-					});
-				},
-				openSucMsgDialog:function(status,id){
+				openMsgDialog:function(status,id){
 					master.validateDialog = $.ligerDialog.open({
 						height:540,
 						width: 920,
-						url: '${contextRoot}/correlation/arApplyDialog',
+						url: '${contextRoot}/archive/apply/arApplyDialog',
 						urlParms: {
 							status: status,
 							id:id
@@ -153,20 +139,6 @@
 						load:true
 					});
 			    },
-				openViewMsgDialog:function(status,id){
-					master.validateDialog = $.ligerDialog.open({
-						height:240,
-						width: 260,
-						url: '${contextRoot}/correlation/arApplyDialog',
-						urlParms: {
-							status: status,
-							id:id
-						},
-						isHidden: false,
-						opener: true,
-						load:true
-					});
-				},
 				bindEvents: function () {
 					//事件绑定
 					retrieve.$searchBtn.click(function(){
@@ -174,22 +146,13 @@
 					});
 
 					$.subscribe('archive:audit:update', function (event, status, id) {
-						var dataModel = $.DataModel.init();
-						dataModel.updateRemote("${contextRoot}/correlation/validateAudit",
-						{   data:{id:id},
-							success: function(result) {
-
-							},
-							error: function () {
-								$.Notice.error( '审核校验失败！请联系管理员！');
-							}
-						});
+						master.openMsgDialog("audit",id);
 					});
 					$.subscribe('archive:audit:success', function (event, status, id) {
-						master.openSucMsgDialog("success",id);
+						master.openMsgDialog("success",id);
 					});
 					$.subscribe('archive:audit:error', function (event, status, id) {
-						master.openErrMsgDialog("view",id);
+						master.openMsgDialog("view",id);
 					});
 				}
 			};

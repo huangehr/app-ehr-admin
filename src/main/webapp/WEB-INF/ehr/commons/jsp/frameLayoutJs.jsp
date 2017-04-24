@@ -172,7 +172,7 @@
                     pid: 12,
                     level:3,
                     text: '<spring:message code="title.correlation.audit"/>',
-                    url: '${contextRoot}/correlation/initial'
+                    url: '${contextRoot}/archive/apply/initial'
                 },
                 </sec:authorize>
 
