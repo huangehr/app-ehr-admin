@@ -92,10 +92,10 @@ public class UserCardsController extends BaseUIController {
             stringBuffer.append("auditStatus=" + auditStatus + ";");
         }
         if (!StringUtils.isEmpty(cardNo)) {
-            stringBuffer.append("cardNo?" + cardNo );
+            stringBuffer.append("cardNo?" + cardNo + ";");
         }
         if (!StringUtils.isEmpty(name)) {
-            stringBuffer.append("ownerName?" + name );
+            stringBuffer.append("ownerName?" + name + ";");
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
@@ -254,5 +254,61 @@ public class UserCardsController extends BaseUIController {
         return "simpleView";
     }
 
+
+
+    /**
+     * 列表页
+     * @param model
+     * @return
+     */
+    @RequestMapping("/archiveRelation/initial")
+    public String archiveRelationInitial(Model model) {
+        model.addAttribute("contentPage", "/patient/archRelation/archiveRelation");
+        return "pageView";
+    }
+
+    /**
+     * 查找用户关联卡
+     * @param
+     * @param page
+     * @param rows
+     * @return
+     */
+    @RequestMapping("searchArchiveRelation")
+    @ResponseBody
+    public Object searchArchiveRelation(String orgIdOrOrgName,String nameOrIdCard ,String profileId,String status ,int page, int rows) {
+        String url = "/patientArchive/getArRelationList";
+        String resultStr = "";
+        String filters = "";
+
+        if (!StringUtils.isEmpty(nameOrIdCard)) {
+            filters += "name?" + nameOrIdCard + " g1;idCardNo?" + nameOrIdCard + " g1;";
+        }
+        if (!StringUtils.isEmpty(orgIdOrOrgName)) {
+            filters += "orgCode?" + orgIdOrOrgName + " g1;orgName?" + orgIdOrOrgName + " g1;";
+        }
+        if (!StringUtils.isEmpty(status)) {
+            filters += "status=" + status + ";";
+        }
+        if (!StringUtils.isEmpty(profileId)) {
+            filters += "profileId?" + profileId + ";";
+        }
+
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("fields", "");
+        params.put("filters", filters);
+        params.put("size", rows);
+        params.put("page", page);
+        params.put("sorts", "");
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
 
 }

@@ -209,6 +209,17 @@
                 },
                 </sec:authorize>
 
+                // 1-2-6 档案关联列表
+                <sec:authorize url="userCards/archiveRelation/initial">
+                {
+                    id: 126,
+                    pid: 12,
+                    level:3,
+                    text: '<spring:message code="title.patient.archiveRelation"/>',
+                    url: '${contextRoot}/userCards/archiveRelation/initial'
+                },
+                </sec:authorize>
+
 
                 // 1-3 - 医生管理
                 <sec:authorize url="/doctor/initial">
