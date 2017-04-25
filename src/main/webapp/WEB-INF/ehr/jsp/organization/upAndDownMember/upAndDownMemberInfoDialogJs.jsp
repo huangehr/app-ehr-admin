@@ -32,8 +32,8 @@
 				this.bindEvents();
 			},
 			initForm: function () {
-				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId + '&userId=' + categoryIdOld;
-				this.$userId.customCombo(url);
+				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
+				this.$userId.customCombo(url, p, undefined, undefined, false);
 				var mode = '${mode}';
 				this.$form.attrScan();
 				this.$form.show();
