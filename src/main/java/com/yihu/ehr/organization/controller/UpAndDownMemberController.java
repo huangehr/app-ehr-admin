@@ -43,8 +43,10 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
     ObjectMapper objectMapper;
 
     @RequestMapping("initialUpAndDownMember")
-    public String deptMemberInitial(Model model,String mode, String dataModel){
-        model.addAttribute("dataModel",dataModel);
+    public String deptMemberInitial(Model model,String mode, String orgCode, String orgId, String orgName){
+        model.addAttribute("orgCode",orgCode);
+        model.addAttribute("orgId",orgId);
+        model.addAttribute("orgName",orgName);
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage", "/organization/upAndDownMember/upAndDownMember");
         return "pageView";

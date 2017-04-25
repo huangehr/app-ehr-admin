@@ -14,6 +14,7 @@
 			var categoryName = '';
 			var categoryOrgId = '';
 			var typeTree = null;
+			var orgId = '${orgId}';
 
 
 			var rsPageParams = JSON.parse(sessionStorage.getItem('rsPageParams'));
@@ -75,8 +76,6 @@
 				$searchNm: $('#inp_searchNm'),
 				$level: $('#inp_level'),
 
-
-
 				init: function () {
 					var self = this;
 					var categoryName = '';
@@ -84,8 +83,7 @@
 						axis:"yx"
 					});
 
-					this.$search.customCombo('${contextRoot}/deptMember/getOrgList');
-
+					<%--this.$search.customCombo('${contextRoot}/deptMember/getOrgList');--%>
 
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
@@ -97,10 +95,10 @@
 						reloadGrid(parms);
 					}});
 
-//					self.getResourceBrowseTree();
+					self.getResourceBrowseTree();
 				},
 
-				getResourceBrowseTree: function (orgId) {
+				getResourceBrowseTree: function () {
 					typeTree = this.$resourceBrowseTree.ligerSearchTree({
 						nodeWidth: 240,
 						url: '${contextRoot}/upAndDownMember/categories?orgId='+orgId,

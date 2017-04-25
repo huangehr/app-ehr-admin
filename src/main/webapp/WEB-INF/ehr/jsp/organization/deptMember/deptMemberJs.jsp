@@ -16,7 +16,7 @@
 			var categoryOrgId = '';
 			var status = '';
 			var typeTree = null;
-
+			var orgId = '${orgId}';
 
 			var rsPageParams = JSON.parse(sessionStorage.getItem('rsPageParams'));
 			sessionStorage.removeItem('rsPageParams');
@@ -94,23 +94,6 @@
 						value:"0"
 					});
 
-//					this.$search.ligerTextBox({width:220,value:searchParams.categorySearchNm,isSearch: true, search: function () {
-//						categoryName = $("#inp_search").val();
-//						typeTree.selectNode('');
-//						typeTree.s_search(categoryName);
-//						if(categoryName == ''){
-//							typeTree.collapseAll();
-//						}else{
-//							typeTree.expandAll();
-//						}
-//						var parms = {
-//							'searchNm':'',
-//							'categoryId':'',
-//						};
-//						reloadGrid(parms);
-//					}});
-
-
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
 						status = $('#inp_status').val();
@@ -128,7 +111,7 @@
 				getResourceBrowseTree: function () {
 					typeTree = this.$resourceBrowseTree.ligerSearchTree({
 						nodeWidth: 240,
-						url: '${contextRoot}/deptMember/categories',
+						url: '${contextRoot}/deptMember/categories?orgId='+orgId,
 						checkbox: false,
 						idFieldName: 'id',
 						parentIDFieldName :'parentDeptId',
@@ -208,9 +191,6 @@
 						validate : true,
 						unSetValidateAttr:false,
 						allowHideColumn: false,
-//						onDblClickRow : function (row){
-//							$.publish("rs:info:open",[row.id,'view'])
-//						}
 					}));
 					this.resourceInfoGrid.adjustToWidth();
 					this.bindEvents();

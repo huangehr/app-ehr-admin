@@ -42,8 +42,10 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
     ObjectMapper objectMapper;
 
     @RequestMapping("initialDeptMember")
-    public String deptMemberInitial(Model model,String mode, String dataModel){
-        model.addAttribute("dataModel",dataModel);
+    public String deptMemberInitial(Model model,String mode, String orgCode, String orgId, String orgName){
+        model.addAttribute("orgCode",orgCode);
+        model.addAttribute("orgId",orgId);
+        model.addAttribute("orgName",orgName);
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage", "/organization/deptMember/deptMember");
         return "pageView";
@@ -52,14 +54,14 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
     //部门树目录数据-获取所有分类的不分页方法
     @RequestMapping("/categories")
     @ResponseBody
-    public Object getCategories(){
+    public Object getCategories(String orgId){
         List<OrgDeptModel> list = new ArrayList<>();
         try{
             String filters = "";
             String envelopStr = "";
-            String url = "/orgDept/getAllOrgDepts";
+            String url = "/orgDept/list";
             Map<String,Object> params = new HashMap<>();
-            params.put("filters",filters);
+            params.put("orgId",orgId);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
             if(envelopGet.isSuccessFlg()){
