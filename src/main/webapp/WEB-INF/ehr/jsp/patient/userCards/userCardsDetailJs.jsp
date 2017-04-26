@@ -12,13 +12,16 @@
         var name='${userCards.ownerName}';
         var idCardNo='${userCards.ownerIdcard}';
         var cardNo ='${userCards.cardNo}';
+        var auditStatus ='${userCards.auditStatus}';
         var relativeCount = 0;
 
 
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
             userCardInfo.init();
-            master.init();
+            if(auditStatus=='0'){
+                master.init();
+            }
             $("#btn_relative").hide();
         }
         /* *************************** 模块初始化 ***************************** */
@@ -27,15 +30,38 @@
 			$btnCancel: $("#btn_cancel"),
             $btnRelative: $("#btn_relative"),
             $audit: $("#audit"),
+            $reason: $("#reason"),
 
             init: function () {
+                this.initDDL(68, $('#audit'));
+                this.initDDL(69, $('#reason'));
                 this.bindEvents();
+            },
+
+            initDDL: function (dictId, target) {
+                var width = '100';
+                if(dictId==69){
+                    width = '200';
+                }
+                var target = $(target);
+                var dataModel = $.DataModel.init();
+                dataModel.fetchRemote("${contextRoot}/dict/searchDictEntryList", {
+                    data: {dictId: dictId},
+                    success: function (data) {
+                        target.ligerComboBox({
+                            valueField: 'code',
+                            textField: 'value',
+                            width: width,
+                            data: [].concat(data.detailModelList)
+                        });
+                    }
+                });
             },
 
             bindEvents: function () {
                 var self = this;
-                this.$audit.change(function(){
-                    var auditVal = this.value;
+                $("#audit").change(function(){
+                    var auditVal = $("#audit_val").val();
                     if(auditVal==2){
                         $("#refuseReasonGroup").css('display','block');
                     }
@@ -46,9 +72,9 @@
 
                 this.$btnSave.click(function () {
                     var id = $("#id").val();
-                    var auditVal = $("#audit").val();
+                    var auditVal = $("#audit_val").val();
                     var reasonTxt='';
-                    var reasonVal = $("#reason").val();
+                    var reasonVal = $("#reason_val").val();
                     var otherResonVal = $("#otherReason").val();
                     reasonTxt = otherResonVal;
                     if(auditVal=='' || auditVal==undefined){

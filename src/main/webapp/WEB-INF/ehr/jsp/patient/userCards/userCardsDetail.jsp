@@ -91,26 +91,14 @@
 		<div class="m-form-group">
 			<label>审核：</label>
 			<div class="m-form-control ">
-				<label>
-					<select id="audit" class="col" style="width: 80px;height: 25px;">
-						<option value="">请选择</option>
-						<option value="1">通过</option>
-						<option value="2">拒绝</option>
-					</select>
-				</label>
-
+					<input type="text" data-type="select" id="audit"  class="col" >
 			</div>
 
-			<div class="m-form-control " id="refuseReasonGroup" style="display: none">
+			<div class="m-form-control " id="refuseReasonGroup" style="display: none;">
 				<label>拒绝原因：</label>
-				<label class="col" >
-					<select id="reason" style="height: 25px;">
-						<option value="">请选择</option>
-						<option value="1">信息不全，匹配出多张就诊卡</option>
-						<option value="2">信息不符，没有匹配的就诊卡</option>
-						<option value="0">其他</option>
-					</select>
-				</label>
+				<div class="m-form-control" >
+					<input type="text" id="reason" data-type="select"  class="col">
+				</div>
 			</div>
 
 			<label>原因：</label>
