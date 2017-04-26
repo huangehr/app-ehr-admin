@@ -17,8 +17,7 @@
 
             <div class="m-form-control f-ml10">
                 <!--下拉框-->
-                <input type="text" id="inp_settledWay" placeholder="请选择入驻方式" data-type="select"
-                       data-attr-scan="searchWay">
+                <input type="text" id="inp_settledWay" placeholder="请选择入驻方式" data-type="select" data-attr-scan="searchWay">
             </div>
             <div class="m-form-control f-ml10">
                 <!--下拉框-->
@@ -26,7 +25,7 @@
             </div>
             <div class="m-form-control f-ml10">
                 <!--下拉框-->
-                <input type="text" id="inp_orgArea" data-type="comboSelect" data-attr-scan="location">
+                <input type="text" id="inp_orgArea"  placeholder="请选择区域" data-type="comboSelect" data-attr-scan="location">
             </div>
             <div class="m-form-control f-ml10">
                 <!--按钮:查询 & 新增-->

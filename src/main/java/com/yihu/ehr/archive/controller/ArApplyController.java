@@ -149,7 +149,7 @@ public class ArApplyController extends BaseUIController {
         if (!StringUtils.isEmpty(cardNo)) {
             filters += "cardNo=" + cardNo + ";";
         }
-
+        filters += "status=0;";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("fields", "");

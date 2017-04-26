@@ -41,7 +41,7 @@
                     this.initDDL(settledWayDictId, this.$settledWay);
                     this.initDDL(orgTypeDictId, this.$orgType);
 
-                    this.$searchNm.ligerTextBox({width: 240});
+                    this.$searchNm.ligerTextBox({width: 200});
 
                     this.$location.addressDropdown({
                         tabsData: [
@@ -133,12 +133,13 @@
                                     return html;
                                 }
                             },
-                            {display: '入驻方式', name: 'settledWayName', width: '10%', isAllowHide: false},
+                            {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '14%', render: function (row) {
+                                display: '操作', name: 'operator', width: '24%', render: function (row) {
                                 var html = '';
-
-                                html += '<sec:authorize url="/template/initial"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
+                                html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName) + '">部门管理</a></sec:authorize>';
+                                html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
+                                html += '<sec:authorize url="/template/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/dialog/orgInfo"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode, 'modify') + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/delete"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:del", row.orgCode, 'del') + '"></a></sec:authorize>';
                                 return html;
@@ -236,18 +237,39 @@
                             }
                         });
 
-                    })
+                    });
                     $.subscribe('org:orgInfoDialog:modelConfig', function (event, orgCode, orgType, orgName) {
                         var url = '${contextRoot}/template/initial?treePid=1&treeId=12';
                         var orgData = {
                             orgCode: orgCode,
                             orgType: orgType,
-                            orgName: orgName,
+                            orgName: orgName
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, {'dataModel': JSON.stringify(orgData)});
-
-                    })
+                    });
+                    $.subscribe('org:orgInfoDialog:deptMember', function (event, orgCode, orgId, orgName) {
+                        var url = '${contextRoot}/deptMember/initialDeptMember';
+                        var orgData = {
+                            mode:'',
+                            orgCode: orgCode,
+                            orgId: orgId,
+                            orgName: orgName
+                        }
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url, orgData);
+                    });
+                    $.subscribe('org:orgInfoDialog:upAndDownMember', function (event, orgCode, orgId, orgName) {
+                        var url = '${contextRoot}/upAndDownMember/initialUpAndDownMember';
+                        var orgData = {
+                            mode:'',
+                            orgCode: orgCode,
+                            orgId: orgId,
+                            orgName: orgName
+                        }
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url, orgData);
+                    });
                 }
             };
 

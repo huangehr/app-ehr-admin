@@ -440,7 +440,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
 
     @RequestMapping("/getOrgMemberList")
     @ResponseBody
-    public Object getOrgMemberList( String searchParm,int page, int rows,String orgId,String userId) {
+    public Object getOrgMemberList( String searchParm,String orgId,int page, int rows) {
         try {
             String url = "/orgDeptMember/list";
             PageParms pageParms = new PageParms(rows, page)

@@ -172,8 +172,8 @@
 					//查看详情
                     $.subscribe('userCards:info:open',function(event,userCardsId,auditStatus){
                         isFirstPage = false;
-                        var title = '用户口认证详情';
-                        if(auditStatus == '0'){title = '用户口认证审核';};
+                        var title = '用户认证详情';
+                        if(auditStatus == '0'){title = '用户认证审核';};
                         master.userCardsInfoDialog = $.ligerDialog.open({
                             height:640,
                             width: 1100,
