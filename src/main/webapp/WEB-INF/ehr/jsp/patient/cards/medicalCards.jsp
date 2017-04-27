@@ -30,7 +30,7 @@
             </div>
 
             <sec:authorize url="/ehr/template">
-                <a href="<%=request.getContextPath()%>/template/资源就诊卡导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+                <a href="<%=request.getContextPath()%>/template/MCardsImportTpl.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
                    style="">
                     下载模版
                 </a>
