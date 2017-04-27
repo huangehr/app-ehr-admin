@@ -113,6 +113,7 @@
                 });
                 this.$btnSave.click(function () {
                     if(validator.validate()){
+                        self.$btnSave.unbind('click');
                         var values = self.$form.Fields.getValues();
                         var dataModel = $.DataModel.init();
                         dataModel.updateRemote("${contextRoot}/userCards/updateUserCards", {

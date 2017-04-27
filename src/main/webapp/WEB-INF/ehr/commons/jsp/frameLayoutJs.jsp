@@ -204,14 +204,25 @@
                 },
                 </sec:authorize>
 
-                //  1-3-1   卫生机构管理
+                //  1-3-2  卫生机构管理
                 <sec:authorize url="/organization/Initial">
                 {
-                    id: 131,
+                    id: 132,
                     pid: 13,
                     level:3,
                     text: '<spring:message code="title.org.manage"/>',
                     url: '${contextRoot}/organization/initial'
+                },
+                </sec:authorize>
+
+                // 1-3-3 - 机构管理 - 机构上下级机构
+                <sec:authorize url="/initialUpAndDownOrg/initialUpAndDownOrg">
+                {
+                    id: 133,
+                    pid: 13,
+                    level:3,
+                    text: '<spring:message code="title.org.upAndDownOrg"/>',
+                    url: '${contextRoot}/upAndDownOrg/initialUpAndDownOrg'
                 },
                 </sec:authorize>
 

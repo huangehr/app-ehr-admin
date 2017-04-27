@@ -229,26 +229,14 @@ public class UserController extends BaseUIController {
                 if(userDetailModel.getUserType().equals("Doctor")){
                     userModel.setMajor(userDetailModel.getMajor());
                 }
-
                 String imageId = fileUpload(userModel.getId(),restStream,imageName);
-//                String imageId = null;
-//                if (!StringUtils.isEmpty(restStream)) {
-//
-//                    FileResourceModel fileResourceModel = new FileResourceModel(userModel.getId(),"user","");
-//                    String fileResourceModelJsonData = objectMapper.writeValueAsString(fileResourceModel);
-//
-//                    MultiValueMap<String, String> params1 = new LinkedMultiValueMap<>();
-//                    params1.add("file_str",restStream);
-//                    params1.add("file_name",imageName);
-//                    params1.add("json_data",fileResourceModelJsonData);
-//
-//                    imageId = templates.doPost(comUrl + "/files",params1);
-//
-//                }
-
                 if (!StringUtils.isEmpty(imageId)){
                     userModel.setImgRemotePath(imageId);
                 }
+                userModel.setSecondPhone(userDetailModel.getSecondPhone());
+                userModel.setQq(userDetailModel.getQq());
+                userModel.setMicard(userDetailModel.getMicard());
+                userModel.setSsid(userDetailModel.getSsid());
 
                 userJsonDataModel = toJson(userModel);
                 params.add("user_json_data", userJsonDataModel);
@@ -351,26 +339,19 @@ public class UserController extends BaseUIController {
         params.put("userId", userId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-
             Envelop ep = getEnvelop(resultStr);
             UserDetailModel userDetailModel = toModel(toJson(ep.getObj()),UserDetailModel.class);
 
             String imageOutStream = "";
             if (!StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
-
                 params.put("object_id",userDetailModel.getId());
                 imageOutStream = HttpClientUtil.doGet(comUrl + "/files",params,username, password);
                 envelop = toModel(imageOutStream,Envelop.class);
-
                 if (envelop.getDetailModelList().size()>0){
                     session.removeAttribute("userImageStream");
                     session.setAttribute("userImageStream",imageOutStream == null ? "" :envelop.getDetailModelList().get(envelop.getDetailModelList().size()-1));
                 }
             }
-
-
-
-
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/userInfoDialog");

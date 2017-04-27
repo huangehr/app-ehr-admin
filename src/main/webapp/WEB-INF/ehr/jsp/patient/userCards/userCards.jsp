@@ -17,11 +17,11 @@
     <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
         <div class="m-form-group f-mt10">
             <div class="m-form-control">
-                <input type="text" id="inp_cardNo" placeholder="请输入卡号" class="f-ml10" data-attr-scan="cardNo"/>
+                <input type="text" id="inp_cardNo" placeholder="请输入卡号" data-attr-scan="cardNo"/>
             </div>
 
-            <div class="m-form-control">
-                <input type="text" id="inp_name" placeholder="请输入持卡人姓名" class="f-ml10" data-attr-scan="name"/>
+            <div class="m-form-control f-ml10" >
+                <input type="text" id="inp_name" placeholder="请输入持卡人姓名"  data-attr-scan="name"/>
             </div>
 
             <div class="m-form-control f-ml10">
@@ -29,7 +29,7 @@
             </div>
 
             <!--按钮:查询 & 新增-->
-            <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+            <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml10" >
                 <span><spring:message code="btn.search"/></span>
             </div>
 

@@ -121,6 +121,11 @@
                     if (validator.validate()) {
                         noticeModel = self.$form.Fields.getValues();
                         if (validator.validate()) {
+                            var content = editor.html();
+                            if(content==""){
+                                window.top.$.Notice.error("内容不能为空");
+                                return;
+                            }
                             update(noticeModel);
                         } else {
                             return;

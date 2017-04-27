@@ -10,7 +10,7 @@
         <form id="form_login" class="box-form" action="${contextRoot}/login/validate" method="post">
             <div class="u-input-group">
                 <span class="u-input-addon u-icon-user"></span>
-                <input name="userName" id="inp_user_name" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" data-attr-scan type="text" value="${userName}" class="u-input required useTitle" placeholder="输入用户名/邮箱/手机号"  required-title=<spring:message code="lbl.must.input"/>>
+                <input name="userName" id="inp_user_name" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" data-attr-scan type="text" value="${userName}" class="u-input required useTitle" placeholder="输入用户名"  required-title=<spring:message code="lbl.must.input"/>>
             </div>
             <div class="u-input-group">
                 <span class="u-input-addon u-icon-psw"></span>

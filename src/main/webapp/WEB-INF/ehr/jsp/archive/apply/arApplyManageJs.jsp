@@ -82,8 +82,8 @@
 						urlParms: {dictId: 36},
 						valueField: 'code',
 						textField: 'value',
-						value:"0"
-
+						value:"0",
+						width:100
 					});
 				}
 			};
