@@ -28,14 +28,14 @@
 
 	<div class="m-form-group">
 		<label >持卡人身份证:</label>
-		<div class="l-text-wrapper m-form-control">
+		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_ownerIdcard" class="f-h28 f-w240 required useTitle ajax validate-id-number" data-attr-scan="ownerIdcard">
 		</div>
 	</div>
 
 	<div class="m-form-group">
 		<label >持卡人绑定手机:</label>
-		<div class="l-text-wrapper m-form-control">
+		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_ownerPhone" class="required useTitle validate-mobile-phone"   data-attr-scan="ownerPhone">
 		</div>
 	</div>
