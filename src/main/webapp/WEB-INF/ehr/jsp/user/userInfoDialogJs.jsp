@@ -247,12 +247,11 @@
                     sourceName:user.sourceName,
                     fertilityStatus:user.fertilityStatus,
                     secondPhone:user.secondPhone,
-                    birthday:user.birthday,
+                    birthday:user.birthday.substring(0,10),
                     micard:user.micard,
                     qq:user.qq,
                     ssid:user.ssid,
                     realnameFlag:user.realnameFlag,
-                    birthday:user.birthday,
 
                 });
 				if(user.role){

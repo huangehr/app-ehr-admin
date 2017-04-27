@@ -73,7 +73,8 @@
                             target.ligerComboBox({
                                 valueField: 'code',
                                 textField: 'value',
-                                data: [].concat(data.detailModelList)
+                                data: [].concat(data.detailModelList),
+                                width:150
                             });
                         }
                     });

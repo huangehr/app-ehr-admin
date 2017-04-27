@@ -33,7 +33,7 @@
             </div>
 
             <!--按钮:查询 & 新增-->
-            <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+            <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml10" >
                 <span><spring:message code="btn.search"/></span>
             </div>
 

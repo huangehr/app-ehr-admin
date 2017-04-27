@@ -116,6 +116,11 @@
                 this.$addBtn.click(function () {
                     var addNotice = self.$form.Fields.getValues();
                     if (validator.validate()) {
+                        var content = editor.html();
+                        if(content==""){
+                            window.top.$.Notice.error("内容不能为空");
+                            return;
+                        }
                         update(addNotice);
                     } else {
                         return;
