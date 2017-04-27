@@ -14,6 +14,7 @@
         var cardNo ='${userCards.cardNo}';
         var auditStatus ='${userCards.auditStatus}';
         var relativeCount = 0;
+        var reasonTxt='';
 
 
 		/* *************************** 函数定义 ******************************* */
@@ -73,7 +74,6 @@
                 this.$btnSave.click(function () {
                     var id = $("#id").val();
                     var auditVal = $("#audit_val").val();
-                    var reasonTxt='';
                     var reasonVal = $("#reason_val").val();
                     var otherResonVal = $("#otherReason").val();
                     reasonTxt = otherResonVal;
@@ -90,10 +90,11 @@
                                 return;
                             }
                         }else{
-                            reasonTxt = $("#reason").text();
+                            reasonTxt = $("#reason").val();
                         }
                     }
-
+                    debugger
+                    console.log(reasonTxt);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/userCards/audit", {
                         data:{
