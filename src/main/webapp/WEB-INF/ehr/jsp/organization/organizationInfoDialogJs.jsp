@@ -92,7 +92,7 @@
                 this.$fullName.ligerTextBox({width: 240});
                 this.$shortName.ligerTextBox({width: 240});
                 this.$location.ligerComboBox({width: 240});
-                this.$tags.ligerTextBox({width: 240, height: 56});
+//                this.$tags.ligerTextBox({width: 240, height: 56});
                 this.$admin.ligerTextBox({width: 240, height: 28});
                 this.$tel.ligerTextBox({width: 240, height: 28});
                 this.$tel.removeClass('l-text-field-number');
@@ -117,7 +117,7 @@
                 this.$hosType.ligerComboBox({width: 240});
                 this.$ascriptionType.ligerComboBox({width: 240});
                 this.$phone.ligerTextBox({width: 240});
-                this.$introduction.ligerTextBox({width: 240,height:100});
+                this.$introduction.ligerTextBox({width: 644,height:100,padding:10});
                 this.$levelId.ligerTextBox({width: 240});
                 this.$legalPerson.ligerTextBox({width: 240});
                 this.$parentHosId.ligerTextBox({width: 240});
@@ -352,6 +352,20 @@
         };
 
         /* *************************** 页面初始化 **************************** */
+        //        内容折叠
+        var listTit = $('.list-tit');
+        listTit.on('click',function () {
+            var nextNode = $(this).next();
+            sty = nextNode.css('display');
+            console.log(sty);
+            if (sty === 'block') {
+                nextNode.slideUp();
+                $(this).children().html('+');
+            } else {
+                nextNode.slideDown();
+                $(this).children().html('-');
+            }
+        });
         pageInit();
         function addImg(){
             if(imgLop.detailModelList.length>0){

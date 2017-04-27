@@ -92,9 +92,8 @@
                 this.$ing.ligerTextBox({width: 240});
                 this.$lat.ligerTextBox({width: 240});
                 this.$hosType.ligerComboBox({width: 240});
-                this.$ascriptionType.ligerComboBox({width: 240});
                 this.$phone.ligerTextBox({width: 240});
-                this.$introduction.ligerTextBox({width: 240,height:100});
+                this.$introduction.ligerTextBox({width: 644,height:100,padding:10});
                 this.$levelId.ligerTextBox({width: 240});
                 this.$legalPerson.ligerTextBox({width: 240});
                 this.$parentHosId.ligerTextBox({width: 240});
@@ -294,6 +293,20 @@
         };
 
         /* *************************** 页面初始化 **************************** */
+//        内容折叠
+        var listTit = $('.list-tit');
+        listTit.on('click',function () {
+            var nextNode = $(this).next();
+                sty = nextNode.css('display');
+            console.log(sty);
+            if (sty === 'block') {
+                nextNode.slideUp();
+                $(this).children().html('+');
+            } else {
+                nextNode.slideDown();
+                $(this).children().html('-');
+            }
+        });
         pageInit();
     })(jQuery, window);
 </script>

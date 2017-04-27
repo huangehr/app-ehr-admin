@@ -2,11 +2,17 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<link rel="stylesheet" href="${contextRoot}/develop/common/flod.css">
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">机构管理</div>
 
 <!-- ####### 页面部分 ####### -->
 <div id="div_wrapper">
+    <div class="alert-warning">
+        <i class="icon-warring"></i>
+        <p>说明：双击列表单行，可查看机构详情。</p>
+    </div>
     <!-- ####### 查询条件部分 ####### -->
     <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
         <div class="m-form-group f-mt10">
@@ -17,7 +23,8 @@
 
             <div class="m-form-control f-ml10">
                 <!--下拉框-->
-                <input type="text" id="inp_settledWay" placeholder="请选择入驻方式" data-type="select" data-attr-scan="searchWay">
+                <input type="text" id="inp_settledWay" placeholder="请选择入驻方式" data-type="select"
+                       data-attr-scan="searchWay">
             </div>
             <div class="m-form-control f-ml10">
                 <!--下拉框-->
@@ -25,7 +32,7 @@
             </div>
             <div class="m-form-control f-ml10">
                 <!--下拉框-->
-                <input type="text" id="inp_orgArea"  placeholder="请选择区域" data-type="comboSelect" data-attr-scan="location">
+                <input type="text" id="inp_orgArea" data-type="comboSelect" data-attr-scan="location">
             </div>
             <div class="m-form-control f-ml10">
                 <!--按钮:查询 & 新增-->
