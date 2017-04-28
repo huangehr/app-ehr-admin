@@ -101,6 +101,14 @@
                 var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
                 });
                 this.$btnSave.click(function () {
+                    var begin = $("#inp_validity_date_begin").val();
+                    var end = $("#inp_validity_date_end").val();
+                    if(begin!="" && end != ""){
+                        if(begin>=end){
+                            $.Notice.error("截止时间应该比时间起始大");
+                            return;
+                        }
+                    }
                     if(validator.validate()){
                         var values = self.$form.Fields.getValues();
                         var dataModel = $.DataModel.init();
