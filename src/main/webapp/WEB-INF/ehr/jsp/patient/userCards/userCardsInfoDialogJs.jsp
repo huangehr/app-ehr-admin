@@ -81,7 +81,7 @@
                         releaseDate:medicalCards.releaseDate.substring(0,10),
                         validityDateBegin:medicalCards.validityDateBegin.substring(0,10),
                         validityDateEnd:medicalCards.validityDateEnd.substring(0,10),
-                        description:medicalCards.description
+                        description:medicalCards.description.substring(0,10)
                     });
 					$("#inp_status").ligerGetComboBoxManager().setValue(medicalCards.status);
                     if(medicalCards.status==1){
@@ -93,6 +93,7 @@
                     $("#inp_card_type").ligerGetComboBoxManager().setValue(medicalCards.cardType);
                     $("#inp_card_type").ligerGetComboBoxManager().setText(medicalCards.cardTypeName);
                     oldCardNo = medicalCards.cardNo;
+                    $("#inp_description").title(medicalCards.description);
                 }
                 this.$form.show();
             },

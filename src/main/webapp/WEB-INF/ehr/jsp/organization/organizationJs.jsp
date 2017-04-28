@@ -154,8 +154,8 @@
                         onDblClickRow: function (row) {
                             var mode = 'view';
                             this.orgInfoDialog = $.ligerDialog.open({
-                                height: 1200,
-                                width: 600,
+                                height: 700,
+                                width: 1000,
                                 title: '机构基本信息',
                                 url: '${contextRoot}/organization/dialog/orgInfo',
                                 load: true,
@@ -211,8 +211,8 @@
                         var title = '修改机构信息';
                         self.orgInfoDialog = $.ligerDialog.open({
                             isHidden: false,
-                            height: 1200,
-                            width: 600,
+                            height: 700,
+                            width: 1000,
                             title: title,
                             url: '${contextRoot}/organization/dialog/orgInfo',
                             load: true,

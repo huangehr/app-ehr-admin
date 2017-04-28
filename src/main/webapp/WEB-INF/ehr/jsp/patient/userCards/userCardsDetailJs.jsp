@@ -106,7 +106,9 @@
                             if (data.successFlg) {
                                 $.Notice.success('审核成功');
                                 $("#btn_save").hide();
-                                $("#btn_relative").show();
+                                if(auditVal=='1'){
+                                    $("#btn_relative").show();
+                                }
                             } else {
                                 $.Notice.error(data.errorMsg);
                             }
