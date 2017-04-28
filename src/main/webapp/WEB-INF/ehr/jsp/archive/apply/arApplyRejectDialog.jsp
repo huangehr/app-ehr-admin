@@ -3,13 +3,13 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div id="div_std_info_form" data-role-form class="m-form-inline f-mt20 f-ml26" data-role-form>
-    <h3 style="margin:0px 0 18px 35%;font-weight: bold;font-size:35px;">明细 - 审批未通过</h3>
+    <h3 style="margin:0px 0 18px 35%;font-weight: bold;font-size:35px;">明细 - 审批不通过</h3>
     <div class="div-apply-msg f-audit-fw50">
         <fieldset class="fie-bd">
             <legend class="f-pl10 f-pr10"><b>申请信息</b></legend>
             <div id="div_apply_form" data-role-form class="m-form-inline">
                 <div class="m-form-group m-form-readonly">
-                    <label>申请人姓名:</label>
+                    <label>姓名:</label>
                     <div class="l-text-wrapper m-form-control">
                         <input type="text" id="inp_name" class="f-matching-bd" data-attr-scan="name"/>
                     </div>
@@ -81,12 +81,12 @@
                 </div>
         </fieldset>
     </div>
-    <div class="m-form-group f-pa" style="bottom: 10px;right: 10px;">
-        <div class="m-form-control">
-            <div id="btn_ok" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
-                <span>确定</span>
-            </div>
-        </div>
-    </div>
+    <%--<div class="m-form-group f-pa" style="bottom: 10px;right: 10px;">--%>
+        <%--<div class="m-form-control">--%>
+            <%--<div id="btn_ok" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >--%>
+                <%--<span>确定</span>--%>
+            <%--</div>--%>
+        <%--</div>--%>
+    <%--</div>--%>
 </div>
 
