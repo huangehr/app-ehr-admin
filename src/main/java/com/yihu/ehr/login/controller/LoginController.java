@@ -55,9 +55,9 @@ public class LoginController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
-    @Value("${service-gateway.portalurl}")
-    private String portalUrl;
-    @Value("${service-gateway.clientId}")
+    @Value("${app.oauth2authorize}")
+    private String authorize;
+    @Value("${app.clientId}")
     private String clientId;
 
     @RequestMapping(value = "")
@@ -89,7 +89,7 @@ public class LoginController extends BaseUIController {
             params.put("clientId", clientId);
             params.put("accessToken", token);
 
-            String response = HttpClientUtil.doPost(portalUrl + "/oauth/validToken", params);
+            String response = HttpClientUtil.doPost(authorize + "/oauth/validToken", params);
             Map<String,Object> map = objectMapper.readValue(response,Map.class);
 
             if ((Boolean) map.get("successFlg")) {
