@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
 <style>
 	.col{
 		color: blue;
@@ -63,7 +65,7 @@
 		</div>
 		<label>描述：</label>
 		<div class="m-form-control ">
-			<label class="col">${userCards.description}</label>
+			<label class="col"  title="${userCards.description}">${fn:substring(userCards.description,1,10)}</label>
 		</div>
 	</div>
 
@@ -107,9 +109,6 @@
 					<textarea id="otherReason" style="height: 40px;" class="f-w240 max-length-500 validate-special-char"  maxlength="500"></textarea>
 				</label>
 			</div>
-			<%--<div id="btn_relative" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >--%>
-				<%--<span>辅助审核查看</span>--%>
-			<%--</div>--%>
 		</div>
 
 		<div class="m-form-group f-pr my-footer">
