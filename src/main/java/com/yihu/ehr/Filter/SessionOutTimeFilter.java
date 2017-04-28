@@ -36,8 +36,8 @@ import java.util.*;
 @Component("loginFilter")
 public class SessionOutTimeFilter extends OncePerRequestFilter {
 
-    @Value("${service-gateway.portalurl}")
-    private String portalurl;
+    @Value("${app.oauth2authorize}")
+    private String authorize;
     @Value("${service-gateway.url}")
     private String comUrl;
     @Value("${service-gateway.username}")
@@ -85,7 +85,7 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
             String validTokenUrl = "/oauth/validToken?clientId=" + clientId + "&accessToken=" + accessToken;
             Map<String, Object> params = new HashMap<>();
             try {
-                String resultStr = HttpClientUtil.doPost(portalurl + validTokenUrl, params, this.username, this.password);
+                String resultStr = HttpClientUtil.doPost(authorize + validTokenUrl, params, this.username, this.password);
                 Map map = objectMapper.readValue(resultStr, Map.class);
                 if ((boolean)map.get("successFlg")){
                     //验证通过。赋值session中的用户信息

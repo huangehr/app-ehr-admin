@@ -33,7 +33,7 @@ public class RoleCache {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
-    @Value("${service-gateway.clientId}")
+    @Value("${app.clientId}")
     private String clientId;
 
     private final static CopyOnWriteArrayList<String> resourceList = new CopyOnWriteArrayList<>();
