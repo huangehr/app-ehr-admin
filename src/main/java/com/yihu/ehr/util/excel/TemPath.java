@@ -16,7 +16,7 @@ public class TemPath {
     public final static String defPath = "ehr" + separator;
 
     public static String createFileName(String userId, String type, String parentFile, String fileType) throws IOException {
-        File file = new File( tmpdir + defPath + parentFile + separator);
+        File file = new File( tmpdir + separator + defPath + parentFile + separator);
         if(!file.exists())
             file.mkdirs();
 

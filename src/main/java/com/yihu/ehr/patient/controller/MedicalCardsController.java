@@ -268,7 +268,7 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
                 rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
             }
 
-            if(correctLs.size()>0 && correctLs.size()<=50){
+            if(correctLs.size()>0 && correctLs.size()<=50 && errorLs.size()==0){
                 String cardNoStr = "";
                 for(RsMedicalCardModel rsMedicalCardModel : correctLs){
                     cardNoStr = cardNoStr + rsMedicalCardModel.getCardNo() + ",";
@@ -296,7 +296,7 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
                 }else{
                     saveMedicalCard(toJson(correctLs),String.valueOf(user.getId()) );
                 }
-            }else{
+            }else if(correctLs.size()>50){
                 rs.put("maxMsg","一次最多不能超过50条");
                 writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
             }

@@ -230,25 +230,11 @@
                             </div>
                         </div>
                     </li>
-                </ul>
-                <ul class="list-item" style="display: none">
-                    <li>
-                        <div class="m-form-group">
-                            <label>医院联系电话<spring:message code="spe.colon"/></label>
-                            <div class="l-text-wrapper m-form-control">
-                                <input type="text" id="phone" class="useTitle f-w240 max-length-20 "  data-attr-scan="phone"/>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-                <ul class="list-item" style="display: none">
                     <li>
                         <form  id ="uploadForm" enctype="multipart/form-data">
                             <div class="m-form-group">
                                 <label>医院LOGO</label>
                                 <div class="l-text-wrapper m-form-control ">
-                                    <%--<img src="${contextRoot}/authentication/showImage?imgPath" id="logoImage" />--%>
-                                    <%--<input type="hidden" id="logoUrl"  data-attr-scan="logoUrl" >--%>
                                     <div id="logoImage"></div>
                                     <input type="text" class="i-text" id="logoUrl" data-attr-scan="logoUrl" readonly="readonly" />
                                     <div class="uploadBtn">上传
@@ -259,6 +245,7 @@
                         </form>
                     </li>
                 </ul>
+
             </div>
             <div>
                 <h3 class="list-tit">资质信息<a href="javascript:;">-</a></h3>

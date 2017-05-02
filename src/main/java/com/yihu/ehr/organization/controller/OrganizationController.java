@@ -313,7 +313,9 @@ public class OrganizationController extends BaseUIController {
                 orgForUpdate.setIntroduction(org.getIntroduction());
                 orgForUpdate.setLegalPerson(org.getLegalPerson());
                 orgForUpdate.setLevelId(org.getLevelId());
-                orgForUpdate.setLogoUrl(org.getLogoUrl());
+                if(!StringUtils.isEmpty(org.getLogoUrl())){
+                    orgForUpdate.setLogoUrl(org.getLogoUrl());
+                }
                 orgForUpdate.setSortNo(org.getSortNo());
                 orgForUpdate.setParentHosId(org.getParentHosId());
                 orgForUpdate.setIng(org.getIng());

@@ -86,7 +86,7 @@
 	<div class="m-form-group">
 		<label><spring:message code="lbl.description"/><spring:message code="spe.colon"/></label>
 		<div class="m-form-control ">
-			<textarea id="inp_description" class="f-w240 max-length-500 validate-special-char" data-attr-scan="description" maxlength="500"></textarea>
+			<textarea id="inp_description" title="" class="f-w240 max-length-500 validate-special-char" data-attr-scan="description" maxlength="500"></textarea>
 		</div>
 	</div>
 
@@ -96,9 +96,6 @@
 			<input type="text" id="inp_status" data-type="select" class="required" data-attr-scan="status"/>
 		</div>
 	</div>
-
-
-
 
 	<div class="m-form-group f-pr my-footer" align="right" hidden="hidden">
 		<div class="m-form-control f-pa" style="right: 10px">

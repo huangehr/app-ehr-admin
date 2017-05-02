@@ -93,8 +93,6 @@
                             reasonTxt = $("#reason").val();
                         }
                     }
-                    debugger
-                    console.log(reasonTxt);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/userCards/audit", {
                         data:{
@@ -106,7 +104,9 @@
                             if (data.successFlg) {
                                 $.Notice.success('审核成功');
                                 $("#btn_save").hide();
-                                $("#btn_relative").show();
+                                if(auditVal=='1'){
+                                    $("#btn_relative").show();
+                                }
                             } else {
                                 $.Notice.error(data.errorMsg);
                             }

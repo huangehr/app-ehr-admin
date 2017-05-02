@@ -231,6 +231,7 @@
 
                 <%--});--%>
                 this.$form.attrScan();
+                debugger
                 this.$form.Fields.fillValues({
                     id: user.id,
                     loginCode: user.loginCode,
@@ -247,7 +248,7 @@
                     sourceName:user.sourceName,
                     fertilityStatus:user.fertilityStatus,
                     secondPhone:user.secondPhone,
-                    birthday:user.birthday.substring(0,10),
+                    birthday:user.birthday != null?user.birthday.substring(0,10):"",
                     micard:user.micard,
                     qq:user.qq,
                     ssid:user.ssid,
