@@ -93,8 +93,6 @@
                             reasonTxt = $("#reason").val();
                         }
                     }
-                    debugger
-                    console.log(reasonTxt);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/userCards/audit", {
                         data:{
