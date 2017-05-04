@@ -68,7 +68,7 @@
             };
 
             master = {
-                userCardsInfoDialog: null,
+                archiveRelativeInfoDialog: null,
                 grid: null,
                 init: function () {
                     this.grid = $("#div_archiveRelative_info_grid").ligerGrid($.LigerGridEx.config({
@@ -111,7 +111,13 @@
                                     return '已关联';
                                 }
                             }
-                            }
+                            },
+                            { display: '操作', name: 'operator', width: '12%', render: function (row) {
+                                var html = '';
+                                html += '<sec:authorize url="/userCards/archiveRelationInfo"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "userCards/archiveRelationInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
+                                html += '<sec:authorize url="/userCards/del"><a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "userCards/archiveRelationInfo:delete", row.id) + '"></a></sec:authorize>';
+                                return html;
+                            }}
                         ],
 						pageSize:20,
 						enabledSort:true,
@@ -137,6 +143,53 @@
 						master.reloadGrid();
 					});
 
+                    //新增按钮
+                    retrieve.$addBtn.click(function(){
+                        $.publish("userCards/archiveRelationInfo:open",['','new']);
+                    });
+                    //新增、修改、查看统一定制方法
+                    $.subscribe('userCards/archiveRelationInfo:open',function(event,id,mode){
+                        isFirstPage = false;
+                        var title = '';
+                        if(mode == 'modify'){title = '修改档案关联信息';};
+                        if(mode == 'new'){title = '新增档案关联信息';};
+                        if(mode == 'view'){title = '查看档案关联信息';}
+                        master.archiveRelativeInfoDialog = $.ligerDialog.open({
+                            height:640,
+                            width: 600,
+                            title : title,
+                            url: '${contextRoot}/userCards/archRelationInfoInitial',
+                            urlParms: {
+                                id: id,
+                                mode:mode
+                            },
+                            isHidden: false,
+                            opener: true,
+                            load:true
+                        });
+                    });
+
+                    //删除
+                    $.subscribe('userCards/archiveRelationInfo:delete',function(event,id){
+                        isFirstPage = false;
+                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                            if (yes) {
+                                var dataModel = $.DataModel.init();
+                                dataModel.updateRemote('${contextRoot}/userCards/deleteArchiveRelation', {
+                                    data: {id: id},
+                                    success: function (data) {
+                                        if (data.successFlg) {
+                                            $.Notice.success('操作成功。');
+                                            master.reloadGrid();
+                                        } else {
+                                            $.Notice.open({type: 'error', msg: '操作失败。'});
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    });
+
                 },
             };
             /* ******************Dialog页面回调接口****************************** */
@@ -148,7 +201,7 @@
                     callback.call(win);
                     master.reloadGrid();
                 }
-                master.userCardsInfoDialog.close();
+                master.archiveRelativeInfoDialog.close();
             };
             /* *************************** 页面功能 **************************** */
             /* *************************** 页面功能 **************************** */

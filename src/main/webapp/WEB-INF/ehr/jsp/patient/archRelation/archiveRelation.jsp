@@ -37,6 +37,11 @@
                 <span><spring:message code="btn.search"/></span>
             </div>
 
+            <sec:authorize url="/app/patient/archiveRelation">
+                <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+                    <span ><spring:message code="btn.create"/></span>
+                </div>
+            </sec:authorize>
 
         </div>
 

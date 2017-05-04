@@ -64,20 +64,27 @@ public class AppApiController extends ExtendController<AppApiService> {
     public Object tree(String appId, String appName) {
 
         try {
-            List<AppApiModel> ls = search(new PageParms( "+parentId", 999, 1).addNotEqual("type", "1"));
+            List<AppApiModel> ls = search(new PageParms( "+parentId", 999, 1).addNotEqual("type", "1").addEqual("appId",appId));
             Map<Integer, AppFeatureTree> map = new HashMap<>();
-            map.put(0, new AppFeatureTree(0, "全部应用", "", -1, "-1", ""));
+//            map.put(0, new AppFeatureTree(0, "全部应用", "", -1, "-1", ""));
+            int parentId = 0;
             for(AppApiModel model : ls){
-                map.put(model.getId(), new AppFeatureTree(
-                        model.getId(), model.getName(), model.getDescription(), model.getParentId(), model.getType(), model.getAppId()) );
+                if(model.getParentId() > 0){
+                    map.put(model.getId(), new AppFeatureTree(
+                            model.getId(), model.getName(), model.getDescription(), model.getParentId(), model.getType(), model.getAppId()) );
+                }else{
+                    parentId = model.getId();
+                    map.put(parentId, new AppFeatureTree(0, model.getName(), "", -1, "-1", ""));
+                }
             }
             AppFeatureTree p;
             for(AppFeatureTree model : map.values()){
-                if((p=map.get(model.getParentId()))!=null)
+                p = map.get(model.getParentId());
+                if( p != null)
                     p.addChild(model);
             }
             List rs = new ArrayList<>();
-            rs.add(map.get(0));
+            rs.add(map.get(parentId));
             Envelop envelop = new Envelop();
             envelop.setDetailModelList(rs);
             return toJson(envelop);
