@@ -116,15 +116,15 @@
                 </sec:authorize>
 
                 // 1-1-2 -身份认证
-                <sec:authorize url="/deptMember/initialDeptMember">
-                {
-                    id: 112,
-                    pid: 11,
-                    level:3,
-                    text: '<spring:message code="title.patient.apply"/>',
-                    url: '${contextRoot}/authentication/initial'
-                },
-                </sec:authorize>
+                <%--<sec:authorize url="/deptMember/initialDeptMember">--%>
+                <%--{--%>
+                    <%--id: 112,--%>
+                    <%--pid: 11,--%>
+                    <%--level:3,--%>
+                    <%--text: '<spring:message code="title.patient.apply"/>',--%>
+                    <%--url: '${contextRoot}/authentication/initial'--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
 
 
@@ -144,32 +144,32 @@
                     id: 121,
                     level:3,
                     pid: 12,
-                    text: '<spring:message code="title.access.apply.manage.center"/>',
+                    text: '<spring:message code="title.ehr.app.manage"/>',
                     url: '${contextRoot}/app/initial'
                 },
                 </sec:authorize>
 
-                // 开放中心 - 平台应用
-                <sec:authorize url="/app/platform/initial">
-                {
-                    id: 122,
-                    level:3,
-                    pid: 12,
-                    text:  '<spring:message code="title.ehr.app.manage"/>',
-                    url: '${contextRoot}/app/platform/initial'
-                },
-                </sec:authorize>
+                <%--// 开放中心 - 平台应用--%>
+                <%--<sec:authorize url="/app/platform/initial">--%>
+                <%--{--%>
+                    <%--id: 122,--%>
+                    <%--level:3,--%>
+                    <%--pid: 12,--%>
+                    <%--text:  '<spring:message code="title.ehr.app.manage"/>',--%>
+                    <%--url: '${contextRoot}/app/platform/initial'--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
-                // 开放中心 - API管理
-                <sec:authorize url="/app/api/initial">
-                {
-                    id: 123,
-                    level:3,
-                    pid: 12,
-                    text: '<spring:message code="title.api.manage"/>',
-                    url:'${contextRoot}/app/api/initial'
-                },
-                </sec:authorize>
+                <%--// 开放中心 - API管理--%>
+                <%--<sec:authorize url="/app/api/initial">--%>
+                <%--{--%>
+                    <%--id: 123,--%>
+                    <%--level:3,--%>
+                    <%--pid: 12,--%>
+                    <%--text: '<spring:message code="title.api.manage"/>',--%>
+                    <%--url:'${contextRoot}/app/api/initial'--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 // 开放中心 - 应用角色
                 <sec:authorize url="/appRole/initial">

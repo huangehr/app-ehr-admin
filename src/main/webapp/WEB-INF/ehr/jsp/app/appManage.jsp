@@ -18,6 +18,9 @@
 				<input type="text" id="inp_search_org" placeholder="请输入机构代码" class="f-ml10" data-attr-scan="org"/>
 			</div>
             <div class="m-form-control f-ml10">
+                <input type="text" data-type="select" id="ipt_sourceType" placeholder="应用来源" data-attr-scan="sourceType">
+            </div>
+            <div class="m-form-control f-ml10">
                 <!--下拉框-->
                 <input type="text" id="ipt_catalog" data-type="select" placeholder="请选择应用类型" data-attr-scan="catalog">
             </div>

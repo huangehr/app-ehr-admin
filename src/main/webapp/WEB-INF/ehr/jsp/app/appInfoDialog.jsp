@@ -4,12 +4,20 @@
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 
 <div id="div_app_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
-	<input type="hidden" id="inp_source_type"  data-attr-scan="sourceType" value="0">
+	<%--<input type="hidden" id="inp_source_type"  data-attr-scan="sourceType" value="0">--%>
 
 	<div class="m-form-group">
 		<label><spring:message code="lbl.designation"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_app_name" class="required useTitle max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
+		</div>
+	</div>
+
+	<div class="m-form-group">
+		<label>应用来源:</label>
+		<div class="l-text-wrapper m-form-control essential">
+			<input type="text" id="inp_source_type" data-type="select" class="required useTitle max-length-50 validate-special-char"
+				   placeholder="请选择应用来源" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="sourceType"/>
 		</div>
 	</div>
 	<%--增加图标 查看单个应用不需要图标--%>
