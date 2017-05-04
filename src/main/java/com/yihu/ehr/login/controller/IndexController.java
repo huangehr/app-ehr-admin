@@ -12,7 +12,8 @@ public class IndexController {
 
     @RequestMapping(value = "")
     public String init(Model model,HttpServletRequest request) {
-
+        model.addAttribute("contentPage", "login/empty");
+        model.addAttribute("successFlg", true);
         return "frameView";
     }
 }
