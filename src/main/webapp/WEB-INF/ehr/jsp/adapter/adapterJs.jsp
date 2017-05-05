@@ -23,6 +23,7 @@
             function getAdapterPlan(target, id, mode) {
 
                 var title = '';
+                var wait = $.Notice.waitting("正在加载...");
                 //只有new 跟 modify两种模式会到这个函数
                 if (mode == 'modify') {
                     title = '修改标准适配';
@@ -40,8 +41,14 @@
                         mode: mode
                     },
                     isHidden: false,
-                    opener: true
+                    opener: true,
+                    show:false,
+                    onLoaded:function() {
+                        wait.close(),
+                        target.adapterInfoDialog.show()
+                    }
                 });
+                target.adapterInfoDialog.hide();
             }
 
             function delAdapterPlan(id) {
@@ -290,6 +297,7 @@
                     });
                     //定制适配方案
                     $.subscribe('adapter:adapterInfo:customize', function (event, id, version,status) {
+                        var wait = $.Notice.waitting("正在加载...");
                         self.adapterCustomize = $.ligerDialog.open({
                             height: 500,
                             width: 700,
@@ -301,8 +309,14 @@
                                 status:status
                             },
                             isHidden: false,
-                            opener: true
+                            opener: true,
+                            show:false,
+                            onLoaded:function() {
+                                wait.close(),
+                                self.adapterCustomize.show()
+                            }
                         });
+                        self.adapterCustomize.hide();
                     });
                     //适配
                     $.subscribe('adapter:adapterInfo:adapter', function (event, id, mode) {

@@ -83,25 +83,33 @@
                                 }
                             }
                         ],
-                       enabledEdit: true,
-                       validate: true,
-                       unSetValidateAttr: false,
-                       onDblClickRow : function (row){
-                           var mode = 'view';
-                           $.ligerDialog.open({
-                               height: 800,
-                               width: 600,
-                               isDrag:true,
-                               //isResize:true,
-                               title:'公告基本信息',
-                               url: '${contextRoot}/portalNotice/getPortalNotice',
-                               load: true,
-                               urlParms: {
-                                   portalNoticeId: row.id,
+                        enabledEdit: true,
+                        validate: true,
+                        unSetValidateAttr: false,
+                        onDblClickRow : function (row){
+                            var mode = 'view';
+                            var wait = $.Notice.waitting("请稍后...");
+                            var rowDialog = $.ligerDialog.open({
+                                height: 800,
+                                width: 600,
+                                isDrag:true,
+                                //isResize:true,
+                                title:'公告基本信息',
+                                url: '${contextRoot}/portalNotice/getPortalNotice',
+                                load: true,
+                                isHidden: false,
+                            	show: false,
+                                urlParms: {
+                                    portalNoticeId: row.id,
                                    mode:mode
-                               }
-                           });
-                       }
+                                },
+							    onLoaded:function() {
+									wait.close(),
+	                                rowDialog.show()
+								}
+                            });
+                            rowDialog.hide();
+                        }
                     }));
                     grid.adjustToWidth();
                     this.bindEvents();
@@ -123,12 +131,14 @@
                         self.addNoticeInfoDialog = $.ligerDialog.open({
                             height: 600,
                             width: 750,
+                            load: false,
                             title: '新增通知公告信息',
                             url: '${contextRoot}/portalNotice/addNoticeInfoDialog?'+ $.now()
                         })
                     });
                     //修改通知公告信息
                     $.subscribe('portalNotice:noticeInfoModifyDialog:open', function (event, portalNoticeId, mode) {
+                        var wait = $.Notice.waitting("请稍后...");
                         self.noticeInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
@@ -139,11 +149,17 @@
                             isResize:true,
                             url: '${contextRoot}/portalNotice/getPortalNotice',
                             load: true,
+                        	show: false,
                             urlParms: {
                                 portalNoticeId: portalNoticeId,
                                 mode:mode
-                            }
+                            },
+						    onLoaded:function() {
+								wait.close(),
+                                self.noticeInfoDialog.show()
+							}
                         });
+                        self.noticeInfoDialog.hide();
                     });
                     //删除通知公告
                     $.subscribe('portalNotice:noticeInfoModifyDialog:del', function (event, portalNoticeId) {

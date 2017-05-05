@@ -164,6 +164,7 @@
 					$.subscribe("roles:infoDialog:open",function(events,id,mode,appId){
 						isFirstPage = false;
 						var title = '';
+						var wait = $.Notice.waitting("正在加载...");
 						if(mode == 'modify'){
 							title = '修改角色组';
 						}else if(mode == 'new'){
@@ -178,6 +179,7 @@
 							height: 360,
 							width: 500,
 							title: title,
+							show:false,
 							urlParms:{
 								id:id,
 								mode:mode,
@@ -186,7 +188,12 @@
 							url: '${contextRoot}/userRoles/rolesInfoInitial',
 							isHidden: false,
 							load: true,
+							onLaoded:function() {
+							    wait.close(),
+							    rolesMaster.rolesInfoDialog.show()
+							}
 						})
+						rolesMaster.rolesInfoDialog.hide();
 					});
 					//删除角色组（删除判断）
 					$.subscribe("roles:info:delete",function(event,id){

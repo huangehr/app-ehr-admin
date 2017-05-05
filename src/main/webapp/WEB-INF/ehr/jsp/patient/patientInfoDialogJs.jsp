@@ -481,18 +481,25 @@
                 //添加卡
                 cardFormInit.$addCard.click(function(){
                     var idCardNo = patientInfo.$form.Fields.idCardNo.getValue();
-                    $.ligerDialog.open({
+                    var wait = $.Notice.waitting("请稍后...");
+                    var cardDialog = $.ligerDialog.open({
                         height: 640,
                         width: 600,
                         title: '新增卡',
+						show: false,
                         url: '${contextRoot}/card/addCardInfoDialog',
                         urlParms: {
                             idCardNo: idCardNo
                         },
                         onClosed: function () {
                             cardInfoRefresh();
-                        }
+                        },
+	                    onLoaded:function() {
+	                        wait.close(),
+	                        cardDialog.show()
+	                    }
                     })
+                    cardDialog.hide();
                 })
             }
 

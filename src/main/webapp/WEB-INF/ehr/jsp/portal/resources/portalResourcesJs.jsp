@@ -113,6 +113,7 @@
 
                     //修改资源信息
                     $.subscribe('portalResources:ResourcesInfoModifyDialog:open', function (event, portalResourcesId, mode) {
+                        var wait = $.Notice.waitting("请稍后...");
                         self.ResourcesInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
@@ -123,11 +124,17 @@
                             isResize:true,
                             url: '${contextRoot}/portalResources/getPortalResources',
                             load: true,
+                            show: false,
                             urlParms: {
                                 portalResourcesId: portalResourcesId,
                                 mode:mode
-                            }
+                            },
+							onLoaded:function() {
+								wait.close(),
+                                self.ResourcesInfoDialog.show()
+							}
                         });
+                        self.ResourcesInfoDialog.hide();
                     });
                     //删除资源
                     $.subscribe('portalResources:ResourcesInfoModifyDialog:del', function (event, portalResourcesId) {

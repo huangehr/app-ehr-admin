@@ -149,17 +149,25 @@
                     });
                 },
                 ligerDialogOpen: function (jsonStr, type, title, width, height) {
+                    var wait = $.Notice.waitting("请稍后...");
                     appRoleGroupInfoDialog = $.ligerDialog.open({
                         title: title,
                         height: width,
                         width: height,
                         url: url+'appRoleDialog',
                         load: true,
+                        isHidden: false,
+                        show: false,
                         urlParms: {
                             jsonStr: jsonStr,
                             type: type
+                        },
+                        onLoaded:function() {
+                            wait.close(),
+                            appRoleGroupInfoDialog.show()
                         }
                     });
+                    appRoleGroupInfoDialog.hide();
                 }
             };
 

@@ -231,7 +231,7 @@
 
                 <%--});--%>
                 this.$form.attrScan();
-                debugger
+                //debugger
                 this.$form.Fields.fillValues({
                     id: user.id,
                     loginCode: user.loginCode,

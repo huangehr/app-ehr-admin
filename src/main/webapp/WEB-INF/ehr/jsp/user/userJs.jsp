@@ -134,19 +134,27 @@
                         unSetValidateAttr: false,
                         onDblClickRow : function (row){
                             var mode = 'view';
-                            $.ligerDialog.open({
+                            var wait = $.Notice.waitting("请稍后...");
+                            var rowDialog = $.ligerDialog.open({
                                 height: 750,
                                 width: 600,
                                 isDrag:true,
                                 //isResize:true,
                                 title:'用户基本信息',
-                                url: '${contextRoot}/user/getUser',
+                                isHidden: false,
                                 load: true,
+                                show:false,
+                                url: '${contextRoot}/user/getUser',
                                 urlParms: {
                                     userId: row.id,
                                     mode:mode
-                                }
+                                },
+								onLoaded:function() {
+									wait.close(),
+	                                rowDialog.show()
+								}
                             });
+                            rowDialog.hide();
                         }
                     }));
                     // 自适应宽度
@@ -166,21 +174,28 @@
                     });
                     //修改用户信息
                     $.subscribe('user:userInfoModifyDialog:open', function (event, userId, mode) {
+                        var wait = $.Notice.waitting("请稍后...");
                         self.userInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
-                            isHidden: false,
                             title:'修改基本信息',
                             height: 700,
                             width: 600,
-                            isDrag:true,
-                            isResize:true,
-                            url: '${contextRoot}/user/getUser',
                             load: true,
+                            isDrag: true,
+                            isResize: true,
+                            isHidden: false,
+                            show: false,
+                            url: '${contextRoot}/user/getUser',
                             urlParms: {
                                 userId: userId,
                                 mode:mode
-                            }
+                            },
+							onLoaded:function() {
+								wait.close(),
+                                self.userInfoDialog.show()
+							}
                         });
+                        self.userInfoDialog.hide();
                     });
                     //新增用户
                     retrieve.$newRecordBtn.click(function () {

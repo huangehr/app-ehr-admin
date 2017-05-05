@@ -290,6 +290,7 @@
           });
           //
           $.subscribe('grid:right:open',function(event,id,mode){
+            var wait = $.Notice.waitting("正在加载...");
             if(!master.grid.getSelectedRow()){
               if(cfgModel==0)
                 $.Notice.warn('请先添加数据集数据！');
@@ -310,8 +311,14 @@
               },
               isHidden: false,
               opener: true,
-              load : true
+              load : true,
+              show:false,
+              onLoaded:function() {
+                  wait.close(),
+                  entryMater.entryInfoDialog.show()
+              }
             });
+            entryMater.entryInfoDialog.hide();
           });
 
           $.subscribe('grid:right:delete',function(event,ids) {

@@ -200,6 +200,7 @@
 					});
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
 						var title = "";
+						var wait = $.Notice.waitting("请稍后...");
 						if(mode == "modify"){title = "修改资源";}
 						if(mode == "view"){title = "查看资源";}
 						if(mode == "new"){title = "新增资源";}
@@ -213,8 +214,15 @@
 								mode:mode,
 								categoryId:categoryId,
 							},
-							load:true
+							load:true,
+							show:false,
+							isHidden:false,
+							onLoaded:function(){
+								wait.close(),
+								master.rsInfoDialog.show()
+							}
 						});
+						master.rsInfoDialog.hide();
 					});
 					//删除
 					$.subscribe('rs:info:delete',function(event,id){

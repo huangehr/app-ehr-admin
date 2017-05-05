@@ -182,6 +182,9 @@
                     $.subscribe('app:appInfo:open',function(event,appId,mode){
 						isFirstPage = false;
                         var title = '';
+                        var wait=null;
+                        wait = $.Notice.waitting('正在加载中...');
+
                         if(mode == 'modify'){title = '修改应用信息';};
 						if(mode == 'new'){title = '新增应用信息';};
 						if(mode == 'view'){title = '查看应用信息';}
@@ -196,8 +199,15 @@
                             },
                             isHidden: false,
                             opener: true,
-							load:true
+							load:true,
+							isDrag:true,
+							show:false,
+							onLoaded:function() {
+                                wait.close();
+                                master.appInfoDialog.show();
+                            }
                         });
+                        master.appInfoDialog.hide();
                     });
 
 					//删除

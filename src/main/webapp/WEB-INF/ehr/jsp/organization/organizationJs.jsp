@@ -153,7 +153,8 @@
                         unSetValidateAttr: false,
                         onDblClickRow: function (row) {
                             var mode = 'view';
-                            this.orgInfoDialog = $.ligerDialog.open({
+                            var wait = $.Notice.waitting("请稍后...");
+                            row.orgInfoDialog = $.ligerDialog.open({
                                 height: 700,
                                 width: 1000,
                                 title: '机构基本信息',
@@ -162,8 +163,15 @@
                                 urlParms: {
                                     orgCode: encodeURIComponent(row.orgCode),
                                     mode: mode
+                                },
+                                isHidden: false,
+                                show: false,
+                                onLoaded:function() {
+                                    wait.close(),
+                                    row.orgInfoDialog.show()
                                 }
                             });
+                            row.orgInfoDialog.hide();
                         }
                     }));
                     // 自适应宽度
@@ -209,6 +217,7 @@
                     var self = this;
                     $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
                         var title = '修改机构信息';
+                        var wait = $.Notice.waitting("请稍后...");
                         self.orgInfoDialog = $.ligerDialog.open({
                             isHidden: false,
                             height: 700,
@@ -219,8 +228,14 @@
                             urlParms: {
                                 orgCode: encodeURIComponent(orgCode),
                                 mode: mode
+                            },
+                            show: false,
+                            onLoaded:function() {
+                                wait.close(),
+                                self.orgInfoDialog.show()
                             }
                         });
+                        self.orgInfoDialog.hide();
                     });
                     $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg,msg) {
                         $.ligerDialog.confirm('是否对该机构进行'+msg+'操作', function (yes) {

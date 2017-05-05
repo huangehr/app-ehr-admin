@@ -104,7 +104,7 @@
                     this.$form.addClass("m-form-readonly");
                     this.$cancelBtn.hide();
                     this.$updateDtn.hide();
-                    this.$filePicker.hide();
+                    //this.$filePicker.hide();
                 }
             },
 

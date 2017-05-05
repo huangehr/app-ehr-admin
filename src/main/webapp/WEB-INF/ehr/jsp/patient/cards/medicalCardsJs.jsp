@@ -156,6 +156,7 @@
                     $.subscribe('medicalCards:medicalCardsInfo:open',function(event,medicalCardsId,mode){
 						isFirstPage = false;
                         var title = '';
+                        var wait = $.Notice.waitting("请稍后...");
                         if(mode == 'modify'){title = '修改就诊卡信息';};
 						if(mode == 'new'){title = '新增就诊卡信息';};
 						if(mode == 'view'){title = '查看就诊卡信息';}
@@ -163,15 +164,21 @@
                             height:640,
                             width: 600,
                             title : title,
+                            isHidden: false,
+                            opener: true,
+							load:true,
+							show:false,
                             url: '${contextRoot}/medicalCards/infoInitial',
                             urlParms: {
                                 id: medicalCardsId,
                                 mode:mode
                             },
-                            isHidden: false,
-                            opener: true,
-							load:true
+							onLoaded:function() {
+								wait.close(),
+                                master.medicalCardsInfoDialog.show()
+							}
                         });
+                        master.medicalCardsInfoDialog.hide();
                     });
 
 					//删除

@@ -152,27 +152,35 @@
                     $.subscribe('userCards:userCardsInfo:open',function(event,userCardsId,mode){
 						isFirstPage = false;
                         var title = '';
+                        var wait = $.Notice.waitting("请稍后...");
                         if(mode == 'modify'){title = '修改就诊卡信息';};
 						if(mode == 'new'){title = '新增用户就诊卡认证信息';};
                         master.userCardsInfoDialog = $.ligerDialog.open({
                             height:640,
                             width: 600,
                             title : title,
+                            isHidden: false,
+                            opener: true,
+							load:true,
+							show: false,
                             url: '${contextRoot}/userCards/infoInitial',
                             urlParms: {
                                 id: userCardsId,
                                 mode:mode
                             },
-                            isHidden: false,
-                            opener: true,
-							load:true
+                            onLoaded:function() {
+                                wait.close(),
+                                master.userCardsInfoDialog.show()
+                            }
                         });
+                        master.userCardsInfoDialog.hide();
                     });
 
 					//查看详情
                     $.subscribe('userCards:info:open',function(event,userCardsId,auditStatus){
                         isFirstPage = false;
                         var title = '用户认证详情';
+                        var wait = $.Notice.waitting("请稍后...");
                         if(auditStatus == '0'){title = '用户认证审核';};
                         master.userCardsInfoDialog = $.ligerDialog.open({
                             height:640,
@@ -185,8 +193,14 @@
                             },
                             isHidden: false,
                             opener: true,
-                            load:true
+                            load:true,
+							show: false,
+                            onLoaded:function() {
+                                wait.close(),
+                                master.userCardsInfoDialog.show()
+                            }
                         });
+                        master.userCardsInfoDialog.hide();
                     });
 
                 },

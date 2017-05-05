@@ -110,7 +110,8 @@
                        unSetValidateAttr: false,
                        onDblClickRow : function (row){
                            var mode = 'view';
-                           $.ligerDialog.open({
+                           var wait = $.Notice.waitting("请稍后...");
+                           var rowDialog = $.ligerDialog.open({
                                height: 870,
                                width: 600,
                                isDrag:true,
@@ -121,8 +122,15 @@
                                urlParms: {
                                    doctorId: row.id,
                                    mode:mode
+                               },
+                               isHidden: false,
+                               show: false,
+                               onLoaded:function() {
+                                   wait.close(),
+                                   rowDialog.show()
                                }
                            });
+                           rowDialog.hide();
                        }
                     }));
                     grid.adjustToWidth();
@@ -142,15 +150,24 @@
 
                     //新增医生信息
                     retrieve.$newDoctor.click(function(){
+                        var wait = $.Notice.waitting("请稍后...");
                         self.addDoctorInfoDialog = $.ligerDialog.open({
                             height: 850,
                             width: 600,
                             title: '新增医生信息',
-                            url: '${contextRoot}/doctor/addDoctorInfoDialog?'+ $.now()
+                            url: '${contextRoot}/doctor/addDoctorInfoDialog?'+ $.now(),
+                            isHidden: false,
+                            show: false,
+                            onLoaded:function() {
+                                wait.close(),
+                                self.addDoctorInfoDialog.show()
+                            }
                         })
+                        self.addDoctorInfoDialog.hide();
                     });
                     //修改医生信息
                     $.subscribe('doctor:doctorInfoModifyDialog:open', function (event, doctorId, mode) {
+                        var wait = $.Notice.waitting("请稍后...");
                         self.doctorInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
@@ -164,8 +181,14 @@
                             urlParms: {
                                 doctorId: doctorId,
                                 mode:mode
+                            },
+                            show: false,
+                            onLoaded:function() {
+                                wait.close(),
+                                self.doctorInfoDialog.show()
                             }
                         });
+                        self.doctorInfoDialog.hide();
                     });
                     //修改医生状态(生/失效)
                     $.subscribe('doctor:doctorInfoModifyDialog:failure', function (event, doctorId,status,msg) {

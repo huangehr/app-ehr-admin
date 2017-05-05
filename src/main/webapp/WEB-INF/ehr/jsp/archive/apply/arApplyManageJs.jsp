@@ -126,6 +126,7 @@
 					this.searchList();
 				},
 				openMsgDialog:function(status,id){
+                    var wait = $.Notice.waitting("请稍后...");
 					master.validateDialog = $.ligerDialog.open({
 						height:640,
 						width: 1000,
@@ -136,8 +137,14 @@
 						},
 						isHidden: false,
 						opener: true,
-						load:true
+						load:true,
+						show:false,
+						onLoaded:function() {
+							wait.close(),
+							master.validateDialog.show()
+						}
 					});
+					master.validateDialog.hide();
 			    },
 				bindEvents: function () {
 					//事件绑定

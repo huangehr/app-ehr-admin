@@ -186,7 +186,7 @@
                         <%--location.href = '${contextRoot}/orgdataset/initial?treePid=4&treeId=25&adapterOrg='+code;--%>
                     });
                     $.subscribe('adapter:adapterInfo:open', function (event, code, mode) {
-
+                        var wait = $.Notice.waitting("请稍后...");
                         var title = '';
                         //只有new 跟 modify两种模式会到这个函数
                         if (mode == 'modify') {
@@ -207,8 +207,14 @@
                             },
                             isHidden: false,
                             opener: true,
-                            load: true
+                            load: true,
+                            show: false,
+                            onLoaded:function() {
+                                wait.close(),
+                                master.adapterInfoDialog.show()
+                            }
                         });
+                        master.adapterInfoDialog.hide();
                     });
                     $.subscribe('adapter:adapterInfo:del', function (event, code) {
                         var delLen = 1;

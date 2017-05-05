@@ -92,18 +92,26 @@
                         unSetValidateAttr: false,
                         onDblClickRow : function (row){
                             var mode = 'view';
-                            $.ligerDialog.open({
+                            var wait = $.Notice.waitting("请稍后...");
+                            var rowDialog = $.ligerDialog.open({
                                 height: 800,
                                 width: 600,
                                 isDrag:true,
                                 title:'消息提醒基本信息',
+                                isHidden: false,
+                            	show: false,
                                 url: '${contextRoot}/messageRemind/getMessageRemind',
                                 load: true,
                                 urlParms: {
                                     messageRemindId: row.id,
                                     mode:mode
-                                }
+                                },
+								onLoaded:function() {
+									wait.close(),
+	                                rowDialog.show()
+								}
                             });
+                            rowDialog.hide();
                         }
                     }));
                     grid.adjustToWidth();
@@ -132,7 +140,8 @@
                     });
                     //修改消息提醒信息
                     $.subscribe('messageRemind:messageInfoModifyDialog:open', function (event, messageRemindId, mode) {
-                        self.messageInfoDialog = $.ligerDialog.open({
+                        var wait = $.Notice.waitting("请稍后...");
+                        self.messageInfoDialog = $.ligerDialog.open({	
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
@@ -140,13 +149,20 @@
                             width: 550,
                             isDrag:true,
                             isResize:true,
+                            isHidden: false,
                             url: '${contextRoot}/messageRemind/getMessageRemind',
                             load: true,
+                            show: false,
                             urlParms: {
                                 messageRemindId: messageRemindId,
                                 mode:mode
-                            }
+                            },
+							onLoaded:function() {
+								wait.close(),
+                                self.messageInfoDialog.show()
+							}
                         });
+                        self.messageInfoDialog.hide();
                     });
                     //删除消息提醒
                     $.subscribe('messageRemind:messageInfoModifyDialog:del', function (event, messageRemindId) {

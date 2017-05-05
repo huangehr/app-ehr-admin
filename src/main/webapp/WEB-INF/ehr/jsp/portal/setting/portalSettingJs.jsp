@@ -99,18 +99,26 @@
                         unSetValidateAttr: false,
                         onDblClickRow : function (row){
                             var mode = 'view';
-                            $.ligerDialog.open({
+                            var wait = $.Notice.waitting("请稍后...");
+                            var rowDialog = $.ligerDialog.open({
                                 height: 800,
                                 width: 600,
                                 isDrag:true,
+                                isHidden: false,
+                                show: false,
                                 title:'门户配置提醒基本信息',
                                 url: '${contextRoot}/portalSetting/getPortalSetting',
                                 load: true,
                                 urlParms: {
                                     portalSettingId: row.id,
                                     mode:mode
-                                }
+                                },
+								onLoaded:function() {
+									wait.close(),
+	                                rowDialog.show()
+								}
                             });
+                            rowDialog.hide();
                         }
                     }));
                     grid.adjustToWidth();
@@ -139,6 +147,7 @@
                     });
                     //修改门户配置提醒信息
                     $.subscribe('portalSetting:messageInfoModifyDialog:open', function (event, portalSettingId, mode) {
+                        var wait = $.Notice.waitting("请稍后...");
                         self.messageInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
@@ -149,11 +158,17 @@
                             isResize:true,
                             url: '${contextRoot}/portalSetting/getPortalSetting',
                             load: true,
+                            show: false,
                             urlParms: {
                                 portalSettingId: portalSettingId,
                                 mode:mode
-                            }
+                            },
+							onLoaded:function() {
+								wait.close(),
+                                self.messageInfoDialog.show()
+							}
                         });
+                        self.messageInfoDialog.hide();
                     });
                     //删除门户配置提醒
                     $.subscribe('portalSetting:messageInfoModifyDialog:del', function (event, portalSettingId) {

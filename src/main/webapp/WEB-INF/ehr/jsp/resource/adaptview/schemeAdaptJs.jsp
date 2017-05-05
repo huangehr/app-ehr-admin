@@ -20,6 +20,7 @@
             }
             function getSchemeAdapt(target, id, mode) {
                 var title = '';
+                var wait = $.Notice.waitting("请稍后...");
                 //只有new 跟 modify两种模式会到这个函数
                 if (mode == 'modify') {
                     title = '修改适配方案';
@@ -37,8 +38,14 @@
                         mode: mode
                     },
                     isHidden: false,
-                    opener: true
+                    opener: true,
+                    show:false,
+                    onLoaded:function(){
+                    	wait.close(),
+                    	target.adapterInfoDialog.show()
+                    }
                 });
+                target.adapterInfoDialog.hide();
             }
 
             function delSchemeAdapt(id) {

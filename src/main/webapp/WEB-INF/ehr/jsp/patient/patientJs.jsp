@@ -148,6 +148,7 @@
 
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){
+                        var wait =  $.Notice.waitting("正在加载...");
                         patientDialog = $.ligerDialog.open({
                             isHidden:false,
                             title:'新增人口信息',
@@ -159,11 +160,17 @@
                             url:'${contextRoot}/patient/patientDialogType',
                             urlParms:{
                                 patientDialogType:'addPatient'
+                            },
+                            onLoaded:function() {
+                                wait.close(),
+                                patientDialog.show()
                             }
                         })
+                        patientDialog.hide();
                     });
                     //修改人口信息
                   $.subscribe('patient:patientInfoModifyDialog:open',function(event,idCardNo){
+                      var wait =  $.Notice.waitting("正在加载...");
                       patientDialog = $.ligerDialog.open({
                             isHidden:false,
                             title:'修改人口信息',
@@ -176,8 +183,13 @@
                             urlParms:{
                                 idCardNo:idCardNo,
                                 patientDialogType:'updatePatient'
+                            },
+                            onLoaded:function() {
+                                wait.close(),
+                                patientDialog.show()
                             }
                         })
+                      patientDialog.hide();
                     });
                     //删除人口信息
                     $.subscribe('patient:patientInfoModifyDialog:delete', function (event, idCardNo) {
