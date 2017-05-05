@@ -4,9 +4,9 @@
 <div class="pop_tab">
     <ul>
         <li class="cur" id="btn_basic">基础属性</li>
-        <li id="btn_card" >卡管理</li>
-        <li id="btn_archive" >档案管理</li>
-        <li id="btn_home_relation" >家庭关系</li>
+        <%--<li id="btn_card" >卡管理</li>--%>
+        <%--<li id="btn_archive" >档案管理</li>--%>
+        <%--<li id="btn_home_relation" >家庭关系</li>--%>
 
     </ul>
 </div>

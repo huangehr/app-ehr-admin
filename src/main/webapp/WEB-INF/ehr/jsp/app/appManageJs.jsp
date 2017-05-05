@@ -13,6 +13,7 @@
             var appInfoGrid = null;
             var catalogDictId = 1;
             var statusDictId = 2;
+            var sourceTypeDictId = 38;
 			var isFirstPage = true;
 
 			//初始检索条件、page、pageSize
@@ -49,11 +50,13 @@
 				$searchOrg: $('#inp_search_org'),
                 $catalog: $('#ipt_catalog'),
                 $status: $('#ipt_status'),
+                $sourceType: $('#ipt_sourceType'),
                 $searchBtn: $('#btn_search'),
                 $addBtn: $('#btn_add'),
                 init: function () {
                     this.initDDL(catalogDictId, $('#ipt_catalog'),searchParms.catalog);
                     this.initDDL(statusDictId, $('#ipt_status'),searchParms.status);
+                    this.initDDL(sourceTypeDictId, $('#ipt_sourceType'),searchParms.sourceType);
 					this.$searchNm.ligerTextBox({width: 240,value:searchParms.searchNm});
 					this.$searchOrg.ligerTextBox({width:240,value:searchParms.org});
 
@@ -81,23 +84,24 @@
                 grid: null,
                 init: function () {
                     this.grid = $("#div_app_info_grid").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/app/searchApps?sourceType=0',
+                        url: '${contextRoot}/app/searchApps',
                         parms: {
 							searchNm:searchParms.searchNm,
 							org: searchParms.org,
 							catalog: searchParms.catalog,
-							status: searchParms.status,
+                            sourceType: searchParms.sourceType,
+                            status: searchParms.status,
 							page:searchParms.page
                         },
                         columns: [
 							{ display: 'APP ID',name: 'id', width: '10%',isAllowHide: false},
 							{ display: 'APP Secret', name: 'secret', width: '10%', minColumnWidth: 60,},
                             { display: '应用名称', name: 'name',width: '10%', isAllowHide: false,align:'left' },
-                            { display: '是否在线', name: 'releaseFlag',width: '10%',isAllowHide: false,render:function(row){
-                                if (Util.isStrEquals(row.releaseFlag,'1')) {
-                                    return '是';
+                            { display: '应用来源', name: 'sourceType',width: '6%',isAllowHide: false,render:function(row){
+                                if (row.sourceType==1) {
+                                    return '平台';
                                 } else {
-                                    return '否';
+                                    return '接入';
                                 }
                             }
                             },
@@ -117,13 +121,15 @@
 									return '无'
 								}
 							}},
-							{ display: '已授权资源', name: 'resourceNames', width: '8%',align:'left'},
-							{ display: '操作', name: 'operator', width: '12%', render: function (row) {
+//							{ display: '已授权资源', name: 'resourceNames', width: '8%',align:'left'},
+							{ display: '操作', name: 'operator', width: '15%', render: function (row) {
 								var html = '';
 								if(Util.isStrEquals( row.status,'WaitingForApprove') || Util.isStrEquals( row.status,'Approved')){
-									html += '<sec:authorize url="/app/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
 								}
-								html += '<sec:authorize url="/app/template/appInfo"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
+                                html += '<sec:authorize url="/app/feature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:platform:manager", row.id,row.name) + '">功能管理</a></sec:authorize>';
+                                html += '<sec:authorize url="/app/feature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:api:manager", row.id,row.name) + '">API管理</a></sec:authorize>';
+                                html += '<sec:authorize url="/app/template/appInfo"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
 								html += '<sec:authorize url="/app/deleteApp"><a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:appInfo:delete", row.id) + '"></a></sec:authorize>';
 								return html;
                             }}
@@ -263,6 +269,27 @@
 						$("#contentPage").empty();
 						$("#contentPage").load(url,{backParams:JSON.stringify(data)});
 					});
+                    //功能管理
+                    $.subscribe('app:platform:manager', function (event, appId,name) {
+                        var data = {
+                            'dataModel':appId+","+name
+                        }
+                        var url = '${contextRoot}/app/feature/initial';
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url,data);
+                    });
+
+                    //API管理
+                    $.subscribe('app:api:manager', function (event, appId,name) {
+                        var url= '${contextRoot}/app/api/initial';
+                        var data = {
+                            'dataModel':appId
+                        }
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url,data);
+                    });
+
+
                 },
             };
             /* ******************Dialog页面回调接口****************************** */

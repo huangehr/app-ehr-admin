@@ -1,5 +1,7 @@
 package com.yihu.ehr.patient.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.patient.ArchiveRelationModel;
 import com.yihu.ehr.agModel.patient.UserCardsModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
@@ -304,6 +306,118 @@ public class UserCardsController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+
+    @RequestMapping("/archRelationInfoInitial")
+    public String archiveRelationInfoInitial(Model model,String mode,String id){
+        model.addAttribute("mode",mode);
+        model.addAttribute("contentPage","patient/archRelation/archiveRelationInfoDialog");
+        Envelop envelop = new Envelop();
+        String envelopStr = "";
+        try{
+            if (!StringUtils.isEmpty(id)) {
+                String url = "/patient/findArchiveRelation";
+                Map<String, Object> par = new HashMap<>();
+                par.put("id", Long.valueOf(id));
+                envelopStr = HttpClientUtil.doPost(comUrl + url, par, username, password);
+            }
+            model.addAttribute("allData",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
+        }catch (Exception ex){
+            LogService.getLogger(UserCardsController.class).error(ex.getMessage());
+        }
+        return "simpleView";
+    }
+
+    /**
+     * 新增修改
+     * @param archiveRelationModelJsonData
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "updateArchiveRelationInfo")
+    @ResponseBody
+    public Object updateArchiveRelationInfo(String archiveRelationModelJsonData ) throws IOException{
+        String resultStr = "";
+        Envelop result = new Envelop();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        ArchiveRelationModel detailModel = objectMapper.readValue(archiveRelationModelJsonData, ArchiveRelationModel.class);
+        RestTemplates templates = new RestTemplates();
+        try {
+            String url = "/patient/updateArchiveRelation";
+            String getUrl = "/patient/findArchiveRelation";
+            if (detailModel.getId() != 0) {
+                Long id = detailModel.getId();
+                Map<String, Object> par = new HashMap<>();
+                par.put("id", id);
+                resultStr = HttpClientUtil.doPost(comUrl + getUrl,par, username, password);
+                Envelop envelop = getEnvelop(resultStr);
+                if (envelop.isSuccessFlg()) {
+                    ArchiveRelationModel archiveRelationModel = getEnvelopModel(envelop.getObj(), ArchiveRelationModel.class);
+                    archiveRelationModel.setCardType(detailModel.getCardType());
+                    archiveRelationModel.setCardNo(detailModel.getCardNo());
+                    archiveRelationModel.setIdCardNo(detailModel.getIdCardNo());
+                    archiveRelationModel.setOrgCode(detailModel.getOrgCode());
+                    archiveRelationModel.setOrgName(detailModel.getOrgName());
+                    archiveRelationModel.setIdCardNo(detailModel.getIdCardNo());
+                    if(!StringUtils.isEmpty(detailModel.getEventDate())){
+                        archiveRelationModel.setEventDate(detailModel.getEventDate() + " 00:00:00");
+                    }
+                    archiveRelationModel.setEventNo(detailModel.getEventNo());
+                    archiveRelationModel.setEventType(detailModel.getEventType());
+                    params.add("data", toJson(archiveRelationModel));
+                    resultStr = templates.doPost(comUrl + url, params, username, password);
+                } else {
+                    result.setSuccessFlg(false);
+                    result.setErrorMsg(envelop.getErrorMsg());
+                    return result;
+                }
+            } else {
+                if(!StringUtils.isEmpty(detailModel.getEventDate())) {
+                    detailModel.setEventDate(detailModel.getEventDate() + " 00:00:00");
+                }
+                detailModel.setStatus("0");
+                params.add("data", toJson(detailModel));
+                resultStr = templates.doPost(comUrl + url, params, username, password);
+            }
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+        return resultStr;
+    }
+
+
+    /**
+     * 删除就诊卡
+     * @param id
+     * @return
+     */
+    @RequestMapping("deleteArchiveRelation")
+    @ResponseBody
+    public Object deleteArchiveRelation(Long id) {
+        String url = "/patient/delArchiveRelation";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("id", id);
+        try {
+            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            result = mapper.readValue(resultStr, Envelop.class);
+            if (result.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+            }
+            return result;
         } catch (Exception e) {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());

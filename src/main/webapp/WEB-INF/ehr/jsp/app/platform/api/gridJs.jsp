@@ -11,9 +11,9 @@
         $(function () {
             var Util = $.Util;
             var openedDialog;
-            var p = '${dataModel}';
+            var appId = '${dataModel}';
             var contentH = $('.l-layout-center').height();
-            var parms = {};
+            var parms = {appId:appId};
             var urls = {
                 gotoModify: '${contextRoot}/app/api/gotoModify',
                 tree: '${contextRoot}/app/api/tree',

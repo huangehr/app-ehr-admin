@@ -11,6 +11,7 @@
         var jValidation = $.jValidation;
 		var catalogDictId = 1;
 		var statusDictId = 2;
+        var sourceTypeDictId = 38;
         var app = {};
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -21,6 +22,7 @@
         appInfoForm = {
 			$form: $("#div_app_info_form"),
 			$name: $("#inp_app_name"),
+            $sourceType: $("#inp_source_type"),
             $code: $("#inp_app_code"),
 			$orgCode:$('#inp_org_code'),
 			$catalog: $("#inp_dialog_catalog"),
@@ -44,6 +46,8 @@
                 this.$name.ligerTextBox({width:240});
 				this.initDDL(catalogDictId, this.$catalog);
 				this.initDDL(statusDictId, this.$status);
+                this.initDDL(sourceTypeDictId, this.$sourceType);
+
 				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{filters: "activityFlag=1;"})
                 this.$tags.ligerTextBox({width:240});
 				this.$code.ligerTextBox({width:240});
