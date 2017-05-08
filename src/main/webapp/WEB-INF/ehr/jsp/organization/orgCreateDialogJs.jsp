@@ -170,7 +170,6 @@
                     }
                 }});
                 this.$updateOrgBtn.click(function () {
-
                     var orgImgHtml = self.$orgImageShow.children().length;
                     if(validator.validate()){
                     	var dataModel = $.DataModel.init();
@@ -186,8 +185,19 @@
 						orgModel.tags = tags;
 						//原location是对象，传到controller转化成model会报错--机构、地址分开传递（json串）
 						orgModel.location = "";
+                        //用于存储机构最小划分区域的id -追加 start by zdm
+                        var administrative_division=null;
+                        if(!Util.isStrEmpty(orgAddress.keys[2])){
+                            administrative_division = orgAddress.keys[2];
+                        } else if(!Util.isStrEmpty( orgAddress.keys[1])){
+                            administrative_division = orgAddress.keys[1];
+                        }else if(!Util.isStrEmpty( orgAddress.keys[0])){
+                            administrative_division = orgAddress.id[0];
+                        }
+                        orgModel.administrativeDivision = administrative_division;
+                        //用于存储机构最小划分区域的id -追加 end by zdm
 						var addressModel = {
-							province:  orgAddress.names[0],
+							cprovine:  orgAddress.names[0],
 							city: orgAddress.names[1],
 							district: orgAddress.names[2],
 							town: "",
