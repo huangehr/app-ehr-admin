@@ -7,18 +7,13 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.model.patient.MedicalCards;
 import com.yihu.ehr.patient.model.RsMedicalCardModel;
 import com.yihu.ehr.patient.service.MedicalCardsService;
-import com.yihu.ehr.resource.model.RsMetaMsgModel;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.excel.AExcelReader;
-import com.yihu.ehr.util.excel.ObjectFileRW;
 import com.yihu.ehr.util.excel.TemPath;
 import com.yihu.ehr.util.excel.read.RsMedicalCardModelReader;
 import com.yihu.ehr.util.excel.read.RsMedicalCardModelWriter;
-import com.yihu.ehr.util.excel.read.RsMetaMsgModelReader;
-import com.yihu.ehr.util.excel.read.RsMetaMsgModelWriter;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.web.RestTemplates;
@@ -33,15 +28,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.URLDecoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhoujie on 2017/4/17
