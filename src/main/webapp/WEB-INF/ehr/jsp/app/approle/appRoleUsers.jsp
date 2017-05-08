@@ -1,5 +1,35 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<style>
+	#div_app_insetr{
+		height: 100%;
+		position: relative;
+		padding: 0 10px;
+	}
+	.win-pop{
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		background:rgba(0,0,0,0.5)
+	}
+	#div_user_grid{
+		margin-left: -1px;
+		margin-bottom: 10px;
+	}
+	#div_config_user_grid{
+		margin-right: -1px;
+		margin-bottom: 10px;
+	}
+	.f-mw50{
+		width: 375px
+	}
+	.l-grid-row{
+		cursor: pointer;
+	}
+</style>
+
 <div id="div_app_insetr" class="f-mw100">
 	<div class="f-mw50 f-fl f-mt15 f-ds1">
 		<div class="f-fl f-mw100 f-mt10" >
@@ -16,4 +46,5 @@
 		</div>
 		<div id="div_config_user_grid" class="f-fr f-mt10"></div>
 	</div>
+	<div class="win-pop" style="display: none"></div>
 </div>
