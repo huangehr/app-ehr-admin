@@ -217,6 +217,17 @@
                         self.$form.attrScan();
                         var orgAddress = self.$form.Fields.location.getValue();
                         var orgModel = self.$form.Fields.getValues();
+                        //用于存储机构最小划分区域的id -追加 start by zdm
+                        var administrative_division=null;
+                        if(!Util.isStrEmpty(orgAddress.keys[2])){
+                            administrative_division = orgAddress.keys[2];
+                        } else if(!Util.isStrEmpty( orgAddress.keys[1])){
+                            administrative_division = orgAddress.keys[1];
+                        }else if(!Util.isStrEmpty( orgAddress.keys[0])){
+                            administrative_division = orgAddress.id[0];
+                        }
+                        orgModel.administrativeDivision = administrative_division;
+                        //用于存储机构最小划分区域的id -追加 end by zdm
                         //标签字符串转化为数组
                         var tags = orgModel.tags;
                         tags = tags.split(/[;；]/)
