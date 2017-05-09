@@ -623,6 +623,26 @@
                 },
                 </sec:authorize>
 
+                // 6-1 - 质量监控报告
+                <sec:authorize url="Ehr_Master_Centre">
+                {
+                    id: 6,
+                    level:1,
+                    text: '<spring:message code="title.quality.control.management"/>'
+                },
+                </sec:authorize>
+
+                // 6-1 - 趋势分析
+                <sec:authorize url="Ehr_Patients">
+                {
+                    id: 61,
+                    pid: 6,
+                    level:2,
+                    text: '<spring:message code="title.trend.analysis"/>',
+                    url: '${contextRoot}/report/initial'
+                },
+                </sec:authorize>
+
             ],
 
             // 一级菜单图标
