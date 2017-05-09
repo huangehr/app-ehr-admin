@@ -54,7 +54,7 @@ $(function(){
 
             };
             ObjHtml=ObjHtml.replace(/<ul><\/ul>/g,'');//删除多余<UL></ul>
-            var Objcount='<ul class="menucyc"><li class="li first-tit"><i></i>导航栏菜单</li>'+ObjHtml+'</ul>'//初始化
+            var Objcount='<ul class="menucyc">'+ObjHtml+'</ul>'//初始化
             //$('body').html(Objcount);
             $(obj).html(Objcount);
             $(".menucyc").menu(".menucyc")
