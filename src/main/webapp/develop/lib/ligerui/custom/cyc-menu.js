@@ -114,7 +114,7 @@ $(function(){
 
                     $(this).closest("#mCSB_1_container").attr("class","")
                     $(this).closest("#mCSB_1").attr("class","")
-                    $("#div_main_content").find(">div:eq(0)").attr("class","").css("position","absolute").css({"position":"relative","z-index":"100"})
+                    $("#div_main_content").find(">div:eq(0)").attr("class","").css({"position":"relative","z-index":"100","width":"197px"})
                     var mscbTop=$(this).closest("#mCSB_1_container").css("top");
                     $(this).closest("#mCSB_1_container").css("top","mscbTop")
                     $(this).closest("#mCSB_1_container").attr("id","xmCSB_1_container");
