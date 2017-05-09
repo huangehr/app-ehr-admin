@@ -25,12 +25,12 @@
         <pluginRepository>
             <id>pluginCentral</id>
             <name>pluginCentral</name>
-            <url>http://172.19.103.47:8081/nexus/content/repositories/central/</url>
+            <url>http://172.19.103.43:8081/nexus/content/repositories/central/</url>
         </pluginRepository>
         <pluginRepository>
             <id>pluginReleases</id>
             <name>pluginReleases</name>
-            <url>http://172.19.103.47:8081/nexus/content/repositories/releases/</url>
+            <url>http://172.19.103.43:8081/nexus/content/repositories/releases/</url>
         </pluginRepository>
     </pluginRepositories>
     <!--用于发布到服务器 对应setting的对应server表情里面的id -->
@@ -38,24 +38,24 @@
         <repository>
             <id>Releases</id>
             <name>Releases</name>
-            <url>http://172.19.103.47:8081/nexus/content/repositories/releases/</url>
+            <url>http://172.19.103.43:8081/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
             <name>Snapshots</name>
-            <url>http://172.19.103.47:8081/nexus/content/repositories/snapshots/</url>
+            <url>http://172.19.103.43:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <repositories>
         <repository>
             <id>repositoryCentral</id>
             <name>repositoryCentral</name>
-            <url>http://172.19.103.47:8081/nexus/content/repositories/central/</url>
+            <url>http://172.19.103.43:8081/nexus/content/repositories/central/</url>
         </repository>
         <repository>
             <id>repositoryReleases</id>
             <name>repositoryReleases</name>
-            <url>http://172.19.103.47:8081/nexus/content/repositories/releases/</url>
+            <url>http://172.19.103.43:8081/nexus/content/repositories/releases/</url>
         </repository>
     </repositories>
 	<dependencies>
