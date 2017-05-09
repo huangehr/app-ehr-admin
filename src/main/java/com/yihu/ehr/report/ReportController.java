@@ -40,7 +40,7 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("analysisList")
     public String addResources(Model model) {
-        model.addAttribute("contentPage", "report/analysisList");
+        model.addAttribute("contentPage", "/report/analysisList");
         return "pageView";
     }
 

@@ -74,7 +74,7 @@
 
                 this.$mainContent.ligerLayout({
                     // 左侧导航栏菜单宽度
-                    leftWidth: 190,
+                    leftWidth: 199,
                     // 不允许菜单向左收缩
                     allowLeftCollapse: false
                 });
