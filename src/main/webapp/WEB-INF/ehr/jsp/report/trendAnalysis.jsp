@@ -35,17 +35,17 @@
           <div class="div-item-title">完整性</div>
           <div class="div-item-content">
             <div class="div-item active">
-              <img src="/ehr/develop/images/01zhengtishuliang_icon.png">
+              <img src="${staticRoot}/images/01zhengtishuliang_icon.png">
               <span>50%</span>
               <div class="div-item-type">整体数量</div>
             </div>
             <div class="div-item">
-              <img src="/ehr/develop/images/02shujuji_icon.png">
+              <img src="${staticRoot}/images/02shujuji_icon.png">
               <span>80%</span>
               <div class="div-item-type">数据集</div>
             </div>
             <div class="div-item">
-              <img src="/ehr/develop/images/03shujuyuan_icon.png">
+              <img src="${staticRoot}/images/03shujuyuan_icon.png">
               <span>50%</span>
               <div class="div-item-type">数据元</div>
             </div>
@@ -55,7 +55,7 @@
           <div class="div-item-title">准确性</div>
           <div class="div-item-content">
             <div class="div-item" style="width: 100%;">
-              <img src="/ehr/develop/images/04zhuquexing_icon.png">
+              <img src="${staticRoot}/images/04zhuquexing_icon.png">
               <span>50%</span>
               <div class="div-item-type">全部及时性</div>
             </div>
@@ -65,17 +65,17 @@
           <div class="div-item-title">及时性</div>
           <div class="div-item-content">
             <div class="div-item">
-              <img src="/ehr/develop/images/05quanbujishi_icon.png">
+              <img src="${staticRoot}/images/05quanbujishi_icon.png">
               <span>50%</span>
               <div class="div-item-type">全部及时性</div>
             </div>
             <div class="div-item">
-              <img src="/ehr/develop/images/06zhuyuanjishi_icon.png">
+              <img src="${staticRoot}/images/06zhuyuanjishi_icon.png">
               <span>80%</span>
               <div class="div-item-type">住院病人及时性</div>
             </div>
             <div class="div-item">
-              <img src="/ehr/develop/images/07menzhenjishi_icon.png">
+              <img src="${staticRoot}/images/07menzhenjishi_icon.png">
               <span>50%</span>
               <div class="div-item-type">门诊病人及时性</div>
             </div>
@@ -86,18 +86,52 @@
   </div>
 </div>
 
-<div style="height:445px;border:1px solid #dddddd;border-left: 0;border-right:0;position: relative;">
+<div class="div-chart-content">
+    <div class="div-zuoqiehuan"></div>
+    <div class="div-youqiehuan"></div>
     <div class="div-qsfx" style="">趋势分析：</div>
     <div class="div-group">
        <div class="div-btn active">日</div>
       <div class="div-btn">周</div>
       <div  class="div-btn">月</div>
     </div>
+  <div id="chart-main"></div>
 </div>
 
-<div style="height:445px;border:1px solid #dddddd;border-left: 0;border-right:0;">
+<div class="f-pt20 f-mb20">
+  <div class="f-ml20 div-organization f-mb20">
+    <div class="div-hospital-name">海沧医院</div>
+    <div class="div-hospital-item">
+      <div class="l-gq-bg"  style="width: 90%;"></div>
+      <div class="l-gq-value">90%(90/100)</div>
+    </div>
+  </div>
 
+  <div class="f-ml20 div-organization f-mb20">
+    <div class="div-hospital-name">长庚医院</div>
+    <div class="div-hospital-item">
+      <div class="l-gq-bg" style="width: 70%;"></div>
+      <div class="l-gq-value">70%(70/100)</div>
+    </div>
+  </div>
+
+  <div class="f-ml20 div-organization f-mb20">
+    <div class="div-hospital-name">莲花医院</div>
+    <div class="div-hospital-item">
+      <div class="l-gq-bg" style="width: 60%;"></div>
+      <div class="l-gq-value">60%(60/100)</div>
+    </div>
+  </div>
+
+  <div class="f-ml20 div-organization f-mb20">
+    <div class="div-hospital-name">厦门第一医院</div>
+    <div class="div-hospital-item">
+      <div class="l-gq-bg" style="width: 50%;"></div>
+      <div class="l-gq-value">50%(50/100)</div>
+    </div>
+  </div>
 </div>
+
 
 
 
