@@ -29,7 +29,7 @@
             uploadJson : '/ehr/file/upload/EditorImage',
             filterMode : false,
             formatUploadUrl:false,
-            width : '500',
+            width : '580',
             height : '270',
             afterBlur: function(){this.sync();},
             items : [

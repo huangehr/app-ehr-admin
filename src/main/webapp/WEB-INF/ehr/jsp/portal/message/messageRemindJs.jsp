@@ -65,8 +65,6 @@
                         pageSize:20,
                         parms: {
                             searchNm: '',
-                            page:1,
-                            rows:15
                         },
                         allowHideColumn:false,
                         columns: [
@@ -94,8 +92,8 @@
                             var mode = 'view';
                             var wait = $.Notice.waitting("请稍后...");
                             var rowDialog = $.ligerDialog.open({
-                                height: 800,
-                                width: 600,
+                                height: 430,
+                                width: 500,
                                 isDrag:true,
                                 title:'消息提醒基本信息',
                                 isHidden: false,
@@ -132,7 +130,7 @@
                     //新增消息提醒信息
                     retrieve.$newMessageRemind.click(function(){
                         self.addMessageInfoDialog = $.ligerDialog.open({
-                            height: 600,
+                            height: 400,
                             width: 550,
                             title: '新增消息提醒信息',
                             url: '${contextRoot}/messageRemind/addMessageRemindInfoDialog?'+ $.now()
@@ -145,7 +143,7 @@
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 600,
+                            height: 430,
                             width: 550,
                             isDrag:true,
                             isResize:true,

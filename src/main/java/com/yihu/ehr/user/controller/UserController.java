@@ -7,13 +7,13 @@ import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.web.RestTemplates;
 import com.yihu.ehr.util.log.LogService;
-import org.apache.commons.httpclient.*;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,20 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.util.URIUtil;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -45,11 +31,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.*;
 
 /**
  * @author zlf
@@ -343,7 +328,7 @@ public class UserController extends BaseUIController {
             UserDetailModel userDetailModel = toModel(toJson(ep.getObj()),UserDetailModel.class);
 
             String imageOutStream = "";
-            if (!StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
+            if (userDetailModel!=null && !StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
                 params.put("object_id",userDetailModel.getId());
                 imageOutStream = HttpClientUtil.doGet(comUrl + "/files",params,username, password);
                 envelop = toModel(imageOutStream,Envelop.class);

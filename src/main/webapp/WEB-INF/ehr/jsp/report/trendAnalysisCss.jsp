@@ -23,14 +23,16 @@
     .div-group .div-btn{width: 70px;height: 32px;float: left;background: #fff;color: #000;text-align: center;line-height: 32px;border-right: 1px solid #dddddd;}
     .div-group .div-btn:last-child{border-right: 0}
     .div-group .div-btn.active{background: #4DB2EE;color: #ffffff;}
-    .div-hospital-name{width: 100px;height: 100px;position: relative;border-radius: 100px;line-height: 100px;text-align: center;vertical-align: middle;border:1px solid #dddddd;display: inline-block;font-size: 15px; font-weight: bold;}
-    .div-hospital-item{width: 70%;height: 40px;border:1px solid #dddddd;display: inline-block;position: relative;vertical-align: middle;}
-    .l-gq-bg{position: relative;height: 40px;background-color: #4DB2EE; z-index: 1;}
+    .div-hospital-name{width: 100px;height: 100px;position: relative;border-radius: 100px;text-align: center;border:1px solid #dddddd;font-size: 15px; font-weight: bold;padding: 15px;display: -webkit-box;overflow: hidden;text-overflow: ellipsis;-webkit-box-orient: vertical;-webkit-line-clamp: 3;}
+    .div-hospital-name p{position: relative;top:50%;transform:translateY(-50%);overflow: hidden;}
+    .div-hospital-item{width: 70%;height: 40px;border:1px solid #dddddd; position: absolute; left: 120px;top: 30px;}
+    .l-gq-bg{position: relative;height: 39px;background-color: #4DB2EE; z-index: 1;}
     .l-gq-value{position: relative;top: -70%;left: 5px;color: #fff;z-index: 2;font-size: 14px;}
     .div-chart-content{height:345px;border:1px solid #dddddd;border-left: 0;border-right:0;position: relative;}
     .div-zuoqiehuan{background: url(${staticRoot}/images/zuoqiehuan_btn.png) no-repeat;width: 40px;height: 40px;position: absolute;left: 0px;top: 45%;z-index: 20;}
-    .div-zuoqiehuan:active{background: url(${staticRoot}/images/zuoqiehuan_btn_pre.png) no-repeat;}
+    .div-zuoqiehuan:active,.div-zuoqiehuan:hover{background: url(${staticRoot}/images/zuoqiehuan_btn_pre.png) no-repeat;cursor: pointer}
     .div-youqiehuan{background: url(${staticRoot}/images/youqiehuan_btn.png) no-repeat;width: 40px;height: 40px;position: absolute;right: 20px;top: 45%;z-index: 20;}
-    .div-youqiehuan:active{background: url(${staticRoot}/images/youqiehuan_btn_pre.png) no-repeat;}
+    .div-youqiehuan:active,.div-youqiehuan:hover{background: url(${staticRoot}/images/youqiehuan_btn_pre.png) no-repeat;cursor: pointer}
     #chart-main{width: 100%;height: 250px;position: relative;z-index: 10;}
+    .div-organization{position: relative;}
 </style>

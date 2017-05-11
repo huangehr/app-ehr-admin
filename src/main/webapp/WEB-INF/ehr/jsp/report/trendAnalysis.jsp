@@ -100,15 +100,17 @@
 
 <div class="f-pt20 f-mb20">
   <div class="f-ml20 div-organization f-mb20">
-    <div class="div-hospital-name">海沧医院</div>
+    <div class="div-hospital-name">
+      <p>海沧医院</p>
+    </div>
     <div class="div-hospital-item">
-      <div class="l-gq-bg"  style="width: 90%;"></div>
+      <div class="l-gq-bg" style="width: 90%;"></div>
       <div class="l-gq-value">90%(90/100)</div>
     </div>
   </div>
 
   <div class="f-ml20 div-organization f-mb20">
-    <div class="div-hospital-name">长庚医院</div>
+    <div class="div-hospital-name"><p>长庚医院</p></div>
     <div class="div-hospital-item">
       <div class="l-gq-bg" style="width: 70%;"></div>
       <div class="l-gq-value">70%(70/100)</div>
@@ -116,7 +118,7 @@
   </div>
 
   <div class="f-ml20 div-organization f-mb20">
-    <div class="div-hospital-name">莲花医院</div>
+    <div class="div-hospital-name"><p>莲花医院</p></div>
     <div class="div-hospital-item">
       <div class="l-gq-bg" style="width: 60%;"></div>
       <div class="l-gq-value">60%(60/100)</div>
@@ -124,7 +126,7 @@
   </div>
 
   <div class="f-ml20 div-organization f-mb20">
-    <div class="div-hospital-name">厦门第一医院</div>
+    <div class="div-hospital-name"><p>厦门第一医院</p></div>
     <div class="div-hospital-item">
       <div class="l-gq-bg" style="width: 50%;"></div>
       <div class="l-gq-value">50%(50/100)</div>

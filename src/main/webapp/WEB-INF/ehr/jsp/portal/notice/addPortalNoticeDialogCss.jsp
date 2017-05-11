@@ -19,8 +19,12 @@
     padding: 6px 0 4px;
     background-color: #fff;
     /*border-top: 1px solid #ccc;*/
-    text-align: left;
+    text-align: right;
   }
+  .close-toolbar{
+    margin-right: 48px;
+  }
+
   .save-toolbar{
 	  margin-left: 160px;
   }
