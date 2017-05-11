@@ -22,4 +22,7 @@ a:focus{color:#ffffff;text-decoration: none;}
 #span_nav_breadcrumb_content span.strong{ font-weight:bold;}
 /**/
 #div_left #div_typeTree{padding: 0 0 10px 0}
-
+/*弹出框样式覆盖*/
+.l-dialog td, .l-dialog tr, .l-dialog td div{font-size: 12px;}
+.l-dialog td .l-dialog-title{font-size: 16px;}
+.l-dialog-table .pop_tab li{font-size: 14px;}

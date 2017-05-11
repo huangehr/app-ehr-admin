@@ -232,7 +232,7 @@
 							}
 						}
 						master.rsInfoDialog = $.ligerDialog.open({
-							height:550,
+							height:400,
 							width:500,
 							title:title,
 							url:'${contextRoot}/deptMember/infoInitial',

@@ -63,6 +63,13 @@
         text-indent: 0;
         line-height: 20px;
     }
-
-
+	.m-form-inline .m-form-group{
+		padding-bottom: 0 !important;
+	}
+	.m-form-inline div{
+		font-size: 12px !important;
+	}
+	.list-tit{
+		margin: 15px 10px 10px 10px !important;
+	}
 </style>

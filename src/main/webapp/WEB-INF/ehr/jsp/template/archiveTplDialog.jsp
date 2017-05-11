@@ -52,7 +52,7 @@
         </div>--%>
 
     <div class="m-form-control pane-attribute-toolbar">
-        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" id="div_add_btn">
+        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" id="div_add_btn">
             <span>保存</span>
         </div>
         <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_cancel_btn">

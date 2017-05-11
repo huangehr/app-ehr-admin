@@ -26,7 +26,7 @@
 			</div>
 			<div class="m-form-control m-form-control-fr">
 				<sec:authorize url="/resource/resourceInterface/infoInitial">
-				<div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+				<div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-mr10" >
 					<span><spring:message code="btn.create"/></span>
 				</div>
 				</sec:authorize>

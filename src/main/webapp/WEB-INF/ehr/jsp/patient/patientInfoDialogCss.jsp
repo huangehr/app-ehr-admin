@@ -8,7 +8,7 @@
   .u-border{ border-top:1px dashed #cccccc; height:1px; margin-top: -10px; }
   .f-wtl{ top: -10px;left: 10px;background: #fff;text-align: center; }
   .u-bd{ border: 1px solid #c8c8c8;height: auto;margin-left: 10px;margin-right: 10px;margin-bottom: 10px; }
-  .pane-attribute-toolbar{  display: block;  position: absolute;  bottom: 0;  left: 0;  width: 100%;  height: 50px;  padding: 6px 0 4px;  background-color: #fff;  text-align: right;  }
+  .pane-attribute-toolbar{  display: block; width: 100%;  height: 50px;  padding: 6px 0 4px;  background-color: #fff;  text-align: right;  }
   .close-toolbar{  margin-right: 20px;  }
   .f-w88{ width: 88px; }
   .f-h110{ height: 110px }
