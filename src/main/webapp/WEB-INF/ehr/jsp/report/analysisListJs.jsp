@@ -36,54 +36,52 @@
       
       tabelGrid = $("#table_analysis").ligerGrid($.LigerGridEx.config({
             url: '${contextRoot}/report/analysisListData',
-            columns: [
-									{ display: '时间', name: 'Date', frozen:true,height:"40px"},
-	                { display: '对象', name: 'Hospital', frozen:true,height:"40px"},
-	                { display: '完整性', columns:
-	                [
-											{ display: '', name: 'bizhi',height:"40px"},
-	                    { display: '整体数量', name: 'OverallQuantity',height:"40px"},
-	                    { display: '数据集', name: 'DataSet',height:"40px"},
-	                    { display: '数据元', name: 'DataElement',height:"40px"}
-		                ]
-	                },
-	                { display: '准确性', columns:
-	                [
-	                    { display: '准确性', name: 'Accuracy',height:"40px"}
-		                ]
-	                },
-	                { display: '及时性', columns:
-	                [
-											{ display: '全部及时性', name: 'AllTimeliness',height:"40px"},
-	                    { display: '住院病人及时性', name: 'InpatientTimeliness',height:"40px"},
-	                    { display: '门诊病人及时性', name: 'OutpatientTimeliness',height:"40px"}
-	                ]
-	                }
-	                ],
-            delayLoad:true,
-            selectRowButtonOnly: true,
+            pageSize:20,
             allowHideColumn:false,
-            validate : true,
-            unSetValidateAttr:false,
+            columns: [
+                        { display: '时间', name: 'Date', width: '10%',frozen:true,height:"40px"},
+                { display: '对象', name: 'Hospital',width: '10%', frozen:true,height:"40px"},
+                { display: '完整性', columns:
+                [
+                                { display: '', name: 'bizhi',width: '10%',height:"40px"},
+                    { display: '整体数量',width: '10%', name: 'OverallQuantity',height:"40px"},
+                    { display: '数据集', width: '10%',name: 'DataSet',height:"40px"},
+                    { display: '数据元',width: '10%', name: 'DataElement',height:"40px"}
+                ]
+                },
+                { display: '准确性', columns:
+                [
+                    { display: '准确性', width: '10%',name: 'Accuracy',height:"40px"}
+                ]
+                },
+                { display: '及时性', columns:
+                [
+                                { display: '全部及时性', width: '10%',name: 'AllTimeliness',height:"40px"},
+                    { display: '住院病人及时性',width: '10%', name: 'InpatientTimeliness',height:"40px"},
+                    { display: '门诊病人及时性',width: '10%', name: 'OutpatientTimeliness',height:"40px"}
+                ]
+                }
+	          ],
             onBeforeShowData: function (data) {
-            debugger
             	console.log(data);
-              if(data.detailModelList.length==0){
-                entryMater.reloadGrid('');
-              }
+//              if(data.detailModelList.length==0){
+//                entryMater.reloadGrid('');
+//              }
             },
             onAfterShowData: function () {
               this.select(0);
-              setTimeout(function () {
-			            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Date', tabelGrid);
-			            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Hospital', tabelGrid);
-	            }, 0)
+//              setTimeout(function () {
+//			            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Date', tabelGrid);
+//			            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Hospital', tabelGrid);
+//	            }, 0)
             },
             onSelectRow: function(row){
-              entryMater.grid.options.newPage = 1;
-              entryMater.reloadGrid();
+//              entryMater.grid.options.newPage = 1;
+//              entryMater.reloadGrid();
             }
           }));
+       tabelGrid.adjustToWidth();
+      window.tabelGrid = tabelGrid;
 //			tabelGrid = $("#table_analysis").ligerGrid({
 //                columns: [
 //									{ display: '时间', name: 'Date', frozen:true,height:"40px"},
