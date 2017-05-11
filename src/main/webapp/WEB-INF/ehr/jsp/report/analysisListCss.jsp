@@ -23,5 +23,11 @@
     .div-group .div-btn{width: 70px;height: 32px;float: left;background: #fff;color: #000;text-align: center;line-height: 32px;border-right: 1px solid #dddddd;}
     .div-group .div-btn:last-child{border-right: 0}
     .div-group .div-btn.active{background: #4DB2EE;color: #ffffff;}
-
+    .div-analysis-title{height: 60px;line-height:60px;border: #dddddd solid 1px;border-bottom: none;}
+    .div-analysis-title .title{margin-left: 20px;}
+    .div-analysis-title .tips{margin-right: 160px;color: red;}
+    .div-analysis-title .icon{margin-right: 20px;margin-top: 16px;}
+    #table_analysis{width: 100% !important;}
+	/*.l-grid-header{background: #f3f3f3;height: 80px !important;}
+	.l-grid-header-table{height: 80px;}*/
 </style>

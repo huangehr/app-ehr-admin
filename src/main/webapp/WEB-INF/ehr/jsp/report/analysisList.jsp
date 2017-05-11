@@ -76,18 +76,21 @@
   </div>
 </div>
 
-<div style="height:445px;border:1px solid #dddddd;border-left: 0;border-right:0;position: relative;">
-  <div class="div-qsfx" style="">趋势分析：</div>
+<div style="height:74px;border-left: 0;border-right:0;position: relative;">
   <div class="div-group">
     <div class="div-btn active">日</div>
     <div class="div-btn">周</div>
     <div  class="div-btn">月</div>
   </div>
 </div>
-
-<div style="height:445px;border:1px solid #dddddd;border-left: 0;border-right:0;">
-
+<div class="div-analysis-title">
+	<span class="f-ff1 f-fs16 f-fl title">分析列表</span>
+	<img class="f-fr icon" src="/ehr/develop/images/xiazaidayin_icon.png">
+	<span class="f-ff1 f-fs14 f-fr tips">提示：警示的红色字体代表未达标的</span>
 </div>
+<div id="table_analysis"></div>
+
+
 
 
 
