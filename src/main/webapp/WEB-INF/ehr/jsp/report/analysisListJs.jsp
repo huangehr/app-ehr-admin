@@ -38,6 +38,7 @@
             url: '${contextRoot}/report/analysisListData',
             pageSize:20,
             allowHideColumn:false,
+            //mouseoverRowCssClass:"",
             columns: [
                         { display: '时间', name: 'Date', width: '10%',frozen:true,height:"40px"},
                 { display: '对象', name: 'Hospital',width: '10%', frozen:true,height:"40px"},
@@ -49,11 +50,7 @@
                     { display: '数据元',width: '10%', name: 'DataElement',height:"40px"}
                 ]
                 },
-                { display: '准确性', columns:
-                [
-                    { display: '准确性', width: '10%',name: 'Accuracy',height:"40px"}
-                ]
-                },
+                { display: '准确性', name: 'Accuracy', width: '10%',height:"40px"},
                 { display: '及时性', columns:
                 [
                                 { display: '全部及时性', width: '10%',name: 'AllTimeliness',height:"40px"},
@@ -63,17 +60,13 @@
                 }
 	          ],
             onBeforeShowData: function (data) {
-            	console.log(data);
-//              if(data.detailModelList.length==0){
-//                entryMater.reloadGrid('');
-//              }
             },
             onAfterShowData: function () {
-              this.select(0);
-//              setTimeout(function () {
-//			            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Date', tabelGrid);
-//			            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Hospital', tabelGrid);
-//	            }, 0)
+              
+                setTimeout(function () {
+			            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Date', tabelGrid);
+			            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Hospital', tabelGrid);
+	            }, 0)
             },
             onSelectRow: function(row){
 //              entryMater.grid.options.newPage = 1;
@@ -82,55 +75,12 @@
           }));
        tabelGrid.adjustToWidth();
       window.tabelGrid = tabelGrid;
-//			tabelGrid = $("#table_analysis").ligerGrid({
-//                columns: [
-//									{ display: '时间', name: 'Date', frozen:true,height:"40px"},
-//	                { display: '对象', name: 'Hospital', frozen:true,height:"40px"},
-//	                { display: '完整性', columns:
-//	                [
-//											{ display: '', name: 'bizhi',height:"40px"},
-//	                    { display: '整体数量', name: 'OverallQuantity',height:"40px"}, 
-//	                    { display: '数据集', name: 'DataSet',height:"40px"},
-//	                    { display: '数据元', name: 'DataElement',height:"40px"}
-//		                ]
-//	                },
-//	                { display: '准确性', columns:
-//	                [
-//	                    { display: '准确性', name: 'Accuracy',height:"40px"}
-//		                ]
-//	                },
-//	                { display: '及时性', columns:
-//	                [
-//											{ display: '全部及时性', name: 'AllTimeliness',height:"40px"},
-//	                    { display: '住院病人及时性', name: 'InpatientTimeliness',height:"40px"}, 
-//	                    { display: '门诊病人及时性', name: 'OutpatientTimeliness',height:"40px"}
-//	                ]
-//	                }
-//	                ], 
-//									pageSize: 30, 
-//									checkbox: true,
-//	                allowHideColumn: false,
-//	                data: CustomersData,
-//	                width: '100%', 
-//									height: '50px', 
-//									isScroll:false,
-//									alternatingRow:false,
-//									mouseoverRowCssClass:"",
-//									rownumbers: true,
-//									checkbox:false,
-//									headerRowHeight:"40px",
-//									onAfterShowData: function (s) {
-//			        			setTimeout(function () {
-//						            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Date', tabelGrid);
-//						            $('#table_analysis .l-grid-body1 .l-grid-body-table tbody').rowspan('Hospital', tabelGrid);
-//			                }, 0)
-//			            }
-//            });
       /* *************************** 页面功能 **************************** */
       pageInit();
     });
     
   })(jQuery, window);
+  //合并单元格
 	jQuery.fn.rowspan = function (colname, tableObj) {
 		var colIdx;
 		for (var i = 0, n = tableObj.columns.length; i < n; i++) {
