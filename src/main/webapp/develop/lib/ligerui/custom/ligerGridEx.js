@@ -73,10 +73,12 @@
                 var column = this;
 
                 if (!column) return;
-
-                $('.l-grid2 .l-grid-header-table .l-grid-hd-cell',self.element).each(function(){
+                //添加.l-grid1 .l-grid-header-table .l-grid-hd-cell 自动计算列宽度，适用于多表头
+                $('.l-grid1 .l-grid-header-table .l-grid-hd-cell,.l-grid2 .l-grid-header-table .l-grid-hd-cell',self.element).each(function(){
                     var idx = $(this).attr('columnindex');
-                    $(this).css('width',self.getColumn(idx)._width);
+                    if(idx){
+                        $(this).css('width',self.getColumn(idx)._width);
+                    }
                 });
                 $(document.getElementById(column['__domid'])).css('width', newwidth);
                 var cells = [];
