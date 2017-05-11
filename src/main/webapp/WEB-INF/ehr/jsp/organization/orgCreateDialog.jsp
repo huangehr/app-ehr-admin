@@ -294,7 +294,7 @@
     </div>
 </div>
 <div class="m-form-control pane-attribute-toolbar">
-    <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_update_btn">
+    <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar f-mr10" id="div_update_btn">
         <span><spring:message code="btn.save"/></span>
     </div>
     <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="btn_cancel">

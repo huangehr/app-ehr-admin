@@ -11,9 +11,9 @@
 		</div>
 	</div>
 
-	<div class="m-form-group f-pa" style="bottom: 0;right: 10px;">
+	<div class="m-form-group f-pa" style="bottom: 0;right: 20px;">
 		<div class="m-form-control">
-			<input type="button" value="<spring:message code="btn.save"/>" id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />
+			<input type="button" value="<spring:message code="btn.save"/>" id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" />
 			<div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
 				<span><spring:message code="btn.close"/></span>
 			</div>

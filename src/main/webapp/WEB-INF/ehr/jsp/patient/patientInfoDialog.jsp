@@ -118,7 +118,7 @@
             </div>
         </div>
         <div class="m-form-group f-mt20" id="reset_password">
-            <hr class="u-border">
+            <!--<hr class="u-border">-->
             <div class="f-pr u-bd" style="display: none">
                 <div class="f-pa f-w40 f-wtl">
                     高级
@@ -131,7 +131,7 @@
     </div>
 
     <div class="m-form-control pane-attribute-toolbar">
-        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" id="div_update_btn">
+        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" id="div_update_btn">
             <span>保存</span>
         </div>
         <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_cancel_btn">

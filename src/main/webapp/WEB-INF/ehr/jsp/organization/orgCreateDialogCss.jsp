@@ -14,10 +14,10 @@
 		left: 0;
 		width: 100%;
 		height: 50px;
-		padding: 6px 0 4px;
+		padding: 6px 20px 4px;
 		background-color: #fff;
 		/*border-top: 1px solid #ccc;*/
-		text-align: left;
+		text-align: right;
 	}
 	.save-toolbar{ margin-left: 360px; }
 	.u-border{ border-top:1px dashed #cccccc;margin-top: 10px; margin-bottom: 16px;}
@@ -68,5 +68,13 @@
 		text-indent: 0;
 		line-height: 20px;
 	}
-
+	.m-form-inline .m-form-group{
+		padding-bottom: 0 !important;
+	}
+	.m-form-inline div{
+		font-size: 12px !important;
+	}
+	.list-tit{
+		margin: 15px 10px 10px 10px !important;
+	}
 </style>

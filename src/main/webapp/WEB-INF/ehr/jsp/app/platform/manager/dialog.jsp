@@ -67,7 +67,7 @@
   <div class="m-form-group f-pa update-footer">
     <div class="m-form-control">
 
-      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
         <span>保存</span>
       </div>
 

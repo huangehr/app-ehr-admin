@@ -44,7 +44,7 @@
             <div class="list-con">
                 <ul class="list-item">
                     <li>
-                        <div class="m-form-group f-mt20 m-form-readonly">
+                        <div class="m-form-group m-form-readonly">
                             <label><spring:message code="lbl.org.code"/><spring:message code="spe.colon"/></label>
                             <div class="l-text-wrapper m-form-control essential">
                                 <input type="text" id="org_code" class=" f-w240"  data-attr-scan="orgCode"/>
