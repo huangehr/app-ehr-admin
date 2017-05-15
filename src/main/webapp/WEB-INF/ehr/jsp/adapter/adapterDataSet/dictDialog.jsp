@@ -36,8 +36,8 @@
 
     <div class="m-form-group f-pa update-footer">
         <div class="m-form-control">
-            <input type="button" value="保存" id="btn_save_dict" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" />
-            <div id="btn_cancel_dict" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr20" >
+            <input type="button" value="保存" id="btn_save_dict" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />
+            <div id="btn_cancel_dict" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
                 <span>关闭</span>
             </div>
         </div>

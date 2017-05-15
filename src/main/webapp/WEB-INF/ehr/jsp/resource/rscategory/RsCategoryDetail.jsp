@@ -29,10 +29,10 @@
   </div>
 
   <div class="m-form-control pane-attribute-toolbar">
-    <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" id="btn_save">
+    <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" id="btn_save">
       <span>保存</span>
     </div>
-    <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar f-mr20" id="btn_close">
+    <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="btn_close">
       <span>关闭</span>
     </div>
   </div>

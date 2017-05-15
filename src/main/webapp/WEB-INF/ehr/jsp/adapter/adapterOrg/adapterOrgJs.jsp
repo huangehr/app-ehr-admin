@@ -196,7 +196,7 @@
                             title = '新增第三方标准';
                         }
                         master.adapterInfoDialog = $.ligerDialog.open({
-                            height: 470,
+                            height: 550,
                             width: 460,
                             title: title,
                             url: '${contextRoot}/adapterorg/template/adapterOrgInfo',
