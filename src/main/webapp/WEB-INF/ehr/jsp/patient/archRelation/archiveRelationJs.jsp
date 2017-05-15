@@ -77,7 +77,9 @@
                             orgIdOrOrgName: '',
                             nameOrIdCard: '',
                             profileId:'',
-                            status: ''
+                            status: '',
+                            page:1,
+                            rows:15
                         },
                         columns: [
                             { display: '机构编码',name: 'orgCode', width: '8%',isAllowHide: false},
@@ -153,8 +155,8 @@
                         if(mode == 'new'){title = '新增档案关联信息';};
                         if(mode == 'view'){title = '查看档案关联信息';}
                         master.archiveRelativeInfoDialog = $.ligerDialog.open({
-                            height:540,
-                            width: 550,
+                            height:550,
+                            width: 600,
                             title : title,
                             url: '${contextRoot}/userCards/archRelationInfoInitial',
                             urlParms: {

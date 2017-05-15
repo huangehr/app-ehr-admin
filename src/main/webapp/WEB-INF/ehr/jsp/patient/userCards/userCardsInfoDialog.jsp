@@ -90,7 +90,7 @@
 		</div>
 	</div>
 
-	<div class="m-form-group" style="padding-bottom: 60px;">
+	<div class="m-form-group">
 		<label>卡状态<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_status" data-type="select" class="required" data-attr-scan="status"/>
@@ -98,7 +98,7 @@
 	</div>
 
 	<div class="m-form-group f-pr my-footer" align="right" hidden="hidden">
-		<div class="m-form-control f-pa" style="right: 10px;bottom:20px;">
+		<div class="m-form-control f-pa" style="right: 10px">
 			<div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
 				<span><spring:message code="btn.save"/></span>
 			</div>

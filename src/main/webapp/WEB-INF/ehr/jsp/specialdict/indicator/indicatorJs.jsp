@@ -108,7 +108,7 @@
 							title = '新增字典项'
 						};
 						self.infoDialog = $.ligerDialog.open({
-							height:600,
+							height:550,
 							width:500,
 							title:title,
 							url:'${contextRoot}/specialdict/indicator/dialog/indicator',

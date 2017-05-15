@@ -29,7 +29,7 @@
 
 	<div class="m-form-group f-pa" style="right: 10px;bottom: 0;">
 		<div class="m-form-control">
-			<input type="button" value="<spring:message code="btn.save"/>" id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" />
+			<input type="button" value="<spring:message code="btn.save"/>" id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" />
 			<div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
 				<span><spring:message code="btn.close"/></span>
 			</div>

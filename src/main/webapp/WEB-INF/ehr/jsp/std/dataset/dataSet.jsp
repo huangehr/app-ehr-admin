@@ -119,8 +119,8 @@
                         </table>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="dataSetAdd"><spring:message code="btn.save"/></button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="btn.cancel"/></button>
+                        <button type="button" class="btn btn-primary f-mr10" id="dataSetAdd"><spring:message code="btn.save"/></button>
+                        <button type="button" class="btn btn-default f-mr20" data-dismiss="modal"><spring:message code="btn.cancel"/></button>
                     </div>
                 </form>
             </div>

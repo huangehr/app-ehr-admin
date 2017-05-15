@@ -136,7 +136,7 @@
                             var mode = 'view';
                             var wait = $.Notice.waitting("请稍后...");
                             var rowDialog = $.ligerDialog.open({
-                                height: 620,
+                                height: 750,
                                 width: 600,
                                 isDrag:true,
                                 //isResize:true,
@@ -178,7 +178,7 @@
                         self.userInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
                             title:'修改基本信息',
-                            height: 620,
+                            height: 700,
                             width: 600,
                             load: true,
                             isDrag: true,
