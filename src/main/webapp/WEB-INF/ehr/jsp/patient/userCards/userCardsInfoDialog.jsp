@@ -99,7 +99,7 @@
 
 	<div class="m-form-group f-pr my-footer" align="right" hidden="hidden">
 		<div class="m-form-control f-pa" style="right: 10px">
-			<div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+			<div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
 				<span><spring:message code="btn.save"/></span>
 			</div>
 			<div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >

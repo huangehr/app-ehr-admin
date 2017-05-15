@@ -195,7 +195,7 @@
             title += cfg[cfgModel].left.title;
             dialogOpener = cfgModel==0?0:2;
             master.infoDialog = $.ligerDialog.open({
-              height:462,
+              height:450,
               width: 460,
               title : title,
               url: '${contextRoot}' + cfg[cfgModel].left.goAdd,

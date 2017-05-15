@@ -155,7 +155,7 @@
                         if(mode == 'new'){title = '新增档案关联信息';};
                         if(mode == 'view'){title = '查看档案关联信息';}
                         master.archiveRelativeInfoDialog = $.ligerDialog.open({
-                            height:640,
+                            height:550,
                             width: 600,
                             title : title,
                             url: '${contextRoot}/userCards/archRelationInfoInitial',
