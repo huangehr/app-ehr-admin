@@ -62,7 +62,7 @@ public class UserCardsController extends BaseUIController {
         String envelopStr = "";
         try{
             if (!StringUtils.isEmpty(id)) {
-                String url = "/userCards/get";
+                String url = "/patientCards/apply";
                 Map<String, Object> par = new HashMap<>();
                 par.put("id", id);
                 envelopStr = HttpClientUtil.doGet(comUrl + url,par, username, password);
