@@ -43,7 +43,7 @@
         <div class="m-form-group ">
             <label>民族：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control essential f-pr0">
                 <input type="text" id="inp_patientNation" data-type="select" class="required useTitle"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="nation"/>
             </div>
         </div>

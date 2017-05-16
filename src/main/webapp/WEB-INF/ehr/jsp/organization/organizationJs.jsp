@@ -156,7 +156,7 @@
                             var wait = $.Notice.waitting("请稍后...");
                             row.orgInfoDialog = $.ligerDialog.open({
                                 height: 600,
-                                width: 1000,
+                                width: 900,
                                 title: '机构基本信息',
                                 url: '${contextRoot}/organization/dialog/orgInfo',
                                 load: true,

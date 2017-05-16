@@ -65,7 +65,7 @@
                 </div>
                 <div class="m-form-control  f-mr10">
                     <sec:authorize url="/deptMember/infoInitial">
-                        <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                        <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml10">
                             <span>新增成员</span>
                         </div>
                     </sec:authorize>

@@ -17,7 +17,7 @@
     <div class="m-form-group">
         <label>版本号：</label>
 
-        <div id="inp_versionNo_wrap" class="l-text-wrapper m-form-control essential">
+        <div id="inp_versionNo_wrap" class="l-text-wrapper m-form-control essential f-pr0">
             <input type="text" id="inp_versionNo" class="required  useTitle f-w238 " placeholder="请输入版本号" required-title=<spring:message code="lbl.must.input"/> data-type="select"
                    data-attr-scan="cdaVersion"/>
         </div>
@@ -26,8 +26,8 @@
     <div class="m-form-group">
         <label>CDA文档：</label>
 
-        <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="inp_dataset" class="required  useTitle"  required-title=<spring:message code="lbl.must.input"/> data-type="select"
+        <div class="l-text-wrapper m-form-control essential f-pr0">
+            <input type="text" id="inp_dataset" class="required f-ml10 useTitle"  required-title=<spring:message code="lbl.must.input"/> data-type="select"
                    data-attr-scan="cdaDocumentId"/>
         </div>
     </div>
@@ -35,7 +35,7 @@
     <div class="m-form-group" id="div-org">
         <label>医疗机构：</label>
 
-        <div id="inp_org_wrap" class="m-form-control essential">
+        <div id="inp_org_wrap" class="l-text-wrapper m-form-control essential">
             <!--输入框带查询-->
             <input type="text" id="inp_org"  class="f-ml10 required  useTitle f-w238 validate-org-length"  data-type="comboSelect"
                    required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="organizationCode" validate-org-length="请选择到医院一级！"/>

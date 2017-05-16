@@ -97,7 +97,7 @@
                 this.$lczc.ligerTextBox({width: 240});
                 this.$xlzc.ligerTextBox({width: 240});
                 this.$zxzc.ligerTextBox({width: 240});
-                this.$introduction.ligerTextBox({width:240,height:150 });
+                this.$introduction.ligerTextBox({width:600,height:100 });
 
                 this.$sex.ligerRadio();
                 this.$form.attrScan();
