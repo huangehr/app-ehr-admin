@@ -57,7 +57,7 @@
 				this.$appId.ligerTextBox({width:240});
 				this.$secret.ligerTextBox({width:240});
 				this.$url.ligerTextBox({width:240, height: 50 });
-                this.$description.ligerTextBox({width:240, height: 120 });
+                this.$description.ligerTextBox({width:240, height: 50 });
                 var mode = '${mode}';
 				if(mode != 'view'){
 					$(".my-footer").show();

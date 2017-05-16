@@ -2,5 +2,5 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <style>
-    .div-appRole-btn{ position: absolute;bottom: 10px; margin-left: 270px; }
+    .div-appRole-btn{ position: absolute;bottom: 10px; right: 20px; }
 </style>

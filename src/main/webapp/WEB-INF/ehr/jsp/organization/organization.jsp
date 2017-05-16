@@ -9,10 +9,10 @@
 
 <!-- ####### 页面部分 ####### -->
 <div id="div_wrapper">
-    <div class="alert-warning">
+    <!--<div class="alert-warning">
         <i class="icon-warring"></i>
         <p>说明：双击列表单行，可查看机构详情。</p>
-    </div>
+    </div>-->
     <!-- ####### 查询条件部分 ####### -->
     <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
         <div class="m-form-group f-mt10">
@@ -42,7 +42,7 @@
                     </div>
                 </sec:authorize>
             </div>
-            <div class="m-form-control m-form-control-fr">
+            <div class="m-form-control f-ml10">
                 <sec:authorize url="/organization/dialog/create">
                     <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span><spring:message code="btn.create"/></span>
