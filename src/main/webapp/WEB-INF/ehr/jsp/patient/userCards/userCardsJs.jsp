@@ -124,10 +124,7 @@
                         enabledEdit: true,
                         validate : true,
                         unSetValidateAttr:false,
-                        allowHideColumn: false,
-                        onDblClickRow : function (row){
-							$.publish("userCards:userCardsInfo:open",[row.id,'view']);
-                        },
+                        allowHideColumn: false
                     }));
 
                     this.bindEvents();
