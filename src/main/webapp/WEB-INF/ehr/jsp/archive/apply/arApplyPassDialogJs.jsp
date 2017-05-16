@@ -3,7 +3,6 @@
 
 <script type="text/javascript">
     (function ($, win) {
-        debugger
         var auditForm = null;
         var mode = eval("(" + '${mode}' + ")");
         var archives = '${archives}'==''?{}:eval("(" + '${archives}' + ")");

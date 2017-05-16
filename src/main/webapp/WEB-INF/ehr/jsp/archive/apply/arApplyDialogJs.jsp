@@ -159,8 +159,8 @@
                     columns: [
                         { display: '机构编码',name: 'orgCode', width: '8%',isAllowHide: false},
                         { display: '机构名称',name: 'orgName', width: '8%',isAllowHide: false},
-                        { display: '姓名', name: 'name', width: '5%', minColumnWidth: 60,},
-                        { display: '身份证号码', name: 'idCardNo', width: '12%', minColumnWidth: 60,},
+                        { display: '姓名', name: 'name', width: '5%', minColumnWidth: 60},
+                        { display: '身份证号码', name: 'idCardNo', width: '12%', minColumnWidth: 60},
                         { display: '就诊卡类别',name: 'cardTypeName', width: '5%',isAllowHide: false},
                         { display: '卡号',name: 'cardNo', width: '8%',isAllowHide: false},
                         { display: '就诊事件号',name: 'eventNo', width: '8%',isAllowHide: false},
@@ -192,10 +192,10 @@
                     enabledSort:true,
                     enabledEdit: true,
                     validate : true,
+                    width:870,
                     checkbox: true,
                     unSetValidateAttr:false,
                     allowHideColumn: false
-
                 }));
                 this.grid.adjustToWidth();
                 this.bindEvents();
