@@ -64,9 +64,7 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            searchNm: '',
-                            page:1,
-                            rows:15
+                            searchNm: ''
                         },
                         allowHideColumn:false,
                         columns: [
@@ -87,7 +85,7 @@
                                }
                             },
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', width: '12%', render: function (row) {
                                 var html = '<sec:authorize url="/portalSetting/updatePortalSetting"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalSetting:messageInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/portalSetting/deletePortalSetting"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalSetting:messageInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                 return html;
@@ -101,8 +99,8 @@
                             var mode = 'view';
                             var wait = $.Notice.waitting("请稍后...");
                             var rowDialog = $.ligerDialog.open({
-                                height: 800,
-                                width: 600,
+                                height: 430,
+                                width: 500,
                                 isDrag:true,
                                 isHidden: false,
                                 show: false,
@@ -139,7 +137,7 @@
                     //新增门户配置提醒信息
                     retrieve.$newPortalSetting.click(function(){
                         self.addMessageInfoDialog = $.ligerDialog.open({
-                            height: 600,
+                            height: 420,
                             width: 550,
                             title: '新增门户配置提醒信息',
                             url: '${contextRoot}/portalSetting/addPortalSettingInfoDialog?'+ $.now()
@@ -152,7 +150,7 @@
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 600,
+                            height: 430,
                             width: 550,
                             isDrag:true,
                             isResize:true,

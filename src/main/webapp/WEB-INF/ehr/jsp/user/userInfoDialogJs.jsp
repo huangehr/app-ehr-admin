@@ -232,44 +232,46 @@
                 <%--});--%>
                 this.$form.attrScan();
                 //debugger
-                this.$form.Fields.fillValues({
-                    id: user.id,
-                    loginCode: user.loginCode,
-                    realName: user.realName,
-                    idCardNo: user.idCardNo,
-                    gender: user.gender,
-                    email: user.email,
-                    telephone: user.telephone,
-                    organization: [user.province, user.city, user.organization],
-                    major: user.major,
-                    publicKey: user.publicKey,
-                    validTime: user.validTime,
-                    startTime: user.startTime,
-                    sourceName:user.sourceName,
-                    fertilityStatus:user.fertilityStatus,
-                    secondPhone:user.secondPhone,
-                    birthday:user.birthday != null?user.birthday.substring(0,10):"",
-                    micard:user.micard,
-                    qq:user.qq,
-                    ssid:user.ssid,
-                    realnameFlag:user.realnameFlag,
+                if(user){
+                    this.$form.Fields.fillValues({
+                        id: user.id,
+                        loginCode: user.loginCode,
+                        realName: user.realName,
+                        idCardNo: user.idCardNo,
+                        gender: user.gender,
+                        email: user.email,
+                        telephone: user.telephone,
+                        organization: [user.province, user.city, user.organization],
+                        major: user.major,
+                        publicKey: user.publicKey,
+                        validTime: user.validTime,
+                        startTime: user.startTime,
+                        sourceName:user.sourceName,
+                        fertilityStatus:user.fertilityStatus,
+                        secondPhone:user.secondPhone,
+                        birthday:user.birthday != null?user.birthday.substring(0,10):"",
+                        micard:user.micard,
+                        qq:user.qq,
+                        ssid:user.ssid,
+                        realnameFlag:user.realnameFlag,
 
-                });
-				if(user.role){
-					var roleArr = user.role.split(",") ;
-					for(var k in roleArr){
-						$("#"+ roleArr[k], trees.tree).find(".l-checkbox").click()
-					}
-				}
-                self.$publicKeyMessage.val(user.publicKey);
-                self.$publicKeyValidTime.html(user.validTime);
-                self.$publicKeyStartTime.html(user.startTime);
-                self.$idCardCopy.val(user.idCardNo);
-                self.$emailCopy.val(user.email);
+                    });
+                    if(user.role){
+                        var roleArr = user.role.split(",") ;
+                        for(var k in roleArr){
+                            $("#"+ roleArr[k], trees.tree).find(".l-checkbox").click()
+                        }
+                    }
+                    self.$publicKeyMessage.val(user.publicKey);
+                    self.$publicKeyValidTime.html(user.validTime);
+                    self.$publicKeyStartTime.html(user.startTime);
+                    self.$idCardCopy.val(user.idCardNo);
+                    self.$emailCopy.val(user.email);
 
-                var pic = user.imgRemotePath;
-                if (!Util.isStrEmpty(pic)) {
-                    self.$imageShow.html('<img src="${contextRoot}/user/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
+                    var pic = user.imgRemotePath;
+                    if (!Util.isStrEmpty(pic)) {
+                        self.$imageShow.html('<img src="${contextRoot}/user/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
+                    }
                 }
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");

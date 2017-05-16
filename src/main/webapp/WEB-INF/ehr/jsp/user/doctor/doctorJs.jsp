@@ -112,7 +112,7 @@
                            var mode = 'view';
                            var wait = $.Notice.waitting("请稍后...");
                            var rowDialog = $.ligerDialog.open({
-                               height: 870,
+                               height: 600,
                                width: 600,
                                isDrag:true,
                                //isResize:true,
@@ -152,7 +152,7 @@
                     retrieve.$newDoctor.click(function(){
                         var wait = $.Notice.waitting("请稍后...");
                         self.addDoctorInfoDialog = $.ligerDialog.open({
-                            height: 850,
+                            height: 600,
                             width: 600,
                             title: '新增医生信息',
                             url: '${contextRoot}/doctor/addDoctorInfoDialog?'+ $.now(),
@@ -172,7 +172,7 @@
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 870,
+                            height: 600,
                             width: 600,
                             isDrag:true,
                             isResize:true,

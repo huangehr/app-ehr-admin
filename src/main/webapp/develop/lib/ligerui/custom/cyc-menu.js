@@ -54,7 +54,7 @@ $(function(){
 
             };
             ObjHtml=ObjHtml.replace(/<ul><\/ul>/g,'');//删除多余<UL></ul>
-            var Objcount='<ul class="menucyc"><li class="li first-tit"><i></i>导航栏菜单</li>'+ObjHtml+'</ul>'//初始化
+            var Objcount='<ul class="menucyc">'+ObjHtml+'</ul>'//初始化
             //$('body').html(Objcount);
             $(obj).html(Objcount);
             $(".menucyc").menu(".menucyc")
@@ -114,7 +114,7 @@ $(function(){
 
                     $(this).closest("#mCSB_1_container").attr("class","")
                     $(this).closest("#mCSB_1").attr("class","")
-                    $("#div_main_content").find(">div:eq(0)").attr("class","").css("position","absolute").css({"position":"relative","z-index":"100"})
+                    $("#div_main_content").find(">div:eq(0)").attr("class","").css({"position":"relative","z-index":"100","width":"197px"})
                     var mscbTop=$(this).closest("#mCSB_1_container").css("top");
                     $(this).closest("#mCSB_1_container").css("top","mscbTop")
                     $(this).closest("#mCSB_1_container").attr("id","xmCSB_1_container");

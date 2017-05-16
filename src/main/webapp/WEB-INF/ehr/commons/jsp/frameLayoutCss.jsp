@@ -131,4 +131,9 @@
 	/**/
 	#menucyc-scroll #mCSB_1_container{ margin-right:0;}
 	.mCS-dark.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar{background-color: rgba(0,0,0,0.2)}
+	.l-layout-left{border: 0;}
+	.l-layout-center{left: 200px !important;border-top: 0;}
+
+	/*菜单栏风格修改*/
+	
 </style>

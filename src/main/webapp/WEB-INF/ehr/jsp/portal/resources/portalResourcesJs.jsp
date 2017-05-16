@@ -64,20 +64,18 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            searchNm: '',
-                            page:1,
-                            rows:15
+                            searchNm: ''
                         },
                         allowHideColumn:false,
                         columns: [
                             {display: '名称', name: 'name', width: '15%',align: 'center'},
                             {display: '版本', name: 'version', width: '5%'},
-                            {display: '平台类别', name: 'platformTypeName', width: '8%', resizable: true,align: 'left'},
-                            {display: '应用开发环境', name: 'developLanName', width: '8%', resizable: true,align: 'left'},
+                            {display: '平台类别', name: 'platformTypeName', width: '10%', resizable: true,align: 'left'},
+                            {display: '应用开发环境', name: 'developLanName', width: '10%', resizable: true,align: 'left'},
                             {display: '描述', name: 'description', width: '25%', resizable: true,align: 'left'},
                             {display: '上传日期', name: 'uploadTime', width: '15%', resizable: true,align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '15%', render: function (row) {
+                                display: '操作', name: 'operator', width: '20%', render: function (row) {
                                 var html = '<sec:authorize url="/portalResources/updatePortalResources"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/portalResources/deletePortalResources"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/appportalResources/uploadFile"><a data-toggle="model"  class="label_a" target="_blank" href="${contextRoot}/portalResources/uploadFile?storagePath='+ row.url + ' " >'+'下载'+'</a></sec:authorize>'
@@ -104,7 +102,7 @@
                     //新增资源信息
                     retrieve.$newPortalResources.click(function(){
                         self.addResourcesInfoDialog = $.ligerDialog.open({
-                            height: 550,
+                            height: 470,
                             width: 600,
                             title: '新增资源信息',
                             url:'${contextRoot}/portalResources/addResourcesInfoDialog?'+ $.now()
@@ -118,7 +116,7 @@
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 550,
+                            height: 490,
                             width: 600,
                             isDrag:true,
                             isResize:true,

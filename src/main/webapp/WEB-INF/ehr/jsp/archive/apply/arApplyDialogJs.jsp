@@ -154,9 +154,7 @@
                     parms: {
                         name: name,
                         idCardNo: idCardNo,
-                        cardNo: cardNo,
-                        page:1,
-                        rows:15
+                        cardNo: cardNo
                     },
                     columns: [
                         { display: '机构编码',name: 'orgCode', width: '8%',isAllowHide: false},

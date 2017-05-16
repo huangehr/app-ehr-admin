@@ -188,7 +188,7 @@
 							url: '${contextRoot}/userRoles/rolesInfoInitial',
 							isHidden: false,
 							load: true,
-							onLaoded:function() {
+							onLoaded:function() {
 							    wait.close(),
 							    rolesMaster.rolesInfoDialog.show()
 							}

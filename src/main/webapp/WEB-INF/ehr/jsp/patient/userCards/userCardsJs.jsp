@@ -88,7 +88,7 @@
                             { display: '创建时间', name: 'createDate',width: '8%',align:'left'},
 //                            { display: '有效期起始时间', name: 'validityDateBegin',width: '8%',align:'left'},
 //                            { display: '有效期截止时间', name: 'validityDateEnd',width: '8%', align:'left' },
-                            { display: '描述', name: 'description',width: '10%', align:'left' },
+                            { display: '描述', name: 'description',width: '14%', align:'left' },
                             { display: '审核状态', name: 'auditStatus',width: '8%',render:function(row){
                                 if (Util.isStrEquals(row.auditStatus,'0')) {
                                     return '未审核';
@@ -156,8 +156,8 @@
                         if(mode == 'modify'){title = '修改就诊卡信息';};
 						if(mode == 'new'){title = '新增用户就诊卡认证信息';};
                         master.userCardsInfoDialog = $.ligerDialog.open({
-                            height:640,
-                            width: 600,
+                            height:540,
+                            width: 550,
                             title : title,
                             isHidden: false,
                             opener: true,

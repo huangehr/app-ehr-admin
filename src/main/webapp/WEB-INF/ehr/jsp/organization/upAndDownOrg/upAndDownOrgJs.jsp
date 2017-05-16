@@ -177,20 +177,31 @@
 					});
 					$.subscribe("rs:info:open",function(event,resourceId,categoryId){
 						var title = "新增下级机构";
+                    	var	wait = $.Notice.waitting('请稍后...');
 						if(categoryId == ''){
 							$.Notice.error('请在坐边选中一个机构');
+							if(wait){
+								wait.close();
+							}
 							return ;
 						}
 						master.rsInfoDialog = $.ligerDialog.open({
-							height:350,
+							height:200,
 							width:500,
 							title:title,
 							url:'${contextRoot}/upAndDownOrg/infoInitial',
 							urlParms:{
 								categoryId:categoryId
 							},
-							load:true
+							load:true,
+							show:false,
+							isHidden: false,
+                            onLoaded:function() {
+                                wait.close();
+                                master.rsInfoDialog.show();
+                            }
 						});
+						master.rsInfoDialog.hide();
 					});
 
 

@@ -63,6 +63,7 @@
 <script src="${staticRoot}/lib/ligerui/custom/cyc-big.js"></script>
 
 <script src="${staticRoot}/lib/ligerui/custom/jquery.mousewheel.js"></script>
+<script src="${staticRoot}/lib/plugin/echarts/2.2.7/js/echarts-all.js"></script>
 
 <script>
     (function ($, win) {

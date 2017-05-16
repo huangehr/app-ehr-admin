@@ -74,7 +74,7 @@
 
                 this.$mainContent.ligerLayout({
                     // 左侧导航栏菜单宽度
-                    leftWidth: 190,
+                    leftWidth: 199,
                     // 不允许菜单向左收缩
                     allowLeftCollapse: false
                 });
@@ -620,6 +620,26 @@
                     level: 3,
                     text: '<spring:message code="title.portal.portalSetting"/>',
                     url: '${contextRoot}/portalSetting/initial'
+                },
+                </sec:authorize>
+
+                // 6-1 - 质量监控报告
+                <sec:authorize url="Ehr_Master_Centre">
+                {
+                    id: 6,
+                    level:1,
+                    text: '<spring:message code="title.quality.control.management"/>'
+                },
+                </sec:authorize>
+
+                // 6-1 - 趋势分析
+                <sec:authorize url="Ehr_Patients">
+                {
+                    id: 61,
+                    pid: 6,
+                    level:2,
+                    text: '<spring:message code="title.trend.analysis"/>',
+                    url: '${contextRoot}/report/initial'
                 },
                 </sec:authorize>
 

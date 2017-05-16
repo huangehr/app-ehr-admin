@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
@@ -164,6 +165,8 @@ public class LoginController extends BaseUIController {
                     model.addAttribute("contentPage", "user/changePassword");
                     return "generalView";
                 } else {
+                    //创建session保存用户信息
+                    HttpSession session = request.getSession();
                     request.getSession().removeAttribute("defaultPassWord");
                     SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
                     Date date = new Date();
@@ -185,7 +188,7 @@ public class LoginController extends BaseUIController {
                     conditionMap.add("user_json_data", toJson(userDetailModel));
                     RestTemplates templates = new RestTemplates();
                     resultStr = templates.doPut(comUrl + url, conditionMap);
-
+                    session.setAttribute("loginCode",userDetailModel.getLoginCode());
 
                     //获取用户角色信息
                     List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());

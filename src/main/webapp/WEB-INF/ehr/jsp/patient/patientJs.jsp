@@ -175,7 +175,7 @@
                             isHidden:false,
                             title:'修改人口信息',
                             width:600,
-                            height:720,
+                            height:600,
                             load: true,
                             isDrag:true,
                             show:false,

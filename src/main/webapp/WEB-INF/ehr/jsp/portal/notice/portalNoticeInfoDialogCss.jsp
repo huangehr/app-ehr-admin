@@ -40,7 +40,7 @@
         text-align: right;
     }
     .close-toolbar{
-        margin-right: 20px;
+        margin-right: 48px;
     }
     .l-dialog-body {
         overflow: auto;

@@ -65,18 +65,16 @@
                         pageSize:20,
                         parms: {
                             searchNm: '',
-                            page:1,
-                            rows:15
                         },
                        allowHideColumn:false,
                         columns: [
-                            {display: '标题', name: 'title', width: '25%',align: 'left'},
-                            {display: '类型', name: 'typeName', width: '7%'},
-                            {display: '门户类型', name: 'portalTypeName', width: '8%'},
+                            {display: '标题', name: 'title', width: '35%',align: 'left'},
+                            {display: '类型', name: 'typeName', width: '15%'},
+                            {display: '门户类型', name: 'portalTypeName', width: '10%'},
 //                            {display: '内容', name: 'content', width: '45%', resizable: true,align: 'left'},
-                            {display: '发布日期', name: 'releaseDate', width: '15%', resizable: true,align: 'center'},
+                            {display: '发布日期', name: 'releaseDate', width: '20%', resizable: true,align: 'center'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', width: '20%', render: function (row) {
                                     var html = '<sec:authorize url="/portalNotice/updatePortalNotice"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalNotice:noticeInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/portalNotice/deletePortalNotice"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalNotice:noticeInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                     return html;
@@ -129,7 +127,7 @@
                     //新增通知公告信息
                     retrieve.$newPortalNotice.click(function(){
                         self.addNoticeInfoDialog = $.ligerDialog.open({
-                            height: 600,
+                            height: 550,
                             width: 750,
                             load: false,
                             title: '新增通知公告信息',
@@ -143,7 +141,7 @@
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
-                            height: 600,
+                            height: 550,
                             width: 750,
                             isDrag:true,
                             isResize:true,

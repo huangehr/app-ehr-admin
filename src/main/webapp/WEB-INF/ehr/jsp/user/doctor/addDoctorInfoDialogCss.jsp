@@ -16,10 +16,10 @@
     left: 0;
     width: 100%;
     height: 50px;
-    padding: 6px 0 4px;
+    padding: 6px 20px 4px;
     background-color: #fff;
     /*border-top: 1px solid #ccc;*/
-    text-align: left;
+    text-align: right;
   }
   .save-toolbar{
 	  margin-left: 360px;

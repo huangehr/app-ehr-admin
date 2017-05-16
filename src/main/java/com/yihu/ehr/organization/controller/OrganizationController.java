@@ -302,7 +302,9 @@ public class OrganizationController extends BaseUIController {
                 orgForUpdate.setOrgType(org.getOrgType());
                 orgForUpdate.setTags(org.getTags());
                 orgForUpdate.setImgLocalPath("");
-
+                //用于存储机构最小划分区域的id -追加 start by zdm
+                orgForUpdate.setAdministrativeDivision(org.getAdministrativeDivision());
+                //用于存储机构最小划分区域的id -追加 end by zdm
                 orgForUpdate.setCode(org.getCode());
                 orgForUpdate.setTraffic(org.getTraffic());
                 orgForUpdate.setPhoto(org.getPhoto());

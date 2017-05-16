@@ -25,7 +25,7 @@
     </div>
 </div>
 <div id="div_main_content" class="l-layout">
-    <div position="left" class="l-layout-content f-hh" hidetitle="true">
+    <div position="left" class="l-layout-content f-hh" hidetitle="false">
         <!--菜单导航栏-->
         <div class="m-nav-menu f-hh" id="menucyc-scroll">
             <div class="m-snav-title f-pr f-h40 f-ww f-fs14 s-c0 s-bc2 f-fwb">

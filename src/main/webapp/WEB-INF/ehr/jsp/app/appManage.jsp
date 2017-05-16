@@ -29,7 +29,7 @@
             </div>
             <div class="m-form-control f-ml10">
                 <!--按钮:查询 & 新增-->
-					<div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+					<div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-mr10" >
 						<span><spring:message code="btn.search"/></span>
 					</div>
             </div>
