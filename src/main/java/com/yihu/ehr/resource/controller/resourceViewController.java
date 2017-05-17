@@ -62,24 +62,6 @@ public class resourceViewController extends BaseUIController {
         return envelop.getDetailModelList();
     }
 
-//    @RequestMapping("/searchResourceData")
-//    @ResponseBody
-//    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows) {
-//        Map<String, Object> params = new HashMap<>();
-//        String resultStr = "";
-//        String url = "/resources/ResourceBrowses/getResourceData";
-//        params.put("resourcesCode", resourcesCode);
-//        params.put("queryCondition", searchParams);
-//        params.put("page", page);
-//        params.put("size", rows);
-//        try {
-//            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//        } catch (Exception e) {
-//
-//        }
-//        return resultStr;
-//    }
-
 
     /**
      * 动态获取GRID的列名
