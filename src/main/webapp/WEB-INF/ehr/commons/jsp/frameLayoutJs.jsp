@@ -95,17 +95,18 @@
                 </sec:authorize>
 
                 // 1-1 - 居民管理
-                <sec:authorize url="Ehr_Patients">
+                <sec:authorize url="/organization/Initial">
                 {
                     id: 11,
                     pid: 1,
                     level:2,
-                    text: '<spring:message code="title.patient.manage"/>'
+                    text: '<spring:message code="title.patient.manage"/>',
+                    url: '${contextRoot}/patient/initial'
                 },
                 </sec:authorize>
 
                 // 1-1-1 - 基础信息维护
-                <sec:authorize url="/organization/Initial">
+                <%--<sec:authorize url="/organization/Initial">
                 {
                     id: 111,
                     pid: 11,
@@ -113,7 +114,7 @@
                     text: '<spring:message code="title.patient.master.info"/>',
                     url: '${contextRoot}/patient/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 // 1-1-2 -身份认证
                 <%--<sec:authorize url="/deptMember/initialDeptMember">--%>
