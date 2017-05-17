@@ -64,7 +64,7 @@ public class ReportController extends BaseUIController {
     @RequestMapping("/getQcOverAllIntegrity")
     @ResponseBody
     public Object searchQcOverAllIntegrity(String location,String startTime,String endTime){
-        String url = "/getQcOverAllIntegrity";
+        String url = "/report/getQcOverAllIntegrity";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -86,7 +86,7 @@ public class ReportController extends BaseUIController {
     @RequestMapping("/getQcOverAllOrgIntegrity")
     @ResponseBody
     public Object searchQcOverAllOrgIntegrity(String location,String orgCode,String startTime,String endTime){
-        String url = "/getQcOverAllOrgIntegrity";
+        String url = "/report/getQcOverAllOrgIntegrity";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -109,7 +109,7 @@ public class ReportController extends BaseUIController {
     @RequestMapping("/getQcQuotaIntegrity")
     @ResponseBody
     public Object searchQcQuotaIntegrity(String location,String quotaId,String startTime,String endTime){
-        String url = "/getQcQuotaIntegrity";
+        String url = "/report/getQcQuotaIntegrity";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -131,7 +131,7 @@ public class ReportController extends BaseUIController {
     @RequestMapping("/getQcQuotaOrgIntegrity")
     @ResponseBody
     public Object searchQcQuotaOrgIntegrity(String orgCode,String quotaId,String startTime,String endTime){
-        String url = "/getQcQuotaOrgIntegrity";
+        String url = "/report/getQcQuotaOrgIntegrity";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -154,7 +154,7 @@ public class ReportController extends BaseUIController {
     @RequestMapping("/getQcQuotaDailyIntegrity")
     @ResponseBody
     public Object searchQcQuotaDailyIntegrity(String location,String quotaId,String startTime,String endTime){
-        String url = "/getQcQuotaDailyIntegrity";
+        String url = "/report/getQcQuotaDailyIntegrity";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -177,7 +177,7 @@ public class ReportController extends BaseUIController {
     @RequestMapping("/getQcQuotaByLocation")
     @ResponseBody
     public Object searchQcQuotaByLocation(String location,String quotaId,String startTime,String endTime){
-        String url = "/getQcQuotaByLocation";
+        String url = "/report/getQcQuotaByLocation";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
