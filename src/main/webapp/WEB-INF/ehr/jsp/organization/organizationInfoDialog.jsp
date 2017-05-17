@@ -248,39 +248,28 @@
 
             </div>
             <div>
-                <h3 class="list-tit">资质信息<a href="javascript:;">-</a></h3>
-                <div class="list-con">
-                    <ul class="list-item">
-                        <li class="li-width">
-                            <div id="uploader" style="margin-right: 10px;">
-                                <input id="mime" type="hidden" value="org"/>
-                                <input id="objectId" type="hidden" value=""/>
-                                <input id="purpose" type="hidden" value="org"/>
-                                <div class="queueList">
-                                    <div id="dndArea" class="placeholder">
-                                        <div id="filePicker"></div>
-                                        <p>或将照片拖到这里，单次最多可选300张</p>
-                                    </div>
-                                    <ul id="filelist" class="filelist"></ul>
-                                </div>
-
-                                <div class="statusBar" style="display:none;">
-                                    <div class="progress">
-                                        <span class="text">0%</span>
-                                        <span class="percentage"></span>
-                                    </div><div class="info" style=""></div>
-                                    <div class="btns">
-                                        <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+            	<h3 class="list-tit">其他信息<a href="javascript:void;">-</a></h3>
+            	<ul class="list-item">
+            		<li>
+                        <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml100 u-btn-pk-color f-mt10 f-mb10" id="div_aptitude">
+                            <span>资质信息</span>
+                        </div>
+                        
+                    </li>
+                    <li>
+                        <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml100 u-btn-pk-color f-mt10 f-mb10" id="div_publicKey">
+                            <span>公钥管理</span>
+                        </div>
+                    </li>
+                </ul>
             </div>
+            <!--<div>
+                <h3 class="list-tit">资质信息<a href="javascript:;">-</a></h3>-->
+                
+            <!--</div>-->
         </div>
 
-        <div>
+        <!--<div>
             <h3 class="list-tit">公钥管理<a href="javascript:;">-</a></h3>
             <div class="list-con">
                 <ul class="list-item">
@@ -319,9 +308,37 @@
                     </li>
                 </ul>
             </div>
-        </div>
+        </div>-->
     </div>
+		<div class="list-con" id="content_aptitude">
+            <ul class="list-item">
+                <li class="li-width">
+                    <div id="uploader" style="margin-right: 10px;">
+                        <input id="mime" type="hidden" value="org"/>
+                        <input id="objectId" type="hidden" value=""/>
+                        <input id="purpose" type="hidden" value="org"/>
+                        <div class="queueList">
+                            <div id="dndArea" class="placeholder">
+                                <div id="filePicker"></div>
+                                <p>或将照片拖到这里，单次最多可选300张</p>
+                            </div>
+                            <ul id="filelist" class="filelist"></ul>
+                        </div>
 
+                        <div class="statusBar">
+                            <div class="progress">
+                                <span class="text">0%</span>
+                                <span class="percentage"></span>
+                            </div>
+                            <div class="info" style=""></div>
+                            <div class="btns">
+                                <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
         <div id="div_public_manage" class="u-public-manage">
             <div class="l-button u-btn u-btn-small u-btn-cancel f-ib f-vam u-btn-color f-mb10" id="div_allot_publicKey">
                 <span>分配公钥</span>
@@ -335,12 +352,11 @@
         </div>
 
     </div>
-</div>
-<div class="m-form-control pane-attribute-toolbar" id="div_footer">
-    <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_update_btn">
+<div class="m-form-control pane-attribute-toolbar f-tar" id="div_footer">
+    <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar f-mr10" id="div_update_btn">
         <span><spring:message code="btn.save"/></span>
     </div>
-    <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="btn_cancel">
+    <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar f-mr20" id="btn_cancel">
         <span><spring:message code="btn.close"/></span>
     </div>
 </div>

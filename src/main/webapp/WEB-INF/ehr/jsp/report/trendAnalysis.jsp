@@ -37,16 +37,19 @@
             <div class="div-item active">
               <img src="${staticRoot}/images/01zhengtishuliang_icon.png">
               <span>50%</span>
+              <div class="div-item-count">50/100</div>
               <div class="div-item-type">整体数量</div>
             </div>
             <div class="div-item">
               <img src="${staticRoot}/images/02shujuji_icon.png">
               <span>80%</span>
+              <div class="div-item-count">80/100</div>
               <div class="div-item-type">数据集</div>
             </div>
             <div class="div-item">
               <img src="${staticRoot}/images/03shujuyuan_icon.png">
               <span>50%</span>
+              <div class="div-item-count">50/100</div>
               <div class="div-item-type">数据元</div>
             </div>
           </div>
@@ -57,6 +60,7 @@
             <div class="div-item" style="width: 100%;">
               <img src="${staticRoot}/images/04zhuquexing_icon.png">
               <span>50%</span>
+              <div class="div-item-count">50/100</div>
               <div class="div-item-type">全部及时性</div>
             </div>
           </div>
@@ -67,16 +71,19 @@
             <div class="div-item">
               <img src="${staticRoot}/images/05quanbujishi_icon.png">
               <span>50%</span>
+              <div class="div-item-count">50/100</div>
               <div class="div-item-type">全部及时性</div>
             </div>
             <div class="div-item">
               <img src="${staticRoot}/images/06zhuyuanjishi_icon.png">
               <span>80%</span>
+              <div class="div-item-count">80/100</div>
               <div class="div-item-type">住院病人及时性</div>
             </div>
             <div class="div-item">
               <img src="${staticRoot}/images/07menzhenjishi_icon.png">
               <span>50%</span>
+              <div class="div-item-count">50/100</div>
               <div class="div-item-type">门诊病人及时性</div>
             </div>
           </div>

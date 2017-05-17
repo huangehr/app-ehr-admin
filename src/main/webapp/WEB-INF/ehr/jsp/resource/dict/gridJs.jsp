@@ -99,7 +99,7 @@
                     mode = mode || 'new';
                     id = id || '';
                     isSaveSelectStatus = true;
-                    master.dialog = openDialog(master.urls.gotoModify, mode=='new'?'新增':'修改', 440, 400, {id: id, mode: mode});
+                    master.dialog = openDialog(master.urls.gotoModify, mode=='new'?'新增':'修改', 440, 360, {id: id, mode: mode});
                     curOprator = master;
                 },
                 //删除事件
@@ -200,7 +200,7 @@
                     }
                     mode = mode || 'new';
                     id = id || '';
-                    em.dialog = openDialog(em.urls.gotoModify, mode=='new'?'新增':'修改', 440, 400, {id: id, mode: mode});
+                    em.dialog = openDialog(em.urls.gotoModify, mode=='new'?'新增':'修改', 440, 360, {id: id, mode: mode});
                     curOprator = em;
                 },
                 //删除事件

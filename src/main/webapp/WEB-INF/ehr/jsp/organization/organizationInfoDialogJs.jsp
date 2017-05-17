@@ -65,6 +65,8 @@
             $publicKey: $("#div_publicKey"),
             $allotpublicKey: $("#div_allot_publicKey"),
             $publicManage: $("#div_public_manage"),
+            $aptitude:$("#div_aptitude"),
+            $aptitudeManage:$("#content_aptitude"),
 
             //公钥管理弹窗控件
             $publicKeyMessage: $("#txt_publicKey_message"),
@@ -169,11 +171,11 @@
 
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");
-                    this.$publicKey.hide();
+                    //this.$publicKey.hide();
                     this.$footer.hide();
-                    this.$selectPublicKeyMessage.show();
-                    this.$selectPublicKeyValidTime.show();
-                    this.$selectPublicKeyStartTime.show();
+//                  this.$selectPublicKeyMessage.show();
+//                  this.$selectPublicKeyValidTime.show();
+//                  this.$selectPublicKeyStartTime.show();
                     this.$filePicker.addClass("hidden");
                     $("#filePicker2").hide();
                     $('#div_organization_info_form textarea').attr("disabled","disabled");
@@ -357,8 +359,99 @@
                         publicKeyMsgDialog.close();
                     })
                 });
+				//资质信息窗口点击事件
+				this.$aptitude.click(function () {
+                    publicKeyMsgDialog = $.ligerDialog.open({
+                        title: '资质信息',
+                        width: 416,
+                        height: 320,
+                        target: self.$aptitudeManage
+                    });
+                    //资质信息点击事件
+//                  self.$updateOrgBtn.click(function () {
+//                  var orgImgHtml = self.$orgImageShow.children().length;
+//                  if (validator.validate()) {
+//                      var dataModel = $.DataModel.init();
+//                      self.$form.attrScan();
+//                      var orgAddress = self.$form.Fields.location.getValue();
+//                      var orgModel = self.$form.Fields.getValues();
+//                      //用于存储机构最小划分区域的id -追加 start by zdm
+//                      var administrative_division=null;
+//                      if(!Util.isStrEmpty(orgAddress.keys[2])){
+//                          administrative_division = orgAddress.keys[2];
+//                      } else if(!Util.isStrEmpty( orgAddress.keys[1])){
+//                          administrative_division = orgAddress.keys[1];
+//                      }else if(!Util.isStrEmpty( orgAddress.keys[0])){
+//                          administrative_division = orgAddress.id[0];
+//                      }
+//                      orgModel.administrativeDivision = administrative_division;
+//                      //用于存储机构最小划分区域的id -追加 end by zdm
+//                      //标签字符串转化为数组
+//                      var tags = orgModel.tags;
+//                      tags = tags.split(/[;；]/)
+//                      orgModel.tags = tags;
+//                      //原location是对象，传到controller转化成model会报错--机构、地址分开传递（json串）
+//                      orgModel.location = "";
+//                      var addressModel = {
+//                          province: orgAddress.names[0],
+//                          city: orgAddress.names[1],
+//                          district: orgAddress.names[2],
+//                          town: "",
+//                          street: orgAddress.names[3]
+//                      };
+//
+//                      if (Util.isStrEmpty(orgImgHtml)) {
+//                          updateOrg(orgModel, addressModel, '');
+//                      } else {
+//                          var upload = self.$uploader.instance;
+//                          var image = upload.getFiles().length;
+//                          if (image) {
+//                              upload.options.formData.orgModel = encodeURIComponent(JSON.stringify(orgModel) + ";" + JSON.stringify(addressModel) + ";update");
+//                              upload.upload();
+//                          } else {
+//                              updateOrg(orgModel, addressModel, '');
+//                          }
+//                      }
+//
+//                  } else {
+//                      return;
+//                  }
+//              });
+//
+//              function updateOrg(orgModel, addressModel, msg) {
+//                  var orgCode = orgModel.orgCode;
+//                  var orgModel = JSON.stringify(orgModel);
+//                  var addressModel = JSON.stringify(addressModel);
+//                  var dataModel = $.DataModel.init();
+//                  dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
+//                      data: {orgModel: orgModel, addressModel: addressModel, mode: msg},
+//                      success: function (data) {
+//                          uploader.options.formData.objectId = orgCode;
+//                          uploader.options.server="${contextRoot}/file/upload/image";
+//                          uploader.options.successCallBack=function(){
+//                              win.parent.closeAddOrgInfoDialog(function () {
+//                                  win.parent.$.Notice.success('保存成功！');
+//                              });
+//                          }
+//                          if (data.successFlg) {
+//                              if(uploader.getFiles().length>0){
+//                                  $(".uploadBtn").click();
+//                              }else{
+//                                  win.parent.closeAddOrgInfoDialog(function () {
+//                                      win.parent.$.Notice.success('保存成功！');
+//                                  });
+//                              }
+//                          } else {
+//                              win.parent.closeAddOrgInfoDialog(function () {
+//                              });
+//                              window.top.$.Notice.error(data.errorMsg);
+//                          }
+//                      }
+//                  })
+//              }
 
 
+                });
             }
         };
 
