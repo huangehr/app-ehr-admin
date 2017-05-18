@@ -42,7 +42,11 @@
 					                { display: '对象', name: 'Hospital',width: '10%', frozen:true,height:"40px"},
 					                { display: '完整性', columns:
 					                [
-					                    { display: '', name: 'bizhi',width: '10%',height:"40px"},
+					                    { display: '', name: 'bizhi',width: '10%',height:"40px",render: function (row) {
+					                    	if(row.Date == "4月1日"){
+					                    		return "总体";
+					                    	}
+					                    }},
 					                    { display: '整体数量',width: '10%', name: 'OverallQuantity',height:"40px"},
 					                    { display: '数据集', width: '10%',name: 'DataSet',height:"40px"},
 					                    { display: '数据元',width: '10%', name: 'DataElement',height:"40px"}

@@ -39,7 +39,7 @@
 
 	<div class="m-form-group">
 		<label>就诊卡类别</label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_cardType" class="required" data-type="select"    data-attr-scan="cardType"/>
 		</div>
 	</div>
@@ -66,7 +66,7 @@
 
 	<div class="m-form-group">
 		<label>就诊类型<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_eventType" data-type="select" class="required" data-attr-scan="eventType"/>
 		</div>
 	</div>

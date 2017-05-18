@@ -83,22 +83,24 @@
             },
             initForm: function () {
                 var self=this;
-                this.$orgCode.ligerTextBox({width: 240});
-                this.$fullName.ligerTextBox({width: 240});
-                this.$shortName.ligerTextBox({width: 240});
-                this.$location.ligerComboBox({width: 240});
+                this.$orgCode.ligerTextBox({width: 140});
+                this.$fullName.ligerTextBox({width: 140});
+                this.$shortName.ligerTextBox({width: 140});
+                this.$location.ligerComboBox({width: 140});
 
-                this.$traffic.ligerTextBox({width: 240});
-                this.$ing.ligerTextBox({width: 240});
-                this.$lat.ligerTextBox({width: 240});
-                this.$hosType.ligerComboBox({width: 240});
-                this.$phone.ligerTextBox({width: 240});
-                this.$introduction.ligerTextBox({width: 644,height:100,padding:10});
-                this.$levelId.ligerTextBox({width: 240});
-                this.$legalPerson.ligerTextBox({width: 240});
-                this.$parentHosId.ligerTextBox({width: 240});
-                this.$zxy.ligerTextBox({width: 240});
-
+                this.$traffic.ligerTextBox({width: 140});
+                this.$ing.ligerTextBox({width: 140});
+                this.$lat.ligerTextBox({width: 140});
+                this.$hosType.ligerComboBox({width: 140});
+                this.$phone.ligerTextBox({width: 140});
+                this.$introduction.ligerTextBox({width: 396,height:104,padding:10});
+                this.$levelId.ligerTextBox({width: 140});
+                this.$legalPerson.ligerTextBox({width: 140});
+                this.$parentHosId.ligerTextBox({width: 140});
+                this.$zxy.ligerTextBox({width: 140});
+                this.$orgType.ligerComboBox({width:140});
+                this.$ascriptionType.ligerComboBox({width:140});
+                this.$settledWay.ligerComboBox({width:140});
 
 
                 this.initDDL(orgTypeDictId,this.$orgType);
@@ -120,9 +122,9 @@
                     {name: '街道', maxlength: 200}
                 ]});
 
-                this.$admin.ligerTextBox({width: 240, height:28});
-                this.$tags.ligerTextBox({width: 240, height:28});
-                this.$tel.ligerTextBox({width: 240, height:28});
+                this.$admin.ligerTextBox({width: 140, height:28});
+                this.$tags.ligerTextBox({width: 140, height:28});
+                this.$tel.ligerTextBox({width: 140, height:28});
                 this.$tel.removeClass('l-text-field-number');
             },
             initDDL: function (dictId, target) {
