@@ -153,13 +153,12 @@ public class ReportController extends BaseUIController {
     //分析明细列表
     @RequestMapping("/getQcQuotaDailyIntegrity")
     @ResponseBody
-    public Object searchQcQuotaDailyIntegrity(String location,String quotaId,String startTime,String endTime){
+    public Object searchQcQuotaDailyIntegrity(String location,String startTime,String endTime){
         String url = "/report/getQcQuotaDailyIntegrity";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("location", location);
-        params.put("quotaId", quotaId);
         params.put("startTime", startTime);
         params.put("endTime", endTime);
         try {
