@@ -89,6 +89,7 @@
                 this.$major.ligerTextBox({width: 240});
                 this.$sex.ligerRadio();
                 this.$org.addressDropdown({
+                    width:260,
                     tabsData: [
                         {
                             name: '省份',

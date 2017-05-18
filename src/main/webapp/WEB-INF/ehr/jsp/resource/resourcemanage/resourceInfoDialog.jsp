@@ -6,7 +6,7 @@
 	<input type="hidden" id="id" data-attr-scan="id"/>
 	<div class="m-form-group">
 		<label>资源分类<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_category" readonly="readonly" data-type="select" class="required useTitle f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="categoryId" />
 		</div>
 	</div>

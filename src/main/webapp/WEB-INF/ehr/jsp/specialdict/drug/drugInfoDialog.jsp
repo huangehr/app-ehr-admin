@@ -18,13 +18,13 @@
 	</div>
 	<div class="m-form-group">
 		<label >药品类别:</label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_drug_type" data-type="select" class="required useTitle f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label >药品标识:</label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_drug_flag" data-type="select" class="required useTitle f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="flag">
 		</div>
 	</div>

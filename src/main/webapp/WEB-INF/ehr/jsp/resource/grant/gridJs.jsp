@@ -205,7 +205,7 @@
                     id = id || '';
                     curOprator = em;
                     var params = {id: id, mode: mode, appResId: appResId, resMetaId: resMetaId, appId: appId};
-                    em.dialog = openedDialog = openDialog(em.urls.gotoModify, '维度授权', 500, 250, params);
+                    em.dialog = openedDialog = openDialog(em.urls.gotoModify, '维度授权', 550, 250, params);
                 },
                 //查询列表方法
                 find : function (appId, appResourceId) {

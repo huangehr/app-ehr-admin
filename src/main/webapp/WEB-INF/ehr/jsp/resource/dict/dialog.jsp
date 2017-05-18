@@ -33,7 +33,7 @@
         <span>保存</span>
       </div>
 
-      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr20" >
+      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr10" >
         <span>关闭</span>
       </div>
 

@@ -65,8 +65,6 @@
             $publicKey: $("#div_publicKey"),
             $allotpublicKey: $("#div_allot_publicKey"),
             $publicManage: $("#div_public_manage"),
-            $aptitude:$("#div_aptitude"),
-            $aptitudeManage:$("#content_aptitude"),
 
             //公钥管理弹窗控件
             $publicKeyMessage: $("#txt_publicKey_message"),
@@ -90,13 +88,14 @@
                 addImg();
             },
             initForm: function () {
-                this.$orgCode.ligerTextBox({width: 240});
-                this.$fullName.ligerTextBox({width: 240});
-                this.$shortName.ligerTextBox({width: 240});
-                this.$location.ligerComboBox({width: 240});
+                this.$orgCode.ligerTextBox({width: 140});
+                this.$fullName.ligerTextBox({width: 140});
+                this.$shortName.ligerTextBox({width: 140});
+                this.$location.ligerComboBox({width: 140});
+                this.$orgType.ligerComboBox({width: 140});
 //                this.$tags.ligerTextBox({width: 240, height: 56});
-                this.$admin.ligerTextBox({width: 240, height: 28});
-                this.$tel.ligerTextBox({width: 240, height: 28});
+                this.$admin.ligerTextBox({width: 140, height: 28});
+                this.$tel.ligerTextBox({width: 140, height: 28});
                 this.$tel.removeClass('l-text-field-number');
                 this.$location.addressDropdown({
                     tabsData: [
@@ -113,17 +112,18 @@
                     ]
                 });
 
-                this.$traffic.ligerTextBox({width: 240});
-                this.$ing.ligerTextBox({width: 240});
-                this.$lat.ligerTextBox({width: 240});
-                this.$hosType.ligerComboBox({width: 240});
-                this.$ascriptionType.ligerComboBox({width: 240});
-                this.$phone.ligerTextBox({width: 240});
-                this.$introduction.ligerTextBox({width: 644,height:100,padding:10});
-                this.$levelId.ligerTextBox({width: 240});
-                this.$legalPerson.ligerTextBox({width: 240});
-                this.$parentHosId.ligerTextBox({width: 240});
-                this.$zxy.ligerTextBox({width: 240});
+                this.$traffic.ligerTextBox({width: 140});
+                this.$ing.ligerTextBox({width: 140});
+                this.$lat.ligerTextBox({width: 140});
+                this.$hosType.ligerComboBox({width: 140});
+                this.$ascriptionType.ligerComboBox({width: 140});
+                this.$phone.ligerTextBox({width: 140});
+                this.$introduction.ligerTextBox({width: 396,height:104,padding:10});
+                this.$levelId.ligerTextBox({width: 140});
+                this.$legalPerson.ligerTextBox({width: 140});
+                this.$parentHosId.ligerTextBox({width: 140});
+                this.$zxy.ligerTextBox({width: 140});
+                this.$settledWay.ligerComboBox({width: 140});
 
                 this.initDDL(orgTypeDictId, this.$orgType);
                 this.initDDL(settledWayDictId, this.$settledWay);
@@ -171,11 +171,11 @@
 
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");
-                    //this.$publicKey.hide();
+                    this.$publicKey.hide();
                     this.$footer.hide();
-//                  this.$selectPublicKeyMessage.show();
-//                  this.$selectPublicKeyValidTime.show();
-//                  this.$selectPublicKeyStartTime.show();
+                    this.$selectPublicKeyMessage.show();
+                    this.$selectPublicKeyValidTime.show();
+                    this.$selectPublicKeyStartTime.show();
                     this.$filePicker.addClass("hidden");
                     $("#filePicker2").hide();
                     $('#div_organization_info_form textarea').attr("disabled","disabled");
@@ -192,7 +192,7 @@
 
                 var logoPic = org.logoUrl;
                 if (!Util.isStrEmpty(logoPic)) {
-                    this.$logoImageShow.html('<img style="width:150px;height:80px;" src="${contextRoot}/organization/showImageLogo?storagePath='+logoPic+'" ></img>');
+                    this.$logoImageShow.html('<img style="width:130px;height:80px;" src="${contextRoot}/organization/showImageLogo?storagePath='+logoPic+'" ></img>');
                 }
 
             },
@@ -359,99 +359,8 @@
                         publicKeyMsgDialog.close();
                     })
                 });
-				//资质信息窗口点击事件
-				this.$aptitude.click(function () {
-                    publicKeyMsgDialog = $.ligerDialog.open({
-                        title: '资质信息',
-                        width: 416,
-                        height: 320,
-                        target: self.$aptitudeManage
-                    });
-                    //资质信息点击事件
-//                  self.$updateOrgBtn.click(function () {
-//                  var orgImgHtml = self.$orgImageShow.children().length;
-//                  if (validator.validate()) {
-//                      var dataModel = $.DataModel.init();
-//                      self.$form.attrScan();
-//                      var orgAddress = self.$form.Fields.location.getValue();
-//                      var orgModel = self.$form.Fields.getValues();
-//                      //用于存储机构最小划分区域的id -追加 start by zdm
-//                      var administrative_division=null;
-//                      if(!Util.isStrEmpty(orgAddress.keys[2])){
-//                          administrative_division = orgAddress.keys[2];
-//                      } else if(!Util.isStrEmpty( orgAddress.keys[1])){
-//                          administrative_division = orgAddress.keys[1];
-//                      }else if(!Util.isStrEmpty( orgAddress.keys[0])){
-//                          administrative_division = orgAddress.id[0];
-//                      }
-//                      orgModel.administrativeDivision = administrative_division;
-//                      //用于存储机构最小划分区域的id -追加 end by zdm
-//                      //标签字符串转化为数组
-//                      var tags = orgModel.tags;
-//                      tags = tags.split(/[;；]/)
-//                      orgModel.tags = tags;
-//                      //原location是对象，传到controller转化成model会报错--机构、地址分开传递（json串）
-//                      orgModel.location = "";
-//                      var addressModel = {
-//                          province: orgAddress.names[0],
-//                          city: orgAddress.names[1],
-//                          district: orgAddress.names[2],
-//                          town: "",
-//                          street: orgAddress.names[3]
-//                      };
-//
-//                      if (Util.isStrEmpty(orgImgHtml)) {
-//                          updateOrg(orgModel, addressModel, '');
-//                      } else {
-//                          var upload = self.$uploader.instance;
-//                          var image = upload.getFiles().length;
-//                          if (image) {
-//                              upload.options.formData.orgModel = encodeURIComponent(JSON.stringify(orgModel) + ";" + JSON.stringify(addressModel) + ";update");
-//                              upload.upload();
-//                          } else {
-//                              updateOrg(orgModel, addressModel, '');
-//                          }
-//                      }
-//
-//                  } else {
-//                      return;
-//                  }
-//              });
-//
-//              function updateOrg(orgModel, addressModel, msg) {
-//                  var orgCode = orgModel.orgCode;
-//                  var orgModel = JSON.stringify(orgModel);
-//                  var addressModel = JSON.stringify(addressModel);
-//                  var dataModel = $.DataModel.init();
-//                  dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
-//                      data: {orgModel: orgModel, addressModel: addressModel, mode: msg},
-//                      success: function (data) {
-//                          uploader.options.formData.objectId = orgCode;
-//                          uploader.options.server="${contextRoot}/file/upload/image";
-//                          uploader.options.successCallBack=function(){
-//                              win.parent.closeAddOrgInfoDialog(function () {
-//                                  win.parent.$.Notice.success('保存成功！');
-//                              });
-//                          }
-//                          if (data.successFlg) {
-//                              if(uploader.getFiles().length>0){
-//                                  $(".uploadBtn").click();
-//                              }else{
-//                                  win.parent.closeAddOrgInfoDialog(function () {
-//                                      win.parent.$.Notice.success('保存成功！');
-//                                  });
-//                              }
-//                          } else {
-//                              win.parent.closeAddOrgInfoDialog(function () {
-//                              });
-//                              window.top.$.Notice.error(data.errorMsg);
-//                          }
-//                      }
-//                  })
-//              }
 
 
-                });
             }
         };
 

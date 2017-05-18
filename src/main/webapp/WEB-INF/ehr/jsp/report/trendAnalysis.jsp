@@ -34,22 +34,22 @@
         <div class="div-items">
           <div class="div-item-title">完整性</div>
           <div class="div-item-content">
-            <div class="div-item active">
+            <div class="div-item">
               <img src="${staticRoot}/images/01zhengtishuliang_icon.png">
-              <span>50%</span>
-              <div class="div-item-count">50/100</div>
+              <span></span>
+              <div class="div-item-count"></div>
               <div class="div-item-type">整体数量</div>
             </div>
             <div class="div-item">
               <img src="${staticRoot}/images/02shujuji_icon.png">
-              <span>80%</span>
-              <div class="div-item-count">80/100</div>
+              <span></span>
+              <div class="div-item-count"></div>
               <div class="div-item-type">数据集</div>
             </div>
             <div class="div-item">
               <img src="${staticRoot}/images/03shujuyuan_icon.png">
-              <span>50%</span>
-              <div class="div-item-count">50/100</div>
+              <span></span>
+              <div class="div-item-count"></div>
               <div class="div-item-type">数据元</div>
             </div>
           </div>
@@ -59,9 +59,9 @@
           <div class="div-item-content">
             <div class="div-item" style="width: 100%;">
               <img src="${staticRoot}/images/04zhuquexing_icon.png">
-              <span>50%</span>
-              <div class="div-item-count">50/100</div>
-              <div class="div-item-type">全部及时性</div>
+              <span></span>
+              <div class="div-item-count"></div>
+              <div class="div-item-type">准确性</div>
             </div>
           </div>
         </div>
@@ -70,20 +70,20 @@
           <div class="div-item-content">
             <div class="div-item">
               <img src="${staticRoot}/images/05quanbujishi_icon.png">
-              <span>50%</span>
-              <div class="div-item-count">50/100</div>
+              <span></span>
+              <div class="div-item-count"></div>
               <div class="div-item-type">全部及时性</div>
             </div>
             <div class="div-item">
               <img src="${staticRoot}/images/06zhuyuanjishi_icon.png">
-              <span>80%</span>
-              <div class="div-item-count">80/100</div>
+              <span></span>
+              <div class="div-item-count"></div>
               <div class="div-item-type">住院病人及时性</div>
             </div>
             <div class="div-item">
               <img src="${staticRoot}/images/07menzhenjishi_icon.png">
-              <span>50%</span>
-              <div class="div-item-count">50/100</div>
+              <span></span>
+              <div class="div-item-count"></div>
               <div class="div-item-type">门诊病人及时性</div>
             </div>
           </div>
@@ -105,40 +105,9 @@
   <div id="chart-main"></div>
 </div>
 
-<div class="f-pt20 f-mb20">
-  <div class="f-ml20 div-organization f-mb20">
-    <div class="div-hospital-name">
-      <p>海沧医院</p>
-    </div>
-    <div class="div-hospital-item">
-      <div class="l-gq-bg" style="width: 90%;"></div>
-      <div class="l-gq-value">90%(90/100)</div>
-    </div>
-  </div>
+<div class="f-pt20 f-mb20 div-organization-content">
 
-  <div class="f-ml20 div-organization f-mb20">
-    <div class="div-hospital-name"><p>长庚医院</p></div>
-    <div class="div-hospital-item">
-      <div class="l-gq-bg" style="width: 70%;"></div>
-      <div class="l-gq-value">70%(70/100)</div>
-    </div>
-  </div>
 
-  <div class="f-ml20 div-organization f-mb20">
-    <div class="div-hospital-name"><p>莲花医院</p></div>
-    <div class="div-hospital-item">
-      <div class="l-gq-bg" style="width: 60%;"></div>
-      <div class="l-gq-value">60%(60/100)</div>
-    </div>
-  </div>
-
-  <div class="f-ml20 div-organization f-mb20">
-    <div class="div-hospital-name"><p>厦门第一医院</p></div>
-    <div class="div-hospital-item">
-      <div class="l-gq-bg" style="width: 50%;"></div>
-      <div class="l-gq-value">50%(50/100)</div>
-    </div>
-  </div>
 </div>
 
 
