@@ -16,7 +16,7 @@
 
   <div class="m-form-group">
     <label>业务领域<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
+    <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_domain" data-type="select" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="domain">
     </div>
   </div>
@@ -37,7 +37,7 @@
 
   <div class="m-form-group">
     <label>类型<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
+    <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_column_type" data-type="select" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="columnType">
     </div>
   </div>

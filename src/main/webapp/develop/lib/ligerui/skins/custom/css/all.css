@@ -123,7 +123,7 @@ a.l-checkbox-checked{ background:url(../images/gouxuan.png)  }
 .l-panel-bbar-inner { margin-top: 0; }
 
 .m-form-group:after { display: table; content: " "; clear: both; }
-.m-form-inline .m-form-group label { display: block; position: relative; float: left; width: 150px;  height: 30px; line-height: 30px;text-align: right; min-height: 1px; padding-right: 10px; padding-left: 10px; font-weight: normal; }
+.m-form-inline .m-form-group label { display: block; position: relative; float: left; width: 150px;  height: 30px; min-height: 30px; line-height: 30px;text-align: right; padding-right: 10px; padding-left: 10px; font-weight: normal; }
 .m-form-inline .m-form-group { padding-bottom: 10px; }
 .m-form-inline .m-form-group .m-form-control{ float: left; }
 .m-form-inline .m-form-group .l-text-wrapper {  vertical-align: middle;padding-right: 10px; }

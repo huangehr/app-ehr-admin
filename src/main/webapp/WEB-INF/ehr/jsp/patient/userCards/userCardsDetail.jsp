@@ -93,7 +93,7 @@
 		<div class="m-form-group">
 			<label>审核：</label>
 			<div class="m-form-control ">
-					<input type="text" data-type="select" id="audit"  class="col" >
+					<input type="text" data-type="select" id="audit">
 			</div>
 
 			<div class="m-form-control " id="refuseReasonGroup" style="display: none;">
@@ -103,17 +103,17 @@
 				</div>
 			</div>
 
-			<label>原因：</label>
+			<label class="f-ml50">原因：</label>
 			<div class="m-form-control ">
-				<label class="col">
-					<textarea id="otherReason" style="height: 40px;" class="f-w240 max-length-500 validate-special-char"  maxlength="500"></textarea>
+				<label class="col" id="otherReason">
+					<!--<textarea style="height: 40px;" class="f-w240 max-length-500 validate-special-char"  maxlength="500"></textarea>-->
 				</label>
 			</div>
 		</div>
 
 		<div class="m-form-group f-pr my-footer">
-			<div class="m-form-control f-pa" style="right: 10px">
-				<div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+			<div class="m-form-control f-pa" style="right: 20px">
+				<div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
 					<span><spring:message code="btn.confirm"/></span>
 				</div>
 				<div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >

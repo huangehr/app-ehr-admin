@@ -4,7 +4,7 @@
 <style>
   .m-form-inline .m-form-group label{ width: 110px;}
   .m-form-inline .m-form-group { padding-bottom: 5px; }
-  .u-upload-img{ position: absolute; left: 400px; }
+  .u-upload-img{ position: absolute; left: 470px; }
   /*.f-tac{ margin-top: -760px; margin-left: 400px; }*/
   .f-ml160{ margin-left:160px; }
   .f-ml60{ margin-left: 60px; }

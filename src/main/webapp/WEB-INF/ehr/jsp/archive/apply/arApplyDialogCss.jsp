@@ -10,6 +10,6 @@
     .m-form-inline .m-form-group label{ width: 100px;}
     .m-form-inline .m-form-group {
         padding-bottom: 0;
-        width: 900px;
+        width: 871px;
     }
 </style>

@@ -17,7 +17,6 @@ public class LogInterceptor implements HandlerInterceptor {
 
 
 
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

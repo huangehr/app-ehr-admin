@@ -13,6 +13,6 @@
 	#div_right{float: left;width: 700px;margin-left: 10px}
 	.div_resource_browse_tree{width:890px; float:right;margin-left: 10px}
 	.div-result-msg{width: 100%;height: auto; float: left;}
-	.right-retrieve{border: 1px solid #D6D6D6;border-bottom: none }
+	.right-retrieve{border: 1px solid #D6D6D6;border-bottom: none;height: 41px;line-height: 40px;padding: 0 10px;}
 </style>
 

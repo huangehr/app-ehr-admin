@@ -21,8 +21,8 @@
     .m-combo-dropdown>.m-input-box{ margin-top: -1px;margin-left: -1px }
     .m-combo-dropdown .u-dropdown-icon{ margin-top: -1px;margin-right: -1px }
 	.u-select-tab a{line-height:13px;  }
-	.pane-attribute-toolbar{ display: block;  position: absolute;  bottom: 0;  left: 0;  width: 100%;  height: 50px;  padding: 6px 0 4px;  background-color: #fff; text-align: left;  }
-	.save-toolbar{  margin-left: 360px;  }
+	.pane-attribute-toolbar{ display: block;  position: absolute;  bottom: 0;  left: 0;  width: 100%;  height: 50px;  padding: 6px 0 4px;  background-color: #fff; text-align: right;  }
+	/*.save-toolbar{  margin-left: 360px;  }*/
     .div-aptitude-manager-show{ margin-top: 40px;width: 100px; }
     .u-image-btn{ bottom: 55px; margin-top: 6px; }
     .f-ml130{ margin-left: 130px; bottom: 40px; }
@@ -72,4 +72,5 @@
 	.list-tit{
 		margin: 15px 10px 10px 10px !important;
 	}
+	#content_aptitude{display: none;}
 </style>
