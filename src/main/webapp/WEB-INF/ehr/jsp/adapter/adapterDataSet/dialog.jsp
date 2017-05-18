@@ -8,7 +8,7 @@
 
     <div class="m-form-group">
         <label class="label_title">标准数据元<spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control essential f-pr0">
             <input type="text" id="inp_info_metaDataId" data-type="select" class="required f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="metaDataId"/>
         </div>
     </div>
@@ -44,7 +44,7 @@
     <div class="m-form-group f-pa update-footer">
         <div class="m-form-control">
             <input type="button" value="保存" id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" />
-            <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr20" >
+            <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr10" >
                 <span>关闭</span>
             </div>
         </div>

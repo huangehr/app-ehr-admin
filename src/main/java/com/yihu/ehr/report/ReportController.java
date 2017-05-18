@@ -9,7 +9,6 @@ import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -37,8 +36,25 @@ public class ReportController extends BaseUIController {
      * @return
      */
     @RequestMapping("initial")
-    public String patientInitial(Model model) {
+    public String initial(Model model) {
         model.addAttribute("contentPage", "/report/trendAnalysis");
+        return "pageView";
+    }
+
+    /**
+     * 趋势分析详情页
+     * @param model
+     * @return
+     */
+    @RequestMapping("trendAnalysisDetail")
+    public String trendAnalysisDetail(Model model,String location,String orgCode,String orgName,String quotaId,String startTime,String endTime) {
+        model.addAttribute("location",location);
+        model.addAttribute("orgCode",orgCode);
+        model.addAttribute("orgName",orgName);
+        model.addAttribute("quotaId",quotaId);
+        model.addAttribute("startTime",startTime);
+        model.addAttribute("endTime",endTime);
+        model.addAttribute("contentPage", "/report/trendAnalysisDetail");
         return "pageView";
     }
 
@@ -153,13 +169,12 @@ public class ReportController extends BaseUIController {
     //分析明细列表
     @RequestMapping("/getQcQuotaDailyIntegrity")
     @ResponseBody
-    public Object searchQcQuotaDailyIntegrity(String location,String quotaId,String startTime,String endTime){
+    public Object searchQcQuotaDailyIntegrity(String location,String startTime,String endTime){
         String url = "/report/getQcQuotaDailyIntegrity";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("location", location);
-        params.put("quotaId", quotaId);
         params.put("startTime", startTime);
         params.put("endTime", endTime);
         try {

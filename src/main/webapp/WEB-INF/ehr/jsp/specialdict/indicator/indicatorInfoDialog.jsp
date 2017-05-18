@@ -18,7 +18,7 @@
 	</div>
 	<div class="m-form-group">
 		<label >指标类别:</label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_indicator_type" data-type="select" class="required useTitle ajax f-w240"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
 		</div>
 	</div>

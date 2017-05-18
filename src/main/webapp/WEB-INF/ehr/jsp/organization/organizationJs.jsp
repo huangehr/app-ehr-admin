@@ -54,9 +54,9 @@
                             },
                             {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
                             {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'}
-                        ]
+                        ],
+                        placeholder:"请选择地区"
                     });
-
                     this.bindEvents();
 
                     this.$element.show();
@@ -87,8 +87,8 @@
                     });
                     self.$newRecordBtn.click(function () {
                         self.addOrgInfoDialog = $.ligerDialog.open({
-                            height: 600,
-                            width: 1000,
+                            height: 580,
+                            width: 1050,
                             title: '新增机构信息',
                             url: '${contextRoot}/organization/dialog/create'
                         })
@@ -156,7 +156,7 @@
                             var wait = $.Notice.waitting("请稍后...");
                             row.orgInfoDialog = $.ligerDialog.open({
                                 height: 600,
-                                width: 1000,
+                                width: 1050,
                                 title: '机构基本信息',
                                 url: '${contextRoot}/organization/dialog/orgInfo',
                                 load: true,
@@ -221,7 +221,7 @@
                         self.orgInfoDialog = $.ligerDialog.open({
                             isHidden: false,
                             height: 600,
-                            width: 1000,
+                            width: 1050,
                             title: title,
                             url: '${contextRoot}/organization/dialog/orgInfo',
                             load: true,

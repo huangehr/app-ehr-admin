@@ -188,15 +188,18 @@
                     $.subscribe('adapter:adapterInfo:open', function (event, code, mode) {
                         var wait = $.Notice.waitting("请稍后...");
                         var title = '';
+                        var height = null;
                         //只有new 跟 modify两种模式会到这个函数
                         if (mode == 'modify') {
                             title = '修改第三方标准';
+                            height = 510;
                         }
                         else {
                             title = '新增第三方标准';
+                            height = 470;
                         }
                         master.adapterInfoDialog = $.ligerDialog.open({
-                            height: 470,
+                            height: height,
                             width: 460,
                             title: title,
                             url: '${contextRoot}/adapterorg/template/adapterOrgInfo',

@@ -12,13 +12,13 @@
 	<input type="hidden" id="id" data-attr-scan="id"/>
 	<div class="m-form-group">
 		<label>接口名称:</label>
-		<div class="m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_name" class="required useTitle ajax f-w350 f-h28 max-length-50"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="name">
 		</div>
 	</div>
 	<div class="m-form-group">
 		<label >接口编码:</label>
-		<div class="m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential">
 			<textarea id="inp_code" class=" required useTitle ajax f-w350  validate-special-char max-length-500"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="resourceInterface"></textarea>
 		</div>
 	</div>
