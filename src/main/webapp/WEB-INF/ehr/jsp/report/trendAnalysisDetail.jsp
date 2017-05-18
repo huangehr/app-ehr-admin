@@ -3,8 +3,16 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/report/initial');" class="f-fwb" style="position: absolute; top: 30px;">返回上一层 </a>
+
 <!-- ####### Title设置 ####### -->
-<div class="div-title">厦门市XXXX数据</div>
+<div class="div-title"></div>
+<input value="${location}" class="f-dn" id="inp_location"/>
+<input value="${orgCode}" class="f-dn" id="inp_orgCode"/>
+<input value="${orgName}" class="f-dn" id="inp_orgName"/>
+<input value="${quotaId}" class="f-dn" id="inp_quotaId"/>
+<input value="${startTime}" class="f-dn" id="inp_startTime"/>
+<input value="${endTime}" class="f-dn" id="inp_endTime"/>
 
 <!-- ####### 页面部分 ####### -->
 <div class="adpater-plan-modal">
@@ -20,14 +28,6 @@
       <div class="m-form-control">
         <input type="text" id="inp_end_date" class="validate-date l-text-field validate-date"  placeholder="请选择查询的结束时间"/>
       </div>
-      <%--<sec:authorize url="/adapter/update">--%>
-      <div class="m-form-control m-form-control-fr">
-        <!--按钮:新增 <spring:message code="btn.create"/>-->
-        <div id="btn_detail" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-mr10" >
-          <span> 趋势分析详情</span>
-        </div>
-      </div>
-      <%--</sec:authorize>--%>
 
     </div>
       <div class="div-head">
@@ -103,11 +103,6 @@
       <div  class="div-btn">月</div>
     </div>
   <div id="chart-main"></div>
-</div>
-
-<div class="f-pt20 f-mb20 div-organization-content">
-
-
 </div>
 
 
