@@ -39,7 +39,7 @@
                     }});
                     self.$startDate.ligerDateEditor("setValue",$("#inp_startTime").val());
                     self.$endDate.ligerDateEditor("setValue",$("#inp_endTime").val());
-                    $(".div-title").html($("#inp_orgName").val());
+                    $(".div-title").find(".span-location").html($("#inp_orgName").val());
                     self.$element.show();
                     self.$element.attrScan();
                     self.bindEvents();
@@ -286,7 +286,7 @@
                     };
 
                     myChart.setOption(option);
-
+                    window.onresize = myChart.resize;
                 },
                 getCurrentMonthFirst:function(){
                     var date_ = new Date();

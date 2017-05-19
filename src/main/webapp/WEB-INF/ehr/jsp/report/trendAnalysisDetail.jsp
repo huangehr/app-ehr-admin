@@ -6,7 +6,7 @@
 <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/report/initial');" class="f-fwb" style="position: absolute; top: 30px;">返回上一层 </a>
 
 <!-- ####### Title设置 ####### -->
-<div class="div-title"></div>
+<div class="div-title"><span class="span-location"></span>趋势分析数据</div>
 <input value="${location}" class="f-dn" id="inp_location"/>
 <input value="${orgCode}" class="f-dn" id="inp_orgCode"/>
 <input value="${orgName}" class="f-dn" id="inp_orgName"/>

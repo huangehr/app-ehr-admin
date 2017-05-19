@@ -25,22 +25,41 @@
                 $startDate:$("#inp_start_date"),
                 $endDate:$("#inp_end_date"),
                 $addDetail: $('#btn_detail'),
+                $location: $('#inp_orgArea'),
+                $searchBtn: $('#btn_search'),
                 init: function () {
                     var self = this;
                     self.$startDate.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
-                            if(value){
-                                self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
-                            }
+//                            if(value){
+//                                self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
+//                            }
                     }});
                     self.$endDate.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
-                        if(value){
-                            self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
-                        }
+//                        if(value){
+//                            self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
+//                        }
                     }});
                     self.$startDate.ligerDateEditor("setValue",self.getCurrentMonthFirst());
                     self.$endDate.ligerDateEditor("setValue",self.getCurrentDate());
+                    self.$location.addressDropdown({
+                        tabsData: [
+                            {
+                                name: '省份',
+                                code: 'id',
+                                value: 'name',
+                                url: '${contextRoot}/address/getParent',
+                                params: {level: '1'}
+                            },
+                            {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                            {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'}
+                        ],
+                        placeholder:"请选择地区"
+                    });
                     self.$element.show();
                     self.$element.attrScan();
+                   setTimeout(function(){
+                       self.$element.Fields.location.setValue(["福建省", "厦门市", "", ""]);
+                   },500);
                     self.bindEvents();
                     self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
                 },
@@ -63,12 +82,52 @@
                                     activeIndex = $(".div-head").find(".div-item.active").attr("data-index");
                                 }
                                 $(".div-head").find(".div-item").eq(activeIndex).trigger("click");
+                            }else{
+                                $(".div-head").find(".div-item").each(function(index,ele){
+                                    $(ele).find("span").html("0.00%");
+                                    $(ele).find(".div-item-count").html("0/0");
+                                })
+                                self.drawChart([],[],[],[]);
+                                $(".div-organization-content").html("");
+                                chartData = null;
                             }
                         }
                     });
                 },
                 bindEvents: function () {
                     var self = this;
+                    self.$searchBtn.click(function () {
+                        if(self.$startDate.val()==""){
+                            $.Notice.error('请选择查询的开始时间');
+                            return false;
+                        }
+                        if(self.$endDate.val()==""){
+                            $.Notice.error('请选择查询的结束时间');
+                            return false;
+                        }
+                        var orgAddress = retrieve.$element.Fields.location.getValue();
+                        var orgName = orgAddress.names.toString().replace(/,/g,'');
+                        if(orgName==""){
+                            $.Notice.error('请选择地区');
+                            return false;
+//                            orgName = "福建省厦门市";
+//                            location = "350200";
+//                            self.$element.Fields.location.setValue(["福建省", "厦门市", "", ""]);
+                        }else{
+                            var keysArr = orgAddress.keys;
+                            var namesArr = orgAddress.names;
+                            for (var i = keysArr.length - 1;  i >0; i--) {
+                                if (keysArr[i] === "") {
+                                    keysArr.splice(i, 1);
+                                    namesArr.splice(i, 1);
+                                }
+                            }
+                            location = orgAddress.keys[orgAddress.keys.length-1];
+                        }
+                        $(".span-location").html(orgName);
+                        self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
+                    });
+
                     //趋势分析详情
                     retrieve.$addDetail.click(function () {
                         var url = '${contextRoot}/report/analysisList';
@@ -84,7 +143,7 @@
                     });
                     //左切换
                     $(".div-zuoqiehuan").on("click",function(){
-                        if(currentIndex==0){
+                        if(currentIndex==0 || chartData==null){
                             $.Notice.success('暂无更多数据');
                             return false;
                         }
@@ -93,7 +152,7 @@
                     });
                     //右切换
                     $(".div-youqiehuan").on("click",function(){
-                        if(currentIndex==(Object.keys(chartData.eventTimeData).length-1)){
+                        if((chartData!=null && currentIndex==(Object.keys(chartData.eventTimeData).length-1)) || chartData==null){
                             $.Notice.success('暂无更多数据');
                             return false;
                         }
@@ -104,7 +163,7 @@
                     $(".div-organization-content").on("click",".div-organization .div-hospital-item",function(){
                         var quotaId = $(".div-head").find(".div-item.active").attr("data-quotaId");
                         var orgCode = $(this).closest(".div-organization").attr("data-orgCode");
-                        var orgName = $(this).closest(".div-organization").attr("data-orgName");
+                        var orgName = $(".span-location").html()+$(this).closest(".div-organization").attr("data-orgName");
                         var url = '${contextRoot}/report/trendAnalysisDetail?location='+location+'&orgCode='+orgCode+'&orgName='+orgName+'&quotaId='+quotaId+'&startTime='+self.$startDate.val()+'&endTime='+self.$endDate.val();
                         $("#contentPage").load(url);
                     })
@@ -315,7 +374,7 @@
                     };
 
                     myChart.setOption(option);
-
+                    window.onresize = myChart.resize;
                 },
                 getCurrentMonthFirst:function(){
                     var date_ = new Date();

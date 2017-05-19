@@ -41,7 +41,7 @@
                             '{@/each} ';
 
     var defaults = {
-      placehoder: '请选择',
+      placehoder: '请选择地区',
       width: 240,
       tabData:[],
       groups: ['A-G', 'H-K', 'L-S', 'T-Z','其他'],
