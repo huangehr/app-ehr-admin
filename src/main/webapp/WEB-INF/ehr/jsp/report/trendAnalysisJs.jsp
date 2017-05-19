@@ -130,7 +130,21 @@
 
                     //趋势分析详情
                     retrieve.$addDetail.click(function () {
-                        var url = '${contextRoot}/report/analysisList';
+                        if(self.$startDate.val()==""){
+                            $.Notice.error('请选择查询的开始时间');
+                            return false;
+                        }
+                        if(self.$endDate.val()==""){
+                            $.Notice.error('请选择查询的结束时间');
+                            return false;
+                        }
+                        var orgAddress = retrieve.$element.Fields.location.getValue();
+                        var orgName = orgAddress.names.toString().replace(/,/g,'');
+                        if(orgName==""){
+                            $.Notice.error('请选择地区');
+                            return false;
+                        }
+                        var url = '${contextRoot}/report/analysisList?location='+location+'&orgName='+$(".span-location").html()+'&startTime='+self.$startDate.val()+'&endTime='+self.$endDate.val();
                         $("#contentPage").load(url);
                     });
 

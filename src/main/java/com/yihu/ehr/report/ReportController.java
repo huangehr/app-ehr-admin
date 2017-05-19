@@ -64,18 +64,15 @@ public class ReportController extends BaseUIController {
      * @return
      */
     @RequestMapping("analysisList")
-    public String addResources(Model model) {
+    public String addResources(Model model,String location,String orgName,String startTime,String endTime) {
+        model.addAttribute("location",location);
+        model.addAttribute("orgName",orgName);
+        model.addAttribute("startTime",startTime);
+        model.addAttribute("endTime",endTime);
         model.addAttribute("contentPage", "/report/analysisList");
         return "pageView";
     }
     
-    @RequestMapping("analysisListData")
-    @ResponseBody
-    public Object searchPatient(int page, int rows) {
-            String resultStr = "{\"successFlg\":true,\"pageSize\":15,\"currPage\":1,\"totalPage\":2,\"totalCount\":19,\"detailModelList\":[{\"RowId\":\"1\",\"Date\":\"4月1日\",\"Hospital\":\"海沧医院\",\"bizhi\":\"总体\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"2\",\"Date\":\"4月1日\",\"Hospital\":\"海沧医院\",\"bizhi\":\"同比\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"3\",\"Date\":\"4月1日\",\"Hospital\":\"海沧医院\",\"bizhi\":\"环比\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"4\",\"Date\":\"4月1日\",\"Hospital\":\"长庚医院\",\"bizhi\":\"总体\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"5\",\"Date\":\"4月1日\",\"Hospital\":\"长庚医院\",\"bizhi\":\"同比\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"6\",\"Date\":\"4月1日\",\"Hospital\":\"长庚医院\",\"bizhi\":\"环比\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"7\",\"Date\":\"4月2日\",\"Hospital\":\"海沧医院\",\"bizhi\":\"总体\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"8\",\"Date\":\"4月2日\",\"Hospital\":\"海沧医院\",\"bizhi\":\"同比\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"9\",\"Date\":\"4月2日\",\"Hospital\":\"海沧医院\",\"bizhi\":\"环比\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"10\",\"Date\":\"4月2日\",\"Hospital\":\"长庚医院\",\"bizhi\":\"总体\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"11\",\"Date\":\"4月2日\",\"Hospital\":\"长庚医院\",\"bizhi\":\"同比\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"},{\"RowId\":\"12\",\"Date\":\"4月2日\",\"Hospital\":\"长庚医院\",\"bizhi\":\"环比\",\"OverallQuantity\":\"50%\",\"DataSet\":\"50%\",\"DataElement\":\"50%\",\"Accuracy\":\"50%\",\"AllTimeliness\":\"50%\",\"InpatientTimeliness\":\"50%\",\"OutpatientTimeliness\":\"50%\"}],\"obj\":null,\"errorMsg\":null,\"errorCode\":0}";
-            return resultStr;
-    }
-
     //所有指标统计结果查询,初始化查询
     @RequestMapping("/getQcOverAllIntegrity")
     @ResponseBody
