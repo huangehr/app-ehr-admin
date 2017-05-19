@@ -102,7 +102,7 @@
 		        	var endTime   = self.$endDate.val();
 		        	tabelGrid     = retrieve.$table.ligerGrid($.LigerGridEx.config({
 				            url: '${contextRoot}/report/getQcQuotaDailyIntegrity',
-				            pageSize:20,
+				            usePager:false,
 				            allowHideColumn:false,
 				            height:500,
 				            rownumbers:true,
