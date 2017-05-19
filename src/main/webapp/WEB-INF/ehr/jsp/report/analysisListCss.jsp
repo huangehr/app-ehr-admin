@@ -15,7 +15,7 @@
     .div-item{width: 33%;height: 100%;border-right: 1px solid #dddddd;float:left;}
     .div-item:last-child{border-right:0;}
     .div-item.active{border: 2px solid #4DB2EE;}
-    .div-items  .div-item-content img{width: 42px;height: 42px;margin: 5px;}
+    .div-items  .div-item-content img{width: 30px;height: 30px;margin: 10px 5px;}
     .div-items  .div-item-content span{font-size: 1.6vw;vertical-align:middle;font-weight: bold;}
     .div-items  .div-item-content .div-item-type, .div-items  .div-item-content .div-item-count{text-align: center;padding-top: 10px;font-size: 16px;color: #666666;}
     .div-qsfx{color:#666666;margin:30px 20px;font-size: 16px;}

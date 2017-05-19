@@ -120,7 +120,7 @@
 				            pageSize:20,
 				            allowHideColumn:false,
 				            height:500,
-				            rownumbers:false,
+				            rownumbers:true,
 				            parms: {
 								location:location,
 								quotaId: quotaId,
@@ -143,7 +143,7 @@
 				                    { display: '整体数量',width: '9%', name: 'arIntegrity',
 					                    render: function (row) {
 					                    	var html = '';
-					                    	if(row.arIntegrity == 0){
+					                    	if(row.arIntegritySta == 0){
 					                    		html+='<span style="color:red">'+ row.arIntegrity + '</span>';
 					                    	}else{
 					                    		html+= row.arIntegrity;
@@ -153,7 +153,7 @@
 				                    { display: '数据集', width: '9%',name: 'dsIntegrity',
 					                    render: function (row) {
 					                    	var html = '';
-					                    	if(row.dsIntegrity == 0){
+					                    	if(row.dsIntegritySta == 0){
 					                    		html+='<span style="color:red">'+ row.dsIntegrity + '</span>';
 					                    	}else{
 					                    		html+= row.dsIntegrity;
@@ -163,7 +163,7 @@
 				                    { display: '数据元',width: '9%', name: 'mdIntegrity',
 					                    render: function (row) {
 					                    	var html = '';
-					                    	if(row.mdIntegrity == 0){
+					                    	if(row.mdIntegritySta == 0){
 					                    		html+='<span style="color:red">'+ row.mdIntegrity + '</span>';
 					                    	}else{
 					                    		html+= row.mdIntegrity;
@@ -172,13 +172,23 @@
 					                    }}
 				                ]
 				                },
-				                { display: '准确性', name: 'mdAccuracy', width: '7%'},
+				                { display: '准确性', name: 'mdAccuracy', width: '7%',
+									render: function (row) {
+					                    	var html = '';
+					                    	if(row.arTimelySta == 0){
+					                    		html+='<span style="color:red">'+ row.arTimely + '</span>';
+					                    	}else{
+					                    		html+= row.arTimely;
+					                    	}
+					                    	return html;
+					                    }
+								},
 				                { display: '及时性', columns:
 				                [
 				                    { display: '全部及时性', width: '9%',name: 'arTimely',
 					                    render: function (row) {
 					                    	var html = '';
-					                    	if(row.arTimely == 0){
+					                    	if(row.arTimelySta == 0){
 					                    		html+='<span style="color:red">'+ row.arTimely + '</span>';
 					                    	}else{
 					                    		html+= row.arTimely;
@@ -188,7 +198,7 @@
 				                    { display: '住院病人及时性',width: '9%', name: 'hpTimely',
 					                    render: function (row) {
 					                    	var html = '';
-					                    	if(row.hpTimely == 0){
+					                    	if(row.hpTimelySta == 0){
 					                    		html+='<span style="color:red">'+ row.hpTimely + '</span>';
 					                    	}else{
 					                    		html+= row.hpTimely;
@@ -198,7 +208,7 @@
 				                    { display: '门诊病人及时性',width: '9%', name: 'opTimely',
 					                    render: function (row) {
 					                    	var html = '';
-					                    	if(row.opTimely == 0){
+					                    	if(row.opTimelySta == 0){
 					                    		html+='<span style="color:red">'+ row.opTimely + '</span>';
 					                    	}else{
 					                    		html+= row.opTimely;
