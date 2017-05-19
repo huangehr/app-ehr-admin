@@ -3,7 +3,11 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-
+<!-- ####### Title设置 ####### -->
+<div class="div-title"><span class="span-location">${orgName}</span>趋势分析数据</div>
+<input value="${location}" class="f-dn" id="inp_location"/>
+<input value="${startTime}" class="f-dn" id="inp_startTime"/>
+<input value="${endTime}" class="f-dn" id="inp_endTime"/>
 <!-- ####### 页面部分 ####### -->
 <div class="adpater-plan-modal">
       <div class="body-head" align="left" style="margin-left: 10px; margin-top: 10px">

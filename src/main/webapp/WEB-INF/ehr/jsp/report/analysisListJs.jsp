@@ -39,8 +39,8 @@
                             $(".div-head").find(".div-item.active").trigger("click");
                         }
                     }});
-                    self.$startDate.ligerDateEditor("setValue",self.getCurrentMonthFirst());
-                    self.$endDate.ligerDateEditor("setValue",self.getCurrentDate());
+                    self.$startDate.ligerDateEditor("setValue",$("#inp_startTime").val());
+                    self.$endDate.ligerDateEditor("setValue",$("#inp_endTime").val());
                     self.$element.show();
                     self.$element.attrScan();
 			        self.bindEvents();
@@ -83,21 +83,6 @@
                         }
                     });
                 },
-                getCurrentMonthFirst:function(){
-                    var date_ = new Date();
-                    var year = date_.getFullYear();
-                    var month = date_.getMonth() + 1<10?"0"+parseInt(date_.getMonth() + 1):parseInt(date_.getMonth() + 1);
-                    var firstdate = year + '-' + month + '-01';
-                    return firstdate;
-                },
-                getCurrentDate:function(){
-                    var date_ = new Date();
-                    var year = date_.getFullYear();
-                    var month = date_.getMonth() + 1<10?"0"+parseInt(date_.getMonth() + 1):parseInt(date_.getMonth() + 1);
-                    var day = date_.getDate()<10?"0"+date_.getDate():date_.getDate();
-                    var currentDate = year + '-' + month + '-' + day;
-                    return currentDate;
-                },
                 getExl:function(){
                 	var self = this;
                     var dataModel = $.DataModel.init();
@@ -112,7 +97,7 @@
                 },
 		        drawTable:function(quotaId){
 		        	var self = this;
-		        	var location  = "350200";
+		        	var location  = $("#inp_location").val();
 		        	var startTime = self.$startDate.val();
 		        	var endTime   = self.$endDate.val();
 		        	tabelGrid     = retrieve.$table.ligerGrid($.LigerGridEx.config({
