@@ -35,4 +35,5 @@
     .div-youqiehuan:active,.div-youqiehuan:hover{background: url(${staticRoot}/images/youqiehuan_btn_pre.png) no-repeat;cursor: pointer}
     #chart-main{width: 100%;height: 250px;position: relative;z-index: 10;}
     .div-organization{position: relative;}
+    .m-combo-dropdown{width:200px;}
 </style>
