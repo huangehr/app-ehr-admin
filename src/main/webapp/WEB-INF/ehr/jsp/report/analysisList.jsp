@@ -3,9 +3,17 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-
+<!-- ####### Title设置 ####### -->
+<div class="div-title"><span class="span-location">${orgName}</span>趋势分析数据</div>
+<input value="${location}" class="f-dn" id="inp_location"/>
+<input value="${startTime}" class="f-dn" id="inp_startTime"/>
+<input value="${endTime}" class="f-dn" id="inp_endTime"/>
 <!-- ####### 页面部分 ####### -->
+<a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/report/initial');" class="f-fwb" style="position: absolute; top: 30px;">返回上一层 </a>
 <div class="adpater-plan-modal">
+      <%--<div class="body-head" align="left" style="margin-left: 10px; margin-top: 10px">--%>
+        <%--<a id="btn_back" class="f-fwb">返回上一层 </a>--%>
+      <%--</div>--%>
   <!-- ####### 查询条件部分 ####### -->
   <div class="m-retrieve-area f-dn f-pr m-form-inline condition" data-role-form>
     <div class="m-form-group f-mt10">
@@ -83,16 +91,16 @@
   </div>
 </div>
 
-<div style="height:74px;border-left: 0;border-right:0;position: relative;">
+<!-- <div style="height:74px;border-left: 0;border-right:0;position: relative;">
   <div class="div-group">
     <div class="div-btn active">日</div>
     <div class="div-btn">周</div>
     <div  class="div-btn">月</div>
   </div>
-</div>
+</div> -->
 <div class="div-analysis-title">
 	<span class="f-ff1 f-fs16 f-fl title">分析列表</span>
-	<img class="f-fr icon" src="/ehr/develop/images/xiazaidayin_icon.png">
+	<img id="downExl" class="f-fr icon" src="/ehr/develop/images/xiazaidayin_icon.png">
 	<span class="f-ff1 f-fs14 f-fr tips">提示：警示的红色字体代表未达标的</span>
 </div>
 <div id="table_analysis"></div>

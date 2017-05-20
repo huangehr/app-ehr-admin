@@ -12,7 +12,7 @@
             var chartData = null;
             var recordCount = 10;//一页显示几条数据
             var currentIndex = 0;//第一页
-            var location = "350200";
+            var isInit = true;//是否是初始化加载
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
@@ -25,139 +25,66 @@
                 $startDate:$("#inp_start_date"),
                 $endDate:$("#inp_end_date"),
                 $addDetail: $('#btn_detail'),
-                $location: $('#inp_orgArea'),
-                $searchBtn: $('#btn_search'),
                 init: function () {
                     var self = this;
                     self.$startDate.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
-//                            if(value){
-//                                self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
-//                            }
+                            if(value){
+                                self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
+                            }
                     }});
                     self.$endDate.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
-//                        if(value){
-//                            self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
-//                        }
+                        if(value){
+                            self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
+                        }
                     }});
-                    self.$startDate.ligerDateEditor("setValue",self.getCurrentMonthFirst());
-                    self.$endDate.ligerDateEditor("setValue",self.getCurrentDate());
-                    self.$location.addressDropdown({
-                        tabsData: [
-                            {
-                                name: '省份',
-                                code: 'id',
-                                value: 'name',
-                                url: '${contextRoot}/address/getParent',
-                                params: {level: '1'}
-                            },
-                            {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                            {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'}
-                        ],
-                        placeholder:"请选择地区"
-                    });
+                    self.$startDate.ligerDateEditor("setValue",$("#inp_startTime").val());
+                    self.$endDate.ligerDateEditor("setValue",$("#inp_endTime").val());
+                    $(".div-title").find(".span-location").html($("#inp_orgName").val());
                     self.$element.show();
                     self.$element.attrScan();
-                   setTimeout(function(){
-                       self.$element.Fields.location.setValue(["福建省", "厦门市", "", ""]);
-                   },500);
                     self.bindEvents();
                     self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
                 },
                 getQcOverAllIntegrity:function(){
                     var self = this;
                     var dataModel = $.DataModel.init();
-                    dataModel.createRemote('${contextRoot}/report/getQcOverAllIntegrity', {
-                        data: {location: location,startTime:self.$startDate.val(),endTime:self.$endDate.val()},
+                    dataModel.createRemote('${contextRoot}/report/getQcOverAllOrgIntegrity', {
+                        data: {location: $("#inp_location").val(),orgCode:$("#inp_orgCode").val(),startTime:self.$startDate.val(),endTime:self.$endDate.val()},
                         success: function (data) {
                             if(data.successFlg){
                                 var list = data.detailModelList;
+                                var activeIndex = 0;
                                 for(var i=0;i<list.length;i++){
                                     var item =  $(".div-item").eq(i);
-                                    item.attr("data-quotaId",list[i].quotaId).attr("data-index",i);;
+                                    if($("#inp_quotaId").val()==list[i].quotaId && isInit){
+                                        activeIndex = i;
+                                        isInit = false;
+                                    }
+                                    item.attr("data-quotaId",list[i].quotaId).attr("data-index",i);
                                     item.find("span").html(list[i].value);
                                     item.find(".div-item-count").html(list[i].realNum+"/"+list[i].totalNum);
                                 }
-                                var activeIndex = 0;
                                 if($(".div-head").find(".div-item.active").length>0){
                                     activeIndex = $(".div-head").find(".div-item.active").attr("data-index");
                                 }
                                 $(".div-head").find(".div-item").eq(activeIndex).trigger("click");
-                            }else{
-                                $(".div-head").find(".div-item").each(function(index,ele){
-                                    $(ele).find("span").html("0.00%");
-                                    $(ele).find(".div-item-count").html("0/0");
-                                })
-                                self.drawChart([],[],[],[]);
-                                $(".div-organization-content").html("");
-                                chartData = null;
                             }
                         }
                     });
                 },
                 bindEvents: function () {
                     var self = this;
-                    self.$searchBtn.click(function () {
-                        if(self.$startDate.val()==""){
-                            $.Notice.error('请选择查询的开始时间');
-                            return false;
-                        }
-                        if(self.$endDate.val()==""){
-                            $.Notice.error('请选择查询的结束时间');
-                            return false;
-                        }
-                        var orgAddress = retrieve.$element.Fields.location.getValue();
-                        var orgName = orgAddress.names.toString().replace(/,/g,'');
-                        if(orgName==""){
-                            $.Notice.error('请选择地区');
-                            return false;
-//                            orgName = "福建省厦门市";
-//                            location = "350200";
-//                            self.$element.Fields.location.setValue(["福建省", "厦门市", "", ""]);
-                        }else{
-                            var keysArr = orgAddress.keys;
-                            var namesArr = orgAddress.names;
-                            for (var i = keysArr.length - 1;  i >0; i--) {
-                                if (keysArr[i] === "") {
-                                    keysArr.splice(i, 1);
-                                    namesArr.splice(i, 1);
-                                }
-                            }
-                            location = orgAddress.keys[orgAddress.keys.length-1];
-                        }
-                        $(".span-location").html(orgName);
-                        self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
-                    });
-
-                    //趋势分析详情
-                    retrieve.$addDetail.click(function () {
-                        if(self.$startDate.val()==""){
-                            $.Notice.error('请选择查询的开始时间');
-                            return false;
-                        }
-                        if(self.$endDate.val()==""){
-                            $.Notice.error('请选择查询的结束时间');
-                            return false;
-                        }
-                        var orgAddress = retrieve.$element.Fields.location.getValue();
-                        var orgName = orgAddress.names.toString().replace(/,/g,'');
-                        if(orgName==""){
-                            $.Notice.error('请选择地区');
-                            return false;
-                        }
-                        var url = '${contextRoot}/report/analysisList?location='+location+'&orgName='+$(".span-location").html()+'&startTime='+self.$startDate.val()+'&endTime='+self.$endDate.val();
-                        $("#contentPage").load(url);
-                    });
 
                     $(".div-head").on("click",".div-item",function(){
                         var quotaId = $(this).attr("data-quotaId");
                         $(".div-head").find(".div-item").removeClass("active");
                         $(this).addClass("active");
+                        debugger
                         self.getChartData(quotaId);//趋势分析 -按区域列表查询,按日初始化查询
-                        self.getQcQuotaByLocation(quotaId);//根据地区、期间查询各机构某项指标的值
                     });
                     //左切换
                     $(".div-zuoqiehuan").on("click",function(){
-                        if(currentIndex==0 || chartData==null){
+                        if(currentIndex==0){
                             $.Notice.success('暂无更多数据');
                             return false;
                         }
@@ -166,7 +93,7 @@
                     });
                     //右切换
                     $(".div-youqiehuan").on("click",function(){
-                        if((chartData!=null && currentIndex==(Object.keys(chartData.eventTimeData).length-1)) || chartData==null){
+                        if(currentIndex==(Object.keys(chartData.eventTimeData).length-1)){
                             $.Notice.success('暂无更多数据');
                             return false;
                         }
@@ -175,18 +102,15 @@
                     });
 
                     $(".div-organization-content").on("click",".div-organization .div-hospital-item",function(){
-                        var quotaId = $(".div-head").find(".div-item.active").attr("data-quotaId");
-                        var orgCode = $(this).closest(".div-organization").attr("data-orgCode");
-                        var orgName = $(".span-location").html()+$(this).closest(".div-organization").attr("data-orgName");
-                        var url = '${contextRoot}/report/trendAnalysisDetail?location='+location+'&orgCode='+orgCode+'&orgName='+orgName+'&quotaId='+quotaId+'&startTime='+self.$startDate.val()+'&endTime='+self.$endDate.val();
-                        $("#contentPage").load(url);
+                        $.Notice.waitting('加载中...');
                     })
                 },
                 getChartData:function(quotaId){
+                    debugger
                     var self = retrieve;
                     var dataModel = $.DataModel.init();
-                    dataModel.createRemote('${contextRoot}/report/getQcQuotaIntegrity', {
-                        data: {location: location,quotaId:quotaId,startTime:self.$startDate.val(),endTime:self.$endDate.val()},
+                    dataModel.createRemote('${contextRoot}/report/getQcQuotaOrgIntegrity', {
+                        data: {orgCode:$("#inp_orgCode").val(),quotaId:quotaId,startTime:self.$startDate.val(),endTime:self.$endDate.val()},
                         success: function (data) {
                             if(data.successFlg){
                                 var list = data.detailModelList;
@@ -213,32 +137,6 @@
                                 }
                                 chartData = {eventTimeData:eventTimeData,valueData:valueData,anData:anData,momData:momData};
 
-                            }
-                        }
-                    });
-                },
-                getQcQuotaByLocation:function(quotaId){
-                    var self = retrieve;
-                    var dataModel = $.DataModel.init();
-                    dataModel.createRemote('${contextRoot}/report/getQcQuotaByLocation', {
-                        data: {location: location,quotaId:quotaId,startTime:self.$startDate.val(),endTime:self.$endDate.val()},
-                        success: function (data) {
-                            if(data.successFlg) {
-                                var list = data.detailModelList;
-                                var resultStr = "";
-                                for(var i=0;i<list.length;i++){
-                                    var item = list[i];
-                                    resultStr +='<div class="f-ml20 div-organization f-mb20" data-orgCode="'+item.orgCode+'" data-orgName="'+item.orgName+'">'+
-                                                    '<div class="div-hospital-name">'+
-                                                         '<p>'+item.orgName+'</p>'+
-                                                    '</div>'+
-                                                    '<div class="div-hospital-item">'+
-                                                        '<div class="l-gq-bg" style="width: '+item.value+';"></div>'+
-                                                        '<div class="l-gq-value">'+item.value+'('+item.realNum+'/'+item.totalNum+')</div>'+
-                                                    '</div>'+
-                                                '</div>';
-                                }
-                                $(".div-organization-content").html(resultStr);
                             }
                         }
                     });

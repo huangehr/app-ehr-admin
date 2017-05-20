@@ -550,6 +550,17 @@
                 },
                 </sec:authorize>
 
+                // 安全管理中心 - 日志管理
+                <sec:authorize url="/logManager/initial">
+                {
+                    id: 43,
+                    pid: 4,
+                    level:2,
+                    text:  '<spring:message code="title.log.manage"/>',
+                    url: '${contextRoot}/logManager/initial'
+                },
+                </sec:authorize>
+
                 // 配置管理中心
                 <sec:authorize url="Ehr_Setting_Centre">
                 {
