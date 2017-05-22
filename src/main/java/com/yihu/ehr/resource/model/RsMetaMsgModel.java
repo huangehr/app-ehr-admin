@@ -57,10 +57,10 @@ public class RsMetaMsgModel extends ExcelUtil implements Validation {
             valid = 0;
         }
 
-        if(!RegUtil.regCode(stdCode)){
-            addErrorMsg("stdCode", "只允许输入数字、英文、小数点与下划线！");
-            valid = 0;
-        }
+//        if(!RegUtil.regCode(stdCode)){
+//            addErrorMsg("stdCode", "只允许输入数字、英文、小数点与下划线！");
+//            valid = 0;
+//        }
 
         if(!RegUtil.regLen(name)){
             valid = 0;

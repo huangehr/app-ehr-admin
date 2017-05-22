@@ -32,10 +32,11 @@ public class RsDictionaryMsg extends ExcelUtil implements Validation {
     @Override
     public int validate(Map<String, Set> repeatMap) throws Exception {
         int rs = 1;
-        if(!RegUtil.regCode(code)){
-            rs = 0;
-            addErrorMsg("code", RegUtil.codeMsg);
-        }else if(!repeatMap.get("code").add(code)){
+//        if(!RegUtil.regCode(code)){
+//            rs = 0;
+//            addErrorMsg("code", RegUtil.codeMsg);
+//        }else
+        if(!repeatMap.get("code").add(code)){
             rs = 0;
             addErrorMsg("code", "代码重复！" );
         }
