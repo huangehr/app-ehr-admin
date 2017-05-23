@@ -1,6 +1,5 @@
 package com.yihu.ehr.report;
 
-import com.yihu.ehr.agModel.report.MQcDailyReportResultDetailModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -242,37 +241,37 @@ public class ReportController extends BaseUIController {
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop qcEnvelop = getEnvelop(envelopStr);
 
-            List<MQcDailyReportResultDetailModel> qcModelList = (List<MQcDailyReportResultDetailModel>)getEnvelopList(qcEnvelop.getDetailModelList(),new ArrayList<MQcDailyReportResultDetailModel>(),MQcDailyReportResultDetailModel.class) ;
-            //写excel
-            WritableWorkbook wwb = Workbook.createWorkbook(os);
-            //创建Excel工作表 指定名称和位置
-            WritableSheet ws = wwb.createSheet("质控分析明细",0);
-            addStaticCell(ws);//添加固定信息，题头等
-            //添加字典项信息
-            WritableCellFormat wc = new WritableCellFormat();
-            wc.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, Colour.SKY_BLUE);//边框
-            MQcDailyReportResultDetailModel qc=null;
-            for(int i=1;i<qcModelList.size();i++) {
-                qc = (MQcDailyReportResultDetailModel)qcModelList.get(i);
-                //添加列表明细
-                addCell(ws,0,i,qc.getEventTime(),wc);//时间
-                addCell(ws,1,i,qc.getOrgName(),wc);//机构名称
-                addCell(ws,2,i,qc.getScaleType(),wc);//比例名称
-                addCell(ws,3,i,qc.getArIntegrity(),wc);//整体数量完整性
-                addCell(ws,4,i,qc.getDsIntegrity(),wc);//数据集完整性
-                addCell(ws,5,i,qc.getMdIntegrity(),wc);//数据元完整性
-                addCell(ws,6,i,qc.getMdAccuracy(),wc);//准确性
-                addCell(ws,7,i,qc.getArTimely(),wc);//全部及时性
-                addCell(ws,8,i,qc.getHpTimely(),wc);//住院病人及时性
-                addCell(ws,9,i,qc.getOpTimely(),wc);//门诊病人及时性
+//            List<MQcDailyReportResultDetailModel> qcModelList = (List<MQcDailyReportResultDetailModel>)getEnvelopList(qcEnvelop.getDetailModelList(),new ArrayList<MQcDailyReportResultDetailModel>(),MQcDailyReportResultDetailModel.class) ;
+//            //写excel
+//            WritableWorkbook wwb = Workbook.createWorkbook(os);
+//            //创建Excel工作表 指定名称和位置
+//            WritableSheet ws = wwb.createSheet("质控分析明细",0);
+//            addStaticCell(ws);//添加固定信息，题头等
+//            //添加字典项信息
+//            WritableCellFormat wc = new WritableCellFormat();
+//            wc.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, Colour.SKY_BLUE);//边框
+//            MQcDailyReportResultDetailModel qc=null;
+//            for(int i=1;i<qcModelList.size();i++) {
+//                qc = (MQcDailyReportResultDetailModel)qcModelList.get(i);
+//                //添加列表明细
+//                addCell(ws,0,i,qc.getEventTime(),wc);//时间
+//                addCell(ws,1,i,qc.getOrgName(),wc);//机构名称
+//                addCell(ws,2,i,qc.getScaleType(),wc);//比例名称
+//                addCell(ws,3,i,qc.getArIntegrity(),wc);//整体数量完整性
+//                addCell(ws,4,i,qc.getDsIntegrity(),wc);//数据集完整性
+//                addCell(ws,5,i,qc.getMdIntegrity(),wc);//数据元完整性
+//                addCell(ws,6,i,qc.getMdAccuracy(),wc);//准确性
+//                addCell(ws,7,i,qc.getArTimely(),wc);//全部及时性
+//                addCell(ws,8,i,qc.getHpTimely(),wc);//住院病人及时性
+//                addCell(ws,9,i,qc.getOpTimely(),wc);//门诊病人及时性
+//
+//            }
 
-            }
 
 
-
-            //写入工作表
-            wwb.write();
-            wwb.close();
+//            //写入工作表
+//            wwb.write();
+//            wwb.close();
             os.flush();
             os.close();
         } catch (Exception e) {
