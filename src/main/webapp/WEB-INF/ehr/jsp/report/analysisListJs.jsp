@@ -21,6 +21,7 @@
 		
 		    /* *************************** 模块初始化 ***************************** */
 		    retrieve = {
+		    	$location:$('#inp_location'),
 		        $element: $('.m-retrieve-area'),
 		        $startDate:$("#inp_start_date"),
 		        $endDate:$("#inp_end_date"),
@@ -60,15 +61,15 @@
                         self.drawTable(quotaId);//趋势分析 -按区域列表查询,按日初始化查询
                     });
                     //下载数据
-                    // retrieve.$downExl.click(function(){
-                    // 	self.getExl();
-                    // });
+                    retrieve.$downExl.click(function(){
+                     	self.getExl();
+                    });
 		        },
 		        getQcOverAllIntegrity:function(){
                     var self = this;
                     var dataModel = $.DataModel.init();
                     dataModel.createRemote('${contextRoot}/report/getQcOverAllIntegrity', {
-                        data: {location: "350200",startTime:self.$startDate.val(),endTime:self.$endDate.val()},
+                        data: {location: self.$location.val(),startTime:self.$startDate.val(),endTime:self.$endDate.val()},
                         success: function (data) {
                             if(data.successFlg){
                                 var list = data.detailModelList;
@@ -85,15 +86,7 @@
                 },
                 getExl:function(){
                 	var self = this;
-                    var dataModel = $.DataModel.init();
-                    dataModel.createRemote('', {
-                        data: {},
-                        success: function (data) {
-                            if(data.successFlg){
-                                
-                            }
-                        }
-                    });
+                    window.open("${contextRoot}/report/exportToExcel?location="+self.$location.val()+"&startTime="+self.$startDate.val()+"&endTime="+self.$endDate.val(),"分析列表明细");
                 },
 		        drawTable:function(quotaId){
 		        	var self = this;
