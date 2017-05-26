@@ -35,8 +35,8 @@ public class OrgSaasController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("orgCode","01114532-1");
-        params.put("type","1");
+        params.put("orgCode",orgCode);
+        params.put("type",type);
         try{
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
