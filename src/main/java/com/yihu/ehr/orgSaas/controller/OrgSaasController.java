@@ -30,7 +30,7 @@ public class OrgSaasController {
 
     @RequestMapping("/getOrgSaas")
     @ResponseBody
-    public String getParent(String orgCode,String type) {
+    public Object getParent(String orgCode,String type) {
         String url = "/OrgSaasByOrg";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -39,22 +39,22 @@ public class OrgSaasController {
         params.put("type",type);
         try{
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//            ObjectMapper mapper = new ObjectMapper();
-//            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
-//            if (envelop.isSuccessFlg()) {
-//                result.setObj(envelop.getDetailModelList());
-//                result.setSuccessFlg(true);
-////                return result;
-//            }else{
-//                result.setSuccessFlg(false);
-////                return result;
-//            }
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            if (envelop.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+                result.setDetailModelList(envelop.getDetailModelList());
+                return result;
+            }else{
+                result.setSuccessFlg(false);
+                return result;
+            }
         } catch (Exception e) {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
-            return resultStr;
+            return result;
         }
-        return resultStr;
+
     }
 
 
