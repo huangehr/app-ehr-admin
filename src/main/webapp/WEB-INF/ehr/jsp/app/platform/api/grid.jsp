@@ -9,11 +9,11 @@
 <div>
 
     <div id="div_wrapper">
-		<div id="conditionArea" class="f-mb10 f-mr10" align="right">
+		<%--<div id="conditionArea" class="f-mb10 f-mr10" align="right">
             <div class="body-head f-h30" align="left" style="line-height: 30px">
                 <a id="btn_back" class="f-fwb">返回上一层 </a>
             </div>
-        </div>
+        </div>--%>
         <div id="grid_content" style="width: 100%">
             <!--   属性菜单 -->
             <div id="div_left" style=" width:360px;float: left;">
