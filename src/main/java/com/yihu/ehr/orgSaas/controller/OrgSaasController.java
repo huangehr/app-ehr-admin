@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -30,30 +29,32 @@ public class OrgSaasController {
     private String comUrl;
 
     @RequestMapping("/getOrgSaas")
-    public List getParent(String orgCode, String type) {
+    @ResponseBody
+    public String getParent(String orgCode,String type) {
         String url = "/OrgSaasByOrg";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("orgCode",orgCode);
         params.put("type",type);
-        Envelop envelop =new Envelop();
         try{
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            ObjectMapper mapper = new ObjectMapper();
-            envelop = mapper.readValue(resultStr, Envelop.class);
-            if (envelop.isSuccessFlg()) {
-                result.setObj(envelop.getDetailModelList());
-                result.setSuccessFlg(true);
-            }else{
-                result.setSuccessFlg(false);
-            }
+//            ObjectMapper mapper = new ObjectMapper();
+//            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+//            if (envelop.isSuccessFlg()) {
+//                result.setObj(envelop.getDetailModelList());
+//                result.setSuccessFlg(true);
+////                return result;
+//            }else{
+//                result.setSuccessFlg(false);
+////                return result;
+//            }
         } catch (Exception e) {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
-
+            return resultStr;
         }
-        return envelop.getDetailModelList();
+        return resultStr;
     }
 
 
