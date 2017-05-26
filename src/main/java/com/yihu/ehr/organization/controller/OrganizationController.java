@@ -1,24 +1,18 @@
 package com.yihu.ehr.organization.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.adapter.service.PageParms;
-import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgDeptListModel;
 import com.yihu.ehr.agModel.org.OrgDeptModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.model.org.MOrgDept;
-import com.yihu.ehr.patient.controller.PatientController;
-import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.patient.controller.PatientController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.web.RestTemplates;
-import com.yihu.ehr.util.encode.*;
 import com.yihu.ehr.util.log.LogService;
-import io.swagger.annotations.ApiOperation;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.web.RestTemplates;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +22,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,7 +37,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Base64;
 import java.util.*;
 
 /**
@@ -99,6 +91,15 @@ public class OrganizationController extends BaseUIController {
         model.addAttribute("mode", mode);
         model.addAttribute("contentPage", "organization/orgCreateDialog");
         return "generalView";
+    }
+
+    @RequestMapping("dialog/orgDataGrant")
+    public String orgDataGrantDialog(Model model,String orgCode, String orgTypeName, String fullName) {
+        model.addAttribute("orgCode", orgCode);
+        model.addAttribute("orgTypeName", orgTypeName);
+        model.addAttribute("fullName", fullName);
+        model.addAttribute("contentPage", "organization/orgGrantInfoDialog");
+        return "simpleView";
     }
 
     @RequestMapping(value = "searchOrgs", produces = "text/html;charset=UTF-8")
