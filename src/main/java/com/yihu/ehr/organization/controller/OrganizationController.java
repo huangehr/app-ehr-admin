@@ -2,7 +2,6 @@ package com.yihu.ehr.organization.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
-import com.yihu.ehr.agModel.org.OrgDeptListModel;
 import com.yihu.ehr.agModel.org.OrgDeptModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
@@ -563,76 +562,5 @@ public class OrganizationController extends BaseUIController {
         return url;
     }
 
-    //获取机构部门树
-    @RequestMapping("/getAllOrgAndDepts")
-    @ResponseBody
-    public Envelop getAllOrgAndDepts() {
-        try {
-            String searchParm="";
-
-            Envelop envelop = new Envelop();
-            Map<String, Object> params = new HashMap<>();
-            //所有机构
-            String orgUrl = "/organizations/getAllOrgs";
-            String orgStr = HttpClientUtil.doGet(comUrl + orgUrl, username, password);
-            List<OrgModel> orgList = toModel(orgStr, Envelop.class).getDetailModelList();
-            //获取所有部门
-            String deptUrl = "/orgDept/getAllOrgDepts";
-            String deptStr = HttpClientUtil.doGet(comUrl + deptUrl, username, password);
-            List<OrgDeptModel> deptList = toModel(deptStr, Envelop.class).getDetailModelList();
-
-            OrgModel orgModel=null;
-            Map<String, String> orgMap = new HashedMap();
-            if (null != orgList &&orgList.size()>0) {
-                for (int i=0;i<orgList.size();i++) {
-                    orgModel = toModel(toJson(orgList.get(i)), OrgModel.class);
-                    orgMap.put(orgModel.getId().toString(), orgModel.getFullName());
-
-                }
-            }
-            OrgDeptModel orgDeptModel=null;
-            Map<String, OrgDeptListModel> orgModelMap = new HashedMap();
-            if (null != deptList && deptList.size() > 0) {
-                for (int i=0;i<deptList.size();i++) {
-                     orgDeptModel=toModel(toJson(deptList.get(i)), OrgDeptModel.class);
-                    if (null != orgModelMap.get(orgDeptModel.getOrgId())) {
-                        OrgDeptListModel od=orgModelMap.get(orgDeptModel.getOrgId());
-                        OrgDeptModel om=new OrgDeptModel();
-                        om.setCode(orgDeptModel.getCode());
-                        om.setName(orgDeptModel.getName());
-                        od.getOrgDept().add(om);
-                    }else{
-                        OrgDeptListModel od=new OrgDeptListModel();
-                        od.setOrgId(orgDeptModel.getOrgId());
-                        od.setOrgName(orgMap.get(orgDeptModel.getOrgId()));
-                        List<OrgDeptModel> list=new ArrayList<>();
-                        OrgDeptModel om=new OrgDeptModel();
-                        om.setCode(orgDeptModel.getCode());
-                        om.setName(orgDeptModel.getName());
-                        list.add(om);
-                        od.setOrgDept(list);
-                        orgModelMap.put(od.getOrgId(),od);
-                    }
-                }
-            }
-            List<OrgDeptListModel> modelList = new ArrayList<OrgDeptListModel>();
-            if(null!=orgModelMap&&orgModelMap.size()>0){
-                Iterator it = orgModelMap.keySet().iterator();
-                while (it.hasNext()) {
-                    String key = it.next().toString();
-                    modelList.add(orgModelMap.get(key));
-                }
-            }
-
-            envelop.setDetailModelList(modelList);
-            envelop.setSuccessFlg(true);
-            return envelop;
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-            return failedSystem();
-        }
-    }
 
 }
