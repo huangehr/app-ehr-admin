@@ -655,6 +655,17 @@
                 },
                 </sec:authorize>
 
+                // 6-2 - 单个机构统计数据
+                <sec:authorize url="Ehr_Patients">
+                {
+                    id: 62,
+                    pid: 6,
+                    level:2,
+                    text: '<spring:message code="title.trend.analysisLs"/>',
+                    url: '${contextRoot}/report/initialLs'
+                },
+                </sec:authorize>
+
             ],
 
             // 一级菜单图标

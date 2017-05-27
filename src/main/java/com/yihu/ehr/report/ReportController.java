@@ -1,6 +1,7 @@
 package com.yihu.ehr.report;
 
 import com.yihu.ehr.agModel.report.MQcDailyReportResultDetailModel;
+import com.yihu.ehr.agModel.report.QcDailyStorageModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -314,6 +315,34 @@ public class ReportController extends BaseUIController {
         }
     }
 
+
+
+    /**
+     * 临时页
+     * @param model
+     * @return
+     */
+    @RequestMapping("initialLs")
+    public String initialLs(Model model) {
+        model.addAttribute("contentPage", "/report/ls/orgAnalysisList");
+
+        String url = "/report/qcDailyStatisticsStorageByDate";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        try {
+            params.put("orgCode","01114598-7");
+            params.put("startDate","2016-06-30");
+            params.put("endDate","2016-07-02");
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop qcEnvelop = getEnvelop(resultStr);
+            List<QcDailyStorageModel>  qcDailyStorageModelList = qcEnvelop.getDetailModelList();
+            model.addAttribute("qcDailyStorageModelList",qcDailyStorageModelList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "simpleView";
+    }
 
 
 }
