@@ -82,7 +82,7 @@
 										$("#div_configFun_featrue_grid").html(html);
 										$("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
 										$("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide();
-										$(".div-grant-btn.quyu").attr("data-saved","true");
+										$(".div-grant-btn.div-quyu").attr("data-saved","true");
 									},300);
 								}else{//机构数据
 									setTimeout(function(){
@@ -90,7 +90,7 @@
 										$("#div_configFun_featrue_org_grid").html(html);
 										$("#div_configFun_featrue_org_grid .l-box.l-checkbox").hide();
 										$("#div_configFun_featrue_org_grid .l-checkbox-unchecked").closest("li").hide();
-										$(".div-grant-btn.jigou").attr("data-saved","true");
+										$(".div-grant-btn.div-jigou").attr("data-saved","true");
 									},300)
 								}
 
@@ -119,7 +119,8 @@
 										var html = $("#div_function_featrue_grid").html();
 										$("#div_configFun_featrue_grid").html(html).show();
 										$("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
-										$("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide()
+										$("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide();
+										$("#div_configFun_featrue_grid .l-checkbox-checked").closest("li").show();
 									}, 300);
 
 									$("#div_function_featrue_grid li div span ,#div_configFun_featrue_grid li div span").css({
@@ -128,6 +129,7 @@
 									});
 								}else{//加载机构数据
 									$("#div_configFun_featrue_org_grid").hide();
+									debugger
 									functionFeatrueType[1].setData(data.detailModelList);
 									//加载区域右树
 									functionFeatrueRigthType[1] = funRightEle[1].ligerSearchTree({
@@ -148,7 +150,8 @@
 										var html = $("#div_function_featrue_org_grid").html();
 										$("#div_configFun_featrue_org_grid").html(html).show();
 										$("#div_configFun_featrue_org_grid .l-box.l-checkbox").hide();
-										$("#div_configFun_featrue_org_grid .l-checkbox-unchecked").closest("li").hide()
+										$("#div_configFun_featrue_org_grid .l-checkbox-unchecked").closest("li").hide();
+										$("#div_configFun_featrue_org_grid .l-checkbox-checked").closest("li").show();
 									}, 300);
 
 									$("#div_function_featrue_org_grid li div span ,#div_configFun_featrue_org_grid li div span").css({
@@ -173,29 +176,31 @@
 					var self = this;
 					//切换区域和机构
 					self.$divGrantBtn.click(function(){
-						var isQuyu = $(this).hasClass("div-quyu");
-						$(".div-grant-btn").removeClass("active");
-						$(this).addClass("active");
-						if(isQuyu){//显示区域
-							$(".div-area-grant").show();
-							$(".div-org-grant").hide();
-						}else{//显示机构
-							$(".div-area-grant").hide();
-							$(".div-org-grant").show();
-						}
 						if($(".div-quyu.active").attr("data-saved")=="true") {//区域数据已更新，是否保存
-							$.Notice.confirm("区域数据已更新，是否保存？", function (r) {
+							$.Notice.success('区域数据已更新，请先保存数据，再进行其他操作？',function () {
 								self.saveArea();
 							});
 						}else if($(".div-quyu.active").attr("data-saved")=="true"){//机构数据已更新，是否保存
-							$.Notice.confirm("区域数据已更新，是否保存？", function (r) {
+							$.Notice.success('区域数据已更新，请先保存数据，再进行其他操作？',function () {
 								self.saveOrg();
 							});
+						}else{
+							var isQuyu = $(this).hasClass("div-quyu");
+							$(".div-grant-btn").removeClass("active");
+							$(this).addClass("active");
+							if(isQuyu){//显示区域
+								$(".div-area-grant").show();
+								$(".div-org-grant").hide();
+							}else{//显示机构
+								$(".div-area-grant").hide();
+								$(".div-org-grant").show();
+							}
 						}
 					});
 
 					//修改用户信息
 					self.$featrueSaveBtn.click(function () {
+						debugger
 						if($(".div-quyu.active").length>0){//保存区域数据
 							self.saveArea();
 						}else{//保存机构数据
@@ -233,9 +238,11 @@
 					dataModel.updateRemote("${contextRoot}/orgSaas/orgSaasSave", {
 						data: {orgCode:orgCode,type:type,jsonData: jsonData},
 						success: function (data) {
-							if (data.successFlg)
+							if (data.successFlg){
+								$(".div-quyu.active").attr("data-saved","false");
+								$(".div-jigou.active").attr("data-saved","false");
 								$.Notice.success('保存成功');
-							else
+							}else
 								$.Notice.error('保存失败');
 						}
 					});
