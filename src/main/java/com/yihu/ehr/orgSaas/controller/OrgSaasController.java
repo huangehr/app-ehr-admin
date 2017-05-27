@@ -30,22 +30,24 @@ public class OrgSaasController {
 
     @RequestMapping("/getOrgSaas")
     @ResponseBody
-    public Object getParent(String orgCode,String type) {
+    public Object getParent(String orgCode, String type,String saasName) {
         String url = "/OrgSaasByOrg";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("orgCode",orgCode);
-        params.put("type",type);
-        try{
+        params.put("orgCode", orgCode);
+        params.put("type", type);
+        params.put("saasName", saasName);
+        try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
             if (envelop.isSuccessFlg()) {
                 result.setSuccessFlg(true);
                 result.setDetailModelList(envelop.getDetailModelList());
+                result.setObj(envelop.getObj());
                 return result;
-            }else{
+            } else {
                 result.setSuccessFlg(false);
                 return result;
             }
@@ -58,4 +60,40 @@ public class OrgSaasController {
     }
 
 
+    /**
+     * 机构授权检查并保存
+     *
+     * @return
+     */
+    @RequestMapping("/orgSaasSave")
+    @ResponseBody
+    public Object saveOrgSaas(String orgCode, String type, String jsonData) {
+        String url = "/orgSaasSave";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("orgCode", "01114532-12");
+        params.put("type", "2");
+        params.put("jsonData","[{\"id\": 3,\"org_code\": \"01114532-12\",\"type\": \"2\",\"saas_code\": \"jkzl\",\"saas_name\": \"健康之路\"},\n" +
+                "{\"id\": 4,\"org_code\": \"01114532-13\",\"type\": \"2\",\"saas_code\": \"jkzl2\",\"saas_name\": \"健康之路2\"}]");
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            if (envelop.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+                result.setDetailModelList(envelop.getDetailModelList());
+                return result;
+            } else {
+                result.setSuccessFlg(false);
+                return result;
+            }
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+
+
+    }
 }
