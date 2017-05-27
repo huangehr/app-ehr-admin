@@ -463,13 +463,14 @@
                 setAddParentFun: function ( id, me, categoryName) {
                     var html = ['<div class="pop-form">',
 									'<label for="name">机构：</label>',
-                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w150 validate-special-char" data-type="select" placeholder="请选择机构"/>',
+								    $('#h_org_name').val(),
+//                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w150 validate-special-char" data-type="select" placeholder="请选择机构"/>',
                                 '</div>'].join('');
                     me.showPopWin(me,function () {
 						var url = "${contextRoot}/deptMember/updateOrgDept",
 							name = me.$popWim.find('.name').val(),
 							code = me.$popWim.find('.code').val(),
-							orgId = me.$popWim.find('#inp_deptId_val').val();
+							orgId = $('#h_org_id').val();
 						if(name =='' || name == undefined){
 							$.Notice.error('名称不能为空');
 							return false;
@@ -478,10 +479,10 @@
 							$.Notice.error('编码不能为空');
 							return false;
 						}
-						if(orgId =='' || orgId == undefined){
-							$.Notice.error('机构不能为空');
-							return false;
-						}
+//						if(orgId =='' || orgId == undefined){
+//							$.Notice.error('机构不能为空');
+//							return false;
+//						}
 						me.res( url,
 								{
 									id:orgId,
