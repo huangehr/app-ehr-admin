@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <style>
-    #inp_url { height: 50px; }
+    /*#inp_url { height: 50px; }*/
     #inp_description { height: 100px; }
     .m-form-readonly textarea{pointer-events: auto}
     #div_app_info_form .mCustomScrollBox{ display:none !important}

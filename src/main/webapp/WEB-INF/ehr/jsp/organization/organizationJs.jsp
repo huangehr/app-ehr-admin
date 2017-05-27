@@ -36,6 +36,7 @@
                 $location: $('#inp_orgArea'),
 
                 addOrgInfoDialog: null,
+                orgDataGrantDialog:null,
 
                 init: function () {
                     this.initDDL(settledWayDictId, this.$settledWay);
@@ -140,6 +141,7 @@
                                 html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName) + '">部门管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
                                 html += '<sec:authorize url="/template/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
+                                html += '<sec:authorize url="/organization/dialog/orgDataGrant"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:orgDataGrant", row.orgCode, row.orgTypeName, row.fullName) + '">机构数据授权</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/dialog/orgInfo"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode, 'modify') + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/delete"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:del", row.orgCode, 'del') + '"></a></sec:authorize>';
                                 return html;
@@ -262,6 +264,22 @@
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, {'dataModel': JSON.stringify(orgData)});
+                    });
+                    $.subscribe('org:orgInfoDialog:orgDataGrant', function (event, orgCode, orgTypeName, fullName) {
+                        self.orgDataGrantDialog= $.ligerDialog.open({
+                            height: 600,
+                            width: 800,
+                            title: "机构数据授权",
+                            urlParms:{
+                                orgCode: orgCode,
+                                orgTypeName: orgTypeName,
+                                fullName: fullName
+                            },
+                            url:  '${contextRoot}/organization/dialog/orgDataGrant',
+                            isHidden: false,
+                            load: true
+                        })
+
                     });
                     $.subscribe('org:orgInfoDialog:deptMember', function (event, orgCode, orgId, orgName) {
                         var url = '${contextRoot}/deptMember/initialDeptMember';

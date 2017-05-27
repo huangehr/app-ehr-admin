@@ -68,18 +68,18 @@
 		<div class="l-text-wrapper m-form-control u-ui-readonly">
 			<input type="text" id="inp_app_secret"  data-attr-scan="secret"/>
 		</div>
-		<label >角色组:</label>
-		<div id="roleDiv" class="l-text-wrapper m-form-control essential f-pr0">
-			<input style="color: #fff" type="text" id="jryycyc" class="ajax f-h28" data-type="select" data-attr-scan="role">
+		<label><spring:message code="lbl.callback.URL"/><spring:message code="spe.colon"/></label>
+		<!--<div class="m-form-control essential">-->
+		<div class="l-text-wrapper m-form-control">
+			<input id="inp_url" class="required useTitle max-length-500 validate-special-char" placeholder="请输入回调URL"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="url" maxlength="500"/>
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label><spring:message code="lbl.callback.URL"/><spring:message code="spe.colon"/></label>
-		<!--<div class="m-form-control essential">-->
-		<div class="m-form-control">
-			<textarea id="inp_url" class="required useTitle max-length-500 validate-special-char" placeholder="请输入回调URL"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="url" maxlength="500"></textarea>
+		<label >角色组:</label>
+		<div id="roleDiv" class="l-text-wrapper m-form-control essential f-pr0">
+			<input type="text" id="jryycyc" class="ajax f-h28" data-type="select" data-attr-scan="role">
 		</div>
-		<label class="f-ml10"><spring:message code="lbl.description"/><spring:message code="spe.colon"/></label>
+		<label class=""><spring:message code="lbl.description"/><spring:message code="spe.colon"/></label>
 		<div class="m-form-control ">
 			<textarea id="inp_description" class="f-w240 max-length-500 validate-special-char" data-attr-scan="description" maxlength="500"></textarea>
 		</div>
