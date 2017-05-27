@@ -76,7 +76,7 @@ public class OrgSaasController {
         params.put("type",type);
         params.put("jsonData",jsonData);
         try {
-            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
             if (envelop.isSuccessFlg()) {
