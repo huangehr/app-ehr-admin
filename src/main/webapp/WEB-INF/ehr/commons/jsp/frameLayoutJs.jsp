@@ -162,15 +162,15 @@
                 <%--</sec:authorize>--%>
 
                 <%--// 开放中心 - API管理--%>
-                <%--<sec:authorize url="/app/api/initial">--%>
-                <%--{--%>
-                    <%--id: 123,--%>
-                    <%--level:3,--%>
-                    <%--pid: 12,--%>
-                    <%--text: '<spring:message code="title.api.manage"/>',--%>
-                    <%--url:'${contextRoot}/app/api/initial'--%>
-                <%--},--%>
-                <%--</sec:authorize>--%>
+                <sec:authorize url="/app/api/initial">
+                {
+                    id: 123,
+                    level:3,
+                    pid: 12,
+                    text: '<spring:message code="title.api.manage"/>',
+                    url:'${contextRoot}/app/api/initial'
+                },
+                </sec:authorize>
 
                 // 开放中心 - 应用角色
                 <sec:authorize url="/appRole/initial">
