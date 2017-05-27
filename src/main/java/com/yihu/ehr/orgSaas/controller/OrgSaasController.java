@@ -72,12 +72,11 @@ public class OrgSaasController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("orgCode", "01114532-12");
-        params.put("type", "2");
-        params.put("jsonData","[{\"id\": 3,\"org_code\": \"01114532-12\",\"type\": \"2\",\"saas_code\": \"jkzl\",\"saas_name\": \"健康之路\"},\n" +
-                "{\"id\": 4,\"org_code\": \"01114532-13\",\"type\": \"2\",\"saas_code\": \"jkzl2\",\"saas_name\": \"健康之路2\"}]");
+        params.put("orgCode",orgCode);
+        params.put("type",type);
+        params.put("jsonData",jsonData);
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
             if (envelop.isSuccessFlg()) {
