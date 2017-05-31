@@ -40,6 +40,7 @@
 							functionFeatrueType[0].s_search(categoryName);
 							if (categoryName == '') {
 								functionFeatrueType[0].collapseAll();
+								self.showAreaChecked();
 							} else {
 								functionFeatrueType[0].expandAll();
 							}
@@ -53,6 +54,7 @@
 							functionFeatrueType[1].s_search(categoryName);
 							if (categoryName == '') {
 								functionFeatrueType[1].collapseAll();
+								self.showOrgChecked();
 							} else {
 								functionFeatrueType[1].expandAll();
 							}
@@ -77,18 +79,12 @@
 							onCheck:function (data,checked) {
 								if (Util.isStrEquals(this.id, 'div_function_featrue_grid')) {//区域数据
 									setTimeout(function(){
-										var html= $("#div_function_featrue_grid").html();
-										$("#div_configFun_featrue_grid").html(html);
-										$("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
-										$("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide();
+										self.showAreaChecked();
 										$(".div-grant-btn.div-quyu").attr("data-saved","true");
 									},300);
 								}else{//机构数据
 									setTimeout(function(){
-										var html= $("#div_function_featrue_org_grid").html();
-										$("#div_configFun_featrue_org_grid").html(html);
-										$("#div_configFun_featrue_org_grid .l-box.l-checkbox").hide();
-										$("#div_configFun_featrue_org_grid .l-checkbox-unchecked").closest("li").hide();
+										self.showOrgChecked();
 										$(".div-grant-btn.div-jigou").attr("data-saved","true");
 									},300)
 								}
@@ -115,11 +111,7 @@
 									});
 
 									setTimeout(function () {
-										var html = $("#div_function_featrue_grid").html();
-										$("#div_configFun_featrue_grid").html(html).show();
-										$("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
-										$("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide();
-										$("#div_configFun_featrue_grid .l-checkbox-checked").closest("li").show();
+										self.showAreaChecked();
 									}, 300);
 
 									$("#div_function_featrue_grid li div span ,#div_configFun_featrue_grid li div span").css({
@@ -145,11 +137,7 @@
 										}
 									});
 									setTimeout(function () {
-										var html = $("#div_function_featrue_org_grid").html();
-										$("#div_configFun_featrue_org_grid").html(html).show();
-										$("#div_configFun_featrue_org_grid .l-box.l-checkbox").hide();
-										$("#div_configFun_featrue_org_grid .l-checkbox-unchecked").closest("li").hide();
-										$("#div_configFun_featrue_org_grid .l-checkbox-checked").closest("li").show();
+										self.showOrgChecked();
 									}, 300);
 
 									$("#div_function_featrue_org_grid li div span ,#div_configFun_featrue_org_grid li div span").css({
@@ -170,6 +158,20 @@
 					}
 
 				},
+				showAreaChecked:function(){//显示区域已勾选的数据
+					var html= $("#div_function_featrue_grid").html();
+					$("#div_configFun_featrue_grid").html(html);
+					$("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
+					$("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide();
+					$("#div_configFun_featrue_grid .l-checkbox-checked").closest("li").show();
+				},
+				showOrgChecked:function(){//显示机构已勾选的数据
+					var html = $("#div_function_featrue_org_grid").html();
+					$("#div_configFun_featrue_org_grid").html(html).show();
+					$("#div_configFun_featrue_org_grid .l-box.l-checkbox").hide();
+					$("#div_configFun_featrue_org_grid .l-checkbox-unchecked").closest("li").hide();
+					$("#div_configFun_featrue_org_grid .l-checkbox-checked").closest("li").show();
+				},
 				clicks: function () {
 					var self = this;
 					//切换区域和机构
@@ -178,7 +180,7 @@
 							$.Notice.success('区域数据已更新，请先保存数据，再进行其他操作？',function () {
 								self.saveArea();
 							});
-						}else if($(".div-quyu.active").attr("data-saved")=="true"){//机构数据已更新，是否保存
+						}else if($(".div-jigou.active").attr("data-saved")=="true"){//机构数据已更新，是否保存
 							$.Notice.success('机构数据已更新，请先保存数据，再进行其他操作？',function () {
 								self.saveOrg();
 							});
