@@ -356,7 +356,7 @@
 								function (data) {
 									if(data.successFlg){
 										$.Notice.success('添加成功',function () {
-											location.reload();
+											pageInit();
 											return true;
 										});
 									}else{
@@ -387,7 +387,7 @@
 								function (data) {
 									if(data.successFlg){
 										$.Notice.success('修改成功',function () {
-											location.reload();
+											pageInit();
 											return true;
 										});
 									}else{
@@ -409,7 +409,7 @@
 							function (data) {
 								if(data.successFlg){
 									$.Notice.success('删除成功',function () {
-										location.reload();
+										pageInit();
 										return true;
 									});
 								}else{
@@ -429,7 +429,7 @@
 							function (data) {
 								if(data.successFlg){
 									$.Notice.success('操作成功',function () {
-										location.reload();
+										pageInit();
 										return true;
 									});
 								}else{
@@ -449,7 +449,7 @@
 							function (data) {
 								if(data.successFlg){
 									$.Notice.success('操作成功',function () {
-										location.reload();
+										pageInit();
 										return true;
 									});
 								}else{
@@ -493,7 +493,7 @@
 								function (data) {
 									if(data.successFlg){
 										$.Notice.success('操作成功',function () {
-											location.reload();
+											pageInit();
 											return true;
 										});
 									}else{
