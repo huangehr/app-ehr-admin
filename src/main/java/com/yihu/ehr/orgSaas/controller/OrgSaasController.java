@@ -66,7 +66,6 @@ public class OrgSaasController {
      * @return
      */
     @RequestMapping("/orgSaasSave")
-    @ResponseBody
     public Object saveOrgSaas(String orgCode, String type, String jsonData) {
         String url = "/orgSaasSave";
         String resultStr = "";
@@ -76,7 +75,7 @@ public class OrgSaasController {
         params.put("type",type);
         params.put("jsonData",jsonData);
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
             if (envelop.isSuccessFlg()) {
