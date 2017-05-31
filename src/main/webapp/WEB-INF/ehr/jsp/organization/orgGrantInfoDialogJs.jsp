@@ -75,7 +75,6 @@
 							checkbox: true,
 							async: false,
 							onCheck:function (data,checked) {
-								debugger
 								if (Util.isStrEquals(this.id, 'div_function_featrue_grid')) {//区域数据
 									setTimeout(function(){
 										var html= $("#div_function_featrue_grid").html();
@@ -129,7 +128,6 @@
 									});
 								}else{//加载机构数据
 									$("#div_configFun_featrue_org_grid").hide();
-									debugger
 									functionFeatrueType[1].setData(data.detailModelList);
 									//加载区域右树
 									functionFeatrueRigthType[1] = funRightEle[1].ligerSearchTree({
@@ -181,7 +179,7 @@
 								self.saveArea();
 							});
 						}else if($(".div-quyu.active").attr("data-saved")=="true"){//机构数据已更新，是否保存
-							$.Notice.success('区域数据已更新，请先保存数据，再进行其他操作？',function () {
+							$.Notice.success('机构数据已更新，请先保存数据，再进行其他操作？',function () {
 								self.saveOrg();
 							});
 						}else{
@@ -200,7 +198,6 @@
 
 					//修改用户信息
 					self.$featrueSaveBtn.click(function () {
-						debugger
 						if($(".div-quyu.active").length>0){//保存区域数据
 							self.saveArea();
 						}else{//保存机构数据
@@ -235,9 +232,11 @@
 					self.saveData(orgCode,type,jsonData);
 				},
 				saveData:function(orgCode,type,jsonData){
+					var wait = $.Notice.waitting('正在加载中...');
 					dataModel.updateRemote("${contextRoot}/orgSaas/orgSaasSave", {
 						data: {orgCode:orgCode,type:type,jsonData: jsonData},
 						success: function (data) {
+							wait.close();
 							if (data.successFlg){
 								$(".div-quyu.active").attr("data-saved","false");
 								$(".div-jigou.active").attr("data-saved","false");
