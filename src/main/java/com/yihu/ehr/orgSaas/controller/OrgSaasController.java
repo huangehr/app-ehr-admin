@@ -66,6 +66,7 @@ public class OrgSaasController {
      * @return
      */
     @RequestMapping("/orgSaasSave")
+    @ResponseBody
     public Object saveOrgSaas(String orgCode, String type, String jsonData) {
         String url = "/orgSaasSave";
         String resultStr = "";
@@ -80,18 +81,13 @@ public class OrgSaasController {
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
             if (envelop.isSuccessFlg()) {
                 result.setSuccessFlg(true);
-                result.setDetailModelList(envelop.getDetailModelList());
-                return result;
             } else {
                 result.setSuccessFlg(false);
-                return result;
             }
         } catch (Exception e) {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
         }
-
-
+        return result;
     }
 }
