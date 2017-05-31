@@ -190,7 +190,7 @@
 							$.Notice.success('区域数据已更新，请先保存数据，再进行其他操作？',function () {
 								self.saveArea();
 							});
-						}else if($(".div-quyu.active").attr("data-saved")=="true"){//机构数据已更新，是否保存
+						}else if($(".div-jigou.active").attr("data-saved")=="true"){//机构数据已更新，是否保存
 							$.Notice.success('机构数据已更新，请先保存数据，再进行其他操作？',function () {
 								self.saveOrg();
 							});
