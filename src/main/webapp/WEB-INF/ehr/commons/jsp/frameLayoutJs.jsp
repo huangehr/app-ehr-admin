@@ -162,15 +162,15 @@
                 <%--</sec:authorize>--%>
 
                 <%--// 开放中心 - API管理--%>
-                <%--<sec:authorize url="/app/api/initial">--%>
-                <%--{--%>
-                    <%--id: 123,--%>
-                    <%--level:3,--%>
-                    <%--pid: 12,--%>
-                    <%--text: '<spring:message code="title.api.manage"/>',--%>
-                    <%--url:'${contextRoot}/app/api/initial'--%>
-                <%--},--%>
-                <%--</sec:authorize>--%>
+                <sec:authorize url="/app/api/initial">
+                {
+                    id: 123,
+                    level:3,
+                    pid: 12,
+                    text: '<spring:message code="title.api.manage"/>',
+                    url:'${contextRoot}/app/api/initial'
+                },
+                </sec:authorize>
 
                 // 开放中心 - 应用角色
                 <sec:authorize url="/appRole/initial">
@@ -652,6 +652,17 @@
                     level:2,
                     text: '<spring:message code="title.trend.analysis"/>',
                     url: '${contextRoot}/report/initial'
+                },
+                </sec:authorize>
+
+                // 6-2 - 单个机构统计数据
+                <sec:authorize url="Ehr_Patients">
+                {
+                    id: 62,
+                    pid: 6,
+                    level:2,
+                    text: '<spring:message code="title.trend.analysisLs"/>',
+                    url: '${contextRoot}/report/initialLs'
                 },
                 </sec:authorize>
 

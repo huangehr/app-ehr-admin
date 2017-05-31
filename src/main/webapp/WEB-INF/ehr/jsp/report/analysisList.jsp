@@ -33,19 +33,19 @@
         <div class="div-item-title">完整性</div>
         <div class="div-item-content">
           <div class="div-item active">
-            <img src="/ehr/develop/images/01zhengtishuliang_icon.png">
+            <img src="${staticRoot}/images/01zhengtishuliang_icon.png">
             <span>50%</span>
             <div class="div-item-count">50/100</div>
             <div class="div-item-type">整体数量</div>
           </div>
           <div class="div-item">
-            <img src="/ehr/develop/images/02shujuji_icon.png">
+            <img src="${staticRoot}/images/02shujuji_icon.png">
             <span>80%</span>
             <div class="div-item-count">80/100</div>
             <div class="div-item-type">数据集</div>
           </div>
           <div class="div-item">
-            <img src="/ehr/develop/images/03shujuyuan_icon.png">
+            <img src="${staticRoot}/images/03shujuyuan_icon.png">
             <span>50%</span>
             <div class="div-item-count">50/100</div>
             <div class="div-item-type">数据元</div>
@@ -56,7 +56,7 @@
         <div class="div-item-title">准确性</div>
         <div class="div-item-content">
           <div class="div-item" style="width: 100%;">
-            <img src="/ehr/develop/images/04zhuquexing_icon.png">
+            <img src="${staticRoot}/images/04zhuquexing_icon.png">
             <span>50%</span>
             <div class="div-item-count">50/100</div>
             <div class="div-item-type">全部及时性</div>
@@ -67,19 +67,19 @@
         <div class="div-item-title">及时性</div>
         <div class="div-item-content">
           <div class="div-item">
-            <img src="/ehr/develop/images/05quanbujishi_icon.png">
+            <img src="${staticRoot}/images/05quanbujishi_icon.png">
             <span>50%</span>
             <div class="div-item-count">50/100</div>
             <div class="div-item-type">全部及时性</div>
           </div>
           <div class="div-item">
-            <img src="/ehr/develop/images/06zhuyuanjishi_icon.png">
+            <img src="${staticRoot}/images/06zhuyuanjishi_icon.png">
             <span>80%</span>
             <div class="div-item-count">80/100</div>
             <div class="div-item-type">住院病人及时性</div>
           </div>
           <div class="div-item">
-            <img src="/ehr/develop/images/07menzhenjishi_icon.png">
+            <img src="${staticRoot}/images/07menzhenjishi_icon.png">
             <span>50%</span>
             <div class="div-item-count">50/100</div>
             <div class="div-item-type">门诊病人及时性</div>
@@ -100,7 +100,7 @@
 </div> -->
 <div class="div-analysis-title">
 	<span class="f-ff1 f-fs16 f-fl title">分析列表</span>
-	<img id="downExl" class="f-fr icon" src="/ehr/develop/images/xiazaidayin_icon.png">
+	<img id="downExl" class="f-fr icon" src="${staticRoot}/images/xiazaidayin_icon.png">
 	<span class="f-ff1 f-fs14 f-fr tips">提示：警示的红色字体代表未达标的</span>
 </div>
 <div id="table_analysis"></div>

@@ -68,8 +68,8 @@
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '记录时间', name: 'time', width: '15%'},
-                            {display: '用户ID', name: 'caller', width: '15%'},
+                            {display: '记录时间', name: 'time', width: '20%'},
+                            {display: '用户ID', name: 'caller', width: '20%'},
                             {display: '日志类型', name: 'appApiId', width: '10%'},
                             {display: '数据', name: 'data', width: '50%'}
                         ],
