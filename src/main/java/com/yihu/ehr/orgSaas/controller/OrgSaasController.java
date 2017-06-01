@@ -76,23 +76,18 @@ public class OrgSaasController {
         params.put("type",type);
         params.put("jsonData",jsonData);
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
             if (envelop.isSuccessFlg()) {
                 result.setSuccessFlg(true);
-                result.setDetailModelList(envelop.getDetailModelList());
-                return result;
             } else {
                 result.setSuccessFlg(false);
-                return result;
             }
         } catch (Exception e) {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
         }
-
-
+        return result;
     }
 }
