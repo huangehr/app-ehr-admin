@@ -95,7 +95,7 @@
                 </sec:authorize>
 
                 // 1-1 - 居民管理
-                <sec:authorize url="/organization/Initial">
+                <sec:authorize url="/patient/Initial">
                 {
                     id: 11,
                     pid: 1,
