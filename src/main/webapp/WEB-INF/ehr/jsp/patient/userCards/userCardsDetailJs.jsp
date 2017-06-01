@@ -65,6 +65,7 @@
                     var auditVal = $("#audit_val").val();
                     if(auditVal==2){
                         $("#refuseReasonGroup").css('display','block');
+                        $("#refuseReasonGroup").find("#reason").removeClass("col");
                     }
                     if(auditVal==1){
                         $("#refuseReasonGroup").css('display','none');

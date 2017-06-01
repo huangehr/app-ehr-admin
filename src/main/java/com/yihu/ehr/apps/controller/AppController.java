@@ -1,6 +1,7 @@
 package com.yihu.ehr.apps.controller;
 
 import com.yihu.ehr.agModel.app.AppDetailModel;
+import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.resource.RsAppResourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
@@ -12,6 +13,7 @@ import com.yihu.ehr.web.RestTemplates;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,14 +21,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Created by yww on 2015/8/12.
@@ -367,6 +370,85 @@ public class AppController extends BaseUIController {
         }
         return envelop;
     }
+
+
+    /**
+     * 资源文件上传
+     * @param
+     * @return
+     */
+    @RequestMapping("appIconFileUpload")
+    @ResponseBody
+    public Object orgLogoFileUpload(
+            @RequestParam("iconFile") MultipartFile file) throws IOException {
+        Envelop result = new Envelop();
+        InputStream inputStream = file.getInputStream();
+        String fileName = file.getOriginalFilename(); //获取文件名
+        if (!file.isEmpty()) {
+            return  uploadFile(inputStream,fileName);
+        }
+        return "fail";
+    }
+
+    public String uploadFile(InputStream inputStream,String fileName){
+        try {
+            //读取文件流，将文件输入流转成 byte
+            int temp = 0;
+            int bufferSize = 1024;
+            byte tempBuffer[] = new byte[bufferSize];
+            byte[] fileBuffer = new byte[0];
+            while ((temp = inputStream.read(tempBuffer)) != -1) {
+                fileBuffer = ArrayUtils.addAll(fileBuffer, ArrayUtils.subarray(tempBuffer, 0, temp));
+            }
+            inputStream.close();
+            String restStream = Base64.getEncoder().encodeToString(fileBuffer);
+            String url = "";
+            url = fileUpload(restStream,fileName);
+            if (!StringUtils.isEmpty(url)){
+                System.out.println("上传成功");
+                return url;
+            }else{
+                System.out.println("上传失败");
+            }
+
+        } catch (Exception e) {
+            return "fail";
+        }
+        return "fail";
+    }
+
+    /**
+     * 图片上传
+     * @param inputStream
+     * @param fileName
+     * @return
+     */
+    public String fileUpload(String inputStream,String fileName){
+
+        RestTemplates templates = new RestTemplates();
+        Map<String, Object> params = new HashMap<>();
+
+        String url = null;
+        if (!StringUtils.isEmpty(inputStream)) {
+
+            //mime  参数 doctor 需要改变  --  需要从其他地方配置
+            FileResourceModel fileResourceModel = new FileResourceModel("","org","");
+            String fileResourceModelJsonData = toJson(fileResourceModel);
+
+            params.put("file_str", inputStream);
+            params.put("file_name", fileName);
+            params.put("json_data",fileResourceModelJsonData);
+            try {
+                url = HttpClientUtil.doPost(comUrl + "/filesReturnUrl", params,username,password);
+                return url;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return url;
+    }
+
+
 
     //修改、查看授权资源
     //-------------------------------------------------------应用---资源授权管理---结束----------------

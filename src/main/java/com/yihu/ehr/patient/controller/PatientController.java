@@ -120,7 +120,7 @@ public class PatientController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("search", searchNm);
+        params.put("search", searchNm.trim());
         params.put("page", page);
         params.put("rows", rows);
         params.put("home_province", province);

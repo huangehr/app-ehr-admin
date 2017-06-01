@@ -32,7 +32,7 @@
 <div class="f-dn" data-head-title="true">部门成员添加</div>
 <div id="div_wrapper">
     <div id="conditionArea" class="f-ml10" >
-        <input class="body-head f-h40" align="left">
+        <div class="body-head f-h40" align="left">
             <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb">返回上一层 </a>
             <span class="f-ml20 f-fwb">部门与成员管理</span>
             <span class="f-ml20">机构全称：</span><input value="${orgName}" class="f-fwb f-mt10" readonly id="h_org_name"/>
@@ -42,9 +42,10 @@
     </div>
     <!-- ####### 查询条件部分 ####### -->
     <div id="div_content" class="f-ww contentH">
-        <div id="div_left" class="f-w240 f-bd f-of-hd">
+        <div id="div_left" class="f-w240 f-bd f-of-hd" style="position: relative;">
+            <div style="position: absolute;left: 10px;top: 6px;">备注：右击可进行部门信息的维护</div>
             <!--资源浏览树-->
-            <div id="div_tree" class="f-w230">
+            <div id="div_tree" class="f-w230 f-pt30">
                 <div id="div_resource_browse_tree"></div>
             </div>
         </div>
