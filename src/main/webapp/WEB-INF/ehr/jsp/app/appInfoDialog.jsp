@@ -3,6 +3,31 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 
+<style>
+	.i-text{
+		width: 185px;
+		height: 30px;
+		line-height: 30px;
+		padding-right: 17px;
+		color: #555555;
+		padding-left: 5px;
+		vertical-align: middle;
+	}
+	.uploadBtn{
+		position: relative;
+		vertical-align: middle;
+		overflow: hidden;
+	}
+	.uploadBtn .file{
+		width: 50px;
+		height: 30px;
+		position: absolute;
+		top: 0;
+		left: 0;
+		opacity: 0;
+		z-index: 999;
+	}
+</style>
 <div id="div_app_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
 	<%--<input type="hidden" id="inp_source_type"  data-attr-scan="sourceType" value="0">--%>
 
@@ -18,19 +43,23 @@
 		</div>
 	</div>
 	<%--增加图标 查看单个应用不需要图标--%>
-	<div class="m-form-group">
-		<label>应用图标:</label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_app_icon" class="required useTitle max-length-50 validate-special-char" placeholder="请选择应用图标" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="icon"/>
-			<%----%>
+		<form id ="uploadForm" enctype="multipart/form-data">
+		<div class="m-form-group">
+			<label>应用图标:</label>
+			<div class="l-text-wrapper m-form-control essential">
+				<%--<input type="text" id="inp_app_icon" class="required useTitle max-length-50 validate-special-char" placeholder="请选择应用图标" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="icon"/>--%>
 
-			<%----%>
+					<input type="text" class="i-text" id="inp_app_icon" data-attr-scan="icon" readonly="readonly" />
+					<div class="uploadBtn">上传
+						<input type="file" id="inp_file_icon" name="iconFile" class="file" value="" />
+					</div>
+			</div>
+			<label>应用代码<spring:message code="spe.colon"/></label>
+			<div class="l-text-wrapper m-form-control essential">
+				<input type="text" id="inp_app_code" class="required max-length-50 validate-code-char ajax"  data-attr-scan="code"/>
+			</div>
 		</div>
-		<label>应用代码<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_app_code" class="required max-length-50 validate-code-char ajax"  data-attr-scan="code"/>
-		</div>
-	</div>
+		</form>
 	<%--增加在线状态--%>
 	<div class="m-form-group">
 		<label>是否在线:</label>
@@ -45,7 +74,7 @@
 	</div>
 	<div class="m-form-group">
 		<label><spring:message code="lbl.type"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control f-pr0">
+		<div class="l-text-wrapper m-form-control f-pr0 essential">
 			<input type="text" id="inp_dialog_catalog" data-type="select" class="required" data-attr-scan="catalog">
 		</div>
 		<label><spring:message code="lbl.status"/><spring:message code="spe.colon"/></label>
@@ -70,7 +99,7 @@
 		</div>
 		<label><spring:message code="lbl.callback.URL"/><spring:message code="spe.colon"/></label>
 		<!--<div class="m-form-control essential">-->
-		<div class="l-text-wrapper m-form-control">
+		<div class="l-text-wrapper m-form-control essential" >
 			<input id="inp_url" class="required useTitle max-length-500 validate-special-char" placeholder="请输入回调URL"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="url" maxlength="500"/>
 		</div>
 	</div>
