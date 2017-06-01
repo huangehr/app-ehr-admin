@@ -40,9 +40,9 @@
             },
 
             initDDL: function (dictId, target) {
-                var width = '100';
+                var width = '150';
                 if(dictId==69){
-                    width = '200';
+                    width = '150';
                 }
                 var target = $(target);
                 var dataModel = $.DataModel.init();
