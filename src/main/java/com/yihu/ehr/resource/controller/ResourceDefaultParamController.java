@@ -108,7 +108,7 @@ public class ResourceDefaultParamController extends BaseUIController {
     //删除
     @RequestMapping("/delete")
     @ResponseBody
-    public Object delete(Long id){
+    public Object delete(String id){
         try{
             if(id == null){
                 return failed("id不能为空！");
