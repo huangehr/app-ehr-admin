@@ -57,7 +57,7 @@
 	<div class="m-form-group">
 		<label>描述：</label>
 		<div class="m-form-control">
-			<textarea  class="col"  title="${userCards.description}" style="width:750px;">${userCards.description}</textarea>
+			<textarea  class="col" readonly title="${userCards.description}" style="width:750px;">${userCards.description}</textarea>
 		</div>
 	</div>
 	<div class="m-form-group">
