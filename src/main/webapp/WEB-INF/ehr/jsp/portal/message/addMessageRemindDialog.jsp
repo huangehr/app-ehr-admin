@@ -3,14 +3,14 @@
 <div id="div_addMessageRemind_form" data-role-form class="m-form-inline f-mt20 f-pb10 f-dn" style="overflow:auto" >
 	<div class="m-form-group">
 		<label><spring:message code="lbl.messageRemind.appId"/><spring:message code="spe.colon"/></label>
-		<div class="m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_appId" data-attr-scan="appId"  class="required f-w240 description  max-length-50 validate-special-char">
 		</div>
 	</div>
 
 	<div class="m-form-group">
 		<label><spring:message code="lbl.messageRemind.appName"/><spring:message code="spe.colon"/></label>
-		<div class="m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_appName"  data-attr-scan="appName" class="required f-w240 description  max-length-50 validate-special-char">
 		</div>
 	</div>
@@ -31,7 +31,7 @@
 
 	<div class="m-form-group" id="inp_content_div">
 		<label><spring:message code="lbl.messageRemind.content"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control ">
+		<div class="l-text-wrapper m-form-control essential">
 			<textarea id="inp_content" class=" f-w240 description  max-length-256 validate-special-char"
 					  data-attr-scan="content" ></textarea>
 		</div>
