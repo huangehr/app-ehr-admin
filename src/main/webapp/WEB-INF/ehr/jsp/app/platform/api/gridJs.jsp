@@ -12,7 +12,6 @@
             var Util = $.Util;
             var openedDialog;
             var p = '${dataModel}';
-            debugger;
             var contentH = $('.l-layout-center').height();
             var parms = {"appId":p};
             var urls = {
