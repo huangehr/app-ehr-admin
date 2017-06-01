@@ -423,15 +423,16 @@ public class CdaController extends BaseUIController{
             return result;
         }
         try {
-            MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
-            conditionMap.add("data_set_ids", strDatasetIds);
-            conditionMap.add("document_Id", strCdaId);
-            conditionMap.add("version", strVersionCode);
-            conditionMap.add("xml_info", xmlInfo);
-            String url = standardUrl + "/documents/data_set_relationships";
+            Map<String,Object> conditionMap = new HashMap<>();
+            conditionMap.put("dataSetIds", strDatasetIds);
+            conditionMap.put("cdaId", strCdaId);
+            conditionMap.put("versionCode", strVersionCode);
+            conditionMap.put("xmlInfo", xmlInfo);
+            String url = comUrl + "/cda/saveRelationship";
 
             RestTemplates template = new RestTemplates();
-            String _rus = template.doPost(url, conditionMap);
+//            String _rus = template.doPost(url, conditionMap);
+            String _rus = HttpClientUtil.doPost( url, conditionMap, username, password);
 
 
             //测试
