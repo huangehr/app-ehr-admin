@@ -14,6 +14,7 @@
         var orgTypeDictId = 7;
         var hosTypeDictId =  62;
         var ascriptionTypeDictId =  63;
+        var zxyDictId = 70;
 
         // 表单校验工具类
         var jValidation = $.jValidation;
@@ -121,14 +122,17 @@
                 this.$introduction.ligerTextBox({width: 396,height:104,padding:10});
                 this.$levelId.ligerTextBox({width: 140});
                 this.$legalPerson.ligerTextBox({width: 140});
-                this.$parentHosId.ligerTextBox({width: 140});
-                this.$zxy.ligerTextBox({width: 140});
+                this.$zxy.ligerComboBox({width: 140});
                 this.$settledWay.ligerComboBox({width: 140});
 
                 this.initDDL(orgTypeDictId, this.$orgType);
                 this.initDDL(settledWayDictId, this.$settledWay);
                 this.initDDL(hosTypeDictId,this.$hosType);
                 this.initDDL(ascriptionTypeDictId,this.$ascriptionType);
+                this.initDDL(zxyDictId,this.$zxy);
+
+                var url = '${contextRoot}/deptMember/getOrgList';
+                this.$parentHosId.customCombo(url);
 
                 this.$form.attrScan();
                 var tags = '';
@@ -156,7 +160,6 @@
                     introduction:org.introduction,
                     levelId:org.levelId,
                     legalPerson:org.legalPerson,
-                    parentHosId:org.parentHosId,
                     zxy:org.zxy,
 
                     publicKey: org.publicKey,
@@ -166,6 +169,8 @@
                 this.$publicKeyMessage.val(org.publicKey);
                 this.$publicKeyValidTime.html(org.validTime);
                 this.$publicKeyStartTime.html(org.startTime);
+                $("#parentHosId").ligerGetComboBoxManager().setValue(org.parentHosId);
+                $("#parentHosId").ligerGetComboBoxManager().setText(org.parentHosName);
 
                 this.$form.Fields.location.setValue([org.province, org.city, org.district, org.street]);
 

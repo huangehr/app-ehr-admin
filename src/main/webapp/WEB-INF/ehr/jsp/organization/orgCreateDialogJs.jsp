@@ -14,6 +14,7 @@
         var settledWayDictId = 8;
         var hosTypeDictId =  62;
         var ascriptionTypeDictId =  63;
+        var zxyDictId = 70;
         // 表单校验工具类
         var jValidation = $.jValidation;
 
@@ -96,8 +97,8 @@
                 this.$introduction.ligerTextBox({width: 396,height:104,padding:10});
                 this.$levelId.ligerTextBox({width: 140});
                 this.$legalPerson.ligerTextBox({width: 140});
-                this.$parentHosId.ligerTextBox({width: 140});
-                this.$zxy.ligerTextBox({width: 140});
+//                this.$parentHosId.ligerTextBox({width: 140});
+                this.$zxy.ligerComboBox({width: 140});
                 this.$orgType.ligerComboBox({width:140});
                 this.$ascriptionType.ligerComboBox({width:140});
                 this.$settledWay.ligerComboBox({width:140});
@@ -107,6 +108,10 @@
                 this.initDDL(settledWayDictId,this.$settledWay);
                 this.initDDL(hosTypeDictId,this.$hosType);
                 this.initDDL(ascriptionTypeDictId,this.$ascriptionType);
+                this.initDDL(zxyDictId,this.$zxy);
+
+                var url = '${contextRoot}/deptMember/getOrgList';
+                this.$parentHosId.customCombo(url);
 
                 this.$form.attrScan();
                 /*todo 20160704 cyc*/

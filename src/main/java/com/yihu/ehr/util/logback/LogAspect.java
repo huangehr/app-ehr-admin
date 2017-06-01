@@ -1,6 +1,7 @@
 package com.yihu.ehr.util.logback;
 
 import com.google.gson.Gson;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -114,6 +115,10 @@ public class LogAspect {
 //                + " param:" + gson.toJson(inputParamMap) + ";" + "\n result:" + gson.toJson(outputParamMap));
 
         JSONObject data = new JSONObject();
+        UserDetailModel userModel=(UserDetailModel) session.getAttribute("current_user");
+        if(null!=userModel){
+            data.put("patient", userModel.getRealName());// 总支撑
+        }
         data.put("url", requestPath);// 调用的控制器路径
         data.put("responseTime", endTimeMillis - startTimeMillis);// 操作响应时间长
         data.put("responseCode", response.getStatus());// 调用返回结果代码 successflag = true & false
@@ -121,6 +126,8 @@ public class LogAspect {
         data.put("response", gson.toJson(outputParamMap));// 请求返回的结果
         data.put("appKey", "EHR");// 总支撑
         data.put("param", gson.toJson(inputParamMap)); // 请求传递的参数
+
+
         if (userName != null && !"".equals(userName)) {
             BusinessLogs.info(userName, data);
         }
