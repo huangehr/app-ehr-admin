@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<head>
+    <link rel="icon" href="develop/images/logo.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="develop/images/logo.png" type="image/x-icon" />
+</head>
 <!--######登录页面Title设置######-->
 <div class="f-dn" data-head-title="true">登录</div>
 
