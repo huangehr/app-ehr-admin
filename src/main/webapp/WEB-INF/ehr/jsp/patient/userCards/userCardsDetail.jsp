@@ -105,12 +105,12 @@
 				</div>
 			</div>
 
-			<label class="">原因：</label>
-			<div class="m-form-control ">
-				<label class="col f-minh" id="otherReason">
-					<!--<textarea style="height: 40px;" class="f-w240 max-length-500 validate-special-char"  maxlength="500"></textarea>-->
-				</label>
-			</div>
+			<%--<label class="">原因：</label>--%>
+			<%--<div class="m-form-control ">--%>
+				<%--<label class="col f-minh" id="otherReason">--%>
+					<%--<!--<textarea style="height: 40px;" class="f-w240 max-length-500 validate-special-char"  maxlength="500"></textarea>-->--%>
+				<%--</label>--%>
+			<%--</div>--%>
 		</div>
 
 		<div class="m-form-group f-pr my-footer">
