@@ -490,7 +490,7 @@
                 </sec:authorize>
 
                 // 6-2 -身份认证
-                <sec:authorize url="/deptMember/initialDeptMember">
+                <sec:authorize url="/authentication/initial">
                 {
                     pid: 6,
                     level: 2,
