@@ -2,7 +2,6 @@ package com.yihu.ehr.organization.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
-import com.yihu.ehr.agModel.org.OrgDeptModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.constants.ErrorCode;
@@ -12,7 +11,6 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.web.RestTemplates;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -56,6 +54,12 @@ public class OrganizationController extends BaseUIController {
     @RequestMapping("initial")
     public String orgInitial(Model model) {
         model.addAttribute("contentPage", "organization/organization");
+        return "pageView";
+    }
+
+    @RequestMapping("organizationGrant")
+    public String organizationGrant(Model model) {
+        model.addAttribute("contentPage", "organization/organizationGrant");
         return "pageView";
     }
 

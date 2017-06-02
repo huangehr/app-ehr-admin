@@ -404,7 +404,7 @@
                 </sec:authorize>
 
                 // 4-2 居民档案申领审核
-                <sec:authorize url="/correlation/initial">
+                <sec:authorize url="/archive/apply/initial">
                 {
                     pid: 4,
                     level:2,
@@ -490,7 +490,7 @@
                 </sec:authorize>
 
                 // 6-2 -身份认证
-                <sec:authorize url="/deptMember/initialDeptMember">
+                <sec:authorize url="/authentication/initial">
                 {
                     pid: 6,
                     level: 2,
@@ -523,13 +523,13 @@
                 </sec:authorize>
 
                 // 6-5 安全管理中心 - 机构数据授权
-                <sec:authorize url="/appRole/initial">
+                <sec:authorize url="/organization/organizationGrant">
                 {
                     pid: 6,
                     level: 2,
                     id: 65,
                     text: '<spring:message code="title.org.data.auth"/>',
-                    url: '${contextRoot}/appRole/initial'
+                    url: '${contextRoot}/organization/organizationGrant'
                 },
                 </sec:authorize>
 
