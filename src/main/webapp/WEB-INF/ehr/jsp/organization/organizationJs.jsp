@@ -111,12 +111,12 @@
                             district: ''
                         },
                         columns: [
-                            {display: '机构类型', name: 'orgTypeName', width: '8%', align: "left"},
-                            {display: '机构代码', name: 'orgCode', width: '9%', align: "left"},
+                            {display: '机构类型', name: 'orgTypeName', width: '6%', align: "left"},
+                            {display: '机构代码', name: 'orgCode', width: '8%', align: "left"},
                             {display: '机构全名', name: 'fullName', width: '15%', align: "left"},
-                            {display: '联系人', name: 'admin', width: '8%', align: "left"},
+                            {display: '联系人', name: 'admin', width: '7%', align: "left"},
                             {display: '联系方式', name: 'tel', width: '8%', align: "left"},
-                            {display: '机构地址', name: 'locationStrName', width: '20%', align: "left"},
+                            {display: '机构地址', name: 'locationStrName', width: '18%', align: "left"},
                             {
                                 display: '是否生/失效',
                                 name: 'activityFlagName',
@@ -136,7 +136,7 @@
                             },
                             {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '24%', render: function (row) {
+                                display: '操作', name: 'operator', width: '30%', render: function (row) {
                                 var html = '';
                                 html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName) + '">部门管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
