@@ -29,8 +29,6 @@
             retrieve = {
                 $element: $('.m-retrieve-area'),
                 $searchNm: $('#inp_search'),
-                $settledWay: $('#inp_settledWay'),
-                $orgType: $('#inp_orgType'),
                 $searchBtn: $('#btn_search'),
                 $newRecordBtn: $('#div_new_record'),
                 $location: $('#inp_orgArea'),
@@ -39,9 +37,6 @@
                 orgDataGrantDialog:null,
 
                 init: function () {
-                    this.initDDL(settledWayDictId, this.$settledWay);
-                    this.initDDL(orgTypeDictId, this.$orgType);
-
                     this.$searchNm.ligerTextBox({width: 240});
 
                     this.$location.addressDropdown({
@@ -112,8 +107,8 @@
                         },
                         columns: [
                             {display: '机构类型', name: 'orgTypeName', width: '6%', align: "left"},
-                            {display: '机构代码', name: 'orgCode', width: '8%', align: "left"},
-                            {display: '机构全名', name: 'fullName', width: '15%', align: "left"},
+                            {display: '机构代码', name: 'orgCode', width: '18%', align: "left"},
+                            {display: '机构全名', name: 'fullName', width: '20%', align: "left"},
                             {display: '联系人', name: 'admin', width: '7%', align: "left"},
                             {display: '联系方式', name: 'tel', width: '8%', align: "left"},
                             {display: '机构地址', name: 'locationStrName', width: '18%', align: "left"},
@@ -136,13 +131,9 @@
                             },
                             {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '30%', render: function (row) {
+                                display: '操作', name: 'operator', width: '15%', render: function (row) {
                                 var html = '';
-                                html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName) + '">部门管理</a></sec:authorize>';
-                                html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
-                                html += '<sec:authorize url="/template/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
-                                html += '<sec:authorize url="/organization/dialog/orgInfo"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode, 'modify') + '"></a></sec:authorize>';
-                                html += '<sec:authorize url="/organization/delete"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:del", row.orgCode, 'del') + '"></a></sec:authorize>';
+                                html += '<sec:authorize url="/organization/dialog/orgDataGrant"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:orgDataGrant", row.orgCode, row.orgTypeName, row.fullName) + '">机构数据授权</a></sec:authorize>';
                                 return html;
                             }
                             },
@@ -216,28 +207,6 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
-                        var title = '修改机构信息';
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.orgInfoDialog = $.ligerDialog.open({
-                            isHidden: false,
-                            height: 600,
-                            width: 1050,
-                            title: title,
-                            url: '${contextRoot}/organization/dialog/orgInfo',
-                            load: true,
-                            urlParms: {
-                                orgCode: encodeURIComponent(orgCode),
-                                mode: mode
-                            },
-                            show: false,
-                            onLoaded:function() {
-                                wait.close(),
-                                self.orgInfoDialog.show()
-                            }
-                        });
-                        self.orgInfoDialog.hide();
-                    });
                     $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg,msg) {
                         $.ligerDialog.confirm('是否对该机构进行'+msg+'操作', function (yes) {
                             if (yes) {
@@ -246,44 +215,21 @@
                         });
 
                     });
-                    $.subscribe('org:orgInfoDialog:del', function (event, orgCode, activityFlg) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
-                            if (yes) {
-                                self.delRecord(orgCode);
-                            }
-                        });
+                    $.subscribe('org:orgInfoDialog:orgDataGrant', function (event, orgCode, orgTypeName, fullName) {
+                        self.orgDataGrantDialog= $.ligerDialog.open({
+                            height: 600,
+                            width: 800,
+                            title: "机构数据授权",
+                            urlParms:{
+                                orgCode: orgCode,
+                                orgTypeName: orgTypeName,
+                                fullName: fullName
+                            },
+                            url:  '${contextRoot}/organization/dialog/orgDataGrant',
+                            isHidden: false,
+                            load: true
+                        })
 
-                    });
-                    $.subscribe('org:orgInfoDialog:modelConfig', function (event, orgCode, orgType, orgName) {
-                        var url = '${contextRoot}/template/initial?treePid=1&treeId=12';
-                        var orgData = {
-                            orgCode: orgCode,
-                            orgType: orgType,
-                            orgName: orgName
-                        }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, {'dataModel': JSON.stringify(orgData)});
-                    });
-                    $.subscribe('org:orgInfoDialog:deptMember', function (event, orgCode, orgId, orgName) {
-                        var url = '${contextRoot}/deptMember/initialDeptMember';
-                        var orgData = {
-                            mode:'',
-                            orgCode: orgCode,
-                            orgId: orgId,
-                            orgName: orgName
-                        }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, orgData);
-                    });
-                    $.subscribe('org:orgInfoDialog:upAndDownMember', function (event, orgCode, orgId, orgName) {
-                        var url = '${contextRoot}/upAndDownMember/initialUpAndDownMember';
-                        var orgData = {
-                            orgCode: orgCode,
-                            orgId: orgId,
-                            orgName: orgName
-                        }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, orgData);
                     });
                 }
             };

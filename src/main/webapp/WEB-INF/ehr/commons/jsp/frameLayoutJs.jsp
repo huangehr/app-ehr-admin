@@ -511,12 +511,34 @@
                 },
                 </sec:authorize>
 
-                // 6-4 安全管理中心 - 日志管理
-                <sec:authorize url="/logManager/initial">
+                // 6-4 安全管理中心 - 应用角色管理
+                <sec:authorize url="/appRole/initial">
                 {
                     pid: 6,
                     level: 2,
                     id: 64,
+                    text: '<spring:message code="title.app.role"/>',
+                    url: '${contextRoot}/appRole/initial'
+                },
+                </sec:authorize>
+
+                // 6-5 安全管理中心 - 机构数据授权
+                <sec:authorize url="/organization/organizationGrant">
+                {
+                    pid: 6,
+                    level: 2,
+                    id: 65,
+                    text: '<spring:message code="title.org.data.auth"/>',
+                    url: '${contextRoot}/organization/organizationGrant'
+                },
+                </sec:authorize>
+
+                // 6-6 安全管理中心 - 日志管理
+                <sec:authorize url="/logManager/initial">
+                {
+                    pid: 6,
+                    level: 2,
+                    id: 66,
                     text:  '<spring:message code="title.log.manage"/>',
                     url: '${contextRoot}/logManager/initial'
                 },
