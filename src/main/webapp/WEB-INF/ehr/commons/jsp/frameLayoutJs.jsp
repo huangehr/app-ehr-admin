@@ -404,7 +404,7 @@
                 </sec:authorize>
 
                 // 4-2 居民档案申领审核
-                <sec:authorize url="/correlation/initial">
+                <sec:authorize url="/archive/apply/initial">
                 {
                     pid: 4,
                     level:2,
