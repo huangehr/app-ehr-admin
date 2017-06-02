@@ -130,7 +130,7 @@
 
                 //修改的点击事件
                 this.$updateDtn.click(function () {
-
+                    debugger;
                     var imgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         resourcesModel = self.$form.Fields.getValues();
@@ -143,6 +143,8 @@
                                 upload.options.formData.portalResourcesModelJsonData = encodeURIComponent(JSON.stringify(resourcesModel));
                                 upload.upload();
                                 win.reloadMasterUpdateGrid();
+
+                                update(resourcesModel);
                             } else {
                                 update(resourcesModel);
                             }
