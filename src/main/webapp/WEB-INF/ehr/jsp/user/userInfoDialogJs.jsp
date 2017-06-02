@@ -51,7 +51,7 @@
             $idCard: $('#inp_idCard'),
             $email: $('#inp_userEmail'),
             $tel: $('#inp_userTel'),
-            $org: $('#inp_org'),
+//            $org: $('#inp_org'),
             $major: $('#inp_major'),
 //            $source:$('#inp_source'),
             $userSex: $('input[name="gender"]', this.$form),
@@ -148,22 +148,22 @@
                 this.$tel2.ligerTextBox({width: 240});
                 this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
 
-                this.$org.addressDropdown({
-                    tabsData: [
-                        {name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
-                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',
-                            beforeAjaxSend: function (ds, $options) {
-                                var province = $options.eq(0).attr('title'),
-                                        city = $options.eq(1).attr('title');
-                                ds.params = $.extend({}, ds.params, {
-                                    province: province,
-                                    city: city
-                                });
-                            }
-                        }
-                    ]
-                });
+                <%--this.$org.addressDropdown({--%>
+                    <%--tabsData: [--%>
+                        <%--{name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},--%>
+                        <%--{name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},--%>
+                        <%--{name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',--%>
+                            <%--beforeAjaxSend: function (ds, $options) {--%>
+                                <%--var province = $options.eq(0).attr('title'),--%>
+                                        <%--city = $options.eq(1).attr('title');--%>
+                                <%--ds.params = $.extend({}, ds.params, {--%>
+                                    <%--province: province,--%>
+                                    <%--city: city--%>
+                                <%--});--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--]--%>
+                <%--});--%>
                 this.$major.ligerTextBox({width: 240});
 //                this.$source.ligerTextBox({width: 240});
                 this.$userSex.ligerRadio();
@@ -241,7 +241,7 @@
                         gender: user.gender,
                         email: user.email,
                         telephone: user.telephone,
-                        organization: [user.province, user.city, user.organization],
+//                        organization: [user.province, user.city, user.organization],
                         major: user.major,
                         publicKey: user.publicKey,
                         validTime: user.validTime,
@@ -336,8 +336,8 @@
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
 						userModel.role = userInfo.roleIds(userModel.role);
-                        var organizationKeys = userModel.organization['keys'];
-                        userModel.organization = organizationKeys[2];
+//                        var organizationKeys = userModel.organization['keys'];
+//                        userModel.organization = organizationKeys[2];
                         if (userImgHtml == 0) {
                             updateUser(userModel);
                         } else {

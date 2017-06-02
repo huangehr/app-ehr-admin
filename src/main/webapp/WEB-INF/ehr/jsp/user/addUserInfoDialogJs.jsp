@@ -43,7 +43,7 @@
             $idCard: $('#inp_idCard'),
             $userEmail: $('#inp_userEmail'),
             $userTel: $('#inp_userTel'),
-            $org: $('#inp_org'),
+//            $org: $('#inp_org'),
             $major: $('#inp_major'),
 //            $source: $('#inp_source'),
             $sex: $('input[name="gender"]', this.$form),
@@ -88,34 +88,34 @@
                 this.$userTel.ligerTextBox({width: 240});
                 this.$major.ligerTextBox({width: 240});
                 this.$sex.ligerRadio();
-                this.$org.addressDropdown({
-                    width:260,
-                    tabsData: [
-                        {
-                            name: '省份',
-                            code: 'id',
-                            value: 'name',
-                            url: '${contextRoot}/address/getParent',
-                            params: {level: '1'}
-                        },
-                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {
-                            name: '医院',
-                            code: 'orgCode',
-                            value: 'fullName',
-                            url: '${contextRoot}/address/getOrgs',
-                            beforeAjaxSend: function (ds, $options) {
-                                var province = $options.eq(0).attr('title'),
-                                        city = $options.eq(1).attr('title');
-                                ds.params = $.extend({}, ds.params, {
+                <%--this.$org.addressDropdown({--%>
+                    <%--width:260,--%>
+                    <%--tabsData: [--%>
+                        <%--{--%>
+                            <%--name: '省份',--%>
+                            <%--code: 'id',--%>
+                            <%--value: 'name',--%>
+                            <%--url: '${contextRoot}/address/getParent',--%>
+                            <%--params: {level: '1'}--%>
+                        <%--},--%>
+                        <%--{name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},--%>
+                        <%--{--%>
+                            <%--name: '医院',--%>
+                            <%--code: 'orgCode',--%>
+                            <%--value: 'fullName',--%>
+                            <%--url: '${contextRoot}/address/getOrgs',--%>
+                            <%--beforeAjaxSend: function (ds, $options) {--%>
+                                <%--var province = $options.eq(0).attr('title'),--%>
+                                        <%--city = $options.eq(1).attr('title');--%>
+                                <%--ds.params = $.extend({}, ds.params, {--%>
 
-                                    province: province,
-                                    city: city
-                                });
-                            }
-                        }
-                    ]
-                });
+                                    <%--province: province,--%>
+                                    <%--city: city--%>
+                                <%--});--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--]--%>
+                <%--});--%>
                 var select_marriage = this.$inp_select_marriage.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
                     valueField: 'code',
