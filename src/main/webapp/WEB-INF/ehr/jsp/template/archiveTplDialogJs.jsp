@@ -99,7 +99,7 @@
 
                     $('#inp_versionNo_wrap').addClass('u-ui-readonly');
                     if(mode=='new' && !Util.isStrEmpty(model.organizationCode))
-                        $('#inp_org_wrap').addClass('u-ui-readonly');
+//                        $('#inp_org_wrap').addClass('u-ui-readonly');
 
                     this.$form.attrScan();
 

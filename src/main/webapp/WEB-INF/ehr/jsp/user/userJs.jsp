@@ -97,7 +97,7 @@
                             {display: '用户类型', name: 'userTypeName', width: '10%',align:'left'},
                             {display: '姓名', name: 'realName', width: '10%',align:'left'},
                             {display: '账号',name: 'loginCode', width:'10%', isAllowHide: false,align:'left'},
-                            {display: '所属机构', name: 'organizationName', width: '15%',align:'left'},
+//                            {display: '所属机构', name: 'organizationName', width: '15%',align:'left'},
                             {display: '联系方式', name: 'telephone',width: '10%',align:'left'},
                             {display: '用户邮箱', name: 'email', width: '13%', resizable: true,align:'left'},
 

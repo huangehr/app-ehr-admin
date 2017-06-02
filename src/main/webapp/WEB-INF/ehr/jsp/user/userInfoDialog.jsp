@@ -54,12 +54,12 @@
             <input type="text" id="inp_select_marriage" data-type="select" data-attr-scan="martialStatus">
         </div>
     </div>
-    <div class="m-form-group">
-        <label><spring:message code="lbl.user.status.fertility"/><spring:message code="spe.colon"/></label>
-        <div class="m-form-control">
-            <input type="text" id="inp_fertilityStatus" data-type="select" data-attr-scan="fertilityStatus">
-        </div>
-    </div>
+    <%--<div class="m-form-group">--%>
+        <%--<label><spring:message code="lbl.user.status.fertility"/><spring:message code="spe.colon"/></label>--%>
+        <%--<div class="m-form-control">--%>
+            <%--<input type="text" id="inp_fertilityStatus" data-type="select" data-attr-scan="fertilityStatus">--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <div class="m-form-group">
         <label><spring:message code="lbl.user.mail"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
@@ -90,13 +90,13 @@
             <%--<input type="text" id="inp_source" class="max-length-150 validate-special-char" data-attr-scan="sourceName"/>--%>
         <%--</div>--%>
     <%--</div>--%>
-    <div class="m-form-group">
-        <label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control f-w250 ">
-            <input type="text" id="inp_org"  required-title=<spring:message code="lbl.must.input"/> data-type="comboSelect"
-                   data-attr-scan="organization" class="validate-org-length f-w240"/>
-        </div>
-    </div>
+    <%--<div class="m-form-group">--%>
+        <%--<label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>--%>
+        <%--<div class="l-text-wrapper m-form-control f-w250 ">--%>
+            <%--<input type="text" id="inp_org"  required-title=<spring:message code="lbl.must.input"/> data-type="comboSelect"--%>
+                   <%--data-attr-scan="organization" class="validate-org-length f-w240"/>--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <div class="m-form-group" style="display: none" id="inp_major_div">
         <label><spring:message code="lbl.specialized.belong"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control ">
@@ -120,21 +120,21 @@
 
             <div class="m-form-group">
                 <label><spring:message code="lbl.user.micard"/><spring:message code="spe.colon"/></label>
-                <div class="l-text-wrapper m-form-control essential">
-                    <input type="text" id="inp_micard" class="required useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="micard"/>
+                <div class="l-text-wrapper m-form-control ">
+                    <input type="text" id="inp_micard" class=" useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="micard"/>
                 </div>
             </div>
             <div class="m-form-group">
                 <label><spring:message code="lbl.user.ssid"/><spring:message code="spe.colon"/></label>
-                <div class="l-text-wrapper m-form-control essential">
-                    <input type="text" id="inp_ssid" class="required useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="ssid"/>
+                <div class="l-text-wrapper m-form-control ">
+                    <input type="text" id="inp_ssid" class=" useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="ssid"/>
                 </div>
             </div>
 
             <div class="m-form-group">
                 <label><spring:message code="lbl.user.qq"/><spring:message code="spe.colon"/></label>
-                <div class="l-text-wrapper m-form-control essential">
-                    <input type="text" id="inp_qq" class="required useTitle max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="qq"/>
+                <div class="l-text-wrapper m-form-control ">
+                    <input type="text" id="inp_qq" class=" useTitle max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="qq"/>
                 </div>
             </div>
 
