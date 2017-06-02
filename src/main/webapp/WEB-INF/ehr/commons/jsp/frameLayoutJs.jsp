@@ -523,13 +523,13 @@
                 </sec:authorize>
 
                 // 6-5 安全管理中心 - 机构数据授权
-                <sec:authorize url="/appRole/initial">
+                <sec:authorize url="/organization/organizationGrant">
                 {
                     pid: 6,
                     level: 2,
                     id: 65,
                     text: '<spring:message code="title.org.data.auth"/>',
-                    url: '${contextRoot}/appRole/initial'
+                    url: '${contextRoot}/organization/organizationGrant'
                 },
                 </sec:authorize>
 
