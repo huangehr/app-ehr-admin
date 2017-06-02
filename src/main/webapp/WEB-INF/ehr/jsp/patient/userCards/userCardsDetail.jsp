@@ -55,6 +55,12 @@
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label>描述：</label>
+		<div class="m-form-control">
+			<textarea  class="col" readonly title="${userCards.description}" style="width:750px;">${userCards.description}</textarea>
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label>有效期起始时间：</label>
 		<div class="m-form-control">
 			<label class="col">${userCards.validityDateBegin}</label>
@@ -62,10 +68,6 @@
 		<label>有效期截止时间：</label>
 		<div class="m-form-control">
 			<label class="col">${userCards.validityDateEnd}</label>
-		</div>
-		<label>描述：</label>
-		<div class="m-form-control ">
-			<label class="col"  title="${userCards.description}">${fn:substring(userCards.description,1,10)}</label>
 		</div>
 	</div>
 
@@ -84,7 +86,7 @@
 		</div>
 		<c:if test="${userCards.auditStatus == '2'}">
 				<label>审核不通过原因：</label>
-				<div >
+				<div class="m-form-control">
 					<label class="col">${userCards.auditReason}</label>
 				</div>
 		</c:if>
@@ -103,7 +105,7 @@
 				</div>
 			</div>
 
-			<label class="f-ml50">原因：</label>
+			<label class="">原因：</label>
 			<div class="m-form-control ">
 				<label class="col f-minh" id="otherReason">
 					<!--<textarea style="height: 40px;" class="f-w240 max-length-500 validate-special-char"  maxlength="500"></textarea>-->

@@ -47,7 +47,7 @@
                         height: 450,
                         isScroll: true,
                         async: false,
-                        columns: [{display: '姓名', name: 'userName', width: '100%'}],
+                        columns: [{display: '用户类型', name: 'userType', width: '25%'},{display: '姓名1', name: 'userName', width: '30%'},{display: '账号', name: 'loginCode', width: '45%'}],
                         onAfterShowData: function (data) {
                             //获取角色组所有配置的人员
                             dataModel.updateRemote("${contextRoot}/userRoles/roleUsersByRoleId", {
@@ -70,7 +70,7 @@
                         isScroll: true,
                         async: false,
                         checkbox: true,
-                        columns: [{display: '姓名', name: 'realName', width: '100%'}],
+                        columns: [{display: '用户类型', name: 'userType', width: '25%'},{display: '姓名', name: 'realName', width: '30%'},{display: '账号', name: 'loginCode', width: '45%'}],
                         onCheckRow: function (checked, data, rowid, rowdata) {
                             $('.win-pop').show();
                             var url = checked ? 'userCreate' : 'userDelete';

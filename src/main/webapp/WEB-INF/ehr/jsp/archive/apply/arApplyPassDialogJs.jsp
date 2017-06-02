@@ -73,20 +73,24 @@
                     diagnosedResult:mode.diagnosedResult,
                     diagnosedProject:mode.diagnosedProject,
                     medicines:mode.medicines,
-                    memo:mode.memo,
-
-                    nameArchives:archives.data.name,
-                    idCardArchives:archives.data.idCardNo,
-                    applyDateArchives:archives.data.eventDate,
-                    visOrgArchives:archives.data.orgCode,
-                    visDoctorArchives:"",
-                    cardNoArchives:archives.data.cardNo,
-                    diagnosedResultArchives:"",
-                    diagnosedProjectArchives:"",
-                    medicinesArchives:"",
-                    memoArchives:"",
-                    rowKeyArchives:archives.data.profileId
+                    memo:mode.memo
                 });
+                //申请信息填充
+                if(archives.data != null){
+                    auditForm.$form.Fields.fillValues({
+                        nameArchives:archives.data.name,
+                        idCardArchives:archives.data.idCardNo,
+                        applyDateArchives:archives.data.eventDate,
+                        visOrgArchives:archives.data.orgCode,
+                        visDoctorArchives:"",
+                        cardNoArchives:archives.data.cardNo,
+                        diagnosedResultArchives:"",
+                        diagnosedProjectArchives:"",
+                        medicinesArchives:"",
+                        memoArchives:"",
+                        rowKeyArchives:archives.data.profileId
+                    });
+                }
             },bindEvents: function () {
                 this.$btnOk.click(function () {
                     win.closeDialog();

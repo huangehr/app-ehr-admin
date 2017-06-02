@@ -132,17 +132,18 @@
                     </li>
                     <li>
                         <div class="m-form-group">
-                            <label>上级医院ID<spring:message code="spe.colon"/></label>
+                            <label>中西医标识<spring:message code="spe.colon"/></label>
                             <div class="l-text-wrapper m-form-control ">
-                                <input type="text" id="parentHosId" class="useTitle "    data-attr-scan="parentHosId"/>
+                                <input type="text" id="zxy" data-type="select"   class=" useTitle "    data-attr-scan="zxy"/>
                             </div>
                         </div>
                     </li>
                     <li>
                         <div class="m-form-group">
-                            <label>中西医标识<spring:message code="spe.colon"/></label>
+                            <label>上级医院<spring:message code="spe.colon"/></label>
                             <div class="l-text-wrapper m-form-control ">
-                                <input type="text" id="zxy" class=" useTitle "    data-attr-scan="zxy"/>
+                                <input type="text" id="parentHosId"  data-type="select"  class="useTitle ajax"
+                                       placeholder="请选择上级医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
                             </div>
                         </div>
                     </li>

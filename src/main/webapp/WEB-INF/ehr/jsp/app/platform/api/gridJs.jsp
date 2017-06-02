@@ -13,7 +13,7 @@
             var openedDialog;
             var p = '${dataModel}';
             var contentH = $('.l-layout-center').height();
-            var parms = {};
+            var parms = {"appId":p};
             var urls = {
                 gotoModify: '${contextRoot}/app/api/gotoModify',
                 tree: '${contextRoot}/app/api/tree',

@@ -40,9 +40,9 @@
             },
 
             initDDL: function (dictId, target) {
-                var width = '100';
+                var width = '150';
                 if(dictId==69){
-                    width = '200';
+                    width = '150';
                 }
                 var target = $(target);
                 var dataModel = $.DataModel.init();
@@ -65,6 +65,7 @@
                     var auditVal = $("#audit_val").val();
                     if(auditVal==2){
                         $("#refuseReasonGroup").css('display','block');
+                        $("#refuseReasonGroup").find("#reason").removeClass("col");
                     }
                     if(auditVal==1){
                         $("#refuseReasonGroup").css('display','none');

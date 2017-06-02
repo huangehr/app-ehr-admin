@@ -64,6 +64,7 @@
                 this.$form.attrScan();
                 if(mode != 'new'){
                     var archiveRelation =${allData}.obj;
+                    debugger;
                     this.$form.Fields.fillValues({
                         id:archiveRelation.id,
                         orgCode:archiveRelation.orgCode,
@@ -71,7 +72,8 @@
                         name:archiveRelation.name,
                         idCardNo:archiveRelation.idCardNo,
                         cardNo: archiveRelation.cardNo,
-                        eventDate:archiveRelation.eventDate.substring(0,10),
+                       // eventDate:archiveRelation.eventDate.substring(0,10),
+                        eventDate:archiveRelation.eventDate != null?archiveRelation.eventDate.substring(0,10):"",
                         eventNo:archiveRelation.eventNo
                     });
 
