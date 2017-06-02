@@ -65,7 +65,7 @@
                     var auditVal = $("#audit_val").val();
                     if(auditVal==2){
                         $("#refuseReasonGroup").css('display','block');
-                        /*$("#refuseReasonGroup").find("#reason").removeClass("col");*/
+                        $("#refuseReasonGroup").find("#reason");
                     }
                     if(auditVal==1){
                         $("#refuseReasonGroup").css('display','none');
@@ -85,12 +85,12 @@
                         if(reasonVal==''){
                             $.Notice.error('拒绝原因不能为空');
                             return;
-                        }/*else if(reasonVal=='0'){
+                        }else if(reasonVal=='0'){
                             if(otherResonVal=='' || otherResonVal==undefined){
                                 $.Notice.error('原因不能为空');
                                 return;
                             }
-                        }*/else{
+                        }else{
                             reasonTxt = $("#reason").val();
                         }
                     }
