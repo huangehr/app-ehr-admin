@@ -209,6 +209,8 @@ public class UserController extends BaseUIController {
                 userModel.setUserType(userDetailModel.getUserType());
                 userModel.setOrganization(userDetailModel.getOrganization());
                 userModel.setMajor("");
+                userModel.setBirthday(userDetailModel.getBirthday());
+                userModel.setRealnameFlag(userDetailModel.getRealnameFlag());
                 userModel.setImgLocalPath("");
                 userModel.setRole(userDetailModel.getRole());
                 if(userDetailModel.getUserType().equals("Doctor")){

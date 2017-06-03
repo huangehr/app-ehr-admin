@@ -78,6 +78,7 @@
                     var reasonVal = $("#reason_val").val();
                     var otherResonVal = $("#otherReason").val();
                     reasonTxt = otherResonVal;
+                    debugger;
                     if(auditVal=='' || auditVal==undefined){
                         $.Notice.error('审核不能为空');
                         return;

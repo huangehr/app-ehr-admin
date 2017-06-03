@@ -204,7 +204,7 @@
                     onSuccess: function () {
                         self.$form.Fields.fillValues({userType: user.userType});
                         self.$userType.parent().removeClass('l-text-focus')
-//                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
+                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
                     },
                     onSelected: function (value) {
                         if (value == 'Doctor')
@@ -332,6 +332,7 @@
                 //修改用户的点击事件
                 this.$updateUserDtn.click(function () {
 
+                    debugger
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
@@ -358,6 +359,7 @@
                 });
 
                 function updateUser(userModel) {
+                    debugger
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUser", {

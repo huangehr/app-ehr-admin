@@ -107,7 +107,7 @@
 
 			<label class="">原因：</label>
 			<div class="m-form-control ">
-				<textarea style="min-height: 35px;width:150px;border: 1px solid #D0D0D0;" class="max-length-500 validate-special-char"  maxlength="500"></textarea>
+				<textarea id="otherReason" style="min-height: 35px;width:150px;border: 1px solid #D0D0D0;" class="max-length-500 validate-special-char"  maxlength="500"></textarea>
 			</div>
 		</div>
 
