@@ -28,6 +28,10 @@
 
 <link rel="stylesheet" href="${staticRoot}/lib/ligerui/skins/custom/css/all.css">
 <link rel="stylesheet" href="${staticRoot}/common/cover.css">
+<head>
+    <link rel="icon" href="develop/images/logo.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="develop/images/logo.png" type="image/x-icon" />
+</head>
 
 <!--[if lt IE 9]>
 <%-- 让IE9以下的IE支持HTML5元素 --%>
