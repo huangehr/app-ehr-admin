@@ -27,4 +27,5 @@
     .clear{clear: both;}
     .f-w507{width: 507px;}
     #uploader .placeholder{padding-top: 78px !important;min-height: 200px !important;}
+	.u-select-title{width:146px;}
 </style>
