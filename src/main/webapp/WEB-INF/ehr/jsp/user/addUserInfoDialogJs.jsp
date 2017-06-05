@@ -212,14 +212,15 @@
 
                 //新增的点击事件
                 this.$addUserBtn.click(function () {
+                    debugger;
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
 					var roles = addUserInfo.roleIds(addUser.role);
 					addUser.role = roles;
                     if (validator.validate()) {
-                        var organizationKeys = addUser.organization['keys'];
-
-                        addUser.organization = organizationKeys[2];
+//                        var organizationKeys = addUser.organization['keys'];
+//
+//                        addUser.organization = organizationKeys[2];
 //                        addUser.source = source.getValue();
                         if (userImgHtml == 0) {
                             updateUser(addUser);
