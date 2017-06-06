@@ -214,7 +214,10 @@ public class UserController extends BaseUIController {
                 userModel.setMajor("");
                 if(null!=userDetailModel.getBirthday()&&!"".equals(userDetailModel.getBirthday())){
                     userModel.setBirthday(userDetailModel.getBirthday());
+                }else{
+                    userModel.setBirthday(null);
                 }
+
                 userModel.setRealnameFlag(userDetailModel.getRealnameFlag());
                 userModel.setImgLocalPath("");
                 userModel.setRole(userDetailModel.getRole());
