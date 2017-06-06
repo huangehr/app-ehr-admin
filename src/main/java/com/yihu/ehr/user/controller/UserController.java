@@ -86,7 +86,7 @@ public class UserController extends BaseUIController {
 
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName?" + searchNm );
+            stringBuffer.append("realName=" + searchNm );
         }
         if (!StringUtils.isEmpty(searchOrg)) {
             stringBuffer.append("organization=" + searchOrg);
