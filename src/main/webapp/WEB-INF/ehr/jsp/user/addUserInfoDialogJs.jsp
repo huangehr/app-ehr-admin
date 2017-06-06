@@ -252,16 +252,16 @@
                             addUser.provinceName = names[0];
                             addUser.cityId = parseInt(keys[1]);
                             addUser.cityName = names[1];
-                            addUser.area_id = parseInt(keys[2]);
-                            addUser.area_name = names[2];
+                            addUser.areaId = parseInt(keys[2]);
+                            addUser.areaName = names[2];
                         }
                         if(keys.length==4){//省、市、县、街道
                             addUser.provinceId = parseInt(keys[0]);
                             addUser.provinceName = names[0];
                             addUser.cityId = parseInt(keys[1]);
                             addUser.cityName = names[1];
-                            addUser.area_id = parseInt(keys[2]);
-                            addUser.area_name = names[2];
+                            addUser.areaId = parseInt(keys[2]);
+                            addUser.areaName = names[2];
                             addUser.street = keys[3];
                         }
                     }
