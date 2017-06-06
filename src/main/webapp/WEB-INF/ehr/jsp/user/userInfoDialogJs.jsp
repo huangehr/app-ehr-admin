@@ -284,7 +284,7 @@
                         ]
                     });
                     setTimeout(function(){
-                        self.$form.Fields.location.setValue([user.provinceName, user.cityName, user.area_name, user.street]);
+                        self.$form.Fields.location.setValue([user.provinceName, user.cityName, user.areaName, user.street]);
                     },500);
 
                     var pic = user.imgRemotePath;
