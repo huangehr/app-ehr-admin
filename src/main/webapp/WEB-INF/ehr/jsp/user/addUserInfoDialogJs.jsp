@@ -54,6 +54,7 @@
             $cancelBtn: $("#div_cancel_btn"),
             $imageShow: $("#div_file_list"),
 			$jryycyc:$("#jryycyc"),//cyctodo
+            $location: $('#location'),
 
             init: function () {
                 var self = this;
@@ -79,6 +80,7 @@
                         win.parent.closeAddUserInfoDialog(function () {
                         });
                 });
+
             },
             initForm: function () {
                 this.$loginCode.ligerTextBox({width: 240});
@@ -167,6 +169,21 @@
 
                 <%--});--%>
 
+                this.$location.ligerComboBox({width: 240});
+                this.$location.addressDropdown({
+                    tabsData: [
+                        {
+                            name: '省份',
+                            code: 'id',
+                            value: 'name',
+                            url: '${contextRoot}/address/getParent',
+                            params: {level: '1'}
+                        },
+                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                        {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                        {name: '街道', maxlength: 200}
+                    ]
+                });
 
                 this.$form.attrScan();
             },
@@ -216,6 +233,38 @@
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
 					var roles = addUserInfo.roleIds(addUser.role);
+                    var location = self.$location.val()==""?"":JSON.parse(self.$location.val());
+                    if(location!=""){
+                        var keys = location.keys;
+                        var names = location.names;
+                        if(keys.length==1){//省
+                            addUser.provinceId = parseInt(keys[0]);
+                            addUser.provinceName = names[0];
+                        }
+                        if(keys.length==2){//省、市
+                            addUser.provinceId = parseInt(keys[0]);
+                            addUser.provinceName = names[0];
+                            addUser.cityId = parseInt(keys[1]);
+                            addUser.cityName = names[1];
+                        }
+                        if(keys.length==3){//省、市、县
+                            addUser.provinceId =parseInt(keys[0]);
+                            addUser.provinceName = names[0];
+                            addUser.cityId = parseInt(keys[1]);
+                            addUser.cityName = names[1];
+                            addUser.area_id = parseInt(keys[2]);
+                            addUser.area_name = names[2];
+                        }
+                        if(keys.length==4){//省、市、县、街道
+                            addUser.provinceId = parseInt(keys[0]);
+                            addUser.provinceName = names[0];
+                            addUser.cityId = parseInt(keys[1]);
+                            addUser.cityName = names[1];
+                            addUser.area_id = parseInt(keys[2]);
+                            addUser.area_name = names[2];
+                            addUser.street = keys[3];
+                        }
+                    }
 					addUser.role = roles;
                     if (validator.validate()) {
 //                        var organizationKeys = addUser.organization['keys'];

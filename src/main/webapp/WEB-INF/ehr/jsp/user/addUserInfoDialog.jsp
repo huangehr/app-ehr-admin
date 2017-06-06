@@ -53,6 +53,12 @@
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label>现居住地:</label>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="location"  class="max-length-500" data-type="comboSelect" />
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label><spring:message code="lbl.user.role"/><spring:message code="spe.colon"/></label>
 		<div class="m-form-control">
 			<input type="text" id="inp_select_userType" data-type="select" data-attr-scan="userType">

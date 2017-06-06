@@ -173,6 +173,7 @@
                 },
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
+                    values.searchOrg = retrieve.$element.Fields.searchOrg.val();
                     reloadGrid.call(this, '${contextRoot}/user/searchUsers', values);
                 },
                 bindEvents: function () {
