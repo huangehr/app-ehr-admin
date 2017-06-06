@@ -212,10 +212,19 @@ public class UserController extends BaseUIController {
                 userModel.setUserType(userDetailModel.getUserType());
                 userModel.setOrganization(userDetailModel.getOrganization());
                 userModel.setMajor("");
-                userModel.setBirthday(userDetailModel.getBirthday());
+                if(null!=userDetailModel.getBirthday()&&!"".equals(userDetailModel.getBirthday())){
+                    userModel.setBirthday(userDetailModel.getBirthday());
+                }
                 userModel.setRealnameFlag(userDetailModel.getRealnameFlag());
                 userModel.setImgLocalPath("");
                 userModel.setRole(userDetailModel.getRole());
+                userModel.setProvinceId(userDetailModel.getProvinceId());
+                userModel.setProvinceName(userDetailModel.getProvinceName());
+                userModel.setCityId(userDetailModel.getCityId());
+                userModel.setCityName(userDetailModel.getCityName());
+                userModel.setAreaId(userDetailModel.getAreaId());
+                userModel.setAreaName(userDetailModel.getAreaName());
+                userModel.setStreet(userDetailModel.getStreet());
                 if(userDetailModel.getUserType().equals("Doctor")){
                     userModel.setMajor(userDetailModel.getMajor());
                 }
