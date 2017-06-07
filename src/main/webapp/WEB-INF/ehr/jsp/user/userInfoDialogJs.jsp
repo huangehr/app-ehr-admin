@@ -38,6 +38,7 @@
             $idCardCopy: $('#idCardCopy'),
             $emailCopy: $('#emailCopy'),
             $tel2: $('#inp_userTel2'),
+            $location: $('#location'),
             $fertilityStatus: $('#inp_fertilityStatus'),
             $qq: $('#inp_qq'),
             $micard: $('#inp_micard'),
@@ -267,6 +268,24 @@
                     self.$publicKeyStartTime.html(user.startTime);
                     self.$idCardCopy.val(user.idCardNo);
                     self.$emailCopy.val(user.email);
+                    this.$location.ligerComboBox({width: 240});
+                    this.$location.addressDropdown({
+                        tabsData: [
+                            {
+                                name: '省份',
+                                code: 'id',
+                                value: 'name',
+                                url: '${contextRoot}/address/getParent',
+                                params: {level: '1'}
+                            },
+                            {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                            {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                            {name: '街道', maxlength: 200}
+                        ]
+                    });
+                    setTimeout(function(){
+                        self.$form.Fields.location.setValue([user.provinceName, user.cityName, user.areaName, user.street]);
+                    },500);
 
                     var pic = user.imgRemotePath;
                     if (!Util.isStrEmpty(pic)) {
@@ -331,11 +350,43 @@
 
                 //修改用户的点击事件
                 this.$updateUserDtn.click(function () {
-
                     debugger
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
+                        var location = self.$form.Fields.location.val()==""?"":JSON.parse(self.$location.val());
+                        if(location!=""){
+                            var keys = location.keys;
+                            var names = location.names;
+                            if(keys.length==1){//省
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                            }
+                            if(keys.length==2){//省、市
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                            }
+                            if(keys.length==3){//省、市、县
+                                userModel.provinceId =parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                                userModel.areaId = parseInt(keys[2]);
+                                userModel.areaName = names[2];
+                            }
+                            if(keys.length==4){//省、市、县、街道
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                                userModel.areaId = parseInt(keys[2]);
+                                userModel.areaName = names[2];
+                                userModel.street = keys[3];
+                            }
+                        }
+                        delete userModel.location;
 						userModel.role = userInfo.roleIds(userModel.role);
 //                        var organizationKeys = userModel.organization['keys'];
 //                        userModel.organization = organizationKeys[2];

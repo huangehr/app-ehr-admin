@@ -77,7 +77,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("searchUsers")
     @ResponseBody
-    public Object searchUsers(String searchNm, String searchType, int page, int rows) {
+    public Object searchUsers(String searchNm,String searchOrg, String searchType, int page, int rows) {
 
         String url = "/users";
         String resultStr = "";
@@ -86,7 +86,10 @@ public class UserController extends BaseUIController {
 
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName?" + searchNm + " g1;organization?" + searchNm + " g1;");
+            stringBuffer.append("realName=" + searchNm );
+        }
+        if (!StringUtils.isEmpty(searchOrg)) {
+            stringBuffer.append("organization=" + searchOrg);
         }
         if (!StringUtils.isEmpty(searchType)) {
             stringBuffer.append("userType=" + searchType);
@@ -209,10 +212,22 @@ public class UserController extends BaseUIController {
                 userModel.setUserType(userDetailModel.getUserType());
                 userModel.setOrganization(userDetailModel.getOrganization());
                 userModel.setMajor("");
-                userModel.setBirthday(userDetailModel.getBirthday());
+                if(null!=userDetailModel.getBirthday()&&!"".equals(userDetailModel.getBirthday())){
+                    userModel.setBirthday(userDetailModel.getBirthday());
+                }else{
+                    userModel.setBirthday(null);
+                }
+
                 userModel.setRealnameFlag(userDetailModel.getRealnameFlag());
                 userModel.setImgLocalPath("");
                 userModel.setRole(userDetailModel.getRole());
+                userModel.setProvinceId(userDetailModel.getProvinceId());
+                userModel.setProvinceName(userDetailModel.getProvinceName());
+                userModel.setCityId(userDetailModel.getCityId());
+                userModel.setCityName(userDetailModel.getCityName());
+                userModel.setAreaId(userDetailModel.getAreaId());
+                userModel.setAreaName(userDetailModel.getAreaName());
+                userModel.setStreet(userDetailModel.getStreet());
                 if(userDetailModel.getUserType().equals("Doctor")){
                     userModel.setMajor(userDetailModel.getMajor());
                 }

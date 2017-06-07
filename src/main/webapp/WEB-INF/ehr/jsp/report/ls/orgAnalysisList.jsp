@@ -43,7 +43,7 @@
          </div>
        </div>
 
-    <table width="80%" border="1" align="center" style="text-align:center" id="table_data">
+    <table width="100%" border="1" align="center" style="text-align:center" id="table_data">
 
       <%--<c:forEach var="model" items="${qcDailyStorageModelList}" >--%>
         <%--<tr style="margin-bottom: 40px;height: 40px; color: blue;"><td colspan="7"><h3>${model.eventDate}</h3></td></tr>--%>

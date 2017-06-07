@@ -10,10 +10,13 @@
         <div class="m-form-group f-mt10 ">
             <div class="m-form-control">
                 <!--输入框-->
-                <input type="text" id="inp_search" placeholder=<spring:message code="lbl.input.name.org"/> class="f-ml10" data-attr-scan="searchNm"/>
+                <input type="text" id="inp_search" placeholder="请输入姓名" class="f-ml10" data-attr-scan="searchNm"/>
             </div>
-
-            <div class="m-form-control f-ml20">
+            <div class="m-form-control f-mr10 f-ml10">
+                <!--下拉框-->
+                <input id="inp_org" class="required useTitle f-h28 f-w150 validate-special-char" data-type="select" placeholder="请选择机构" data-attr-scan="searchOrg"/>
+            </div>
+            <div class="m-form-control f-ml10">
                 <!--下拉框-->
                 <input type="text" id="inp_select_searchType" placeholder=<spring:message code="lbl.select.userType"/> data-type="select" data-attr-scan="searchType">
             </div>

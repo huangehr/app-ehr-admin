@@ -74,9 +74,9 @@
 								var detailModelList = data.detailModelList;
 								for(var i=0;i<detailModelList.length;i++){
 									var eventDate = detailModelList[i].eventDate;
-									resultStr+='<tr style="margin-bottom: 40px;height: 40px; color: blue;">' +
+									resultStr+='<tr class="firstTr">' +
 													'<td colspan="7"><h3>'+eventDate+'</h3></td></tr>'+
-												'<tr  style="height: 40px;">'+
+												'<tr  class="f-h40">'+
 													'<td>数据集</td>'+
 													'<td>累计入库记录数</td>'+
 													'<td>当天入库记录数</td>'+
@@ -87,7 +87,7 @@
 												'</tr>';
 									var detailData = detailModelList[i].qcDailyStorageDetailModelList;
 									for(var j=0;j<detailData.length;j++){
-										resultStr+='<tr style="height: 30px;">'+
+										resultStr+='<tr class="f-h30">'+
 														'<td>'+detailData[j].dataType+'</td>'+
 														'<td>'+detailData[j].totalStorageNum+'</td>'+
 														'<td>'+detailData[j].todayStorageNum+'</td>'+
