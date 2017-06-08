@@ -112,6 +112,13 @@
             },
             bindEvents: function () {
                 var self = this;
+                $(".l-text-wrapper").on("click",function(){//解决样式不兼容问题
+                   if($(this).find("#jryycyc").length>0){
+                        $(".l-box-select-inner").css("height","240px");
+                    }else{
+                        $(".l-box-select-inner").css("height","auto");
+                    }
+                });
                 var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
                     onElementValidateForAjax:function(elm){
                         var field = $(elm).attr('id');
