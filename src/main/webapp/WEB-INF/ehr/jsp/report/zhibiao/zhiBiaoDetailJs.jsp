@@ -24,12 +24,10 @@
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
 
-                dictRetrieve.init();
                 conditionArea.init();
                 conditionArea.resizeContent();
                 entryRetrieve.init();
                 entryMater.init();
-                //versionStage=getStagedByValue();
             }
 
             function getStagedByValue()
@@ -53,37 +51,12 @@
                 $stdDictVersion: $('#stdDictVersion'),
 
                 init: function () {
-                    this.initDDL(this.$stdDictVersion);
-                    this.$element.show();
-                    this.event();
                     this.rendBarTools();
                 },
                 resizeContent:function(){
-                    var contentW = $('#grid_content').width();
-                    var leftW = $('#div_left').width();
-                    $('#div_right').width(contentW - leftW - 20);
-                },
-                initDDL: function (target) {
-                    var dataModel = $.DataModel.init();
-                    dataModel.fetchRemote("${contextRoot}/cdaVersion/getVersionList", {
-                        success: function (data) {
-                            target.ligerComboBox({
-                                valueField: 'version',
-                                textField: 'versionName',
-                                data: data.detailModelList,
-                                initValue: 1,
-                                allowBlank: false,
-                                onSelected: function (value, text) {
-                                    versionStage=getStagedByValue();
-                                    dictMaster.init();
-                                    $("#l_upd_form").attr("action","${contextRoot}/cdadict/importFromExcel?version="+value);
-                                }
-                            });
-                            var manager = target.ligerGetComboBoxManager();
-                            manager.selectItemByIndex(0);
-
-                        }
-                    });
+//                    var contentW = $('#grid_content').width();
+//                    var leftW = $('#div_left').width();
+//                    $('#div_right').width(contentW - leftW - 20);
                 },
                 //初始化工具栏
                 rendBarTools : function(){
@@ -145,141 +118,6 @@
                 }
             };
 
-            dictMaster = {
-                dictInfoDialog: null,
-                grid: null,
-                init: function () {
-                    if (this.grid) {
-                        this.reloadGrid(1);
-                    }
-                    else {
-                        var searchNm = $("#searchNm").val();
-                        var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                        this.grid = $("#div_stdDict_grid").ligerGrid($.LigerGridEx.config({
-                            url: '${contextRoot}/cdadict/getCdaDictList',
-                            parms: {
-                                searchNm: searchNm,
-                                strVersionCode: stdDictVersion
-                            },
-                            columns: [
-                                {display: 'id', name: 'id', hide: true},
-                                {display: '字典编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
-                                {display: '字典名称', name: 'name', width: '34%', isAllowHide: false, align: 'left'},
-                                {
-                                    display: '操作', name: 'operator', width: '33%', render: function (row) {
-                                    var html = '';
-                                    <sec:authorize url="/cdadict/saveDict">
-                                    html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "stddict:dictInfo:open", row.id, 'modify') + '"></a>';
-                                    </sec:authorize>
-
-                                    <sec:authorize url="/cdadict/deleteDict">
-                                    html +=  '<a class="grid_delete" href="#" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "stddict:dictInfoGrid:delete", row.id) + '"></a>';
-                                    </sec:authorize>
-                                    return html;
-                                }
-                                }
-                            ],
-                            //enabledEdit: true,
-                            validate: true,
-                            unSetValidateAttr: false,
-                            allowHideColumn: false,
-                            onBeforeShowData: function (data) {
-                                if (data.totalCount == 0) {
-                                    entryMater.reloadGrid(1, '');
-                                }
-                            },
-                            onAfterShowData: function (data) {
-                                if (selectRowObj != null && isSaveSelectStatus) {
-                                    isSaveSelectStatus = false;
-                                    dictMaster.grid.select(selectRowObj);
-                                }else
-                                    this.select(0);
-                            },
-                            onSelectRow: function (row) {
-                                selectRowObj = row;
-                                entryMater.reloadGrid(1);
-                            }
-                        }));
-                        this.bindEvents();
-                        // 自适应宽度
-                        this.grid.adjustToWidth();
-                    }
-                },
-                reloadGrid: function (curPage) {
-                    var searchNm = $("#searchNm").val();
-                    var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                    var values = {
-                        searchNm: searchNm,
-                        strVersionCode: stdDictVersion
-                    };
-                    Util.reloadGrid.call(this.grid, '${contextRoot}/cdadict/getCdaDictList', values, curPage);
-                },
-                bindEvents: function () {
-                    $.subscribe('stddict:dictInfo:open', function (event, id, mode) {
-                        var title = '';
-                        //只有new 跟 modify两种模式会到这个函数
-                        if (mode == 'modify') {
-                            title = '修改标准字典';
-                        }
-                        else {
-
-                            if(!versionStage)
-                            {
-                                $.Notice.error("已发布版本不可新增，请确认!");
-                                return;
-                            }
-                            title = '新增标准字典';
-                        }
-                        isSaveSelectStatus = true;
-                        var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                        dictMaster.dictInfoDialog = $.ligerDialog.open({
-                            height: 462,
-                            width: 460,
-                            title: title,
-                            url: '${contextRoot}/cdadict/template/stdDictInfo',
-                            urlParms: {
-                                dictId: id,
-                                mode: mode,
-                                strVersionCode: stdDictVersion,
-                                staged:versionStage
-                            },
-                            isHidden: false,
-                            opener: true,
-                            load: true
-                        });
-                    });
-
-                    $.subscribe('stddict:dictInfoGrid:delete', function (event, id) {
-
-                        if(!versionStage)
-                        {
-                            $.Notice.error("已发布版本不可删除，请确认!");
-                            return;
-                        }
-
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
-                            if (r) {
-                                var dataModel = $.DataModel.init();
-                                var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                                dataModel.updateRemote('${contextRoot}/cdadict/deleteDict', {
-                                    data: {dictId: id, cdaVersion: stdDictVersion},
-                                    success: function (data) {
-                                        if(data.successFlg){
-                                            $.Notice.success('删除成功！');
-                                            dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
-                                        }else{
-                                            $.Notice.error(data.errorMsg);
-                                        }
-
-
-                                    }
-                                });
-                            }
-                        })
-                    });
-                }
-            };
-
             entryRetrieve = {
                 $element: $('#entryRetrieve'),
                 $searchNm: $('#searchNmEntry'),
@@ -298,30 +136,24 @@
             entryMater = {
                 entryInfoDialog: null,
                 grid: null,
-                init: function (dictId) {
+                grid1: null,
+                init: function () {
                     if (this.grid)
                         return;
                     this.grid = $("#div_relation_grid").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/cdadict/searchDictEntryList',
+                        url: '${contextRoot}/cdadict/getCdaDictList',
+                        width:" calc(50% - 20px)",
+                        height:"450px",
+                        parms: {
+                            searchNm: "",
+                            strVersionCode: "592814c2898a"
+                        },
                         columns: [
                             {display: 'id', name: 'id', hide: true},
                             {display: 'dictId', name: 'dictId', hide: true},
-                            {display: '值域编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '值域名称', name: 'value', width: '34%', isAllowHide: false, align: 'left'},
-                            {
-                                display: '操作', name: 'operator', width: '33%', render: function (row) {
-
-                                var html = '';
-                                <sec:authorize url="/cdadict/saveDictEntry">
-                                html += '<a class="grid_edit" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "entry:dictInfo:open", row.id, row.dictId, 'modify') + '"></a>';
-                                </sec:authorize>
-
-                                <sec:authorize url="/cdadict/deleteDictEntryList">
-                                html += '<a class="grid_delete" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "entry:dictInfoGrid:delete", row.id) + '"></a>';
-                                </sec:authorize>
-                                return html;
-                            }
-                            }
+                            {display: '编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
+                            {display: '名称', name: 'name', width: '33%', isAllowHide: false, align: 'left'},
+                            {display: '维度', name: 'name', width: '34%', isAllowHide: false, align: 'left'}
                         ],
                         //delayLoad:true,
                         selectRowButtonOnly: false,
@@ -329,6 +161,31 @@
                         unSetValidateAttr: false,
                         allowHideColumn: false,
                         checkbox: true,
+                        onDblClickRow: function (row) {
+                            //$.publish('entry:dictInfo:open',[row.id, row.dictId, 'modify']);
+                        }
+                    }));
+
+                    this.grid1 = $("#div_relation_grid1").ligerGrid($.LigerGridEx.config({
+                        url: '${contextRoot}/cdadict/getCdaDictList',
+                        parms: {
+                            searchNm: "",
+                            strVersionCode: "592814c2898a"
+                        },
+                        width:" calc(50% - 20px)",
+                        height:"450px",
+                        columns: [
+                            {display: 'id', name: 'id', hide: true},
+                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: '编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
+                            {display: '名称', name: 'name', width: '33%', isAllowHide: false, align: 'left'},
+                            {display: '维度', name: 'name', width: '34%', isAllowHide: false, align: 'left'}
+                        ],
+                        //delayLoad:true,
+                        selectRowButtonOnly: false,
+                        validate: true,
+                        unSetValidateAttr: false,
+                        allowHideColumn: false,
                         onDblClickRow: function (row) {
                             //$.publish('entry:dictInfo:open',[row.id, row.dictId, 'modify']);
                         }
