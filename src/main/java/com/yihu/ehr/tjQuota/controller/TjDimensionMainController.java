@@ -180,12 +180,12 @@ public class TjDimensionMainController extends BaseUIController {
 
     /**
      * 根据id获取消息
-     * @param model
      * @param id
      * @return
      */
     @RequestMapping("getTjDimensionMainByID")
-    public Object getTjDimensionMainByID(Model model, Long id ) {
+    @ResponseBody
+    public TjDimensionMainModel getTjDimensionMainByID(Long id ) {
         String url ="/tj/tjDimensionMainId/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -193,13 +193,11 @@ public class TjDimensionMainController extends BaseUIController {
         params.put("id", id);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            model.addAttribute("allData", resultStr);
-            model.addAttribute("contentPage", "/report/zhibiao/dimensionMain");
-            return "simpleView";
+            Envelop ep = getEnvelop(resultStr);
+            TjDimensionMainModel detailModel = toModel(toJson(ep.getObj()),TjDimensionMainModel.class);
+            return detailModel;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return null;
         }
     }
 

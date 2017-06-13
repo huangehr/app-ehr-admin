@@ -185,7 +185,8 @@ public class TjDimensionSlaveController extends BaseUIController {
      * @return
      */
     @RequestMapping("getTjDimensionSlaveById")
-    public Object getTjDimensionSlaveById(Model model, Long id ) {
+    @ResponseBody
+    public TjDimensionSlaveModel getTjDimensionSlaveById(Model model, Long id ) {
         String url ="/tj/tjDimensionSlaveId/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -193,13 +194,11 @@ public class TjDimensionSlaveController extends BaseUIController {
         params.put("id", id);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            model.addAttribute("allData", resultStr);
-            model.addAttribute("contentPage", "/report/zhibiao/dimensionSlave");
-            return "simpleView";
+            Envelop ep = getEnvelop(resultStr);
+            TjDimensionSlaveModel detailModel = toModel(toJson(ep.getObj()),TjDimensionSlaveModel.class);
+            return detailModel;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return null;
         }
     }
 
