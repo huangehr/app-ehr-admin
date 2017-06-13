@@ -186,7 +186,7 @@ public class TjDimensionSlaveController extends BaseUIController {
      */
     @RequestMapping("getTjDimensionSlave")
     public Object getMessageRemind(Model model, Long id ) {
-        String url ="tj/tjDimensionSlave/" +id;
+        String url ="/tj/tjDimensionSlaveId/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -219,8 +219,7 @@ public class TjDimensionSlaveController extends BaseUIController {
         params.put("name", name);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            result = mapper.readValue(resultStr, Envelop.class);
-            if (result.equals("true")) {
+            if (resultStr.equals("true")) {
                 return  true;
             } else {
 
@@ -247,8 +246,7 @@ public class TjDimensionSlaveController extends BaseUIController {
         params.put("code", code);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            result = mapper.readValue(resultStr, Envelop.class);
-            if (result.equals("true")) {
+            if (resultStr.equals("true")) {
                 return  true;
             } else {
 
