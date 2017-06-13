@@ -412,17 +412,24 @@
                 },
                 </sec:authorize>
 
+                // 5 - 质量监控报告
+                <sec:authorize url="Ehr_Master_Centre">
+                {
+                    id: 5,
+                    level:1,
+                    text: '<spring:message code="title.quality.control.management"/>'
+                },
+                </sec:authorize>
                 // 5-3 - 指标管理
                 <sec:authorize url="/zhibiao/initial">
                 {
                     pid: 5,
                     level: 2,
-                    id: 53,
+                    id: 51,
                     text: '<spring:message code="title.index.management"/>',
                     url: '${contextRoot}/zhibiao/initial'
                 },
                 </sec:authorize>
-
 
                 // 6- 信息安全管理
                 <sec:authorize url="Ehr_Security_Centre">
