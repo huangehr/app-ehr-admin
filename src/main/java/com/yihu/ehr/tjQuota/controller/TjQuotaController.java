@@ -1,7 +1,7 @@
 package com.yihu.ehr.tjQuota.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.agModel.tj.TjDataSaveModel;
+import com.yihu.ehr.agModel.tj.TjQuotaModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by llh on 2017/5/9.
+ * Created by Administrator on 2017/6/13.
  */
 @Controller
-@RequestMapping("/tjDataSave")
+@RequestMapping("/tjQuota")
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class TjDataSaveController extends BaseUIController {
+public class TjQuotaController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -42,23 +42,20 @@ public class TjDataSaveController extends BaseUIController {
     private String comUrl;
 
     /**
-     *数据存储
+     * 指标
      * @param model
      * @return
      */
     @RequestMapping("initial")
     public String initial(Model model) {
-        model.addAttribute("contentPage", "/report/zhibiao/dataSave");
+        model.addAttribute("contentPage", "/report/zhibiao/quota");
         return "pageView";
     }
 
-
-    
-    //查询统计主维度
-    @RequestMapping("/getTjDataSave")
+    @RequestMapping("/getTjQuota")
     @ResponseBody
-    public Object searchTjDataSave(String name, int page, int rows){
-        String url = "/tj/getTjDataSaveList";
+    public Object searchTjQuota(String name, int page, int rows){
+        String url = "/tj/getTjQuotaList";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -76,53 +73,56 @@ public class TjDataSaveController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(TjDataSaveController.class).error(ex.getMessage());
+            LogService.getLogger(TjQuotaController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
     }
 
-
-
     /**
      * 新增修改
-     * @param tjDataSaveModelJsonData
+     * @param tjQuotaModelJsonData
      * @param request
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updateTjDataSave", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updateTjDataSource", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updateTjDataSave(String tjDataSaveModelJsonData, HttpServletRequest request) throws IOException {
+    public Object updateTjQuota(String tjQuotaModelJsonData, HttpServletRequest request) throws IOException {
 
-        String url = "/tj/addTjDataSave";
+        String url = "/tj/addTjQuota/";
         String resultStr = "";
-        System.out.println();
         Envelop result = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        String[] strings = URLDecoder.decode(tjDataSaveModelJsonData, "UTF-8").split(";");
-        TjDataSaveModel detailModel = toModel(strings[0], TjDataSaveModel.class);
+        String[] strings = URLDecoder.decode(tjQuotaModelJsonData, "UTF-8").split(";");
+        TjQuotaModel detailModel = toModel(strings[0], TjQuotaModel.class);
         RestTemplates templates = new RestTemplates();
 
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
-                Long tjDataSaveId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tjDataSave/" + tjDataSaveId);
+                Long tjQuotaId = detailModel.getId();
+                resultStr = templates.doGet(comUrl + "/tjDataSource/" + tjQuotaId);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
-                    TjDataSaveModel updateTjDataSave = getEnvelopModel(envelop.getObj(), TjDataSaveModel.class);
+                    TjQuotaModel updateTjQuota = getEnvelopModel(envelop.getObj(), TjQuotaModel.class);
 
-                    updateTjDataSave.setCode(detailModel.getCode());
-                    updateTjDataSave.setName(detailModel.getName());
-                    updateTjDataSave.setType(detailModel.getType());
-                    updateTjDataSave.setStatus(detailModel.getStatus());
-                    updateTjDataSave.setRemark(detailModel.getRemark());
-                    updateTjDataSave.setCreateTime(new Date());
-                    updateTjDataSave.setCreateUser(userDetailModel.getId());
-                    updateTjDataSave.setCreateUserName(userDetailModel.getRealName());
-                    params.add("model", toJson(updateTjDataSave));
+                    updateTjQuota.setCode(detailModel.getCode());
+                    updateTjQuota.setName(detailModel.getName());
+                    updateTjQuota.setCron(detailModel.getCron());
+                    updateTjQuota.setExecType(detailModel.getExecType());
+                    updateTjQuota.setExecTime(detailModel.getExecTime());
+                    updateTjQuota.setJobClazz(detailModel.getJobClazz());
+                    updateTjQuota.setStatus(detailModel.getStatus());
+                    updateTjQuota.setDataLevel(detailModel.getDataLevel());
+                    updateTjQuota.setRemark(detailModel.getRemark());
+                    updateTjQuota.setCreateTime(new Date());
+                    updateTjQuota.setCreateUser(userDetailModel.getId());
+                    updateTjQuota.setCreateUserName(userDetailModel.getRealName());
+                    updateTjQuota.setTjQuotaDataSaveModel(detailModel.getTjQuotaDataSaveModel());
+                    updateTjQuota.setTjQuotaDataSourceModel(detailModel.getTjQuotaDataSourceModel());
+                    params.add("model", toJson(updateTjQuota));
 
                     resultStr = templates.doPost(comUrl + url, params);
                 } else {
@@ -147,19 +147,19 @@ public class TjDataSaveController extends BaseUIController {
 
     /**
      * 删除消息
-     * @param tjDataSaveId
+     * @param tjQuotaId
      * @return
      */
     @RequestMapping("deleteTjDataSave")
     @ResponseBody
-    public Object deleteTjDataSave(Long tjDataSaveId) {
-        String url = "/tj/deleteTjDataSave";
+    public Object deleteTjQuota(Long tjQuotaId) {
+        String url = "/tj/deleteTjQuota/" + tjQuotaId;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
-        params.put("id", tjDataSaveId);
+        params.put("id", tjQuotaId);
         try {
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             result = mapper.readValue(resultStr, Envelop.class);
@@ -183,9 +183,9 @@ public class TjDataSaveController extends BaseUIController {
      * @param id
      * @return
      */
-    @RequestMapping("getTjDataSaveById")
+    @RequestMapping("getTjQuotaById")
     public Object getTjQuotaById(Model model, Long id ) {
-        String url ="/tj/getTjDataSaveById/" +id;
+        String url ="/tj/getTjQuotaById/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -193,7 +193,7 @@ public class TjDataSaveController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             model.addAttribute("allData", resultStr);
-            model.addAttribute("contentPage", "/report/zhibiao/dataSave");
+            model.addAttribute("contentPage", "/report/zhibiao/quota");
             return "simpleView";
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
@@ -202,4 +202,53 @@ public class TjDataSaveController extends BaseUIController {
         }
     }
 
+    /**
+     * 校验name是否唯一,true已存在
+     * @param name
+     * @return
+     */
+    @RequestMapping("hasExistsName")
+    @ResponseBody
+    public boolean hasExistsName(String name) {
+        String url = "/tj/tjQuotaExistsName" ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("name", name);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
+
+    /**
+     * 校验code是否唯一
+     * @param code
+     * @return
+     */
+    @RequestMapping("hasExistsCode")
+    @ResponseBody
+    public boolean hasExistsCode(String code) {
+        String url = "/tj/tjQuotaExistsCode" ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("code", code);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
 }

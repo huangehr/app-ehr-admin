@@ -96,7 +96,7 @@ public class TjDataSourceController extends BaseUIController {
     @ResponseBody
     public Object updateTjDataSource(String tjDataSourceModelJsonData, HttpServletRequest request) throws IOException {
 
-        String url = "/tj/tjDataSource";
+        String url = "/tj/addTjDataSource";
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
@@ -153,7 +153,7 @@ public class TjDataSourceController extends BaseUIController {
     @RequestMapping("deleteTjDataSource")
     @ResponseBody
     public Object deleteTjDataSource(Long tjDataSourceId) {
-        String url = "/tj/tjDataSource" ;
+        String url = "/tj/deletetTjDataSource" ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -176,5 +176,29 @@ public class TjDataSourceController extends BaseUIController {
         }
     }
 
+    /**
+     * 根据id获取消息
+     * @param model
+     * @param id
+     * @return
+     */
+    @RequestMapping("getTjDataSourceById")
+    public Object getTjQuotaById(Model model, Long id ) {
+        String url ="/tj/getTjDataSourceById/" +id;
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            model.addAttribute("allData", resultStr);
+            model.addAttribute("contentPage", "/report/zhibiao/dataSource");
+            return "simpleView";
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 
 }
