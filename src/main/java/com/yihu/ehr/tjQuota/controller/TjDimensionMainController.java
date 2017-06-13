@@ -96,7 +96,7 @@ public class TjDimensionMainController extends BaseUIController {
     @ResponseBody
     public Object updateTjDimensionMain(String tjDimensionMainModelJsonData, HttpServletRequest request) throws IOException {
 
-        String url = "/tjDimensionMain";
+        String url = "/tj/tjDimensionMain";
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
@@ -153,7 +153,7 @@ public class TjDimensionMainController extends BaseUIController {
     @RequestMapping("deleteTjDimensionMain")
     @ResponseBody
     public Object deleteTjDimensionMain(Long tjDimensionMainId) {
-        String url = "/tjDimensionMain";
+        String url = "/tj/tjDimensionMain";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();

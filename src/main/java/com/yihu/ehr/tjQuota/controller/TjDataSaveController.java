@@ -96,7 +96,7 @@ public class TjDataSaveController extends BaseUIController {
     @ResponseBody
     public Object updateTjDataSave(String tjDataSaveModelJsonData, HttpServletRequest request) throws IOException {
 
-        String url = "/tjDataSave";
+        String url = "/tj/tjDataSave";
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
@@ -153,7 +153,7 @@ public class TjDataSaveController extends BaseUIController {
     @RequestMapping("deleteTjDataSave")
     @ResponseBody
     public Object deleteTjDataSave(Long tjDataSaveId) {
-        String url = "/tjDataSave";
+        String url = "/tj/tjDataSave";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();

@@ -96,7 +96,7 @@ public class TjDataSourceController extends BaseUIController {
     @ResponseBody
     public Object updateTjDataSource(String tjDataSourceModelJsonData, HttpServletRequest request) throws IOException {
 
-        String url = "/tjDataSource";
+        String url = "/tj/tjDataSource";
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
@@ -153,7 +153,7 @@ public class TjDataSourceController extends BaseUIController {
     @RequestMapping("deleteTjDataSource")
     @ResponseBody
     public Object deleteTjDataSource(Long tjDataSourceId) {
-        String url = "/tjDataSource" ;
+        String url = "/tj/tjDataSource" ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
