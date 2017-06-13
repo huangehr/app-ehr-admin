@@ -185,7 +185,7 @@ public class TjDimensionMainController extends BaseUIController {
      * @return
      */
     @RequestMapping("getTjDimensionMain")
-    public Object getMessageRemind(Model model, Long id ) {
+    public Object getTjDimensionMain(Model model, Long id ) {
         String url ="/tj/tjDimensionMainId/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
