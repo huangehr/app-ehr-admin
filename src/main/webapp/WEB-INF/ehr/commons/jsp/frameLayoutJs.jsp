@@ -412,6 +412,18 @@
                 },
                 </sec:authorize>
 
+                // 5-3 - 指标管理
+                <sec:authorize url="/zhibiao/initial">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 53,
+                    text: '<spring:message code="title.index.management"/>',
+                    url: '${contextRoot}/zhibiao/initial'
+                },
+                </sec:authorize>
+
+
                 // 6- 信息安全管理
                 <sec:authorize url="Ehr_Security_Centre">
                 {
