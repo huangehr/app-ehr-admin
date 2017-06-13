@@ -108,8 +108,8 @@ public class TjDimensionSlaveController extends BaseUIController {
 
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
-                Long tjDimensionSlaveId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tjDimensionSlave/" + tjDimensionSlaveId);
+                Long id = detailModel.getId();
+                resultStr = templates.doGet(comUrl + "/tj/tjDimensionSlave/" + id);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDimensionSlaveModel updateTjDimensionSlave = getEnvelopModel(envelop.getObj(), TjDimensionSlaveModel.class);
@@ -117,7 +117,7 @@ public class TjDimensionSlaveController extends BaseUIController {
                     updateTjDimensionSlave.setCode(detailModel.getCode());
                     updateTjDimensionSlave.setName(detailModel.getName());
                     updateTjDimensionSlave.setType(detailModel.getType());
-                    updateTjDimensionSlave.setDel(detailModel.getDel());
+                    updateTjDimensionSlave.setStatus(detailModel.getStatus());
                     updateTjDimensionSlave.setRemark(detailModel.getRemark());
                     updateTjDimensionSlave.setCreateTime(new Date());
                     updateTjDimensionSlave.setCreateUser(userDetailModel.getId());
@@ -153,7 +153,7 @@ public class TjDimensionSlaveController extends BaseUIController {
     @RequestMapping("deleteTjDimensionSlave")
     @ResponseBody
     public Object deleteTjDimensionSlave(Long tjDimensionSlaveId) {
-        String url = "/tjDimensionSlave/" + tjDimensionSlaveId;
+        String url = "/tjDimensionSlave/";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -175,6 +175,88 @@ public class TjDimensionSlaveController extends BaseUIController {
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }
+    }
+
+
+    /**
+     * 根据id获取消息
+     * @param model
+     * @param id
+     * @return
+     */
+    @RequestMapping("getTjDimensionSlave")
+    public Object getMessageRemind(Model model, Long id ) {
+        String url ="tj/tjDimensionSlave/" +id;
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            model.addAttribute("allData", resultStr);
+            model.addAttribute("contentPage", "/report/zhibiao/dimensionSlave");
+            return "simpleView";
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    /**
+     * 校验名称是否唯一
+     * @param name
+     * @return
+     */
+    @RequestMapping("isNameExists")
+    @ResponseBody
+    public boolean isNameExists(String name) {
+        String url = "/tj/tjDimensionSlaveName" ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("name", name);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            result = mapper.readValue(resultStr, Envelop.class);
+            if (result.equals("true")) {
+                return  true;
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
+
+    /**
+     * 校验code是否唯一
+     * @param code
+     * @return
+     */
+    @RequestMapping("isCodeExists")
+    @ResponseBody
+    public boolean isCodeExists(String code) {
+        String url = "/tj/tjDimensionSlaveCode" ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("code", code);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            result = mapper.readValue(resultStr, Envelop.class);
+            if (result.equals("true")) {
+                return  true;
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
     }
 
 

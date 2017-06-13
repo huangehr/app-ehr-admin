@@ -110,8 +110,8 @@ public class TjDimensionMainController extends BaseUIController {
 
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
-                Long tjDimensionMainId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tjDimensionMain/" + tjDimensionMainId);
+                Long id = detailModel.getId();
+                resultStr = templates.doGet(comUrl + "/tj/tjDimensionMain/" + id);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDimensionMainModel updateTjDimensionMain = getEnvelopModel(envelop.getObj(), TjDimensionMainModel.class);
@@ -155,7 +155,7 @@ public class TjDimensionMainController extends BaseUIController {
     @RequestMapping("deleteTjDimensionMain")
     @ResponseBody
     public Object deleteTjDimensionMain(Long tjDimensionMainId) {
-        String url = "/tjDimensionMain/" + tjDimensionMainId;
+        String url = "/tjDimensionMain/";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -177,6 +177,90 @@ public class TjDimensionMainController extends BaseUIController {
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }
+    }
+
+
+    /**
+     * 根据id获取消息
+     * @param model
+     * @param id
+     * @return
+     */
+    @RequestMapping("getTjDimensionMain")
+    public Object getMessageRemind(Model model, Long id ) {
+        String url ="tj/tjDimensionMain/" +id;
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            model.addAttribute("allData", resultStr);
+            model.addAttribute("contentPage", "/report/zhibiao/dimensionMain");
+            return "simpleView";
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+
+
+    /**
+     * 校验名称是否唯一
+     * @param name
+     * @return
+     */
+    @RequestMapping("isNameExists")
+    @ResponseBody
+    public boolean isNameExists(String name) {
+        String url = "/tj/tjDimensionMainName" ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("name", name);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            result = mapper.readValue(resultStr, Envelop.class);
+            if (result.equals("true")) {
+                return  true;
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
+
+    /**
+     * 校验code是否唯一
+     * @param code
+     * @return
+     */
+    @RequestMapping("isCodeExists")
+    @ResponseBody
+    public boolean isCodeExists(String code) {
+        String url = "/tj/tjDimensionMainCode" ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("code", code);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            result = mapper.readValue(resultStr, Envelop.class);
+            if (result.equals("true")) {
+                return  true;
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
     }
 
 
