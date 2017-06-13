@@ -30,7 +30,8 @@
             <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>">
           </div>
         </div>
-        <div style="position: absolute;left: calc(55% - -20px);top: 60px;font-size: 14px;font-weight: bold;">已选中维度：</div>
+        <button id="div_save" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10" style="position: absolute;right: 20px;top: 50px;">保存</button>
+        <div style="position: absolute;left: 40%;top: 60px;font-size: 14px;font-weight: bold;">已选中维度：</div>
       </div>
 
       <div style="width: 100%;height: 435px;">

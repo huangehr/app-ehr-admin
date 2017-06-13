@@ -34,4 +34,21 @@
     float: left;
     padding: 0 14px;
   }
+  .divIntervalOption {
+    display: none;
+    padding-top: 10px;
+  }
+  .divIntervalOption .l-text {
+    float: left;
+  }
+  .divIntervalOption .label-left {
+    float: left;
+    padding-left: 4px;
+    padding-right: 4px;
+    height: 30px;
+    line-height: 30px;
+  }
+  .divIntervalOption .m-form-group{margin-bottom: 10px;}
+  #divIntervalOption4 .label-left{line-height: 20px;}
+  #divIntervalOption4 .l-text{margin-top: -4px;}
 </style>

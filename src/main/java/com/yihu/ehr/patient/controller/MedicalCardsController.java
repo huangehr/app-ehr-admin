@@ -16,7 +16,7 @@ import com.yihu.ehr.util.excel.read.RsMedicalCardModelReader;
 import com.yihu.ehr.util.excel.read.RsMedicalCardModelWriter;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -14,7 +14,7 @@ import com.yihu.ehr.util.excel.TemPath;
 import com.yihu.ehr.util.excel.read.RsMetaMsgModelReader;
 import com.yihu.ehr.util.excel.read.RsMetaMsgModelWriter;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;

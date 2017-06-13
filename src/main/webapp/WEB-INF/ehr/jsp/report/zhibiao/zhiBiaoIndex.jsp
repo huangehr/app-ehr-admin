@@ -10,32 +10,6 @@
         <input type="text" data-type="select" id="stdDictVersion" data-attr-scan="version">
 
   </div>
-  <div style="height: 45px;padding-top: 5px;">
-
-    <sec:authorize url="/cdadict/exportToExcel">
-      <div>
-        <button id="div_file_export1" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10">日志查询</button>
-      </div>
-    </sec:authorize>
-
-    <sec:authorize url="/cdadict/exportToExcel">
-      <div>
-        <button id="div_file_export2" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10">维度管理</button>
-      </div>
-    </sec:authorize>
-
-    <sec:authorize url="/cdadict/exportToExcel">
-      <div>
-        <button id="div_file_export3" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10">数据存储管理</button>
-      </div>
-    </sec:authorize>
-    <sec:authorize url="/cdadict/exportToExcel">
-    <div>
-      <button id="div_file_export" class="btn u-btn-primary u-btn-small s-c0 f-fr f-mr10">数据源管理</button>
-    </div>
-    </sec:authorize>
-  </div>
-
   <div style="width: 100%" id="grid_content">
     <!--######指标首页######-->
     <div id="div_left" style="width:100%;float: left;">
@@ -50,7 +24,7 @@
 
           <sec:authorize url="/cdadict/saveDict">
           <div class="f-pt5 f-fl f-mr10" >
-            <div title="新增" id="btn_create" class="image-create"  onclick="javascript:$.publish('stddict:dictInfo:open',['','new'])"></div>
+            <div title="新增" id="btn_create" class="image-create"  onclick="javascript:$.publish('zhibiao:zhiBiaoInfo:open',['','new'])"></div>
           </div>
           </sec:authorize>
 

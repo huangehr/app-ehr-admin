@@ -91,23 +91,12 @@
                 },
                 </sec:authorize>
 
-                // 1-1 居民信息
-                <sec:authorize url="/patient/Initial">
-                {
-                    pid: 1,
-                    level:2,
-                    id: 11,
-                    text: '<spring:message code="title.patient.manage"/>',
-                    url: '${contextRoot}/patient/initial'
-                },
-                </sec:authorize>
-
                 // 1-2 应用信息
                 <sec:authorize url="/app/initial">
                 {
                     pid: 1,
                     level: 2,
-                    id: 12,
+                    id: 11,
                     text: '<spring:message code="title.app.manage"/>',
                     url: '${contextRoot}/app/initial'
                 },
@@ -118,7 +107,7 @@
                 {
                     pid: 1,
                     level: 2,
-                    id: 13,
+                    id: 12,
                     text: '<spring:message code="title.doctor.manage"/>',
                     url: '${contextRoot}/doctor/initial'
                 },
@@ -129,7 +118,7 @@
                 {
                     pid: 1,
                     level: 2,
-                    id: 14,
+                    id: 13,
                     text: '<spring:message code="title.org.manage"/>',
                     url: '${contextRoot}/organization/initial'
                 },
@@ -274,40 +263,6 @@
                 },
                 </sec:authorize>
 
-                // 2-3 - 第三方标准
-                <sec:authorize url="/adapterorg/initial">
-                {
-                    pid: 2,
-                    level:2,
-                    id: 23,
-                    text: '<spring:message code="title.org.std.collection.manage"/>',
-                    url: '${contextRoot}/adapterorg/initial'
-                },
-                </sec:authorize>
-
-                // 2-4- 标准适配
-                <sec:authorize url="/adapter/initial">
-                {
-                    pid: 2,
-                    level:2,
-                    id: 24,
-                    text: '<spring:message code="title.adapter.manager"/>',
-                    url: '${contextRoot}/adapter/initial'
-                },
-                </sec:authorize>
-
-                // 2-5 - 模版管理
-                <sec:authorize url="/template/initial">
-                {
-                    pid: 2,
-                    level:2,
-                    id: 25,
-                    text: '<spring:message code="title.template.manage"/>',
-                    url: '${contextRoot}/template/initial'
-                },
-                </sec:authorize>
-
-
                 // 3  数据资源管理
                 <sec:authorize url="Ehr_Resource_Centre">
                 {
@@ -392,12 +347,23 @@
                 },
                 </sec:authorize>
 
+                // 1-1 居民信息
+                <sec:authorize url="/patient/Initial">
+                {
+                    pid: 4,
+                    level:2,
+                    id: 41,
+                    text: '<spring:message code="title.patient.manage"/>',
+                    url: '${contextRoot}/patient/initial'
+                },
+                </sec:authorize>
+
                 // 4-1 居民档案管理
                 <sec:authorize url="userCards/archiveRelation/initial">
                 {
                     pid: 4,
                     level:2,
-                    id: 41,
+                    id: 42,
                     text: '<spring:message code="title.patient.archiveRelation"/>',
                     url: '${contextRoot}/userCards/archiveRelation/initial'
                 },
@@ -408,7 +374,7 @@
                 {
                     pid: 4,
                     level:2,
-                    id: 42,
+                    id: 43,
                     text: '<spring:message code="title.correlation.audit"/>',
                     url: '${contextRoot}/archive/apply/initial'
                 },
@@ -419,7 +385,7 @@
                 {
                     pid: 4,
                     level:2,
-                    id: 43,
+                    id: 44,
                     text: '<spring:message code="title.card.manage"/>',
                     url: '${contextRoot}/medicalCards/initialPageView'
                 },
@@ -430,55 +396,50 @@
                 {
                     pid: 4,
                     level:2,
-                    id: 44,
+                    id: 45,
                     text: '<spring:message code="title.card.medicalCardsAudit"/>',
                     url: '${contextRoot}/userCards/initial'
                 },
                 </sec:authorize>
-
+                // 2-5 - 模版管理
+                <sec:authorize url="/template/initial">
+                {
+                    pid: 4,
+                    level:2,
+                    id: 45,
+                    text: '<spring:message code="title.template.manage"/>',
+                    url: '${contextRoot}/template/initial'
+                },
+                </sec:authorize>
 
                 // 5 - 质量监控报告
-                <sec:authorize url="Ehr_Quality_Report_Centre">
+                <sec:authorize url="Ehr_Master_Centre">
                 {
                     id: 5,
-                    level: 1,
+                    level:1,
                     text: '<spring:message code="title.quality.control.management"/>'
                 },
                 </sec:authorize>
-
-                // 5-1 - 趋势分析
-                <sec:authorize url="/report/initial">
-                {
-                    pid: 5,
-                    level: 2,
-                    id: 51,
-                    text: '<spring:message code="title.trend.analysis"/>',
-                    url: '${contextRoot}/report/initial'
-                },
-                </sec:authorize>
-
-                // 5-2 - 单个机构统计数据
-                <sec:authorize url="/report/initialLs">
-                {
-                    pid: 5,
-                    level: 2,
-                    id: 52,
-                    text: '<spring:message code="title.trend.analysisLs"/>',
-                    url: '${contextRoot}/report/initialLs'
-                },
-                </sec:authorize>
-
                 // 5-3 - 指标管理
                 <sec:authorize url="/zhibiao/initial">
                 {
                     pid: 5,
                     level: 2,
-                    id: 53,
+                    id: 51,
                     text: '<spring:message code="title.index.management"/>',
                     url: '${contextRoot}/zhibiao/initial'
                 },
                 </sec:authorize>
-
+                // 5-4 - 指标配置管理
+                <sec:authorize url="/zhibiaoconfig/initial">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 54,
+                    text: '<spring:message code="title.index.config.management"/>',
+                    url: '${contextRoot}/zhibiaoconfig/initial'
+                },
+                </sec:authorize>
 
                 // 6- 信息安全管理
                 <sec:authorize url="Ehr_Security_Centre">

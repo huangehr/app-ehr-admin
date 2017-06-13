@@ -1,7 +1,7 @@
 package com.yihu.ehr.report;
 
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.controller.BaseUIController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  * Created by llh on 2017/6/8.
  */
 @Controller
-@RequestMapping("/zhibiao")
+@RequestMapping("/zhibiaoimplementation")
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class ZhiBiaoController extends BaseUIController {
+public class ZhiBiaoImplementationController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -23,37 +23,27 @@ public class ZhiBiaoController extends BaseUIController {
     private String comUrl;
 
     /**
-     * 指标管理首页
+     * 指标实施首页
      * @param model
      * @return
      */
     @RequestMapping("initial")
     public String initial(Model model) {
-        model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoIndex");
+        model.addAttribute("contentPage", "/report/zhibiaoconfig/zhiBiaoConfigIndex");
         return "pageView";
     }
 
     /**
-     * 指标详情页
+     * 操作日志首页
      * @param model
      * @return
      */
-    @RequestMapping("zhiBiaoDetail")
-    public String zhiBiaoDetail(Model model) {
-        model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoDetail");
-        return "simpleView";
+    @RequestMapping("operationLog")
+    public String operationLog(Model model) {
+        model.addAttribute("contentPage", "/report/zhibiaoconfig/zhiBiaoConfigIndex");
+        return "pageView";
     }
 
-    /**
-     * 新增/编辑指标页
-     * @param model
-     * @return
-     */
-    @RequestMapping("zhiBiaoInfoDialog")
-    public String zhiBiaoInfoDialog(Model model) {
-        model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoInfoDialog");
-        return "simpleView";
-    }
 
 
 }

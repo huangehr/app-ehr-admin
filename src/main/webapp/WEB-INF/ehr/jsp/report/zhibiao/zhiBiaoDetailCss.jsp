@@ -43,7 +43,7 @@
     position: absolute;
     left: -10px;
     top: -11px;
-    width: 670px;
+    width: 775px;
   }
 
   .pop_tab li.cur {
