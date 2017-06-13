@@ -51,12 +51,17 @@
                         columns: [
                             {display: 'id', name: 'id', hide: true},
                             {display: 'dictId', name: 'dictId', hide: true},
-                            {display: '编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
-                            {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
-                            {display: '类型', name: 'typeName', width: '20%', isAllowHide: false, align: 'left'},
-                            {display: '状态', name: 'statusName', width: '20%', isAllowHide: false, align: 'left'},
+                            {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '状态', name: 'statusName', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '创建时间', name: 'createTime', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '创建人', name: 'createUserName', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '修改时间', name: 'updateTime', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '20%', render: function (row) {
+                                display: '操作', name: 'operator', width: '10%', render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';

@@ -56,42 +56,43 @@
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    <%--if(Util.isStrEquals($(elm).attr('id'),'inp_code')){--%>
-                        <%--var result = new jValidation.ajax.Result();--%>
-                        <%--var code = self.$inpCode.val();--%>
-                        <%--var dataModel = $.DataModel.init();--%>
-                        <%--dataModel.fetchRemote("${contextRoot}/organization/validationOrg", {--%>
-                            <%--data: {orgCode:code},--%>
-                            <%--async: false,--%>
-                            <%--success: function (data) {--%>
-                                <%--if (data.successFlg) {--%>
-                                    <%--result.setResult(true);--%>
-                                <%--} else {--%>
-                                    <%--result.setResult(false);--%>
-                                    <%--result.setErrorMsg("编码已存在");--%>
-                                <%--}--%>
-                            <%--}--%>
-                        <%--});--%>
-                        <%--return result;--%>
-                    <%--}--%>
-                    <%--if(Util.isStrEquals($(elm).attr('id'),'inp_name')){--%>
-                        <%--var result = new jValidation.ajax.Result();--%>
-                        <%--var code = self.$inpCode.val();--%>
-                        <%--var dataModel = $.DataModel.init();--%>
-                        <%--dataModel.fetchRemote("${contextRoot}/organization/validationOrg", {--%>
-                            <%--data: {orgCode:code},--%>
-                            <%--async: false,--%>
-                            <%--success: function (data) {--%>
-                                <%--if (data.successFlg) {--%>
-                                    <%--result.setResult(true);--%>
-                                <%--} else {--%>
-                                    <%--result.setResult(false);--%>
-                                    <%--result.setErrorMsg("编码已存在");--%>
-                                <%--}--%>
-                            <%--}--%>
-                        <%--});--%>
-                        <%--return result;--%>
-                    <%--}--%>
+                   debugger
+                    if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
+                        var result = new jValidation.ajax.Result();
+                        var code = self.$inpCode.val();
+                        var dataModel = $.DataModel.init();
+                        dataModel.fetchRemote("${contextRoot}/tjDimensionMain/isCodeExists", {
+                            data: {code:code},
+                            async: false,
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    result.setResult(true);
+                                } else {
+                                    result.setResult(false);
+                                    result.setErrorMsg("编码已存在");
+                                }
+                            }
+                        });
+                        return result;
+                    }
+                    if(Util.isStrEquals($(elm).attr('id'),'inp_name')){
+                        var result = new jValidation.ajax.Result();
+                        var name = self.$inpName.val();
+                        var dataModel = $.DataModel.init();
+                        dataModel.fetchRemote("${contextRoot}/tjDimensionMain/isNameExists", {
+                            data: {name:name},
+                            async: false,
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    result.setResult(true);
+                                } else {
+                                    result.setResult(false);
+                                    result.setErrorMsg("名称已存在");
+                                }
+                            }
+                        });
+                        return result;
+                    }
                 }});
 
                 self.$updateBtn.click(function(){
@@ -102,6 +103,7 @@
                             data: {tjDimensionMainModelJsonData:JSON.stringify(values)},
                             async: false,
                             success: function (data) {
+                                debugger
                                 if (data.successFlg) {
                                     win.parent.closeAddWeiduInfoDialog(function () {
                                         if(self.$weiDuId.val()){//修改

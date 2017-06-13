@@ -5,7 +5,7 @@
 </style>
 
 <input value="${weiDuId}" class="f-dn" id="inp_weiDuId"/>
-<div id="div_weidu_info_form" data-role-form class="m-form-inline f-mt20" style="overflow:hidden" >
+<div id="div_weidu_info_form" data-role-form="" class="m-form-inline f-mt20" style="overflow:hidden" >
     <div>
         <div class="m-form-group">
             <label>编码：</label>
