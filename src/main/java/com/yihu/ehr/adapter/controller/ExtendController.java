@@ -2,9 +2,8 @@ package com.yihu.ehr.adapter.controller;
 
 import com.yihu.ehr.adapter.service.ExtendService;
 import com.yihu.ehr.common.utils.EnvelopExt;
-import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;

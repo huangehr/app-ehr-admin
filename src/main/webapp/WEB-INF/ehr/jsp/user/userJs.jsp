@@ -57,12 +57,21 @@
                 $searchType: $('#inp_select_searchType'),
                 //查询按钮
                 $searchBtn: $('#btn_search'),
+                $inpOrg: $('#inp_org'),
                 init: function () {
+                    var self = this;
                     retrieve.initDDL(settledWayDictId,this.$searchType);
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
                     this.$searchBox.ligerTextBox({width:240});
+                    var combo = self.$inpOrg.customCombo('${contextRoot}/deptMember/getOrgList');
+                    self.$inpOrg.parent().css({
+                        width:'240'
+                    }).parent().css({
+                        display:'inline-block',
+                        width:'240px'
+                    });
                 },
                 //下拉框列表项初始化
                 initDDL: function (dictId, target) {
@@ -94,10 +103,10 @@
                         columns: [
                             // 隐藏列：hide: true（隐藏），isAllowHide: false（列名右击菜单中不显示）
                             {name: 'id', hide: true, isAllowHide: false},
-                            {display: '用户类型', name: 'userTypeName', width: '10%',align:'left'},
-                            {display: '姓名', name: 'realName', width: '10%',align:'left'},
-                            {display: '账号',name: 'loginCode', width:'10%', isAllowHide: false,align:'left'},
-                            {display: '所属机构', name: 'organizationName', width: '15%',align:'left'},
+                            {display: '用户类型', name: 'userTypeName', width: '15%',align:'left'},
+                            {display: '姓名', name: 'realName', width: '15%',align:'left'},
+                            {display: '账号',name: 'loginCode', width:'15%', isAllowHide: false,align:'left'},
+//                            {display: '所属机构', name: 'organizationName', width: '15%',align:'left'},
                             {display: '联系方式', name: 'telephone',width: '10%',align:'left'},
                             {display: '用户邮箱', name: 'email', width: '13%', resizable: true,align:'left'},
 
@@ -164,6 +173,7 @@
                 },
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
+                    values.searchOrg = retrieve.$element.Fields.searchOrg.val();
                     reloadGrid.call(this, '${contextRoot}/user/searchUsers', values);
                 },
                 bindEvents: function () {

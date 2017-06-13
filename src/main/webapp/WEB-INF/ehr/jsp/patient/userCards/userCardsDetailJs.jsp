@@ -65,7 +65,7 @@
                     var auditVal = $("#audit_val").val();
                     if(auditVal==2){
                         $("#refuseReasonGroup").css('display','block');
-                        $("#refuseReasonGroup").find("#reason").removeClass("col");
+                        $("#refuseReasonGroup").find("#reason");
                     }
                     if(auditVal==1){
                         $("#refuseReasonGroup").css('display','none');
@@ -78,6 +78,7 @@
                     var reasonVal = $("#reason_val").val();
                     var otherResonVal = $("#otherReason").val();
                     reasonTxt = otherResonVal;
+                    debugger;
                     if(auditVal=='' || auditVal==undefined){
                         $.Notice.error('审核不能为空');
                         return;

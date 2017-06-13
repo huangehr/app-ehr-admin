@@ -33,4 +33,6 @@
   .listree li a{ border-radius: 50%;position: absolute;right: -10px;top: -10px;width: 20px; background: #2D9BD2;height: 20px; color: #fff;text-align: center;line-height: 20px;font-size: 14px;opacity: 0.6;}
   .pane-attribute-toolbar{position:unset }
   .f-w250{width: 250px;}
+  .m-combo-dropdown>.m-input-box {border:0;border-bottom: 1px solid #ccc;}
+  .u-select-tab a{padding:0;}
 </style>

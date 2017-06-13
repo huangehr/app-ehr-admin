@@ -53,6 +53,12 @@
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label>现居住地:</label>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="location"  class="max-length-500" data-type="comboSelect" />
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label><spring:message code="lbl.user.role"/><spring:message code="spe.colon"/></label>
 		<div class="m-form-control">
 			<input type="text" id="inp_select_userType" data-type="select" data-attr-scan="userType">
@@ -64,13 +70,13 @@
 			<%--<input type="text" id="inp_source" class="max-length-150 validate-special-char" data-attr-scan=""/>--%>
 		<%--</div>--%>
 	<%--</div>--%>
-	<div class="m-form-group">
-		<label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control f-w250" id="inp_org1">
-			<input type="text" id="inp_org"  data-type="comboSelect" class="validate-org-length"
-				   data-attr-scan="organization"/>
-		</div>
-	</div>
+	<%--<div class="m-form-group">--%>
+		<%--<label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>--%>
+		<%--<div class="l-text-wrapper m-form-control f-w250" id="inp_org1">--%>
+			<%--<input type="text" id="inp_org"  data-type="comboSelect" class="validate-org-length"--%>
+				   <%--data-attr-scan="organization"/>--%>
+		<%--</div>--%>
+	<%--</div>--%>
 	<div class="m-form-group" id="inp_major_div">
 		<label><spring:message code="lbl.specialized.belong"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">

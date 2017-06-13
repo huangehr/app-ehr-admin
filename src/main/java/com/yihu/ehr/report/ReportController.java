@@ -1,12 +1,11 @@
 package com.yihu.ehr.report;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.report.MQcDailyReportResultDetailModel;
-import com.yihu.ehr.agModel.report.QcDailyStorageModel;
-import com.yihu.ehr.agModel.standard.dict.DictModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Workbook;
@@ -18,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -325,23 +325,42 @@ public class ReportController extends BaseUIController {
     @RequestMapping("initialLs")
     public String initialLs(Model model) {
         model.addAttribute("contentPage", "/report/ls/orgAnalysisList");
+        return "simpleView";
+    }
 
+    /**
+     * 档案入库状况数据
+     * @param model
+     * @return
+     */
+    @RequestMapping("rukuData")
+    @ResponseBody
+    public Object rukuData(Model model,String orgCode,String startDate,String endDate) {
         String url = "/report/qcDailyStatisticsStorageByDate";
         String resultStr = "";
-        Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
+        Envelop result = new Envelop();
         try {
-            params.put("orgCode","01114598-7");
-            params.put("startDate","2016-06-30");
-            params.put("endDate","2016-07-02");
+            params.put("orgCode",orgCode);
+            params.put("startDate",startDate);
+            params.put("endDate",endDate);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            Envelop qcEnvelop = getEnvelop(resultStr);
-            List<QcDailyStorageModel>  qcDailyStorageModelList = qcEnvelop.getDetailModelList();
-            model.addAttribute("qcDailyStorageModelList",qcDailyStorageModelList);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            if (!envelop.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+                result.setDetailModelList(envelop.getDetailModelList());
+                result.setObj(envelop.getObj());
+                return result;
+            } else {
+                result.setSuccessFlg(false);
+                return result;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
         }
-        return "simpleView";
     }
 
 

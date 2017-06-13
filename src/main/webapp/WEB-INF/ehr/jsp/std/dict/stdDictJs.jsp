@@ -24,9 +24,9 @@
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
 
-                resizeContent();
                 dictRetrieve.init();
                 conditionArea.init();
+                conditionArea.resizeContent();
                 entryRetrieve.init();
                 entryMater.init();
                 //versionStage=getStagedByValue();
@@ -47,12 +47,6 @@
                 return false;
             }
 
-            function resizeContent() {
-                var contentW = $('#grid_content').width();
-                var leftW = $('#div_left').width();
-                $('#div_right').width(contentW - leftW - 20);
-            }
-
             /* *************************** 标准字典模块初始化 ***************************** */
             conditionArea = {
                 $element: $('#conditionArea'),
@@ -63,6 +57,11 @@
                     this.$element.show();
                     this.event();
                     this.rendBarTools();
+                },
+                resizeContent:function(){
+                    var contentW = $('#grid_content').width();
+                    var leftW = $('#div_left').width();
+                    $('#div_right').width(contentW - leftW - 20);
                 },
                 initDDL: function (target) {
                     var dataModel = $.DataModel.init();
@@ -352,7 +351,7 @@
                 bindEvents: function () {
                     //窗体改变大小事件
                     $(window).bind('resize', function () {
-                        resizeContent();
+                        conditionArea.resizeContent();
                     });
                     //
                     $.subscribe('entry:dictInfo:open', function (event, id, dictId, mode) {
