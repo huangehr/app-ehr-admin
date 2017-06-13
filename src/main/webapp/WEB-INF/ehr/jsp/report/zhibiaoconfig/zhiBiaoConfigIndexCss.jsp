@@ -1,39 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<link rel="stylesheet" href="${staticRoot}/lib/bootstrap/css/bootstrap.min.css">
 <style>
 
-  .image-create{
-    margin-left:20px;
-    width: 22px;
-    height: 22px;
-    background: url(${staticRoot}/images/add_btn.png) no-repeat;
-  }
-
-  .image-create:hover{
-    cursor: pointer;
-    margin-left:20px;
-    width: 22px;
-    height: 22px;
-    background: url(${staticRoot}/images/add_btn_pre.png) no-repeat;
-  }
-  .image-modify{
-    width: 22px;
-    height: 22px;
-    background: url(${staticRoot}/images/Modify_btn_pre.png) no-repeat;
-  }
-  .image-delete{
-    width: 22px;
-    height: 22px;
-    margin-top: -22px;
-    background: url(${staticRoot}/images/Delete_btn_pre.png) no-repeat;
-  }
-
-  .font_right{
-    text-align: right;
-  }
-
-  .u-btn-small{width: 100px !important;margin-top: 0px;height: 30px}
   .btn-group .btn{border-radius: 25px;padding: 9px 20px;}
   [data-toggle=buttons]>.btn input[type=checkbox], [data-toggle=buttons]>.btn input[type=radio], [data-toggle=buttons]>.btn-group>.btn input[type=checkbox], [data-toggle=buttons]>.btn-group>.btn input[type=radio] {
     position: absolute;
@@ -50,6 +19,6 @@
     background-color: #2E9CD2;
     border-color: #2E9CD2;
   }
-  .label_a{line-height: 40px;}
-
+.m-retrieve-area{border: 1px solid #D6D6D6;border-bottom: 0;}
+  .f-fr{float:right !important;}
 </style>

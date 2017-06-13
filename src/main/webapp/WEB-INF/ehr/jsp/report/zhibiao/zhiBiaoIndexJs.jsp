@@ -176,7 +176,7 @@
                                     </sec:authorize>
 
                                     <sec:authorize url="/cdadict/deleteDict">
-                                    html += '<a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName) + '">维度配置</a>';
+                                    html += '<a class="grid_delete" style="width: 60px;line-height: 40px;background: none;position: absolute;text-decoration: underline;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "zhibiao:weidu:config", row.orgCode, row.id, row.fullName) + '">维度配置</a>';
                                     </sec:authorize>
                                     return html;
                                 }
@@ -203,24 +203,7 @@
 //                                entryMater.reloadGrid(1);
                             },
                             onDblClickRow: function (row) {
-//                                var wait = $.Notice.waitting('正在加载中...');
-                                dictMaster.detailDialog = $.ligerDialog.open({
-                                    title:'指标详情',
-                                    height: 625,
-                                    width: 680,
-                                    url: '${contextRoot}/zhibiao/zhiBiaoDetail',
-                                    isHidden: false,
-                                    opener: true,
-                                    load: true,
-                                    urlParms: {
 
-                                    },
-                                    onLoaded:function() {
-//                                        wait.close();
-//                                        dictMaster.detailDialog.show();
-                                    }
-                                });
-//                                dictMaster.detailDialog.hide();
                             }
                         }));
                         this.bindEvents();
@@ -250,8 +233,8 @@
                         isSaveSelectStatus = true;
                         var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
                         dictMaster.dictInfoDialog = $.ligerDialog.open({
-                            height: 562,
-                            width: 460,
+                            height: 620,
+                            width: 480,
                             title: title,
                             url: '${contextRoot}/zhibiao/zhiBiaoInfoDialog',
                             urlParms: {
@@ -285,6 +268,25 @@
                             }
                         })
                     });
+
+                    $.subscribe('zhibiao:weidu:config', function (event, orgCode, id,fullName) {
+                        dictMaster.detailDialog = $.ligerDialog.open({
+                            title:'维度配置',
+                            height: 625,
+                            width: 800,
+                            url: '${contextRoot}/zhibiao/zhiBiaoDetail',
+                            isHidden: false,
+                            opener: true,
+                            load: true,
+                            urlParms: {
+
+                            },
+                            onLoaded:function() {
+
+                            }
+                        });
+                    });
+
                 }
             };
 

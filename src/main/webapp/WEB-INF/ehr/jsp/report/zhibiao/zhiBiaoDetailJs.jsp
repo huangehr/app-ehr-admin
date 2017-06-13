@@ -142,7 +142,7 @@
                         return;
                     this.grid = $("#div_relation_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/cdadict/getCdaDictList',
-                        width:" calc(50% - 20px)",
+                        width:" calc(40% - 20px)",
                         height:"450px",
                         parms: {
                             searchNm: "",
@@ -172,14 +172,23 @@
                             searchNm: "",
                             strVersionCode: "592814c2898a"
                         },
-                        width:" calc(50% - 20px)",
+                        width:" calc(60% - 20px)",
                         height:"450px",
+//                        usePager:false,
                         columns: [
                             {display: 'id', name: 'id', hide: true},
                             {display: 'dictId', name: 'dictId', hide: true},
-                            {display: '编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '名称', name: 'name', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '维度', name: 'name', width: '34%', isAllowHide: false, align: 'left'}
+                            {display: '编码', name: 'code', width: '15%', isAllowHide: false, align: 'left'},
+                            {display: '名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},
+                            {display: '维度', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: 'sql', name: 'name', width: '30%', isAllowHide: false, align: 'left',render: function (row) {
+                                    return '<input type="text" class="inp_sql" style="padding-left: 5px;width:100%;line-height: 28px;" />';
+                                }
+                            },
+                            {display: 'key', name: 'name', width: '30%', isAllowHide: false, align: 'left',render: function (row) {
+                                     return '<input type="text" class="inp_key" style="padding-left: 5px;width:100%;line-height: 28px;" />';
+                                }
+                            }
                         ],
                         //delayLoad:true,
                         selectRowButtonOnly: false,

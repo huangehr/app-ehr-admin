@@ -430,6 +430,16 @@
                     url: '${contextRoot}/zhibiao/initial'
                 },
                 </sec:authorize>
+                // 5-4 - 指标配置管理
+                <sec:authorize url="/zhibiaoconfig/initial">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 54,
+                    text: '<spring:message code="title.index.config.management"/>',
+                    url: '${contextRoot}/zhibiaoconfig/initial'
+                },
+                </sec:authorize>
 
                 // 6- 信息安全管理
                 <sec:authorize url="Ehr_Security_Centre">

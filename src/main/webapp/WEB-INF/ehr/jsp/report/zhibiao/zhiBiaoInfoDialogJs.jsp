@@ -13,7 +13,7 @@
 
         var cardInfoGrid = null;
         var archiveInfoGrid = null;
-
+        var weekDialog = null;
         var cardFormInit = null;
         var archiveFormInit = null;
         // 表单校验工具类
@@ -129,9 +129,13 @@
             $inpName: $("#inp_name"),
             $inpCycle: $("#inp_cycle"),
             $inpObjectClass: $("#inp_object_class"),
+            $inpDataSourceJson: $("#inp_dataSource_json"),
+            $inpDataStorageJson: $("#inp_dataStorage_json"),
             $inpDataSource: $("#inp_data_source"),
             $inpDataStorage: $("#inp_data_storage"),
             $introduction:$("#inp_introduction"),
+            $weekDialog:$("#div_weekDialog"),
+            $zhixingDate: $("#inp_zhixing_date"),
             $gender: $('input[name="gender"]', this.$form),
             $patientNation: $("#inp_patientNation"),
             $patientNativePlace: $("#inp_patientNativePlace"),
@@ -164,14 +168,12 @@
                 self.$inpCode.ligerTextBox({width: 240});
                 self.$inpName.ligerTextBox({width: 240});
                 self.$inpCycle.ligerTextBox({width: 240});
+                self.$inpObjectClass.ligerTextBox({width: 240});
+                self.$inpDataSourceJson.ligerTextBox({width: 240});
+                self.$inpDataStorageJson.ligerTextBox({width: 240});
+                self.$zhixingDate.ligerDateEditor({format: "yyyy-MM-dd"});
                 self.$gender.ligerRadio();
-                var combo = self.$inpObjectClass.customCombo('${contextRoot}/deptMember/getOrgList');
-                self.$inpObjectClass.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
-                });
+                $('input[name="interval_type"]').ligerRadio();
                 var combo1 = self.$inpDataSource.customCombo('${contextRoot}/deptMember/getOrgList');
                 self.$inpDataSource.parent().css({
                     width:'240'
@@ -187,6 +189,16 @@
                     width:'240px'
                 });
                 this.$introduction.ligerTextBox({width:240,height:100 });
+                $('input[name="jobType"]').ligerRadio();
+                $('input[name="interval_type"]').ligerRadio();
+                $("#txtM").ligerSpinner({width: 208,type: 'int',minValue:1});
+                $("#txtH").ligerSpinner({width: 208,type: 'int',minValue:1});
+                $("#txtD").ligerSpinner({width: 208,type: 'int',minValue:1});
+                $("#txtMD").ligerSpinner({width: 160,type: 'int',minValue:1});
+
+                $('input[name="week_day"]').ligerCheckBox();
+                $('input[name="month_day"]').ligerRadio();
+
                 self.$form.attrScan();
                 if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
                     self.$resetArea.show();
@@ -212,6 +224,150 @@
                     if(!Util.isStrEmpty(pic)){
                         self.$picPath.html('<img src="${contextRoot}/patient/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
                     }
+                }
+            },
+            //根据周期类型显示周期面板
+            showInterval:function(tab){
+                $('input[name="interval_type"]').ligerRadio("setValue", tab);
+                $(".divIntervalOption").hide();
+                $("#divIntervalOption"+tab).show();
+            },
+            //初始化时间间隔
+            initInterval:function(){
+                var me = this;
+                var val= $("#txtCronExpression").val();
+                if(val!=null&&val.length>0)
+                {
+                    try {
+                        //反解析cron表达式
+                        var arry = val.split(' ');
+                        if (arry[5] !="?") //周
+                        {
+                            $('input[name="interval_type"]').ligerRadio("setValue", "3");
+                            me.showInterval(3);
+                            $('input[name="week_day"]').ligerCheckBox("setValue", arry[5]);
+                        }
+                        else{
+                            if (arry[3] !="*")
+                            {
+                                var v = arry[3];
+                                if(v.indexOf('/')>0) //天
+                                {
+                                    me.showInterval(2);
+                                    var varry = v.split('/');
+                                    $("#txtD").val(varry[1]);
+                                }
+                                else{//月
+                                    me.showInterval(4);
+                                    if(v=="1")
+                                    {
+                                        $('input[name="month_day"]').ligerRadio("setValue", "0");
+                                    }
+                                    else if(v=="L"){
+                                        $('input[name="month_day"]').ligerRadio("setValue", "1");
+                                    }
+                                    else{
+                                        $('input[name="month_day"]').ligerRadio("setValue", "2");
+                                        $("#txtMD").val(v);
+                                    }
+                                }
+                            }
+                            else{
+                                var v1 = arry[1];
+                                var v2 = arry[2];
+                                if(v1.indexOf('/')>0) //分
+                                {
+                                    me.showInterval(0);
+                                    var varry = v1.split('/');
+                                    $("#txtM").val(varry[1]);
+                                }
+                                else{ //时
+                                    me.showInterval(1);
+                                    var varry = v2.split('/');
+                                    $("#txtH").val(varry[1]);
+                                }
+                            }
+                        }
+
+                    }
+                    catch(e){
+                        return;
+                    }
+                }
+                else{
+                    //清空数据
+                    $("#txtM").val("");
+                    $("#txtH").val("");
+                    $("#txtD").val("");
+                    $("#txtMD").val("");
+                    $('input[name="week_day"]').ligerCheckBox("setValue",null);
+                    $('input[name="month_day"]').ligerRadio("setValue",null);
+                }
+            },
+            //设置时间间隔
+            setInterval:function(){
+                var val = "";
+                //解析cron表达式
+                var interval_type =  $('input[name="interval_type"]').ligerRadio("getValue");
+                var cronTime  = new Date($("#dateNextTime").ligerDateEditor('getValue'));
+                var minute = cronTime.getMinutes(),hour = cronTime.getHours();
+
+                if(interval_type =="0") //分钟
+                {
+                    var num = $("#txtM").val();
+                    if(num!=null && num.length>0) {
+                        val = "0 0/" + num + " * * * ?";
+                    }
+                }
+                else if(interval_type =="1"){ //时钟
+                    var num = $("#txtH").val();
+                    if(num!=null && num.length>0) {
+                        val = "0 "+ minute +" 0/" + num + " * * ?";
+                    }
+                }
+                else if(interval_type =="2"){ //天
+                    var num = $("#txtD").val();
+                    if(num!=null && num.length>0) {
+                        val = "0 "+ minute +" "+ hour +" 1/" + num + " * ?";
+                    }
+                }
+                else if(interval_type =="3"){ //周
+                    var week_day = $('input[name="week_day"]').ligerCheckBox("getValue");
+                    if(week_day!=null && week_day.length>0) {
+                        val = "0 "+ minute +" "+ hour +" ? * " + week_day;
+                    }
+                }
+                else if(interval_type =="4"){ //月
+                    var month_day = $('input[name="month_day"]').ligerRadio("getValue");
+                    if(month_day == "0") //每月第一天
+                    {
+                        val = "0 "+ minute +" "+ hour +" 1 * ?";
+                    }
+                    else if(month_day == "1") //每月最后一天
+                    {
+                        val = "0 "+ minute +" "+ hour +" L * ?";
+                    }
+                    else{
+                        var num = $("#txtMD").val();
+                        if(num!=null && num.length>0)
+                        {
+                            val = "0 "+ minute +" "+ hour +" "+num+" * ?";
+                        }
+                    }
+                }
+
+                $("#txtCronExpression").val(val);
+            },
+            //设置数据集选中值
+            setCheckVal:function(){
+                var me = this;
+                var selected = me.$listDataset.getSelectedRows();
+                if(selected!=null)
+                {
+                    $("#txtJobDataset").val(JSON.stringify(selected));
+                }
+                else{
+                    $("#txtJobDataset").val("");
                 }
             },
             initDDL: function (dictId, target) {
@@ -240,6 +396,40 @@
 
             bindEvents: function () {
                 var self = this;
+                self.$inpCycle.click(function(){
+                    weekDialog = $.ligerDialog.open({
+                        title: "周期配置",
+                        width: 416,
+                        height: 320,
+                        target: self.$weekDialog
+                    });
+
+                    $(document).on('click','input[name="jobType"]',function(){
+                        var value = $(this).val();
+//                    me.setAchiveUploadType(value);
+                    });
+                    $(document).on('click','input[name="interval_type"]',function(){
+                        //清空数据
+                        $("#txtCronExpression").val("");
+                        self.initInterval();
+
+                        $(".divIntervalOption").hide();
+                        $("#divIntervalOption"+$(this).val()).show();
+                    });
+                    $(document).on('click','input[name="month_day"]',function(){
+                        var val = $(this).val();
+                        if(val=="2")
+                        {
+                            $("#txtMD").removeAttr("disabled");
+                        }
+                        else
+                        {
+                            $("#txtMD").attr("disabled",true);
+                        }
+                    });
+
+                })
+
                 $(".u-dropdown-icon").click(function(){
                     $('#inp_realName').click();
                 });
