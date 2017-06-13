@@ -184,8 +184,8 @@ public class TjDimensionMainController extends BaseUIController {
      * @param id
      * @return
      */
-    @RequestMapping("getTjDimensionMain")
-    public Object getTjDimensionMain(Model model, Long id ) {
+    @RequestMapping("getTjDimensionMainByID")
+    public Object getTjDimensionMainByID(Model model, Long id ) {
         String url ="/tj/tjDimensionMainId/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
