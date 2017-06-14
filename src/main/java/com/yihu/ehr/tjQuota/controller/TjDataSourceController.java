@@ -199,4 +199,53 @@ public class TjDataSourceController extends BaseUIController {
         return detailModel;
     }
 
+    /**
+     * 校验name是否唯一,true已存在
+     * @param name
+     * @return
+     */
+    @RequestMapping("hasExistsName")
+    @ResponseBody
+    public boolean hasExistsName(String name) {
+        String url = "/tj/tjDataSourceExistsName/" + name ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("name", name);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
+
+    /**
+     * 校验code是否唯一
+     * @param code
+     * @return
+     */
+    @RequestMapping("hasExistsCode")
+    @ResponseBody
+    public boolean hasExistsCode(String code) {
+        String url = "/tj/tjDataSourceExistsCode/" + code ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("code", code);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
 }

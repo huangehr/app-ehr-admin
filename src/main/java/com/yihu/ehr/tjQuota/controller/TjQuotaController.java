@@ -207,7 +207,7 @@ public class TjQuotaController extends BaseUIController {
     @RequestMapping("hasExistsName")
     @ResponseBody
     public boolean hasExistsName(String name) {
-        String url = "/tj/tjQuotaExistsName" ;
+        String url = "/tj/tjQuotaExistsName/" + name ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -232,7 +232,7 @@ public class TjQuotaController extends BaseUIController {
     @RequestMapping("hasExistsCode")
     @ResponseBody
     public boolean hasExistsCode(String code) {
-        String url = "/tj/tjQuotaExistsCode" ;
+        String url = "/tj/tjQuotaExistsCode/" + code ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
