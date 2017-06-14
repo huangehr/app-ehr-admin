@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -109,7 +110,7 @@ public class TjDataSaveController extends BaseUIController {
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
                 Long tjDataSaveId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tjDataSave/" + tjDataSaveId);
+                resultStr = templates.doGet(comUrl + "/tj/getTjDataSaveById/" + tjDataSaveId);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDataSaveModel updateTjDataSave = getEnvelopModel(envelop.getObj(), TjDataSaveModel.class);
@@ -119,9 +120,8 @@ public class TjDataSaveController extends BaseUIController {
                     updateTjDataSave.setType(detailModel.getType());
                     updateTjDataSave.setStatus(detailModel.getStatus());
                     updateTjDataSave.setRemark(detailModel.getRemark());
-                    updateTjDataSave.setCreateTime(new Date());
-                    updateTjDataSave.setCreateUser(userDetailModel.getId());
-                    updateTjDataSave.setCreateUserName(userDetailModel.getRealName());
+                    updateTjDataSave.setUpdateUser(userDetailModel.getId());
+                    updateTjDataSave.setUpdateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDataSave));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -131,9 +131,8 @@ public class TjDataSaveController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(new Date());
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
@@ -184,22 +183,72 @@ public class TjDataSaveController extends BaseUIController {
      * @return
      */
     @RequestMapping("getTjDataSaveById")
-    public Object getTjQuotaById(Model model, Long id ) {
+    @ResponseBody
+    public TjDataSaveModel getTjQuotaById(Model model, Long id ) {
         String url ="/tj/getTjDataSaveById/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
+        TjDataSaveModel detailModel = null;
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            model.addAttribute("allData", resultStr);
-            model.addAttribute("contentPage", "/report/zhibiao/dataSave");
-            return "simpleView";
+            Envelop ep = getEnvelop(resultStr);
+             detailModel = toModel(toJson(ep.getObj()),TjDataSaveModel.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
         }
+        return detailModel;
+
     }
 
+    /**
+     * 校验name是否唯一,true已存在
+     * @param name
+     * @return
+     */
+    @RequestMapping("hasExistsName")
+    @ResponseBody
+    public boolean hasExistsName(String name) {
+        String url = "/tj/dataSaveExistsName/"+ name ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("name", name);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
+
+    /**
+     * 校验code是否唯一
+     * @param code
+     * @return
+     */
+    @RequestMapping("hasExistsCode")
+    @ResponseBody
+    public boolean hasExistsCode(String code) {
+        String url = "/tj/dataSaveExistsCode/" + code ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("code", code);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
 }

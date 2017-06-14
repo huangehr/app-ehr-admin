@@ -8,8 +8,7 @@
         /* ************************** 变量定义 ******************************** */
         var Util = $.Util;
         var weiduInfo = null;
-        var DimensionMainId =  72;//主维度字典id
-        var DimensionSlaveId = 73;//从维度字典id
+        var DataSourceId =  75;//数据源字典id
         var DimensionStatusId =  74;//维度状态
         // 表单校验工具类
         var jValidation = $.jValidation;
@@ -18,9 +17,9 @@
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
-           weiduInfo.init();
+            weiduInfo.init();
         }
-         /* *************************** 模块初始化 ***************************** */
+        /* *************************** 模块初始化 ***************************** */
         weiduInfo = {
             $form: $("#div_weidu_info_form"),
             $inpCode: $("#inp_code"),
@@ -42,27 +41,27 @@
                 this.$inpCode.ligerTextBox({width: 240});
                 this.$inpName.ligerTextBox({width: 240});
                 this.$inpIntroduction.ligerTextBox({width: 240,height:104,padding:10});
-                this.initDDL(DimensionMainId,this.$inpType,"");
+                this.initDDL(DataSourceId,this.$inpType,"");
                 this.initDDL(DimensionStatusId,this.$inpStatus,"");
                 this.$form.attrScan();
             },
             getTjDimensionMainByID:function(){
                 var self = this;
                 var dataModel = $.DataModel.init();
-                dataModel.fetchRemote("${contextRoot}/tjDimensionMain/getTjDimensionMainByID", {
+                dataModel.fetchRemote("${contextRoot}/tjDataSource/getTjDataSourceById", {
                     data: {id:parseInt(self.$weiDuId.val())},
                     async: false,
                     success: function (data) {
-                       if(data){
-                           initCode = data.code;
-                           initName = data.name;
-                           self.$inpCode.val(data.code);
-                           self.$inpName.val(data.name);
-                           self.$inpIntroduction.val(data.remark);
-                           self.initDDL(DimensionMainId,self.$inpType,data.type);
-                           self.initDDL(DimensionStatusId,self.$inpStatus,data.status);
-                           self.$form.attrScan();
-                       }
+                        if(data){
+                            initCode = data.code;
+                            initName = data.name;
+                            self.$inpCode.val(data.code);
+                            self.$inpName.val(data.name);
+                            self.$inpIntroduction.val(data.remark);
+                            self.initDDL(DataSourceId,self.$inpType,data.type);
+                            self.initDDL(DimensionStatusId,self.$inpStatus,data.status);
+                            self.$form.attrScan();
+                        }
                     }
                 });
             },
@@ -90,7 +89,7 @@
                             return result;
                         }
                         var dataModel = $.DataModel.init();
-                        dataModel.fetchRemote("${contextRoot}/tjDimensionMain/isCodeExists", {
+                        dataModel.fetchRemote("${contextRoot}/tjDataSource/hasExistsCode", {
                             data: {code:code},
                             async: false,
                             success: function (data) {
@@ -112,7 +111,7 @@
                             return result;
                         }
                         var dataModel = $.DataModel.init();
-                        dataModel.fetchRemote("${contextRoot}/tjDimensionMain/isNameExists", {
+                        dataModel.fetchRemote("${contextRoot}/tjDataSource/hasExistsName", {
                             data: {name:name},
                             async: false,
                             success: function (data) {
@@ -132,11 +131,11 @@
                     if(validator.validate()){
                         var values = self.$form.Fields.getValues();
                         if(self.$weiDuId.val()!="" && self.$weiDuId.val()!=undefined){//修改
-                           values.id = parseInt(self.$weiDuId.val());
+                            values.id = parseInt(self.$weiDuId.val());
                         }
                         var dataModel = $.DataModel.init();
-                        dataModel.fetchRemote("${contextRoot}/tjDimensionMain/updateTjDimensionMain", {
-                            data: {tjDimensionMainModelJsonData:JSON.stringify(values)},
+                        dataModel.fetchRemote("${contextRoot}/tjDataSource/updateTjDataSource", {
+                            data: {tjDataSourceModelJsonData:JSON.stringify(values)},
                             async: false,
                             success: function (data) {
                                 if (data.successFlg) {

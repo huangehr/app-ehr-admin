@@ -117,9 +117,8 @@ public class TjQuotaController extends BaseUIController {
                     updateTjQuota.setStatus(detailModel.getStatus());
                     updateTjQuota.setDataLevel(detailModel.getDataLevel());
                     updateTjQuota.setRemark(detailModel.getRemark());
-                    updateTjQuota.setCreateTime(new Date());
-                    updateTjQuota.setCreateUser(userDetailModel.getId());
-                    updateTjQuota.setCreateUserName(userDetailModel.getRealName());
+                    updateTjQuota.setUpdateUser(userDetailModel.getId());
+                    updateTjQuota.setUpdateUserName(userDetailModel.getRealName());
                     updateTjQuota.setTjQuotaDataSaveModel(detailModel.getTjQuotaDataSaveModel());
                     updateTjQuota.setTjQuotaDataSourceModel(detailModel.getTjQuotaDataSourceModel());
                     params.add("model", toJson(updateTjQuota));
@@ -131,9 +130,8 @@ public class TjQuotaController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(new Date());
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
@@ -153,7 +151,7 @@ public class TjQuotaController extends BaseUIController {
     @RequestMapping("deleteTjDataSave")
     @ResponseBody
     public Object deleteTjQuota(Long tjQuotaId) {
-        String url = "/tj/deleteTjQuota/" + tjQuotaId;
+        String url = "/tj/deleteTjQuota";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -190,16 +188,15 @@ public class TjQuotaController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
+        TjQuotaModel detailModel = null;
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            model.addAttribute("allData", resultStr);
-            model.addAttribute("contentPage", "/report/zhibiao/quota");
-            return "simpleView";
+            Envelop ep = getEnvelop(resultStr);
+            detailModel = toModel(toJson(ep.getObj()),TjQuotaModel.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
         }
+        return detailModel;
     }
 
     /**
@@ -210,7 +207,7 @@ public class TjQuotaController extends BaseUIController {
     @RequestMapping("hasExistsName")
     @ResponseBody
     public boolean hasExistsName(String name) {
-        String url = "/tj/tjQuotaExistsName" ;
+        String url = "/tj/tjQuotaExistsName/" + name ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -235,7 +232,7 @@ public class TjQuotaController extends BaseUIController {
     @RequestMapping("hasExistsCode")
     @ResponseBody
     public boolean hasExistsCode(String code) {
-        String url = "/tj/tjQuotaExistsCode" ;
+        String url = "/tj/tjQuotaExistsCode/" + code ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();

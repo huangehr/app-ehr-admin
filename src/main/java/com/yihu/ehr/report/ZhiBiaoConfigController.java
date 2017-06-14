@@ -34,14 +34,50 @@ public class ZhiBiaoConfigController extends BaseUIController {
     }
 
     /**
-     * 新增/编辑维度页
+     * 新增/编辑数据源页
+     * @param model
+     * @return
+     */
+    @RequestMapping("dataSourceDialog")
+    public String dataSourceDialog(Model model,String id) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "/report/zhibiaoconfig/dataSourceDialog");
+        return "simpleView";
+    }
+
+    /**
+     * 新增/编辑数据存储页
+     * @param model
+     * @return
+     */
+    @RequestMapping("dataStorageDialog")
+    public String dataStorageDialog(Model model,String id) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "/report/zhibiaoconfig/dataStorageDialog");
+        return "simpleView";
+    }
+
+    /**
+     * 新增/编辑主维度页
      * @param model
      * @return
      */
     @RequestMapping("weiDuDialog")
-    public String addWeiDuDialog(Model model,String weiDuId) {
-        model.addAttribute("weiDuId", weiDuId);
+    public String addWeiDuDialog(Model model,String id) {
+        model.addAttribute("id", id);
         model.addAttribute("contentPage", "/report/zhibiaoconfig/weiDuDialog");
+        return "simpleView";
+    }
+
+    /**
+     * 新增/编辑细维度页
+     * @param model
+     * @return
+     */
+    @RequestMapping("xiWeiDuDialog")
+    public String xiWeiDuDialog(Model model,String id) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "/report/zhibiaoconfig/xiWeiDuDialog");
         return "simpleView";
     }
 

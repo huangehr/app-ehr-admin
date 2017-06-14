@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -109,7 +110,7 @@ public class TjDimensionSlaveController extends BaseUIController {
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
                 Long id = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tj/tjDimensionSlave/" + id);
+                resultStr = templates.doGet(comUrl + "/tj/tjDimensionSlaveId/" + id);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDimensionSlaveModel updateTjDimensionSlave = getEnvelopModel(envelop.getObj(), TjDimensionSlaveModel.class);
@@ -119,9 +120,8 @@ public class TjDimensionSlaveController extends BaseUIController {
                     updateTjDimensionSlave.setType(detailModel.getType());
                     updateTjDimensionSlave.setStatus(detailModel.getStatus());
                     updateTjDimensionSlave.setRemark(detailModel.getRemark());
-                    updateTjDimensionSlave.setCreateTime(new Date());
-                    updateTjDimensionSlave.setCreateUser(userDetailModel.getId());
-                    updateTjDimensionSlave.setCreateUserName(userDetailModel.getRealName());
+                    updateTjDimensionSlave.setUpdateUser(userDetailModel.getId());
+                    updateTjDimensionSlave.setUpdateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDimensionSlave));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -131,9 +131,8 @@ public class TjDimensionSlaveController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(new Date());
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
