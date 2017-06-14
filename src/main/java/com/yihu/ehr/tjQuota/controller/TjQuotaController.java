@@ -117,9 +117,9 @@ public class TjQuotaController extends BaseUIController {
                     updateTjQuota.setStatus(detailModel.getStatus());
                     updateTjQuota.setDataLevel(detailModel.getDataLevel());
                     updateTjQuota.setRemark(detailModel.getRemark());
-                    updateTjQuota.setCreateTime(new Date());
-                    updateTjQuota.setCreateUser(userDetailModel.getId());
-                    updateTjQuota.setCreateUserName(userDetailModel.getRealName());
+                    updateTjQuota.setUpdateTime(new Date());
+                    updateTjQuota.setUpdateUser(userDetailModel.getId());
+                    updateTjQuota.setUpdateUserName(userDetailModel.getRealName());
                     updateTjQuota.setTjQuotaDataSaveModel(detailModel.getTjQuotaDataSaveModel());
                     updateTjQuota.setTjQuotaDataSourceModel(detailModel.getTjQuotaDataSourceModel());
                     params.add("model", toJson(updateTjQuota));
@@ -131,9 +131,9 @@ public class TjQuotaController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(new Date());
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateTime(new Date());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
