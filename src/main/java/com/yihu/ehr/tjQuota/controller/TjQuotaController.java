@@ -117,7 +117,6 @@ public class TjQuotaController extends BaseUIController {
                     updateTjQuota.setStatus(detailModel.getStatus());
                     updateTjQuota.setDataLevel(detailModel.getDataLevel());
                     updateTjQuota.setRemark(detailModel.getRemark());
-                    updateTjQuota.setUpdateTime(new Date());
                     updateTjQuota.setUpdateUser(userDetailModel.getId());
                     updateTjQuota.setUpdateUserName(userDetailModel.getRealName());
                     updateTjQuota.setTjQuotaDataSaveModel(detailModel.getTjQuotaDataSaveModel());
@@ -131,7 +130,6 @@ public class TjQuotaController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setCreateTime(new Date());
                 detailModel.setCreateUser(userDetailModel.getId());
                 detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
@@ -190,16 +188,15 @@ public class TjQuotaController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
+        TjQuotaModel detailModel = null;
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            model.addAttribute("allData", resultStr);
-            model.addAttribute("contentPage", "/report/zhibiao/quota");
-            return "simpleView";
+            Envelop ep = getEnvelop(resultStr);
+            detailModel = toModel(toJson(ep.getObj()),TjQuotaModel.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
         }
+        return detailModel;
     }
 
     /**
