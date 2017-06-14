@@ -282,7 +282,6 @@
                             $("#div_datastorage_info_grid").css("height","0px");
                             $("#div_weidu_info_grid").css("height","0px");
                             $("#div_slave_weidu_info_grid").css("height","0px");
-                            self.DataSourceGrid.adjustToWidth();
                         }else if(index==1){//数据存储管理
                             $(".div-datasource-search").hide();
                             $(".div-datastorage-search").show();
@@ -296,7 +295,6 @@
                             $("#div_datastorage_info_grid").css("height","100%");
                             $("#div_weidu_info_grid").css("height","0px");
                             $("#div_slave_weidu_info_grid").css("height","0px");
-                            self.DataStorageGrid.adjustToWidth();
                         }else if(index==2){//主维度管理
                             $(".div-datasource-search").hide();
                             $(".div-datastorage-search").hide();
@@ -310,7 +308,6 @@
                             $("#div_datastorage_info_grid").css("height","0px");
                             $("#div_weidu_info_grid").css("height","100%");
                             $("#div_slave_weidu_info_grid").css("height","0px");
-                            self.TjDimensionMainGrid.adjustToWidth();
                         }else if(index==3){//细维度管理
                             $(".div-datasource-search").hide();
                             $(".div-datastorage-search").hide();
@@ -324,8 +321,8 @@
                             $("#div_datastorage_info_grid").css("height","0px");
                             $("#div_weidu_info_grid").css("height","0px");
                             $("#div_slave_weidu_info_grid").css("height","100%");
-                            self.TjDimensionSlaveGrid.adjustToWidth();
                         }
+                        self.reloadGrid();
                     });
                     self.$searchBtn.click(function () {
                         self.reloadGrid();
