@@ -13,6 +13,8 @@
         var DimensionStatusId =  74;//维度状态
         // 表单校验工具类
         var jValidation = $.jValidation;
+        var initCode = "";
+        var initName = "";
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -32,16 +34,39 @@
             init: function () {
                 this.initForm();
                 this.bindEvents();
+                if(this.$weiDuId.val()!="" && this.$weiDuId.val()!=undefined){//修改
+                    this.getTjDimensionMainByID();
+                }
             },
             initForm: function () {
                 this.$inpCode.ligerTextBox({width: 240});
                 this.$inpName.ligerTextBox({width: 240});
                 this.$inpIntroduction.ligerTextBox({width: 240,height:104,padding:10});
-                this.initDDL(DimensionMainId,this.$inpType);
-                this.initDDL(DimensionStatusId,this.$inpStatus);
+                this.initDDL(DimensionMainId,this.$inpType,"");
+                this.initDDL(DimensionStatusId,this.$inpStatus,"");
                 this.$form.attrScan();
             },
-            initDDL: function (dictId, target) {
+            getTjDimensionMainByID:function(){
+                var self = this;
+                var dataModel = $.DataModel.init();
+                dataModel.fetchRemote("${contextRoot}/tjDimensionMain/getTjDimensionMainByID", {
+                    data: {id:parseInt(self.$weiDuId.val())},
+                    async: false,
+                    success: function (data) {
+                       if(data){
+                           initCode = data.code;
+                           initName = data.name;
+                           self.$inpCode.val(data.code);
+                           self.$inpName.val(data.name);
+                           self.$inpIntroduction.val(data.remark);
+                           self.initDDL(DimensionMainId,self.$inpType,data.type);
+                           self.initDDL(DimensionStatusId,self.$inpStatus,data.status);
+                           self.$form.attrScan();
+                       }
+                    }
+                });
+            },
+            initDDL: function (dictId, target,initValue) {
                 var self = this;
                 target.ligerComboBox({
                     url: "${contextRoot}/dict/searchDictEntryList",
@@ -52,20 +77,24 @@
                     onSuccess: function () {
                     }
                 });
+                target.ligerGetComboBoxManager().setValue(initValue);
             },
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                   debugger
                     if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
                         var result = new jValidation.ajax.Result();
                         var code = self.$inpCode.val();
+                        if(code==initCode){
+                            result.setResult(true);
+                            return result;
+                        }
                         var dataModel = $.DataModel.init();
                         dataModel.fetchRemote("${contextRoot}/tjDimensionMain/isCodeExists", {
                             data: {code:code},
                             async: false,
                             success: function (data) {
-                                if (data.successFlg) {
+                                if (!data) {
                                     result.setResult(true);
                                 } else {
                                     result.setResult(false);
@@ -78,12 +107,16 @@
                     if(Util.isStrEquals($(elm).attr('id'),'inp_name')){
                         var result = new jValidation.ajax.Result();
                         var name = self.$inpName.val();
+                        if(name==initName){
+                            result.setResult(true);
+                            return result;
+                        }
                         var dataModel = $.DataModel.init();
                         dataModel.fetchRemote("${contextRoot}/tjDimensionMain/isNameExists", {
                             data: {name:name},
                             async: false,
                             success: function (data) {
-                                if (data.successFlg) {
+                                if (!data) {
                                     result.setResult(true);
                                 } else {
                                     result.setResult(false);
@@ -98,15 +131,17 @@
                 self.$updateBtn.click(function(){
                     if(validator.validate()){
                         var values = self.$form.Fields.getValues();
+                        if(self.$weiDuId.val()!="" && self.$weiDuId.val()!=undefined){//修改
+                           values.id = parseInt(self.$weiDuId.val());
+                        }
                         var dataModel = $.DataModel.init();
                         dataModel.fetchRemote("${contextRoot}/tjDimensionMain/updateTjDimensionMain", {
                             data: {tjDimensionMainModelJsonData:JSON.stringify(values)},
                             async: false,
                             success: function (data) {
-                                debugger
                                 if (data.successFlg) {
                                     win.parent.closeAddWeiduInfoDialog(function () {
-                                        if(self.$weiDuId.val()){//修改
+                                        if(self.$weiDuId.val()!="" && self.$weiDuId.val()!=undefined){//修改
                                             win.parent.$.Notice.success('修改成功');
                                         }else{
                                             win.parent.$.Notice.success('新增成功');

@@ -11,14 +11,14 @@
             <label>编码：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_code" class="required useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
+                <input type="text" id="inp_code" class="required ajax useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
             </div>
         </div>
         <div class="m-form-group ">
             <label>名称：</label>
 
             <div class="l-text-wrapper m-form-control essential ">
-                <input type="text" id="inp_name" class="required useTitle max-length-50 validate-special-char"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
+                <input type="text" id="inp_name" class="required ajax useTitle max-length-50 validate-special-char"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
             </div>
         </div>
         <div class="m-form-group">

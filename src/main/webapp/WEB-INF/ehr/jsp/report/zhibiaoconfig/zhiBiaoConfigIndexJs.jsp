@@ -94,7 +94,7 @@
                     self.$searchBtn.click(function () {
                         self.reloadGrid();
                     });
-                    $.subscribe('zhibiao:zhiBiaoInfo:open', function (event, id, dictId, mode) {
+                    $.subscribe('zhibiao:zhiBiaoInfo:open', function (event, id, mode) {
                         var title = '';
                         //只有new 跟 modify两种模式会到这个函数
                         if (mode == 'modify') {
