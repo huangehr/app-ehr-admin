@@ -151,7 +151,7 @@ public class TjQuotaController extends BaseUIController {
     @RequestMapping("deleteTjDataSave")
     @ResponseBody
     public Object deleteTjQuota(Long tjQuotaId) {
-        String url = "/tj/deleteTjQuota/" + tjQuotaId;
+        String url = "/tj/deleteTjQuota";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
