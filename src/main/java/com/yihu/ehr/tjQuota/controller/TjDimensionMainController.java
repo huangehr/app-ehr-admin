@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -119,7 +120,7 @@ public class TjDimensionMainController extends BaseUIController {
                     updateTjDimensionMain.setType(detailModel.getType());
                     updateTjDimensionMain.setStatus(detailModel.getStatus());
                     updateTjDimensionMain.setRemark(detailModel.getRemark());
-                    updateTjDimensionMain.setCreateTime(new Date());
+                    updateTjDimensionMain.setCreateTime(DateUtil.toString(new Date(), DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
                     updateTjDimensionMain.setCreateUser(userDetailModel.getId());
                     updateTjDimensionMain.setCreateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDimensionMain));
@@ -131,7 +132,7 @@ public class TjDimensionMainController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(new Date());
+                detailModel.setUpdateTime(DateUtil.toString(new Date(),DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
                 detailModel.setUpdateUser(userDetailModel.getId());
                 detailModel.setUpdateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
