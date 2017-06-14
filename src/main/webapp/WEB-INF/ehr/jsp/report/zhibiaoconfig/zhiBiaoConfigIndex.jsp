@@ -9,19 +9,54 @@
       <label class="btn btn-default active" style="width: 100px;" id="switch_dataSource"><input type="radio" name="options" autocomplete="off" checked="">数据源管理</label>
       <label class="btn btn-default" style="width: 100px;" id="switch_dataStoage"><input type="radio" name="options" autocomplete="off">数据存储管理</label>
       <label class="btn btn-default" style="width: 100px;" id="switch_dimension"><input type="radio" name="options" autocomplete="off">主维度管理</label>
+      <label class="btn btn-default" style="width: 100px;" id="switch_slave_dimension"><input type="radio" name="options" autocomplete="off">细维度管理</label>
     </div>
   </div>
 
   <!-- ####### 查询条件部分 ####### -->
   <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
     <div class="m-form-group f-mt10 ">
-      <div class="m-form-control f-mt5 f-fs14 f-fwb f-ml10">
-        <div>维度：</div>
+
+      <div class="div-datasource-search">
+        <div class="m-form-control f-mt5 f-fs14 f-fwb f-ml10">
+          <div>数据源：</div>
+        </div>
+        <div class="m-form-control">
+          <!--输入框-->
+          <input type="text" id="inp_datasource_search" placeholder="请输入名称" class="f-ml10" data-attr-scan="searchNm"/>
+        </div>
       </div>
-      <div class="m-form-control">
-        <!--输入框-->
-        <input type="text" id="inp_search" placeholder="请输入名称" class="f-ml10" data-attr-scan="searchNm"/>
+
+      <div class="div-datastorage-search f-dn">
+        <div class="m-form-control f-mt5 f-fs14 f-fwb f-ml10">
+          <div>数据存储：</div>
+        </div>
+        <div class="m-form-control">
+          <!--输入框-->
+          <input type="text" id="inp_datastorage_search" placeholder="请输入名称" class="f-ml10" data-attr-scan="searchNm"/>
+        </div>
       </div>
+
+      <div class="div-main-search f-dn">
+        <div class="m-form-control f-mt5 f-fs14 f-fwb f-ml10">
+          <div>维度：</div>
+        </div>
+        <div class="m-form-control">
+          <!--输入框-->
+          <input type="text" id="inp_main_search" placeholder="请输入名称" class="f-ml10" data-attr-scan="searchNm"/>
+        </div>
+      </div>
+
+      <div class="div-slave-search f-dn">
+        <div class="m-form-control f-mt5 f-fs14 f-fwb f-ml10">
+          <div>维度：</div>
+        </div>
+        <div class="m-form-control">
+          <!--输入框-->
+          <input type="text" id="inp_slave_search" placeholder="请输入名称" class="f-ml10" data-attr-scan="searchNm"/>
+        </div>
+      </div>
+
       <div class="m-form-control f-ml10">
         <!--按钮:查询-->
         <sec:authorize url="/tjDimensionMain/getTjDimensionMain">
@@ -39,10 +74,29 @@
       </div>
     </div>
   </div>
-  <!--######维度管理表######-->
-  <div id="div_weidu_info_grid" >
+
+  <!--######数据源管理表######-->
+  <div id="div_datasource_info_grid">
 
   </div>
-  <!--######用户信息表#结束######-->
+  <!--######数据源管理表#结束######-->
+
+  <!--######数据存储管理表######-->
+  <div id="div_datastorage_info_grid">
+
+  </div>
+  <!--######数据存储管理表#结束######-->
+
+  <!--######主维度管理表######-->
+  <div id="div_weidu_info_grid">
+
+  </div>
+  <!--######主维度管理表#结束######-->
+
+  <!--######细维度管理表######-->
+  <div id="div_slave_weidu_info_grid" >
+
+  </div>
+  <!--######细维度管理表#结束######-->
 
 </div>
