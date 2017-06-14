@@ -138,7 +138,8 @@ public class UserRolesController extends BaseUIController {
             return failed("应用id不能为空！");
         }
         StringBuffer buffer = new StringBuffer();
-        buffer.append("type=1;appId="+appId+";");
+        //buffer.append("type=1;appId="+appId+";");
+        buffer.append("appId="+appId+";");
         if (!StringUtils.isEmpty(searchNm)) {
             buffer.append("name?" + searchNm+" g0;code?"+searchNm+" g0");
         }
@@ -167,7 +168,7 @@ public class UserRolesController extends BaseUIController {
             String url = ServiceApi.Roles.RoleUsersNoPage;
             Map<String,Object> params = new HashMap<>();
             //type=1,为用户角色
-            params.put("filters","type=1");
+            //params.put("filters","type=1");
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
@@ -388,7 +389,7 @@ public class UserRolesController extends BaseUIController {
     @ResponseBody
     public Object getAppList(String searchNm, int page, int rows) {
         URLQueryBuilder builder = new URLQueryBuilder();
-        builder.addFilter("sourceType","=","1","");
+        //builder.addFilter("sourceType","=","1","");
         if (!StringUtils.isEmpty(searchNm)) {
             builder.addFilter("name", "?", searchNm,"");
         }
