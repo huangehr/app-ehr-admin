@@ -120,9 +120,8 @@ public class TjDimensionMainController extends BaseUIController {
                     updateTjDimensionMain.setType(detailModel.getType());
                     updateTjDimensionMain.setStatus(detailModel.getStatus());
                     updateTjDimensionMain.setRemark(detailModel.getRemark());
-                    updateTjDimensionMain.setCreateTime(DateUtil.toString(new Date(), DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
-                    updateTjDimensionMain.setCreateUser(userDetailModel.getId());
-                    updateTjDimensionMain.setCreateUserName(userDetailModel.getRealName());
+                    updateTjDimensionMain.setUpdateUser(userDetailModel.getId());
+                    updateTjDimensionMain.setUpdateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDimensionMain));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -132,9 +131,8 @@ public class TjDimensionMainController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(DateUtil.toString(new Date(),DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }

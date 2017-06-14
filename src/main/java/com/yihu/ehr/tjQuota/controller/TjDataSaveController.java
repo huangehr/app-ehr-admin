@@ -120,9 +120,8 @@ public class TjDataSaveController extends BaseUIController {
                     updateTjDataSave.setType(detailModel.getType());
                     updateTjDataSave.setStatus(detailModel.getStatus());
                     updateTjDataSave.setRemark(detailModel.getRemark());
-                    updateTjDataSave.setCreateTime(DateUtil.toString(new Date(),DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
-                    updateTjDataSave.setCreateUser(userDetailModel.getId());
-                    updateTjDataSave.setCreateUserName(userDetailModel.getRealName());
+                    updateTjDataSave.setUpdateUser(userDetailModel.getId());
+                    updateTjDataSave.setUpdateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDataSave));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -132,9 +131,8 @@ public class TjDataSaveController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(DateUtil.toString(new Date(),DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }

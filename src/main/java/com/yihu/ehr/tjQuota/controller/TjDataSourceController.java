@@ -120,9 +120,8 @@ public class TjDataSourceController extends BaseUIController {
                     updateTjDataSource.setType(detailModel.getType());
                     updateTjDataSource.setStatus(detailModel.getStatus());
                     updateTjDataSource.setRemark(detailModel.getRemark());
-                    updateTjDataSource.setCreateTime(DateUtil.toString(new Date(),DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
-                    updateTjDataSource.setCreateUser(userDetailModel.getId());
-                    updateTjDataSource.setCreateUserName(userDetailModel.getRealName());
+                    updateTjDataSource.setUpdateUser(userDetailModel.getId());
+                    updateTjDataSource.setUpdateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDataSource));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -132,9 +131,8 @@ public class TjDataSourceController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(DateUtil.toString(new Date(), DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }

@@ -120,9 +120,8 @@ public class TjDimensionSlaveController extends BaseUIController {
                     updateTjDimensionSlave.setType(detailModel.getType());
                     updateTjDimensionSlave.setStatus(detailModel.getStatus());
                     updateTjDimensionSlave.setRemark(detailModel.getRemark());
-                    updateTjDimensionSlave.setCreateTime(DateUtil.toString(new Date(),DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
-                    updateTjDimensionSlave.setCreateUser(userDetailModel.getId());
-                    updateTjDimensionSlave.setCreateUserName(userDetailModel.getRealName());
+                    updateTjDimensionSlave.setUpdateUser(userDetailModel.getId());
+                    updateTjDimensionSlave.setUpdateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDimensionSlave));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -132,9 +131,8 @@ public class TjDimensionSlaveController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(DateUtil.toString(new Date(), DateUtil.DEFAULT_YMDHMSDATE_FORMAT));
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
