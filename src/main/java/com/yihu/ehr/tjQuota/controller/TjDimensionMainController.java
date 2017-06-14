@@ -110,7 +110,7 @@ public class TjDimensionMainController extends BaseUIController {
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
                 Long id = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tj/tjDimensionMain/" + id);
+                resultStr = templates.doGet(comUrl + "/tj/tjDimensionMainId/" + id);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDimensionMainModel updateTjDimensionMain = getEnvelopModel(envelop.getObj(), TjDimensionMainModel.class);

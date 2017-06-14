@@ -110,7 +110,7 @@ public class TjDimensionSlaveController extends BaseUIController {
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
                 Long id = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tj/tjDimensionSlave/" + id);
+                resultStr = templates.doGet(comUrl + "/tj/tjDimensionSlaveId/" + id);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDimensionSlaveModel updateTjDimensionSlave = getEnvelopModel(envelop.getObj(), TjDimensionSlaveModel.class);

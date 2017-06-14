@@ -110,7 +110,7 @@ public class TjDataSourceController extends BaseUIController {
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
                 Long tjDataSourceId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tjDataSource/" + tjDataSourceId);
+                resultStr = templates.doGet(comUrl + "/tj/getTjDataSourceById/" + tjDataSourceId);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDataSourceModel updateTjDataSource = getEnvelopModel(envelop.getObj(), TjDataSourceModel.class);
@@ -188,16 +188,15 @@ public class TjDataSourceController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
+        TjDataSourceModel detailModel = null;
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            model.addAttribute("allData", resultStr);
-            model.addAttribute("contentPage", "/report/zhibiao/dataSource");
-            return "simpleView";
+            Envelop ep = getEnvelop(resultStr);
+            detailModel = toModel(toJson(ep.getObj()),TjDataSourceModel.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
         }
+        return detailModel;
     }
 
 }
