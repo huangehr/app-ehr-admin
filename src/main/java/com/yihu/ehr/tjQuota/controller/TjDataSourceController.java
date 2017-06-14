@@ -182,7 +182,8 @@ public class TjDataSourceController extends BaseUIController {
      * @return
      */
     @RequestMapping("getTjDataSourceById")
-    public Object getTjQuotaById(Model model, Long id ) {
+    @ResponseBody
+    public TjDataSourceModel getTjQuotaById(Model model, Long id ) {
         String url ="/tj/getTjDataSourceById/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
