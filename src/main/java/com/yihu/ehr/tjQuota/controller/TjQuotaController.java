@@ -54,14 +54,14 @@ public class TjQuotaController extends BaseUIController {
 
     @RequestMapping("/getTjQuota")
     @ResponseBody
-    public Object searchTjQuota(String name, int page, int rows){
+    public Object searchTjQuota(String nameOrCode, int page, int rows){
         String url = "/tj/getTjQuotaList";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(name)) {
-            stringBuffer.append("name?" + name );
+        if (!StringUtils.isEmpty(nameOrCode)) {
+            stringBuffer.append("name?" + nameOrCode + " g1;code?" + nameOrCode + " g1;");
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
