@@ -54,7 +54,7 @@ public class TjDimensionMainController extends BaseUIController {
     }
 
 
-    
+
     //查询统计主维度
     @RequestMapping("/getTjDimensionMain")
     @ResponseBody
