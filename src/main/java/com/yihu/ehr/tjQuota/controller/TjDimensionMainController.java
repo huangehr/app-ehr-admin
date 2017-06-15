@@ -41,8 +41,6 @@ public class TjDimensionMainController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
 
-    @Autowired
-    ObjectMapper objectMapper;
     /**
      * 主维度
      * @param model
