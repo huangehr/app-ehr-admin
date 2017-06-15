@@ -18,6 +18,13 @@
                 <input type="text" id="inp_name" class="required useTitle ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
             </div>
         </div>
+        <div class="m-form-group">
+            <label>任务执行方式：</label>
+            <div class="u-checkbox-wrap m-form-control ">
+                <input type="radio" value="1" name="jobType">单次执行
+                <input type="radio" value="2" name="jobType">周期执行
+            </div>
+        </div>
         <div class="m-form-group ">
             <label>周期：</label>
 
@@ -95,14 +102,16 @@
     </div>
 </div>
 
+<input type="hidden" id="execTime">
+
 <div id="div_weekDialog" class="u-public-manage m-form-inline f-dn" style="position: relative;height: 77%;">
-    <div class="m-form-group">
-        <label>任务执行方式：</label>
-        <div class="u-checkbox-wrap m-form-control ">
-            <input type="radio" value="1" name="jobType">单次执行
-            <input type="radio" value="2" name="jobType">周期执行
-        </div>
-    </div>
+    <%--<div class="m-form-group">--%>
+        <%--<label>任务执行方式：</label>--%>
+        <%--<div class="u-checkbox-wrap m-form-control ">--%>
+            <%--<input type="radio" value="1" name="jobType">单次执行--%>
+            <%--<input type="radio" value="2" name="jobType">周期执行--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <div class="m-form-group">
         <label>任务触发时间：</label>
         <div class="m-form-control">
