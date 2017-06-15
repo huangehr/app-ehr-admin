@@ -43,7 +43,7 @@
 
                 </div>
         </div>
-        <div id="div_relation_grid1" style="float: right;margin-right: 16px;">
+        <div id="div_relation_grid1" style="float: right;margin-right: 16px;width: calc(65% - 20px);height: 441px;border: 1px solid #DFDFDF;">
 
         </div>
       </div>

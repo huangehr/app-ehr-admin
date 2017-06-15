@@ -1,85 +1,86 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<input value="${id}" class="f-dn" id="inp_zhiBiaoId"/>
 <div id="div_patient_info_form" data-role-form class="m-form-inline f-mt20" style="overflow:auto">
     <div>
         <div class="m-form-group">
             <label>编码：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_code" class="required useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
+                <input type="text" id="inp_code" class="required ajax useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
             </div>
         </div>
         <div class="m-form-group ">
             <label>名称：</label>
 
             <div class="l-text-wrapper m-form-control essential ">
-                <input type="text" id="inp_name" class="required useTitle ajax validate-id-number"  validate-id-number-title="请输入合法的身份证号"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="idCardNo"/>
+                <input type="text" id="inp_name" class="required useTitle ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
             </div>
         </div>
         <div class="m-form-group ">
             <label>周期：</label>
 
             <div class="l-text-wrapper m-form-control essential ">
-                <input type="text" id="inp_cycle" class="required useTitle ajax validate-id-number"  validate-id-number-title="请输入合法的身份证号"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="idCardNo"/>
+                <input type="text" id="inp_cycle" class="required useTitle ajax"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="corn"/>
             </div>
         </div>
         <div class="m-form-group">
             <label>对象类：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_object_class" class="required"  data-attr-scan="location">
+                <input type="text" id="inp_object_class" class="required"  data-attr-scan="jobClazz">
             </div>
         </div>
-
         <div class="m-form-group">
             <label>数据源：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_data_source" class="required" placeholder="请选择数据源" data-type="comboSelect" data-attr-scan="location">
+                <input type="text" id="inp_data_source" class="required ajax useTitle" placeholder="请选择数据源" data-type="select"  required-title=<spring:message code="lbl.must.input"/>>
             </div>
         </div>
         <div class="m-form-group" id="div_dataSource_json">
-            <label>config_json：</label>
+            <label>源配置：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_dataSource_json" class="required" data-attr-scan="location">
+                <input type="text" id="inp_dataSource_json" class="required useTitle max-length-256 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> />
             </div>
         </div>
-        <div class="m-form-group">
+        <div class="m-form-group f-mt5">
             <label>数据存储：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_data_storage" class="required" placeholder="请选择数据存储" data-type="comboSelect" data-attr-scan="location">
+                <input type="text" id="inp_data_storage" class="required ajax useTitle" placeholder="请选择数据存储" data-type="select"  required-title=<spring:message code="lbl.must.input"/>>
             </div>
         </div>
         <div class="m-form-group" id="div_dataStorage_json">
-            <label>config_json：</label>
+            <label>存储配置：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_dataStorage_json" class="required" data-type="comboSelect" data-attr-scan="location">
+                <input type="text" id="inp_dataStorage_json" class="required useTitle max-length-256 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> />
             </div>
         </div>
         <div class="m-form-group ">
             <label>存储方式：</label>
 
             <div class="u-checkbox-wrap m-form-control ">
-                <input type="radio" value="1" name="gender" data-attr-scan>全量
-                <input type="radio" value="2" name="gender" data-attr-scan>增量
+                <input type="radio" value="1" name="dataLevel" data-attr-scan>全量
+                <input type="radio" value="2" name="dataLevel" data-attr-scan>增量
             </div>
         </div>
         <div class="m-form-group ">
             <label>状态：</label>
 
             <div class="u-checkbox-wrap m-form-control ">
-                <input type="radio" value="1" name="gender" data-attr-scan>生效
-                <input type="radio" value="2" name="gender" data-attr-scan>失效
+                <input type="radio" value="1" name="status" data-attr-scan>正常
+                <input type="radio" value="-1" name="status" data-attr-scan>删除
+                <input type="radio" value="0" name="status" data-attr-scan>不可用
             </div>
         </div>
         <div class="m-form-group f-mb30">
             <label>备注：</label>
             <div class="l-text-wrapper m-form-control">
-                <textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="introduction" ></textarea>
+                <textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="remark" ></textarea>
             </div>
         </div>
     </div>
@@ -92,15 +93,14 @@
             <span>关闭</span>
         </div>
     </div>
-    <input type="hidden" id="inp_patientCopyId">
 </div>
 
-<div id="div_weekDialog" class="u-public-manage m-form-inline" style="position: relative;height: 77%;">
+<div id="div_weekDialog" class="u-public-manage m-form-inline f-dn" style="position: relative;height: 77%;">
     <div class="m-form-group">
         <label>任务执行方式：</label>
         <div class="u-checkbox-wrap m-form-control ">
-            <input type="radio" value="1" name="gender">单次执行
-            <input type="radio" value="2" name="gender">周期执行
+            <input type="radio" value="1" name="jobType">单次执行
+            <input type="radio" value="2" name="jobType">周期执行
         </div>
     </div>
     <div class="m-form-group">
@@ -161,5 +161,6 @@
         </div>
     </div>
 </div>
+
 <script src="${staticRoot}/lib/ligerui/plugins/ligerSpinner.js"></script>
 

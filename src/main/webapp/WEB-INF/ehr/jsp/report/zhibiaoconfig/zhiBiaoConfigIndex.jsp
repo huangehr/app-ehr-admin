@@ -57,14 +57,6 @@
         </div>
       </div>
 
-      <div class="m-form-control f-ml10">
-        <!--按钮:查询-->
-        <sec:authorize url="/tjDimensionMain/getTjDimensionMain">
-          <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
-            <span><spring:message code="btn.search"/></span>
-          </div>
-        </sec:authorize>
-      </div>
       <div class="m-form-control f-mr10 f-fr">
         <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
           <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam"  onclick="javascript:$.publish('zhibiao:zhiBiaoInfo:open',['','new'])">
