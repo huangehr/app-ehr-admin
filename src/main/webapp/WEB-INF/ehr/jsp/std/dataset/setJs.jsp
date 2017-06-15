@@ -262,8 +262,23 @@
 
         getElementList: function (versionCode, setid, curPage) {
             var u = set.list;
-
+            //平台标准-若为已发布，则不能多选删除。将复选框隐藏。
             var strkey = u.elementSearch.getValue();
+            var checkBox = u.versionStage?true:false;
+            u.elementGrid = $("#div_element_grid").ligerGrid($.LigerGridEx.config({
+                url: u._url + "/std/dataset/searchMetaData",
+                parms: {id: setid, version: versionCode, metaDataCode: strkey},
+                columns: u.elementColumns,
+                selectRowButtonOnly: false,
+                unSetValidateAttr: false,
+                allowHideColumn: false,
+                checkbox: checkBox,
+                usePager: true
+            }));
+            // 自适应宽度
+            u.elementGrid.adjustToWidth();
+            return false;
+
             if (u.elementGrid == null) {
                 u.elementGrid = $("#div_element_grid").ligerGrid($.LigerGridEx.config({
                     url: u._url + "/std/dataset/searchMetaData",
