@@ -7,7 +7,6 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +56,7 @@ public class TjDataSourceController extends BaseUIController {
     //查询
     @RequestMapping("/getTjDataSource")
     @ResponseBody
-    public Object searchTjDataSource(String name, int page, int rows){
+    public Object searchTjDataSource(String name,String searchParm, int page, int rows){
         String url = "/tj/getTjDataSourceList";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -66,6 +64,9 @@ public class TjDataSourceController extends BaseUIController {
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(name)) {
             stringBuffer.append("name?" + name );
+        }
+        if (!StringUtils.isEmpty(searchParm)) {
+            stringBuffer.append("name?" + searchParm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
