@@ -260,13 +260,16 @@
                             if(returndata != "fail"){
                                 $('#logoUrl').val(returndata);
                                 self.$logoUrl.val(returndata);
-                                alert("上传成功");
+                                win.parent.$.Notice.success('上传成功');
+//                                alert("上传成功");
                             }else{
-                                alert("上传失败");
+//                                alert("上传失败");
+                                win.parent.$.Notice.success('上传失败');
                             }
                         },
                         error: function (returndata) {
-                            alert("上传失败");
+//                            alert("上传失败");
+                            win.parent.$.Notice.success('上传失败');
                         }
                     });
                 }
