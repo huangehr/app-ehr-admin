@@ -142,7 +142,7 @@
                         return;
                     this.grid = $("#div_relation_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/cdadict/getCdaDictList',
-                        width:" calc(40% - 20px)",
+                        width:" calc(35% - 20px)",
                         height:"450px",
                         parms: {
                             searchNm: "",
@@ -151,9 +151,8 @@
                         columns: [
                             {display: 'id', name: 'id', hide: true},
                             {display: 'dictId', name: 'dictId', hide: true},
-                            {display: '编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '名称', name: 'name', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '维度', name: 'name', width: '34%', isAllowHide: false, align: 'left'}
+                            {display: '编码', name: 'code', width: '50%', isAllowHide: false, align: 'left'},
+                            {display: '名称', name: 'name', width: '50%', isAllowHide: false, align: 'left'},
                         ],
                         //delayLoad:true,
                         selectRowButtonOnly: false,
@@ -161,44 +160,65 @@
                         unSetValidateAttr: false,
                         allowHideColumn: false,
                         checkbox: true,
-                        onDblClickRow: function (row) {
-                            //$.publish('entry:dictInfo:open',[row.id, row.dictId, 'modify']);
-                        }
+                        //默认选中
+                        isChecked:function(row){
+                            if(row.checked=="1")
+                            {
+                                return true;
+                            }
+                            else{
+                                return false;
+                            }
+                        },
+                        //选中修改值
+                        onCheckRow:function(checked,data,rowid,rowdata)
+                        {
+                            //修改行checked值
+                            if(checked)
+                                data.checked ="1";
+                            else
+                                data.checked ="0";
+                            alert("单条选中")
+                        },
+                        //全选事件
+                        onCheckAllRow:function(){
+                            alert("全选")
+                        },
                     }));
 
-                    this.grid1 = $("#div_relation_grid1").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/cdadict/getCdaDictList',
-                        parms: {
-                            searchNm: "",
-                            strVersionCode: "592814c2898a"
-                        },
-                        width:" calc(60% - 20px)",
-                        height:"450px",
-//                        usePager:false,
-                        columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
-                            {display: '编码', name: 'code', width: '15%', isAllowHide: false, align: 'left'},
-                            {display: '名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},
-                            {display: '维度', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
-                            {display: 'sql', name: 'name', width: '30%', isAllowHide: false, align: 'left',render: function (row) {
-                                    return '<input type="text" class="inp_sql" style="padding-left: 5px;width:100%;line-height: 28px;" />';
-                                }
-                            },
-                            {display: 'key', name: 'name', width: '30%', isAllowHide: false, align: 'left',render: function (row) {
-                                     return '<input type="text" class="inp_key" style="padding-left: 5px;width:100%;line-height: 28px;" />';
-                                }
-                            }
-                        ],
-                        //delayLoad:true,
-                        selectRowButtonOnly: false,
-                        validate: true,
-                        unSetValidateAttr: false,
-                        allowHideColumn: false,
-                        onDblClickRow: function (row) {
-                            //$.publish('entry:dictInfo:open',[row.id, row.dictId, 'modify']);
-                        }
-                    }));
+                    <%--this.grid1 = $("#div_relation_grid1").ligerGrid($.LigerGridEx.config({--%>
+                        <%--url: '${contextRoot}/cdadict/getCdaDictList',--%>
+                        <%--parms: {--%>
+                            <%--searchNm: "",--%>
+                            <%--strVersionCode: "592814c2898a"--%>
+                        <%--},--%>
+                        <%--width:" calc(60% - 20px)",--%>
+                        <%--height:"450px",--%>
+<%--//                        usePager:false,--%>
+                        <%--columns: [--%>
+                            <%--{display: 'id', name: 'id', hide: true},--%>
+                            <%--{display: 'dictId', name: 'dictId', hide: true},--%>
+                            <%--{display: '编码', name: 'code', width: '15%', isAllowHide: false, align: 'left'},--%>
+                            <%--{display: '名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},--%>
+                            <%--{display: '维度', name: 'name', width: '10%', isAllowHide: false, align: 'left'},--%>
+                            <%--{display: 'sql', name: 'name', width: '30%', isAllowHide: false, align: 'left',render: function (row) {--%>
+                                    <%--return '<input type="text" class="inp_sql" style="padding-left: 5px;width:100%;line-height: 28px;" />';--%>
+                                <%--}--%>
+                            <%--},--%>
+                            <%--{display: 'key', name: 'name', width: '30%', isAllowHide: false, align: 'left',render: function (row) {--%>
+                                     <%--return '<input type="text" class="inp_key" style="padding-left: 5px;width:100%;line-height: 28px;" />';--%>
+                                <%--}--%>
+                            <%--}--%>
+                        <%--],--%>
+                        <%--//delayLoad:true,--%>
+                        <%--selectRowButtonOnly: false,--%>
+                        <%--validate: true,--%>
+                        <%--unSetValidateAttr: false,--%>
+                        <%--allowHideColumn: false,--%>
+                        <%--onDblClickRow: function (row) {--%>
+                            <%--//$.publish('entry:dictInfo:open',[row.id, row.dictId, 'modify']);--%>
+                        <%--}--%>
+                    <%--}));--%>
                     this.bindEvents();
                     // 自适应宽度
                     this.grid.adjustToWidth();

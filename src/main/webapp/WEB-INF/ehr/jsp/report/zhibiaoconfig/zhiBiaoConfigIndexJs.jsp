@@ -39,13 +39,21 @@
                 $searchBox2: $('#inp_datastorage_search'),
                 $searchBox3: $('#inp_main_search'),
                 $searchBox4: $('#inp_slave_search'),
-                $searchBtn: $('#btn_search'),
                 init: function (dictId) {
                     var self = this;
-                    this.$searchBox1.ligerTextBox({width:240});
-                    this.$searchBox2.ligerTextBox({width:240});
-                    this.$searchBox3.ligerTextBox({width:240});
-                    this.$searchBox4.ligerTextBox({width:240});
+                    this.$searchBox1.ligerTextBox({width:240, isSearch: true, search: function () {
+                        entryMater.reloadGrid();
+                    }});
+                    this.$searchBox2.ligerTextBox({width:240, isSearch: true, search: function () {
+                        entryMater.reloadGrid();
+                    }});
+                    this.$searchBox3.ligerTextBox({width:240, isSearch: true, search: function () {
+                        entryMater.reloadGrid();
+                    }});
+                    this.$searchBox4.ligerTextBox({width:240, isSearch: true, search: function () {
+                        entryMater.reloadGrid();
+                    }});
+
                     this.$element.show();
                     this.$element.attrScan();
                     this.bindEvents();
@@ -324,9 +332,7 @@
                         }
                         self.reloadGrid();
                     });
-                    self.$searchBtn.click(function () {
-                        self.reloadGrid();
-                    });
+
                     $.subscribe('zhibiao:zhiBiaoInfo:open', function (event, id, mode) {
                         var title = '';
                         var titleName = "";
