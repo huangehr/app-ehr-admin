@@ -22,7 +22,7 @@
     <div class="m-form-group">
         <label>描述</label>
         <div class="l-text-wrapper m-form-control">
-            <textarea type="text" id="inp_appRole_explain" placeholder="请输入描述" data-attr-scan="description"></textarea>
+            <textarea type="text"  class="max-length-250" id="inp_appRole_explain" placeholder="请输入描述" data-attr-scan="description"></textarea>
         </div>
     </div>
     <div class="m-form-control div-appRole-btn">

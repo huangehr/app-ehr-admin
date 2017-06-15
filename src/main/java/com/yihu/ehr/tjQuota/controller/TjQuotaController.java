@@ -61,7 +61,7 @@ public class TjQuotaController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(name)) {
-            stringBuffer.append("name?" + name );
+            stringBuffer.append("name?" + name + " g1;code?" + name + " g1;");
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {

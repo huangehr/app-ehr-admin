@@ -51,6 +51,17 @@ public class ReportController extends BaseUIController {
     }
 
     /**
+     * 趋势分析页(对外）
+     * @param model
+     * @return
+     */
+    @RequestMapping("outInitial")
+    public String initialOut(Model model) {
+        model.addAttribute("contentPage", "/report/trendAnalysis");
+        return "generalView";
+    }
+
+    /**
      * 趋势分析详情页
      * @param model
      * @return

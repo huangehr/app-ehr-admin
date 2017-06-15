@@ -1,15 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<link rel="stylesheet" href="${staticRoot}/develop/lib/bootstrap/css/bootstrap.min.css">
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true"><spring:message code="title.dict.manage"/></div>
 <div id="div_wrapper" >
-  <div id="conditionArea" class="f-mb10 f-mr10" align="right" style="display: none;">
-
-        <input type="text" data-type="select" id="stdDictVersion" data-attr-scan="version">
-
-  </div>
   <div style="width: 100%" id="grid_content">
     <!--######指标首页######-->
     <div id="div_left" style="width:100%;float: left;">
