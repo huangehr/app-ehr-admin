@@ -357,7 +357,7 @@
                         var values = self.$form.Fields.getValues();
                         values.execType = $('input[name=jobType]:checked').val();
                         values.execTime = $('#execTime').val();
-                        values.tjquotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
+                        values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
                         values.tjQuotaDataSaveModel = {saveCode:dataSourceSelectedVal,configJson:self.$inpDataStorageJson.val()};
                         debugger
                         console.log(values);
