@@ -3,6 +3,7 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.resource.RsAppResourceModel;
+import com.yihu.ehr.agModel.resource.RsRolesResourceModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
 import com.yihu.ehr.agModel.user.RolesModel;
@@ -10,6 +11,7 @@ import com.yihu.ehr.apps.controller.AppController;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.model.resource.MRsAppResource;
+import com.yihu.ehr.model.resource.MRsRolesResource;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -468,17 +470,17 @@ public class UserRolesController extends BaseUIController {
 
 
     //-------------------------------------------------------角色组---资源授权管理---开始----------------
-//    @RequestMapping("/resource/initial")
-//    public String resourceInitial(Model model, String backParams){
-//        model.addAttribute("backParams",backParams);
-//        model.addAttribute("contentPage", "/app/resource");
-//        return "pageView";
-//    }
+    @RequestMapping("/resource/initial")
+    public String resourceInitial(Model model, String backParams){
+        model.addAttribute("backParams",backParams);
+        model.addAttribute("contentPage", "user/roles/resource");
+        return "pageView";
+    }
 
     //获取角色组已授权资源ids集合
     @RequestMapping("/rolesResourceIds")
     @ResponseBody
-    public  Object rolesResourceIds(String rolesId){
+    public  Object getRolesResourceIds(String rolesId){
         Envelop envelop = new Envelop();
         List<String> list = new ArrayList<>();
         envelop.setSuccessFlg(false);
@@ -498,50 +500,50 @@ public class UserRolesController extends BaseUIController {
             resultStr = template.doGet(comUrl+url+"?"+param);
             Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
             if(resultGet.isSuccessFlg()&&resultGet.getDetailModelList().size()!=0){
-                List<RsAppResourceModel> rsAppModels = (List<RsAppResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsAppResourceModel>(),RsAppResourceModel.class);
-                for(RsAppResourceModel m : rsAppModels){
+                List<RsRolesResourceModel> rsRolesModels = (List<RsRolesResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsRolesResourceModel>(),RsRolesResourceModel.class);
+                for(RsRolesResourceModel m : rsRolesModels){
                     list.add(m.getResourceId());
                 }
                 envelop.setSuccessFlg(true);
             }
         } catch (Exception ex) {
-            LogService.getLogger(AppController.class).error(ex.getMessage());
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
         envelop.setSuccessFlg(true);
         envelop.setDetailModelList(list);
         return envelop;
     }
 
-    @RequestMapping("/app")
+    @RequestMapping("/roles")
     @ResponseBody
-    public Object getAppById(String appId){
+    public Object getRolesById(String rolesId){
         Envelop envelop = new Envelop();
         try{
-            String url = "/apps/"+appId;
+            String url = "/roles/"+rolesId;
             RestTemplates template = new RestTemplates();
             String envelopStr = template.doGet(comUrl+url);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(AppController.class).error(ex.getMessage());
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
         envelop.setSuccessFlg(false);
         return envelop;
     }
 
-    //资源授权appId+resourceIds
-    @RequestMapping("/resource/grant")
+    //资源授权rolesId+resourceIds
+    @RequestMapping("/resource/rolesGrant")
     @ResponseBody
-    public Object resourceGrant(String appId,String resourceIds){
+    public Object resourceGrant(String rolesId,String resourceIds){
         Envelop envelop = new Envelop();
         try {
-            String url = "/resources/apps/"+appId+"/grant";
+            String url = "/resources/roles/"+rolesId+"/grant";
             Map<String,Object> params = new HashMap<>();
-            params.put("appId", appId);
+            params.put("rolesId", rolesId);
             params.put("resourceIds", resourceIds);
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(AppController.class).error(ex.getMessage());
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
         envelop.setSuccessFlg(false);
         return envelop;
@@ -550,11 +552,11 @@ public class UserRolesController extends BaseUIController {
     //批量、单个取消资源授权
     @RequestMapping("/resource/cancel")
     @ResponseBody
-    public Object resourceGrantCancel(String appId,String resourceIds){
+    public Object resourceGrantCancel(String rolesId,String resourceIds){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
-        if(org.springframework.util.StringUtils.isEmpty(appId)){
-            envelop.setErrorMsg("应用id不能为空！");
+        if(org.springframework.util.StringUtils.isEmpty(rolesId)){
+            envelop.setErrorMsg("角色组id不能为空！");
             return envelop;
         }
         if(org.springframework.util.StringUtils.isEmpty(resourceIds)){
@@ -563,30 +565,30 @@ public class UserRolesController extends BaseUIController {
         }
         try {
             //先获取授权关系表的ids
-            String url = "/resources/grants/no_paging";
+            String url = "/resources/rolesGrants/no_paging";
             Map<String,Object> params = new HashMap<>();
-            params.put("filters","appId="+appId+";resourceId="+resourceIds);
+            params.put("filters","rolesId="+rolesId+";resourceId="+resourceIds);
             String envelopStrGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
             Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
             String ids = "";
             if(envelopGet.isSuccessFlg()&&envelopGet.getDetailModelList().size()!=0){
-                List<MRsAppResource> list = (List<MRsAppResource>)getEnvelopList(envelopGet.getDetailModelList(),
-                        new ArrayList<MRsAppResource>(),MRsAppResource.class);
-                for(MRsAppResource m:list){
+                List<MRsRolesResource> list = (List<MRsRolesResource>)getEnvelopList(envelopGet.getDetailModelList(),
+                        new ArrayList<MRsRolesResource>(),MRsRolesResource.class);
+                for(MRsRolesResource m:list){
                     ids += m.getId()+",";
                 }
                 ids = ids.substring(0,ids.length()-1);
             }
             //取消资源授权
             if(!org.springframework.util.StringUtils.isEmpty(ids)){
-                String urlCancel = "/resources/grants";
+                String urlCancel = "/resources/rolesGrants";
                 Map<String,Object> args = new HashMap<>();
                 args.put("ids",ids);
                 String result = HttpClientUtil.doDelete(comUrl+urlCancel,args,username,password);
                 return result;
             }
         } catch (Exception ex) {
-            LogService.getLogger(AppController.class).error(ex.getMessage());
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
@@ -598,7 +600,7 @@ public class UserRolesController extends BaseUIController {
      * @param
      * @return
      */
-    @RequestMapping("appIconFileUpload")
+    @RequestMapping("rolesIconFileUpload")
     @ResponseBody
     public Object orgLogoFileUpload(
             @RequestParam("iconFile") MultipartFile file) throws IOException {
@@ -676,36 +678,36 @@ public class UserRolesController extends BaseUIController {
 
     //-------------------------------------------------------角色组----资源----数据元--管理开始--------------
     @RequestMapping("/resourceManage/initial")
-    public String resourceManageInitial(Model model,String appId,String resourceId, String dataModel){
+    public String resourceManageInitial(Model model,String rolesId,String resourceId, String dataModel){
         model.addAttribute("dataModel",dataModel);
-        model.addAttribute("appRsId",getAppResId(appId,resourceId));
-        model.addAttribute("contentPage", "/app/resourceManage");
+        model.addAttribute("rolesRsId",getRolesResId(rolesId,resourceId));
+        model.addAttribute("contentPage", "user/roles/resourceManage");
         return "pageView";
     }
-    //获取应用资源关联关系id
-    public String getAppResId(String appId,String resourceId) {
+    //获取角色组-资源关联关系id
+    public String getRolesResId(String rolesId,String resourceId) {
         URLQueryBuilder builder = new URLQueryBuilder();
-        if (org.springframework.util.StringUtils.isEmpty(appId)|| org.springframework.util.StringUtils.isEmpty(resourceId)) {
+        if (org.springframework.util.StringUtils.isEmpty(rolesId)|| org.springframework.util.StringUtils.isEmpty(resourceId)) {
             return "";
         }
-        builder.addFilter("appId", "=", appId, "g1");
+        builder.addFilter("rolesId", "=", rolesId, "g1");
         builder.addFilter("resourceId", "=", resourceId, "g1");
         builder.setPageNumber(1)
                 .setPageSize(1);
         String param = builder.toString();
-        String url = "/resources/grants";
+        String url = "/resources/rolesGrants";
         String resultStr = "";
         try {
             RestTemplates template = new RestTemplates();
             resultStr = template.doGet(comUrl+url+"?"+param);
             Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
             if(resultGet.isSuccessFlg()){
-                List<RsAppResourceModel> rsAppModels = (List<RsAppResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsAppResourceModel>(),RsAppResourceModel.class);
-                RsAppResourceModel resourceModel = rsAppModels.get(0);
+                List<RsRolesResourceModel> rsRolesModels = (List<RsRolesResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsRolesResourceModel>(),RsRolesResourceModel.class);
+                RsRolesResourceModel resourceModel = rsRolesModels.get(0);
                 return resourceModel.getId();
             }
         } catch (Exception ex) {
-            LogService.getLogger(AppController.class).error(ex.getMessage());
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
         return "";
     }
