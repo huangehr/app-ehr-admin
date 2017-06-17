@@ -30,7 +30,7 @@ public class RolesGrantController extends ExtendController<RolesGrantService>{
     public RolesGrantController() {
         this.init(
                 "/resource/grant/grid",        //列表页面url
-                "/resource/grant/dialog"      //编辑页面url
+                "/resource/grant/rolesDialog"      //编辑页面url
         );
     }
 
@@ -159,7 +159,7 @@ public class RolesGrantController extends ExtendController<RolesGrantService>{
     public Object saveMeta(String model) {
 
         try {
-            String url = service.comUrl + "/resources/metadata/grants";
+            String url = service.comUrl + "/resources/relosMetadatas/grants";
             Map map = new HashMap<>();
             map.put("model", model);
             String resultStr = service.doPost(url, map);

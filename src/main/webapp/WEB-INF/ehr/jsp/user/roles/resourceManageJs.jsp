@@ -140,6 +140,7 @@
 				},
 				//操作栏渲染器
 				opratorRender: function (row){
+					debugger;
 					var vo = [
 						{type: 'edit', clkFun: "$.publish('grant:meta:modify',['"+ row['id'] +"', '"+ row['rolesResourceId'] +"', '"+ row['resourceMetadataId'] +"', '"+ row['rolesId'] +"', 'modify'])"}
 					];
@@ -147,6 +148,7 @@
 				},
 				//修改、新增点击事件
 				gotoModify : function (event, id, rolesResId, resMetaId, rolesId, mode) {
+					debugger;
 					id = id || '';
 					curOprator = em;
 					var params = {id: id, mode: mode, rolesResId: rolesResId, resMetaId: resMetaId, rolesId: rolesId};
@@ -159,6 +161,7 @@
 				},
 				//公开方法
 				publishFunc : function (){
+					debugger;
 					var m = em;
 					$.subscribe('grant:meta:modify', m.gotoModify);
 				}

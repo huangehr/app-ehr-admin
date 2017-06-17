@@ -16,10 +16,10 @@ public class RolesGrantService extends ExtendService<RsRolesResourceMetadataMode
     public RolesGrantService() {
         init(
                 "/resources/roles_resource/{roles_res_id}/metadata",        //searchUrl
-                "/resources/metadata/grants/{id}",   //modelUrl
-                "/resources/metadatas",               //addUrl
-                "/resources/metadata/grants/{id}",   //modifyUrl
-                "/resources/metadatas"                //deleteUrl
+                "/resources/rolesMetadata/grants/{id}",   //modelUrl
+                "/resources/rolesMetadatas",               //addUrl
+                "/resources/rolesMetadata/grants/{id}",   //modifyUrl
+                "/resources/rolesMetadatas"                //deleteUrl
         );
     }
 }
