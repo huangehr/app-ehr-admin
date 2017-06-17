@@ -48,7 +48,21 @@
                                 {display: '执行方式', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execType', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '任务类', name: 'jobClazz', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '状态', name: 'status', width: '5%', isAllowHide: false, align: 'left'},
+                                {display: '状态', name: 'status', width: '5%', render: function (row) {
+                                    var sta = row.status,
+                                        str = '';
+                                    if (sta == '-1') {
+                                        str = '已删除'
+                                    }
+                                    if (sta == '0') {
+                                        str = '不可用'
+                                    }
+                                    if (sta == '1') {
+                                        str = '正常'
+                                    }
+                                    console.log(row);
+                                    return str;
+                                }, isAllowHide: false, align: 'center'},
                                 {display: '存储方式', name: 'dataLevel', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                                 {
@@ -112,9 +126,9 @@
                             height: 650,
                             width: 480,
                             title: title,
-                            url: '${contextRoot}/zhibiao/zhiBiaoInfoDialog',
+                            url: '${contextRoot}/tjQuota/getPage',
                             urlParms: {
-
+                                id: id
                             },
                             isHidden: false,
                             opener: true,
@@ -124,6 +138,7 @@
 
                     $.subscribe('zhibiao:zhiBiaoGrid:delete', function (event, id) {
 
+                        debugger
                         $.Notice.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
