@@ -356,6 +356,7 @@
 								function (data) {
 									if(data.successFlg){
 										$.Notice.success('添加成功',function () {
+                                            me.removePopWin(me);
 											pageInit();
 											return true;
 										});
@@ -365,7 +366,6 @@
 									}
 								}
 						);
-
 					},{title: (!!categoryName ? categoryName + ' > 添加子部门' : '添加子部门')});
 				},
 				//修改名称
@@ -388,6 +388,7 @@
 									if(data.successFlg){
 										$.Notice.success('修改成功',function () {
 											pageInit();
+                                            me.removePopWin(me);
 											return true;
 										});
 									}else{
@@ -401,23 +402,26 @@
 				//删除
 				setDelFun: function ( id, me) {
 					var url = '';
-					if (!confirm('确定要删除吗？')){
-						return false;
-					}
-					var url = "${contextRoot}/deptMember/delOrgDept";
-					me.res( url,{orgDeptId:id},
-							function (data) {
-								if(data.successFlg){
-									$.Notice.success('删除成功',function () {
-										pageInit();
-										return true;
-									});
-								}else{
-									$.Notice.error('删除失败');
-									return false;
-								}
-							}
-					);
+
+                    $.Notice.error('确定要删除吗?',function () {
+                        var url = "${contextRoot}/deptMember/delOrgDept";
+                        me.res( url,{orgDeptId:id},
+                                function (data) {
+                                    if(data.successFlg){
+                                        $.Notice.success('删除成功',function () {
+                                            pageInit();
+                                            return true;
+                                        });
+                                    }else{
+                                        $.Notice.error('删除失败');
+                                        return false;
+                                    }
+                                }
+                        );
+                    });
+//					if (!confirm('确定要删除吗？')){
+//						return false;
+//					}
 				},
 				//上移
 				setUpFun: function ( id, me, pId) {
@@ -493,6 +497,7 @@
 								function (data) {
 									if(data.successFlg){
 										$.Notice.success('操作成功',function () {
+                                            me.removePopWin(me);
 											pageInit();
 											return true;
 										});
