@@ -11,7 +11,7 @@
 	<!-- ####### 头部 ####### -->
 	<div id="conditionArea" class="" align="right">
 		<div class="body-head f-h30 f-mb10" align="left">
-			<a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/roles/initial');"  class="f-fwb">返回上一层 </a>
+			<a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/userRoles/initial');"  class="f-fwb">返回上一层 </a>
 			<input id="rolesId" hidden=hidden />
 			<span class="f-ml20">角色组名称：</span><input class="f-fwb f-mt10"  readonly="readonly"  readonly id="msg_rolesName"/>
 		</div>
