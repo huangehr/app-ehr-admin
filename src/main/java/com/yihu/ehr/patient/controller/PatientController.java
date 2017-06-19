@@ -397,4 +397,30 @@ public class PatientController extends BaseUIController {
         }
     }
 
+    @RequestMapping("searchPatientByParams")
+    @ResponseBody
+    public Object searchPatientByParams(String searchNm,String gender, String province, String city, String district, String searchRegisterTimeStart,String searchRegisterTimeEnd,int page, int rows) {
+        String url = "/populationsByParams";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("search", searchNm.trim());
+        params.put("gender", gender);
+        params.put("page", page);
+        params.put("rows", rows);
+        params.put("home_province", province);
+        params.put("home_city", city);
+        params.put("home_district", district);
+        params.put("searchRegisterTimeStart", searchRegisterTimeStart);
+        params.put("searchRegisterTimeEnd", searchRegisterTimeEnd);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
 }
