@@ -22,7 +22,8 @@
 
             <div id="conditionArea" class="f-mr10" align="right" style="display: none">
                 <div class="body-head f-h40" align="left">
-                    <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb">返回上一层 </a>
+                   <%-- <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb">返回上一层 </a>--%>
+                    <a href="javascript:;" onclick="getUrl();">返回上一层</a>
                     <input id="adapter_plan_id" value='${adapterPlanId}' hidden="none" />
                     <span class="f-ml20">机构类型：</span><input class="f-fwb f-mt10" readonly id="h_org_type"/>
                     <span class="f-ml20">机构代码：</span><input class="f-mt10" readonly id="h_org_code"/>

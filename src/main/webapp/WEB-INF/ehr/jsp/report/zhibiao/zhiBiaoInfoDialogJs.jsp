@@ -13,10 +13,13 @@
 //        var weekDialog = null;
         var initCode = "";
         var initName = "";
-        var jValidation = $.jValidation;  // 表单校验工具类
+        var jValidation = win.parent.$.jValidation;  // 表单校验工具类
         var dataModel = $.DataModel.init();
         var dataSourceSelectedVal = "";
         var dataStorageSelectedVal = "";
+        var id = ${id};
+        var validator = null;
+
 
         /* ************************** 变量定义结束 ******************************** */
 
@@ -44,6 +47,7 @@
             $jobType: $('input[name="jobType"]', this.$form),
             $intervalType: $('input[name="interval_type"]', this.$form),
             $monthDay: $('input[name="month_day"]', this.$form),
+            $execTime: $('#execTime'),
             $updateBtn:$("#div_update_btn"),
             $cancelBtn:$("#div_cancel_btn"),
             $weekDialog:$("#div_weekDialog"),
@@ -52,6 +56,10 @@
             $div_week_confirm_btn: $('#div_week_confirm_btn'),
             weekDialog: null,
             init: function () {
+                debugger
+                if (id != '-1') {
+                    this.getZBInfo(this.setZBInfo , this);
+                }
                 this.initForm();
                 this.bindEvents();
             },
@@ -60,6 +68,73 @@
             },
             dataStorageSelected:function(code, name){
                 dataStorageSelectedVal = code;
+            },
+            setZBInfo: function ( res, me) {
+                me.dataSourceSelected(res.tjQuotaDataSourceModel);
+                me.dataStorageSelected(res.tjQuotaDataSaveModel);
+                initCode = res.code;
+                initName = res.name;
+                me.$inpCode.val(res.code);
+                me.$inpName.val(res.name);
+                if (res.execType == 1) {
+                    me.$jobType.eq(0).ligerRadio("setValue",'1');
+                    me.$jobType.eq(1).ligerRadio("setValue",'');
+                }
+                if (res.execType == 2) {
+                    me.$jobType.eq(0).ligerRadio("setValue",'');
+                    me.$jobType.eq(1).ligerRadio("setValue",'2');
+                }
+                me.$inpCycle.val(res.cron);
+                me.$inpObjectClass.val(res.jobClazz);
+                me.$inpDataSourceJson.val(res.tjQuotaDataSourceModel.configJson);
+                me.$inpDataStorageJson.val(res.tjQuotaDataSaveModel.configJson);
+                if (res.dataLevel == '1') {
+                    me.$dataLevel.eq(0).ligerRadio("setValue",'1');
+                    me.$dataLevel.eq(1).ligerRadio("setValue",'');
+                }
+                if (res.dataLevel == '2') {
+                    me.$dataLevel.eq(0).ligerRadio("setValue",'');
+                    me.$dataLevel.eq(1).ligerRadio("setValue",'2');
+                }
+                if (res.status == '1') {
+                    me.$status.eq(0).ligerRadio("setValue",'1');
+                    me.$status.eq(1).ligerRadio("setValue",'');
+                    me.$status.eq(2).ligerRadio("setValue",'');
+                }
+                if (res.status == '-1') {
+                    me.$status.eq(0).ligerRadio("setValue",'');
+                    me.$status.eq(1).ligerRadio("setValue",'-1');
+                    me.$status.eq(2).ligerRadio("setValue",'');
+                }
+                if (res.status == '0') {
+                    me.$status.eq(0).ligerRadio("setValue",'');
+                    me.$status.eq(1).ligerRadio("setValue",'');
+                    me.$status.eq(2).ligerRadio("setValue",'0');
+                }
+                me.$execTime.val(res.execTime);
+//                me.$inpDataSource
+//                me.$inpDataStorage
+                me.$introduction.val(res.remark);
+                me.$zhiBiaoId.val(id);
+
+                console.log(res);
+            },
+            getZBInfo: function ( cb, me) {
+                $.ajax({
+                    url: '${contextRoot}/tjQuota/getTjQuotaById',
+                    data: {
+                        id: id
+                    },
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            cb && cb.call( this, data, me);
+                        } else {
+                            $.Notice.error("信息获取失败");
+                        }
+                    }
+                });
             },
             initForm: function () {
                 var self = this;
@@ -304,70 +379,80 @@
 
                 })
 
-                var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
-                        var result = new jValidation.ajax.Result();
-                        var code = self.$inpCode.val();
-                        if(code==initCode){
-                            result.setResult(true);
+                validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
+                    debugger;
+                    try{
+                        if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
+                            var result = new jValidation.ajax.Result();
+                            var code = self.$inpCode.val();
+                            if(code==initCode){
+                                result.setResult(true);
+                                return result;
+                            }
+                            var dataModel = $.DataModel.init();
+                            dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsCode", {
+                                data: {code:code},
+                                async: false,
+                                success: function (data) {
+                                    if (!data) {
+                                        result.setResult(true);
+                                    } else {
+                                        result.setResult(false);
+                                        result.setErrorMsg("编码已存在");
+                                    }
+                                }
+                            });
                             return result;
                         }
-                        var dataModel = $.DataModel.init();
-                        dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsCode", {
-                            data: {code:code},
-                            async: false,
-                            success: function (data) {
-                                if (!data) {
-                                    result.setResult(true);
-                                } else {
-                                    result.setResult(false);
-                                    result.setErrorMsg("编码已存在");
-                                }
+                        if(Util.isStrEquals($(elm).attr('id'),'inp_name')){
+                            var result = new jValidation.ajax.Result();
+                            var name = self.$inpName.val();
+                            if(name==initName){
+                                result.setResult(true);
+                                return result;
                             }
-                        });
-                        return result;
-                    }
-                    if(Util.isStrEquals($(elm).attr('id'),'inp_name')){
-                        var result = new jValidation.ajax.Result();
-                        var name = self.$inpName.val();
-                        if(name==initName){
-                            result.setResult(true);
+                            var dataModel = $.DataModel.init();
+                            dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsName", {
+                                data: {name:name},
+                                async: false,
+                                success: function (data) {
+                                    if (!data) {
+                                        result.setResult(true);
+                                    } else {
+                                        result.setResult(false);
+                                        result.setErrorMsg("名称已存在");
+                                    }
+                                }
+                            });
                             return result;
                         }
-                        var dataModel = $.DataModel.init();
-                        dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsName", {
-                            data: {name:name},
-                            async: false,
-                            success: function (data) {
-                                if (!data) {
-                                    result.setResult(true);
-                                } else {
-                                    result.setResult(false);
-                                    result.setErrorMsg("名称已存在");
-                                }
-                            }
-                        });
-                        return result;
+                    }catch (e){
+                        console.log(e);
                     }
                 }});
 
                 //新增/修改指标
                 zhiBiaoInfo.$updateBtn.click(function () {
+                    debugger;
                     if(validator.validate()){
                         var values = self.$form.Fields.getValues();
                         values.execType = $('input[name=jobType]:checked').val();
                         values.execTime = $('#execTime').val();
-                        values.tjquotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
+                        values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
                         values.tjQuotaDataSaveModel = {saveCode:dataSourceSelectedVal,configJson:self.$inpDataStorageJson.val()};
-                        debugger
+                        if (id != '-1') {
+                            values.id = id.toString();
+                        }
+                        debugger;
                         console.log(values);
                         dataModel.fetchRemote("${contextRoot}/tjQuota/updateTjDataSource", {
                             data: {tjQuotaModelJsonData:JSON.stringify(values)},
                             async: false,
+                            type: 'post',
                             success: function (data) {
                                 if (data.successFlg) {
                                     win.parent.closeZhiBiaoInfoDialog(function () {
-                                        if(self.$zhiBiaoId.val()!="" && self.$zhiBiaoId.val()!=undefined){//修改
+                                        if(self.$zhiBiaoId.val() != "" && self.$zhiBiaoId.val()!=undefined){//修改
                                             win.parent.$.Notice.success('修改成功');
                                         }else{
                                             win.parent.$.Notice.success('新增成功');

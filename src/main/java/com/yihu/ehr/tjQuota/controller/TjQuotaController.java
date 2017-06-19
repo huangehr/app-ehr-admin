@@ -17,6 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -40,6 +41,21 @@ public class TjQuotaController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+
+    /*
+    * 获取弹窗页面：指标增、改
+    * */
+    @RequestMapping(value = "getPage")
+    public String getPage(Model model,String id){
+        if (id == "") {
+            model.addAttribute("id","-1");
+        } else {
+            model.addAttribute("id",id);
+        }
+        return  "/report/zhibiao/zhiBiaoInfoDialog";
+    }
+
 
     /**
      * 指标
@@ -103,7 +119,7 @@ public class TjQuotaController extends BaseUIController {
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
                 Long tjQuotaId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tjDataSource/" + tjQuotaId);
+                resultStr = templates.doGet(comUrl + "/tj/getTjQuotaById/" + tjQuotaId);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjQuotaModel updateTjQuota = getEnvelopModel(envelop.getObj(), TjQuotaModel.class);
@@ -182,6 +198,7 @@ public class TjQuotaController extends BaseUIController {
      * @return
      */
     @RequestMapping("getTjQuotaById")
+    @ResponseBody
     public Object getTjQuotaById(Model model, Long id ) {
         String url ="/tj/getTjQuotaById/" +id;
         String resultStr = "";

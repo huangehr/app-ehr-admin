@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<%@ include file="zhiBiaoInfoDialogCss.jsp" %>
 <input value="${id}" class="f-dn" id="inp_zhiBiaoId"/>
 <div id="div_patient_info_form" data-role-form class="m-form-inline f-mt20" style="overflow:auto">
     <div>
@@ -29,7 +30,7 @@
             <label>周期：</label>
 
             <div class="l-text-wrapper m-form-control essential ">
-                <input type="text" id="inp_cycle" class="required useTitle ajax"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="corn"/>
+                <input type="text" id="inp_cycle" class="required useTitle ajax"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="cron"/>
             </div>
         </div>
         <div class="m-form-group">
@@ -92,7 +93,7 @@
         </div>
     </div>
 
-    <div class="m-form-control pane-attribute-toolbar">
+    <div class="m-form-control pane-attribute-toolbar" style="text-align: center;">
         <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" id="div_update_btn">
             <span>保存</span>
         </div>
@@ -172,4 +173,5 @@
 </div>
 
 <script src="${staticRoot}/lib/ligerui/plugins/ligerSpinner.js"></script>
+<%@ include file="zhiBiaoInfoDialogJs.jsp" %>
 
