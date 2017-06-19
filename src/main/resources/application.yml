@@ -1,6 +1,6 @@
 server:
   contextPath: /ehr
-  port: 8080
+  port: 8083
   sessionTimeout:  30000000
 
 multipart:
@@ -29,6 +29,7 @@ spring:
     password: ha
 app:
   clientId: zkGuSIm2Fg
+  qcReportClientId: 2YTOSRI0tw
   oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
@@ -53,6 +54,7 @@ spring:
     password: ha
 app:
   clientId: zkGuSIm2Fg
+  qcReportClientId: 2YTOSRI0tw
   oauth2authorize: http://localhost:10260/
 service-gateway:
   username: user
@@ -77,6 +79,7 @@ spring:
     password: cloud
 app:
   clientId: zkGuSIm2Fg
+  qcReportClientId: 2YTOSRI0tw
   oauth2authorize: http://172.19.103.73:10260/
 service-gateway:
   username: user
@@ -102,6 +105,7 @@ spring:
     password: ha
 app:
   clientId: zkGuSIm2Fg
+  qcReportClientId: 2YTOSRI0tw
   oauth2authorize: http://11.1.2.21:10260/
 service-gateway:
   username: user
