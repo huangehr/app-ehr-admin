@@ -44,10 +44,10 @@
                     ];
                 }else if(logic == 'IN'){
                     createIptHtml(1, "select");
-                    vo = [{type: 'select', id: 'content', opts: {width: 330, data: model.dictEntries, textField: 'name', isMultiSelect: true, split: ','}}];
+                    vo = [{type: 'select', id: 'content', opts: {width: 280, data: model.dictEntries, textField: 'name', isMultiSelect: true, split: ','}}];
                 }else {
                     createIptHtml(1, "select");
-                    vo = [{type: 'select', id: 'content', opts: {width: 330, data: model.dictEntries, textField: 'name'}}];
+                    vo = [{type: 'select', id: 'content', opts: {width: 280, data: model.dictEntries, textField: 'name'}}];
                 }
             }
             else{
@@ -72,7 +72,7 @@
                     ];
                 }else {
                     createIptHtml(1, "text", clz, placeholder);
-                    vo = [{type: type, id: 'content', opts: {width: 330}}];
+                    vo = [{type: type, id: 'content', opts: {width: 280}}];
                 }
             }
             initFormFields(vo);
