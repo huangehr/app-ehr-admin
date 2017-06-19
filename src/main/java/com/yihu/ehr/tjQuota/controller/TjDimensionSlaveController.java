@@ -257,14 +257,17 @@ public class TjDimensionSlaveController extends BaseUIController {
 
     @RequestMapping("/getTjDimensionSlaveInfo")
     @ResponseBody
-    public Object getTjDimensionSlaveInfo(String name, int page, int rows){
+    public Object getTjDimensionSlaveInfo(String quotaCode, String name, int page, int rows){
         String url = "/tj/getTjDimensionSlaveInfoList";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(quotaCode)) {
+            params.put("filter", "quotaCode?" + quotaCode);
+        }
         if (!StringUtils.isEmpty(name)) {
-            stringBuffer.append("name?" + name );
+            stringBuffer.append("name?" + name + " g1;code?" + name + " g1;");
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
