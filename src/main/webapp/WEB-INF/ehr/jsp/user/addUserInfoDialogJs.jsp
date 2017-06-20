@@ -205,10 +205,15 @@
                             var email = $("#inp_userEmail").val();
                             return checkDataSourceName('email', email, "该邮箱已存在");
                         }
+//                        新增用户手机号验证
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
+                            var telephone = $("#inp_userTel").val();
+                            return checkDataSourceName('telephone', telephone, "该手机号码已存在");
+                        }
 
                     }
                 });
-                //唯一性验证--账号/身份证号(字段名、输入值、提示信息）
+                //唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证
                 function checkDataSourceName(type, inputValue, errorMsg) {
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
@@ -229,7 +234,6 @@
 
                 //新增的点击事件
                 this.$addUserBtn.click(function () {
-                    debugger;
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
 					var roles = addUserInfo.roleIds(addUser.role);
