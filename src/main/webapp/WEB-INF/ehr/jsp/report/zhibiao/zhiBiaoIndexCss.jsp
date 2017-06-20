@@ -51,5 +51,5 @@
     border-color: #2E9CD2;
   }
   .label_a{line-height: 40px;}
-
+  .f-fr{float:right !important;}
 </style>

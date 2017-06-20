@@ -51,4 +51,5 @@
   .divIntervalOption .m-form-group{margin-bottom: 10px;}
   #divIntervalOption4 .label-left{line-height: 20px;}
   #divIntervalOption4 .l-text{margin-top: -4px;}
+  .f-h50{height: 50px;}
 </style>

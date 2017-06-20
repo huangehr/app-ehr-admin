@@ -20,17 +20,62 @@
             </div>
         </div>
         <div class="m-form-group">
-            <label>任务执行方式：</label>
-            <div class="u-checkbox-wrap m-form-control ">
+            <label>执行方式：</label>
+            <div class="u-checkbox-wrap m-form-control">
                 <input type="radio" value="1" name="jobType">单次执行
                 <input type="radio" value="2" name="jobType">周期执行
             </div>
         </div>
-        <div class="m-form-group ">
-            <label>周期：</label>
+        <div class="m-form-group">
+            <label>执行时间：</label>
+            <div class="m-form-control essential" style="position: relative; padding-right: 10px;">
+                <input type="text" id="inp_zhixing_date" class="required"  placeholder="请选择时间"
+                       required-title=<spring:message code="lbl.must.input"/>/>
+            </div>
+        </div>
+        <div class="m-form-group f-dn" id="divTimeInterval">
+            <label>执行周期：</label>
+            <div class="m-form-control">
+                <div>
+                    <input type="radio" name="interval_type" value="0" checked/>分
+                    <input type="radio" name="interval_type" value="1" />时
+                    <input type="radio" name="interval_type" value="2" />天
+                    <input type="radio" name="interval_type" value="3" />周
+                    <input type="radio" name="interval_type" value="4" />月
+                </div>
 
-            <div class="l-text-wrapper m-form-control essential ">
-                <input type="text" id="inp_cycle" class="required useTitle ajax"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="cron"/>
+                <div id="divIntervalOption0" class="divIntervalOption f-h50" style="display: block;">
+                    <div class="label-left">每隔</div><input type="text" id="txtM" /><div class="label-left">分</div>
+                </div>
+                <div id="divIntervalOption1" class="divIntervalOption f-h50">
+                    <div class="label-left">每隔</div><input type="text" id="txtH" /><div class="label-left">时</div>
+                </div>
+                <div id="divIntervalOption2" class="divIntervalOption f-h50">
+                    <div class="label-left">每隔</div><input type="text" id="txtD" /><div class="label-left">天</div>
+                </div>
+                <div id="divIntervalOption3" class="divIntervalOption f-h50">
+                    <input type="checkbox" name="week_day" value="2"/>周一
+                    <input type="checkbox" name="week_day" value="3"/>周二
+                    <input type="checkbox" name="week_day" value="4"/>周三
+                    <input type="checkbox" name="week_day" value="5"/>周四
+                    <input type="checkbox" name="week_day" value="6"/>周五<br/>
+                    <input type="checkbox" name="week_day" value="7"/>周六
+                    <input type="checkbox" name="week_day" value="1"/>周日
+                </div>
+                <div id="divIntervalOption4" class="divIntervalOption">
+                    <div class="m-form-group">
+                        <input type="radio" name="month_day" value="0" checked/>每月第一天
+                    </div>
+                    <div class="m-form-group">
+                        <input type="radio" name="month_day" value="1" />每月最后一天
+                    </div>
+                    <div class="m-form-group">
+                        <div style="float: left">
+                            <input type="radio" name="month_day" value="2"/>
+                        </div>
+                        <div class="label-left" style="padding-left:0px;">每月第</div><input type="text" id="txtMD" disabled/><div class="label-left">天</div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="m-form-group">
@@ -51,7 +96,7 @@
             <label>源配置：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_dataSource_json" class="required useTitle max-length-256 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> />
+                <input type="text" id="inp_dataSource_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> />
             </div>
         </div>
         <div class="m-form-group f-mt5">
@@ -65,7 +110,7 @@
             <label>存储配置：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_dataStorage_json" class="required useTitle max-length-256 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> />
+                <input type="text" id="inp_dataStorage_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> />
             </div>
         </div>
         <div class="m-form-group ">
@@ -105,72 +150,65 @@
 
 <input type="hidden" id="execTime">
 
-<div id="div_weekDialog" class="u-public-manage m-form-inline f-dn" style="position: relative;height: 77%;">
+<%--<div id="div_weekDialog" class="u-public-manage m-form-inline f-dn" style="position: relative;height: 77%;">--%>
     <%--<div class="m-form-group">--%>
-        <%--<label>任务执行方式：</label>--%>
-        <%--<div class="u-checkbox-wrap m-form-control ">--%>
-            <%--<input type="radio" value="1" name="jobType">单次执行--%>
-            <%--<input type="radio" value="2" name="jobType">周期执行--%>
+        <%--<label>任务触发时间：</label>--%>
+        <%--<div class="m-form-control">--%>
+            <%--<input type="text" id="inp_zhixing_date" class="validate-date l-text-field validate-date"  placeholder="输入日期 格式(2016-04-15)"--%>
+                   <%--required-title=<spring:message code="lbl.must.input"/> data-attr-scan="birthday"/>--%>
         <%--</div>--%>
     <%--</div>--%>
-    <div class="m-form-group">
-        <label>任务触发时间：</label>
-        <div class="m-form-control">
-            <input type="text" id="inp_zhixing_date" class="validate-date l-text-field validate-date"  placeholder="输入日期 格式(2016-04-15)"
-                   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="birthday"/>
-        </div>
-    </div>
-    <div class="m-form-group">
-        <label>执行周期：</label>
-        <div class="m-form-control">
-            <div>
-                <input type="radio" name="interval_type" value="0" checked/>分
-                <input type="radio" name="interval_type" value="1" />时
-                <input type="radio" name="interval_type" value="2" />天
-                <input type="radio" name="interval_type" value="3" />周
-                <input type="radio" name="interval_type" value="4" />月
-            </div>
+    <%--<div class="m-form-group">--%>
+        <%--<label>执行周期：</label>--%>
+        <%--<div class="m-form-control">--%>
+            <%--<div>--%>
+                <%--<input type="radio" name="interval_type" value="0" checked/>分--%>
+                <%--<input type="radio" name="interval_type" value="1" />时--%>
+                <%--<input type="radio" name="interval_type" value="2" />天--%>
+                <%--<input type="radio" name="interval_type" value="3" />周--%>
+                <%--<input type="radio" name="interval_type" value="4" />月--%>
+            <%--</div>--%>
 
-            <div id="divIntervalOption0" class="divIntervalOption" style="display: block">
-                <div class="label-left">每隔</div><input type="text" id="txtM" /><div class="label-left">分</div>
-            </div>
-            <div id="divIntervalOption1" class="divIntervalOption">
-                <div class="label-left">每隔</div><input type="text" id="txtH" /><div class="label-left">时</div>
-            </div>
-            <div id="divIntervalOption2" class="divIntervalOption">
-                <div class="label-left">每隔</div><input type="text" id="txtD" /><div class="label-left">天</div>
-            </div>
-            <div id="divIntervalOption3" class="divIntervalOption">
-                <input type="checkbox" name="week_day" value="2"/>周一
-                <input type="checkbox" name="week_day" value="3"/>周二
-                <input type="checkbox" name="week_day" value="4"/>周三
-                <input type="checkbox" name="week_day" value="5"/>周四
-                <input type="checkbox" name="week_day" value="6"/>周五<br/>
-                <input type="checkbox" name="week_day" value="7"/>周六
-                <input type="checkbox" name="week_day" value="1"/>周日
-            </div>
-            <div id="divIntervalOption4" class="divIntervalOption">
-                <div class="m-form-group">
-                    <input type="radio" name="month_day" value="0" checked/>每月第一天
-                </div>
-                <div class="m-form-group">
-                    <input type="radio" name="month_day" value="1" />每月最后一天
-                </div>
-                <div class="m-form-group">
-                    <div style="float: left">
-                        <input type="radio" name="month_day" value="2"/>
-                    </div>
-                    <div class="label-left" style="padding-left:0px;">每月第</div><input type="text" id="txtMD" disabled/><div class="label-left">天</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div style="position: absolute; left: 50%; margin-left: -50px; bottom: -50px;">
-        <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_week_confirm_btn">
-            <span>确认</span>
-        </div>
-    </div>
-</div>
+            <%--<div id="divIntervalOption0" class="divIntervalOption" style="display: block">--%>
+                <%--<div class="label-left">每隔</div><input type="text" id="txtM" /><div class="label-left">分</div>--%>
+            <%--</div>--%>
+            <%--<div id="divIntervalOption1" class="divIntervalOption">--%>
+                <%--<div class="label-left">每隔</div><input type="text" id="txtH" /><div class="label-left">时</div>--%>
+            <%--</div>--%>
+            <%--<div id="divIntervalOption2" class="divIntervalOption">--%>
+                <%--<div class="label-left">每隔</div><input type="text" id="txtD" /><div class="label-left">天</div>--%>
+            <%--</div>--%>
+            <%--<div id="divIntervalOption3" class="divIntervalOption">--%>
+                <%--<input type="checkbox" name="week_day" value="2"/>周一--%>
+                <%--<input type="checkbox" name="week_day" value="3"/>周二--%>
+                <%--<input type="checkbox" name="week_day" value="4"/>周三--%>
+                <%--<input type="checkbox" name="week_day" value="5"/>周四--%>
+                <%--<input type="checkbox" name="week_day" value="6"/>周五<br/>--%>
+                <%--<input type="checkbox" name="week_day" value="7"/>周六--%>
+                <%--<input type="checkbox" name="week_day" value="1"/>周日--%>
+            <%--</div>--%>
+            <%--<div id="divIntervalOption4" class="divIntervalOption">--%>
+                <%--<div class="m-form-group">--%>
+                    <%--<input type="radio" name="month_day" value="0" checked/>每月第一天--%>
+                <%--</div>--%>
+                <%--<div class="m-form-group">--%>
+                    <%--<input type="radio" name="month_day" value="1" />每月最后一天--%>
+                <%--</div>--%>
+                <%--<div class="m-form-group">--%>
+                    <%--<div style="float: left">--%>
+                        <%--<input type="radio" name="month_day" value="2"/>--%>
+                    <%--</div>--%>
+                    <%--<div class="label-left" style="padding-left:0px;">每月第</div><input type="text" id="txtMD" disabled/><div class="label-left">天</div>--%>
+                <%--</div>--%>
+            <%--</div>--%>
+        <%--</div>--%>
+    <%--</div>--%>
+    <%--<div style="position: absolute; left: 50%; margin-left: -50px; bottom: -50px;">--%>
+        <%--<div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_week_confirm_btn">--%>
+            <%--<span>确认</span>--%>
+        <%--</div>--%>
+    <%--</div>--%>
+<%--</div>--%>
 
 <script src="${staticRoot}/lib/ligerui/plugins/ligerSpinner.js"></script>
 <%@ include file="zhiBiaoInfoDialogJs.jsp" %>

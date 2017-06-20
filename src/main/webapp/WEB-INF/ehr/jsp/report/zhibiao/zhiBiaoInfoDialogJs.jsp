@@ -10,7 +10,6 @@
 
         // 页面主模块，对应于用户信息表区域
         var zhiBiaoInfo = null;
-//        var weekDialog = null;
         var initCode = "";
         var initName = "";
         var jValidation = win.parent.$.jValidation;  // 表单校验工具类
@@ -19,6 +18,7 @@
         var dataStorageSelectedVal = "";
         var id = ${id};
         var validator = null;
+        var txtCronExpression = "";
 
 
         /* ************************** 变量定义结束 ******************************** */
@@ -56,12 +56,11 @@
             $div_week_confirm_btn: $('#div_week_confirm_btn'),
             weekDialog: null,
             init: function () {
-                debugger
+                this.initForm();
+                this.bindEvents();
                 if (id != '-1') {
                     this.getZBInfo(this.setZBInfo , this);
                 }
-                this.initForm();
-                this.bindEvents();
             },
             dataSourceSelected:function(code, name){
                 dataSourceSelectedVal = code;
@@ -76,6 +75,7 @@
                 initName = res.name;
                 me.$inpCode.val(res.code);
                 me.$inpName.val(res.name);
+                txtCronExpression = res.cron;
                 if (res.execType == 1) {
                     me.$jobType.eq(0).ligerRadio("setValue",'1');
                     me.$jobType.eq(1).ligerRadio("setValue",'');
@@ -83,6 +83,8 @@
                 if (res.execType == 2) {
                     me.$jobType.eq(0).ligerRadio("setValue",'');
                     me.$jobType.eq(1).ligerRadio("setValue",'2');
+                    me.$form.find('input[name="jobType"]').eq(1).trigger("click");
+                    me.initInterval();
                 }
                 me.$inpCycle.val(res.cron);
                 me.$inpObjectClass.val(res.jobClazz);
@@ -112,8 +114,11 @@
                     me.$status.eq(2).ligerRadio("setValue",'0');
                 }
                 me.$execTime.val(res.execTime);
-//                me.$inpDataSource
-//                me.$inpDataStorage
+                me.$zhixingDate.val(res.execTime);
+                me.$inpDataSource.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.sourceCode);
+                me.$inpDataSource.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.name);
+                me.$inpDataStorage.ligerGetComboBoxManager().setValue(res.tjQuotaDataSaveModel.saveCode);
+                me.$inpDataStorage.ligerGetComboBoxManager().setText(res.tjQuotaDataSaveModel.name);
                 me.$introduction.val(res.remark);
                 me.$zhiBiaoId.val(id);
 
@@ -130,6 +135,7 @@
                     success: function (data) {
                         if (data) {
                             cb && cb.call( this, data, me);
+
                         } else {
                             $.Notice.error("信息获取失败");
                         }
@@ -169,7 +175,9 @@
                 self.$status.ligerRadio();
                 self.$jobType.ligerRadio();
                 self.$intervalType.ligerRadio();
-                self.$zhixingDate.ligerDateEditor({format: "yyyy-MM-dd"});
+                self.$zhixingDate.ligerDateEditor({width:240,showTime: true,onChangeDate:function(val){
+                    self.$zhixingDate.val(val+":00");
+                }});
                 $("#txtM").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtH").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtD").ligerSpinner({width: 208,type: 'int',minValue:1});
@@ -180,14 +188,19 @@
             },
             //根据周期类型显示周期面板
             showInterval:function(tab){
-                $('input[name="interval_type"]').ligerRadio("setValue", tab);
+                $('input[name="interval_type"]').eq(0).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(1).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(2).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(3).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(4).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(tab).ligerRadio("setValue", tab+'');
                 $(".divIntervalOption").hide();
                 $("#divIntervalOption"+tab).show();
             },
             //初始化时间间隔
             initInterval:function(){
                 var me = this;
-                var val= $("#txtCronExpression").val();
+                var val= txtCronExpression;
                 if(val!=null&&val.length>0)
                 {
                     try {
@@ -197,7 +210,30 @@
                         {
                             $('input[name="interval_type"]').ligerRadio("setValue", "3");
                             me.showInterval(3);
-                            $('input[name="week_day"]').ligerCheckBox("setValue", arry[5]);
+                            var arr = arry[5].split(",");
+                            for(var i=0;i<arr.length;i++){
+                                if(arr[i]=="2"){
+                                    $('input[name="week_day"]').eq(0).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="3"){
+                                    $('input[name="week_day"]').eq(1).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="4"){
+                                    $('input[name="week_day"]').eq(2).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="5"){
+                                    $('input[name="week_day"]').eq(3).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="6"){
+                                    $('input[name="week_day"]').eq(4).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="7"){
+                                    $('input[name="week_day"]').eq(5).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="1"){
+                                    $('input[name="week_day"]').eq(6).ligerCheckBox("setValue", arr[i]);
+                                }
+                            }
                         }
                         else{
                             if (arry[3] !="*")
@@ -213,13 +249,19 @@
                                     me.showInterval(4);
                                     if(v=="1")
                                     {
-                                        $('input[name="month_day"]').ligerRadio("setValue", "0");
+                                        $('input[name="month_day"]').eq(0).ligerRadio("setValue", "0");
+                                        $('input[name="month_day"]').eq(1).ligerRadio("setValue", "");
+                                        $('input[name="month_day"]').eq(2).ligerRadio("setValue", "");
                                     }
                                     else if(v=="L"){
-                                        $('input[name="month_day"]').ligerRadio("setValue", "1");
+                                        $('input[name="month_day"]').eq(0).ligerRadio("setValue", "");
+                                        $('input[name="month_day"]').eq(1).ligerRadio("setValue", "1");
+                                        $('input[name="month_day"]').eq(2).ligerRadio("setValue", "");
                                     }
                                     else{
-                                        $('input[name="month_day"]').ligerRadio("setValue", "2");
+                                        $('input[name="month_day"]').eq(0).ligerRadio("setValue", "");
+                                        $('input[name="month_day"]').eq(1).ligerRadio("setValue", "");
+                                        $('input[name="month_day"]').eq(2).ligerRadio("setValue", "2");
                                         $("#txtMD").val(v);
                                     }
                                 }
@@ -260,7 +302,6 @@
             setInterval:function(){
                 var val = "";
                 //解析cron表达式
-//                var interval_type =  $('input[name="interval_type"]').ligerRadio("getValue");
                 var interval_type =  $('input[name="interval_type"]:checked').val();
                 var cronTime  = new Date($("#inp_zhixing_date").ligerDateEditor('getValue'));
                 var minute = cronTime.getMinutes(),hour = cronTime.getHours();
@@ -272,7 +313,7 @@
                         val = "0 0/" + num + " * * * ?";
                     } else {
                         win.parent.$.Notice.error('请填写分钟数');
-                        return;
+                        return false;
                     }
                 }
                 else if(interval_type =="1"){ //时钟
@@ -281,7 +322,7 @@
                         val = "0 "+ minute +" 0/" + num + " * * ?";
                     } else {
                         win.parent.$.Notice.error('请填写小时数');
-                        return;
+                        return false;
                     }
                 }
                 else if(interval_type =="2"){ //天
@@ -290,17 +331,22 @@
                         val = "0 "+ minute +" "+ hour +" 1/" + num + " * ?";
                     } else {
                         win.parent.$.Notice.error('请填写天数');
-                        return;
+                        return false;
                     }
                 }
                 else if(interval_type =="3"){ //周
-//                    var week_day = $('input[name="week_day"]').ligerCheckBox("getValue");
                     var $week_day = $('input[name="week_day"]:checked'),
-                        week_day = $week_day.val();
-
+                        week_day = "";
+                    $week_day.each(function(index,domEle){
+                        if(index==($week_day.length-1)){
+                            week_day+=$(domEle).val()
+                        }else{
+                            week_day+=$(domEle).val()+",";
+                        }
+                    });
                     if ($week_day.length <= 0) {
                         win.parent.$.Notice.error('请填选择周');
-                        return;
+                        return false;
                     }
 
                     if(week_day!=null && week_day.length>0) {
@@ -308,7 +354,7 @@
                     }
                 }
                 else if(interval_type =="4"){ //月
-                    var month_day = $('input[name="month_day"]').ligerRadio("getValue");
+                    var month_day = $('input[name="month_day"]:checked').val();
                     if(month_day == "0") //每月第一天
                     {
                         val = "0 "+ minute +" "+ hour +" 1 * ?";
@@ -324,63 +370,16 @@
                             val = "0 "+ minute +" "+ hour +" "+num+" * ?";
                         } else {
                             win.parent.$.Notice.error('请填写天数');
-                            return;
+                            return false;
                         }
                     }
                 }
-
-                $("#inp_cycle").val(val);
-            },
-            //设置数据集选中值
-            setCheckVal:function(){
-                var me = this;
-                var selected = me.$listDataset.getSelectedRows();
-                if(selected!=null)
-                {
-                    $("#txtJobDataset").val(JSON.stringify(selected));
-                }
-                else{
-                    $("#txtJobDataset").val("");
-                }
+                txtCronExpression = val;
+                return true;
             },
             bindEvents: function () {
                 var self = this;
-                self.$inpCycle.click(function(){
-                    self.weekDialog = $.ligerDialog.open({
-                        title: "周期配置",
-                        width: 416,
-                        height: 250,
-                        target: self.$weekDialog
-                    });
-
-                    $(document).on('click','input[name="jobType"]',function(){
-                        var value = $(this).val();
-//                        me.setAchiveUploadType(value);
-                    });
-                    $(document).on('click','input[name="interval_type"]',function(){
-                        //清空数据
-                        $("#txtCronExpression").val("");
-                        self.initInterval();
-
-                        $(".divIntervalOption").hide();
-                        $("#divIntervalOption"+$(this).val()).show();
-                    });
-                    $(document).on('click','input[name="month_day"]',function(){
-                        var val = $(this).val();
-                        if(val=="2")
-                        {
-                            $("#txtMD").removeAttr("disabled");
-                        }
-                        else
-                        {
-                            $("#txtMD").attr("disabled",true);
-                        }
-                    });
-
-                })
-
                 validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    debugger;
                     try{
                         if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
                             var result = new jValidation.ajax.Result();
@@ -431,20 +430,47 @@
                     }
                 }});
 
+                self.$form.on('click','input[name="jobType"]',function(){
+                    var value = $(this).val();
+                    if(value=="1"){
+                        $("#divTimeInterval").hide();
+                    }else{
+                        $("#divTimeInterval").show();
+                    }
+                });
+
+                self.$form.on('click','input[name="interval_type"]',function(){
+                    //清空数据
+                    txtCronExpression = "";
+                    $(".divIntervalOption").hide();
+                    $("#divIntervalOption"+$(this).val()).show();
+                });
+                self.$form.on('click','input[name="month_day"]',function(){
+                    var val = $(this).val();
+                    if(val=="2")
+                    {
+                        $("#txtMD").removeAttr("disabled");
+                    }
+                    else
+                    {
+                        $("#txtMD").attr("disabled",true);
+                    }
+                });
+
                 //新增/修改指标
                 zhiBiaoInfo.$updateBtn.click(function () {
-                    debugger;
                     if(validator.validate()){
+                        var result = self.setInterval();
+                        if(!result) return;
                         var values = self.$form.Fields.getValues();
+                        values.cron = txtCronExpression;
                         values.execType = $('input[name=jobType]:checked').val();
                         values.execTime = $('#execTime').val();
                         values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
-                        values.tjQuotaDataSaveModel = {saveCode:dataSourceSelectedVal,configJson:self.$inpDataStorageJson.val()};
+                        values.tjQuotaDataSaveModel = {saveCode:dataStorageSelectedVal,configJson:self.$inpDataStorageJson.val()};
                         if (id != '-1') {
                             values.id = id.toString();
                         }
-                        debugger;
-                        console.log(values);
                         dataModel.fetchRemote("${contextRoot}/tjQuota/updateTjDataSource", {
                             data: {tjQuotaModelJsonData:JSON.stringify(values)},
                             async: false,
@@ -452,7 +478,7 @@
                             success: function (data) {
                                 if (data.successFlg) {
                                     win.parent.closeZhiBiaoInfoDialog(function () {
-                                        if(self.$zhiBiaoId.val() != "" && self.$zhiBiaoId.val()!=undefined){//修改
+                                        if(id != '-1'){//修改
                                             win.parent.$.Notice.success('修改成功');
                                         }else{
                                             win.parent.$.Notice.success('新增成功');
@@ -468,7 +494,7 @@
                     }
                 });
 
-                //周期配置
+                //周期配置确认按钮
                 zhiBiaoInfo.$div_week_confirm_btn.on( 'click', function () {
                     var $inpZhixingDate = $('#inp_zhixing_date');
                     console.log('a');
@@ -486,12 +512,24 @@
 
                 //关闭dailog的方法
                 zhiBiaoInfo.$cancelBtn.click(function(){
-
+                    parent.closeDialog();
                 })
             }
         };
 
         /* *************************** 模块初始化结束 ***************************** */
+
+        /* ******************Dialog页面回调接口****************************** */
+        win.weekDialogBack = function (execTypeBack,execTimeBack,cronBack) {
+            win.execTypeB = execTypeBack;
+            win.execTimeB = execTimeBack;
+            win.cronB = cronBack;
+            zhiBiaoInfo.weekDialog.close();
+        };
+
+        win.closeWeekDialog = function () {
+            zhiBiaoInfo.weekDialog.close();
+        };
 
         /* *************************** 页面初始化 **************************** */
         pageInit();
