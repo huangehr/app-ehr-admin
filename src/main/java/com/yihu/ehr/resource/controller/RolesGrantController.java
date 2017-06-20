@@ -5,6 +5,7 @@ import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.resource.service.GrantService;
+import com.yihu.ehr.resource.service.RolesGrantService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,22 +24,22 @@ import java.util.Map;
  * @created 2016/5/20
  */
 @Controller
-@RequestMapping("/resource/grant")
-public class GrantController extends ExtendController<GrantService>{
+@RequestMapping("/rolesResource/grant")
+public class RolesGrantController extends ExtendController<RolesGrantService>{
 
-    public GrantController() {
+    public RolesGrantController() {
         this.init(
                 "/resource/grant/grid",        //列表页面url
-                "/resource/grant/dialog"      //编辑页面url
+                "/resource/grant/rolesDialog"      //编辑页面url
         );
     }
 
     @Override
     public String beforeSearch(String searchUrl, Map<String, Object> params) {
-        return searchUrl.replace("{app_res_id}", (String) params.get("appResId"));
+        return searchUrl.replace("{roles_res_id}", (String) params.get("rolesResId"));
     }
 
-    @RequestMapping("/gotoAppGrant")
+    @RequestMapping("/gotoRolesGrant")
     public Object gotoGrant(Model model, String resourceId){
 
         try {
@@ -82,16 +83,16 @@ public class GrantController extends ExtendController<GrantService>{
         return rs;
     }
 
-    @RequestMapping("/getApps")
+    @RequestMapping("/getRoles")
     @ResponseBody
-    public Object getAppList(String org, String name) {
+    public Object getRolesList(String org, String name) {
 
         try {
             PageParms pageParms = new PageParms(500, 1)
-                    .addEqual("status", "Approved")
+                    .addEqual("status", "Rolesroved")
                     .addEqual("org", org)
                     .addLikeNotNull("name", name);
-            return service.search("/apps", pageParms);
+            return service.search("/roles", pageParms);
         } catch (Exception ex) {
             ex.printStackTrace();
             return systemError();
@@ -99,7 +100,7 @@ public class GrantController extends ExtendController<GrantService>{
     }
 
     private String getGrantTree(String resourceId) throws Exception {
-        String url = "/resources/grant/app/tree";
+        String url = "/resources/grant/roles/tree";
         PageParms pageParms = new PageParms()
                 .addExt("resourceId", resourceId);
         return service.search(url, pageParms);
@@ -118,14 +119,14 @@ public class GrantController extends ExtendController<GrantService>{
     }
 
 
-    @RequestMapping("/saveGrantApp")
+    @RequestMapping("/saveGrantRoles")
     @ResponseBody
-    public Object saveGrantApp(String resourceId, String deleteIds, String addIds) {
+    public Object saveGrantApp(String resourceId, String deleteIds, String rolesIds) {
 
         try {
             String url = service.comUrl + "/resources/"+ resourceId +"/grant";
             Map map = new HashMap<>();
-            map.put("addIds", addIds);
+            map.put("rolesIds", rolesIds);
             map.put("deleteIds", deleteIds);
             String resultStr = service.doPost(url, map);
             return resultStr;
@@ -158,7 +159,7 @@ public class GrantController extends ExtendController<GrantService>{
     public Object saveMeta(String model) {
 
         try {
-            String url = service.comUrl + "/resources/metadata/grants";
+            String url = service.comUrl + "/resources/relosMetadatas/grants";
             Map map = new HashMap<>();
             map.put("model", model);
             String resultStr = service.doPost(url, map);
@@ -169,7 +170,7 @@ public class GrantController extends ExtendController<GrantService>{
     }
 
     @RequestMapping("/gotoMetaGrant")
-    public Object gotoMetaGrant(Model model, String mode, String id, String appResId, String resMetaId, String appId){
+    public Object gotoMetaGrant(Model model, String mode, String id, String rolesResId, String resMetaId, String rolesId){
         try {
             Envelop envelop;
             Map<String, Object> params = new HashMap<>();
@@ -178,10 +179,10 @@ public class GrantController extends ExtendController<GrantService>{
                 params.put("id",id);
                 envelop = getEnvelop(service.getModel(params));
             }else {
-                params.put("app_res_id",appResId);
+                params.put("roles_res_id",rolesResId);
                 params.put("res_meta_id", resMetaId);
-                params.put("app_id", appId);
-                envelop = getEnvelop(service.search("/resources/app_resource/metadata/grant", params));
+                params.put("roles_id", rolesId);
+                envelop = getEnvelop(service.search("/resources/roles_resource/metadata/grant", params));
             }
 
             Object plan;

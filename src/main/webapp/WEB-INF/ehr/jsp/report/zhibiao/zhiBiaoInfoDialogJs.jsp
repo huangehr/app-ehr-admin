@@ -9,121 +9,29 @@
         var Util = $.Util;
 
         // 页面主模块，对应于用户信息表区域
-        var patientInfo = null;
-
-        var cardInfoGrid = null;
-        var archiveInfoGrid = null;
-        var weekDialog = null;
-        var cardFormInit = null;
-        var archiveFormInit = null;
-        // 表单校验工具类
-        var jValidation = $.jValidation;
+        var zhiBiaoInfo = null;
+        var initCode = "";
+        var initName = "";
+        var jValidation = win.parent.$.jValidation;  // 表单校验工具类
         var dataModel = $.DataModel.init();
-        var patientModel = "";
-        var idCardNo="";
-        var patientDialogType = '${patientDialogType}';
-        <%--if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {--%>
-            <%--patientModel =${patientModel}.obj;--%>
-            <%--idCardNo = patientModel.idCardNo;--%>
-<%--//            //todo:暂不发布--%>
-<%--//            $("#btn_archive").hide();--%>
-<%--//            $("#btn_home_relation").hide();--%>
-        <%--}else{--%>
-            <%--$(".pop_tab").hide();--%>
-        <%--}--%>
+        var dataSourceSelectedVal = "";
+        var dataStorageSelectedVal = "";
+        var id = ${id};
+        var validator = null;
+        var txtCronExpression = "";
+
+
         /* ************************** 变量定义结束 ******************************** */
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
-            patientInfo.init();
-            if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
-                cardFormInit.init();
-                archiveFormInit.init();
-                $(window).resize();
-            }
-            tab_click();
-        }
-        function tab_click(){
-            $("#btn_basic").click(function(){
-                $("li").removeClass('cur');
-                $(this).addClass('cur');
-                $("#div_patient_info_form").show();
-                $("#div_card_info").hide();
-                $("#div_home_relation").hide();
-                $("#div_archive_info").hide();
-                $(window).resize();
-            });
-            $("#btn_card").click(function(){
-                $("li").removeClass('cur');
-                $(this).addClass('cur');
-                $("#div_card_info").show();
-                $("#div_patient_info_form").hide();
-                $("#div_home_relation").hide();
-                $("#div_archive_info").hide();
-                $(window).resize();
-            });
-            $("#btn_archive").click(function(){
-                $("li").removeClass('cur');
-                $(this).addClass('cur');
-                $("#div_archive_info").show();
-                $("#div_patient_info_form").hide();
-                $("#div_card_info").hide();
-                $("#div_home_relation").hide();
-                $(window).resize();
-            });
-            $("#btn_home_relation").click(function(){
-                $("li").removeClass('cur');
-                $(this).addClass('cur');
-                $("#div_home_relation").show();
-                $("#div_patient_info_form").hide();
-                $("#div_card_info").hide();
-                $("#div_archive_info").hide();
-                $.get("${contextRoot}/home_relation/home_relationship?id="+$("#inp_idCardNo").val(),function(data){
-                    $("#div_home_relation").html(data);
-                    home.list.init();
-                });
-                $(window).resize();
-            });
-        }
-        function updatePatient(patientJsonData){
-            dataModel.updateRemote("${contextRoot}/patient/updatePatient", {
-                data: {patientJsonData:patientJsonData,patientDialogType:patientDialogType},
-                success: function (data) {
-                    if(data.successFlg){
-                        if (Util.isStrEquals(patientDialogType, 'addPatient')){
-                            win.parent.$.Notice.success('新增成功');
-                        }else{
-                            win.parent.$.Notice.success('修改成功');
-                        }
-                    }else{
-                        if (Util.isStrEquals(patientDialogType, 'addPatient')){
-                            win.parent.$.Notice.error('新增失败');
-                        }else{
-                            win.parent.$.Notice.error('修改失败');
-                        }
-                    }
-                    win.parent.patientDialogClose();
-                    //dialog.close();
-                }
-            })
-        }
-
-        function cardInfoRefresh(){
-            var searchNm = cardFormInit.$cardSearch.val();
-            var cardType = cardFormInit.$selectCardType.ligerComboBox().getValue();
-            cardFormInit.searchCard(searchNm,cardType);
-        }
-        function archiveInfoRefresh(){
-            var start = archiveFormInit.$selectStart.val();
-            var end = archiveFormInit.$selectEnd.val();
-            var org = archiveFormInit.$selectArchiveOrg.ligerComboBox().getValue();
-            archiveFormInit.searchCard(start,end,org);
+            zhiBiaoInfo.init();
         }
 
         /* *************************** 函数定义结束******************************* */
 
         /* *************************** 模块初始化 ***************************** */
-        patientInfo = {
+        zhiBiaoInfo = {
             $form: $("#div_patient_info_form"),
             $inpCode: $("#inp_code"),
             $inpName: $("#inp_name"),
@@ -134,108 +42,165 @@
             $inpDataSource: $("#inp_data_source"),
             $inpDataStorage: $("#inp_data_storage"),
             $introduction:$("#inp_introduction"),
+            $dataLevel: $('input[name="dataLevel"]', this.$form),
+            $status: $('input[name="status"]', this.$form),
+            $jobType: $('input[name="jobType"]', this.$form),
+            $intervalType: $('input[name="interval_type"]', this.$form),
+            $monthDay: $('input[name="month_day"]', this.$form),
+            $execTime: $('#execTime'),
+            $updateBtn:$("#div_update_btn"),
+            $cancelBtn:$("#div_cancel_btn"),
             $weekDialog:$("#div_weekDialog"),
-            $zhixingDate: $("#inp_zhixing_date"),
-            $gender: $('input[name="gender"]', this.$form),
-            $patientNation: $("#inp_patientNation"),
-            $patientNativePlace: $("#inp_patientNativePlace"),
-            $patientMartialStatus: $("#inp_select_patientMartialStatus"),
-            $patientBirthday: $("#inp_patientBirthday"),
-            $birthPlace: $("#inp_birthPlace"),
-            $homeAddress: $("#inp_homeAddress"),
-            $workAddress: $("#inp_workAddress"),
-            $patientTel: $("#inp_patientTel"),
-            $patientEmail: $("#inp_patientEmail"),
-            $updateBtn: $("#div_update_btn"),
-            $cancelBtn: $("#div_cancel_btn"),
-            $resetArea: $("#reset_password"),
-            $resetPassword: $("#div_resetPassword"),
-            $patientImgUpload: $("#div_patient_img_upload"),
-            $patientCopyId:$("#inp_patientCopyId"),
-            $picPath:$('#div_file_list'),
-
+            $zhixingDate:$("#inp_zhixing_date"),
+            $zhiBiaoId:$("#inp_zhiBiaoId"),
+            $div_week_confirm_btn: $('#div_week_confirm_btn'),
+            weekDialog: null,
             init: function () {
-                var self = this;
-                $("#div_card_info").hide();
-                $("#div_home_relation").hide();
-                $("#div_archive_info").hide();
-                self.$gender.eq(0).attr("checked",'true');
-                self.initForm();
-                self.bindEvents();
+                this.initForm();
+                this.bindEvents();
+                if (id != '-1') {
+                    this.getZBInfo(this.setZBInfo , this);
+                }
+            },
+            dataSourceSelected:function(code, name){
+                dataSourceSelectedVal = code;
+            },
+            dataStorageSelected:function(code, name){
+                dataStorageSelectedVal = code;
+            },
+            setZBInfo: function ( res, me) {
+                me.dataSourceSelected(res.tjQuotaDataSourceModel);
+                me.dataStorageSelected(res.tjQuotaDataSaveModel);
+                initCode = res.code;
+                initName = res.name;
+                me.$inpCode.val(res.code);
+                me.$inpName.val(res.name);
+                txtCronExpression = res.cron;
+                if (res.execType == 1) {
+                    me.$jobType.eq(0).ligerRadio("setValue",'1');
+                    me.$jobType.eq(1).ligerRadio("setValue",'');
+                }
+                if (res.execType == 2) {
+                    me.$jobType.eq(0).ligerRadio("setValue",'');
+                    me.$jobType.eq(1).ligerRadio("setValue",'2');
+                    me.$form.find('input[name="jobType"]').eq(1).trigger("click");
+                    me.initInterval();
+                }
+                me.$inpCycle.val(res.cron);
+                me.$inpObjectClass.val(res.jobClazz);
+                me.$inpDataSourceJson.val(res.tjQuotaDataSourceModel.configJson);
+                me.$inpDataStorageJson.val(res.tjQuotaDataSaveModel.configJson);
+                if (res.dataLevel == '1') {
+                    me.$dataLevel.eq(0).ligerRadio("setValue",'1');
+                    me.$dataLevel.eq(1).ligerRadio("setValue",'');
+                }
+                if (res.dataLevel == '2') {
+                    me.$dataLevel.eq(0).ligerRadio("setValue",'');
+                    me.$dataLevel.eq(1).ligerRadio("setValue",'2');
+                }
+                if (res.status == '1') {
+                    me.$status.eq(0).ligerRadio("setValue",'1');
+                    me.$status.eq(1).ligerRadio("setValue",'');
+                    me.$status.eq(2).ligerRadio("setValue",'');
+                }
+                if (res.status == '-1') {
+                    me.$status.eq(0).ligerRadio("setValue",'');
+                    me.$status.eq(1).ligerRadio("setValue",'-1');
+                    me.$status.eq(2).ligerRadio("setValue",'');
+                }
+                if (res.status == '0') {
+                    me.$status.eq(0).ligerRadio("setValue",'');
+                    me.$status.eq(1).ligerRadio("setValue",'');
+                    me.$status.eq(2).ligerRadio("setValue",'0');
+                }
+                me.$execTime.val(res.execTime);
+                me.$zhixingDate.val(res.execTime);
+                me.$inpDataSource.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.sourceCode);
+                me.$inpDataSource.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.name);
+                me.$inpDataStorage.ligerGetComboBoxManager().setValue(res.tjQuotaDataSaveModel.saveCode);
+                me.$inpDataStorage.ligerGetComboBoxManager().setText(res.tjQuotaDataSaveModel.name);
+                me.$introduction.val(res.remark);
+                me.$zhiBiaoId.val(id);
+
+                console.log(res);
+            },
+            getZBInfo: function ( cb, me) {
+                $.ajax({
+                    url: '${contextRoot}/tjQuota/getTjQuotaById',
+                    data: {
+                        id: id
+                    },
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data) {
+                            cb && cb.call( this, data, me);
+
+                        } else {
+                            $.Notice.error("信息获取失败");
+                        }
+                    }
+                });
             },
             initForm: function () {
                 var self = this;
+                self.$dataLevel.eq(0).attr("checked",'true');
+                self.$status.eq(0).attr("checked",'true');
+                self.$jobType.eq(0).attr("checked","true");
+                self.$monthDay.eq(0).attr("checked",'true');
                 self.$inpCode.ligerTextBox({width: 240});
                 self.$inpName.ligerTextBox({width: 240});
                 self.$inpCycle.ligerTextBox({width: 240});
                 self.$inpObjectClass.ligerTextBox({width: 240});
-                self.$inpDataSourceJson.ligerTextBox({width: 240});
-                self.$inpDataStorageJson.ligerTextBox({width: 240});
-                self.$zhixingDate.ligerDateEditor({format: "yyyy-MM-dd"});
-                self.$gender.ligerRadio();
-                $('input[name="interval_type"]').ligerRadio();
-                var combo1 = self.$inpDataSource.customCombo('${contextRoot}/deptMember/getOrgList');
+                var combo1 = self.$inpDataSource.customCombo('${contextRoot}/tjDataSource/getTjDataSource',null,self.dataSourceSelected,null,null,{valueField: 'code',
+                    textField: 'name'});
                 self.$inpDataSource.parent().css({
                     width:'240'
                 }).parent().css({
                     display:'inline-block',
                     width:'240px'
                 });
-                var combo2 = self.$inpDataStorage.customCombo('${contextRoot}/deptMember/getOrgList');
+                var combo2 = self.$inpDataStorage.customCombo('${contextRoot}/tjDataSave/getTjDataSave',null,self.dataStorageSelected,null,null,{valueField: 'code',
+                    textField: 'name'});
                 self.$inpDataStorage.parent().css({
                     width:'240'
                 }).parent().css({
                     display:'inline-block',
                     width:'240px'
                 });
+                this.$inpDataSourceJson.ligerTextBox({width:240,height:100 });
+                this.$inpDataStorageJson.ligerTextBox({width:240,height:100 });
                 this.$introduction.ligerTextBox({width:240,height:100 });
-                $('input[name="jobType"]').ligerRadio();
-                $('input[name="interval_type"]').ligerRadio();
+                self.$dataLevel.ligerRadio();
+                self.$status.ligerRadio();
+                self.$jobType.ligerRadio();
+                self.$intervalType.ligerRadio();
+                self.$zhixingDate.ligerDateEditor({width:240,showTime: true,onChangeDate:function(val){
+                    self.$zhixingDate.val(val+":00");
+                }});
                 $("#txtM").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtH").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtD").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtMD").ligerSpinner({width: 160,type: 'int',minValue:1});
-
                 $('input[name="week_day"]').ligerCheckBox();
-                $('input[name="month_day"]').ligerRadio();
-
+                self.$monthDay.ligerRadio();
                 self.$form.attrScan();
-                if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
-                    self.$resetArea.show();
-                    var birthPlaceInfo = patientModel.birthPlaceInfo;
-                    var homeAddressInfo = patientModel.homeAddressInfo;
-                    var workAddressInfo = patientModel.workAddressInfo;
-                    self.$form.Fields.fillValues({
-                        name: patientModel.name,
-                        idCardNo: patientModel.idCardNo,
-                        gender: patientModel.gender,
-                        nativePlace: patientModel.nativePlace,
-                        birthday: patientModel.birthday,
-                        birthPlaceInfo: birthPlaceInfo&&[birthPlaceInfo.province,birthPlaceInfo.city,birthPlaceInfo.district,birthPlaceInfo.street],
-                        homeAddressInfo: homeAddressInfo&&[homeAddressInfo.province,homeAddressInfo.city,homeAddressInfo.district,homeAddressInfo.street] ,
-                        workAddressInfo: workAddressInfo&&[workAddressInfo.province,workAddressInfo.city,workAddressInfo.district,workAddressInfo.street],
-                        residenceType: patientModel.residenceType,
-                        telephoneNo: patientModel.telephoneNo,
-                        email: patientModel.email
-                    });
-                    self.$patientCopyId.val(patientModel.idCardNo);
-
-                    var pic = patientModel.picPath;
-                    if(!Util.isStrEmpty(pic)){
-                        self.$picPath.html('<img src="${contextRoot}/patient/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
-                    }
-                }
             },
             //根据周期类型显示周期面板
             showInterval:function(tab){
-                $('input[name="interval_type"]').ligerRadio("setValue", tab);
+                $('input[name="interval_type"]').eq(0).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(1).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(2).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(3).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(4).ligerRadio("setValue",'');
+                $('input[name="interval_type"]').eq(tab).ligerRadio("setValue", tab+'');
                 $(".divIntervalOption").hide();
                 $("#divIntervalOption"+tab).show();
             },
             //初始化时间间隔
             initInterval:function(){
                 var me = this;
-                var val= $("#txtCronExpression").val();
+                var val= txtCronExpression;
                 if(val!=null&&val.length>0)
                 {
                     try {
@@ -245,7 +210,30 @@
                         {
                             $('input[name="interval_type"]').ligerRadio("setValue", "3");
                             me.showInterval(3);
-                            $('input[name="week_day"]').ligerCheckBox("setValue", arry[5]);
+                            var arr = arry[5].split(",");
+                            for(var i=0;i<arr.length;i++){
+                                if(arr[i]=="2"){
+                                    $('input[name="week_day"]').eq(0).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="3"){
+                                    $('input[name="week_day"]').eq(1).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="4"){
+                                    $('input[name="week_day"]').eq(2).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="5"){
+                                    $('input[name="week_day"]').eq(3).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="6"){
+                                    $('input[name="week_day"]').eq(4).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="7"){
+                                    $('input[name="week_day"]').eq(5).ligerCheckBox("setValue", arr[i]);
+                                }
+                                if(arr[i]=="1"){
+                                    $('input[name="week_day"]').eq(6).ligerCheckBox("setValue", arr[i]);
+                                }
+                            }
                         }
                         else{
                             if (arry[3] !="*")
@@ -261,13 +249,19 @@
                                     me.showInterval(4);
                                     if(v=="1")
                                     {
-                                        $('input[name="month_day"]').ligerRadio("setValue", "0");
+                                        $('input[name="month_day"]').eq(0).ligerRadio("setValue", "0");
+                                        $('input[name="month_day"]').eq(1).ligerRadio("setValue", "");
+                                        $('input[name="month_day"]').eq(2).ligerRadio("setValue", "");
                                     }
                                     else if(v=="L"){
-                                        $('input[name="month_day"]').ligerRadio("setValue", "1");
+                                        $('input[name="month_day"]').eq(0).ligerRadio("setValue", "");
+                                        $('input[name="month_day"]').eq(1).ligerRadio("setValue", "1");
+                                        $('input[name="month_day"]').eq(2).ligerRadio("setValue", "");
                                     }
                                     else{
-                                        $('input[name="month_day"]').ligerRadio("setValue", "2");
+                                        $('input[name="month_day"]').eq(0).ligerRadio("setValue", "");
+                                        $('input[name="month_day"]').eq(1).ligerRadio("setValue", "");
+                                        $('input[name="month_day"]').eq(2).ligerRadio("setValue", "2");
                                         $("#txtMD").val(v);
                                     }
                                 }
@@ -308,37 +302,59 @@
             setInterval:function(){
                 var val = "";
                 //解析cron表达式
-                var interval_type =  $('input[name="interval_type"]').ligerRadio("getValue");
-                var cronTime  = new Date($("#dateNextTime").ligerDateEditor('getValue'));
+                var interval_type =  $('input[name="interval_type"]:checked').val();
+                var cronTime  = new Date($("#inp_zhixing_date").ligerDateEditor('getValue'));
                 var minute = cronTime.getMinutes(),hour = cronTime.getHours();
 
                 if(interval_type =="0") //分钟
                 {
                     var num = $("#txtM").val();
-                    if(num!=null && num.length>0) {
+                    if(num != null && num.length>0) {
                         val = "0 0/" + num + " * * * ?";
+                    } else {
+                        win.parent.$.Notice.error('请填写分钟数');
+                        return false;
                     }
                 }
                 else if(interval_type =="1"){ //时钟
                     var num = $("#txtH").val();
                     if(num!=null && num.length>0) {
                         val = "0 "+ minute +" 0/" + num + " * * ?";
+                    } else {
+                        win.parent.$.Notice.error('请填写小时数');
+                        return false;
                     }
                 }
                 else if(interval_type =="2"){ //天
                     var num = $("#txtD").val();
                     if(num!=null && num.length>0) {
                         val = "0 "+ minute +" "+ hour +" 1/" + num + " * ?";
+                    } else {
+                        win.parent.$.Notice.error('请填写天数');
+                        return false;
                     }
                 }
                 else if(interval_type =="3"){ //周
-                    var week_day = $('input[name="week_day"]').ligerCheckBox("getValue");
+                    var $week_day = $('input[name="week_day"]:checked'),
+                        week_day = "";
+                    $week_day.each(function(index,domEle){
+                        if(index==($week_day.length-1)){
+                            week_day+=$(domEle).val()
+                        }else{
+                            week_day+=$(domEle).val()+",";
+                        }
+                    });
+                    if ($week_day.length <= 0) {
+                        win.parent.$.Notice.error('请填选择周');
+                        return false;
+                    }
+
                     if(week_day!=null && week_day.length>0) {
                         val = "0 "+ minute +" "+ hour +" ? * " + week_day;
                     }
                 }
                 else if(interval_type =="4"){ //月
-                    var month_day = $('input[name="month_day"]').ligerRadio("getValue");
+                    var month_day = $('input[name="month_day"]:checked').val();
                     if(month_day == "0") //每月第一天
                     {
                         val = "0 "+ minute +" "+ hour +" 1 * ?";
@@ -352,425 +368,168 @@
                         if(num!=null && num.length>0)
                         {
                             val = "0 "+ minute +" "+ hour +" "+num+" * ?";
+                        } else {
+                            win.parent.$.Notice.error('请填写天数');
+                            return false;
                         }
                     }
                 }
-
-                $("#txtCronExpression").val(val);
+                txtCronExpression = val;
+                return true;
             },
-            //设置数据集选中值
-            setCheckVal:function(){
-                var me = this;
-                var selected = me.$listDataset.getSelectedRows();
-                if(selected!=null)
-                {
-                    $("#txtJobDataset").val(JSON.stringify(selected));
-                }
-                else{
-                    $("#txtJobDataset").val("");
-                }
-            },
-            initDDL: function (dictId, target) {
-                var self = this;
-                target.ligerComboBox({
-                    url: "${contextRoot}/dict/searchDictEntryList",
-                    dataParmName: 'detailModelList',
-                    urlParms: {dictId: dictId},
-                    valueField: 'code',
-                    textField: 'value',
-                    autocomplete:true,
-                    onSuccess: function () {
-                        self.$form.Fields.fillValues({nation: patientModel.nation});
-                        self.$form.Fields.fillValues({martialStatus: patientModel.martialStatus});
-                    }
-                });
-            },
-            initAddress: function (target){
-                target.addressDropdown({tabsData:[
-                    {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
-                    {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
-                    {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
-                    {name: '街道',maxlength: 200}
-                ]});
-            },
-
             bindEvents: function () {
                 var self = this;
-                self.$inpCycle.click(function(){
-                    weekDialog = $.ligerDialog.open({
-                        title: "周期配置",
-                        width: 416,
-                        height: 320,
-                        target: self.$weekDialog
-                    });
-
-                    $(document).on('click','input[name="jobType"]',function(){
-                        var value = $(this).val();
-//                    me.setAchiveUploadType(value);
-                    });
-                    $(document).on('click','input[name="interval_type"]',function(){
-                        //清空数据
-                        $("#txtCronExpression").val("");
-                        self.initInterval();
-
-                        $(".divIntervalOption").hide();
-                        $("#divIntervalOption"+$(this).val()).show();
-                    });
-                    $(document).on('click','input[name="month_day"]',function(){
-                        var val = $(this).val();
-                        if(val=="2")
-                        {
-                            $("#txtMD").removeAttr("disabled");
-                        }
-                        else
-                        {
-                            $("#txtMD").attr("disabled",true);
-                        }
-                    });
-
-                })
-
-                $(".u-dropdown-icon").click(function(){
-                    $('#inp_realName').click();
-                });
-                var idCardNo = self.$form.Fields.idCardNo.getValue();
-                var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    if(Util.isStrEquals($(elm).attr('id'),'inp_idCardNo')){
-                        var copyCardNo = self.$patientCopyId.val();
-                        var result = new jValidation.ajax.Result();
-                        var idCardNo = self.$idCardNo.val();
-                        var dataModel = $.DataModel.init();
-                        if(Util.isStrEquals(idCardNo,copyCardNo)){
-                            return true;
-                        }
-                        dataModel.fetchRemote("${contextRoot}/patient/checkIdCardNo", {
-                            data: {searchNm:idCardNo},
-                            async: false,
-                            success: function (data) {
-                                if (!data.successFlg) {
-                                    result.setResult(true);
-                                } else {
-                                    result.setResult(false);
-                                    result.setErrorMsg("该身份证已被使用");
-                                }
+                validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
+                    try{
+                        if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
+                            var result = new jValidation.ajax.Result();
+                            var code = self.$inpCode.val();
+                            if(code==initCode){
+                                result.setResult(true);
+                                return result;
                             }
-                        });
-                        return result;
+                            var dataModel = $.DataModel.init();
+                            dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsCode", {
+                                data: {code:code},
+                                async: false,
+                                success: function (data) {
+                                    if (!data) {
+                                        result.setResult(true);
+                                    } else {
+                                        result.setResult(false);
+                                        result.setErrorMsg("编码已存在");
+                                    }
+                                }
+                            });
+                            return result;
+                        }
+                        if(Util.isStrEquals($(elm).attr('id'),'inp_name')){
+                            var result = new jValidation.ajax.Result();
+                            var name = self.$inpName.val();
+                            if(name==initName){
+                                result.setResult(true);
+                                return result;
+                            }
+                            var dataModel = $.DataModel.init();
+                            dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsName", {
+                                data: {name:name},
+                                async: false,
+                                success: function (data) {
+                                    if (!data) {
+                                        result.setResult(true);
+                                    } else {
+                                        result.setResult(false);
+                                        result.setErrorMsg("名称已存在");
+                                    }
+                                }
+                            });
+                            return result;
+                        }
+                    }catch (e){
+                        console.log(e);
                     }
                 }});
 
-                //修改人口信息
-                patientInfo.$updateBtn.click(function () {
-                    var picHtml = self.$picPath.children().length;
+                self.$form.on('click','input[name="jobType"]',function(){
+                    var value = $(this).val();
+                    if(value=="1"){
+                        $("#divTimeInterval").hide();
+                    }else{
+                        $("#divTimeInterval").show();
+                    }
+                });
+
+                self.$form.on('click','input[name="interval_type"]',function(){
+                    //清空数据
+                    txtCronExpression = "";
+                    $(".divIntervalOption").hide();
+                    $("#divIntervalOption"+$(this).val()).show();
+                });
+                self.$form.on('click','input[name="month_day"]',function(){
+                    var val = $(this).val();
+                    if(val=="2")
+                    {
+                        $("#txtMD").removeAttr("disabled");
+                    }
+                    else
+                    {
+                        $("#txtMD").attr("disabled",true);
+                    }
+                });
+
+                //新增/修改指标
+                zhiBiaoInfo.$updateBtn.click(function () {
                     if(validator.validate()){
-                        var addressList = self.$form.Fields.birthPlaceInfo.getValue();
-                        var homeAddressList = self.$form.Fields.homeAddressInfo.getValue();
-                        var workAddressList = self.$form.Fields.workAddressInfo.getValue();
-                        var values = $.extend({},self.$form.Fields.getValues(),{
-                            birthPlaceInfo: {
-                                province:  addressList.names[0] || null,
-                                city: addressList.names[1] || null,
-                                district: addressList.names[2] || null,
-                                street: addressList.names[3] || null
-                            },
-                            homeAddressInfo:{
-                                province:  homeAddressList.names[0] || null,
-                                city: homeAddressList.names[1] || null,
-                                district: homeAddressList.names[2] || null,
-                                street: homeAddressList.names[3] || null
-                            },
-                            workAddressInfo:{
-                                province:  workAddressList.names[0] || null,
-                                city: workAddressList.names[1] || null,
-                                district: workAddressList.names[2] || null,
-                                street: workAddressList.names[3] || null
+                        var result = self.setInterval();
+                        if(!result) return;
+                        var values = self.$form.Fields.getValues();
+                        values.cron = txtCronExpression;
+                        values.execType = $('input[name=jobType]:checked').val();
+                        values.execTime = $('#execTime').val();
+                        values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
+                        values.tjQuotaDataSaveModel = {saveCode:dataStorageSelectedVal,configJson:self.$inpDataStorageJson.val()};
+                        if (id != '-1') {
+                            values.id = id.toString();
+                        }
+                        dataModel.fetchRemote("${contextRoot}/tjQuota/updateTjDataSource", {
+                            data: {tjQuotaModelJsonData:JSON.stringify(values)},
+                            async: false,
+                            type: 'post',
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    win.parent.closeZhiBiaoInfoDialog(function () {
+                                        if(id != '-1'){//修改
+                                            win.parent.$.Notice.success('修改成功');
+                                        }else{
+                                            win.parent.$.Notice.success('新增成功');
+                                        }
+                                    });
+                                } else {
+                                    window.top.$.Notice.error(data.errorMsg);
+                                }
                             }
                         });
-                        var jsonData = JSON.stringify(values)+";"+patientDialogType;
-                        if(picHtml == 0){
-                            updatePatient(jsonData);
-//                        updatePatient(JSON.stringify(values));
-                        }else{
-                            var upload = self.$patientImgUpload.instance;
-                            var image = upload.getFiles().length;
-                            if(image){
-                                upload.options.formData.patientJsonData =   encodeURIComponent(jsonData);
-                                upload.upload();
-                                win.parent.patientDialogRefresh();
-                            }else{
-                                updatePatient(jsonData);
-                            }
-                        }
                     }else{
                         return
                     }
                 });
 
-                //重置密码
-                patientInfo.$resetPassword.click(function () {
-                    var patientIdCardNo = self.$form.Fields.idCardNo.getValue();
-                    $.ligerDialog.confirm('确认重置密码？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
-                        if (yes) {
-                            var dataModel = $.DataModel.init();
-                            dataModel.updateRemote("${contextRoot}/patient/resetPass", {
-                                data: {idCardNo: patientIdCardNo},
-                                success: function (data) {
-                                    if (data.successFlg) {
-                                        win.parent.$.Notice.success('密码修改成功');
-                                    } else {
-                                        win.parent.$.Notice.error('密码修改失败');
-                                    }
-                                    //dialog.close();
-                                }
-                            })
-                        }
-                    });
-
-
+                //周期配置确认按钮
+                zhiBiaoInfo.$div_week_confirm_btn.on( 'click', function () {
+                    var $inpZhixingDate = $('#inp_zhixing_date');
+                    console.log('a');
+                    if ($inpZhixingDate.val() == '') {
+                        $inpZhixingDate.parent().addClass('validation-failed');
+                        win.parent.$.Notice.error('请选择日期');
+                        return;
+                    }
+                    $('#execTime').val($inpZhixingDate.val());
+                    zhiBiaoInfo.setInterval();
+                    zhiBiaoInfo.weekDialog.close();
                 });
+
+
+
                 //关闭dailog的方法
-                patientInfo.$cancelBtn.click(function(){
-                    win.parent.patientDialogClose();
-                    //dialog.close();
+                zhiBiaoInfo.$cancelBtn.click(function(){
+                    parent.closeDialog();
                 })
             }
-        };
-
-        //卡管理
-        cardFormInit = {
-            $selectCardType:$('#inp_select_cardType'),
-            $addCard: $("#div_addCard"),
-            $cardSearch: $("#inp_card_search"),
-            $cardBasicMsg: $("#div_card_basicMsg"),
-
-            $cardForm: $("#div_card_info_form"),
-
-            $cardType:$("#inp_cardType"),
-            $cardNo:$("#inp_cardNo"),
-            $holderName:$("#inp_HolderName"),
-            $issueAddress:$("#inp_issueAddress"),
-            $issueOrg:$("#inp_issueOrg"),
-            $addDate:$("#inp_addDate"),
-            $cardStatus:$("#inp_cardStatus"),
-            $cardExplain:$("#inp_cardExplain"),
-
-            init: function () {
-                this.$cardType.ligerTextBox({width: 240});
-                this.$cardNo.ligerTextBox({width: 240});
-                this.$holderName.ligerTextBox({width: 240});
-                this.$issueAddress.ligerTextBox({width: 240});
-                this.$issueOrg.ligerTextBox({width: 240});
-                this.$addDate.ligerTextBox({width: 240});
-                this.$cardStatus.ligerTextBox({width: 240});
-                this.$cardExplain.ligerTextBox({width: 240});
-                this.$selectCardType.ligerComboBox(
-                        {
-                            url: '${contextRoot}/dict/searchDictEntryList',
-                            valueField: 'code',
-                            textField: 'value',
-                            dataParmName: 'detailModelList',
-                            urlParms: {
-                                dictId: 10
-                            },
-                            width:120,
-                            autocomplete: true,
-                            onSelected: function (v, t) {
-                                cardFormInit.searchCard(cardFormInit.$cardSearch.val(), v);
-                            }
-                        });
-                this.$cardSearch.ligerTextBox({
-                    width: 240, isSearch: true, search: function () {
-                        cardInfoRefresh();
-                    }
-                });
-                this.$cardForm.attrScan();
-                cardInfoGrid = cardFormInit.$cardForm.ligerGrid($.LigerGridEx.config({
-                    url: '${contextRoot}/card/searchCard',
-                    parms: {
-                        idCardNo: idCardNo,
-                        searchNm: '',
-                        cardType: ''
-                    },
-                    columns: [
-                        { name: 'id',hide: true},
-                        { name: 'cardType',hide: true},
-                        {display: '类型', name: 'typeName', width: '10%'},
-                        {display: '卡号', name: 'number', width: '30%'},
-                        {display: '发行机构', name: 'releaseOrgName', width: '20%'},
-                        {display: '创建时间', name: 'createDate', width: '18%'},
-                        {display: '状态', name: 'statusName', width: '8%'},
-                        {
-                            display: '操作', name: 'operator', width: '14%', render: function (row) {
-                            var html = '<a href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:cardInfoModifyDialog:open", row.id,row.cardType) + '">解除关联</a>  ';
-                            return html;
-                        }
-                        }
-                    ],
-                    allowHideColumn:false,
-                    inWindow: false,
-                    height:400,
-                    onDblClickRow: function (row) {
-                        //查看卡信息
-                        $.ligerDialog.open({ width:450, height:500,target: cardFormInit.$cardBasicMsg});
-                        var self = this;
-                        var dataModel = $.DataModel.init();
-                        dataModel.createRemote('${contextRoot}/card/getCard', {
-                            data: {id: row.id,cardType:row.cardType},
-                            success: function (data) {
-                                if (data.successFlg) {
-                                    cardFormInit.$cardForm.Fields.fillValues({
-                                        cardType: data.obj.typeName,
-                                        number: data.obj.number,
-                                        ownerName: data.obj.ownerName,
-                                        local: data.obj.local,
-                                        releaseOrgName: data.obj.releaseOrgName,
-                                        createDate: data.obj.createDate,
-                                        statusName: data.obj.statusName,
-                                        description: data.obj.description
-                                    });
-                                }
-                            }
-                        });
-                    }
-                }));
-                cardInfoGrid.adjustToWidth();
-                this.bindEvents();
-            },
-
-            searchCard: function (searchNm, cardType) {
-                cardInfoGrid.setOptions({parms: {searchNm: searchNm, idCardNo: idCardNo, cardType: cardType},newPage:1});
-                cardInfoGrid.loadData(true);
-            },
-            bindEvents: function () {
-                //解绑卡信息
-                $.subscribe('patient:cardInfoModifyDialog:open',function(event,id,cardType){
-                    $.ligerDialog.confirm('确认解除关联该卡信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
-                        if (yes) {
-                            var dataModel = $.DataModel.init();
-                            dataModel.updateRemote('${contextRoot}/card/detachCard', {
-                                data: {id: id,cardType:cardType},
-                                success: function (data) {
-                                    if (data.successFlg) {
-                                        $.ligerDialog.alert('解除关联成功');
-                                        cardFormInit.searchCard();
-                                    } else {
-                                        $.Notice.error('解除关联失败');
-                                    }
-                                }
-                            });
-                        }
-                    })
-                });
-                //添加卡
-                cardFormInit.$addCard.click(function(){
-                    var idCardNo = patientInfo.$form.Fields.idCardNo.getValue();
-                    var wait = $.Notice.waitting("请稍后...");
-                    var cardDialog = $.ligerDialog.open({
-                        height: 640,
-                        width: 600,
-                        title: '新增卡',
-						show: false,
-                        url: '${contextRoot}/card/addCardInfoDialog',
-                        urlParms: {
-                            idCardNo: idCardNo
-                        },
-                        onClosed: function () {
-                            cardInfoRefresh();
-                        },
-	                    onLoaded:function() {
-	                        wait.close(),
-	                        cardDialog.show()
-	                    }
-                    })
-                    cardDialog.hide();
-                })
-            }
-
-        };
-        //档案信息
-        archiveFormInit = {
-            $selectStart:$('#inp_select_start'),
-            $selectEnd:$('#inp_select_end'),
-            $selectArchiveOrg:$('#inp_select_archiveOrg'),
-            $searchArchive:$('#div_search_archive'),
-            $archiveForm: $("#div_archive_info_form"),
-            init: function () {
-                this.$selectStart.ligerDateEditor({format: "yyyy-MM-dd"});
-                this.$selectEnd.ligerDateEditor({format: "yyyy-MM-dd"});
-                this.$selectArchiveOrg.addressDropdown({
-                    tabsData: [
-                        {
-                            name: '省份',
-                            code: 'id',
-                            value: 'name',
-                            url: '${contextRoot}/address/getParent',
-                            params: {level: '1'}
-                        },
-                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {
-                            name: '医院',
-                            code: 'orgCode',
-                            value: 'fullName',
-                            url: '${contextRoot}/address/getOrgs',
-                            beforeAjaxSend: function (ds, $options) {
-                                var province = $options.eq(0).attr('title'),
-                                        city = $options.eq(1).attr('title');
-                                ds.params = $.extend({}, ds.params, {
-
-                                    province: province,
-                                    city: city
-                                });
-                            }
-                        }
-                    ]
-                });
-
-                archiveInfoGrid = this.$archiveForm.ligerGrid($.LigerGridEx.config({
-                    <%--url: '${contextRoot}/archive/searchArchive',--%>
-                    url: '${contextRoot}/card/searchCard',
-                    parms: {
-                        start: '',
-                        end: '',
-                        org: ''
-                    },
-                    columns: [
-                        { name: 'id',hide: true},
-                        {display: '就诊时间', name: 'archiveTime', width: '28%'},
-                        {display: '就诊机构', name: 'archiveOrg', width: '30%'},
-                        {display: '关联时间', name: 'archiveRelateTime', width: '28%'},
-                        {
-                            display: '操作', name: 'operator', width: '14%', render: function (row) {
-                            var html = '<a href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:archiveView:open", row.id) + '">查看</a>  ';
-                            return html;
-                        }
-                        }
-                    ],
-                    allowHideColumn:false,
-                    inWindow: false,
-                    height:400
-                }));
-                archiveInfoGrid.adjustToWidth();
-                this.bindEvents();
-            },
-
-            searchArchive: function (start,end, org) {
-                archiveInfoGrid.setOptions({parms: {start: start, end: end, org: org},newPage:1});
-                archiveInfoGrid.loadData(true);
-            },
-            bindEvents: function () {
-                //查看档案
-                $.subscribe('patient:archiveView:open',function(event,id,cardType){
-
-                });
-                //档案搜索
-                archiveFormInit.$searchArchive.click(function(){
-
-                });
-            }
-
         };
 
         /* *************************** 模块初始化结束 ***************************** */
+
+        /* ******************Dialog页面回调接口****************************** */
+        win.weekDialogBack = function (execTypeBack,execTimeBack,cronBack) {
+            win.execTypeB = execTypeBack;
+            win.execTimeB = execTimeBack;
+            win.cronB = cronBack;
+            zhiBiaoInfo.weekDialog.close();
+        };
+
+        win.closeWeekDialog = function () {
+            zhiBiaoInfo.weekDialog.close();
+        };
 
         /* *************************** 页面初始化 **************************** */
         pageInit();

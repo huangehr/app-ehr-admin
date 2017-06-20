@@ -358,16 +358,16 @@
                 },
                 </sec:authorize>
 
-                // 4-1 居民档案管理
-                <sec:authorize url="userCards/archiveRelation/initial">
-                {
-                    pid: 4,
-                    level:2,
-                    id: 42,
-                    text: '<spring:message code="title.patient.archiveRelation"/>',
-                    url: '${contextRoot}/userCards/archiveRelation/initial'
-                },
-                </sec:authorize>
+                <%--// 4-1 居民档案管理--%>
+                <%--<sec:authorize url="userCards/archiveRelation/initial">--%>
+                <%--{--%>
+                    <%--pid: 4,--%>
+                    <%--level:2,--%>
+                    <%--id: 42,--%>
+                    <%--text: '<spring:message code="title.patient.archiveRelation"/>',--%>
+                    <%--url: '${contextRoot}/userCards/archiveRelation/initial'--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 // 4-2 居民档案申领审核
                 <sec:authorize url="/archive/apply/initial">
@@ -380,16 +380,16 @@
                 },
                 </sec:authorize>
 
-                // 4-3- 就诊卡管理
-                <sec:authorize url="/medicalCards/initialPageView">
-                {
-                    pid: 4,
-                    level:2,
-                    id: 44,
-                    text: '<spring:message code="title.card.manage"/>',
-                    url: '${contextRoot}/medicalCards/initialPageView'
-                },
-                </sec:authorize>
+                <%--// 4-3- 就诊卡管理--%>
+                <%--<sec:authorize url="/medicalCards/initialPageView">--%>
+                <%--{--%>
+                    <%--pid: 4,--%>
+                    <%--level:2,--%>
+                    <%--id: 44,--%>
+                    <%--text: '<spring:message code="title.card.manage"/>',--%>
+                    <%--url: '${contextRoot}/medicalCards/initialPageView'--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 // 4-4 就诊卡申领审核
                 <sec:authorize url="/userCards/initial">
