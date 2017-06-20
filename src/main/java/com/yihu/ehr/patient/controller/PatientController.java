@@ -532,6 +532,27 @@ public class PatientController extends BaseUIController {
         }
     }
 
+    //获取账号授权角色组
+    @RequestMapping("/appUserRolesIds")
+    public Object appFeatureInitial(Model model,String userId){
+        //获取用户所属角色
+        Envelop envelop = new Envelop();
+        String en = "";
+        String envelopStr ="";
+        try {
+            en = objectMapper.writeValueAsString(envelop);
+            String url = "/roles/role_user/userRolesIds";
+            Map<String,Object> params = new HashMap<>();
+            //账户id
+            params.put("user_id",userId);
+             envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+        } catch (Exception ex) {
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+        return envelopStr;
+    }
+
 
 
 }
