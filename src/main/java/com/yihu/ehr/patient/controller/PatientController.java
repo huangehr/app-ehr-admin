@@ -457,19 +457,18 @@ public class PatientController extends BaseUIController {
      */
     @RequestMapping("/PatientCardByUserId")
     @ResponseBody
-    public Object searchUserCards(String userId,String auditStatus ,int page, int rows) {
+    public Object searchUserCards(String ownerIdcard,int page, int rows) {
         String url = "/PatientCardByUserId";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(userId)) {
-            stringBuffer.append("userId=" + userId + ";");
+        if (!StringUtils.isEmpty(ownerIdcard)) {
+            stringBuffer.append("ownerIdcard=" + ownerIdcard + ";");
         }
-        if (!StringUtils.isEmpty(auditStatus)) {
-            stringBuffer.append("auditStatus=" + auditStatus + ";");
-        }
+        //审核状态 0未审核 1 通过 2 拒绝
+        stringBuffer.append("auditStatus=" + 1 + ";");
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
