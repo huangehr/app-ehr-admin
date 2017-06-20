@@ -336,7 +336,7 @@ public class ReportController extends BaseUIController {
     @RequestMapping("initialLs")
     public String initialLs(Model model) {
         model.addAttribute("contentPage", "/report/ls/orgAnalysisList");
-        return "simpleView";
+        return "generalView";
     }
 
     /**
