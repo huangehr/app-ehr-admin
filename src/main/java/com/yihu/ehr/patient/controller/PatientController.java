@@ -423,4 +423,27 @@ public class PatientController extends BaseUIController {
         }
     }
 
+    @RequestMapping("/PatientCardByUserId")
+    public Object infoInitial(String userId){
+        Envelop envelop = new Envelop();
+        String envelopStr = "";
+        try{
+            if (!StringUtils.isEmpty(userId)) {
+                String url = "/PatientCardByUserId";
+                Map<String, Object> par = new HashMap<>();
+                par.put("userId", userId);
+                par.put("cardType", "");
+                par.put("page", 0);
+                par.put("rows", 9999);
+                envelopStr = HttpClientUtil.doGet(comUrl + url,par, username, password);
+                return envelopStr;
+            }
+        }catch (Exception ex){
+            LogService.getLogger(UserCardsController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
 }
