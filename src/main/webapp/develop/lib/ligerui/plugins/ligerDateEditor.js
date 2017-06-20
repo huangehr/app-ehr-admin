@@ -55,8 +55,8 @@
         _render: function ()
         {
             var g = this, p = this.options;
-            if (!p.showTime && p.format.indexOf(" hh:mm:ss") > -1)
-                p.format = p.format.replace(" hh:mm:ss", "");
+            if (!p.showTime && p.format.indexOf(" hh:mm") > -1)
+                p.format = p.format.replace(" hh:mm", "");
             if (this.element.tagName.toLowerCase() != "input" || this.element.type != "text")
                 return;
             g.inputText = $(this.element);
@@ -67,7 +67,7 @@
             //g.text = g.inputText.wrap('<div class="l-text l-text-date "></div>').parent();
             g.text = g.inputText.wrap('<div class="l-text l-text-date j-text-wrapper"></div>').parent();
             // TODO [代码片段004][增加‘j-text-wrapper’类用于表单验证失败时样式控制][yezeh] 结束
-            g.text.append('<div class="l-text-l"></div><div class="l-text-r"></div><i class="isdata" >格式错误!</i>');
+            g.text.append('<div class="l-text-l"></div><div class="l-text-r"></div>');
             g.text.append(g.link);
             //添加个包裹，
             g.textwrapper = g.text.wrap('<div class="l-text-wrapper"></div>').parent();
@@ -90,10 +90,9 @@
             dateeditorHTML += "            </tbody>";
             dateeditorHTML += "        </table>";
             dateeditorHTML += "        <ul class='l-box-dateeditor-monthselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
-            dateeditorHTML += "        <select class='l-box-dateeditor-yearselector' size=10 style='overflow-y: auto;'></select>";
+            dateeditorHTML += "        <ul class='l-box-dateeditor-yearselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
             dateeditorHTML += "        <ul class='l-box-dateeditor-hourselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
             dateeditorHTML += "        <ul class='l-box-dateeditor-minuteselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
-            dateeditorHTML += "        <ul class='l-box-dateeditor-secondselector'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>";
             dateeditorHTML += "    </div>";
             dateeditorHTML += "    <div class='l-box-dateeditor-toolbar'>";
             dateeditorHTML += "        <div class='l-box-dateeditor-time'></div>";
@@ -117,12 +116,10 @@
             g.body.yearselector = $(".l-box-dateeditor-yearselector", g.body);
             g.body.hourselector = $(".l-box-dateeditor-hourselector", g.body);
             g.body.minuteselector = $(".l-box-dateeditor-minuteselector", g.body);
-            g.body.secondselector = $(".l-box-dateeditor-secondselector", g.body);
 
             g.toolbar.time = $(".l-box-dateeditor-time", g.toolbar);
             g.toolbar.time.hour = $("<a></a>");
             g.toolbar.time.minute = $("<a></a>");
-            g.toolbar.time.second = $("<a></a>");
             g.buttons = {
                 btnPrevYear: $(".l-box-dateeditor-header-prevyear", g.header),
                 btnNextYear: $(".l-box-dateeditor-header-nextyear", g.header),
@@ -140,8 +137,7 @@
                 day: nowDate.getDay(),
                 date: nowDate.getDate(),
                 hour: nowDate.getHours(),
-                minute: nowDate.getMinutes(),
-                second: nowDate.getSeconds()
+                minute: nowDate.getMinutes()
             };
             //当前的时间
             g.currentDate = {
@@ -150,8 +146,7 @@
                 day: nowDate.getDay(),
                 date: nowDate.getDate(),
                 hour: nowDate.getHours(),
-                minute: nowDate.getMinutes(),
-                second: nowDate.getSeconds()
+                minute: nowDate.getMinutes()
             };
             //选择的时间
             g.selectedDate = null;
@@ -178,7 +173,7 @@
             if (p.showTime)
             {
                 g.toolbar.time.show();
-                g.toolbar.time.append(g.toolbar.time.hour).append(":").append(g.toolbar.time.minute).append(":").append(g.toolbar.time.second);
+                g.toolbar.time.append(g.toolbar.time.hour).append(":").append(g.toolbar.time.minute);
                 $("li", g.body.hourselector).each(function (i, item)
                 {
                     var str = i;
@@ -186,12 +181,6 @@
                     $(this).html(str);
                 });
                 $("li", g.body.minuteselector).each(function (i, item)
-                {
-                    var str = i;
-                    if (i < 10) str = "0" + i.toString();
-                    $(this).html(str);
-                });
-                $("li", g.body.secondselector).each(function (i, item)
                 {
                     var str = i;
                     if (i < 10) str = "0" + i.toString();
@@ -239,7 +228,6 @@
                 this.className = "l-trigger-hover";
             }).click(function ()
             {
-
                 if (p.disabled) return;
                 g.bulidContent();
                 g.toggleDateEditor(g.dateeditor.is(":visible"));
@@ -264,10 +252,6 @@
                 $(this).removeClass("l-box-dateeditor-over");
             }).click(function ()
             {
-                //TODO CYC 20160418 日期控件选中事件之后原本提示错误的输入框 提示删除
-                $(g.element).closest("div").removeClass("validation-failed");
-                $(".SD-tipbox").remove();
-
                 $(".l-box-dateeditor-selected", g.body.tbody).removeClass("l-box-dateeditor-selected");
                 if (!$(this).hasClass("l-box-dateeditor-today"))
                     $(this).addClass("l-box-dateeditor-selected");
@@ -315,32 +299,18 @@
             g.buttons.btnYear.click(function ()
             {
                 //build year list
-                /*if (!g.body.yearselector.is(":visible"))
-                 {
-                 $("li", g.body.yearselector).each(function (i, item)
-                 {
-                 var currentYear = g.currentDate.year + (i - 4);
-                 if (currentYear == g.currentDate.year)
-                 $(this).addClass("l-selected");
-                 else
-                 $(this).removeClass("l-selected");
-                 $(this).html(currentYear);
-                 });
-                 }*/
-                /* ******************TODO 时间空间年选则改成下拉列表开始****************************** */
                 if (!g.body.yearselector.is(":visible"))
                 {
-                    var opthtml='';
-                    for(i=g.currentDate.year-50;i<=g.currentDate.year+50;i++){
-                        opthtml+="<option value="+i+">"+i+"</option>";
-                    }
-                    $(g.body.yearselector).html(opthtml);
-                    setTimeout(function(){
-                        $(g.body.yearselector).find("option[value="+g.currentDate.year+"]").attr('selected',true)
-                    },500);
-
+                    $("li", g.body.yearselector).each(function (i, item)
+                    {
+                        var currentYear = g.currentDate.year + (i - 4);
+                        if (currentYear == g.currentDate.year)
+                            $(this).addClass("l-selected");
+                        else
+                            $(this).removeClass("l-selected");
+                        $(this).html(currentYear);
+                    });
                 }
-                /* ******************TODO 时间空间年选则改成下拉列表结束****************************** */
 
                 g.body.yearselector.slideToggle();
             });
@@ -348,20 +318,12 @@
             {
                 $(this).slideUp();
             });
-            /* $("li", g.body.yearselector).click(function ()
-             {
-             g.currentDate.year = parseInt($(this).html());
-             g.body.yearselector.slideToggle();
-             g.bulidContent();
-             });*/
-            /* ******************TODO 时间空间年选则改成下拉列表开始****************************** */
-            $(g.body.yearselector).change(function ()
+            $("li", g.body.yearselector).click(function ()
             {
-                g.currentDate.year = parseInt($(this).find("option:selected").html());
+                g.currentDate.year = parseInt($(this).html());
                 g.body.yearselector.slideToggle();
                 g.bulidContent();
             });
-            /* ******************TODO 时间空间年选则改成下拉列表结束****************************** */
             //select month
             g.buttons.btnMonth.click(function ()
             {
@@ -442,38 +404,6 @@
                 var index = $("li", g.body.minuteselector).index(this);
                 g.currentDate.minute = index;
                 g.body.minuteselector.slideToggle("fast");
-                g.bulidContent();
-                g.showDate();
-            });
-
-            g.toolbar.time.second.click(function ()
-            {
-                $("li", g.body.secondselector).each(function (i, item)
-                {
-                    if (g.currentDate.second == i)
-                        $(this).addClass("l-selected");
-                    else
-                        $(this).removeClass("l-selected");
-                });
-                g.body.secondselector.slideToggle("fast", function ()
-                {
-                    var index = $("li", this).index($('li.l-selected', this));
-                    if (index > 29)
-                    {
-                        var offSet = ($('li.l-selected', this).offset().top - $(this).offset().top);
-                        $(this).animate({ scrollTop: offSet });
-                    }
-                });
-            });
-            g.body.secondselector.hover(function () { }, function ()
-            {
-                $(this).slideUp("fast");
-            });
-            $("li", g.body.secondselector).click(function ()
-            {
-                var index = $("li", g.body.secondselector).index(this);
-                g.currentDate.second = index;
-                g.body.secondselector.slideToggle("fast");
                 g.bulidContent();
                 g.showDate();
             });
@@ -603,18 +533,15 @@
             var monthDayNum = new Date(nextYear, nextMonth - 1, 0).getDate();
             //当前上个月天数
             var prevMonthDayNum = new Date(g.currentDate.year, g.currentDate.month - 1, 0).getDate();
-            var date = new Date();
+
             g.buttons.btnMonth.html(p.monthMessage[g.currentDate.month - 1]);
             g.buttons.btnYear.html(g.currentDate.year);
             g.toolbar.time.hour.html(g.currentDate.hour);
             g.toolbar.time.minute.html(g.currentDate.minute);
-            g.toolbar.time.second.html(g.currentDate.second);
             if (g.toolbar.time.hour.html().length == 1)
                 g.toolbar.time.hour.html("0" + g.toolbar.time.hour.html());
             if (g.toolbar.time.minute.html().length == 1)
                 g.toolbar.time.minute.html("0" + g.toolbar.time.minute.html());
-            if (g.toolbar.time.second.html().length == 1)
-                g.toolbar.time.second.html("0" + g.toolbar.time.second.html());
             $("td", this.body.tbody).each(function () { this.className = "" });
             $("tr", this.body.tbody).each(function (i, tr)
             {
@@ -623,7 +550,7 @@
                     var id = i * 7 + (j - thismonthFirstDay);
                     var showDay = id + 1;
                     if (g.selectedDate && g.currentDate.year == g.selectedDate.year &&
-                        g.currentDate.month == g.selectedDate.month && g.currentDate.second == g.selectedDate.second &&
+                        g.currentDate.month == g.selectedDate.month &&
                         id + 1 == g.selectedDate.date)
                     {
                         if (j == 0 || j == 6)
@@ -672,7 +599,6 @@
         updateSelectBoxPosition: function ()
         {
             var g = this, p = this.options;
-            var textHeight = g.text.height();//TODO textHeight 官方源码未声明
             if (p.absolute)
             {
                 var contentHeight = $(document).height();
@@ -745,8 +671,7 @@
             if (!this.currentDate) return;
             this.currentDate.hour = parseInt(g.toolbar.time.hour.html(), 10);
             this.currentDate.minute = parseInt(g.toolbar.time.minute.html(), 10);
-            this.currentDate.second= parseInt(g.toolbar.time.second.html(), 10);
-            var dateStr = this.currentDate.year + '/' + this.currentDate.month + '/' + this.currentDate.date + ' ' + this.currentDate.hour + ':' + this.currentDate.minute+ ':' + this.currentDate.second;
+            var dateStr = this.currentDate.year + '/' + this.currentDate.month + '/' + this.currentDate.date + ' ' + this.currentDate.hour + ':' + this.currentDate.minute;
             var myDate = new Date(dateStr);
             dateStr = g.getFormatDate(myDate);
             this.inputText.val(dateStr);
@@ -767,12 +692,12 @@
         isLongDateTime: function (dateStr)
         {
             var g = this, p = this.options;
-            var reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2}):(\d{1,2})$/;
+            var reg = /^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2}) (\d{1,2}):(\d{1,2})$/;
             var r = dateStr.match(reg);
             if (r == null) return false;
-            var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6],r[7]);
+            var d = new Date(r[1], r[3] - 1, r[4], r[5], r[6]);
             if (d == "NaN") return false;
-            return (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6]&& d.getSeconds() == r[7]);
+            return (d.getFullYear() == r[1] && (d.getMonth() + 1) == r[3] && d.getDate() == r[4] && d.getHours() == r[5] && d.getMinutes() == r[6]);
         },
         getFormatDate: function (date)
         {
@@ -848,15 +773,14 @@
         //恢复
         _rever: function ()
         {
-            //TODO 2016/04/14  日期不恢复
-            //var g = this, p = this.options;
-            //if (!g.usedDate)
-            //{
-            //    g.inputText.val("");
-            //} else
-            //{
-            //    g.inputText.val(g.getFormatDate(g.usedDate));
-            //}
+            var g = this, p = this.options;
+            if (!g.usedDate)
+            {
+                g.inputText.val("");
+            } else
+            {
+                g.inputText.val(g.getFormatDate(g.usedDate));
+            }
         },
         _getMatch: function (format)
         {
@@ -887,7 +811,6 @@
                     str = str.substring(mathLength);
                 } else
                 {
-
                     return null;
                 }
             }
@@ -897,10 +820,7 @@
         {
             var g = this, p = this.options;
             var r = this._getMatch();
-            if (!r){
-
-                return null
-            };
+            if (!r) return null;
             var t = dateStr.match(r.reg);
             if (!t) return null;
             var tt = {
@@ -938,8 +858,6 @@
             var newDate = g._bulidDate(val);
             if (!newDate)
             {
-                //日期格式如果输入错误提示cyc
-
                 g._rever();
                 return;
             }
@@ -953,8 +871,7 @@
                 day: g.usedDate.getDay(),
                 date: g.usedDate.getDate(),
                 hour: g.usedDate.getHours(),
-                minute: g.usedDate.getMinutes(),
-                second: g.usedDate.getSeconds()
+                minute: g.usedDate.getMinutes()
             };
             g.currentDate = {
                 year: g.usedDate.getFullYear(),
@@ -962,12 +879,9 @@
                 day: g.usedDate.getDay(),
                 date: g.usedDate.getDate(),
                 hour: g.usedDate.getHours(),
-                minute: g.usedDate.getMinutes(),
-                second: g.usedDate.getSeconds()
+                minute: g.usedDate.getMinutes()
             };
             var formatVal = g.getFormatDate(newDate);
-            // 手动输入日期格式正确则隐藏提示窗cyc
-
             g.inputText.val(formatVal);
             g.trigger('changeDate', [formatVal]);
             if ($(g.dateeditor).is(":visible"))

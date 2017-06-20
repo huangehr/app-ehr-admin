@@ -45,8 +45,8 @@
                                 {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '执行方式', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '执行时间', name: 'execType', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '执行方式', name: 'execTypeName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '任务类', name: 'jobClazz', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '状态', name: 'status', width: '5%', render: function (row) {
                                     var sta = row.status,
@@ -60,10 +60,9 @@
                                     if (sta == '1') {
                                         str = '正常'
                                     }
-                                    console.log(row);
                                     return str;
                                 }, isAllowHide: false, align: 'center'},
-                                {display: '存储方式', name: 'dataLevel', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '存储方式', name: 'dataLevelName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                                 {
                                     display: '操作', name: 'operator', width: '15%', align: 'center',render: function (row) {
@@ -77,7 +76,7 @@
                                     </sec:authorize>
 
                                     <sec:authorize url="/tjQuota/deleteDict">
-                                    html += '<a class="grid_delete" style="width: 60px;line-height: 40px;background: none;position: absolute;text-decoration: underline;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "zhibiao:weidu:config", row.orgCode, row.id, row.fullName) + '">维度配置</a>';
+                                    html += '<a class="grid_delete" style="width: 60px;line-height: 40px;background: none;position: absolute;text-decoration: underline;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a>';
                                     </sec:authorize>
                                     return html;
                                 }
@@ -138,7 +137,6 @@
 
                     $.subscribe('zhibiao:zhiBiaoGrid:delete', function (event, id) {
 
-                        debugger
                         $.Notice.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
@@ -160,7 +158,7 @@
                         })
                     });
 
-                    $.subscribe('zhibiao:weidu:config', function (event, orgCode, id,fullName) {
+                    $.subscribe('zhibiao:weidu:config', function (event, code) {
                         dictMaster.detailDialog = $.ligerDialog.open({
                             title:'维度配置',
                             height: 625,
@@ -170,7 +168,7 @@
                             opener: true,
                             load: true,
                             urlParms: {
-
+                                quotaCode:code
                             },
                             onLoaded:function() {
 
@@ -197,6 +195,7 @@
                 }
                 dictMaster.dictInfoDialog.close();
             };
+
             /* *************************** 页面功能 **************************** */
             pageInit();
         });

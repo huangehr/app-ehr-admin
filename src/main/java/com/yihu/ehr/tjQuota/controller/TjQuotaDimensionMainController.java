@@ -45,7 +45,7 @@ public class TjQuotaDimensionMainController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("model", toJson(jsonModel));
+        params.add("model", jsonModel);
         RestTemplates templates = new RestTemplates();
         try {
             resultStr = templates.doPost(comUrl + url, params);

@@ -16,11 +16,13 @@
             <input type="text" id="searchNm" placeholder="<spring:message code="lbl.input.placehold"/>">
           </div>
 
-          <sec:authorize url="/cdadict/saveDict">
-          <div class="f-pt5 f-fl f-mr10" >
-            <div title="新增" id="btn_create" class="image-create"  onclick="javascript:$.publish('zhibiao:zhiBiaoInfo:open',['','new'])"></div>
+          <div class="m-form-control f-mr10 f-fr">
+            <sec:authorize url="/tjQuota/updateTjDataSource">
+              <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam"  onclick="javascript:$.publish('zhibiao:zhiBiaoInfo:open',['','new'])">
+                <span><spring:message code="btn.create"/></span>
+              </div>
+            </sec:authorize>
           </div>
-          </sec:authorize>
 
         </div>
       </div>

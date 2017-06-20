@@ -49,7 +49,7 @@
 	<div class="m-form-group">
 		<label><spring:message code="lbl.user.tel"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_userTel" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="telephone"/>
+			<input type="text" id="inp_userTel" class="required useTitle validate-mobile-phone ajax"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="telephone"/>
 		</div>
 	</div>
 	<div class="m-form-group">
