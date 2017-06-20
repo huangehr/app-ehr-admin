@@ -1,8 +1,11 @@
 package com.yihu.ehr.patient.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
@@ -443,6 +446,64 @@ public class PatientController extends BaseUIController {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
+        return envelop;
+    }
+    /**
+     * 查找用户关联卡（卡状态为审核通过）
+     * @param
+     * @param page
+     * @param rows
+     * @return
+     */
+    @RequestMapping("/searchUserCards")
+    @ResponseBody
+    public Object searchUserCards(String userId,String auditStatus ,int page, int rows) {
+        String url = "/getUserCards";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("filters", "");
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(userId)) {
+            stringBuffer.append("userId=" + userId + ";");
+        }
+        if (!StringUtils.isEmpty(auditStatus)) {
+            stringBuffer.append("auditStatus=" + auditStatus + ";");
+        }
+        String filters = stringBuffer.toString();
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+    /**
+     * 根据id删除居民就诊卡
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/deletePatientCardByCardId")
+    @ResponseBody
+    public Object auditUserCards(long id, HttpServletRequest request)throws Exception {
+//        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        String url = "/deletePatientCardByCardId";
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", Long.valueOf(id));
+        params.put("auditor","");
+        params.put("status", "2");
+        params.put("auditReason", "");
+
+        String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+        Envelop envelop = getEnvelop(resultStr);
         return envelop;
     }
 
