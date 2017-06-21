@@ -441,7 +441,7 @@
 				//修改名称
 				setEditNameFun: function ( id, me, categoryName) {
 					debugger
-					var editData = null;
+					var editData = {};
 					var name = "修改名称";
 					if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 						name = "修改内容";
@@ -471,10 +471,13 @@
 								}
 							});
 							editData.name = name;
+							if(editData.deptDetail==null){
+								editData.deptDetail = {};
+							}
 							editData.deptDetail.name = name;
-							editData.deptDetail.phone = phone;
+							editData.deptDetail.phone = deptPhone;
 							editData.deptDetail.displayStatus = displayStatus;
-							editData.deptDetail.gloryId = gloryId;
+							editData.deptDetail.gloryId = glory;
 							editData.deptDetail.introduction = introduction;
 							editData.deptDetail.place = place;
 							editData.deptDetail.pyCode = pyCode;
@@ -505,19 +508,19 @@
 							success: function (data) {
 								debugger
 								editData = data;
-								var deptDetail = data.deptDetail;
+								var deptDetail = data.deptDetail || {};
 								var html = [
 									'<div class="pop-form">',
 									'<label for="name">科室电话：</label>',
-									'<input id="deptPhone" class="deptPhone" type="text" value="'+deptDetail.phone+'" />',
+									'<input id="deptPhone" class="deptPhone" type="text" value="'+(deptDetail.phone || "")+'" />',
 									'</div>',
 									'<div class="pop-form">',
 									'<label for="name">科室介绍：</label>',
-									'<input id="introduction" class="introduction" type="text" value="'+deptDetail.introduction+'" />',
+									'<input id="introduction" class="introduction" type="text" value="'+(deptDetail.introduction || "")+'" />',
 									'</div>',
 									'<div class="pop-form">',
 									'<label for="name">科室位置：</label>',
-									'<input id="place" class="place" type="text" value="'+deptDetail.place+'" />',
+									'<input id="place" class="place" type="text" value="'+(deptDetail.place || "")+'" />',
 									'</div>',
 									'<div class="pop-form">',
 									'<label for="name">是否显示：</label>',
@@ -546,8 +549,9 @@
 									display:'inline-block',
 									width:'238px'
 								});
-
-								me.$popWim.find('.displayStatus').ligerComboBox().selectValue(deptDetail.displayStatus);//赋值
+								if(deptDetail.displayStatus){
+									me.$popWim.find('.displayStatus').ligerComboBox().selectValue(deptDetail.displayStatus);//赋值
+								}
 
 								$('input[name="glory"]').ligerCheckBox();
 								var gloryId = deptDetail.gloryId;
@@ -578,7 +582,10 @@
 									display:'inline-block',
 									width:'238px'
 								});
-								me.$popWim.find('.pyCode').ligerComboBox().selectValue(deptDetail.pyCode);//赋值
+								if(deptDetail.pyCode){
+									me.$popWim.find('.pyCode').ligerComboBox().selectValue(deptDetail.pyCode);//赋值
+								}
+
 							}
 						});
 					}
@@ -690,7 +697,7 @@
 							});
 							var orgDeptJsonDate = JSON.stringify({orgId:$("#h_org_id").val(),code:code,name:name,
 								deptDetail:{name:name,phone:deptPhone,displayStatus:displayStatus,gloryId:glory,orgId:$("#h_org_id").val(),introduction:introduction,place:place,pyCode:pyCode}});
-							params = {id:id,mode:'new',orgDeptJsonDate:orgDeptJsonDate};
+							params = {id:orgId,mode:'addRoot',orgDeptJsonDate:orgDeptJsonDate};
 						}
 
 						me.res( url,params,function (data) {
