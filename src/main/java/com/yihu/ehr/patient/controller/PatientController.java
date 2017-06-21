@@ -534,7 +534,7 @@ public class PatientController extends BaseUIController {
 
     //获取账号授权角色组
     @RequestMapping("/appUserRolesIds")
-    public Object appFeatureInitial(Model model,String userId){
+    public Object appFeatureInitial(String userId){
         //获取用户所属角色
         Envelop envelop = new Envelop();
         String en = "";
@@ -553,6 +553,34 @@ public class PatientController extends BaseUIController {
         return envelopStr;
     }
 
-
+    /**
+     * 居民信息-角色授权-角色组保存
+     *
+     * @return
+     */
+    @RequestMapping("/appUserRolesSave")
+    @ResponseBody
+    public Object saveOrgSaas(String userId, String jsonData) {
+        String url = "/appUserRolesSave";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId",userId);
+        params.put("jsonData",jsonData);
+        try {
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            if (envelop.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+            }
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return result;
+    }
 
 }
