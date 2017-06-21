@@ -28,7 +28,7 @@ public class BusinessLogs {
 
             log.put("caller", caller);
             log.put("time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date()));
-            log.put("logType", 3);
+            log.put("logType", "3");
 
             JSONObject data = new JSONObject();
 
