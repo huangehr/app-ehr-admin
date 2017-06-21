@@ -494,7 +494,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 urlGet = "/orgDept/checkDeptName";
                 params.clear();
                 params.put("orgId",parentpModel.getOrgId());
-                params.put("name",orgDeptModel.getDeptDetail().getNationalDeptSn());
+                params.put("name",orgDeptModel.getName());
                 String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
                 Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
                 if (!envelopGet2.isSuccessFlg()){
@@ -503,7 +503,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
 
                 OrgDeptModel sunorgDeptModel = new OrgDeptModel();
                 sunorgDeptModel.setCode(orgDeptModel.getCode());
-                sunorgDeptModel.setName(orgDeptModel.getDeptDetail().getNationalDeptSn());
+                sunorgDeptModel.setName(orgDeptModel.getDeptDetail().getName());
                 sunorgDeptModel.setParentDeptId(Integer.valueOf(id));
                 sunorgDeptModel.setOrgId(parentpModel.getOrgId());
                 orgDeptModel.getDeptDetail().setOrgId(parentpModel.getOrgId());
