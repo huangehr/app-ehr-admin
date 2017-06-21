@@ -40,11 +40,12 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
     ObjectMapper objectMapper;
 
     @RequestMapping("initialDeptMember")
-    public String deptMemberInitial(Model model,String mode, String orgCode, String orgId, String orgName){
+    public String deptMemberInitial(Model model,String mode, String orgCode, String orgId, String orgName,String orgType){
         model.addAttribute("orgCode",orgCode);
         model.addAttribute("orgId",orgId);
         model.addAttribute("orgName",orgName);
         model.addAttribute("mode",mode);
+        model.addAttribute("orgType",orgType);
         model.addAttribute("contentPage", "/organization/deptMember/deptMember");
         return "pageView";
     }
