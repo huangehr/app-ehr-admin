@@ -507,7 +507,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 sunorgDeptModel.setParentDeptId(Integer.valueOf(id));
                 sunorgDeptModel.setOrgId(parentpModel.getOrgId());
                 orgDeptModel.getDeptDetail().setOrgId(parentpModel.getOrgId());
-                orgDeptModel.getDeptDetail().setCode(UUID.randomUUID().toString());
+                orgDeptModel.getDeptDetail().setCode(UUID.randomUUID().toString().replace("-", ""));
                 sunorgDeptModel.setDeptDetail(orgDeptModel.getDeptDetail());
 
                 Map<String,Object> args = new HashMap<>();
@@ -531,7 +531,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 rootDeptModel.setCode(orgDeptModel.getCode());
                 rootDeptModel.setName(orgDeptModel.getDeptDetail().getName());
                 rootDeptModel.setOrgId(orgDeptModel.getDeptDetail().getOrgId());
-                orgDeptModel.getDeptDetail().setCode(UUID.randomUUID().toString());
+                orgDeptModel.getDeptDetail().setCode(UUID.randomUUID().toString().replace("-", ""));
                 rootDeptModel.setDeptDetail(orgDeptModel.getDeptDetail());
 
                 Map<String,Object> args = new HashMap<>();
