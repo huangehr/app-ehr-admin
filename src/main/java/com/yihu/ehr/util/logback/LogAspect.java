@@ -1,5 +1,6 @@
 package com.yihu.ehr.util.logback;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -15,6 +16,7 @@ import org.aspectj.lang.annotation.Before;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
@@ -51,6 +53,8 @@ public class LogAspect {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     /**
      * @param joinPoint
@@ -109,7 +113,7 @@ public class LogAspect {
             Object obj = appFeatureFindUrl(operationPath);
 
             Gson gson = new Gson();
-            Envelop envelop = gson.fromJson(obj.toString(), Envelop.class);
+            Envelop envelop = gson.fromJson(objectMapper.writeValueAsString(obj), Envelop.class);
             List<Object> appFeatureList = envelop.getDetailModelList();
             if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(appFeatureList)) {
                 Map<Object, Object> objectMap = (Map<Object, Object>) appFeatureList.get(0);
