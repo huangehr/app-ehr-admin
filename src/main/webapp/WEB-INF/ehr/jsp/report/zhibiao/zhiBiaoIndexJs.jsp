@@ -46,7 +46,7 @@
                                 {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '执行方式', name: 'execTypeName', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
                                 {display: '任务类', name: 'jobClazz', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '状态', name: 'status', width: '5%', render: function (row) {
                                     var sta = row.status,
@@ -65,19 +65,11 @@
                                 {display: '存储方式', name: 'dataLevelName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                                 {
-                                    display: '操作', name: 'operator', width: '15%', align: 'center',render: function (row) {
+                                    display: '操作', name: 'operator', width: '20%', align: 'center',render: function (row) {
                                     var html = '';
-                                    <sec:authorize url="/tjQuota/updateTjDataSource">
-                                    html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';
-                                    </sec:authorize>
-
-                                    <sec:authorize url="/tjQuota/deleteTjDataSave">
-                                    html +=  '<a class="grid_delete" href="#" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a>';
-                                    </sec:authorize>
-
-                                    <sec:authorize url="/tjQuota/deleteDict">
-                                    html += '<a class="grid_delete" style="width: 60px;line-height: 40px;background: none;position: absolute;text-decoration: underline;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a>';
-                                    </sec:authorize>
+                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/deleteTjDataSave"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
                                     return html;
                                 }
                                 }
