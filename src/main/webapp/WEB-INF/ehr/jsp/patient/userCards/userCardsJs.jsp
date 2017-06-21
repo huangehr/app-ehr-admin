@@ -75,8 +75,6 @@
                             cardNo: '',
                             name: '',
                             auditStatus: '',
-                            page:1,
-                            rows:15
                         },
                         columns: [
 							{ display: '卡号',name: 'cardNo', width: '10%',isAllowHide: false},
@@ -124,10 +122,7 @@
                         enabledEdit: true,
                         validate : true,
                         unSetValidateAttr:false,
-                        allowHideColumn: false,
-                        onDblClickRow : function (row){
-							$.publish("userCards:userCardsInfo:open",[row.id,'view']);
-                        },
+                        allowHideColumn: false
                     }));
 
                     this.bindEvents();
@@ -180,11 +175,14 @@
                     $.subscribe('userCards:info:open',function(event,userCardsId,auditStatus){
                         isFirstPage = false;
                         var title = '用户认证详情';
+                        var height = 400;
                         var wait = $.Notice.waitting("请稍后...");
                         if(auditStatus == '0'){title = '用户认证审核';};
+                        if(auditStatus == '1'){height=640;};
+                        console.log(auditStatus);
                         master.userCardsInfoDialog = $.ligerDialog.open({
-                            height:640,
-                            width: 1100,
+                            height:height,
+                            width: 950,
                             title : title,
                             url: '${contextRoot}/userCards/getUserDetail',
                             urlParms: {

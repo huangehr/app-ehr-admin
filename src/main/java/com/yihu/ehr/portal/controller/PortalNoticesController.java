@@ -5,10 +5,10 @@ import com.yihu.ehr.agModel.portal.PortalNoticeDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -115,8 +115,8 @@ public class PortalNoticesController extends BaseUIController {
         Envelop result = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        String[] strings = URLDecoder.decode(portalNoticeModelJsonData, "UTF-8").split(";");
-        PortalNoticeDetailModel detailModel = toModel(strings[0], PortalNoticeDetailModel.class);
+        String strings = URLDecoder.decode(portalNoticeModelJsonData, "UTF-8");
+        PortalNoticeDetailModel detailModel = toModel(strings, PortalNoticeDetailModel.class);
         RestTemplates templates = new RestTemplates();
 
         try {

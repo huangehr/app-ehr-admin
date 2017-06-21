@@ -198,5 +198,39 @@ public class GrantController extends ExtendController<GrantService>{
             return systemError();
         }
     }
+    //角色组维度授权
+    @RequestMapping("/rolesLock")
+    @ResponseBody
+    public Object rolesLock(String data, int valid) {
+
+        try {
+            String url = service.comUrl + "/resources/relosMetadatas/valid";
+            Map map = new HashMap<>();
+            map.put("data", data);
+            map.put("valid", valid);
+            String resultStr = service.doLargePost(url, map);
+            if("true".equals(resultStr))
+                return success("");
+            else
+                return faild("操作失败");
+        } catch (Exception e) {
+            return faild("操作失败");
+        }
+    }
+    //角色组维度授权
+    @RequestMapping("/rolesSaveMeta")
+    @ResponseBody
+    public Object rolesSaveMeta(String model) {
+
+        try {
+            String url = service.comUrl + "/resources/relosMetadatas/grants";
+            Map map = new HashMap<>();
+            map.put("model", model);
+            String resultStr = service.doPost(url, map);
+            return resultStr;
+        } catch (Exception e) {
+            return faild("授权失败");
+        }
+    }
 
 }

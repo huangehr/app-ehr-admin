@@ -21,13 +21,6 @@
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label><spring:message code="lbl.sex"/><spring:message code="spe.colon"/></label>
-		<div class="u-checkbox-wrap m-form-control">
-			<input type="radio" value="1" name="sex" data-attr-scan><spring:message code="lbl.male"/>
-			<input type="radio" value="2" name="sex" data-attr-scan><spring:message code="lbl.female"/>
-		</div>
-	</div>
-	<div class="m-form-group">
 		<label><spring:message code="lbl.doctor.skill"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_skill" class="required useTitle max-length-100 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="skill"/>
@@ -44,23 +37,10 @@
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_email" class="required useTitle validate-email ajax max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> validate-email-title=<spring:message code="lbl.input.true.email"/> data-attr-scan="email"/>
 		</div>
-	</div>
-	<div class="m-form-group">
-		<label><spring:message code="lbl.doctor.phone"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_phone" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="phone"/>
-		</div>
-	</div>
-	<div class="m-form-group">
-		<label><spring:message code="lbl.doctor.secondPhone"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_secondPhone" class="useTitle validate-mobile-phone" data-attr-scan="secondPhone"/>
-		</div>
-	</div>
-	<div class="m-form-group">
-		<label><spring:message code="lbl.doctor.familyTel"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_familyTel" class="useTitle validate-phone" data-attr-scan="familyTel"/>
+		<label><spring:message code="lbl.sex"/><spring:message code="spe.colon"/></label>
+		<div class="u-checkbox-wrap m-form-control">
+			<input type="radio" value="1" name="sex" data-attr-scan><spring:message code="lbl.male"/>
+			<input type="radio" value="2" name="sex" data-attr-scan><spring:message code="lbl.female"/>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -68,36 +48,45 @@
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_officeTel" class="required useTitle validate-phone"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="officeTel"/>
 		</div>
-	</div>
-
-	<div class="m-form-group" id="inp_introduction_div">
-		<label><spring:message code="lbl.doctor.introduction"/><spring:message code="spe.colon"/></label>
+		<label><spring:message code="lbl.doctor.xzzc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
-			<textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="introduction" ></textarea>
+			<input type="text" id="inp_zxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xzzc"/>
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label><spring:message code="lbl.doctor.phone"/><spring:message code="spe.colon"/></label>
+		<div class="l-text-wrapper m-form-control essential">
+			<input type="text" id="inp_phone" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="phone"/>
+		</div>
 		<label><spring:message code="lbl.doctor.jxzc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_jxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="jxzc"/>
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label><spring:message code="lbl.doctor.secondPhone"/><spring:message code="spe.colon"/></label>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_secondPhone" class="useTitle validate-mobile-phone" data-attr-scan="secondPhone"/>
+		</div>
 		<label><spring:message code="lbl.doctor.lczc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_lczc" class="useTitle max-length-50 validate-special-char" data-attr-scan="lczc"/>
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label><spring:message code="lbl.doctor.familyTel"/><spring:message code="spe.colon"/></label>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_familyTel" class="useTitle validate-phone" data-attr-scan="familyTel"/>
+		</div>
 		<label><spring:message code="lbl.doctor.xlzc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_xlzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xlzc"/>
 		</div>
 	</div>
-	<div class="m-form-group">
-		<label><spring:message code="lbl.doctor.xzzc"/><spring:message code="spe.colon"/></label>
+	<div class="m-form-group" id="inp_introduction_div">
+		<label><spring:message code="lbl.doctor.introduction"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_zxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xzzc"/>
+			<textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="introduction" ></textarea>
 		</div>
 	</div>
 	<div class="m-form-control pane-attribute-toolbar">

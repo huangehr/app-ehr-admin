@@ -14,6 +14,7 @@
         var settledWayDictId = 8;
         var hosTypeDictId =  62;
         var ascriptionTypeDictId =  63;
+        var zxyDictId = 70;
         // 表单校验工具类
         var jValidation = $.jValidation;
 
@@ -83,28 +84,34 @@
             },
             initForm: function () {
                 var self=this;
-                this.$orgCode.ligerTextBox({width: 240});
-                this.$fullName.ligerTextBox({width: 240});
-                this.$shortName.ligerTextBox({width: 240});
-                this.$location.ligerComboBox({width: 240});
+                this.$orgCode.ligerTextBox({width: 140});
+                this.$fullName.ligerTextBox({width: 140});
+                this.$shortName.ligerTextBox({width: 140});
+                this.$location.ligerComboBox({width: 140});
 
-                this.$traffic.ligerTextBox({width: 240});
-                this.$ing.ligerTextBox({width: 240});
-                this.$lat.ligerTextBox({width: 240});
-                this.$hosType.ligerComboBox({width: 240});
-                this.$phone.ligerTextBox({width: 240});
-                this.$introduction.ligerTextBox({width: 644,height:100,padding:10});
-                this.$levelId.ligerTextBox({width: 240});
-                this.$legalPerson.ligerTextBox({width: 240});
-                this.$parentHosId.ligerTextBox({width: 240});
-                this.$zxy.ligerTextBox({width: 240});
-
+                this.$traffic.ligerTextBox({width: 140});
+                this.$ing.ligerTextBox({width: 140});
+                this.$lat.ligerTextBox({width: 140});
+                this.$hosType.ligerComboBox({width: 140});
+                this.$phone.ligerTextBox({width: 140});
+                this.$introduction.ligerTextBox({width: 396,height:104,padding:10});
+                this.$levelId.ligerTextBox({width: 140});
+                this.$legalPerson.ligerTextBox({width: 140});
+//                this.$parentHosId.ligerTextBox({width: 140});
+                this.$zxy.ligerComboBox({width: 140});
+                this.$orgType.ligerComboBox({width:140});
+                this.$ascriptionType.ligerComboBox({width:140});
+                this.$settledWay.ligerComboBox({width:140});
 
 
                 this.initDDL(orgTypeDictId,this.$orgType);
                 this.initDDL(settledWayDictId,this.$settledWay);
                 this.initDDL(hosTypeDictId,this.$hosType);
                 this.initDDL(ascriptionTypeDictId,this.$ascriptionType);
+                this.initDDL(zxyDictId,this.$zxy);
+
+                var url = '${contextRoot}/deptMember/getOrgList';
+                this.$parentHosId.customCombo(url);
 
                 this.$form.attrScan();
                 /*todo 20160704 cyc*/
@@ -120,9 +127,9 @@
                     {name: '街道', maxlength: 200}
                 ]});
 
-                this.$admin.ligerTextBox({width: 240, height:28});
-                this.$tags.ligerTextBox({width: 240, height:28});
-                this.$tel.ligerTextBox({width: 240, height:28});
+                this.$admin.ligerTextBox({width: 140, height:28});
+                this.$tags.ligerTextBox({width: 140, height:28});
+                this.$tel.ligerTextBox({width: 140, height:28});
                 this.$tel.removeClass('l-text-field-number');
             },
             initDDL: function (dictId, target) {
@@ -253,13 +260,16 @@
                             if(returndata != "fail"){
                                 $('#logoUrl').val(returndata);
                                 self.$logoUrl.val(returndata);
-                                alert("上传成功");
+                                win.parent.$.Notice.success('上传成功');
+//                                alert("上传成功");
                             }else{
-                                alert("上传失败");
+//                                alert("上传失败");
+                                win.parent.$.Notice.success('上传失败');
                             }
                         },
                         error: function (returndata) {
-                            alert("上传失败");
+//                            alert("上传失败");
+                            win.parent.$.Notice.success('上传失败');
                         }
                     });
                 }

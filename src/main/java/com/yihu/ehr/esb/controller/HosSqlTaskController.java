@@ -6,9 +6,9 @@ import com.yihu.ehr.agModel.esb.HosSqlTaskModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by yww on 2016/5/13.

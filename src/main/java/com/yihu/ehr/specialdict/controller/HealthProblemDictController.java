@@ -3,26 +3,27 @@ package com.yihu.ehr.specialdict.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.HealthProblemDictModel;
 import com.yihu.ehr.agModel.specialdict.HpIcd10RelationModel;
-import com.yihu.ehr.agModel.specialdict.Icd10IndicatorRelationModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yww on 2016/4/20.

@@ -96,8 +96,6 @@
                         parms: {
                             searchNm: '',
                             status: '',
-                            page:1,
-                            rows:15
                         },
                         columns: [
 							{ display: '卡号',name: 'cardNo', width: '10%',isAllowHide: false},
@@ -161,7 +159,7 @@
 						if(mode == 'new'){title = '新增就诊卡信息';};
 						if(mode == 'view'){title = '查看就诊卡信息';}
                         master.medicalCardsInfoDialog = $.ligerDialog.open({
-                            height:640,
+                            height:580,
                             width: 600,
                             title : title,
                             isHidden: false,

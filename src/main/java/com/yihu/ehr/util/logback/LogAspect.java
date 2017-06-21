@@ -1,10 +1,6 @@
 package com.yihu.ehr.util.logback;
 
 import com.google.gson.Gson;
-import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -14,7 +10,6 @@ import org.aspectj.lang.annotation.Before;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -25,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,21 +30,12 @@ import java.util.Map;
 @Component
 public class LogAspect {
     private static Logger logger = LoggerFactory.getLogger(LogAspect.class);
-    private String requestPath; // 请求地址
-    private String operationPath;//操作地址(去掉项目部署名称的地址)
-    private String userName; // 用户名
-    private String function; // 操作页面名称
-    private String operation;// 操作内容（增、删、改、查、导入）
+    private String requestPath = null; // 请求地址
+    private String userName = null; // 用户名
     private Map<?, ?> inputParamMap = null; // 传入参数
     private Map<String, Object> outputParamMap = null; // 存放输出结果
     private long startTimeMillis = 0; // 开始时间
     private long endTimeMillis = 0; // 结束时间
-    @Value("${service-gateway.username}")
-    private String username;
-    @Value("${service-gateway.password}")
-    private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
 
     /**
      * @param joinPoint
@@ -101,35 +86,7 @@ public class LogAspect {
         // 获取输入参数
         inputParamMap = request.getParameterMap();
         // 获取请求地址
-        requestPath = request.getRequestURL().toString();
-        //获取操作地址
-        operationPath = request.getServletPath();
-        if (StringUtils.isNotBlank(operationPath)) {
-            //调用接口查询url对应的菜单
-            Object obj = appFeatureFindUrl(operationPath);
-
-            Gson gson = new Gson();
-            Envelop envelop = gson.fromJson(obj.toString(), Envelop.class);
-            List<Object> appFeatureList = envelop.getDetailModelList();
-            if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(appFeatureList)) {
-                Map<Object, Object> objectMap = (Map<Object, Object>) appFeatureList.get(0);
-                String type = (String) objectMap.get("type");
-                if ("3".equals(type)) {
-                    operation = (String) objectMap.get("name");
-                    String parentId = Double.valueOf((Double) objectMap.get("parentId")).intValue() + "";
-                    //调用接口查询parentId对应的菜单
-                    Object obj2 = appFeatureFindParentId(parentId);
-                    Envelop envelop2 = gson.fromJson(obj2.toString(), Envelop.class);
-                    Map<Object, Object> objectMap2 = (Map<Object, Object>) envelop2.getObj();
-                    function = (String) objectMap2.get("name");
-                } else {
-                    function = (String) objectMap.get("name");
-                }
-            } else {
-                function = "";
-                operation = "";
-            }
-        }
+        requestPath = request.getRequestURI();
 
         // 执行完方法的返回值：调用proceed()方法，就会触发切入点方法执行
         outputParamMap = new HashMap<String, Object>();
@@ -152,72 +109,20 @@ public class LogAspect {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         HttpSession session = request.getSession();
         String userName = (String) session.getAttribute("loginCode");
+//        logger.info("\n user:" + userName
+//                + "  url:" + requestPath + ": op_time:" + optTime + " pro_time:" + (endTimeMillis - startTimeMillis) + "ms :"
+//                + " param:" + gson.toJson(inputParamMap) + ";" + "\n result:" + gson.toJson(outputParamMap));
 
         JSONObject data = new JSONObject();
         data.put("url", requestPath);// 调用的控制器路径
         data.put("responseTime", endTimeMillis - startTimeMillis);// 操作响应时间长
         data.put("responseCode", response.getStatus());// 调用返回结果代码 successflag = true & false
+        System.out.println(gson.toJson(outputParamMap));
         data.put("response", gson.toJson(outputParamMap));// 请求返回的结果
         data.put("appKey", "EHR");// 总支撑
         data.put("param", gson.toJson(inputParamMap)); // 请求传递的参数
-        data.put("function", function);// 操作页面名称
-        data.put("operation", operation);// 操作内容（增、删、改、查、导入）
         if (userName != null && !"".equals(userName)) {
             BusinessLogs.info(userName, data);
         }
     }
-
-    /**
-     * 根据url查询对应的菜单信息
-     *
-     * @param url
-     * @return
-     */
-    public Object appFeatureFindUrl(String url) {
-        String rqUrl = "/AppFeatureFindUrl";
-        String resultStr = "";
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-
-        StringBuffer stringBuffer = new StringBuffer();
-        if (!org.apache.commons.lang.StringUtils.isEmpty(url)) {
-            stringBuffer.append("url=" + url);
-        }
-        params.put("filters", "");
-        String filters = stringBuffer.toString();
-        if (!org.apache.commons.lang.StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + rqUrl, params, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
-        }
-
-    }
-
-    /**
-     * 根据parentId查询对应菜单信息
-     *
-     * @param parentId
-     * @return
-     */
-    public Object appFeatureFindParentId(String parentId) {
-        String url = "/appFeature/" + parentId;
-        String resultStr = "";
-        Envelop envelop = new Envelop();
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
-        }
-
-    }
-
 }

@@ -6,8 +6,8 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.resource.MRsCategory;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,7 @@ import java.util.Map;
 @RequestMapping("/rscategory")
 @Controller
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class ResourceCategoryController extends BaseUIController{
+public class ResourceCategoryController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")

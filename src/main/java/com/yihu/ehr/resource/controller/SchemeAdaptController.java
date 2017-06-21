@@ -1,15 +1,13 @@
 package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.agModel.esb.HosAcqTaskModel;
-import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.model.esb.MHosEsbMiniRelease;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.model.resource.MRsAdapterSchema;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

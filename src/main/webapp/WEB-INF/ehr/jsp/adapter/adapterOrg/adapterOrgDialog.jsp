@@ -8,14 +8,14 @@
 
     <div class="m-form-group">
         <label class="label_title">标准类别<spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control essential f-pr0">
             <input type="text" id="inp_adapterorg_type" data-type="select" class="required useTitle" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
         </div>
     </div>
 
     <div class="m-form-group">
         <label class="label_title">发布机构<spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control essential f-pr0">
             <input type="text" id="inp_adapterorg_org" data-type="select" class=" useTitle" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="org">
         </div>
     </div>

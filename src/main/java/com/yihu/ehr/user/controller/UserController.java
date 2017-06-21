@@ -1,17 +1,18 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,7 +78,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("searchUsers")
     @ResponseBody
-    public Object searchUsers(String searchNm, String searchType, int page, int rows) {
+    public Object searchUsers(String searchNm,String searchOrg, String searchType, int page, int rows) {
 
         String url = "/users";
         String resultStr = "";
@@ -86,7 +87,10 @@ public class UserController extends BaseUIController {
 
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName?" + searchNm + " g1;organization?" + searchNm + " g1;");
+            stringBuffer.append("realName"+ PageParms.LIKE + searchNm );
+        }
+        if (!StringUtils.isEmpty(searchOrg)) {
+            stringBuffer.append("organization=" + searchOrg);
         }
         if (!StringUtils.isEmpty(searchType)) {
             stringBuffer.append("userType=" + searchType);
@@ -209,8 +213,22 @@ public class UserController extends BaseUIController {
                 userModel.setUserType(userDetailModel.getUserType());
                 userModel.setOrganization(userDetailModel.getOrganization());
                 userModel.setMajor("");
+                if(null!=userDetailModel.getBirthday()&&!"".equals(userDetailModel.getBirthday())){
+                    userModel.setBirthday(userDetailModel.getBirthday());
+                }else{
+                    userModel.setBirthday(null);
+                }
+
+                userModel.setRealnameFlag(userDetailModel.getRealnameFlag());
                 userModel.setImgLocalPath("");
                 userModel.setRole(userDetailModel.getRole());
+                userModel.setProvinceId(userDetailModel.getProvinceId());
+                userModel.setProvinceName(userDetailModel.getProvinceName());
+                userModel.setCityId(userDetailModel.getCityId());
+                userModel.setCityName(userDetailModel.getCityName());
+                userModel.setAreaId(userDetailModel.getAreaId());
+                userModel.setAreaName(userDetailModel.getAreaName());
+                userModel.setStreet(userDetailModel.getStreet());
                 if(userDetailModel.getUserType().equals("Doctor")){
                     userModel.setMajor(userDetailModel.getMajor());
                 }

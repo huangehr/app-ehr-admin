@@ -49,7 +49,13 @@
 	<div class="m-form-group">
 		<label><spring:message code="lbl.user.tel"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_userTel" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="telephone"/>
+			<input type="text" id="inp_userTel" class="required useTitle validate-mobile-phone ajax"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="telephone"/>
+		</div>
+	</div>
+	<div class="m-form-group">
+		<label>现居住地:</label>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="location"  class="max-length-500" data-type="comboSelect" />
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -64,13 +70,13 @@
 			<%--<input type="text" id="inp_source" class="max-length-150 validate-special-char" data-attr-scan=""/>--%>
 		<%--</div>--%>
 	<%--</div>--%>
-	<div class="m-form-group">
-		<label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control  f-w240" id="inp_org1">
-			<input type="text" id="inp_org"  data-type="comboSelect" class="validate-org-length"
-				   data-attr-scan="organization"/>
-		</div>
-	</div>
+	<%--<div class="m-form-group">--%>
+		<%--<label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>--%>
+		<%--<div class="l-text-wrapper m-form-control f-w250" id="inp_org1">--%>
+			<%--<input type="text" id="inp_org"  data-type="comboSelect" class="validate-org-length"--%>
+				   <%--data-attr-scan="organization"/>--%>
+		<%--</div>--%>
+	<%--</div>--%>
 	<div class="m-form-group" id="inp_major_div">
 		<label><spring:message code="lbl.specialized.belong"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
@@ -79,7 +85,7 @@
 	</div>
 	<div class="m-form-group" >
 		<label >角色组:</label>
-		<div id="roleDiv" class="l-text-wrapper m-form-control essential" >
+		<div id="roleDiv" class="l-text-wrapper m-form-control essential f-pr0" >
 			<input type="text" style="color: #fff" id="jryycyc" class="required useTitle f-h28 f-w240 " required-title=<spring:message code="lbl.must.input"/> data-type="select" data-attr-scan="role">
 		</div>
 	</div>

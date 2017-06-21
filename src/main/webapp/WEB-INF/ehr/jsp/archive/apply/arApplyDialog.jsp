@@ -63,8 +63,8 @@
             </div>
         </div>
 
-        <div class="m-form-group" style="margin:10px 0px 10px 100px;">
-                <div id="btn_audit" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam"  >
+        <div class="m-form-group" style="margin:10px 0px 10px 0px;text-align: right;">
+                <div id="btn_audit" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10"  >
                     <span>通过</span>
                 </div>
                 <div id="btn_refuse" class="l-button u-btn u-btn-primary  u-btn-large f-ib f-vam"  >

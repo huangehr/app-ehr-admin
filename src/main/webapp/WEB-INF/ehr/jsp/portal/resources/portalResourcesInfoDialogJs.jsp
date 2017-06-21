@@ -130,7 +130,7 @@
 
                 //修改的点击事件
                 this.$updateDtn.click(function () {
-
+                    debugger;
                     var imgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         resourcesModel = self.$form.Fields.getValues();
@@ -143,6 +143,8 @@
                                 upload.options.formData.portalResourcesModelJsonData = encodeURIComponent(JSON.stringify(resourcesModel));
                                 upload.upload();
                                 win.reloadMasterUpdateGrid();
+
+                                update(resourcesModel);
                             } else {
                                 update(resourcesModel);
                             }
@@ -209,14 +211,17 @@
                         processData: false,
                         success: function (returndata) {
                             if(returndata != "fail"){
-                                alert("上传成功");
+//                                alert("上传成功");
+                                win.parent.$.Notice.success('上传成功');
                                 fileUrl = returndata;
                             }else{
-                                alert("上传失败");
+//                                alert("上传失败");
+                                win.parent.$.Notice.success('上传失败');
                             }
                         },
                         error: function (returndata) {
-                            alert("上传失败");
+//                            alert("上传失败");
+                            win.parent.$.Notice.success('上传失败');
                         }
                     });
                     return fileUrl;

@@ -12,12 +12,12 @@
     .div-items{width: 40%;height: 100%;float: left;border: 1px solid #dddddd;}
     .div-item-title{height: 40px;width: 100%;text-align: center;background: #f3f3f3;line-height: 40px;border-bottom:1px solid #dddddd;color:#bbbbbb;}
     .div-item-content{width: 100%;height: 128px;text-align: center}
-    .div-item{width: 33%;padding-top: 30px;height: 100%;border-right: 1px solid #dddddd;float:left;}
+    .div-item{width: 33%;height: 100%;border-right: 1px solid #dddddd;float:left;}
     .div-item:last-child{border-right:0;}
     .div-item.active{border: 2px solid #4DB2EE;}
-    .div-items  .div-item-content img{width: 42px;height: 42px;margin: 0px 20px;}
-    .div-items  .div-item-content span{font-size: 30px;vertical-align:middle;}
-    .div-items  .div-item-content .div-item-type{text-align: center;padding-top: 20px;font-size: 16px;color: #666666;}
+    .div-items  .div-item-content img{width: 30px;height: 30px;margin: 10px 5px;}
+    .div-items  .div-item-content span{font-size: 1.6vw;vertical-align:middle;font-weight: bold;}
+    .div-items  .div-item-content .div-item-type, .div-items  .div-item-content .div-item-count{text-align: center;padding-top: 10px;font-size: 16px;color: #666666;}
     .div-qsfx{color:#666666;margin:30px 20px;font-size: 16px;}
     .div-group{height: 34px;border:1px solid #dddddd;width: 212px;position: absolute;right: 20px;top: 20px;}
     .div-group .div-btn{width: 70px;height: 32px;float: left;background: #fff;color: #000;text-align: center;line-height: 32px;border-right: 1px solid #dddddd;}
@@ -28,6 +28,4 @@
     .div-analysis-title .tips{margin-right: 160px;color: red;}
     .div-analysis-title .icon{margin-right: 20px;margin-top: 16px;}
     #table_analysis{width: 100% !important;}
-	/*.l-grid-header{background: #f3f3f3;height: 80px !important;}
-	.l-grid-header-table{height: 80px;}*/
 </style>

@@ -4,9 +4,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <style>
-	.col{
-		color: blue;
-	}
+	/*.col{*/
+		/*color: blue;*/
+	/*}*/
 
 </style>
 
@@ -55,6 +55,12 @@
 		</div>
 	</div>
 	<div class="m-form-group">
+		<label>描述：</label>
+		<div class="m-form-control">
+			<textarea  class="col" readonly title="${userCards.description}" style="width:750px;">${userCards.description}</textarea>
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label>有效期起始时间：</label>
 		<div class="m-form-control">
 			<label class="col">${userCards.validityDateBegin}</label>
@@ -62,10 +68,6 @@
 		<label>有效期截止时间：</label>
 		<div class="m-form-control">
 			<label class="col">${userCards.validityDateEnd}</label>
-		</div>
-		<label>描述：</label>
-		<div class="m-form-control ">
-			<label class="col"  title="${userCards.description}">${fn:substring(userCards.description,1,10)}</label>
 		</div>
 	</div>
 
@@ -84,7 +86,7 @@
 		</div>
 		<c:if test="${userCards.auditStatus == '2'}">
 				<label>审核不通过原因：</label>
-				<div >
+				<div class="m-form-control">
 					<label class="col">${userCards.auditReason}</label>
 				</div>
 		</c:if>
@@ -93,7 +95,7 @@
 		<div class="m-form-group">
 			<label>审核：</label>
 			<div class="m-form-control ">
-					<input type="text" data-type="select" id="audit"  class="col" >
+					<input type="text" data-type="select" id="audit">
 			</div>
 
 			<div class="m-form-control " id="refuseReasonGroup" style="display: none;">
@@ -103,17 +105,15 @@
 				</div>
 			</div>
 
-			<label>原因：</label>
+			<label class="">原因：</label>
 			<div class="m-form-control ">
-				<label class="col">
-					<textarea id="otherReason" style="height: 40px;" class="f-w240 max-length-500 validate-special-char"  maxlength="500"></textarea>
-				</label>
+				<textarea id="otherReason" style="min-height: 35px;width:150px;border: 1px solid #D0D0D0;" class="max-length-500 validate-special-char"  maxlength="500"></textarea>
 			</div>
 		</div>
 
 		<div class="m-form-group f-pr my-footer">
-			<div class="m-form-control f-pa" style="right: 10px">
-				<div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+			<div class="m-form-control f-pa" style="right: 20px">
+				<div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
 					<span><spring:message code="btn.confirm"/></span>
 				</div>
 				<div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >

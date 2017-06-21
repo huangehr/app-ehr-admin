@@ -8,7 +8,7 @@
     .m-form-inline .m-form-group label{ width: 110px; }
     /*.m-form-inline .m-form-group { margin-top: 10px; }*/
     .m-form-inline .m-form-group { padding-bottom: 5px; }
-    .u-upload-img{ position: absolute; left: 400px; }
+    .u-upload-img{ position: absolute; left: 470px; }
     .u-public-manage{ text-align: center; margin:3px; display:none; }
     /*.u-btn-cancel{ margin-bottom: 10px; }*/
     .u-btn-color{ background: #4bb941; }

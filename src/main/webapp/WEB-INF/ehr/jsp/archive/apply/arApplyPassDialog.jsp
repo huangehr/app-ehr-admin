@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div id="div_std_info_form" data-role-form class="m-form-inline f-mt20 f-ml26" data-role-form>
-    <h3 style="margin:0px 0 18px 40%;font-weight: bold;font-size:35px;">明细 - 审批已通过</h3>
+    <h3 style="margin:0px 0 18px 40%;font-size:20px;">明细 - 审批已通过</h3>
     <div class="div-apply-msg f-audit-fw100 f-fl">
 
         <fieldset class="fie-bd">

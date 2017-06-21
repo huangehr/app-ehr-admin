@@ -2,9 +2,11 @@ package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
 import jxl.Cell;
 import jxl.Workbook;
 import jxl.write.Label;
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.util.*;
@@ -60,11 +63,14 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/searchResourceData")
     @ResponseBody
-    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows) {
+    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows,HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String url = "/resources/ResourceBrowses/getResourceData";
+        //当前用户机构
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        params.put("orgCode", userDetailModel.getOrganization());
         params.put("resourcesCode", resourcesCode);
         params.put("queryCondition", searchParams);
         params.put("page", page);

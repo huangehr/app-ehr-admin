@@ -36,6 +36,7 @@
 			$btnCancel: $("#btn_cancel"),
             $jryycyc:$("#jryycyc"),//cyctodo
             $icon:$("#inp_app_icon"),
+            $inpFileIcon:$("#inp_file_icon"),
             $releaseFlag: $('input[name="releaseFlag"]', this.$form),
             init: function () {
                 this.cycToDo()//复制完记得删掉阿亮
@@ -52,12 +53,12 @@
                 this.$tags.ligerTextBox({width:240});
 				this.$code.ligerTextBox({width:240});
 
-				this.$icon.ligerTextBox({width:240});
+				this.$icon.ligerTextBox({width:190});
                 this.$releaseFlag.ligerRadio();
 				this.$appId.ligerTextBox({width:240});
 				this.$secret.ligerTextBox({width:240});
-				this.$url.ligerTextBox({width:240, height: 50 });
-                this.$description.ligerTextBox({width:240, height: 120 });
+				this.$url.ligerTextBox({width:240});
+                this.$description.ligerTextBox({width:240, height: 50 });
                 var mode = '${mode}';
 				if(mode != 'view'){
 					$(".my-footer").show();
@@ -111,6 +112,13 @@
             },
             bindEvents: function () {
                 var self = this;
+                $(".l-text-wrapper").on("click",function(){//解决样式不兼容问题
+                   if($(this).find("#jryycyc").length>0){
+                        $(".l-box-select-inner").css("height","240px");
+                    }else{
+                        $(".l-box-select-inner").css("height","auto");
+                    }
+                });
                 var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
                     onElementValidateForAjax:function(elm){
                         var field = $(elm).attr('id');
@@ -174,6 +182,41 @@
                 this.$btnCancel.click(function () {
 					win.closeDialog();
                 });
+
+                //change事件
+                this.$inpFileIcon.on( 'change', function () {
+                    var url = '${contextRoot}/app/appIconFileUpload';
+                    self.$icon.val(doUpload(url));
+                });
+
+                function doUpload(url) {
+                    var formData = new FormData($( "#uploadForm" )[0]);
+                    var fileUrl;
+                    $.ajax({
+                        url: url ,
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (returndata) {
+                            if(returndata != "fail"){
+//                                alert("上传成功");
+                                win.parent.$.Notice.success('上传成功');
+                                fileUrl = returndata;
+                            }else{
+//                                alert("上传失败");
+                                win.parent.$.Notice.success('上传失败');
+                            }
+                        },
+                        error: function (returndata) {
+//                            alert("上传失败");
+                            win.parent.$.Notice.success('上传失败');
+                        }
+                    });
+                    return fileUrl;
+                };
             },
             cycToDo:function(){
                 var treeData;

@@ -11,9 +11,9 @@
         $(function () {
             var Util = $.Util;
             var openedDialog;
-            var appId = '${dataModel}';
+            var p = '${dataModel}';
             var contentH = $('.l-layout-center').height();
-            var parms = {appId:appId};
+            var parms = {"appId":p};
             var urls = {
                 gotoModify: '${contextRoot}/app/api/gotoModify',
                 tree: '${contextRoot}/app/api/tree',
@@ -22,7 +22,12 @@
                 apiEdit: "${contextRoot}/app/api/edit",
                 existence: "${contextRoot}/app/api/existence"
             };
-
+			var initSub = function () {
+                $('#btn_back').click(function () {
+                    $('#contentPage').empty();
+                    $('#contentPage').load('${contextRoot}/app/initial', {dataModel: 1});
+                });
+            }();
             function searchParent(searchDoms){
                 var parent = [], p = null;
                 $.each(searchDoms, function (i, v) {
@@ -33,7 +38,6 @@
                 if(parent.length>0)
                     searchParent(parent);
             }
-
             var master = {
                 tree: undefined,
                 dialog: undefined,

@@ -3,7 +3,7 @@
 
 <style>
 
-    .m-form-inline .m-form-group label{ width: 130px;}
+    .m-form-inline .m-form-group label{ width: 100px;}
     .u-public-manage{ text-align: center; margin:3px; display:none; }
     .u-btn-color{ background: #4bb941; }
     .txt-public-content{ width:389px; height: 120px; }
@@ -21,8 +21,7 @@
     .m-combo-dropdown>.m-input-box{ margin-top: -1px;margin-left: -1px }
     .m-combo-dropdown .u-dropdown-icon{ margin-top: -1px;margin-right: -1px }
 	.u-select-tab a{line-height:13px;  }
-	.pane-attribute-toolbar{ display: block;  position: absolute;  bottom: 0;  left: 0;  width: 100%;  height: 50px;  padding: 6px 0 4px;  background-color: #fff; text-align: left;  }
-	.save-toolbar{  margin-left: 360px;  }
+	.pane-attribute-toolbar{ display: block;  position: absolute;  bottom: 0;  left: 0;  width: 100%;  height: 50px;  padding: 6px 0 4px;  background-color: #fff; text-align: right;  }
     .div-aptitude-manager-show{ margin-top: 40px;width: 100px; }
     .u-image-btn{ bottom: 55px; margin-top: 6px; }
     .f-ml130{ margin-left: 130px; bottom: 40px; }
@@ -72,4 +71,19 @@
 	.list-tit{
 		margin: 15px 10px 10px 10px !important;
 	}
+	.one-text-b{
+		width: 395px;
+	    padding: 10px;
+	    border-width: 1px;
+	    border-style: solid;
+	    border-color: rgb(208, 208, 208);
+	    border-image: initial;
+    }
+    .f-w395{width: 395px;}
+    .l-text-field{width: 138px;}
+    .clear{clear: both;}
+    .f-w507{width: 507px;}
+    #uploader .statusBar{border: none !important; position: absolute !important; top: -58px; right: 50px; width: 121px; height: 40px;}
+    .list-title{padding: 0 0 10px 30px; font-size: 16px; font-weight: 600; border-bottom: 1px solid #ccc; color: #777;height: 50px;line-height: 50px;margin: 10px 10px 0 10px;}
+    .u-select-title{width:146px;}
 </style>

@@ -2,10 +2,8 @@ package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.util.controller.BaseUIController;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;

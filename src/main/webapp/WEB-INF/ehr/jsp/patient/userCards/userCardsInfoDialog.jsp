@@ -43,7 +43,7 @@
 
 	<div class="m-form-group">
 		<label>卡类别</label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_card_type" class="required"
 				   data-type="select"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="cardType"/>
 		</div>
@@ -92,7 +92,7 @@
 
 	<div class="m-form-group" style="padding-bottom: 60px;">
 		<label>卡状态<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_status" data-type="select" class="required" data-attr-scan="status"/>
 		</div>
 	</div>

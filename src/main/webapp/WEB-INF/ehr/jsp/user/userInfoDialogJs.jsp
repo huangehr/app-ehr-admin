@@ -38,6 +38,7 @@
             $idCardCopy: $('#idCardCopy'),
             $emailCopy: $('#emailCopy'),
             $tel2: $('#inp_userTel2'),
+            $location: $('#location'),
             $fertilityStatus: $('#inp_fertilityStatus'),
             $qq: $('#inp_qq'),
             $micard: $('#inp_micard'),
@@ -51,7 +52,7 @@
             $idCard: $('#inp_idCard'),
             $email: $('#inp_userEmail'),
             $tel: $('#inp_userTel'),
-            $org: $('#inp_org'),
+//            $org: $('#inp_org'),
             $major: $('#inp_major'),
 //            $source:$('#inp_source'),
             $userSex: $('input[name="gender"]', this.$form),
@@ -148,22 +149,22 @@
                 this.$tel2.ligerTextBox({width: 240});
                 this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
 
-                this.$org.addressDropdown({
-                    tabsData: [
-                        {name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
-                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',
-                            beforeAjaxSend: function (ds, $options) {
-                                var province = $options.eq(0).attr('title'),
-                                        city = $options.eq(1).attr('title');
-                                ds.params = $.extend({}, ds.params, {
-                                    province: province,
-                                    city: city
-                                });
-                            }
-                        }
-                    ]
-                });
+                <%--this.$org.addressDropdown({--%>
+                    <%--tabsData: [--%>
+                        <%--{name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},--%>
+                        <%--{name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},--%>
+                        <%--{name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',--%>
+                            <%--beforeAjaxSend: function (ds, $options) {--%>
+                                <%--var province = $options.eq(0).attr('title'),--%>
+                                        <%--city = $options.eq(1).attr('title');--%>
+                                <%--ds.params = $.extend({}, ds.params, {--%>
+                                    <%--province: province,--%>
+                                    <%--city: city--%>
+                                <%--});--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--]--%>
+                <%--});--%>
                 this.$major.ligerTextBox({width: 240});
 //                this.$source.ligerTextBox({width: 240});
                 this.$userSex.ligerRadio();
@@ -204,7 +205,7 @@
                     onSuccess: function () {
                         self.$form.Fields.fillValues({userType: user.userType});
                         self.$userType.parent().removeClass('l-text-focus')
-//                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
+                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
                     },
                     onSelected: function (value) {
                         if (value == 'Doctor')
@@ -241,7 +242,7 @@
                         gender: user.gender,
                         email: user.email,
                         telephone: user.telephone,
-                        organization: [user.province, user.city, user.organization],
+//                        organization: [user.province, user.city, user.organization],
                         major: user.major,
                         publicKey: user.publicKey,
                         validTime: user.validTime,
@@ -267,6 +268,24 @@
                     self.$publicKeyStartTime.html(user.startTime);
                     self.$idCardCopy.val(user.idCardNo);
                     self.$emailCopy.val(user.email);
+                    this.$location.ligerComboBox({width: 240});
+                    this.$location.addressDropdown({
+                        tabsData: [
+                            {
+                                name: '省份',
+                                code: 'id',
+                                value: 'name',
+                                url: '${contextRoot}/address/getParent',
+                                params: {level: '1'}
+                            },
+                            {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                            {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                            {name: '街道', maxlength: 200}
+                        ]
+                    });
+                    setTimeout(function(){
+                        self.$form.Fields.location.setValue([user.provinceName, user.cityName, user.areaName, user.street]);
+                    },500);
 
                     var pic = user.imgRemotePath;
                     if (!Util.isStrEmpty(pic)) {
@@ -331,13 +350,46 @@
 
                 //修改用户的点击事件
                 this.$updateUserDtn.click(function () {
-
+                    debugger
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
+                        var location = self.$form.Fields.location.val()==""?"":JSON.parse(self.$location.val());
+                        if(location!=""){
+                            var keys = location.keys;
+                            var names = location.names;
+                            if(keys.length==1){//省
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                            }
+                            if(keys.length==2){//省、市
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                            }
+                            if(keys.length==3){//省、市、县
+                                userModel.provinceId =parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                                userModel.areaId = parseInt(keys[2]);
+                                userModel.areaName = names[2];
+                            }
+                            if(keys.length==4){//省、市、县、街道
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                                userModel.areaId = parseInt(keys[2]);
+                                userModel.areaName = names[2];
+                                userModel.street = keys[3];
+                            }
+                        }
+                        delete userModel.location;
 						userModel.role = userInfo.roleIds(userModel.role);
-                        var organizationKeys = userModel.organization['keys'];
-                        userModel.organization = organizationKeys[2];
+//                        var organizationKeys = userModel.organization['keys'];
+//                        userModel.organization = organizationKeys[2];
                         if (userImgHtml == 0) {
                             updateUser(userModel);
                         } else {
@@ -358,6 +410,7 @@
                 });
 
                 function updateUser(userModel) {
+                    debugger
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUser", {

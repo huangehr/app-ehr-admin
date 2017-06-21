@@ -6,12 +6,12 @@ import com.yihu.ehr.agModel.patient.UserCardsModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,7 +62,7 @@ public class UserCardsController extends BaseUIController {
         String envelopStr = "";
         try{
             if (!StringUtils.isEmpty(id)) {
-                String url = "/userCards/get";
+                String url = "/patientCards/apply";
                 Map<String, Object> par = new HashMap<>();
                 par.put("id", id);
                 envelopStr = HttpClientUtil.doGet(comUrl + url,par, username, password);

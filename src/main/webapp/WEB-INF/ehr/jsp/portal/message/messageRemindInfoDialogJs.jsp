@@ -118,7 +118,7 @@
                                 win.reloadMasterUpdateGrid();
                                 $.Notice.success('修改成功');
                             } else {
-                                $.Notice.error('修改失败');
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })

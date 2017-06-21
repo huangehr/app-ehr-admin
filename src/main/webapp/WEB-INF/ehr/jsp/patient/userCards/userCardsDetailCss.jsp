@@ -2,6 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <style>
-
+.m-form-group .col{border: 1px solid #D0D0D0;text-align: left !important;}
+.m-form-inline .m-form-group .l-text-wrapper{padding: 0;}
 </style>
 

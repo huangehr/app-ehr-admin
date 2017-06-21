@@ -3,8 +3,6 @@ package com.yihu.ehr.apps.controller;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppApiModel;
-import com.yihu.ehr.agModel.app.AppApiParameterModel;
-import com.yihu.ehr.agModel.app.AppApiResponseModel;
 import com.yihu.ehr.apps.model.AppFeatureTree;
 import com.yihu.ehr.apps.service.AppApiService;
 import com.yihu.ehr.common.utils.EnvelopExt;
@@ -58,33 +56,32 @@ public class AppApiController extends ExtendController<AppApiService> {
         return "pageView";
     }
 
-
     @RequestMapping("/tree")
     @ResponseBody
     public Object tree(String appId, String appName) {
 
+        List<AppApiModel> ls;
+
         try {
-            List<AppApiModel> ls = search(new PageParms( "+parentId", 999, 1).addNotEqual("type", "1").addEqual("appId",appId));
+            if(StringUtils.isEmpty(appId)){
+                ls  = search(new PageParms( "+parentId", 999, 1).addNotEqual("type", "1"));
+            }else{
+                ls = search(new PageParms( "+parentId", 999, 1).addNotEqual("type", "1").addEqual("appId",appId));
+            }
+
             Map<Integer, AppFeatureTree> map = new HashMap<>();
-//            map.put(0, new AppFeatureTree(0, "全部应用", "", -1, "-1", ""));
-            int parentId = 0;
+            map.put(0, new AppFeatureTree(0, "全部应用", "", -1, "-1", ""));
             for(AppApiModel model : ls){
-                if(model.getParentId() > 0){
-                    map.put(model.getId(), new AppFeatureTree(
-                            model.getId(), model.getName(), model.getDescription(), model.getParentId(), model.getType(), model.getAppId()) );
-                }else{
-                    parentId = model.getId();
-                    map.put(parentId, new AppFeatureTree(0, model.getName(), "", -1, "-1", ""));
-                }
+                map.put(model.getId(), new AppFeatureTree(
+                        model.getId(), model.getName(), model.getDescription(), model.getParentId(), model.getType(), model.getAppId()) );
             }
             AppFeatureTree p;
             for(AppFeatureTree model : map.values()){
-                p = map.get(model.getParentId());
-                if( p != null)
+                if((p=map.get(model.getParentId()))!=null)
                     p.addChild(model);
             }
             List rs = new ArrayList<>();
-            rs.add(map.get(parentId));
+            rs.add(map.get(0));
             Envelop envelop = new Envelop();
             envelop.setDetailModelList(rs);
             return toJson(envelop);

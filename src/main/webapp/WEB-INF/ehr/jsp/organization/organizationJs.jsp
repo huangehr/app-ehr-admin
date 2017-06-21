@@ -36,6 +36,7 @@
                 $location: $('#inp_orgArea'),
 
                 addOrgInfoDialog: null,
+                orgDataGrantDialog:null,
 
                 init: function () {
                     this.initDDL(settledWayDictId, this.$settledWay);
@@ -54,9 +55,9 @@
                             },
                             {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
                             {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'}
-                        ]
+                        ],
+                        placeholder:"请选择地区"
                     });
-
                     this.bindEvents();
 
                     this.$element.show();
@@ -87,8 +88,8 @@
                     });
                     self.$newRecordBtn.click(function () {
                         self.addOrgInfoDialog = $.ligerDialog.open({
-                            height: 600,
-                            width: 1000,
+                            height: 580,
+                            width: 1050,
                             title: '新增机构信息',
                             url: '${contextRoot}/organization/dialog/create'
                         })
@@ -110,12 +111,12 @@
                             district: ''
                         },
                         columns: [
-                            {display: '机构类型', name: 'orgTypeName', width: '8%', align: "left"},
-                            {display: '机构代码', name: 'orgCode', width: '9%', align: "left"},
+                            {display: '机构类型', name: 'orgTypeName', width: '6%', align: "left"},
+                            {display: '机构代码', name: 'orgCode', width: '8%', align: "left"},
                             {display: '机构全名', name: 'fullName', width: '15%', align: "left"},
-                            {display: '联系人', name: 'admin', width: '8%', align: "left"},
+                            {display: '联系人', name: 'admin', width: '7%', align: "left"},
                             {display: '联系方式', name: 'tel', width: '8%', align: "left"},
-                            {display: '机构地址', name: 'locationStrName', width: '20%', align: "left"},
+                            {display: '机构地址', name: 'locationStrName', width: '18%', align: "left"},
                             {
                                 display: '是否生/失效',
                                 name: 'activityFlagName',
@@ -135,7 +136,7 @@
                             },
                             {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '24%', render: function (row) {
+                                display: '操作', name: 'operator', width: '30%', render: function (row) {
                                 var html = '';
                                 html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName) + '">部门管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
@@ -156,7 +157,7 @@
                             var wait = $.Notice.waitting("请稍后...");
                             row.orgInfoDialog = $.ligerDialog.open({
                                 height: 600,
-                                width: 1000,
+                                width: 1050,
                                 title: '机构基本信息',
                                 url: '${contextRoot}/organization/dialog/orgInfo',
                                 load: true,
@@ -221,7 +222,7 @@
                         self.orgInfoDialog = $.ligerDialog.open({
                             isHidden: false,
                             height: 600,
-                            width: 1000,
+                            width: 1050,
                             title: title,
                             url: '${contextRoot}/organization/dialog/orgInfo',
                             load: true,

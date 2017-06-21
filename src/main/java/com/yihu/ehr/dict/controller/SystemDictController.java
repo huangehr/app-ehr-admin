@@ -6,9 +6,9 @@ import com.yihu.ehr.agModel.dict.SystemDictModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 

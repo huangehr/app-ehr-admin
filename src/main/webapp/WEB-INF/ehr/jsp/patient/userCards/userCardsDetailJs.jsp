@@ -40,9 +40,9 @@
             },
 
             initDDL: function (dictId, target) {
-                var width = '100';
+                var width = '150';
                 if(dictId==69){
-                    width = '200';
+                    width = '150';
                 }
                 var target = $(target);
                 var dataModel = $.DataModel.init();
@@ -65,6 +65,7 @@
                     var auditVal = $("#audit_val").val();
                     if(auditVal==2){
                         $("#refuseReasonGroup").css('display','block');
+                        $("#refuseReasonGroup").find("#reason");
                     }
                     if(auditVal==1){
                         $("#refuseReasonGroup").css('display','none');
@@ -77,6 +78,7 @@
                     var reasonVal = $("#reason_val").val();
                     var otherResonVal = $("#otherReason").val();
                     reasonTxt = otherResonVal;
+                    debugger;
                     if(auditVal=='' || auditVal==undefined){
                         $.Notice.error('审核不能为空');
                         return;
@@ -136,9 +138,7 @@
                     parms: {
                         name: name,
                         idCardNo: idCardNo,
-                        cardNo: cardNo,
-                        page:1,
-                        rows:15
+                        cardNo: cardNo
                     },
                     columns: [
                         { display: '机构编码',name: 'orgCode', width: '8%',isAllowHide: false},
@@ -173,6 +173,7 @@
                         }
                     ],
                     pageSize:20,
+                    width:900,
                     enabledSort:true,
                     enabledEdit: true,
                     validate : true,

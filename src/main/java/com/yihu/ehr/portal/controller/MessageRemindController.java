@@ -8,10 +8,9 @@ import com.yihu.ehr.agModel.portal.MessageRemindModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

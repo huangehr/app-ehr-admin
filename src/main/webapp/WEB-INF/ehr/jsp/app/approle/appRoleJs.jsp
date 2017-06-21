@@ -55,6 +55,7 @@
                         async: false,
                         columns: [{display: '应用名称', name: 'name', width: '100%'}],
                         onSelectRow: function (data) {
+                            debugger;
                             self.reloadAppRoleGrid("appRoleGroup", appRoleId = data.id, "");
                         },
                         onAfterShowData: function (data) {
@@ -72,9 +73,8 @@
                             {display: '描述', name: 'description', width: '25%'},
                             {
                                 display: '操作', name: 'operator', width: '35%', render: function (row) {
-                                var html = '<sec:authorize url="/appRole/feature"><a class="label_a" title="权限配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'featrueConfig') + '>权限配置</a>&nbsp;&nbsp;</sec:authorize>';
-                                html += '<sec:authorize url="/appRole/appUser"><a class="label_a" title="人员配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appUsers') + '>人员配置</a>&nbsp;&nbsp;</sec:authorize>';
-                                html += '<sec:authorize url="/appRole/app"><a class="label_a" title="接入应用" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appInsert') + '>应用接入</a></sec:authorize>';
+                                var html = '<sec:authorize url="/appRole/feature"><a class="label_a" title="API配置" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'featrueConfig') + '>API配置</a>&nbsp;&nbsp;</sec:authorize>';
+                                html += '<sec:authorize url="/appRole/app"><a class="label_a" title="接入应用" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", JSON.stringify(row), 'appInsert') + '>应用配置</a></sec:authorize>';
                                 html += '<sec:authorize url="/appRole/saveAppRoleGroup"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'edit') + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/appRole/deleteAppRoleGroup"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:roles", row.id, 'delete') + '"></a></sec:authorize>';
                                 return html;
@@ -90,6 +90,7 @@
                     self.clicks();
                 },
                 reloadAppRoleGrid: function (type, appRoleId, searchParams) {
+                    debugger;
                     if (Util.isStrEquals(type, "appRole")){
                         searchParams = {searchNm:searchParams,gridType:type};
                     }else{

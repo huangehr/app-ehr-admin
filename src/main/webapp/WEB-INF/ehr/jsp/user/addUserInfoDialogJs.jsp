@@ -43,7 +43,7 @@
             $idCard: $('#inp_idCard'),
             $userEmail: $('#inp_userEmail'),
             $userTel: $('#inp_userTel'),
-            $org: $('#inp_org'),
+//            $org: $('#inp_org'),
             $major: $('#inp_major'),
 //            $source: $('#inp_source'),
             $sex: $('input[name="gender"]', this.$form),
@@ -54,6 +54,7 @@
             $cancelBtn: $("#div_cancel_btn"),
             $imageShow: $("#div_file_list"),
 			$jryycyc:$("#jryycyc"),//cyctodo
+            $location: $('#location'),
 
             init: function () {
                 var self = this;
@@ -79,6 +80,7 @@
                         win.parent.closeAddUserInfoDialog(function () {
                         });
                 });
+
             },
             initForm: function () {
                 this.$loginCode.ligerTextBox({width: 240});
@@ -88,33 +90,34 @@
                 this.$userTel.ligerTextBox({width: 240});
                 this.$major.ligerTextBox({width: 240});
                 this.$sex.ligerRadio();
-                this.$org.addressDropdown({
-                    tabsData: [
-                        {
-                            name: '省份',
-                            code: 'id',
-                            value: 'name',
-                            url: '${contextRoot}/address/getParent',
-                            params: {level: '1'}
-                        },
-                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {
-                            name: '医院',
-                            code: 'orgCode',
-                            value: 'fullName',
-                            url: '${contextRoot}/address/getOrgs',
-                            beforeAjaxSend: function (ds, $options) {
-                                var province = $options.eq(0).attr('title'),
-                                        city = $options.eq(1).attr('title');
-                                ds.params = $.extend({}, ds.params, {
+                <%--this.$org.addressDropdown({--%>
+                    <%--width:260,--%>
+                    <%--tabsData: [--%>
+                        <%--{--%>
+                            <%--name: '省份',--%>
+                            <%--code: 'id',--%>
+                            <%--value: 'name',--%>
+                            <%--url: '${contextRoot}/address/getParent',--%>
+                            <%--params: {level: '1'}--%>
+                        <%--},--%>
+                        <%--{name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},--%>
+                        <%--{--%>
+                            <%--name: '医院',--%>
+                            <%--code: 'orgCode',--%>
+                            <%--value: 'fullName',--%>
+                            <%--url: '${contextRoot}/address/getOrgs',--%>
+                            <%--beforeAjaxSend: function (ds, $options) {--%>
+                                <%--var province = $options.eq(0).attr('title'),--%>
+                                        <%--city = $options.eq(1).attr('title');--%>
+                                <%--ds.params = $.extend({}, ds.params, {--%>
 
-                                    province: province,
-                                    city: city
-                                });
-                            }
-                        }
-                    ]
-                });
+                                    <%--province: province,--%>
+                                    <%--city: city--%>
+                                <%--});--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--]--%>
+                <%--});--%>
                 var select_marriage = this.$inp_select_marriage.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
                     valueField: 'code',
@@ -166,6 +169,21 @@
 
                 <%--});--%>
 
+                this.$location.ligerComboBox({width: 240});
+                this.$location.addressDropdown({
+                    tabsData: [
+                        {
+                            name: '省份',
+                            code: 'id',
+                            value: 'name',
+                            url: '${contextRoot}/address/getParent',
+                            params: {level: '1'}
+                        },
+                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                        {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                        {name: '街道', maxlength: 200}
+                    ]
+                });
 
                 this.$form.attrScan();
             },
@@ -187,10 +205,15 @@
                             var email = $("#inp_userEmail").val();
                             return checkDataSourceName('email', email, "该邮箱已存在");
                         }
+//                        新增用户手机号验证
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
+                            var telephone = $("#inp_userTel").val();
+                            return checkDataSourceName('telephone', telephone, "该手机号码已存在");
+                        }
 
                     }
                 });
-                //唯一性验证--账号/身份证号(字段名、输入值、提示信息）
+                //唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证
                 function checkDataSourceName(type, inputValue, errorMsg) {
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
@@ -214,11 +237,43 @@
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
 					var roles = addUserInfo.roleIds(addUser.role);
+                    var location = self.$location.val()==""?"":JSON.parse(self.$location.val());
+                    if(location!=""){
+                        var keys = location.keys;
+                        var names = location.names;
+                        if(keys.length==1){//省
+                            addUser.provinceId = parseInt(keys[0]);
+                            addUser.provinceName = names[0];
+                        }
+                        if(keys.length==2){//省、市
+                            addUser.provinceId = parseInt(keys[0]);
+                            addUser.provinceName = names[0];
+                            addUser.cityId = parseInt(keys[1]);
+                            addUser.cityName = names[1];
+                        }
+                        if(keys.length==3){//省、市、县
+                            addUser.provinceId =parseInt(keys[0]);
+                            addUser.provinceName = names[0];
+                            addUser.cityId = parseInt(keys[1]);
+                            addUser.cityName = names[1];
+                            addUser.areaId = parseInt(keys[2]);
+                            addUser.areaName = names[2];
+                        }
+                        if(keys.length==4){//省、市、县、街道
+                            addUser.provinceId = parseInt(keys[0]);
+                            addUser.provinceName = names[0];
+                            addUser.cityId = parseInt(keys[1]);
+                            addUser.cityName = names[1];
+                            addUser.areaId = parseInt(keys[2]);
+                            addUser.areaName = names[2];
+                            addUser.street = keys[3];
+                        }
+                    }
 					addUser.role = roles;
                     if (validator.validate()) {
-                        var organizationKeys = addUser.organization['keys'];
-
-                        addUser.organization = organizationKeys[2];
+//                        var organizationKeys = addUser.organization['keys'];
+//
+//                        addUser.organization = organizationKeys[2];
 //                        addUser.source = source.getValue();
                         if (userImgHtml == 0) {
                             updateUser(addUser);

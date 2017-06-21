@@ -1,10 +1,9 @@
 package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
-import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
@@ -13,7 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,24 +61,6 @@ public class resourceViewController extends BaseUIController {
         }
         return envelop.getDetailModelList();
     }
-
-//    @RequestMapping("/searchResourceData")
-//    @ResponseBody
-//    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows) {
-//        Map<String, Object> params = new HashMap<>();
-//        String resultStr = "";
-//        String url = "/resources/ResourceBrowses/getResourceData";
-//        params.put("resourcesCode", resourcesCode);
-//        params.put("queryCondition", searchParams);
-//        params.put("page", page);
-//        params.put("size", rows);
-//        try {
-//            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-//        } catch (Exception e) {
-//
-//        }
-//        return resultStr;
-//    }
 
 
     /**

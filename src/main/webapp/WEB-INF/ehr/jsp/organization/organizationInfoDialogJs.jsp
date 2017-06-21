@@ -14,6 +14,7 @@
         var orgTypeDictId = 7;
         var hosTypeDictId =  62;
         var ascriptionTypeDictId =  63;
+        var zxyDictId = 70;
 
         // 表单校验工具类
         var jValidation = $.jValidation;
@@ -88,13 +89,14 @@
                 addImg();
             },
             initForm: function () {
-                this.$orgCode.ligerTextBox({width: 240});
-                this.$fullName.ligerTextBox({width: 240});
-                this.$shortName.ligerTextBox({width: 240});
-                this.$location.ligerComboBox({width: 240});
+                this.$orgCode.ligerTextBox({width: 140});
+                this.$fullName.ligerTextBox({width: 140});
+                this.$shortName.ligerTextBox({width: 140});
+                this.$location.ligerComboBox({width: 140});
+                this.$orgType.ligerComboBox({width: 140});
 //                this.$tags.ligerTextBox({width: 240, height: 56});
-                this.$admin.ligerTextBox({width: 240, height: 28});
-                this.$tel.ligerTextBox({width: 240, height: 28});
+                this.$admin.ligerTextBox({width: 140, height: 28});
+                this.$tel.ligerTextBox({width: 140, height: 28});
                 this.$tel.removeClass('l-text-field-number');
                 this.$location.addressDropdown({
                     tabsData: [
@@ -111,22 +113,26 @@
                     ]
                 });
 
-                this.$traffic.ligerTextBox({width: 240});
-                this.$ing.ligerTextBox({width: 240});
-                this.$lat.ligerTextBox({width: 240});
-                this.$hosType.ligerComboBox({width: 240});
-                this.$ascriptionType.ligerComboBox({width: 240});
-                this.$phone.ligerTextBox({width: 240});
-                this.$introduction.ligerTextBox({width: 644,height:100,padding:10});
-                this.$levelId.ligerTextBox({width: 240});
-                this.$legalPerson.ligerTextBox({width: 240});
-                this.$parentHosId.ligerTextBox({width: 240});
-                this.$zxy.ligerTextBox({width: 240});
+                this.$traffic.ligerTextBox({width: 140});
+                this.$ing.ligerTextBox({width: 140});
+                this.$lat.ligerTextBox({width: 140});
+                this.$hosType.ligerComboBox({width: 140});
+                this.$ascriptionType.ligerComboBox({width: 140});
+                this.$phone.ligerTextBox({width: 140});
+                this.$introduction.ligerTextBox({width: 396,height:104,padding:10});
+                this.$levelId.ligerTextBox({width: 140});
+                this.$legalPerson.ligerTextBox({width: 140});
+                this.$zxy.ligerComboBox({width: 140});
+                this.$settledWay.ligerComboBox({width: 140});
 
                 this.initDDL(orgTypeDictId, this.$orgType);
                 this.initDDL(settledWayDictId, this.$settledWay);
                 this.initDDL(hosTypeDictId,this.$hosType);
                 this.initDDL(ascriptionTypeDictId,this.$ascriptionType);
+                this.initDDL(zxyDictId,this.$zxy);
+
+                var url = '${contextRoot}/deptMember/getOrgList';
+                this.$parentHosId.customCombo(url);
 
                 this.$form.attrScan();
                 var tags = '';
@@ -154,7 +160,6 @@
                     introduction:org.introduction,
                     levelId:org.levelId,
                     legalPerson:org.legalPerson,
-                    parentHosId:org.parentHosId,
                     zxy:org.zxy,
 
                     publicKey: org.publicKey,
@@ -164,6 +169,8 @@
                 this.$publicKeyMessage.val(org.publicKey);
                 this.$publicKeyValidTime.html(org.validTime);
                 this.$publicKeyStartTime.html(org.startTime);
+                $("#parentHosId").ligerGetComboBoxManager().setValue(org.parentHosId);
+                $("#parentHosId").ligerGetComboBoxManager().setText(org.parentHosName);
 
                 this.$form.Fields.location.setValue([org.province, org.city, org.district, org.street]);
 
@@ -190,7 +197,7 @@
 
                 var logoPic = org.logoUrl;
                 if (!Util.isStrEmpty(logoPic)) {
-                    this.$logoImageShow.html('<img style="width:150px;height:80px;" src="${contextRoot}/organization/showImageLogo?storagePath='+logoPic+'" ></img>');
+                    this.$logoImageShow.html('<img style="width:130px;height:80px;" src="${contextRoot}/organization/showImageLogo?storagePath='+logoPic+'" ></img>');
                 }
 
             },
@@ -311,13 +318,16 @@
                             if(returndata != "fail"){
                                 $('#logoUrl').val(returndata);
                                 self.$logoUrl.val(returndata);
-                                alert("上传成功");
+//                                alert("上传成功");
+                                win.parent.$.Notice.success('上传成功');
                             }else{
-                                alert("上传失败");
+//                                alert("上传失败");
+                                win.parent.$.Notice.success('上传失败');
                             }
                         },
                         error: function (returndata) {
-                            alert("上传失败");
+//                            alert("上传失败");
+                            win.parent.$.Notice.success('上传失败');
                         }
                     });
                 }

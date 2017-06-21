@@ -5,10 +5,10 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +28,7 @@ import java.util.Map;
 @RequestMapping("/cda")
 @Controller
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class CdaController extends BaseUIController{
+public class CdaController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -423,15 +423,16 @@ public class CdaController extends BaseUIController{
             return result;
         }
         try {
-            MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
-            conditionMap.add("data_set_ids", strDatasetIds);
-            conditionMap.add("document_Id", strCdaId);
-            conditionMap.add("version", strVersionCode);
-            conditionMap.add("xml_info", xmlInfo);
-            String url = standardUrl + "/documents/data_set_relationships";
+            Map<String,Object> conditionMap = new HashMap<>();
+            conditionMap.put("dataSetIds", strDatasetIds);
+            conditionMap.put("cdaId", strCdaId);
+            conditionMap.put("versionCode", strVersionCode);
+            conditionMap.put("xmlInfo", xmlInfo);
+            String url = comUrl + "/cda/saveRelationship";
 
             RestTemplates template = new RestTemplates();
-            String _rus = template.doPost(url, conditionMap);
+//            String _rus = template.doPost(url, conditionMap);
+            String _rus = HttpClientUtil.doPost( url, conditionMap, username, password);
 
 
             //测试

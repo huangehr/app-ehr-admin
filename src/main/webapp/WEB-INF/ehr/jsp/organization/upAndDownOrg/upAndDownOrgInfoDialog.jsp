@@ -5,7 +5,7 @@
 <div id="div_rs_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
 	<div class="m-form-group">
 		<label>机构<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
+		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_orgId"  data-type="select"  class="required useTitle ajax f-h28 f-w240"
 				   placeholder="请选择机构" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="orgId">
 		</div>

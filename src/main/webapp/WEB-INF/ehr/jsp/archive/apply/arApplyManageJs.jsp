@@ -14,6 +14,8 @@
 			var archiveGrid = null;
 			//是否第一页
 			var isFirstPage = true;
+			//获取搜索类型
+			var dialogStatus = null;
 
 			/* *************************** 函数定义 ******************************* */
 			/**
@@ -105,6 +107,7 @@
 							{display: '', name: 'userId', hide: true},
 							{display: '操作',name: 'operator', width:'10%', align:'center',render: function (row) {
 								var html="";
+								dialogStatus = row.status;
 								if(row.status==0){
 								 html = '<sec:authorize url="/correlation/validateAudit"><a href="javascript:void(0)" title="审核" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "archive:audit:update", row.status,row.id) + '">审核</a></sec:authorize>';
 								}else if(row.status==1){
@@ -116,6 +119,7 @@
 							}}
 						],onReload:function(){
 							master.reloadGrid();
+							
 						}
 					}));
 					// 自适应宽度
@@ -126,10 +130,18 @@
 					this.searchList();
 				},
 				openMsgDialog:function(status,id){
-                    var wait = $.Notice.waitting("请稍后...");
+                    var wait  = $.ligerDialog.waitting("请稍后...");
+                    var width = null;
+                    if(dialogStatus == 0){
+                    	width = 910;
+                    }else if(dialogStatus == 1){
+                    	width = 1000;
+                    }else{
+                    	width =550;
+                    }
 					master.validateDialog = $.ligerDialog.open({
 						height:640,
-						width: 1000,
+						width: width,
 						url: '${contextRoot}/archive/apply/arApplyDialog',
 						urlParms: {
 							status: status,
@@ -140,8 +152,9 @@
 						load:true,
 						show:false,
 						onLoaded:function() {
-							wait.close(),
-							master.validateDialog.show()
+							wait.close();
+							master.validateDialog.show();
+							master.reloadGrid();
 						}
 					});
 					master.validateDialog.hide();
