@@ -1,6 +1,7 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
@@ -86,7 +87,7 @@ public class UserController extends BaseUIController {
 
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName=" + searchNm );
+            stringBuffer.append("realName"+ PageParms.LIKE + searchNm );
         }
         if (!StringUtils.isEmpty(searchOrg)) {
             stringBuffer.append("organization=" + searchOrg);
