@@ -138,7 +138,7 @@
                             {
                                 display: '操作', name: 'operator', width: '30%', render: function (row) {
                                 var html = '';
-                                html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName) + '">部门管理</a></sec:authorize>';
+                                html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName,row.orgType) + '">部门管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
                                 html += '<sec:authorize url="/template/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/dialog/orgInfo"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode, 'modify') + '"></a></sec:authorize>';
@@ -264,13 +264,14 @@
                         $("#contentPage").empty();
                         $("#contentPage").load(url, {'dataModel': JSON.stringify(orgData)});
                     });
-                    $.subscribe('org:orgInfoDialog:deptMember', function (event, orgCode, orgId, orgName) {
+                    $.subscribe('org:orgInfoDialog:deptMember', function (event, orgCode, orgId, orgName,orgType) {
                         var url = '${contextRoot}/deptMember/initialDeptMember';
                         var orgData = {
                             mode:'',
                             orgCode: orgCode,
                             orgId: orgId,
-                            orgName: orgName
+                            orgName: orgName,
+                            orgType:orgType
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, orgData);

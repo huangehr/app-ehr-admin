@@ -12,6 +12,7 @@ import com.yihu.ehr.resource.controller.ResourceInterfaceController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -40,11 +41,12 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
     ObjectMapper objectMapper;
 
     @RequestMapping("initialDeptMember")
-    public String deptMemberInitial(Model model,String mode, String orgCode, String orgId, String orgName){
+    public String deptMemberInitial(Model model,String mode, String orgCode, String orgId, String orgName,String orgType){
         model.addAttribute("orgCode",orgCode);
         model.addAttribute("orgId",orgId);
         model.addAttribute("orgName",orgName);
         model.addAttribute("mode",mode);
+        model.addAttribute("orgType",orgType);
         model.addAttribute("contentPage", "/organization/deptMember/deptMember");
         return "pageView";
     }
@@ -494,7 +496,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 urlGet = "/orgDept/checkDeptName";
                 params.clear();
                 params.put("orgId",parentpModel.getOrgId());
-                params.put("name",orgDeptModel.getDeptDetail().getNationalDeptSn());
+                params.put("name",orgDeptModel.getName());
                 String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
                 Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
                 if (!envelopGet2.isSuccessFlg()){
@@ -503,11 +505,11 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
 
                 OrgDeptModel sunorgDeptModel = new OrgDeptModel();
                 sunorgDeptModel.setCode(orgDeptModel.getCode());
-                sunorgDeptModel.setName(orgDeptModel.getDeptDetail().getNationalDeptSn());
+                sunorgDeptModel.setName(orgDeptModel.getDeptDetail().getName());
                 sunorgDeptModel.setParentDeptId(Integer.valueOf(id));
                 sunorgDeptModel.setOrgId(parentpModel.getOrgId());
                 orgDeptModel.getDeptDetail().setOrgId(parentpModel.getOrgId());
-                orgDeptModel.getDeptDetail().setCode(UUID.randomUUID().toString());
+                orgDeptModel.getDeptDetail().setCode(UUID.randomUUID().toString().replace("-", ""));
                 sunorgDeptModel.setDeptDetail(orgDeptModel.getDeptDetail());
 
                 Map<String,Object> args = new HashMap<>();
@@ -517,12 +519,13 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 return envelopStr;
             } else if("modify".equals(mode)){
                 OrgDeptModel updateDeptModel = new OrgDeptModel();
-//                updateDeptModel.setCode(orgDeptModel.getDeptDetail().getCode());
+                BeanUtils.copyProperties(orgDeptModel, updateDeptModel);
+//                updateDeptModel.setCode(orgDeptModel.getCode());
                 updateDeptModel.setName(orgDeptModel.getDeptDetail().getName());
-                updateDeptModel.setDeptDetail(orgDeptModel.getDeptDetail());
+//                updateDeptModel.setDeptDetail(orgDeptModel.getDeptDetail());
 
                 Map<String,Object> args = new HashMap<>();
-                args.put("orgDeptsJsonData",objectMapper.writeValueAsString(updateDeptModel));
+                args.put("orgDeptJsonData",objectMapper.writeValueAsString(updateDeptModel));
                 String updateUrl = "/orgDept";
                 String envelopStr = HttpClientUtil.doPut(comUrl + updateUrl, args, username, password);
                 return envelopStr;
@@ -531,7 +534,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 rootDeptModel.setCode(orgDeptModel.getCode());
                 rootDeptModel.setName(orgDeptModel.getDeptDetail().getName());
                 rootDeptModel.setOrgId(orgDeptModel.getDeptDetail().getOrgId());
-                orgDeptModel.getDeptDetail().setCode(UUID.randomUUID().toString());
+                orgDeptModel.getDeptDetail().setCode(UUID.randomUUID().toString().replace("-", ""));
                 rootDeptModel.setDeptDetail(orgDeptModel.getDeptDetail());
 
                 Map<String,Object> args = new HashMap<>();
