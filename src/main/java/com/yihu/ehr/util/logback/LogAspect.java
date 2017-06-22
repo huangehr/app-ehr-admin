@@ -53,8 +53,6 @@ public class LogAspect {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     /**
      * @param joinPoint
@@ -113,7 +111,7 @@ public class LogAspect {
             Object obj = appFeatureFindUrl(operationPath);
 
             Gson gson = new Gson();
-            Envelop envelop = gson.fromJson(objectMapper.writeValueAsString(obj), Envelop.class);
+            Envelop envelop = gson.fromJson(obj.toString(), Envelop.class);
             List<Object> appFeatureList = envelop.getDetailModelList();
             if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(appFeatureList)) {
                 Map<Object, Object> objectMap = (Map<Object, Object>) appFeatureList.get(0);

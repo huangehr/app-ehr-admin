@@ -329,10 +329,9 @@
 			/* *************************** 页面初始化 **************************** */
 			pageInit();
 			/* ************************* 页面初始化结束 ************************** */
-            $MousePop.init({
+            var MousePop = $MousePop.init({
 				//添加子类
 				setAddChildFun: function ( id, me, categoryName) {
-					console.log(categoryName);
 					me.showPopWin(me,function () {
 						//确认按钮回调：返回true关闭窗口
 						var url = "${contextRoot}/deptMember/updateOrgDept",
@@ -346,30 +345,107 @@
 							$.Notice.error('编码不能为空');
 							return false;
 						}
-						me.res( url,
-								{
-									id:id,
-									mode:'new',
-									code:code,
-									name:name
-								},
-								function (data) {
-									if(data.successFlg){
-										$.Notice.success('添加成功',function () {
-                                            me.removePopWin(me);
-											pageInit();
-											return true;
-										});
-									}else{
-										$.Notice.error(data.errorMsg);
-										return false;
-									}
+						var params = {id:id,mode:'new',code:code,name:name};
+						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
+							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
+							var deptPhone = me.$popWim.find('.deptPhone').val(),
+									introduction = me.$popWim.find('.introduction').val(),
+									place = me.$popWim.find('.place').val(),
+									displayStatus = me.$popWim.find('.displayStatus').ligerComboBox().getValue(),
+									pyCode = me.$popWim.find('.pyCode').ligerComboBox().getValue();
+							var $glory = $('input[name="glory"]:checked'),glory = "";
+							$glory.each(function(index,domEle){
+								if(index==($glory.length-1)){
+									glory+=$(domEle).val()
+								}else{
+									glory+=$(domEle).val()+",";
 								}
+							});
+							var orgDeptJsonDate = JSON.stringify({orgId:$("#h_org_id").val(),code:code,name:name,
+								deptDetail:{name:name,phone:deptPhone,displayStatus:displayStatus,gloryId:glory,orgId:$("#h_org_id").val(),introduction:introduction,place:place,pyCode:pyCode}});
+							 params = {id:id,mode:'new',orgDeptJsonDate:orgDeptJsonDate};
+						}
+						me.res( url,params,function (data) {
+								if(data.successFlg){
+									$.Notice.success('添加成功',function () {
+										me.removePopWin(me);
+										pageInit();
+										return true;
+									});
+								}else{
+									$.Notice.error(data.errorMsg);
+									return false;
+								}
+							}
 						);
 					},{title: (!!categoryName ? categoryName + ' > 添加子部门' : '添加子部门')});
+
+					if( $("#h_org_type").val()=="Hospital"){//如果机构类型为医院，则添加上述信息
+						var html = [
+							'<div class="pop-form">',
+								'<label for="name">科室电话：</label>',
+								'<input id="deptPhone" class="deptPhone" type="text" value="" />',
+							'</div>',
+							'<div class="pop-form">',
+								'<label for="name">科室介绍：</label>',
+								'<input id="introduction" class="introduction" type="text" value="" />',
+							'</div>',
+							'<div class="pop-form">',
+								'<label for="name">科室位置：</label>',
+								'<input id="place" class="place" type="text" value="" />',
+							'</div>',
+							'<div class="pop-form">',
+								'<label for="name">是否显示：</label>',
+								'<input id="displayStatus" class="displayStatus" type="text" data-type="select" placeholder="请选择状态" style="height:26px;line-height: 26px;" />',
+							'</div>',
+							'<div class="pop-form">',
+								'<label for="name">科室类型：</label>',
+								'<input id="pyCode" class="pyCode" type="text" data-type="select" placeholder="请选择科室类型" style="height:26px;line-height: 26px;"/>',
+							'</div>',
+							'<div class="pop-form">',
+								'<label for="name">科室荣誉：</label>',
+								'<input type="checkbox" name="glory" value="1"/>国家重点科室',
+								'<input type="checkbox" name="glory" value="2"/>省级重点科室',
+								'<input type="checkbox" name="glory" value="3"/>医院特色专科',
+							'</div>',].join('');
+						me.$popWim.append(html);
+
+						$("#displayStatus").ligerComboBox({
+							data:[{"code":"0","value":"显示"},{"code":"1","value":"不显示"}],
+							valueField: 'code',
+							textField: 'value'
+						});
+						$("#displayStatus").parent().css({
+							width:'241'
+						}).parent().css({
+							display:'inline-block',
+							width:'238px'
+						});
+
+						$('input[name="glory"]').ligerCheckBox();
+
+						$("#pyCode").ligerComboBox({
+							data:[{"code":"1","value":"门诊科室"},{"code":"2","value":"检验科室"}],
+							valueField: 'code',
+							textField: 'value'
+						});
+						$("#pyCode").parent().css({
+							width:'241'
+						}).parent().css({
+							display:'inline-block',
+							width:'238px'
+						});
+					}
+
 				},
 				//修改名称
 				setEditNameFun: function ( id, me, categoryName) {
+					debugger
+					var editData = {};
+					var name = "修改名称";
+					if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
+						name = "修改内容";
+					}
 					me.showPopWin(me,function () {
 						//确认按钮回调：返回true关闭窗口
 						var url = "${contextRoot}/deptMember/updateOrgDept",
@@ -378,26 +454,141 @@
 							$.Notice.error('名称不能为空');
 							return false;
 						}
-						me.res( url,
-								{   id:id,
-									mode:'modify',
-									code:'',
-									name:name
-								},
-								function (data) {
-									if(data.successFlg){
-										$.Notice.success('修改成功',function () {
-											pageInit();
-                                            me.removePopWin(me);
-											return true;
-										});
-									}else{
-										$.Notice.error(data.errorMsg);
-										return false;
-									}
+						var params = {id:id,mode:'modify',code:'',name:name};
+						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
+							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
+							var deptPhone = me.$popWim.find('.deptPhone').val(),
+									introduction = me.$popWim.find('.introduction').val(),
+									place = me.$popWim.find('.place').val(),
+									displayStatus = me.$popWim.find('.displayStatus').ligerComboBox().getValue(),
+									pyCode = me.$popWim.find('.pyCode').ligerComboBox().getValue();
+							var $glory = $('input[name="glory"]:checked'),glory = "";
+							$glory.each(function(index,domEle){
+								if(index==($glory.length-1)){
+									glory+=$(domEle).val()
+								}else{
+									glory+=$(domEle).val()+",";
 								}
+							});
+							editData.name = name;
+							if(editData.deptDetail==null){
+								editData.deptDetail = {};
+							}
+							editData.deptDetail.name = name;
+							editData.deptDetail.phone = deptPhone;
+							editData.deptDetail.displayStatus = displayStatus;
+							editData.deptDetail.gloryId = glory;
+							editData.deptDetail.introduction = introduction;
+							editData.deptDetail.place = place;
+							editData.deptDetail.pyCode = pyCode;
+							var orgDeptJsonDate = JSON.stringify(editData);
+							params = {id:id,mode:'modify',orgDeptJsonDate:orgDeptJsonDate};
+						}
+
+						me.res( url,params,function (data) {
+								if(data.successFlg){
+									$.Notice.success('修改成功',function () {
+										pageInit();
+										me.removePopWin(me);
+										return true;
+									});
+								}else{
+									$.Notice.error(data.errorMsg);
+									return false;
+								}
+							}
 						);
-					},{title:(!!categoryName ? categoryName + ' > 修改名称' : '修改名称'),name:categoryName,className:'pt',classCode:'pop-f-hide'});
+					},{title:(!!categoryName ? categoryName + ' > '+name : name),name:categoryName,className:'pt',classCode:'pop-f-hide'});
+
+					if( $("#h_org_type").val()=="Hospital"){//如果机构类型为医院，则添加上述信息
+						var dataModel = $.DataModel.init();
+						dataModel.fetchRemote("${contextRoot}/deptMember/getOrgDeptByCode", {
+							data: {deptId: parseInt(id)},
+							async: false,
+							success: function (data) {
+								debugger
+								editData = data;
+								var deptDetail = data.deptDetail || {};
+								var html = [
+									'<div class="pop-form">',
+									'<label for="name">科室电话：</label>',
+									'<input id="deptPhone" class="deptPhone" type="text" value="'+(deptDetail.phone || "")+'" />',
+									'</div>',
+									'<div class="pop-form">',
+									'<label for="name">科室介绍：</label>',
+									'<input id="introduction" class="introduction" type="text" value="'+(deptDetail.introduction || "")+'" />',
+									'</div>',
+									'<div class="pop-form">',
+									'<label for="name">科室位置：</label>',
+									'<input id="place" class="place" type="text" value="'+(deptDetail.place || "")+'" />',
+									'</div>',
+									'<div class="pop-form">',
+									'<label for="name">是否显示：</label>',
+									'<input id="displayStatus" class="displayStatus" type="text" data-type="select" placeholder="请选择状态" style="height:26px;line-height: 26px;" />',
+									'</div>',
+									'<div class="pop-form">',
+									'<label for="name">科室类型：</label>',
+									'<input id="pyCode" class="pyCode" type="text" data-type="select" placeholder="请选择科室类型" style="height:26px;line-height: 26px;"/>',
+									'</div>',
+									'<div class="pop-form">',
+									'<label for="name">科室荣誉：</label>',
+									'<input type="checkbox" name="glory" value="1"/>国家重点科室',
+									'<input type="checkbox" name="glory" value="2"/>省级重点科室',
+									'<input type="checkbox" name="glory" value="3"/>医院特色专科',
+									'</div>',].join('');
+								me.$popWim.append(html);
+
+								$("#displayStatus").ligerComboBox({
+									data:[{"code":"0","value":"显示"},{"code":"1","value":"不显示"}],
+									valueField: 'code',
+									textField: 'value'
+								});
+								$("#displayStatus").parent().css({
+									width:'241'
+								}).parent().css({
+									display:'inline-block',
+									width:'238px'
+								});
+								if(deptDetail.displayStatus!=null){
+									me.$popWim.find('.displayStatus').ligerComboBox().selectValue(deptDetail.displayStatus+"");//赋值
+								}
+
+								$('input[name="glory"]').ligerCheckBox();
+								var gloryId = deptDetail.gloryId;
+								if(gloryId){
+									var gloryArr = gloryId.split(",");
+									for(var i=0;i<gloryArr.length;i++){
+										if(gloryArr[i]=="1"){
+											$('input[name="glory"]').eq(0).ligerCheckBox("setValue", "1");//赋值
+										}
+										if(gloryArr[i]=="2"){
+											$('input[name="glory"]').eq(1).ligerCheckBox("setValue", "2");//赋值
+										}
+										if(gloryArr[i]=="3"){
+											$('input[name="glory"]').eq(2).ligerCheckBox("setValue", "3");//赋值
+										}
+									}
+
+								}
+
+								$("#pyCode").ligerComboBox({
+									data:[{"code":"1","value":"门诊科室"},{"code":"2","value":"检验科室"}],
+									valueField: 'code',
+									textField: 'value'
+								});
+								$("#pyCode").parent().css({
+									width:'241'
+								}).parent().css({
+									display:'inline-block',
+									width:'238px'
+								});
+								if(deptDetail.pyCode){
+									me.$popWim.find('.pyCode').ligerComboBox().selectValue(deptDetail.pyCode);//赋值
+								}
+
+							}
+						});
+					}
 				},
 				//删除
 				setDelFun: function ( id, me) {
@@ -465,11 +656,12 @@
                 },
                 //添加父类
                 setAddParentFun: function ( id, me, categoryName) {
-                    var html = ['<div class="pop-form">',
-									'<label for="name">机构：</label>',
-								    $('#h_org_name').val(),
-//                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w150 validate-special-char" data-type="select" placeholder="请选择机构"/>',
-                                '</div>'].join('');
+					debugger
+//                    var html = ['<div class="pop-form">',
+//									'<label for="name">机构：</label>',
+//								    $('#h_org_name').val(),
+////                                    '<input id="inp_deptId" class="required useTitle f-h28 f-w150 validate-special-char" data-type="select" placeholder="请选择机构"/>',
+//                                '</div>'].join('');
                     me.showPopWin(me,function () {
 						var url = "${contextRoot}/deptMember/updateOrgDept",
 							name = me.$popWim.find('.name').val(),
@@ -487,14 +679,28 @@
 //							$.Notice.error('机构不能为空');
 //							return false;
 //						}
-						me.res( url,
-								{
-									id:orgId,
-									mode:'addRoot',
-									code:code,
-									name:name
-								},
-								function (data) {
+						var params = {id:orgId,mode:'addRoot',code:code,name:name};
+						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
+							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
+							var deptPhone = me.$popWim.find('.deptPhone').val(),
+									introduction = me.$popWim.find('.introduction').val(),
+									place = me.$popWim.find('.place').val(),
+									displayStatus = me.$popWim.find('.displayStatus').ligerComboBox().getValue(),
+									pyCode = me.$popWim.find('.pyCode').ligerComboBox().getValue();
+							var $glory = $('input[name="glory"]:checked'),glory = "";
+							$glory.each(function(index,domEle){
+								if(index==($glory.length-1)){
+									glory+=$(domEle).val()
+								}else{
+									glory+=$(domEle).val()+",";
+								}
+							});
+							var orgDeptJsonDate = JSON.stringify({orgId:$("#h_org_id").val(),code:code,name:name,
+								deptDetail:{name:name,phone:deptPhone,displayStatus:displayStatus,gloryId:glory,orgId:$("#h_org_id").val(),introduction:introduction,place:place,pyCode:pyCode}});
+							params = {id:orgId,mode:'addRoot',orgDeptJsonDate:orgDeptJsonDate};
+						}
+
+						me.res( url,params,function (data) {
 									if(data.successFlg){
 										$.Notice.success('操作成功',function () {
                                             me.removePopWin(me);
@@ -509,17 +715,77 @@
 						);
 						return true;
                     },{title:'添加根部门'});
-                    me.$popWim.append(html);
-					var inpD = $('#inp_deptId');
-					inpD.customCombo('${contextRoot}/deptMember/getOrgList');
-					inpD.parent().css({
-						width:'185'
-					}).parent().css({
-						display:'inline-block',
-						width:'185px'
-					});
+
+					if( $("#h_org_type").val()=="Hospital"){//如果机构类型为医院，则添加上述信息
+						var html = [
+							'<div class="pop-form">',
+							'<label for="name">科室电话：</label>',
+							'<input id="deptPhone" class="deptPhone" type="text" value="" />',
+							'</div>',
+							'<div class="pop-form">',
+							'<label for="name">科室介绍：</label>',
+							'<input id="introduction" class="introduction" type="text" value="" />',
+							'</div>',
+							'<div class="pop-form">',
+							'<label for="name">科室位置：</label>',
+							'<input id="place" class="place" type="text" value="" />',
+							'</div>',
+							'<div class="pop-form">',
+							'<label for="name">是否显示：</label>',
+							'<input id="displayStatus" class="displayStatus" type="text" data-type="select" placeholder="请选择状态" style="height:26px;line-height: 26px;" />',
+							'</div>',
+							'<div class="pop-form">',
+							'<label for="name">科室类型：</label>',
+							'<input id="pyCode" class="pyCode" type="text" data-type="select" placeholder="请选择科室类型" style="height:26px;line-height: 26px;"/>',
+							'</div>',
+							'<div class="pop-form">',
+							'<label for="name">科室荣誉：</label>',
+							'<input type="checkbox" name="glory" value="1"/>国家重点科室',
+							'<input type="checkbox" name="glory" value="2"/>省级重点科室',
+							'<input type="checkbox" name="glory" value="3"/>医院特色专科',
+							'</div>',].join('');
+						me.$popWim.append(html);
+
+						$("#displayStatus").ligerComboBox({
+							data:[{"code":"0","value":"显示"},{"code":"1","value":"不显示"}],
+							valueField: 'code',
+							textField: 'value'
+						});
+						$("#displayStatus").parent().css({
+							width:'241'
+						}).parent().css({
+							display:'inline-block',
+							width:'238px'
+						});
+
+						$('input[name="glory"]').ligerCheckBox();
+
+						$("#pyCode").ligerComboBox({
+							data:[{"code":"1","value":"门诊科室"},{"code":"2","value":"检验科室"}],
+							valueField: 'code',
+							textField: 'value'
+						});
+						$("#pyCode").parent().css({
+							width:'241'
+						}).parent().css({
+							display:'inline-block',
+							width:'238px'
+						});
+					}
+
+					<%--var inpD = $('#inp_deptId');--%>
+					<%--inpD.customCombo('${contextRoot}/deptMember/getOrgList');--%>
+					<%--inpD.parent().css({--%>
+						<%--width:'185'--%>
+					<%--}).parent().css({--%>
+						<%--display:'inline-block',--%>
+						<%--width:'185px'--%>
+					<%--});--%>
                 }
             });
+			if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
+				MousePop.childShowHtml = MousePop.childShowHtml.replace("修改名称","修改内容");
+			}
 
 		});
 	})(jQuery, window);
