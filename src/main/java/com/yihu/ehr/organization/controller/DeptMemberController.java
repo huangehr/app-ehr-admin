@@ -12,6 +12,7 @@ import com.yihu.ehr.resource.controller.ResourceInterfaceController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -518,12 +519,13 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 return envelopStr;
             } else if("modify".equals(mode)){
                 OrgDeptModel updateDeptModel = new OrgDeptModel();
-//                updateDeptModel.setCode(orgDeptModel.getDeptDetail().getCode());
+                BeanUtils.copyProperties(orgDeptModel, updateDeptModel);
+//                updateDeptModel.setCode(orgDeptModel.getCode());
                 updateDeptModel.setName(orgDeptModel.getDeptDetail().getName());
-                updateDeptModel.setDeptDetail(orgDeptModel.getDeptDetail());
+//                updateDeptModel.setDeptDetail(orgDeptModel.getDeptDetail());
 
                 Map<String,Object> args = new HashMap<>();
-                args.put("orgDeptsJsonData",objectMapper.writeValueAsString(updateDeptModel));
+                args.put("orgDeptJsonData",objectMapper.writeValueAsString(updateDeptModel));
                 String updateUrl = "/orgDept";
                 String envelopStr = HttpClientUtil.doPut(comUrl + updateUrl, args, username, password);
                 return envelopStr;
