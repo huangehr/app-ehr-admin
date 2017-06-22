@@ -549,8 +549,8 @@
 									display:'inline-block',
 									width:'238px'
 								});
-								if(deptDetail.displayStatus){
-									me.$popWim.find('.displayStatus').ligerComboBox().selectValue(deptDetail.displayStatus);//赋值
+								if(deptDetail.displayStatus!=null){
+									me.$popWim.find('.displayStatus').ligerComboBox().selectValue(deptDetail.displayStatus+"");//赋值
 								}
 
 								$('input[name="glory"]').ligerCheckBox();
