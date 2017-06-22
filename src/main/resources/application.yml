@@ -30,11 +30,11 @@ spring:
 app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
-  oauth2authorize: http://localhost:10260/
+  oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
-  url: http://localhost:10000/api/v1.0/admin
+  url: http://192.168.1.221:10000/api/v1.0/admin
   stdurl: http://192.168.1.221:10000/api/v1.0/admin/std
   versionurl: http://192.168.1.221:10000/api/v1.0/admin/version
   cdatypeurl: http://192.168.1.221:10000/api/v1.0/admin/cda_type
