@@ -28,6 +28,16 @@
                         <span><spring:message code="btn.create"/></span>
                     </div>
                 </sec:authorize>
+                <sec:authorize url="/ehr/template">
+                    <a href="<%=request.getContextPath()%>/template/医护人员导入模板.xls" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam"
+                       style="">
+                        下载模版
+                    </a>
+                </sec:authorize>
+
+                <sec:authorize url="/doctorImport/import">
+                    <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px" ></div>
+                </sec:authorize>
             </div>
             <%--<div id="div_new_patient" class="l-button u-btn u-btn-primary u-btn-small l-button-over">
               <span>新增</span>
