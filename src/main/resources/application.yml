@@ -1,6 +1,6 @@
 server:
   contextPath: /ehr
-  port: 8083
+  port: 8080
   sessionTimeout:  30000000
 
 multipart:
