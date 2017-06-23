@@ -5,11 +5,11 @@
 
     (function ($, win) {
         $(function () {
-            debugger;
             var grid;
             var urls = {
                 list: '${contextRoot}/doctorImport/importLs',
-                existence: "${contextRoot}/doctorImport/existence",
+                userExistence: "${contextRoot}/doctorImport/userIsExistence",
+                doctorExistence: "${contextRoot}/doctorImport/doctorIsExistence",
                 batchSave: "${contextRoot}/doctorImport/batchSave",
                 downLoad: "${contextRoot}/doctorImport/downLoadErrInfo",
                 <%--dictCombo: "${contextRoot}/doctorImport/searchCombo"--%>
@@ -22,7 +22,6 @@
             var barTools = function(){
 
                 function save(){
-                    debugger;
                     if(validator.validate()){
                         if($form.Fields)
                             $form.removeData('propMap');
@@ -39,7 +38,7 @@
 
                         var dataModel = $.DataModel.init();
                         dataModel.createRemote(urls.batchSave, {
-                            data: {metas: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
+                            data: {doctors: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
                             success: function (data) {
                                 waitting.close();
                                 if (data.successFlg) {
@@ -109,15 +108,18 @@
                         return result;
                     }
 
-                    if(field.indexOf('code')!=-1){
-                        return uniqValid(urls.existence, "code="+val, "该医生账户已存在！");
+//                    if(field.indexOf('code')!=-1){
+//                        return uniqValid(urls.existence, "code="+val, "该医生账户已存在！");
+//                    }
+                    if(field.indexOf('phone')!=-1){
+                        return uniqValid(urls.doctorExistence, "phone="+val, "该联系电话在医生表中已存在！");
                     }
                     if(field.indexOf('phone')!=-1){
-                        return uniqValid(urls.existence, "phone="+val, "该联系电话已存在！");
+                        return uniqValid(urls.userExistence, "phone="+val, "该联系电话在账户表中已存在！");
                     }
-                    if(field.indexOf('officeTel')!=-1){
-                        return uniqValid(urls.existence, "code="+val, "该办公电话已存在！");
-                    }
+//                    if(field.indexOf('officeTel')!=-1){
+//                        return uniqValid(urls.existence, "code="+val, "该办公电话已存在！");
+//                    }
                 });
                 validator.validate();
             }
@@ -152,7 +154,6 @@
 
 
             function textRender(row, index, name, column){
-                debugger;
                 if(mode=='tFile')
                     return row[column.name];
 

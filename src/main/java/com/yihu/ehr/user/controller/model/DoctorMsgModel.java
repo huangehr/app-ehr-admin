@@ -66,18 +66,19 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
 //            valid = 0;
 //            addErrorMsg("name", RegUtil.lenMsg);
 //        }
-        String validateEmail="\\w{1,}[@][\\w\\-]{1,}([.]([\\w\\-]{1,})){1,3}$/";
-        Pattern vEmailPa = Pattern.compile(validateEmail);
-        //正则表达式的匹配器
-        Matcher m = vEmailPa.matcher(email);
-        //进行正则匹配
-        boolean emailValue= m.matches();
-        if(!emailValue){
-            valid = 0;
-            addErrorMsg("email", "请输入有效的邮件地址,如 username@example.com！" );
-        }
+//        ;
+//        String validateEmail="^[a-zA-Z0-9_-]@[a-zA-Z0-9_-](\\.[a-zA-Z0-9_-])$";
+//        Pattern vEmailPa = Pattern.compile(validateEmail);
+//        //正则表达式的匹配器
+//        Matcher m = vEmailPa.matcher(email);
+//        //进行正则匹配
+//        boolean emailValue= m.matches();
+//        if(!emailValue){
+//            valid = 0;
+//            addErrorMsg("email", "请输入有效的邮件地址,如 username@example.com！" );
+//        }
 
-        String validatePhone="/^0?(13[0-9]|15[0-9]|18[0-9]|14[57]|17[0-9])[0-9]{8}$/";
+        String validatePhone="^1[3|4|5|7|8][0-9]{9}$";
         //正则表达式的模式
         Pattern vPhonePa = Pattern.compile(validatePhone);
         //正则表达式的匹配器
@@ -93,16 +94,16 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
             repeatMap.get("phone").add(phone);
         }
 
-        String validateOfficePhone="/^((0[1-9]{3})?(0[12][0-9])?[-])?\\d{6,8}$/";
-        Pattern vOfficePa = Pattern.compile(validateOfficePhone);
-        //正则表达式的匹配器
-        Matcher o= vOfficePa.matcher(officeTel);
-        //进行正则匹配
-        boolean OfficeValue= o.matches();
-        if(!OfficeValue){
-            valid = 0;
-            addErrorMsg("officeTel", "请输入正确的电话号码,如:010-29392929！" );
-        }
+//        String validateOfficePhone="^\\d{3,4}-\\d{7,8}$";
+//        Pattern vOfficePa = Pattern.compile(validateOfficePhone);
+//        //正则表达式的匹配器
+//        Matcher o= vOfficePa.matcher(officeTel);
+//        //进行正则匹配
+//        boolean OfficeValue= o.matches();
+//        if(!OfficeValue){
+//            valid = 0;
+//            addErrorMsg("officeTel", "请输入正确的电话号码,如:010-29392929！" );
+//        }
 
 
         return valid;

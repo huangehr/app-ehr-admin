@@ -185,32 +185,17 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
     }
 
-    private Map getDictIds( String dictCodes) throws Exception {
-        PageParms pageParms = new PageParms(5000,1)
-                .addGroupNotNull("code", dictCodes, "g1")
-                .setFields("id,code");
-        Envelop rs = getEnvelop(service.search("/resources/dict", pageParms));
-        if(rs.isSuccessFlg()){
-            Map dictIds = new HashMap<>();
-            List<Map> maps = rs.getDetailModelList();
-            for (Map map : maps){
-                dictIds.put(map.get("code"), map.get("id"));
-            }
-            return dictIds;
-        }
-        throw new Exception("获取字典数据出错");
-    }
 
     private int validate(DoctorMsgModel model, Set<String> phones, Set<String> userPhones){
         int rs = 1;
         //医生表
         if(phones.contains(model.getPhone())){
-            model.addErrorMsg("id", "该电话号码在医生表已存在，请核对！");
+            model.addErrorMsg("phone", "该电话号码在医生表已存在，请核对！");
             rs = 0;
         }
         //账户表
         if(userPhones.contains(model.getPhone())){
-            model.addErrorMsg("id", "该电话号码对应的账户已存在，请核对！");
+            model.addErrorMsg("phone", "该电话号码对应的账户已存在，请核对！");
             rs = 0;
         }
 
@@ -269,8 +254,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
 
 
             Map<String, Set> repeat = new HashMap<>();
-            repeat.put("id", new HashSet<String>());
-            repeat.put("dictCode", new HashSet<String>());
+            repeat.put("phone", new HashSet<String>());
+            repeat.put("code", new HashSet<String>());
             for(DoctorMsgModel model : doctorMsgModels){
                 model.validate(repeat);
             }
@@ -287,10 +272,9 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             List saveLs = new ArrayList<>();
             for(int i=0; i<doctorMsgModels.size(); i++){
                 model = doctorMsgModels.get(i);
-                if(  validate(model, phones, userPhones)==0
-                        || model.errorMsg.size()>0)
+                if(validate(model, phones, userPhones)==0|| model.errorMsg.size()>0) {
                     all.set(all.indexOf(model), model);
-                else{
+                }else{
                     saveLs.add(model);
                     all.remove(model);
                 }
@@ -305,4 +289,37 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             return systemError();
         }
     }
+    @RequestMapping("/doctorIsExistence")
+    @ResponseBody
+    public Object doctorIsExistence(String filters){
+        try {
+            Map map = new HashMap<>();
+            map.put("filters", filters);
+            String resultStr = "";
+            resultStr = HttpClientUtil.doGet(comUrl + "/doctor/onePhone/existence", map, username, password);
+            return resultStr;
+//            doctorIsExistenceUrl = "/doctor/onePhone/existence"; //存在
+//            userIsExistenceUrl = "/user/onePhone/existence"; //存在
+//            return service.doctorIsExistence(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return systemError();
+        }
+    }
+    @RequestMapping("/userIsExistence")
+    @ResponseBody
+    public Object userIsExistence(String filters){
+        try {
+            Map map = new HashMap<>();
+            map.put("filters", filters);
+            String resultStr = "";
+            resultStr = HttpClientUtil.doGet(comUrl + "/user/onePhone/existence", map, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return systemError();
+        }
+    }
+
+
 }
