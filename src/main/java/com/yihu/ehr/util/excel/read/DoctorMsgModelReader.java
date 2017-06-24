@@ -17,6 +17,7 @@ public class DoctorMsgModelReader extends AExcelReader {
             DoctorMsgModel p;
             getRepeat().put("code", new HashSet<>());
             getRepeat().put("phone", new HashSet<>());
+            getRepeat().put("email", new HashSet<>());
 
             for (Sheet sheet : sheets) {
                 if ((rows = sheet.getRows()) == 0) continue;

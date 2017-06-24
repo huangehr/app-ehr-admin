@@ -57,6 +57,10 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
             valid = 0;
             addErrorMsg("phone", "医生联系电话重复！" );
         }
+        if(!repeatMap.get("email").add(email)){
+            valid = 0;
+            addErrorMsg("email", "医生邮箱重复！" );
+        }
 //        if(!RegUtil.regCode(stdCode)){
 //            addErrorMsg("stdCode", "只允许输入数字、英文、小数点与下划线！");
 //            valid = 0;
@@ -67,16 +71,16 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
 //            addErrorMsg("name", RegUtil.lenMsg);
 //        }
 //        ;
-//        String validateEmail="^[a-zA-Z0-9_-]@[a-zA-Z0-9_-](\\.[a-zA-Z0-9_-])$";
-//        Pattern vEmailPa = Pattern.compile(validateEmail);
-//        //正则表达式的匹配器
-//        Matcher m = vEmailPa.matcher(email);
-//        //进行正则匹配
-//        boolean emailValue= m.matches();
-//        if(!emailValue){
-//            valid = 0;
-//            addErrorMsg("email", "请输入有效的邮件地址,如 username@example.com！" );
-//        }
+        String validateEmail="^[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,4}$";
+        Pattern vEmailPa = Pattern.compile(validateEmail);
+        //正则表达式的匹配器
+        Matcher m = vEmailPa.matcher(email);
+        //进行正则匹配
+        boolean emailValue= m.matches();
+        if(!emailValue){
+            valid = 0;
+            addErrorMsg("email", "请输入有效的邮件地址,如 username123@example.com！" );
+        }
 
         String validatePhone="^1[3|4|5|7|8][0-9]{9}$";
         //正则表达式的模式
