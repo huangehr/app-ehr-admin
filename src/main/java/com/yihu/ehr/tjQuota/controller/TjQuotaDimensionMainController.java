@@ -2,9 +2,11 @@ package com.yihu.ehr.tjQuota.controller;
 
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
@@ -16,6 +18,8 @@ import org.springframework.web.client.RestClientException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017/6/15.
@@ -40,10 +44,23 @@ public class TjQuotaDimensionMainController extends BaseUIController {
      */
     @RequestMapping(value = "addTjQuotaDimensionMain", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object addTjQuotaDimensionMain(String jsonModel, HttpServletRequest request) throws IOException {
+    public Object addTjQuotaDimensionMain(String quotaCode, String jsonModel, HttpServletRequest request) throws IOException {
         String url = "/tj/addTjQuotaDimensionMain";
         String resultStr = "";
         Envelop result = new Envelop();
+        if (!StringUtils.isBlank(quotaCode)) {
+            url = "/tj/deleteMainByQuotaCode";
+            Map<String, Object> params = new HashMap<>();
+            params.put("quotaCode", quotaCode);
+            try {
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            } catch (Exception e) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.SystemError.toString());
+                return result;
+            }
+            return resultStr;
+        }
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("model", jsonModel);
         RestTemplates templates = new RestTemplates();

@@ -48,7 +48,6 @@
                 }
             },
             setZBInfo: function ( res, me) {
-                debugger
                 initCode = res.code;
                 initName = res.name;
                 me.$inpCode.val(res.code);
@@ -89,7 +88,6 @@
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    debugger
                     if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
                         var result = new jValidation.ajax.Result();
                         var code = self.$inpCode.val();
