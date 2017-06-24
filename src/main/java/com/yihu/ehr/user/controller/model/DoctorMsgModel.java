@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * @created 2017/6/22
  */
 @Row(start = 1)
-@Title(names= "{'医生账号', '姓名', '性别', '医生专长', '医生门户首页', '邮箱', '联系电话', '办公电话（固）'}")
+@Title(names= "{'医生账号', '姓名', '性别', '医生专长', '医生门户首页', '邮箱', '联系电话', '办公电话（固）', '教学职称', '临床职称', '学历', '行政职称', '简介'}")
 public class DoctorMsgModel extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
@@ -42,6 +42,17 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
     @Location(x=7)
     @ValidRepeat
     private String officeTel;
+    @Location(x=8)
+    private String jxzc;
+    @Location(x=9)
+    private String lczc;
+    @Location(x=10)
+    private String xlzc;
+    @Location(x=11)
+    private String xzzc;
+    @Location(x=12)
+    private String introduction;
+
 
 
 
@@ -178,4 +189,43 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
         this.officeTel = officeTel;
     }
 
+    public String getJxzc() {
+        return jxzc;
+    }
+
+    public void setJxzc(String jxzc) {
+        this.jxzc = jxzc;
+    }
+
+    public String getLczc() {
+        return lczc;
+    }
+
+    public void setLczc(String lczc) {
+        this.lczc = lczc;
+    }
+
+    public String getXlzc() {
+        return xlzc;
+    }
+
+    public void setXlzc(String xlzc) {
+        this.xlzc = xlzc;
+    }
+
+    public String getXzzc() {
+        return xzzc;
+    }
+
+    public void setXzzc(String xzzc) {
+        this.xzzc = xzzc;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
 }

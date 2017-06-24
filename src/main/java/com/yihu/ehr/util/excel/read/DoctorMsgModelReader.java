@@ -37,6 +37,11 @@ public class DoctorMsgModelReader extends AExcelReader {
                     p.setPhone(getCellCont(sheet, i, 6));
                     p.setOfficeTel(getCellCont(sheet, i, 7));
                     p.setExcelSeq(j);
+                    p.setJxzc(getCellCont(sheet, i, 8));
+                    p.setLczc(getCellCont(sheet, i, 9));
+                    p.setXlzc(getCellCont(sheet, i, 10));
+                    p.setXzzc(getCellCont(sheet, i, 11));
+                    p.setIntroduction(getCellCont(sheet, i, 12));
                     int rs = p.validate(repeat);
                     if (rs == 0)
                         errorLs.add(p);

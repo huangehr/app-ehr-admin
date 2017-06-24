@@ -215,6 +215,11 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             model.addErrorMsg("email", "该邮箱对应的账户已存在，请核对！");
             rs = 0;
         }
+        //账户表
+        if(model.getIntroduction().length()>256){
+            model.addErrorMsg("introduction", "该简介过长，请核对！");
+            rs = 0;
+        }
 
         return rs;
     }
