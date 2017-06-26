@@ -430,6 +430,18 @@
                     url: '${contextRoot}/zhibiao/initial'
                 },
                 </sec:authorize>
+
+                //  5-2 指标分类管理
+                <sec:authorize url="/organization/Initial">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 52,
+                    text: '<spring:message code="title.health.manage"/>',
+                    url: '${contextRoot}/health/initial'
+                },
+                </sec:authorize>
+
                 // 5-4 - 指标配置管理
                 <sec:authorize url="/zhibiaoconfig/initial">
                 {

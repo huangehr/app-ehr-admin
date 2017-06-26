@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script type="text/javascript" src="${staticRoot}/Scripts/homeRelationship.js"></script>
 <script>
     (function ($, win) {
@@ -13,7 +14,7 @@
 
         var cardInfoGrid = null;
         var archiveInfoGrid = null;
-
+        var doctorCardInfo = null;
         var cardFormInit = null;
         var archiveFormInit = null;
         // 表单校验工具类
@@ -21,6 +22,7 @@
         var dataModel = $.DataModel.init();
         var patientModel = "";
         var idCardNo="";
+        var typeTree = null;
         var patientDialogType = '${patientDialogType}';
         if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
             patientModel =${patientModel}.obj;
@@ -122,6 +124,22 @@
 
         /* *************************** 函数定义结束******************************* */
 
+
+        //由跳转页面返回成员注册页面时的页面初始化-------------
+        function treeNodeInit (id){
+            if(!id){return}
+            function expandNode (id){
+                var level = $($('#'+id).parent()).parent().attr('outlinelevel')
+                if(level){
+                    var parentId = $($('#'+id).parent()).parent().attr('id')
+                    $($($('#'+id).parent()).prev()).children(".l-expandable-close").click()//展开节点
+                    expandNode(parentId);
+                }
+            }
+            expandNode(id);
+            typeTree.selectNode(id);
+        };
+
         /* *************************** 模块初始化 ***************************** */
         patientInfo = {
             $form: $("#div_patient_info_form"),
@@ -145,7 +163,9 @@
             $patientImgUpload: $("#div_patient_img_upload"),
             $patientCopyId:$("#inp_patientCopyId"),
             $picPath:$('#div_file_list'),
-
+            $tabList: $('.tab-list'),
+            $tabCon: $('.tab-con'),
+            $divResourceBrowseTree: $('.div_resource_browse_tree'),
             init: function () {
                 var self = this;
                 $("#div_card_info").hide();
@@ -176,6 +196,7 @@
                         //dialog.close();
                     });
                 });
+//                self.getTreeData(1);
             },
             initForm: function () {
                 var self = this;
@@ -219,6 +240,8 @@
                     if(!Util.isStrEmpty(pic)){
                         self.$picPath.html('<img src="${contextRoot}/patient/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
                     }
+
+                    doctorCardInfo.init();
                 }
             },
             initDDL: function (dictId, target) {
@@ -244,7 +267,26 @@
                     {name: '街道',maxlength: 200}
                 ]});
             },
+            getTreeData: function (id) {
+                debugger
+                typeTree = this.$divResourceBrowseTree.ligerSearchTree({
+                    nodeWidth: 240,
+                    url: '',
+                    checkbox: false,
+                    idFieldName: 'id',
+                    parentIDFieldName :'parentDeptId',
+                    textFieldName: 'name',
+                    isExpand: false,
+                    childIcon:null,
+                    parentIcon:null,
+                    onSelect: function (e) {
 
+                    },
+                    onSuccess: function (data) {
+
+                    },
+                });
+            },
             bindEvents: function () {
                 var self = this;
                 $(".u-dropdown-icon").click(function(){
@@ -345,6 +387,19 @@
 
 
                 });
+                //tab
+                self.$tabList.on( 'click', 'li', function (e) {
+                    var index = $(this).index();
+                    if (index == 1) {
+                        $('.btm-btns').hide();
+                    } else {
+                        $('.btm-btns').show();
+                    }
+                    $(this).addClass('cur').siblings().removeClass('cur');
+                    self.$tabCon.hide().eq(index).show();
+                });
+
+
                 //关闭dailog的方法
                 patientInfo.$cancelBtn.click(function(){
                     win.parent.patientDialogClose();
@@ -352,6 +407,68 @@
                 })
             }
         };
+
+        doctorCardInfo = {
+            $doctorCardList: $('#doctorCardList'),
+            init: function () {
+                this.getDoctorCardInfoData();
+            },
+            getDoctorCardInfoData: function () {
+                var me = this;
+                $.ajax({
+                    url: '${contextRoot}/patient/PatientCardByUserId',
+                    data: {
+                        ownerIdcard: idCardNo
+                    },
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (res) {
+                        debugger
+                        var html = '';
+                        if (res.detailModelList != null && res.detailModelList.length > 0) {
+                            var d = res.detailModelList;
+                            for (var i = 0, len = d.length; i < len; i++) {
+                                html += ['<li class="card-l-item">',
+                                            '<div><span>' + d[i].cardType + '</span><a href="javascript:;" class="grid_delete" data-id="'  +  d[i].id +'"></a></div>',
+                                            '<ul class="first-ul">',
+                                                '<li><span>卡号: </span><span>' + d[i].cardNo + '</span></li>',
+                                                '<li><span>是否有效: </span><span>' + d[i].status == 0 ? '无效' : '有效' + '</span></li>',
+                                            '</ul>',
+                                            '<ul class="last-ul">',
+                                                '<li><span>发卡机构: </span><span>' + (d[i].releaseOrg || '') + '</span></li>',
+                                                '<li><span>有效时间: </span><span>' + d[i].validityDateBegin.substring( 0, 9) + '</span> ~ <span>' + d[i].validityDateEnd.substring( 0, 9) + '</span></li>',
+                                            '</ul>',
+                                        '</li>'].join('');
+                            }
+                        } else {
+                            html += ['<li class="data-null">',
+                                        '<div class="null-page"></div>',
+                                        '<span>暂无数据</span>',
+                                    '</li>'].join('');
+                        }
+                        me.$doctorCardList.append(html);
+                    }
+                });
+            },
+            bindEvents: function () {
+                var me = this;
+                me.$doctorCardList.on( 'click', '.grid_delete', function () {
+                    var id = $(this).attr('data-id');
+                    $.ajax({
+                        url: '${contextRoot}/patient/deletePatientCardByCardId',
+                        data: {
+                            id: id
+                        },
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (res) {
+                            
+                        }
+                    });
+                    console.log(id);
+                });
+            }
+        }
 
         //卡管理
         cardFormInit = {
