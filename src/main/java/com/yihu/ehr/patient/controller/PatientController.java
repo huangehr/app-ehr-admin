@@ -511,7 +511,7 @@ public class PatientController extends BaseUIController {
     //获取所有平台应用下的角色组用于下拉框
     @RequestMapping("/appRolesList")
     @ResponseBody
-    public Object getAppRolesList(){
+    public Object getAppRolesList(String userId){
         String roleType = "";//用户角色类型字典值
         String appSourceType = "";//应用类型字典值
         try {
@@ -519,6 +519,7 @@ public class PatientController extends BaseUIController {
             Map<String,Object> params = new HashMap<>();
             params.put("type",roleType);
             params.put("source_type",appSourceType);
+            params.put("user_id",userId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
             envelop.getDetailModelList();
@@ -534,6 +535,7 @@ public class PatientController extends BaseUIController {
 
     //获取账号授权角色组
     @RequestMapping("/appUserRolesIds")
+    @ResponseBody
     public Object appFeatureInitial(String userId){
         //获取用户所属角色
         Envelop envelop = new Envelop();
