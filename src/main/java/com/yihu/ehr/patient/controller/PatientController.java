@@ -476,8 +476,8 @@ public class PatientController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
-        params.put("page", page);
-        params.put("size", rows);
+        params.put("page", 1);
+        params.put("size", 999);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
