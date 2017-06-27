@@ -80,8 +80,8 @@
     </div>
     <div class="m-form-group">
         <label><spring:message code="lbl.user.tel2"/><spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="inp_userTel2" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="secondPhone"/>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" id="inp_userTel2" class="useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="secondPhone"/>
         </div>
     </div>
     <div class="m-form-group">

@@ -16,6 +16,7 @@
             var jValidation = win.parent.$.jValidation;  // 表单校验工具类
             var validator = null;
             var validator1 = null;
+            var quotaId = null;
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 entryMater.init();
@@ -31,6 +32,7 @@
                 $quotaCode:$("#inp_quotaCode").val(),
                 init: function () {
                     var self = this;
+                    quotaId = self.$quotaCode;
                     this.$searchNm.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
                             self.reloadGrid();
@@ -264,6 +266,7 @@
                             if(validate){
                                 var wait = $.Notice.waitting('正在加载中...');
                                 var saveData = [];
+                                var quotaCode = null
                                 var reqUrl = '${contextRoot}/tjQuotaDimensionMain/addTjQuotaDimensionMain';
                                 if($(".pop_tab li.cur").index()==0){
                                     var divItem = $("#div_main_relation").find(".div-item");
@@ -280,7 +283,10 @@
                                     })
                                 }
                                 var dataModel = $.DataModel.init();
-                                dataModel.updateRemote(reqUrl, {data: {jsonModel: JSON.stringify(saveData)},
+                                if (saveData.length == 0) {
+                                    quotaCode = quotaId;
+                                }
+                                dataModel.updateRemote(reqUrl, {data: {quotaCode : quotaCode, jsonModel: JSON.stringify(saveData)},
                                     success: function (data) {
                                         wait.close();
                                         if(data.successFlg){

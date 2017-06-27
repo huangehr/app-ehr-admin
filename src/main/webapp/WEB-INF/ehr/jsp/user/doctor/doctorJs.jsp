@@ -1,11 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
     (function ($, win) {
         $(function () {
 
             /* ************************** 变量定义 ******************************** */
+            var urls = {
+                gotoImportLs: "${contextRoot}/doctorImport/gotoImportLs"
+            }
             // 通用工具类库
             var Util = $.Util;
 
@@ -36,6 +44,15 @@
 
                 isFirstPage = true;
             }
+            function onUploadSuccess(g, result){
+                debugger;
+                if(result)
+                    openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
+                else
+                    $.Notice.success("导入成功！");
+            }
+            $('#upd').uploadFile({url: "${contextRoot}/doctorImport/import", onUploadSuccess: onUploadSuccess});
+
             /* *************************** 函数定义结束******************************* */
 
             retrieve = {
@@ -167,6 +184,7 @@
                     });
                     //修改医生信息
                     $.subscribe('doctor:doctorInfoModifyDialog:open', function (event, doctorId, mode) {
+                        var mode = 'modify';
                         var wait = $.Notice.waitting("请稍后...");
                         self.doctorInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框

@@ -13,6 +13,7 @@
 
         var cardInfoGrid = null;
         var archiveInfoGrid = null;
+        var doctorCardInfo = null;
 
         var cardFormInit = null;
         var archiveFormInit = null;
@@ -107,6 +108,9 @@
             $patientTel: $("#inp_patientTel"),
             $patientEmail: $("#inp_patientEmail"),
             picPath:$('#div_file_list'),
+            $tabList: $('.tab-list'),
+            $tabCon: $('.tab-con'),
+            $divResourceBrowseTree: $('.div_resource_browse_tree'),
 
             init: function () {
                 this.initForm();
@@ -116,6 +120,7 @@
                 $("#div_card_info").hide();
                 $("#div_home_relation").hide();
                 $("#div_archive_info").hide();
+                doctorCardInfo.init();
             },
             initForm: function () {
                 this.$realName.ligerTextBox({width: 240});
@@ -177,6 +182,14 @@
                 }
             },
             bindEvents: function () {
+                debugger
+                var self = this;
+                //tab
+                self.$tabList.on( 'click', 'li', function (e) {
+                    var index = $(this).index();
+                    $(this).addClass('cur').siblings().removeClass('cur');
+                    self.$tabCon.hide().eq(index).show();
+                });
             }
         };
         cardFormInit = {
@@ -315,6 +328,53 @@
             }
 
         };
+        //
+        doctorCardInfo = {
+            $doctorCardList: $('#doctorCardList'),
+            init: function () {
+                this.getDoctorCardInfoData();
+            },
+            getDoctorCardInfoData: function () {
+                var me = this;
+                $.ajax({
+                    url: '${contextRoot}/patient/PatientCardByUserId',
+                    data: {
+                        ownerIdcard: idCardNo
+                    },
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (res) {
+                        debugger
+                        var html = '';
+                        if (res.detailModelList != null && res.detailModelList.length > 0) {
+                            var d = res.detailModelList;
+                            for (var i = 0, len = d.length; i < len; i++) {
+                                html += ['<li class="card-l-item">',
+                                    '<div><span>' + d[i].cardType + '</span></div>',
+                                    '<ul class="first-ul">',
+                                    '<li><span>卡号: </span><span>' + d[i].cardNo + '</span></li>',
+                                    '<li><span>是否有效: </span><span>' + d[i].status == 0 ? '无效' : '有效' + '</span></li>',
+                                    '</ul>',
+                                    '<ul class="last-ul">',
+                                    '<li><span>发卡机构: </span><span>' + (d[i].releaseOrg || '') + '</span></li>',
+                                    '<li><span>有效时间: </span><span>' + d[i].validityDateBegin.substring( 0, 9) + '</span> ~ <span>' + d[i].validityDateEnd.substring( 0, 9) + '</span></li>',
+                                    '</ul>',
+                                    '</li>'].join('');
+                            }
+                        } else {
+                            html += ['<li class="data-null">',
+                                '<div class="null-page"></div>',
+                                '<span>暂无数据</span>',
+                                '</li>'].join('');
+                        }
+                        me.$doctorCardList.append(html);
+                        console.log(res);
+                    }
+                });
+            }
+        }
+
+
         //档案信息
         archiveFormInit = {
             $selectStart:$('#inp_select_start'),

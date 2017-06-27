@@ -1,6 +1,6 @@
 server:
   contextPath: /ehr
-  port: 8083
+  port: 8080
   sessionTimeout:  30000000
 
 multipart:
@@ -55,7 +55,7 @@ spring:
 app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
-  oauth2authorize: http://localhost:10260/
+  oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
@@ -80,7 +80,7 @@ spring:
 app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
-  oauth2authorize: http://172.19.103.73:10260/
+  oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
@@ -106,7 +106,7 @@ spring:
 app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
-  oauth2authorize: http://11.1.2.21:10260/
+  oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
