@@ -57,7 +57,7 @@
                 $searchType: $('#inp_select_searchType'),
                 //查询按钮
                 $searchBtn: $('#btn_search'),
-                $inpOrg: $('#inp_org'),
+                //$inpOrg: $('#inp_org'),
                 init: function () {
                     var self = this;
                     retrieve.initDDL(settledWayDictId,this.$searchType);
@@ -65,13 +65,13 @@
                     this.$element.attrScan();
                     window.form = this.$element;
                     this.$searchBox.ligerTextBox({width:240});
-                    var combo = self.$inpOrg.customCombo('${contextRoot}/deptMember/getOrgList');
+                    /*var combo = self.$inpOrg.customCombo('${contextRoot}/deptMember/getOrgList');
                     self.$inpOrg.parent().css({
                         width:'240'
                     }).parent().css({
                         display:'inline-block',
                         width:'240px'
-                    });
+                    });*/
                 },
                 //下拉框列表项初始化
                 initDDL: function (dictId, target) {
@@ -173,7 +173,7 @@
                 },
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
-                    values.searchOrg = retrieve.$element.Fields.searchOrg.val();
+                    //values.searchOrg = retrieve.$element.Fields.searchOrg.val();
                     reloadGrid.call(this, '${contextRoot}/user/searchUsers', values);
                 },
                 bindEvents: function () {
