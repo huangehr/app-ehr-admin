@@ -34,4 +34,8 @@
     float: left;
     padding: 0 14px;
   }
+  .m-nav-tree .l-tree li .l-body, .m-nav-tree .l-tree .l-box, .m-nav-tree .l-tree a, .l-tree span, .m-nav-tree .l-tree .l-selected span{
+    height: 22px;
+    line-height: 22px;
+  }
 </style>

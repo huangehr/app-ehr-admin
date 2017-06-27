@@ -18,13 +18,14 @@
     .data-null{margin-top: 90px;position: relative}
     .null-page{width: 260px;height: 163px;background: url("${contextRoot}/develop/images/shujukong_bg.png") no-repeat center;margin: 0 auto;}
     .data-null span {width:100%;display:block;text-align: center;padding: 15px;font-size: 16px;color: #999;}
+    .f-dn{display: none;}
 </style>
 
 <div class="pop_tab">
     <ul class="tab-list">
         <li class="cur" id="btn_basic">基础属性</li>
         <li id="card_info">就诊卡信息</li>
-        <li id="user_jur">角色授权</li>
+        <li id="user_jur" style="display: none;">角色授权</li>
         <%--<li id="btn_card" >卡管理</li>--%>
         <%--<li id="btn_archive" >档案管理</li>--%>
         <%--<li id="btn_home_relation" >家庭关系</li>--%>
@@ -163,8 +164,8 @@
 
 <%--new add--%>
 <%--角色授权--%>
-<div class="tab-con m-form-inline" style="display: none">
-    <div class="tab-con-info">
+<div class="tab-con m-form-inline" style="display: none;width: 280px;height: 420px;;border:1px solid #dcdcdc;margin-left: 10px;">
+    <div class="tab-con-info div-appRole-grid-scrollbar" >
         <%--树--%>
         <div id="div_resource_browse_tree"></div>
     </div>

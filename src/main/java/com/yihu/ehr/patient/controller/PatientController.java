@@ -60,7 +60,7 @@ public class PatientController extends BaseUIController {
     }
 
     @RequestMapping("patientDialogType")
-    public Object patientDialogType(String idCardNo, String patientDialogType, Model model,HttpSession session) throws IOException {
+    public Object patientDialogType(String idCardNo, String patientDialogType, String userId, Model model,HttpSession session) throws IOException {
         String url = "";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -99,6 +99,7 @@ public class PatientController extends BaseUIController {
                 if (envelop.isSuccessFlg()) {
                     model.addAttribute("patientModel", resultStr);
                     if (patientDialogType.equals("updatePatient")) {
+                        model.addAttribute("userId", userId);
                         model.addAttribute("contentPage", "patient/patientInfoDialog");
                         //return "generalView";
                         return "simpleView";
@@ -460,7 +461,7 @@ public class PatientController extends BaseUIController {
      */
     @RequestMapping("/PatientCardByUserId")
     @ResponseBody
-    public Object searchUserCards(String ownerIdcard,int page, int rows) {
+    public Object searchUserCards(String ownerIdcard) {
         String url = "/PatientCardByUserId";
         String resultStr = "";
         Envelop result = new Envelop();

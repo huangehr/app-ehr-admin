@@ -24,6 +24,7 @@
         var idCardNo="";
         var typeTree = null;
         var patientDialogType = '${patientDialogType}';
+        var userId = '${userId}';
         if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
             patientModel =${patientModel}.obj;
             idCardNo = patientModel.idCardNo;
@@ -165,7 +166,8 @@
             $picPath:$('#div_file_list'),
             $tabList: $('.tab-list'),
             $tabCon: $('.tab-con'),
-            $divResourceBrowseTree: $('.div_resource_browse_tree'),
+            $divResourceBrowseTree: $('#div_resource_browse_tree'),
+            $appRoleGridScrollbar: $(".div-appRole-grid-scrollbar"),
             init: function () {
                 var self = this;
                 $("#div_card_info").hide();
@@ -174,6 +176,8 @@
                 self.$gender.eq(0).attr("checked",'true');
                 self.initForm();
                 self.bindEvents();
+                self.$appRoleGridScrollbar.mCustomScrollbar({
+                });
 
                 self.$patientImgUpload.instance = self.$patientImgUpload.webupload({
                     server: "${contextRoot}/patient/updatePatient",
@@ -196,7 +200,11 @@
                         //dialog.close();
                     });
                 });
-//                self.getTreeData(1);
+                if(userId!="null"){
+                    $(".tab-list #user_jur").show();
+                    self.getTreeData();
+                }
+
             },
             initForm: function () {
                 var self = this;
@@ -268,22 +276,22 @@
                 ]});
             },
             getTreeData: function (id) {
-                debugger
                 typeTree = this.$divResourceBrowseTree.ligerSearchTree({
-                    nodeWidth: 240,
-                    url: '',
-                    checkbox: false,
+                    nodeWidth: 200,
+                    url: '${contextRoot}/patient/appRolesList',
+                    parms:{userId: userId},
                     idFieldName: 'id',
                     parentIDFieldName :'parentDeptId',
                     textFieldName: 'name',
                     isExpand: false,
-                    childIcon:null,
-                    parentIcon:null,
+                    enabledCompleteCheckbox:false,
+                    checkbox: true,
+                    async: false,
                     onSelect: function (e) {
 
                     },
                     onSuccess: function (data) {
-
+                        typeTree.setData(data.detailModelList);
                     },
                 });
             },
@@ -423,11 +431,12 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function (res) {
-                        debugger
                         var html = '';
                         if (res.detailModelList != null && res.detailModelList.length > 0) {
                             var d = res.detailModelList;
                             for (var i = 0, len = d.length; i < len; i++) {
+                                var validityDateBegin = d[i].validityDateBegin==null?"":d[i].validityDateBegin.substring( 0, 9);
+                                var validityDateEnd = d[i].validityDateEnd==null?"":d[i].validityDateEnd.substring( 0, 9);
                                 html += ['<li class="card-l-item">',
                                             '<div><span>' + d[i].cardType + '</span><a href="javascript:;" class="grid_delete" data-id="'  +  d[i].id +'"></a></div>',
                                             '<ul class="first-ul">',
@@ -436,7 +445,7 @@
                                             '</ul>',
                                             '<ul class="last-ul">',
                                                 '<li><span>发卡机构: </span><span>' + (d[i].releaseOrg || '') + '</span></li>',
-                                                '<li><span>有效时间: </span><span>' + d[i].validityDateBegin.substring( 0, 9) + '</span> ~ <span>' + d[i].validityDateEnd.substring( 0, 9) + '</span></li>',
+                                                '<li><span>有效时间: </span><span>' + validityDateBegin + '</span> ~ <span>' + validityDateEnd + '</span></li>',
                                             '</ul>',
                                         '</li>'].join('');
                             }
