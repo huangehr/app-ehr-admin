@@ -41,7 +41,7 @@
                 this.$inpCode.ligerTextBox({width: 240});
                 this.$inpName.ligerTextBox({width: 240});
                 this.$inpIntroduction.ligerTextBox({width: 240,height:104,padding:10});
-                this.initDDL(DimensionSlaveId,this.$inpType,"");
+//                this.initDDL(DimensionSlaveId,this.$inpType,"");
                 this.initDDL(DimensionStatusId,this.$inpStatus,"");
                 this.$form.attrScan();
             },
@@ -58,7 +58,7 @@
                             self.$inpCode.val(data.code);
                             self.$inpName.val(data.name);
                             self.$inpIntroduction.val(data.remark);
-                            self.initDDL(DimensionSlaveId,self.$inpType,data.type);
+//                            self.initDDL(DimensionSlaveId,self.$inpType,data.type);
                             self.initDDL(DimensionStatusId,self.$inpStatus,data.status);
                             self.$form.attrScan();
                         }
