@@ -184,6 +184,7 @@
                     });
                     //修改医生信息
                     $.subscribe('doctor:doctorInfoModifyDialog:open', function (event, doctorId, mode) {
+                        var mode = 'modify';
                         var wait = $.Notice.waitting("请稍后...");
                         self.doctorInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
