@@ -338,6 +338,17 @@
                 },
                 </sec:authorize>
 
+                // 3-7 - 资源浏览
+                <sec:authorize url="/resourceBrowse/browse">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 37,
+                    text: '<spring:message code="title.resource.browse"/>',
+                    url: '${contextRoot}/resourceBrowse/browse'
+                },
+                </sec:authorize>
+
                 // 4- 全程健康档案
                 <sec:authorize url="Ehr_Archive_Manager">
                 {
