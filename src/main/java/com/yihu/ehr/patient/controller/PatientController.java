@@ -104,6 +104,7 @@ public class PatientController extends BaseUIController {
                         //return "generalView";
                         return "simpleView";
                     } else if (patientDialogType.equals("patientInfoMessage")) {
+                        model.addAttribute("userId", userId);
                         model.addAttribute("contentPage", "patient/patientBasicInfoDialog");
                         return "simpleView";
                     }

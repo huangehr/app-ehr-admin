@@ -131,25 +131,26 @@
                             }
                         ],
                         onDblClickRow: function (row) {
-                            self.showUserInfo(row.idCardNo);
+                            self.showUserInfo(row.idCardNo,row.userId);
                         }
                     }));
                     grid.adjustToWidth();
                     this.bindEvents();
                 },
-                showUserInfo: function (id) {
+                showUserInfo: function (id,userId) {
                     var wait=null;
                     wait = $.Notice.waitting('正在加载中...');
                     var dialog = $.ligerDialog.open({
                         title:'居民信息详情',
                         height: 625,
-                        width: 570,
+                        width: 600,
                         url: '${contextRoot}/patient/patientDialogType',
                         load: true,
                         isDrag:true,
                         show:false,
                         urlParms: {
                             idCardNo: id,
+                            userId:userId,
                             patientDialogType: 'patientInfoMessage'
                         },
                         isHidden: false,
