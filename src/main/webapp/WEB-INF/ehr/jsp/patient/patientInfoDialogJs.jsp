@@ -276,6 +276,7 @@
                 ]});
             },
             getTreeData: function (id) {
+                var self = this;
                 typeTree = this.$divResourceBrowseTree.ligerSearchTree({
                     nodeWidth: 200,
                     url: '${contextRoot}/patient/appRolesList',
@@ -287,16 +288,79 @@
                     enabledCompleteCheckbox:false,
                     checkbox: true,
                     async: false,
-                    onSelect: function (e) {
+                    onCheck:function (checkData,checked) {
+                            var data = checkData.data;
+                            var checkD = null;
+                            if(data.pid){//点中的是二级节点
+                                checkD = [data];
+                            }else{//点中根节点
+                                if(data.children){
+                                    checkD = data.children;
+                                }
+                            }
+                            if(checkD){
+                                if(checked){//选中
+                                    self.appendCheckData(checkD);
+                                }else{//取消选中
+                                    self.cancelCheckData(checkD);
+                                }
+                            }
 
                     },
                     onSuccess: function (data) {
                         typeTree.setData(data.detailModelList);
+                        self.appendCheckData(data.obj || []);
                     },
                 });
             },
+            cancelCheckData:function(selectedData){
+                var rightData = $("#div_checked_data .div-item");
+                for(var i=0;i<selectedData.length;i++){
+                    for(var j=0;j<rightData.length;j++){
+                        if(selectedData[i].id==$(rightData[j]).attr("data-id")){
+                            $(rightData[j]).remove();
+                            break;
+                        }
+                    }
+                }
+            },
+            appendCheckData:function(data){
+                var resultHtml = "";
+                var appDom = $("#div_checked_data .div-header-content");
+                for(var i=0;i<data.length;i++) {
+                    var item = data[i];
+                    var roleId = item.id || item.roleId;
+                    var roleName = item.name || item.roleName;
+                    if (appDom.find(".div-item[data-id='" + roleId + "']").length == 0) {
+                        resultHtml += '<div class="h-40 div-item" data-id="'+roleId+'">'+
+                                         '<div class="div-main-content" title="'+roleName+'">'+roleName+'</div>'+
+                                        '<div class="div-delete-content"><a class="grid_delete" href="#" title="删除"></a></div>'+
+                                    '</div>';
+                    }
+                }
+                appDom.after(resultHtml);
+            },
             bindEvents: function () {
                 var self = this;
+                $("#div_checked_data").on("click",".grid_delete",function(){
+                    var itemId = $(this).closest(".div-item").attr("data-id");
+                    var selectedData = typeTree.getCheckedData();
+                    var rowdata = null;
+                    for(var i=0;i<selectedData.length;i++){
+                        if(selectedData[i].pid){
+                            if(selectedData[i].id==itemId){
+                                rowdata = selectedData[i];
+                                break;
+                            }
+                        }
+                    }
+                    if(rowdata) typeTree.cancelSelect(rowdata);//取消选中行
+                    $("#div_checked_data").find(".div-item[data-id="+itemId+"]").remove();
+                    if(typeTree.getCheckedData().length==1){//根节点
+                        typeTree.cancelSelect(typeTree.getCheckedData()[0]);//取消选中行
+                    }
+                })
+
                 $(".u-dropdown-icon").click(function(){
                     $('#inp_realName').click();
                 });
@@ -328,49 +392,70 @@
 
                 //修改人口信息
                 patientInfo.$updateBtn.click(function () {
-                    var picHtml = self.$picPath.children().length;
-                    if(validator.validate()){
-                        var addressList = self.$form.Fields.birthPlaceInfo.getValue();
-                        var homeAddressList = self.$form.Fields.homeAddressInfo.getValue();
-                        var workAddressList = self.$form.Fields.workAddressInfo.getValue();
-                        var values = $.extend({},self.$form.Fields.getValues(),{
-                            birthPlaceInfo: {
-                                province:  addressList.names[0] || null,
-                                city: addressList.names[1] || null,
-                                district: addressList.names[2] || null,
-                                street: addressList.names[3] || null
-                            },
-                            homeAddressInfo:{
-                                province:  homeAddressList.names[0] || null,
-                                city: homeAddressList.names[1] || null,
-                                district: homeAddressList.names[2] || null,
-                                street: homeAddressList.names[3] || null
-                            },
-                            workAddressInfo:{
-                                province:  workAddressList.names[0] || null,
-                                city: workAddressList.names[1] || null,
-                                district: workAddressList.names[2] || null,
-                                street: workAddressList.names[3] || null
+                    if($(".tab-list li.cur").html()=="角色授权"){//保存角色授权值
+                        var wait = $.Notice.waitting('正在加载中...');
+                        var saveData = [];
+                        var rightData = $("#div_checked_data .div-item");
+                        for(var j=0;j<rightData.length;j++){
+                            saveData.push({userId:userId,roleId:$(rightData[j]).attr("data-id")});
+                        }
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote('${contextRoot}/patient/appUserRolesSave', {data: {userId : userId, jsonData: JSON.stringify(saveData)},
+                            success: function (data) {
+                                wait.close();
+                                if(data.successFlg){
+                                    $.Notice.success('保存成功！');
+                                }else{
+                                    $.Notice.error(data.errorMsg);
+                                }
                             }
                         });
-                        var jsonData = JSON.stringify(values)+";"+patientDialogType;
-                        if(picHtml == 0){
-                            updatePatient(jsonData);
-//                        updatePatient(JSON.stringify(values));
-                        }else{
-                            var upload = self.$patientImgUpload.instance;
-                            var image = upload.getFiles().length;
-                            if(image){
-                                upload.options.formData.patientJsonData =   encodeURIComponent(jsonData);
-                                upload.upload();
-                                win.parent.patientDialogRefresh();
-                            }else{
-                                updatePatient(jsonData);
-                            }
-                        }
                     }else{
-                        return
+                        var picHtml = self.$picPath.children().length;
+                        if(validator.validate()){
+                            var addressList = self.$form.Fields.birthPlaceInfo.getValue();
+                            var homeAddressList = self.$form.Fields.homeAddressInfo.getValue();
+                            var workAddressList = self.$form.Fields.workAddressInfo.getValue();
+                            var values = $.extend({},self.$form.Fields.getValues(),{
+                                birthPlaceInfo: {
+                                    province:  addressList.names[0] || null,
+                                    city: addressList.names[1] || null,
+                                    district: addressList.names[2] || null,
+                                    street: addressList.names[3] || null
+                                },
+                                homeAddressInfo:{
+                                    province:  homeAddressList.names[0] || null,
+                                    city: homeAddressList.names[1] || null,
+                                    district: homeAddressList.names[2] || null,
+                                    street: homeAddressList.names[3] || null
+                                },
+                                workAddressInfo:{
+                                    province:  workAddressList.names[0] || null,
+                                    city: workAddressList.names[1] || null,
+                                    district: workAddressList.names[2] || null,
+                                    street: workAddressList.names[3] || null
+                                }
+                            });
+                            var jsonData = JSON.stringify(values)+";"+patientDialogType;
+                            if(picHtml == 0){
+                                updatePatient(jsonData);
+//                        updatePatient(JSON.stringify(values));
+                            }else{
+                                var upload = self.$patientImgUpload.instance;
+                                var image = upload.getFiles().length;
+                                if(image){
+                                    upload.options.formData.patientJsonData =   encodeURIComponent(jsonData);
+                                    upload.upload();
+                                    win.parent.patientDialogRefresh();
+                                }else{
+                                    updatePatient(jsonData);
+                                }
+                            }
+                        }else{
+                            return
+                        }
                     }
+
                 });
 
                 //重置密码

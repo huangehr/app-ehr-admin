@@ -196,7 +196,7 @@
                             var keyVal = item.keyVal || "";
                             resultHtml+='<div class="h-40 div-item" data-id="'+item.id+'" data-code="'+mainCode+'"  data-name="'+item.name+'" >'+
                                     '<div class="div-main-content">'+mainCode+'</div>'+
-                                    '<div class="div-main-content">'+item.name+'</div>'+
+                                    '<div class="div-main-content" title="'+item.name+'">'+item.name+'</div>'+
                                     '<div class="div-main-content">'+
                                     '<input type="text" value="'+dictSql+'" class="required inp-dictSql">'+
                                     '</div>'+

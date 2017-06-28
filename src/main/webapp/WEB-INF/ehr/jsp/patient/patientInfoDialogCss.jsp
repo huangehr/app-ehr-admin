@@ -38,4 +38,10 @@
     height: 22px;
     line-height: 22px;
   }
+  .h-40{height:40px;}
+  .div-header{width: 70%;height: 40px;text-align: center;line-height: 40px;background: #EDF6FA;font-weight: bold;border-bottom: 1px solid #DFDFDF;border-right: 1px solid #DFDFDF;float: left;}
+  .div-opera-header{width: 30%;height: 40px;text-align: center;line-height: 40px;background: #EDF6FA;font-weight: bold;border-bottom: 1px solid #DFDFDF;border-right: 1px solid #DFDFDF;float: left;}
+  .div-main-content{width: 70%;height: 40px;text-align: center;line-height: 40px;border-bottom: 1px solid #DFDFDF;border-right: 1px solid #DFDFDF;float: left;font-size: 12px;overflow: hidden;}
+  .div-delete-content{width: 30%; height: 40px; border-bottom: 1px solid #DFDFDF; border-right: 1px solid #DFDFDF;float: left;text-align: center;  padding-top: 5px;}
+
 </style>
