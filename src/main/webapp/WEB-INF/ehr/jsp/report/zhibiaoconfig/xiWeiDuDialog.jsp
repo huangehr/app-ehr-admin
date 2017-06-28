@@ -21,13 +21,13 @@
                 <input type="text" id="inp_name" class="required ajax useTitle max-length-50 validate-special-char"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
             </div>
         </div>
-        <div class="m-form-group">
-            <label>类型：</label>
+        <%--<div class="m-form-group">--%>
+            <%--<label>类型：</label>--%>
 
-            <div class="l-text-wrapper m-form-control essential f-pr0">
-                <input type="text" id="inp_type" class="required"  required-title=<spring:message code="lbl.must.input"/> placeholder="请选择类型" data-type="select" data-attr-scan="type">
-            </div>
-        </div>
+            <%--<div class="l-text-wrapper m-form-control essential f-pr0">--%>
+                <%--<input type="text" id="inp_type" class="required"  required-title=<spring:message code="lbl.must.input"/> placeholder="请选择类型" data-type="select" data-attr-scan="type">--%>
+            <%--</div>--%>
+        <%--</div>--%>
         <div class="m-form-group">
             <label>状态：</label>
 

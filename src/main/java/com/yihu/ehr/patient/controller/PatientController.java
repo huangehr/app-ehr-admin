@@ -60,7 +60,7 @@ public class PatientController extends BaseUIController {
     }
 
     @RequestMapping("patientDialogType")
-    public Object patientDialogType(String idCardNo, String patientDialogType, Model model,HttpSession session) throws IOException {
+    public Object patientDialogType(String idCardNo, String patientDialogType, String userId, Model model,HttpSession session) throws IOException {
         String url = "";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -99,10 +99,12 @@ public class PatientController extends BaseUIController {
                 if (envelop.isSuccessFlg()) {
                     model.addAttribute("patientModel", resultStr);
                     if (patientDialogType.equals("updatePatient")) {
+                        model.addAttribute("userId", userId);
                         model.addAttribute("contentPage", "patient/patientInfoDialog");
                         //return "generalView";
                         return "simpleView";
                     } else if (patientDialogType.equals("patientInfoMessage")) {
+                        model.addAttribute("userId", userId);
                         model.addAttribute("contentPage", "patient/patientBasicInfoDialog");
                         return "simpleView";
                     }
@@ -460,7 +462,7 @@ public class PatientController extends BaseUIController {
      */
     @RequestMapping("/PatientCardByUserId")
     @ResponseBody
-    public Object searchUserCards(String ownerIdcard,int page, int rows) {
+    public Object searchUserCards(String ownerIdcard) {
         String url = "/PatientCardByUserId";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -476,8 +478,8 @@ public class PatientController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
-        params.put("page", page);
-        params.put("size", rows);
+        params.put("page", 1);
+        params.put("size", 999);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
@@ -511,7 +513,7 @@ public class PatientController extends BaseUIController {
     //获取所有平台应用下的角色组用于下拉框
     @RequestMapping("/appRolesList")
     @ResponseBody
-    public Object getAppRolesList(){
+    public Object getAppRolesList(String userId){
         String roleType = "";//用户角色类型字典值
         String appSourceType = "";//应用类型字典值
         try {
@@ -519,12 +521,13 @@ public class PatientController extends BaseUIController {
             Map<String,Object> params = new HashMap<>();
             params.put("type",roleType);
             params.put("source_type",appSourceType);
+            params.put("user_id",userId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
             envelop.getDetailModelList();
-            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
-                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
-            }
+//            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
+//                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
+//            }
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
@@ -534,6 +537,7 @@ public class PatientController extends BaseUIController {
 
     //获取账号授权角色组
     @RequestMapping("/appUserRolesIds")
+    @ResponseBody
     public Object appFeatureInitial(String userId){
         //获取用户所属角色
         Envelop envelop = new Envelop();
@@ -568,7 +572,7 @@ public class PatientController extends BaseUIController {
         params.put("userId",userId);
         params.put("jsonData",jsonData);
         try {
-            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
             if (envelop.isSuccessFlg()) {

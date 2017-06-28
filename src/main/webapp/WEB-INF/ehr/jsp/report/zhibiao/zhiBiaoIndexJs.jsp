@@ -53,23 +53,23 @@
                                         str = '';
                                     if (sta == '-1') {
                                         str = '已删除'
-                                    }
-                                    if (sta == '0') {
+                                    }else if (sta == '0') {
                                         str = '不可用'
-                                    }
-                                    if (sta == '1') {
+                                    }else if (sta == '1') {
                                         str = '正常'
                                     }
                                     return str;
                                 }, isAllowHide: false, align: 'center'},
-                                {display: '存储方式', name: 'dataLevelName', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '存储方式', name: 'dataLevelName', width: '5%', isAllowHide: false, align: 'left'},
                                 {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                                 {
-                                    display: '操作', name: 'operator', width: '20%', align: 'center',render: function (row) {
+                                    display: '操作', name: 'operator', width: '30%', align: 'center',render: function (row) {
                                     var html = '';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/deleteTjDataSave"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:execu", row.id) + '">任务执行</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:result:selectResult", row.id) + '">结果查询</a></sec:authorize>';
                                     return html;
                                 }
                                 }
@@ -135,7 +135,6 @@
                                 dataModel.updateRemote('${contextRoot}/tjQuota/deleteTjDataSave', {
                                     data: {tjQuotaId: parseInt(id)},
                                     success: function (data) {
-                                        debugger
                                         if(data.successFlg){
                                             $.Notice.success('删除成功！');
                                             dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
@@ -166,6 +165,34 @@
 
                             }
                         });
+                    });
+
+                    $.subscribe('zhibiao:execu', function (event, id) {
+                        $.Notice.confirm('确认要执行所选指标？', function (r) {
+                            if (r) {
+                                debugger
+                                var dataModel = $.DataModel.init();
+                                dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
+                                    data: {tjQuotaId: parseInt(id)},
+                                    success: function (data) {
+                                        if(data.successFlg){
+                                            $.Notice.success('执行成功！');
+                                        }else{
+                                            $.Notice.error(data.errorMsg);
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                    });
+
+                    $.subscribe('zhibiao:result:selectResult', function (event, id) {
+                        var url = '${contextRoot}/tjQuota/initialResult';
+                        var urlParms = {
+                            tjQuotaId:id
+                        }
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url, urlParms);
                     });
 
                 }

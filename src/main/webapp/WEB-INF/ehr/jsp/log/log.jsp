@@ -11,7 +11,7 @@
                 <input type="text" id="inp_start_time" class="f-h28 f-w160" placeholder="起始时间"
                        data-attr-scan="startTime">
             </div>
-            <div class="m-form-control" style="margin-top: 10px;font-weight:bold;font-size:35px;"> ~</div>
+            <div class="m-form-control" style="margin-top: -15px;font-weight:bold;font-size:35px;"> ~</div>
             <div class="m-form-control">
                 <input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="截止时间" data-attr-scan="endTime">
             </div>
