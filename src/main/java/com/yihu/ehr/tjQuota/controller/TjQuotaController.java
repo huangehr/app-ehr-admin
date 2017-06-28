@@ -160,7 +160,7 @@ public class TjQuotaController extends BaseUIController {
     }
 
     /**
-     * 删除消息
+     * 删除
      * @param tjQuotaId
      * @return
      */
@@ -265,4 +265,84 @@ public class TjQuotaController extends BaseUIController {
         }
         return  false;
     }
+
+
+
+    /**
+     * 指标执行
+     * @param tjQuotaId
+     * @return
+     */
+    @RequestMapping("execuQuota")
+    @ResponseBody
+    public Object execuQuota(Long tjQuotaId) {
+        String url = "/job/execuJob";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        params.put("id", tjQuotaId);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            result = mapper.readValue(resultStr, Envelop.class);
+            if (result.equals("true")) {
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+            }
+            return result;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+    /**
+     * 指标结果页
+     * @param model
+     * @return
+     */
+    @RequestMapping("initialResult")
+    public String initialResult(Model model,long tjQuotaId) {
+        model.addAttribute("contentPage", "/report/zhibiao/resultIndex");
+        model.addAttribute("id", tjQuotaId);
+        return "pageView";
+    }
+
+
+    /**
+     * 指标执行结果
+     * @param tjQuotaId
+     * @return
+     */
+    @RequestMapping("selectQuotaResult")
+    @ResponseBody
+    public Object selectQuotaResult(Long tjQuotaId,String startTime,String endTime,String orgName,String location) {
+        String url = "/tj/tjGetQuotaResult";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        params.put("id", tjQuotaId);
+        params.put("startTime", startTime);
+        params.put("endTime", endTime);
+        params.put("orgName", orgName);
+        params.put("location", location);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            result = mapper.readValue(resultStr, Envelop.class);
+            return result;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+
+
+
 }
