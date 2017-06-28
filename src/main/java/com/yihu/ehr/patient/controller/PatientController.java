@@ -524,9 +524,9 @@ public class PatientController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
             envelop.getDetailModelList();
-            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
-                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
-            }
+//            if(envelop.isSuccessFlg()&&envelop.getDetailModelList().size()>0){
+//                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
+//            }
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
@@ -571,7 +571,7 @@ public class PatientController extends BaseUIController {
         params.put("userId",userId);
         params.put("jsonData",jsonData);
         try {
-            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             ObjectMapper mapper = new ObjectMapper();
             Envelop envelop = mapper.readValue(resultStr, Envelop.class);
             if (envelop.isSuccessFlg()) {
