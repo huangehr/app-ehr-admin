@@ -105,7 +105,7 @@
 						data:{dataJson:JSON.stringify(values),deptId:deptId,mode:mode},
 						success: function(data) {
 							if (data.successFlg) {
-								parent.reloadMasterUpdateGrid(deptId);
+								reloadMasterUpdateGrid(deptId);
 								$.Notice.success('操作成功');
 								win.closeRsInfoDialog();
 							} else {

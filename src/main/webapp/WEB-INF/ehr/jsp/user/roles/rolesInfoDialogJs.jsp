@@ -102,7 +102,7 @@
 						data:{dataJson:JSON.stringify(values),mode:mode},
 						success: function(data) {
 							if (data.successFlg) {
-								parent.reloadRolesGrid();
+								reloadRolesGrid();
 								$.Notice.success('操作成功');
 								win.closeRolesInfoDialog();
 							} else {

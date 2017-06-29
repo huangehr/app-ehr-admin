@@ -94,11 +94,11 @@
 							success: function (data) {
 								if(data.successFlg){
 									if(!Util.isStrEquals(mode,'new')){
-										parent.updateParamMasterInfo(rowIndex,data.obj);
+										updateParamMasterInfo(rowIndex,data.obj);
 										win.closeParamMasterInfoDialog();
 										return
 									}
-									parent.addParamMasterInfo(data.obj);
+									addParamMasterInfo(data.obj);
 									win.closeParamMasterInfoDialog();
 								}else{
 									$.Notice.error(data.errorMsg);

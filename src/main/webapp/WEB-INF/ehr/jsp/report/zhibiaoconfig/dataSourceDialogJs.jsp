@@ -139,11 +139,11 @@
                             async: false,
                             success: function (data) {
                                 if (data.successFlg) {
-                                    win.parent.closeAddWeiduInfoDialog(function () {
+                                   closeAddWeiduInfoDialog(function () {
                                         if(self.$weiDuId.val()!="" && self.$weiDuId.val()!=undefined){//修改
-                                            win.parent.$.Notice.success('修改成功');
+                                            $.Notice.success('修改成功');
                                         }else{
-                                            win.parent.$.Notice.success('新增成功');
+                                           $.Notice.success('新增成功');
                                         }
                                     });
                                 } else {

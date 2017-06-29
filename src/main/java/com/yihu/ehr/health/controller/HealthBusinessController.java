@@ -209,4 +209,22 @@ public class HealthBusinessController extends BaseUIController {
         }
         return  false;
     }
+
+    @RequestMapping("/getAllHealthBusinessList")
+    @ResponseBody
+    public Object getAllHealthBusinessList(){
+        String url = "/healthBusiness/list";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
+            return resultStr;
+        } catch (Exception ex) {
+            LogService.getLogger(HealthBusinessController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 }

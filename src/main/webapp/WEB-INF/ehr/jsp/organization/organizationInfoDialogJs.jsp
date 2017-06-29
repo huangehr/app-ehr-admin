@@ -278,20 +278,20 @@
                             uploader.options.formData.objectId = orgCode;
                             uploader.options.server="${contextRoot}/file/upload/image";
                             uploader.options.successCallBack=function(){
-                                win.parent.closeAddOrgInfoDialog(function () {
-                                    win.parent.$.Notice.success('保存成功！');
+                               closeAddOrgInfoDialog(function () {
+                                    $.Notice.success('保存成功！');
                                 });
                             }
                             if (data.successFlg) {
                                 if(uploader.getFiles().length>0){
                                     $(".uploadBtn").click();
                                 }else{
-                                    win.parent.closeAddOrgInfoDialog(function () {
-                                        win.parent.$.Notice.success('保存成功！');
+                                    closeAddOrgInfoDialog(function () {
+                                        $.Notice.success('保存成功！');
                                     });
                                 }
                             } else {
-                                win.parent.closeAddOrgInfoDialog(function () {
+                                closeAddOrgInfoDialog(function () {
                                 });
                                 window.top.$.Notice.error(data.errorMsg);
                             }
@@ -319,15 +319,15 @@
                                 $('#logoUrl').val(returndata);
                                 self.$logoUrl.val(returndata);
 //                                alert("上传成功");
-                                win.parent.$.Notice.success('上传成功');
+                                $.Notice.success('上传成功');
                             }else{
 //                                alert("上传失败");
-                                win.parent.$.Notice.success('上传失败');
+                                $.Notice.success('上传失败');
                             }
                         },
                         error: function (returndata) {
 //                            alert("上传失败");
-                            win.parent.$.Notice.success('上传失败');
+                           $.Notice.success('上传失败');
                         }
                     });
                 }

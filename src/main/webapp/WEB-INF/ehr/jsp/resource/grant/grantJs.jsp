@@ -4,7 +4,7 @@
 <script type="text/javascript">
 
     (function ($, win) {
-        var treeData = parent.getTreeData();
+        var treeData = getTreeData();
         var resourceId = '${resourceId}';
         var urls = {grant: "${contextRoot}/resource/grant/saveGrantApp"}
 

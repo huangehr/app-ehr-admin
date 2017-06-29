@@ -12,7 +12,7 @@
         var zhiBiaoInfo = null;
         var initCode = "";
         var initName = "";
-        var jValidation = win.parent.$.jValidation;  // 表单校验工具类
+        var jValidation = $.jValidation;  // 表单校验工具类
         var dataModel = $.DataModel.init();
         var dataSourceSelectedVal = "";
         var dataStorageSelectedVal = "";
@@ -312,7 +312,7 @@
                     if(num != null && num.length>0) {
                         val = "0 0/" + num + " * * * ?";
                     } else {
-                        win.parent.$.Notice.error('请填写分钟数');
+                        $.Notice.error('请填写分钟数');
                         return false;
                     }
                 }
@@ -321,7 +321,7 @@
                     if(num!=null && num.length>0) {
                         val = "0 "+ minute +" 0/" + num + " * * ?";
                     } else {
-                        win.parent.$.Notice.error('请填写小时数');
+                        $.Notice.error('请填写小时数');
                         return false;
                     }
                 }
@@ -330,7 +330,7 @@
                     if(num!=null && num.length>0) {
                         val = "0 "+ minute +" "+ hour +" 1/" + num + " * ?";
                     } else {
-                        win.parent.$.Notice.error('请填写天数');
+                        $.Notice.error('请填写天数');
                         return false;
                     }
                 }
@@ -345,7 +345,7 @@
                         }
                     });
                     if ($week_day.length <= 0) {
-                        win.parent.$.Notice.error('请填选择周');
+                        $.Notice.error('请填选择周');
                         return false;
                     }
 
@@ -369,7 +369,7 @@
                         {
                             val = "0 "+ minute +" "+ hour +" "+num+" * ?";
                         } else {
-                            win.parent.$.Notice.error('请填写天数');
+                            $.Notice.error('请填写天数');
                             return false;
                         }
                     }
@@ -477,11 +477,11 @@
                             type: 'post',
                             success: function (data) {
                                 if (data.successFlg) {
-                                    win.parent.closeZhiBiaoInfoDialog(function () {
+                                    closeZhiBiaoInfoDialog(function () {
                                         if(id != '-1'){//修改
-                                            win.parent.$.Notice.success('修改成功');
+                                            $.Notice.success('修改成功');
                                         }else{
-                                            win.parent.$.Notice.success('新增成功');
+                                            $.Notice.success('新增成功');
                                         }
                                     });
                                 } else {
@@ -500,7 +500,7 @@
                     console.log('a');
                     if ($inpZhixingDate.val() == '') {
                         $inpZhixingDate.parent().addClass('validation-failed');
-                        win.parent.$.Notice.error('请选择日期');
+                        $.Notice.error('请选择日期');
                         return;
                     }
                     $('#execTime').val($inpZhixingDate.val());

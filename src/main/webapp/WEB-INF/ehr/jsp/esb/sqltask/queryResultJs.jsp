@@ -29,7 +29,7 @@
 			},
 			bindEvents: function () {
 				queryResult.$cancelBtn.click(function(){
-					parent.closeResultInfoDialog();
+					closeResultInfoDialog();
 				});
 			}
 		};

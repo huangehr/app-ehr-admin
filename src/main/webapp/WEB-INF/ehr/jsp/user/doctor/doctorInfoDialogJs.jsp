@@ -72,10 +72,10 @@
                 });
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     if(!resp.successFlg)
-                        win.parent.$.Notice.error(resp.errorMsg);
+                        $.Notice.error(resp.errorMsg);
                     else
-                        win.parent.$.Notice.success('修改成功');
-                    win.parent.closeAddDoctorInfoDialog(function () {});
+                        $.Notice.success('修改成功');
+                    closeAddDoctorInfoDialog(function () {});
                 });
             },//树形结构todo
             initForm: function () {

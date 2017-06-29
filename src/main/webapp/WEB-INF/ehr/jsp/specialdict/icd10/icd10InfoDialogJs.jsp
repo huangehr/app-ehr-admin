@@ -131,7 +131,7 @@
 							data:  {icd10JsonData:JSON.stringify(icd10Model),mode:mode},
 							success: function (data) {
 								if(data.successFlg){
-									parent.reloadIcd10InfoGrid();
+									reloadIcd10InfoGrid();
 									$.Notice.success('操作成功');
 									win.closeIcd10InfoDialog();
 								}else{

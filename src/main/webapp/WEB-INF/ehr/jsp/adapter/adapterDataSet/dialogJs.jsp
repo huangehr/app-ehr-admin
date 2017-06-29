@@ -8,8 +8,8 @@
         var infoForm = null;
         var jValidation = $.jValidation;
 //        var dialog = frameElement.dialog;
-        var adapterPlanId = parent.getAdapterPlanId();
-        var parentId = parent.getParentId();
+        var adapterPlanId = getAdapterPlanId();
+        var parentId = getParentId();
         var mode = '${mode}';
         var info = JSON.parse('${model}');
         var dictUrl = [

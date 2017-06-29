@@ -56,8 +56,8 @@
 							data:  {dataJson:JSON.stringify(hisModel)},
 							success: function (data) {
 								if(data.successFlg){
-									parent.reloadMasterUpdateGrid();
-									parent.closeHisInfoDialog('1');
+									reloadMasterUpdateGrid();
+									closeHisInfoDialog('1');
 								}else{
 									$.Notice.error(data.errorMsg);
 								}
@@ -69,7 +69,7 @@
 				});
 
 				self.$cancelBtn.click(function(){
-					parent.closeHisInfoDialog();
+					closeHisInfoDialog();
 				});
 			}
 		};

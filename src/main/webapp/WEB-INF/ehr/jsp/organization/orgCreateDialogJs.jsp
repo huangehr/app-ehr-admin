@@ -76,7 +76,7 @@
                 });
                 this.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     $.ligerDialog.alert("保存成功", function () {
-                        win.parent.closeAddOrgInfoDialog(function () {
+                       closeAddOrgInfoDialog(function () {
 
                         });
                     });
@@ -260,16 +260,16 @@
                             if(returndata != "fail"){
                                 $('#logoUrl').val(returndata);
                                 self.$logoUrl.val(returndata);
-                                win.parent.$.Notice.success('上传成功');
+                                $.Notice.success('上传成功');
 //                                alert("上传成功");
                             }else{
 //                                alert("上传失败");
-                                win.parent.$.Notice.success('上传失败');
+                                $.Notice.success('上传失败');
                             }
                         },
                         error: function (returndata) {
 //                            alert("上传失败");
-                            win.parent.$.Notice.success('上传失败');
+                            $.Notice.success('上传失败');
                         }
                     });
                 }
@@ -288,8 +288,8 @@
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
                             uploader.options.successCallBack=function(){
-                                win.parent.closeAddOrgInfoDialog(function () {
-                                    win.parent.$.Notice.success('保存成功！');
+                                closeAddOrgInfoDialog(function () {
+                                    $.Notice.success('保存成功！');
                                 });
                             }
                             uploader.options.formData.objectId = data.obj.orgCode;
@@ -298,8 +298,8 @@
                                     uploader.options.server="${contextRoot}/file/upload/image";
                                     $(".uploadBtn").click();
                                 }else{
-                                    win.parent.closeAddOrgInfoDialog(function () {
-                                        win.parent.$.Notice.success('保存成功！');
+                                    closeAddOrgInfoDialog(function () {
+                                       $.Notice.success('保存成功！');
                                     });
                                 }
                             } else {

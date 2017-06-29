@@ -114,7 +114,7 @@
 							data:  {dataJson:JSON.stringify(model),mode:mode},
 							success: function (data) {
 								if(data.successFlg){
-									parent.reloadMasterUpdateGrid();
+									reloadMasterUpdateGrid();
 									$.Notice.success('操作成功');
 									win.closeInterfaceInfoDialog();
 								}else{

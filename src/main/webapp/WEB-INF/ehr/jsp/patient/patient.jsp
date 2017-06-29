@@ -30,7 +30,7 @@
             <%--new add--%>
             <div class="m-form-control f-ml10 f-mb10">
                 <!--开始时间-->
-                <input type="text" id="star_time" class="l-text-field" data-attr-scan="searchRegisterTimeStart" placeholder="注册其实时间"/>
+                <input type="text" id="star_time" class="l-text-field" data-attr-scan="searchRegisterTimeStart" placeholder="注册起始时间"/>
             </div>
 
             <%--new add--%>
