@@ -76,10 +76,10 @@
                 });
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     if(!resp.successFlg)
-                        win.parent.$.Notice.error(resp.errorMsg);
+                        $.Notice.error(resp.errorMsg);
                     else
-                        win.parent.$.Notice.success('新增成功');
-                        win.parent.closeAddDoctorInfoDialog(function () {
+                        $.Notice.success('新增成功');
+                        closeAddDoctorInfoDialog(function () {
                         });
                 });
             },
@@ -165,8 +165,8 @@
                         data: {doctorModelJsonData: doctorModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddDoctorInfoDialog(function () {
-                                    win.parent.$.Notice.success('医生新增成功');
+                                closeAddDoctorInfoDialog(function () {
+                                    $.Notice.success('医生新增成功');
                                 });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
