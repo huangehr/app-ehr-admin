@@ -283,13 +283,10 @@ public class TjQuotaController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-
         params.put("id", tjQuotaId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            result = mapper.readValue(resultStr, Envelop.class);
-            if (result.equals("true")) {
+            if (resultStr.equals("true")) {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
