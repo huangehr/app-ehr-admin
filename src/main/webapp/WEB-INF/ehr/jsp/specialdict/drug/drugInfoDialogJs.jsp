@@ -133,7 +133,7 @@
 							success: function (data) {
 								debugger
 								if(data.successFlg){
-									parent.reloadDrugInfoGrid();
+									reloadDrugInfoGrid();
 									$.Notice.success('操作成功');
 									win.closeDrugInfoDialog();
 								}else{

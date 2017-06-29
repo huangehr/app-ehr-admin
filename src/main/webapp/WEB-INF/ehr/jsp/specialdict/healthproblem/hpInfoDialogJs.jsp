@@ -97,7 +97,7 @@
 							data:  {dictJson:JSON.stringify(hpgModel),mode:mode},
 							success: function (data) {
 								if(data.successFlg){
-									parent.reloadHpInfoGrid();
+									reloadHpInfoGrid();
 									$.Notice.success('操作成功');
 									win.closeHpInfoDialog();
 								}else{

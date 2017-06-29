@@ -10,7 +10,7 @@
         }
 
         var model = ${model};
-        var dict = parent.getSelected();
+        var dict = getSelected();
         model.dictCode = dict.code;
         model.dictId = dict.id;
         var mode = '${mode}';

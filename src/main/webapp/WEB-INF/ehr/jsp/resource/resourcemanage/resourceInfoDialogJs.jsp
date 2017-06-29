@@ -145,7 +145,7 @@
 						data:{dataJson:JSON.stringify(values),mode:mode},
 						success: function(data) {
 							if (data.successFlg) {
-								parent.reloadMasterUpdateGrid(categoryIdNew);
+								reloadMasterUpdateGrid(categoryIdNew);
 								$.Notice.success('操作成功');
 								win.closeRsInfoDialog();
 							} else {
