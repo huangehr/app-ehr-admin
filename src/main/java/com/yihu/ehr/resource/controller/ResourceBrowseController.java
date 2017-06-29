@@ -2,6 +2,7 @@ package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
+import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -304,5 +305,47 @@ public class ResourceBrowseController extends BaseUIController {
             e.printStackTrace();
         }
         return value;
+    }
+
+    @RequestMapping("browseBefore")
+    public String resourceBrowseBefore(Model model) {
+        Envelop envelop = new Envelop();
+        String resultStr = "";
+        List<RsCategoryModel> list=new ArrayList<RsCategoryModel>();
+        try {
+            RsCategoryModel rsModel=new RsCategoryModel();
+            rsModel.setId("0dae002159535497b3865e129433e933");
+            rsModel.setName("全员人口个案库");
+            list.add(rsModel);
+            rsModel=new RsCategoryModel();
+            rsModel.setId("0dae0021595354a8b3865e129433e934");
+            rsModel.setName("医疗资源库");
+            list.add(rsModel);
+            rsModel=new RsCategoryModel();
+            rsModel.setId("0dae0021595354c4b3865e129433e935");
+            rsModel.setName("健康档案库");
+            list.add(rsModel);
+            rsModel=new RsCategoryModel();
+            rsModel.setId("0dae0021595354cfb3865e129433e936");
+            rsModel.setName("电子病历库");
+            list.add(rsModel);
+            rsModel=new RsCategoryModel();
+            rsModel.setId("0dae0021595354d6b3865e129433e937");
+            rsModel.setName("生命体征库");
+            list.add(rsModel);
+            envelop.setDetailModelList(list);
+            envelop.setSuccessFlg(true);
+            resultStr =  toJson(envelop);
+            model.addAttribute("list",list);
+            model.addAttribute("resultStr",resultStr);
+            model.addAttribute("contentPage", "/resource/browse/resourceBrowseBefore");
+
+            return "pageView";
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("字典查询失败");
+        }
+        model.addAttribute("contentPage", "/resource/browse/resourceBrowseBefore");
+        return "pageView";
     }
 }

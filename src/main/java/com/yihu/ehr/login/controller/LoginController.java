@@ -61,6 +61,8 @@ public class LoginController extends BaseUIController {
     private String clientId;
     @Value("${app.qcReportClientId}")
     private String qcReportClientId;
+    @Value("${app.resourceBrowseClientId}")
+    private String resourceBrowseClientId;
 
     @RequestMapping(value = "")
     public String login(Model model) {
@@ -103,6 +105,8 @@ public class LoginController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             if ("1".equals(isQcReport)){
                 params.put("clientId", qcReportClientId);
+            }else if ("2".equals(isQcReport)){
+                params.put("clientId", resourceBrowseClientId);
             }else {
                 params.put("clientId", clientId);
             }
@@ -520,5 +524,16 @@ public class LoginController extends BaseUIController {
 //        }
 //
 //    }
+
+    /**
+     *  资源视图-oauth2验证集成
+     *
+     */
+    @RequestMapping(value = "signinResource")
+    public String signinResource(Model model) {
+        model.addAttribute("contentPage", "login/signinResource");
+        model.addAttribute("successFlg", true);
+        return "generalView";
+    }
 
 }

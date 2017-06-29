@@ -40,7 +40,7 @@
 	<div class="m-form-group">
 		<label >发卡机构:</label>
 		<div class="l-text-wrapper m-form-control ">
-			<label class="col">${userCards.ownerName}</label>
+			<label class="col">${userCards.releaseOrg}</label>
 		</div>
 		<label>发卡时间：</label>
 		<div class="m-form-control">
