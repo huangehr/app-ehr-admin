@@ -149,7 +149,7 @@
 										dialog.close();
 										if (data.successFlg) {
 											masters.reloadGrid();
-											win.parent.$.Notice.success('CDA版本新增成功');
+											$.Notice.success('CDA版本新增成功');
 										} else {
 											window.top.$.Notice.error('CDA版本新增失败');
 										}

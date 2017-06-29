@@ -65,7 +65,7 @@
                 this.$btnSave.click(function () {
                     self.$btnSave.attr('disabled','disabled');
                     var values = self.$form.Fields.getValues();
-                    var strVersionCode = parent.getStrVersion();
+                    var strVersionCode = getStrVersion();
                     var data = {
                         cdaVersion:strVersionCode,
                         dictId:values.dictId,

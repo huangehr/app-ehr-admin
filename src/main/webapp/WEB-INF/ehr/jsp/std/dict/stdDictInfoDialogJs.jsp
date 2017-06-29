@@ -68,7 +68,7 @@
             },
             initDDL: function (mode, target) {
                 var dataModel = $.DataModel.init();
-                var strVersionCode = parent.getStrVersion();
+                var strVersionCode = getStrVersion();
                 var url = '';
                 if(mode==1){
                     url = "${contextRoot}/cdadict/getStdSourceList";
@@ -144,7 +144,7 @@
                 this.$btnSave.click(function () {
                     self.$btnSave.attr('disabled','disabled');
                     var values = self.$form.Fields.getValues();
-                    var strVersionCode = parent.getStrVersion();
+                    var strVersionCode = getStrVersion();
                     var data = {
                         cdaVersion:strVersionCode,
                         dictId:values.id,
