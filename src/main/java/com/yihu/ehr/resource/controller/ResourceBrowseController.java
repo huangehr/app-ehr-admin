@@ -4,9 +4,11 @@ import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Cell;
 import jxl.Workbook;
@@ -347,5 +349,21 @@ public class ResourceBrowseController extends BaseUIController {
         }
         model.addAttribute("contentPage", "/resource/browse/resourceBrowseBefore");
         return "pageView";
+    }
+
+    //获取所有平台应用下的角色组用于下拉框
+    @RequestMapping("/resourceBrowseTree")
+    @ResponseBody
+    public Object getResourceBrowseTree(){
+        try {
+            String url = "/resourceBrowseTree";
+            Map<String,Object> params = new HashMap<>();
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+//            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceBrowseController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
     }
 }
