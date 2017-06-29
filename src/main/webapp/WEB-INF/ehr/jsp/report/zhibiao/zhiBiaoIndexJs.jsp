@@ -44,10 +44,10 @@
                                 {display: 'id', name: 'id', hide: true},
                                 {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: 'cron表达式', name: 'cron', width: '8%', isAllowHide: false, align: 'left'},
+                                {display: '执行时间', name: 'execTime', width: '8%', isAllowHide: false, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
-                                {display: '任务类', name: 'jobClazz', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '任务类', name: 'jobClazz', width: '8%', isAllowHide: false, align: 'left'},
                                 {display: '状态', name: 'status', width: '5%', render: function (row) {
                                     var sta = row.status,
                                         str = '';
@@ -60,16 +60,17 @@
                                     }
                                     return str;
                                 }, isAllowHide: false, align: 'center'},
-                                {display: '存储方式', name: 'dataLevelName', width: '5%', isAllowHide: false, align: 'left'},
-                                {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '存储方式', name: 'dataLevelName', width: '7%', isAllowHide: false, align: 'left'},
+                                {display: '备注', name: 'remark', width: '8%', isAllowHide: false, align: 'left'},
                                 {
-                                    display: '操作', name: 'operator', width: '30%', align: 'center',render: function (row) {
+                                    display: '操作', name: 'operator', width: '31%', align: 'center',render: function (row) {
                                     var html = '';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/deleteTjDataSave"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:execu", row.id) + '">任务执行</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:result:selectResult", row.id) + '">结果查询</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
                                     return html;
                                 }
                                 }
@@ -190,6 +191,15 @@
                         var url = '${contextRoot}/tjQuota/initialResult';
                         var urlParms = {
                             tjQuotaId:id
+                        }
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url, urlParms);
+                    });
+
+                    $.subscribe('zhibiao:log:quotaLog', function (event, quotaCode) {
+                        var url = '${contextRoot}/tjQuota/initialQuotaLog';
+                        var urlParms = {
+                            quotaCode:quotaCode
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, urlParms);

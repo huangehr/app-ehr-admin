@@ -5,6 +5,7 @@ import com.yihu.ehr.agModel.tj.TjQuotaModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -348,7 +349,46 @@ public class TjQuotaController extends BaseUIController {
         }
     }
 
+    /**
+     * 指标日志查询
+     * @param model
+     * @return
+     */
+    @RequestMapping("initialQuotaLog")
+    public String initialQuotaLog(Model model,String quotaCode) {
+        model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoLogIndex");
+        model.addAttribute("quotaCode", quotaCode);
+        return "pageView";
+    }
 
+    /**
+     * 获取指标日志信息
+     * @param
+     * @return
+     */
+    @RequestMapping("queryQuotaLog")
+    @ResponseBody
+    public Object queryQuotaLog(String quotaCode, String startTime, String endTime,int page, int rows) throws Exception{
+        String url = "/tj/getTjQuotaLogList";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
 
-
+        params.put("startTime", startTime);
+        params.put("endTime", endTime);
+        params.put("quotaCode", quotaCode);
+        params.put("fields", "");
+        params.put("sorts", "");
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception ex) {
+            LogService.getLogger(TjQuotaController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 }
