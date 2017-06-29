@@ -10,6 +10,7 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +42,8 @@ public class TjQuotaController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     /*
@@ -319,19 +322,25 @@ public class TjQuotaController extends BaseUIController {
      */
     @RequestMapping("selectQuotaResult")
     @ResponseBody
-    public Object selectQuotaResult(Long tjQuotaId,String startTime,String endTime,String orgName,String location) {
-        String url = "/tj/tjGetQuotaResult";
-        String resultStr = "";
+    public Object selectQuotaResult(Long tjQuotaId, int page, int rows,
+                                    String startTime,String endTime,String orgName,String province,String city,String district) {
         Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-
-        params.put("id", tjQuotaId);
-        params.put("startTime", startTime);
-        params.put("endTime", endTime);
-        params.put("orgName", orgName);
-        params.put("location", location);
+        String resultStr = "";
+        String url = "/tj/tjGetQuotaResult";
         try {
+            Map<String, Object> filters = new HashMap<>();
+            filters.put("startTime", startTime);
+            filters.put("endTime", endTime);
+            filters.put("orgName", orgName);
+            filters.put("province", province);
+            filters.put("city", city);
+            filters.put("district", district);
+            Map<String, Object> params = new HashMap<>();
+            params.put("id", tjQuotaId);
+            params.put("pageNo", page);
+            params.put("pageSize", rows);
+            params.put("filters", objectMapper.writeValueAsString(filters));
+            ObjectMapper mapper = new ObjectMapper();
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             result = mapper.readValue(resultStr, Envelop.class);
             return result;

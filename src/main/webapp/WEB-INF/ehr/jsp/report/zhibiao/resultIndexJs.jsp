@@ -27,8 +27,8 @@
                 $endTime: $('#inp_end_time'),
                 init: function () {
                     this.$element.show();
-                    this.$starTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime:true});
-                    this.$endTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime:true});
+                    this.$starTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
+                    this.$endTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
 
                     this.$location.addressDropdown({tabsData:[
                         {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
@@ -92,7 +92,12 @@
                 },
                 reloadGrid: function (curPage) {
                     patientRetrieve.$element.attrScan();
-                    var values = patientRetrieve.$element.Fields.getValues();
+//                    var values = patientRetrieve.$element.Fields.getValues();
+                    var address = patientRetrieve.$element.Fields.location.getValue();
+                    var values = $.extend({}, patientRetrieve.$element.Fields.getValues(),
+                            {province: (address.names[0] == null ? '' : address.names[0])},
+                            {city: (address.names[1] == null ? '' : address.names[1])},
+                            {district: (address.names[2] == null ? '' : address.names[2])});
                     Util.reloadGrid.call(this.grid, '${contextRoot}/tjQuota/selectQuotaResult', values, curPage);
                 },
                 bindEvents: function () {
