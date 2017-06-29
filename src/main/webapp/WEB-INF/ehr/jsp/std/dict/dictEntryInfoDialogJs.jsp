@@ -84,8 +84,8 @@
                             if(data.successFlg){
                                 var app = data.obj;
                                 //调用主页面接口，重新刷新Grid
-                                parent.reloadEntryMasterGrid();
-                                parent.closeDialog('right','保存成功！');
+                                reloadEntryMasterGrid();
+                                closeDialog('right','保存成功！');
                             }else{
                                 if(data.errorMsg){
                                      $.Notice.error(data.errorMsg);
@@ -105,7 +105,7 @@
                 });
 
                 this.$btnCancel.click(function () {
-                    parent.closeDialog('right');
+                    closeDialog('right');
                 });
             },
             validate: function (values) {

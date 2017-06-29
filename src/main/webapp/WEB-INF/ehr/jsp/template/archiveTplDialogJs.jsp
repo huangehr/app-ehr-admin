@@ -182,8 +182,8 @@
                                 success: function (data) {
                                     if (data.successFlg) {
                                         $.Notice.success( msg + '成功');
-                                        parent.reloadGrids();
-                                        parent.closeDialog();
+                                        reloadGrids();
+                                        closeDialog();
                                     } else if(data.errorMsg){
                                         $.Notice.error(data.errorMsg);
                                     }else {
@@ -198,7 +198,7 @@
                     });
 
                     self.$cancelBtn.click(function () {
-                        parent.closeDialog();
+                        closeDialog();
                     });
                 }
 

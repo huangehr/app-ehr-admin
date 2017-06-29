@@ -13,7 +13,7 @@
 			var isFirstPage = true;
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
-				resizeContent();
+//				resizeContent();
 				retrieve.init();
 				appMaster.init();
 				rolesMaster.init();

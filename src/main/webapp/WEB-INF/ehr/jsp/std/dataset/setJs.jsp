@@ -650,8 +650,8 @@
                         if (_res.successFlg) {
                             //alert($.i18n.prop('message.save.success'));
                             $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                                parent.set.list.isReload = true;
-                                parent.set.list.top.dialog_set_detail.close();
+                                set.list.isReload = true;
+                                set.list.top.dialog_set_detail.close();
                             }, null);
                         }
                         else {
@@ -674,7 +674,7 @@
                 }
             });
             $("#btn_close").click(function () {
-                parent.set.list.top.dialog_set_detail.close();
+                set.list.top.dialog_set_detail.close();
             });
         }
     };
@@ -869,8 +869,8 @@
                         var _res = eval(data);
                         if (_res.successFlg) {
                             $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                                parent.set.list.isReload = true;
-                                parent.set.list.top.dialog_set_detail.close();
+                                set.list.isReload = true;
+                                set.list.top.dialog_set_detail.close();
                             }, null);
                         }
                         else {
@@ -920,7 +920,7 @@
                 }
             });
             $("#btn_close").click(function () {
-                parent.set.list.top.dialog_set_detail.close();
+                set.list.top.dialog_set_detail.close();
             });
             //给数据元主键和是否空值的选择
             $("#primaryKey").click(function () {
