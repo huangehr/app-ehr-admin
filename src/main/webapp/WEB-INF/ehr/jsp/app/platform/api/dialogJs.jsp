@@ -141,19 +141,19 @@
                             $.Notice.confirm("保存成功，是否继续编辑接口详细信息？", function (y) {
                                 if(y){
                                     var url = urls.apiEdit + '?treePid=1&treeId=11&mode=modify';
-                                    parent.closeDialog();
+                                    closeDialog();
                                     $("#contentPage").empty();
                                     $("#contentPage").load(url, data.obj);
                                 }else
-                                    parent.closeDialog(undefined, data);
+                                    closeDialog(undefined, data);
                             })
                         }else
-                            parent.closeDialog("保存成功!", data);
+                            closeDialog("保存成功!", data);
                     }});
             });
 
             $('#btn_cancel').click(function () {
-                parent.closeDialog();
+                closeDialog();
             });
         };
 

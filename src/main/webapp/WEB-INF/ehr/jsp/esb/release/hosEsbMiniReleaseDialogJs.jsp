@@ -88,8 +88,8 @@
                         success: function(data) {
                             if(data.successFlg){
                                 var app = data.obj;
-                                parent.reloadMasterGrid();
-                                parent.closeDialog('保存成功！');
+                                reloadMasterGrid();
+                                closeDialog('保存成功！');
                             }else{
                                 $.Notice.error(data.errorMsg);
                             }
@@ -104,7 +104,7 @@
                 });
 
                 this.$btnCancel.click(function () {
-                    parent.closeDialog();
+                    closeDialog();
                 });
             }
         };
