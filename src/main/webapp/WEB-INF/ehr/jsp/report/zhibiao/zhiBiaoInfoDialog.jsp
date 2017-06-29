@@ -14,9 +14,14 @@
         </div>
         <div class="m-form-group ">
             <label>名称：</label>
-
             <div class="l-text-wrapper m-form-control essential ">
                 <input type="text" id="inp_name" class="required useTitle ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
+            </div>
+        </div>
+        <div class="m-form-group">
+            <label>指标类型：</label>
+            <div class="l-text-wrapper m-form-control essential">
+                <input type="text" id="inp_quota_type" class="required ajax useTitle" placeholder="请选择指标类型" data-type="select" data-attr-scan="quotaType" required-title=<spring:message code="lbl.must.input"/>>
             </div>
         </div>
         <div class="m-form-group">

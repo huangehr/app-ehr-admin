@@ -134,6 +134,7 @@ public class TjQuotaController extends BaseUIController {
                     updateTjQuota.setExecType(detailModel.getExecType());
                     updateTjQuota.setExecTime(detailModel.getExecTime());
                     updateTjQuota.setJobClazz(detailModel.getJobClazz());
+                    updateTjQuota.setQuotaType(detailModel.getQuotaType());
                     updateTjQuota.setStatus(detailModel.getStatus());
                     updateTjQuota.setDataLevel(detailModel.getDataLevel());
                     updateTjQuota.setRemark(detailModel.getRemark());
