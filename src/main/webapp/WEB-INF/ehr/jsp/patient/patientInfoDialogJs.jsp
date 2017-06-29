@@ -275,7 +275,7 @@
                     {name: '街道',maxlength: 200}
                 ]});
             },
-            getTreeData: function (id) {
+            getTreeData: function () {
                 var self = this;
                 typeTree = this.$divResourceBrowseTree.ligerSearchTree({
                     nodeWidth: 200,
@@ -308,6 +308,7 @@
 
                     },
                     onSuccess: function (data) {
+                        debugger
                         typeTree.setData(data.detailModelList);
                         self.appendCheckData(data.obj || []);
                     },

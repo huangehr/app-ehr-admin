@@ -42,7 +42,7 @@
                     </div>
                 </sec:authorize>
             </div>
-            <div class="m-form-control f-ml10">
+            <div class="m-form-control f-ml10 m-form-control-fr">
                 <sec:authorize url="/organization/dialog/create">
                     <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span><spring:message code="btn.create"/></span>
