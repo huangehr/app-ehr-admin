@@ -13,7 +13,7 @@
             var Util = $.Util;
             var dictMaster = null;
             var entryMater = null;
-            var jValidation = win.parent.$.jValidation;  // 表单校验工具类
+            var jValidation = $.jValidation;  // 表单校验工具类
             var validator = null;
             var validator1 = null;
             var quotaId = null;

@@ -106,8 +106,8 @@
                         data: {messageRemindModelJsonData: modelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddMessageRemindInfoDialog(function () {
-                                    win.parent.$.Notice.success('新增成功');
+                                closeAddMessageRemindInfoDialog(function () {
+                                    $.Notice.success('新增成功');
                                 });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);

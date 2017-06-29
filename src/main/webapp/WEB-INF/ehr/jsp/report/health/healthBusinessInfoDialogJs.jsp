@@ -12,7 +12,7 @@
         var healthBusinessInfo = null;
         var initCode = "";
         var initName = "";
-        var jValidation = win.parent.$.jValidation;  // 表单校验工具类
+        var jValidation = $.jValidation;  // 表单校验工具类
         var dataModel = $.DataModel.init();
         var id = ${id};
         var validator = null;
@@ -154,11 +154,11 @@
                             type: 'post',
                             success: function (data) {
                                 if (data.successFlg) {
-                                    win.parent.closeZhiBiaoInfoDialog(function () {
+                                    closeZhiBiaoInfoDialog(function () {
                                         if(id != '-1'){//修改
-                                            win.parent.$.Notice.success('修改成功');
+                                            $.Notice.success('修改成功');
                                         }else{
-                                            win.parent.$.Notice.success('新增成功');
+                                            $.Notice.success('新增成功');
                                         }
                                     });
                                 } else {
