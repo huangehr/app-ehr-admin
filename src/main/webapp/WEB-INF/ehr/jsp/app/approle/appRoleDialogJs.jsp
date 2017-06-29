@@ -72,7 +72,7 @@
                     });
                     self.$roleGroupBtn.click(function () {
                         if (Util.isStrEquals(this.id, 'div_cancel_roleGroup_btn'))
-                            return win.parent.closeAppRoleGroupInfoDialog();
+                            return closeAppRoleGroupInfoDialog();
                         if(!validator.validate())
                             return;
                         var appGroupModel = self.$appRoleGroupForm.Fields.getValues();
@@ -82,7 +82,7 @@
                             success: function (data) {
                                 var dialogMsg = Util.isStrEquals(appGroupModel.id, '') ? "新增" : "修改";
                                 if (data.successFlg) {
-                                    win.parent.closeAppRoleGroupInfoDialog();
+                                    closeAppRoleGroupInfoDialog();
                                     $.Notice.success(dialogMsg + '成功');
                                 } else {
                                     $.Notice.error(dialogMsg + '失败');

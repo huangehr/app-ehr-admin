@@ -13,7 +13,7 @@
         }
         var model = ${model};
         var mode = '${mode}';
-        var extParms = parent.getEditParms();//其他信息
+        var extParms = getEditParms();//其他信息
         var hasChildType;
         var getChild = function (){
             if(mode=='modify' || mode=='view' || extParms.upType==-1)
