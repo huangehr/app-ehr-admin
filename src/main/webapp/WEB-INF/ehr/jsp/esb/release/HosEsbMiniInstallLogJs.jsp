@@ -112,7 +112,7 @@
                     if (values.orgCode.keys.length > 1){
                         values.orgCode = values.orgCode.keys[2];
                         if(!isNotEmpty(values.orgCode)){
-                            win.parent.$.Notice.error('请选择机构进行查询！');
+                            $.Notice.error('请选择机构进行查询！');
                         }
                     }
                     else{
