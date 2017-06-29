@@ -94,18 +94,18 @@
                 success: function (data) {
                     if(data.successFlg){
                         if (Util.isStrEquals(patientDialogType, 'addPatient')){
-                            win.parent.$.Notice.success('新增成功');
+                            $.Notice.success('新增成功');
                         }else{
-                            win.parent.$.Notice.success('修改成功');
+                            $.Notice.success('修改成功');
                         }
                     }else{
                         if (Util.isStrEquals(patientDialogType, 'addPatient')){
-                            win.parent.$.Notice.error('新增失败');
+                            $.Notice.error('新增失败');
                         }else{
-                            win.parent.$.Notice.error('修改失败');
+                            $.Notice.error('修改失败');
                         }
                     }
-                    win.parent.patientDialogClose();
+                    patientDialogClose();
                     //dialog.close();
                 }
             })
