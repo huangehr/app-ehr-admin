@@ -44,11 +44,11 @@
                                 {display: 'id', name: 'id', hide: true},
                                 {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '指标类型', name: 'quotaTypeName', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '指标类型', name: 'quotaTypeName', width: '5%', isAllowHide: false, align: 'left'},
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
-                                {display: '任务类', name: 'jobClazz', width: '10%', isAllowHide: false, align: 'left'},
+//                                {display: '任务类', name: 'jobClazz', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '状态', name: 'status', width: '5%', render: function (row) {
                                     var sta = row.status,
                                         str = '';

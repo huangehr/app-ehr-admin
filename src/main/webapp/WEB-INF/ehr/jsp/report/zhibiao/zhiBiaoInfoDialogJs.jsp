@@ -116,8 +116,9 @@
                 }
                 me.$execTime.val(res.execTime);
                 me.$zhixingDate.val(res.execTime);
-                me.$inpQuotaType.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.quotaType);
-                me.$inpQuotaType.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.quotaTypeName);
+//
+//                me.$inpQuotaType.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.quotaType);
+//                me.$inpQuotaType.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.quotaTypeName);
                 me.$inpDataSource.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.sourceCode);
                 me.$inpDataSource.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.name);
                 me.$inpDataStorage.ligerGetComboBoxManager().setValue(res.tjQuotaDataSaveModel.saveCode);
@@ -172,9 +173,9 @@
                     width:'240px'
                 });
 
-                var combo3 = self.$inpDataStorage.customCombo('${contextRoot}/health/getQuotaType',null,self.dataStorageSelected,null,null,{valueField: 'id',
+                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/health/getAllHealthBusinessList',null,self.dataStorageSelected,null,null,{valueField: 'id',
                     textField: 'name'});
-                self.$inpDataStorage.parent().css({
+                self.$inpQuotaType.parent().css({
                     width:'240'
                 }).parent().css({
                     display:'inline-block',
