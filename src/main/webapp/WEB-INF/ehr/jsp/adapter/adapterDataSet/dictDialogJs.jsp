@@ -93,8 +93,8 @@
                                 success: function(data) {
                                     if(data.successFlg){
                                         var app = data.obj;
-                                        parent.reloadEntryMasterGrid();
-                                        parent.closeDialog('保存成功！');
+                                        reloadEntryMasterGrid();
+                                        closeDialog('保存成功！');
                                     }else{
                                         if(data.errorMsg)
                                             $.Notice.error( data.errorMsg);
@@ -111,7 +111,7 @@
                     );
                 });
                 $('#btn_cancel_dict').click(function () {
-                    parent.closeDialog();
+                    closeDialog();
                 });
             },
             validate : function (values) {

@@ -109,8 +109,8 @@
                         data: {jsonDataModel:JSON.stringify(adapterModel)},
                         success: function(data) {
                             if(data.successFlg){
-                                parent.reloadMasterGrid();
-                                parent.closeDialog( '保存成功！');
+                                reloadMasterGrid();
+                                closeDialog( '保存成功！');
                             }else{
                                 if(data.errorMsg)
                                     $.Notice.error( data.errorMsg);
@@ -127,7 +127,7 @@
 
                 });
                 this.$btnCancel.click(function () {
-                    parent.closeDialog();
+                    closeDialog();
                 });
             },
             validate : function (values) {
