@@ -16,7 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +38,28 @@ public class ResourceBrowseController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+    @RequestMapping("/browse")
+    public String resourceBrowse(Model model) {
+        model.addAttribute("contentPage", "/resource/browse/resourceView");
+        return "pageView";
+    }
+
+    @RequestMapping("/searchResourceList")
+    @ResponseBody
+    public Object searchResourceList() {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "/resources/categories";
+        String resultStr = "";
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+
+        }
+        return envelop;
+    }
 
     @RequestMapping("/initial")
     public String resourceBrowseInitial(Model model) {
@@ -63,13 +86,13 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/searchResourceData")
     @ResponseBody
-    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows,HttpServletRequest request) {
+    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String url = "/resources/ResourceBrowses/getResourceData";
         //当前用户机构
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         params.put("orgCode", userDetailModel.getOrganization());
         params.put("resourcesCode", resourcesCode);
         params.put("queryCondition", searchParams);
