@@ -76,7 +76,7 @@
                     success: function (data) {
                         waittingDialog.close();
                         if(data.successFlg){
-                            parent.closeDialog("授权成功！");
+                            closeDialog("授权成功！");
                         }else
                             $.Notice.error(data.errorMsg);
                     },
@@ -88,7 +88,7 @@
             });
 
             $('#btn_cancel').click(function () {
-                parent.closeDialog();
+                closeDialog();
             })
         }
 

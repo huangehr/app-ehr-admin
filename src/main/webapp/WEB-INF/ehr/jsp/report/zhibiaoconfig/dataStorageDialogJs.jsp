@@ -157,7 +157,7 @@
                 })
 
                 self.$cancelBtn.click(function(){
-                    parent.closeDialog();
+                    closeDialog();
                 })
 
             }

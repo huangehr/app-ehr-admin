@@ -512,7 +512,7 @@
 
                 //关闭dailog的方法
                 zhiBiaoInfo.$cancelBtn.click(function(){
-                    parent.closeDialog();
+                    closeDialog();
                 })
             }
         };

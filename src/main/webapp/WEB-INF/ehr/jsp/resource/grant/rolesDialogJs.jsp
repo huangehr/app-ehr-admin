@@ -132,14 +132,14 @@
             });
 
             $('#btn_cancel').click(function () {
-                parent.closeDialog();
+                closeDialog();
             });
         };
 
         function checkInit(){
             if(!model.resourceMetadataName){
                 $.Notice.error("数据加载失败！", function () {
-                    parent.closeDialog();
+                    closeDialog();
                 });
             }
         }

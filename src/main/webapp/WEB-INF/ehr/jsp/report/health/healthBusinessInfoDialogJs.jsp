@@ -173,7 +173,7 @@
 
                 //关闭dailog的方法
                 healthBusinessInfo.$cancelBtn.click(function(){
-                    parent.closeDialog();
+                    closeDialog();
                 })
             }
         };
