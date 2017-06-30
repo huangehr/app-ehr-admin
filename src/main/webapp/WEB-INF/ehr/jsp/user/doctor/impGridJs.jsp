@@ -117,7 +117,6 @@
                     if(field.indexOf('phone')!=-1){
                         return uniqValid(urls.userExistence, "phone="+val, "该联系电话在账户表中已存在！");
                     }
-                    debugger;
                     if(field.indexOf('email')!=-1){
                         return uniqValid(urls.doctorExistence, "email="+val, "该邮箱在医生表中已存在！");
                     }
@@ -219,8 +218,20 @@
                     {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                     }},
-//                    {display: '说明', name: 'description', hide: true, render: function (row, index) {
-//                        return '<input type="hidden" value="'+ row.description +'" data-attr-scan="description_'+ index +'">'
+//                    {display: '简介', name: 'introduction', hide: true, render: function (row, index) {
+//                        return '<input type="hidden" value="'+ row.introduction +'" data-attr-scan="introduction'+ index +'">'
+//                    }},
+//                    {display: '教学职称', name: 'jxzc', hide: true, render: function (row, index) {
+//                        return '<input type="hidden" value="'+ row.jxzc +'" data-attr-scan="jxzc'+ index +'">'
+//                    }},
+//                    {display: '临床职称', name: 'lczc', hide: true, render: function (row, index) {
+//                        return '<input type="hidden" value="'+ row.lczc +'" data-attr-scan="lczc'+ index +'">'
+//                    }},
+//                    {display: '学历', name: 'xlzc', hide: true, render: function (row, index) {
+//                        return '<input type="hidden" value="'+ row.xlzc +'" data-attr-scan="xlzc'+ index +'">'
+//                    }},
+//                    {display: '行政职称', name: 'xzzc', hide: true, render: function (row, index) {
+//                        return '<input type="hidden" value="'+ row.xzzc +'" data-attr-scan="xzzc'+ index +'">'
 //                    }},
                     {display: '医生账号', name: 'code', width: '141', align: 'left', render: textRender},
                     {display: '姓名', name: 'name', width: '93', align: 'left', render: textRender},
@@ -229,7 +240,12 @@
                     {display: '邮箱', name: 'email', width: '150', align: 'left', render: textRender},
                     {display: '联系电话', name: 'phone', width: '140', align: 'left', render: textRender},
                     {display: '办公电话（固）', name: 'officeTel', width: '140', align: 'left', render: textRender},
-                    {display: '医生门户首页', name: 'workPortal', width: '95', align: 'left', render: textRender}];
+                    {display: '医生门户首页', name: 'workPortal', width: '95', align: 'left', render: textRender},
+                    {display: '教学职称', name: 'jxzc', width: '95', align: 'left', render: textRender},
+                    {display: '临床职称', name: 'lczc', width: '95', align: 'left', render: textRender},
+                    {display: '学历', name: 'xlzc', width: '95', align: 'left', render: textRender},
+                    {display: '行政职称', name: 'xzzc', width: '95', align: 'left', render: textRender},
+                    {display: '简介', name: 'introduction', width: '95', align: 'left', render: textRender}];
 
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
                 searchFun();
