@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -225,6 +227,29 @@ public class HealthBusinessController extends BaseUIController {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
+        }
+    }
+
+    @RequestMapping("/getHealthBusinessListTree")
+    @ResponseBody
+    public Object getHealthBusinessListTree(){
+        String url = "/healthBusiness/list";
+        List<HealthBusinessModel> list = new ArrayList<>();
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
+            Envelop envelopGet = objectMapper.readValue(resultStr,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                list = (List<HealthBusinessModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),HealthBusinessModel.class);
+            }
+            return list;
+        } catch (Exception ex) {
+            LogService.getLogger(HealthBusinessController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return list;
         }
     }
 }
