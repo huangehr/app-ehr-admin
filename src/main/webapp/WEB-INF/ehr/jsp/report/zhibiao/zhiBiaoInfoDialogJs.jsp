@@ -16,6 +16,7 @@
         var dataModel = $.DataModel.init();
         var dataSourceSelectedVal = "";
         var dataStorageSelectedVal = "";
+        var quotaTypeSelectedVal = "";
         var id = ${id};
         var validator = null;
         var txtCronExpression = "";
@@ -69,6 +70,9 @@
             dataStorageSelected:function(code, name){
                 dataStorageSelectedVal = code;
             },
+            quotaTypeSelectedVal:function(id, name){
+                quotaTypeSelectedVal = id;
+            },
             setZBInfo: function ( res, me) {
                 me.dataSourceSelected(res.tjQuotaDataSourceModel);
                 me.dataStorageSelected(res.tjQuotaDataSaveModel);
@@ -116,9 +120,8 @@
                 }
                 me.$execTime.val(res.execTime);
                 me.$zhixingDate.val(res.execTime);
-//
-//                me.$inpQuotaType.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.quotaType);
-//                me.$inpQuotaType.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.quotaTypeName);
+                me.$inpQuotaType.ligerGetComboBoxManager().setValue(res.quotaType);
+                me.$inpQuotaType.ligerGetComboBoxManager().setText(res.quotaTypeName);
                 me.$inpDataSource.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.sourceCode);
                 me.$inpDataSource.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.name);
                 me.$inpDataStorage.ligerGetComboBoxManager().setValue(res.tjQuotaDataSaveModel.saveCode);
@@ -156,7 +159,7 @@
                 self.$inpName.ligerTextBox({width: 240});
                 self.$inpCycle.ligerTextBox({width: 240});
                 self.$inpObjectClass.ligerTextBox({width: 240});
-                var combo1 = self.$inpDataSource.customCombo('${contextRoot}/tjDataSource/getTjDataSource',null,self.dataSourceSelected,null,null,{valueField: 'code',
+                var combo1 = self.$inpDataSource.customCombo('${contextRoot}/tjDataSource/getTjDataSource',{},self.dataSourceSelected,null,null,{valueField: 'code',
                     textField: 'name'});
                 self.$inpDataSource.parent().css({
                     width:'240'
@@ -164,7 +167,7 @@
                     display:'inline-block',
                     width:'240px'
                 });
-                var combo2 = self.$inpDataStorage.customCombo('${contextRoot}/tjDataSave/getTjDataSave',null,self.dataStorageSelected,null,null,{valueField: 'code',
+                var combo2 = self.$inpDataStorage.customCombo('${contextRoot}/tjDataSave/getTjDataSave',{},self.dataStorageSelected,null,null,{valueField: 'code',
                     textField: 'name'});
                 self.$inpDataStorage.parent().css({
                     width:'240'
@@ -173,7 +176,7 @@
                     width:'240px'
                 });
 
-                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/health/getAllHealthBusinessList',null,self.dataStorageSelected,null,null,{valueField: 'id',
+                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/health/getAllHealthBusinessList',null,self.quotaTypeSelectedVal,null,null,{valueField: 'id',
                     textField: 'name'});
                 self.$inpQuotaType.parent().css({
                     width:'240'

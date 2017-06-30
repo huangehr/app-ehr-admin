@@ -23,8 +23,8 @@
         <div class="m-form-group">
             <label>父级ID：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_parent_id" class="required"  data-attr-scan="parentId">
+            <div class="l-text-wrapper m-form-control">
+                <input type="text" id="inp_parent_id" class="useTitle ajax"  data-attr-scan="parentId">
             </div>
         </div>
 

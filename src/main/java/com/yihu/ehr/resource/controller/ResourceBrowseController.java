@@ -48,6 +48,12 @@ public class ResourceBrowseController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/browseCenter")
+    public String browseCenter(Model model) {
+        model.addAttribute("contentPage", "/resource/browse/resourceDataView");
+        return "pageView";
+    }
+
     @RequestMapping("/searchResourceList")
     @ResponseBody
     public Object searchResourceList() {
