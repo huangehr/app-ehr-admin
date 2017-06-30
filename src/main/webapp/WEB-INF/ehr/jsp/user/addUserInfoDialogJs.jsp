@@ -199,7 +199,12 @@
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
-                            return checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                            var checkIdCard=checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                          /*  debugger;
+                            if(checkIdCard){
+                                inputSourceByIdCard(idCard);
+                            }*/
+                            return checkIdCard;
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
                             var email = $("#inp_userEmail").val();
@@ -231,6 +236,28 @@
                     });
                     return result;
                 }
+
+                <%--//唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证--%>
+                <%--function inputSourceByIdCard(inputValue) {--%>
+                    <%--debugger;--%>
+                    <%--var result = new jValidation.ajax.Result();--%>
+                    <%--var dataModel = $.DataModel.init();--%>
+                    <%--dataModel.fetchRemote("${contextRoot}/user/getPatientInUserByIdCardNo", {--%>
+                        <%--data: {idCardNo: inputValue},--%>
+                        <%--async: false,--%>
+                        <%--success: function(data) {--%>
+                            <%--var model = data.obj;--%>
+                            <%--self.$sex.val(model.gender);--%>
+                            <%--self.$inp_select_marriage.val(model.martialStatus);--%>
+                            <%--self.$userEmail.val(model.email);--%>
+                            <%--self.$userTel.val(model.telephoneNo);--%>
+                        <%--},--%>
+                        <%--error: function () {--%>
+                            <%--// alert(1)--%>
+                        <%--}--%>
+                    <%--});--%>
+                    <%--return result;--%>
+                <%--}--%>
 
                 //新增的点击事件
                 this.$addUserBtn.click(function () {

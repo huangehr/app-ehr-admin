@@ -582,5 +582,26 @@ public class UserController extends BaseUIController {
         }
     }
 
+    @RequestMapping("/getPatientInUserByIdCardNo")
+    @ResponseBody
+    public Object getUserByIdCardNo(Model model, String idCardNo) {
+        String getUserUrl = "/getPatientInUserByIdCardNo";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id_card_no",idCardNo);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + getUserUrl, params, username, password);
+            Envelop envelop = objectMapper.readValue(resultStr,Envelop.class);
+            model.addAttribute("envelopBoj",envelop.getObj());
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+
+    }
+
 
 }
