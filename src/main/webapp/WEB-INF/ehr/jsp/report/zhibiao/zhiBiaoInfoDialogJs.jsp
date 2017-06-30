@@ -116,9 +116,8 @@
                 }
                 me.$execTime.val(res.execTime);
                 me.$zhixingDate.val(res.execTime);
-//
-//                me.$inpQuotaType.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.quotaType);
-//                me.$inpQuotaType.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.quotaTypeName);
+                me.$inpQuotaType.ligerGetComboBoxManager().setValue(res.quotaType);
+                me.$inpQuotaType.ligerGetComboBoxManager().setText(res.quotaTypeName);
                 me.$inpDataSource.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.sourceCode);
                 me.$inpDataSource.ligerGetComboBoxManager().setText(res.tjQuotaDataSourceModel.name);
                 me.$inpDataStorage.ligerGetComboBoxManager().setValue(res.tjQuotaDataSaveModel.saveCode);
