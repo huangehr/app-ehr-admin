@@ -127,7 +127,6 @@
         var toTarget = options.toTarget; //目标节点id
         var checked = options.checked;
         var fromFlagReg = new RegExp(fromFlag,"g");
-        debugger;
         //来源树到目标树节点生成
         for (var i = 0; i < from.length; i++) {
             data = from[i].data;
@@ -251,7 +250,6 @@
      * @param options
      */
     treePrototype.f_onToTreeCheck = function (options) {
-        debugger;
         var fromTree = options.fromTree; //来源树对象（ligerTree对象）
         var toTree = options.toTree; //目标树对象toTree
         var fromFlag = options.fromFlag; //来源树特殊标志 如：（id="std987",fromFlag="std"）
