@@ -15,6 +15,7 @@
         var jValidation = $.jValidation;  // 表单校验工具类
         var dataModel = $.DataModel.init();
         var id = ${id};
+        var parentSelectedVal = "";
         var validator = null;
 
 
@@ -47,12 +48,17 @@
                     this.getZBInfo(this.setZBInfo , this);
                 }
             },
+            parentSelected:function(pid, name){
+                parentSelectedVal = pid;
+            },
             setZBInfo: function ( res, me) {
                 initCode = res.code;
                 initName = res.name;
                 me.$inpCode.val(res.code);
                 me.$inpName.val(res.name);
-                me.$inpParentId.val(res.parentId);
+//                me.$inpParentId.val(res.parentId);
+                me.$inpParentId.ligerGetComboBoxManager().setValue(res.parentId);
+                me.$inpParentId.ligerGetComboBoxManager().setText(res.parentId);
                 me.$introduction.val(res.note);
                 me.$healthId.val(id);
 
@@ -80,14 +86,34 @@
                 var self = this;
                 self.$inpCode.ligerTextBox({width: 240});
                 self.$inpName.ligerTextBox({width: 240});
-                self.$inpParentId.ligerTextBox({width: 240});
+//                self.$inpParentId.ligerTextBox({width: 240});
                 this.$introduction.ligerTextBox({width:240,height:100 });
+                var combo1 = self.$inpParentId.customCombo('${contextRoot}/health/getHealthBusinessList',{},self.parentSelected,null,null,{valueField: 'id',
+                    textField: 'id'});
+                self.$inpParentId.parent().css({
+                    width:'240'
+                }).parent().css({
+                    display:'inline-block',
+                    width:'240px'
+                });
                 self.$form.attrScan();
             },
 
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
+                    if (Util.isStrEquals($(elm).attr('id'),'inp_parent_id')) {
+                        debugger
+                        var result = new jValidation.ajax.Result();
+                        var parentId = self.$inpParentId.val();
+                        if (id == parentId) {
+                            result.setResult(false);
+                            result.setErrorMsg("您选的父级ID不合法");
+                        } else {
+                            result.setResult(true);
+                        }
+                        return result;
+                    }
                     if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
                         var result = new jValidation.ajax.Result();
                         var code = self.$inpCode.val();
