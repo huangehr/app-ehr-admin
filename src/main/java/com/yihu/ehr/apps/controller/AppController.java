@@ -545,4 +545,20 @@ public class AppController extends BaseUIController {
         }
     }
 
+    //获取平台应用
+    @RequestMapping("/getAppTreeByType")
+    @ResponseBody
+    public Object getAppTreeByType(){
+        try {
+            String url = "/getAppTreeByType";
+            Map<String,Object> params = new HashMap<>();
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+//            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
 }
