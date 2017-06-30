@@ -584,7 +584,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("/getPatientInUserByIdCardNo")
     @ResponseBody
-    public Object getUserByIdCardNo(Model model, String idCardNo) {
+    public Object getUserByIdCardNo(String idCardNo) {
         String getUserUrl = "/getPatientInUserByIdCardNo";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -593,7 +593,6 @@ public class UserController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doGet(comUrl + getUserUrl, params, username, password);
             Envelop envelop = objectMapper.readValue(resultStr,Envelop.class);
-            model.addAttribute("envelopBoj",envelop.getObj());
             return resultStr;
         } catch (Exception e) {
             result.setSuccessFlg(false);
