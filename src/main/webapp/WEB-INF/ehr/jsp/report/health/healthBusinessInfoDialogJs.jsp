@@ -52,13 +52,14 @@
                 parentSelectedVal = pid;
             },
             setZBInfo: function ( res, me) {
+                debugger
                 initCode = res.code;
                 initName = res.name;
                 me.$inpCode.val(res.code);
                 me.$inpName.val(res.name);
 //                me.$inpParentId.val(res.parentId);
                 me.$inpParentId.ligerGetComboBoxManager().setValue(res.parentId);
-                me.$inpParentId.ligerGetComboBoxManager().setText(res.parentId);
+                me.$inpParentId.ligerGetComboBoxManager().setText(res.parentName);
                 me.$introduction.val(res.note);
                 me.$healthId.val(id);
 
@@ -88,8 +89,8 @@
                 self.$inpName.ligerTextBox({width: 240});
 //                self.$inpParentId.ligerTextBox({width: 240});
                 this.$introduction.ligerTextBox({width:240,height:100 });
-                var combo1 = self.$inpParentId.customCombo('${contextRoot}/health/getHealthBusinessList',{},self.parentSelected,null,null,{valueField: 'id',
-                    textField: 'id'});
+                var combo1 = self.$inpParentId.customCombo('${contextRoot}/health/getHealthBusinessList?id='+id,{},self.parentSelected,null,null,{valueField: 'id',
+                    textField: 'name'});
                 self.$inpParentId.parent().css({
                     width:'240'
                 }).parent().css({
@@ -102,10 +103,10 @@
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    if (Util.isStrEquals($(elm).attr('id'),'inp_parent_id')) {
+                    /*if (Util.isStrEquals($(elm).attr('id'),'inp_parent_id')) {
                         debugger
                         var result = new jValidation.ajax.Result();
-                        var parentId = self.$inpParentId.val();
+                        var parentId = parentSelectedVal;
                         if (id == parentId) {
                             result.setResult(false);
                             result.setErrorMsg("您选的父级ID不合法");
@@ -113,7 +114,7 @@
                             result.setResult(true);
                         }
                         return result;
-                    }
+                    }*/
                     if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
                         var result = new jValidation.ajax.Result();
                         var code = self.$inpCode.val();
@@ -165,9 +166,10 @@
                     if(validator.validate()){
 
                         var values = self.$form.Fields.getValues();
+                        debugger
                         values.code = $("#inp_code").val();
                         values.name = $("#inp_name").val();
-                        values.parentId = $("#inp_parent_id").val();
+                        values.parentId = parentSelectedVal;
                         values.note = $("#inp_introduction").val();
                         var mode = "new";
                         if (id != '-1') {
