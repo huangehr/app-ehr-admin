@@ -195,6 +195,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
 
     private int validate(DoctorMsgModel model, Set<String> phones, Set<String> userPhones, Set<String> emails, Set<String> userEmails){
         int rs = 1;
+       boolean existFlag=searchUsers(model.getIdCardNo(),model.getPhone());
         //医生表
         if(phones.contains(model.getPhone())){
               model.addErrorMsg("phone", "该电话号码在医生表已存在，请核对！");
@@ -202,7 +203,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         }
         //账户表
         if(userPhones.contains(model.getPhone())){
-            if(searchUsers(model.getIdCardNo(),model.getPhone())) {
+            //账户表中存在此电话号码，但不是此人的账户，则判断为该电话号码重复。
+            if(!existFlag) {
             model.addErrorMsg("phone", "该电话号码对应的账户已存在，请核对！");
             rs = 0;
             }
@@ -214,16 +216,11 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         }
         //账户表
         if(userEmails.contains(model.getEmail())){
-            if(searchUsers(model.getIdCardNo(),model.getPhone())) {
+            if(!existFlag) {
                 model.addErrorMsg("email", "该邮箱对应的账户已存在，请核对！");
                 rs = 0;
             }
         }
-//        //账户表
-//        if(model.getIntroduction().length()>256){
-//            model.addErrorMsg("introduction", "该简介过长，请核对！");
-//            rs = 0;
-//        }
 
         return rs;
     }
@@ -381,10 +378,10 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(idCardNo)) {
-            stringBuffer.append("idCardNo=" + idCardNo);
+            stringBuffer.append("idCardNo=" + idCardNo+ ";");
         }
         if (!StringUtils.isEmpty(phone)) {
-            stringBuffer.append("telephone=" + phone);
+            stringBuffer.append("telephone=" + phone+ ";");
         }
         params.put("filters", "");
         String filters = stringBuffer.toString();

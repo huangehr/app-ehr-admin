@@ -506,6 +506,7 @@
             $doctorCardList: $('#doctorCardList'),
             init: function () {
                 this.getDoctorCardInfoData();
+                this.bindEvents();
             },
             getDoctorCardInfoData: function () {
                 var me = this;
@@ -557,7 +558,6 @@
                         type: 'GET',
                         dataType: 'json',
                         success: function (res) {
-                            
                         }
                     });
                     console.log(id);

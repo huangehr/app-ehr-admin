@@ -27,7 +27,7 @@
         <div class="m-form-group">
             <label>执行方式：</label>
             <div class="u-checkbox-wrap m-form-control">
-                <input type="radio" value="1" name="jobType">单次执行
+                <input type="radio" value="1" name="jobType">立即执行
                 <input type="radio" value="2" name="jobType">周期执行
             </div>
         </div>
