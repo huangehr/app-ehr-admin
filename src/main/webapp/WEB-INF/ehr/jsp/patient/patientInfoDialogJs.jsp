@@ -527,7 +527,7 @@
                                             '<div><span>' + d[i].cardType + '</span><a href="javascript:;" class="grid_delete" data-id="'  +  d[i].id +'"></a></div>',
                                             '<ul class="first-ul">',
                                                 '<li><span>卡号: </span><span>' + d[i].cardNo + '</span></li>',
-                                                '<li><span>是否有效: </span><span>' + d[i].status == 0 ? '无效' : '有效' + '</span></li>',
+                                                '<li><span>是否有效: </span><span>' + (d[i].status == 0 ? '无效' : '有效') + '</span></li>',
                                             '</ul>',
                                             '<ul class="last-ul">',
                                                 '<li><span>发卡机构: </span><span>' + (d[i].releaseOrg || '') + '</span></li>',

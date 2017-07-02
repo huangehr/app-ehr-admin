@@ -396,15 +396,17 @@
                         if (res.detailModelList != null && res.detailModelList.length > 0) {
                             var d = res.detailModelList;
                             for (var i = 0, len = d.length; i < len; i++) {
+                                var validityDateBegin = d[i].validityDateBegin==null?"":d[i].validityDateBegin.substring( 0, 9);
+                                var validityDateEnd = d[i].validityDateEnd==null?"":d[i].validityDateEnd.substring( 0, 9);
                                 html += ['<li class="card-l-item">',
                                     '<div><span>' + d[i].cardType + '</span></div>',
                                     '<ul class="first-ul">',
                                     '<li><span>卡号: </span><span>' + d[i].cardNo + '</span></li>',
-                                    '<li><span>是否有效: </span><span>' + d[i].status == 0 ? '无效' : '有效' + '</span></li>',
+                                    '<li><span>是否有效: </span><span>' + (d[i].status == 0 ? '无效' : '有效') + '</span></li>',
                                     '</ul>',
                                     '<ul class="last-ul">',
                                     '<li><span>发卡机构: </span><span>' + (d[i].releaseOrg || '') + '</span></li>',
-                                    '<li><span>有效时间: </span><span>' + d[i].validityDateBegin.substring( 0, 9) + '</span> ~ <span>' + d[i].validityDateEnd.substring( 0, 9) + '</span></li>',
+                                    '<li><span>有效时间: </span><span>' + validityDateBegin + '</span> ~ <span>' + validityDateEnd + '</span></li>',
                                     '</ul>',
                                     '</li>'].join('');
                             }

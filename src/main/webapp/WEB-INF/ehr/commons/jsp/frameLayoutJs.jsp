@@ -464,6 +464,17 @@
                 },
                 </sec:authorize>
 
+                // 5-5 - 趋势分析
+                <sec:authorize url="Ehr_Master_Centre">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 55,
+                    text: '<spring:message code="title.trend.analysis"/>',
+                    url: '${contextRoot}/report/initial'
+                },
+                </sec:authorize>
+
                 // 6- 信息安全管理
                 <sec:authorize url="Ehr_Security_Centre">
                 {
