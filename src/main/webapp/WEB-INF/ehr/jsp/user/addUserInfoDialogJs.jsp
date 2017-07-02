@@ -199,7 +199,11 @@
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
-                            return checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                            var checkIdCard=checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                            if(checkIdCard){
+                           inputSourceByIdCard(idCard);
+                            }
+                            return checkIdCard;
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
                             var email = $("#inp_userEmail").val();
@@ -227,6 +231,37 @@
                             } else {
                                 result.setResult(true);
                             }
+                        }
+                    });
+                    return result;
+                }
+
+                function inputSourceByIdCard(inputValue) {
+                    var result = new jValidation.ajax.Result();
+                    var dataModel = $.DataModel.init();
+                    dataModel.fetchRemote("${contextRoot}/user/getPatientInUserByIdCardNo", {
+                        data: {idCardNo: inputValue},
+                        async: false,
+                        success: function(data) {
+                            var model = data.obj;
+                            if(model.name) {
+                             self.$userName.val(model.name);
+                            }
+                            if(model.gender){
+                            self.$sex.val(model.gender);
+                            }
+                            if(model.martialStatus) {
+                                self.$inp_select_marriage.val(model.martialStatus);
+                            }
+                            if(model.email){
+                            self.$userEmail.val(model.email);
+                            }
+                            if(model.telephoneNo){
+                            self.$userTel.val(model.telephoneNo);
+                            }
+                        },
+                        error: function () {
+                            // alert(1)
                         }
                     });
                     return result;

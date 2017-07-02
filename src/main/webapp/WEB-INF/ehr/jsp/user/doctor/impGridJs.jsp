@@ -22,13 +22,15 @@
             var barTools = function(){
 
                 function save(){
-                    if(validator.validate()){
+                    if(true){
                         if($form.Fields)
                             $form.removeData('propMap');
                         $form.attrScan();
                         var waitting = $.ligerDialog.waitting("正在保存中.....");
                         var formData = $form.Fields.getValues();
                         var model = [], f, m;
+
+                        debugger;
                         for(var k in formData){
                             f = k.split('_');
                             m = model[f[1]] || {};
@@ -235,19 +237,21 @@
 //                    }},
                     {display: '医生账号', name: 'code', width: '141', align: 'left', render: textRender},
                     {display: '姓名', name: 'name', width: '93', align: 'left', render: textRender},
+                    {display: '身份证号', name: 'idCardNo', width: '100', align: 'left', render: textRender},
                     {display: '性别', name: 'sex', width: '80', align: 'left', render: textRender},
                     {display: '医生专长', name: 'skill', width: '148', align: 'left', render: textRender},
                     {display: '邮箱', name: 'email', width: '150', align: 'left', render: textRender},
                     {display: '联系电话', name: 'phone', width: '140', align: 'left', render: textRender},
                     {display: '办公电话（固）', name: 'officeTel', width: '140', align: 'left', render: textRender},
-                    {display: '医生门户首页', name: 'workPortal', width: '95', align: 'left', render: textRender},
-                    {display: '教学职称', name: 'jxzc', width: '95', align: 'left', render: textRender},
-                    {display: '临床职称', name: 'lczc', width: '95', align: 'left', render: textRender},
-                    {display: '学历', name: 'xlzc', width: '95', align: 'left', render: textRender},
-                    {display: '行政职称', name: 'xzzc', width: '95', align: 'left', render: textRender},
-                    {display: '简介', name: 'introduction', width: '95', align: 'left', render: textRender}];
+                    {display: '医生门户首页',  hide: true,name: 'workPortal', width: '95', align: 'left', render: textRender},
+                    {display: '教学职称',  hide: true,name: 'jxzc', width: '95', align: 'left', render: textRender},
+                    {display: '临床职称',  hide: true,name: 'lczc', width: '95', align: 'left', render: textRender},
+                    {display: '学历',  hide: true,name: 'xlzc', width: '95', align: 'left', render: textRender},
+                    {display: '行政职称',  hide: true,name: 'xzzc', width: '95', align: 'left', render: textRender},
+                    {display: '简介', hide: true, name: 'introduction', width: '95', align: 'left', render: textRender}];
 
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
+                top.grid = grid;
                 searchFun();
             };
 

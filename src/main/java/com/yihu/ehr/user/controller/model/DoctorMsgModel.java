@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * @created 2017/6/22
  */
 @Row(start = 1)
-@Title(names= "{'医生账号', '姓名', '性别', '医生专长', '医生门户首页', '邮箱', '联系电话', '办公电话（固）', '教学职称', '临床职称', '学历', '行政职称', '简介'}")
+@Title(names= "{'医生账号', '姓名','身份证号', '性别', '医生专长', '医生门户首页', '邮箱', '联系电话', '办公电话（固）', '教学职称', '临床职称', '学历', '行政职称', '简介'}")
 public class DoctorMsgModel extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
@@ -28,11 +28,11 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
     @Location(x=1)
     private String name;
     @Location(x=2)
-    private String sex;
+    private String idCardNo;
     @Location(x=3)
-    private String skill;
+    private String sex;
     @Location(x=4)
-    private String workPortal;
+    private String skill;
     @Location(x=5)
     @ValidRepeat
     private String email;
@@ -52,7 +52,8 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
     private String xzzc;
     @Location(x=12)
     private String introduction;
-
+    @Location(x=13)
+    private String workPortal;
 
 
 
@@ -71,6 +72,10 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
         if(!repeatMap.get("email").add(email)){
             valid = 0;
             addErrorMsg("email", "医生邮箱重复！" );
+        }
+        if(!repeatMap.get("idCardNo").add(idCardNo)){
+            valid = 0;
+            addErrorMsg("idCardNo", "医生身份证号重复！" );
         }
 //        if(!RegUtil.regCode(stdCode)){
 //            addErrorMsg("stdCode", "只允许输入数字、英文、小数点与下划线！");
@@ -227,5 +232,13 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
 
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
+    }
+
+    public String getIdCardNo() {
+        return idCardNo;
+    }
+
+    public void setIdCardNo(String idCardNo) {
+        this.idCardNo = idCardNo;
     }
 }

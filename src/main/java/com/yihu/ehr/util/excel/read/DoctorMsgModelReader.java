@@ -18,6 +18,7 @@ public class DoctorMsgModelReader extends AExcelReader {
             getRepeat().put("code", new HashSet<>());
             getRepeat().put("phone", new HashSet<>());
             getRepeat().put("email", new HashSet<>());
+            getRepeat().put("idCardNo", new HashSet<>());
 
             for (Sheet sheet : sheets) {
                 if ((rows = sheet.getRows()) == 0) continue;
@@ -25,14 +26,15 @@ public class DoctorMsgModelReader extends AExcelReader {
                     p = new DoctorMsgModel();
                     p.setCode(getCellCont(sheet, i, 0));
                     p.setName(getCellCont(sheet, i, 1));
-                    if(getCellCont(sheet, i, 2).equals("男")){
+                    p.setIdCardNo(getCellCont(sheet, i, 2));
+                    if(getCellCont(sheet, i, 3).equals("男")){
                         p.setSex("1");
                     }else{
                         p.setSex("2");
                     }
 
-                    p.setSkill(getCellCont(sheet, i, 3));
-                    p.setWorkPortal(getCellCont(sheet, i, 4));
+                    p.setSkill(getCellCont(sheet, i, 4));
+
                     p.setEmail(getCellCont(sheet, i, 5));
                     p.setPhone(getCellCont(sheet, i, 6));
                     p.setOfficeTel(getCellCont(sheet, i, 7));
@@ -42,6 +44,7 @@ public class DoctorMsgModelReader extends AExcelReader {
                     p.setXlzc(getCellCont(sheet, i, 10));
                     p.setXzzc(getCellCont(sheet, i, 11));
                     p.setIntroduction(getCellCont(sheet, i, 12));
+                    p.setWorkPortal(getCellCont(sheet, i, 13));
                     int rs = p.validate(repeat);
                     if (rs == 0)
                         errorLs.add(p);

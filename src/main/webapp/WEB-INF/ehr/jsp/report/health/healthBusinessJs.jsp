@@ -44,7 +44,7 @@
                                 {display: 'id', name: 'id', hide: true},
                                 {display: '编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
-                                {display: '父级ID', name: 'parentId', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '父级ID', name: 'parentName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '备注', name: 'note', width: '25%', isAllowHide: false, align: 'left'},
                                 {
                                     display: '操作', name: 'operator', width: '25%', align: 'center',render: function (row) {
@@ -88,10 +88,10 @@
                     $.subscribe('health:healthBusinessInfo:open', function (event, id, mode) {
                         var title = '';
                         if (mode == 'modify') {
-                            title = '修改卫生业务';
+                            title = '修改指标分类';
                         }
                         else {
-                            title = '新增卫生业务';
+                            title = '新增指标分类';
                         }
                         dictMaster.dictInfoDialog = $.ligerDialog.open({
                             height: 400,

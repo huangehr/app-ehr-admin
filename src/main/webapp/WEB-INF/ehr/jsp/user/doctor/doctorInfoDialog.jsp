@@ -23,6 +23,13 @@
                    data-attr-scan="name"/>
         </div>
     </div>
+
+    <div class="m-form-group m-form-readonly">
+        <label><spring:message code="lbl.card"/><spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control essential">
+            <input type="text" id="inp_idCardNo" class="required useTitle max-length-50 validate-id-number"  required-title=<spring:message code="lbl.must.input"/> validate-id-number-title=<spring:message code="lbl.input.true.idCard"/>  data-attr-scan="idCardNo"/>
+        </div>
+    </div>
     <div class="m-form-group">
         <label><spring:message code="lbl.doctor.skill"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">

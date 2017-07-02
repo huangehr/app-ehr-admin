@@ -47,6 +47,7 @@
             $cancelBtn: $("#div_cancel_btn"),
             $imageShow: $("#div_file_list"),
 			$skill:$("#inp_skill"),
+            $idCardNo:$("#inp_idCardNo"),
 			$portal:$("#inp_portal"),
 			$email:$("#inp_email"),
 			$phone:$("#inp_phone"),
@@ -86,6 +87,7 @@
             initForm: function () {
                 this.$incode.ligerTextBox({width: 240});
                 this.$name.ligerTextBox({width: 240});
+                this.$idCardNo.ligerTextBox({width: 240});
                 this.$email.ligerTextBox({width: 240});
                 this.$skill.ligerTextBox({width: 240});
                 this.$portal.ligerTextBox({width: 240});
@@ -98,7 +100,6 @@
                 this.$xlzc.ligerTextBox({width: 240});
                 this.$zxzc.ligerTextBox({width: 240});
                 this.$introduction.ligerTextBox({width:600,height:100 });
-
                 this.$sex.ligerRadio();
                 this.$form.attrScan();
             },
@@ -111,6 +112,10 @@
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_code')) {
                             var code = $("#inp_code").val();
                             return checkDataSourceName('code', code, "该账号已存在");
+                        }
+                        if (Util.isStrEquals($(elm).attr("idCardNo"), 'inp_idCard')) {
+                            var CardNo = $("#inp_idCard").val();
+                            return checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
                         }
                     }
                 });

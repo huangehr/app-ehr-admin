@@ -35,6 +35,7 @@
             $form: $("#div_info_form"),
             $incode: $("#inp_code"),
             $name: $('#inp_name'),
+            $idCardNo:$("#inp_idCardNo"),
             $sex: $('input[name="sex"]', this.$form),
             $uploader: $("#div_doctor_img_upload"),
             $skill:$("#inp_skill"),
@@ -83,6 +84,7 @@
                 this.$form.removeClass("m-form-readonly");
                 this.$incode.ligerTextBox({width: 240});
                 this.$name.ligerTextBox({width: 240});
+                this.$idCardNo.ligerTextBox({width: 240});
                 this.$email.ligerTextBox({width: 240});
                 this.$skill.ligerTextBox({width: 240});
                 this.$portal.ligerTextBox({width: 240});
@@ -102,6 +104,7 @@
                     id: doctor.id,
                     code: doctor.code,
                     name: doctor.name,
+                    idCardNo: doctor.idCardNo,
                     sex: doctor.sex,
                     email: doctor.email,
                     skill: doctor.skill,
