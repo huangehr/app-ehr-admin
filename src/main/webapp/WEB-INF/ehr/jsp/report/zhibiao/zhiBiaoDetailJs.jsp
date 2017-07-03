@@ -43,8 +43,10 @@
                             self.reloadGrid();
                         }
                     });
+                    debugger
                     $("#div_relation_grid").show()
                     $("#div_slave_grid").hide();
+                    $(".div-slave-search").hide();
                     this.loadMainGrid();//加载主维度值
                     this.loadSlaveGrid();//加载细维度值
                     this.bindEvents();
