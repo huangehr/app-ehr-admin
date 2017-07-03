@@ -1,30 +1,123 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
-<script src="${contextRoot}/develop/source/gridTools.js"></script>
-<script src="${contextRoot}/develop/source/toolBar.js"></script>
-<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
+<script src="${contextRoot}/develop/lib/plugin/mousepop/mouse_pop.js"></script>
 <script>
     (function ($, win) {
         $(function () {
-
-            /* ************************** 全局变量定义 **************************** */
+            /* ************************** 变量定义 ******************************** */
             var Util = $.Util;
+            var retrieve = null;
+            var isFirstPage = true;
             var dictMaster = null;
+            var typeTree = null;
+            var orgId = '${orgId}';
+            var quotaType = '';
+
+            var rsPageParams = JSON.parse(sessionStorage.getItem('rsPageParams'));
+            sessionStorage.removeItem('rsPageParams');
+            var searchParams = {
+                quotaType:rsPageParams&&rsPageParams.quotaType || '',
+                categorySearchNm:rsPageParams &&rsPageParams.categorySearchNm || '',
+                resourceSearchNm:rsPageParams&&rsPageParams.resourceSearchNm || '',
+                page:rsPageParams&&rsPageParams.page || 1,
+                pageSize:rsPageParams&&rsPageParams.pageSize || 15,
+            }
+
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
+                resizeContent();
+                retrieve.init();
                 dictMaster.init();
             }
 
-            /* *************************** 标准字典模块初始化 ***************************** */
+            function reloadGrid(params) {
+                if (isFirstPage){
+                    dictMaster.resourceInfoGrid.options.newPage = 1;
+                }
+                if(searchParams.page >1){
+                    dictMaster.resourceInfoGrid.options.newPage = searchParams.page;//只针对跳转页面返回时
+                    searchParams.page = 1;//重置
+                }
+                dictMaster.resourceInfoGrid.setOptions({parms: params});
+                dictMaster.resourceInfoGrid.loadData(true);
+                isFirstPage = true;
+            };
+
+            //由跳转页面返回成员注册页面时的页面初始化-------------
+            function treeNodeInit (id){
+                if(!id){return}
+                function expandNode (id){
+                    var level = $($('#'+id).parent()).parent().attr('outlinelevel')
+                    if(level){
+                        var parentId = $($('#'+id).parent()).parent().attr('id')
+                        $($($('#'+id).parent()).prev()).children(".l-expandable-close").click()//展开节点
+                        expandNode(parentId);
+                    }
+                }
+                expandNode(id);
+                typeTree.selectNode(id);
+            };
+
+            /* *************************** 模块初始化 ***************************** */
+            retrieve = {
+
+                typeTree: null,
+                $resourceBrowseTree: $("#div_resource_browse_tree"),
+                $logicalRelationship: $("#inp_logical_relationship"),
+                $searchModel: $(".div_search_model"),
+                $resourceInfoGrid: $("#div_resource_info_grid"),
+                $status:$('#inp_status'),
+                $search: $("#inp_search"),
+                $searchNm: $('#inp_searchNm'),
+
+                init: function () {
+                    var self = this;
+                    $('#div_tree').mCustomScrollbar({
+                        axis:"yx"
+                    });
+                    self.getResourceBrowseTree();
+                },
+
+                getResourceBrowseTree: function () {
+                    typeTree = this.$resourceBrowseTree.ligerSearchTree({
+                        nodeWidth: 240,
+                        url: '${contextRoot}/health/getHealthBusinessListTree',
+                        checkbox: false,
+                        idFieldName: 'id',
+                        parentIDFieldName :'parentId',
+                        textFieldName: 'name',
+                        isExpand: false,
+                        childIcon:null,
+                        parentIcon:null,
+                        onSelect: function (e) {
+                            quotaType = e.data.id;
+                            dictMaster.reloadGrid(1);
+                        },
+                        onSuccess: function (data) {
+
+                            if(data.length != 0){
+                                $("#div_resource_browse_tree li div span").css({
+                                    "line-height": "22px",
+                                    "height": "22px"
+                                });
+//                                quotaType = data[0].id;
+//                                dictMaster.reloadGrid(1);
+                            }
+                        }
+                    });
+                },
+            };
+
             dictMaster = {
                 dictInfoDialog: null,
                 detailDialog:null,
                 grid: null,
                 $searchNm: $('#searchNm'),
                 init: function () {
+                    debugger
                     var self = this;
                     this.$searchNm.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
@@ -38,13 +131,14 @@
                         this.grid = $("#div_stdDict_grid").ligerGrid($.LigerGridEx.config({
                             url:  '${contextRoot}/tjQuota/getTjQuota',
                             parms: {
-                                name: ""
+                                name: "",
+                                quotaType : quotaType
                             },
                             columns: [
                                 {display: 'id', name: 'id', hide: true},
-                                {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
+//                                {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '指标类型', name: 'quotaTypeName', width: '5%', isAllowHide: false, align: 'left'},
+                                {display: '指标类型', name: 'quotaTypeName', width: '11%', isAllowHide: false, align: 'left'},
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
@@ -61,10 +155,10 @@
                                     }
                                     return str;
                                 }, isAllowHide: false, align: 'center'},
-                                {display: '存储方式', name: 'dataLevelName', width: '7%', isAllowHide: false, align: 'left'},
-                                {display: '备注', name: 'remark', width: '8%', isAllowHide: false, align: 'left'},
+                                {display: '存储方式', name: 'dataLevelName', width: '9%', isAllowHide: false, align: 'left'},
+//                                {display: '备注', name: 'remark', width: '8%', isAllowHide: false, align: 'left'},
                                 {
-                                    display: '操作', name: 'operator', width: '31%', align: 'center',render: function (row) {
+                                    display: '操作', name: 'operator', width: '40%', align: 'center',render: function (row) {
                                     var html = '';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
@@ -101,7 +195,8 @@
                 reloadGrid: function (curPage) {
                     var searchNm = $("#searchNm").val();
                     var values = {
-                        name: searchNm
+                        name: searchNm,
+                        quotaType : quotaType
                     };
                     Util.reloadGrid.call(this.grid, '${contextRoot}/tjQuota/getTjQuota', values, curPage);
                 },
@@ -172,7 +267,6 @@
                     $.subscribe('zhibiao:execu', function (event, id) {
                         $.Notice.confirm('确认要执行所选指标？', function (r) {
                             if (r) {
-                                debugger
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
                                     data: {tjQuotaId: parseInt(id)},
@@ -208,8 +302,51 @@
 
                 }
             };
+            /* ************************* 模块初始化结束 ************************** */
+            /* ************************* dialog回调函数 ************************** */
+            var resizeContent = function(){
+                var contentW = $('#div_content').width();
+                //浏览器窗口高度-固定的（健康之路图标+位置）128-20px包裹上下padding
+                var contentH = $(window).height()-128-20;
+                var leftW = $('#div_left').width();
+                $('#div_content').height(contentH);
+                //减50px的检索条件div高度
+                $('#div_tree').height(contentH-50);
+                $('#div_right').width(contentW-leftW-20);
+            };
+            $(window).bind('resize', function() {
+                resizeContent();
+            });
 
-            /* ******************Dialog页面回调接口****************************** */
+            //新增修改所属成员类别为默认时，只刷新右侧列表；有修改所属成员类别时，左侧树重新定位，刷新右侧列表
+            win.reloadMasterUpdateGrid = function () {
+
+                    dictMaster.reloadGrid();
+
+            };
+            win.closeDictInfoDialog = function (callback) {
+                isFirstPage = false;
+                dictMaster.dictInfoDialog.close();
+            };
+            //新增、修改（成员分类有修改情况）定位
+            win.locationTree = function(callbackParams){
+                if(!callbackParams){
+                    dictMaster.reloadGrid();
+                    return
+                }
+                var select = function(id){
+                    if(id){
+                        var parentId = $('#'+id).parent().parent().attr("id");
+                        $('#'+id+' >.l-body>.l-expandable-close').click()
+                        select(parentId);
+                    }
+                }
+                $("#inp_search").val(callbackParams.typeFilter);
+                typeTree.s_search(callbackParams.typeFilter);
+                select(callbackParams.quotaType);
+
+            }
+
             win.reloadMasterGrid = function () {
                 dictMaster.reloadGrid();
             };
@@ -225,9 +362,12 @@
                 }
                 dictMaster.dictInfoDialog.close();
             };
+            /* ************************* dialog回调函数结束 ************************** */
 
-            /* *************************** 页面功能 **************************** */
+            /* *************************** 页面初始化 **************************** */
             pageInit();
+            /* ************************* 页面初始化结束 ************************** */
+
         });
     })(jQuery, window);
 </script>
