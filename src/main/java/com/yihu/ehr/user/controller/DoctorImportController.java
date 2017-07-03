@@ -112,7 +112,11 @@ public class DoctorImportController extends ExtendController<DoctorService> {
                 writerResponse(response, 100 + "", "l_upd_progress");
         } catch (Exception e) {
             e.printStackTrace();
-            writerResponse(response, "-1", "l_upd_progress");
+            if(e.getMessage().equals("模板不正确，请下载新的模板，并按照示例正确填写后上传！")) {
+                writerResponse(response, "-2", "l_upd_progress");
+            }else{
+                writerResponse(response, "-1", "l_upd_progress");
+            }
         }
     }
 
