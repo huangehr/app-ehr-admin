@@ -308,7 +308,6 @@
 
                     },
                     onSuccess: function (data) {
-                        debugger
                         typeTree.setData(data.detailModelList);
                         self.appendCheckData(data.obj || []);
                     },
@@ -547,21 +546,33 @@
                 });
             },
             bindEvents: function () {
-                var me = this;
-                me.$doctorCardList.on( 'click', '.grid_delete', function () {
-                    var id = $(this).attr('data-id');
-                    $.ajax({
-                        url: '${contextRoot}/patient/deletePatientCardByCardId',
-                        data: {
-                            id: id
-                        },
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function (res) {
-                        }
-                    });
-                    console.log(id);
-                });
+                        var me = this;
+                        me.$doctorCardList.on( 'click', '.grid_delete', function () {
+                            var $that = $(this),
+                                $cardLItem =  $that.closest('.card-l-item'),
+                                id = $that.attr('data-id');
+                            $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                                if (yes) {
+                                    $.ajax({
+                                        url: '${contextRoot}/patient/deletePatientCardByCardId',
+                                        data: {
+                                            id: id
+                                        },
+                                        type: 'GET',
+                                        dataType: 'json',
+                                        success: function (res) {
+                                            if (res.successFlg) {
+                                                $cardLItem.remove();
+                                            } else {
+                                                $.Notice.error('删除失败');
+                                            }
+                                        }
+                                    });
+                                    console.log(id);
+                                }
+                            });
+                        });
+
             }
         }
 
