@@ -86,9 +86,9 @@ public class TjQuotaController extends BaseUIController {
         }
         if (!StringUtils.isEmpty(quotaType)) {
             stringBuffer.append("quotaType=" + quotaType + ";");
-        } else {
+        } /*else {
             stringBuffer.append("quotaType=-1");
-        }
+        }*/
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
