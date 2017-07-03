@@ -52,7 +52,6 @@
                 parentSelectedVal = pid;
             },
             setZBInfo: function ( res, me) {
-                debugger
                 initCode = res.code;
                 initName = res.name;
                 me.$inpCode.val(res.code);
@@ -164,12 +163,10 @@
                 //新增/修改
                 healthBusinessInfo.$updateBtn.click(function () {
                     if(validator.validate()){
-
                         var values = self.$form.Fields.getValues();
-                        debugger
                         values.code = $("#inp_code").val();
                         values.name = $("#inp_name").val();
-                        values.parentId = parentSelectedVal;
+                        values.parentId = $("#inp_parent_id").val().trim() == "" ? 0 : parentSelectedVal;
                         values.note = $("#inp_introduction").val();
                         var mode = "new";
                         if (id != '-1') {
