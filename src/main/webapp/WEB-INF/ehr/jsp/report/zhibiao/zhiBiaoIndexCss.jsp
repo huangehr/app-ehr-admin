@@ -3,53 +3,16 @@
 
 <style>
 
-  .image-create{
-    margin-left:20px;
-    width: 22px;
-    height: 22px;
-    background: url(${staticRoot}/images/add_btn.png) no-repeat;
-  }
-
-  .image-create:hover{
-    cursor: pointer;
-    margin-left:20px;
-    width: 22px;
-    height: 22px;
-    background: url(${staticRoot}/images/add_btn_pre.png) no-repeat;
-  }
-  .image-modify{
-    width: 22px;
-    height: 22px;
-    background: url(${staticRoot}/images/Modify_btn_pre.png) no-repeat;
-  }
-  .image-delete{
-    width: 22px;
-    height: 22px;
-    margin-top: -22px;
-    background: url(${staticRoot}/images/Delete_btn_pre.png) no-repeat;
-  }
-
-  .font_right{
-    text-align: right;
-  }
-
-  .u-btn-small{width: 100px !important;margin-top: 0px;height: 30px}
-  .btn-group .btn{border-radius: 25px;padding: 9px 20px;}
-  [data-toggle=buttons]>.btn input[type=checkbox], [data-toggle=buttons]>.btn input[type=radio], [data-toggle=buttons]>.btn-group>.btn input[type=checkbox], [data-toggle=buttons]>.btn-group>.btn input[type=radio] {
-    position: absolute;
-    clip: rect(0,0,0,0);
-    pointer-events: none;
-  }
-  .btn-default:active:hover, .btn-default.active:hover, .open > .dropdown-toggle.btn-default:hover, .btn-default:active:focus, .btn-default.active:focus, .open > .dropdown-toggle.btn-default:focus, .btn-default:active.focus, .btn-default.active.focus, .open > .dropdown-toggle.btn-default.focus {
-    color: #fff;
-    background-color: #2E9CD2;
-    border-color: #2E9CD2;
-  }
-  .btn-default.active, .btn-default.focus, .btn-default:active, .btn-default:focus, .btn-default:hover, .open>.dropdown-toggle.btn-default {
-    color: #fff;
-    background-color: #2E9CD2;
-    border-color: #2E9CD2;
-  }
-  .label_a{line-height: 40px;}
-  .f-fr{float:right !important;}
+    .body-head input{  border: 0;  font-size: 12px;  width: 120px;}
+    .f-bd { border: 1px solid #D6D6D6;  overflow: auto; height: 100% }
+    .f-of-hd{ overflow: hidden; }
+    .f-db{display: inline-block}
+    .tree_type{overflow: auto;}
+    .f-w230{width: 230px;}
+    .contentH{height:780px }
+    #div_left{ width:240px;float: left;height: 100%}
+    #div_right{float: left;width: 700px;margin-left: 10px}
+    .div_resource_browse_tree{width:890px; float:right;margin-left: 10px}
+    .div-result-msg{width: 100%;height: auto; float: left;}
+    .right-retrieve{border: 1px solid #D6D6D6;border-bottom: none;padding: 10px;}
 </style>
