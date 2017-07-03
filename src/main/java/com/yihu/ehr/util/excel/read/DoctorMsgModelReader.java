@@ -53,7 +53,7 @@ public class DoctorMsgModelReader extends AExcelReader {
                 }
             }
         } catch (Exception e) {
-            throw e;
+            throw new RuntimeException("模板不正确，请下载新的模板，并按照示例正确填写后上传！");
         } finally {
             if (rwb != null) rwb.close();
         }

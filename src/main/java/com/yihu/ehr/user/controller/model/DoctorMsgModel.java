@@ -114,6 +114,11 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
             repeatMap.get("phone").add(phone);
         }
 
+        if(idCardNo.length()<15&&idCardNo.length()>18){
+            valid = 0;
+            addErrorMsg("idCardNo", "请输入正确的身份证号码！" );
+        }
+
 //        String validateOfficePhone="^\\d{3,4}-\\d{7,8}$";
 //        Pattern vOfficePa = Pattern.compile(validateOfficePhone);
 //        //正则表达式的匹配器

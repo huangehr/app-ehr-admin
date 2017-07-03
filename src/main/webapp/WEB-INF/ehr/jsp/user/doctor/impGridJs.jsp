@@ -14,7 +14,7 @@
                 downLoad: "${contextRoot}/doctorImport/downLoadErrInfo",
                 <%--dictCombo: "${contextRoot}/doctorImport/searchCombo"--%>
             }
-            var files = ${files};
+            var files = ${files}, ynData= [{code: '1', value: '男'},{code: '0', value: '女'}];
             var mode = 'eFile';
 
 
@@ -196,6 +196,11 @@
                 var html = '';
                 if(!errMsg || errMsg=='' || errMsg=='undefined'){
                     html = '<input type="hidden" id="'+ id +'" data-attr-scan="'+ id +'" value="'+ val +'"/>';
+                    if(val==1){
+                        val="男";
+                    }else{
+                        val="女";
+                    }
                     html += val;
                 }else{
                     html = '<input type="text" id="'+ id +'" class="required" data-attr-scan="'+ id +'" data-type="select"/>';
@@ -203,16 +208,16 @@
                 }
                 return html;
             }
-//            win.initSl = function (id, columnName, width, value) {
-//                var data;
-//                if(columnName== 'domain')
+            win.initSl = function (id, columnName, width, value) {
+                var data;
+                if(columnName== 'sex')
 //                    data = domainData;
 //                else if(columnName== 'columnType')
 //                    data = columnTypeData;
 //                else
-//                    data = ynData;
-//                $("#"+ id ).ligerComboBox({width: width - 20, valueField: "code", textField: "value", data: data}).selectValue(value);
-//            }
+                    data = ynData;
+                $("#"+ id ).ligerComboBox({width: width - 20, valueField: "code", textField: "value", data: data}).selectValue(value);
+            }
 
             //初始化表格
             var rendGrid = function(){
@@ -220,28 +225,13 @@
                     {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                     }},
-//                    {display: '简介', name: 'introduction', hide: true, render: function (row, index) {
-//                        return '<input type="hidden" value="'+ row.introduction +'" data-attr-scan="introduction'+ index +'">'
-//                    }},
-//                    {display: '教学职称', name: 'jxzc', hide: true, render: function (row, index) {
-//                        return '<input type="hidden" value="'+ row.jxzc +'" data-attr-scan="jxzc'+ index +'">'
-//                    }},
-//                    {display: '临床职称', name: 'lczc', hide: true, render: function (row, index) {
-//                        return '<input type="hidden" value="'+ row.lczc +'" data-attr-scan="lczc'+ index +'">'
-//                    }},
-//                    {display: '学历', name: 'xlzc', hide: true, render: function (row, index) {
-//                        return '<input type="hidden" value="'+ row.xlzc +'" data-attr-scan="xlzc'+ index +'">'
-//                    }},
-//                    {display: '行政职称', name: 'xzzc', hide: true, render: function (row, index) {
-//                        return '<input type="hidden" value="'+ row.xzzc +'" data-attr-scan="xzzc'+ index +'">'
-//                    }},
-                    {display: '医生账号', name: 'code', width: '141', align: 'left', render: textRender},
+                    {display: '医生账号', name: 'code', width: '130', align: 'left', render: textRender},
                     {display: '姓名', name: 'name', width: '93', align: 'left', render: textRender},
-                    {display: '身份证号', name: 'idCardNo', width: '100', align: 'left', render: textRender},
-                    {display: '性别', name: 'sex', width: '80', align: 'left', render: textRender},
+                    {display: '身份证号', name: 'idCardNo', width: '151', align: 'left', render: textRender},
+                    {display: '性别', name: 'sex', width: '60', align: 'left', render: selRender},
                     {display: '医生专长', name: 'skill', width: '148', align: 'left', render: textRender},
                     {display: '邮箱', name: 'email', width: '150', align: 'left', render: textRender},
-                    {display: '联系电话', name: 'phone', width: '140', align: 'left', render: textRender},
+                    {display: '联系电话', name: 'phone', width: '120', align: 'left', render: textRender},
                     {display: '办公电话（固）', name: 'officeTel', width: '140', align: 'left', render: textRender},
                     {display: '医生门户首页',  hide: true,name: 'workPortal', width: '95', align: 'left', render: textRender},
                     {display: '教学职称',  hide: true,name: 'jxzc', width: '95', align: 'left', render: textRender},

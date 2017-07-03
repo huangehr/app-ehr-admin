@@ -337,9 +337,11 @@
                         data: {userModelJsonData: userModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                               closeAddUserInfoDialog(function () {
-                                   $.Notice.success('用户新增成功');
-                                });
+                                $.Notice.success('新增成功');
+//                                win.closeAddUserInfoDialog();
+//                               closeAddUserInfoDialog(function () {
+//                                   $.Notice.success('新增成功');
+//                                });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
                             }
@@ -425,6 +427,24 @@
 				return roleArray.join(",");
 			}
         };
+
+        win.closeAddUserInfoDialog = function (callback) {
+            isFirstPage = false;
+            if(callback){
+                dialog.close();
+            }
+        };
+//        win.closeDialog = function (msg) {
+//            dialog.close();
+//           }
+//        function reloadGrid (params) {
+//            if (isFirstPage){
+//                this.grid.options.newPage = 1;
+//            }
+//            this.grid.setOptions({parms: params});
+//            this.grid.loadData(true);
+//            isFirstPage = true;
+//        }
 
         /* ************************* 模块初始化结束 ************************** */
 

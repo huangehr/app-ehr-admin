@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DoctorMsgModelWriter extends AExcelWriter {
     public void addHeader(WritableSheet ws) throws WriteException {
-        String[] header = {"医生账号", "姓名", "性别", "医生专长", "医生门户首页", "邮箱", "联系电话", "办公电话(固)"};
+        String[] header = {"医生编号", "姓名", "身份证号码", "性别", "医生专长", "邮箱", "联系电话", "办公电话(固)", "教学职称", "临床职称", "学历", "行政职称", "简介", "医生门户首页"};
         if (!"".equals(header)) {
             int i = 0;
             for (String h : header) {
@@ -28,12 +28,18 @@ public class DoctorMsgModelWriter extends AExcelWriter {
             for (DoctorMsgModel m : (List<DoctorMsgModel>) ls) {
                 addCell(ws, i, 0, m.getCode(), m.findErrorMsg("code"));
                 addCell(ws, i, 1, m.getName(), m.findErrorMsg("name"));
-                addCell(ws, i, 2, m.getSex(), m.findErrorMsg("sex"));
-                addCell(ws, i, 3, m.getSkill(), m.findErrorMsg("skill"));
-                addCell(ws, i, 4, m.getWorkPortal(), m.findErrorMsg("workPortal"));
+                addCell(ws, i, 2, m.getName(), m.findErrorMsg("idCardNo"));
+                addCell(ws, i, 3, m.getSex(), m.findErrorMsg("sex"));
+                addCell(ws, i, 4, m.getSkill(), m.findErrorMsg("skill"));
                 addCell(ws, i, 5, m.getEmail(), m.findErrorMsg("email"));
                 addCell(ws, i, 6, m.getPhone(), m.findErrorMsg("phone"));
                 addCell(ws, i, 7, m.getOfficeTel(), m.findErrorMsg("officeTel"));
+                addCell(ws, i, 8, m.getOfficeTel(), m.findErrorMsg("jxzc"));
+                addCell(ws, i, 9, m.getOfficeTel(), m.findErrorMsg("lczc"));
+                addCell(ws, i, 10, m.getOfficeTel(), m.findErrorMsg("xlzc"));
+                addCell(ws, i, 11, m.getOfficeTel(), m.findErrorMsg("xzzc"));
+                addCell(ws, i, 12, m.getOfficeTel(), m.findErrorMsg("introduction"));
+                addCell(ws, i, 13, m.getWorkPortal(), m.findErrorMsg("workPortal"));
                 i++;
             }
             wwb.write();
