@@ -5,7 +5,7 @@
 
 <!-- ####### Title设置 ####### -->
 <div class="div-title"><span class="span-location">福建省厦门市</span>趋势分析数据</div>
-
+<input value="${thirdParty}" class="f-dn" id="inp_thirdParty"/>
 <!-- ####### 页面部分 ####### -->
 <div class="adpater-plan-modal">
   <!-- ####### 查询条件部分 ####### -->
