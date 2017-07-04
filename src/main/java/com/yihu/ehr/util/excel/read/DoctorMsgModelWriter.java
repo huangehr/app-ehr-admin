@@ -28,17 +28,17 @@ public class DoctorMsgModelWriter extends AExcelWriter {
             for (DoctorMsgModel m : (List<DoctorMsgModel>) ls) {
                 addCell(ws, i, 0, m.getCode(), m.findErrorMsg("code"));
                 addCell(ws, i, 1, m.getName(), m.findErrorMsg("name"));
-                addCell(ws, i, 2, m.getName(), m.findErrorMsg("idCardNo"));
+                addCell(ws, i, 2, m.getIdCardNo(), m.findErrorMsg("idCardNo"));
                 addCell(ws, i, 3, m.getSex(), m.findErrorMsg("sex"));
                 addCell(ws, i, 4, m.getSkill(), m.findErrorMsg("skill"));
                 addCell(ws, i, 5, m.getEmail(), m.findErrorMsg("email"));
                 addCell(ws, i, 6, m.getPhone(), m.findErrorMsg("phone"));
                 addCell(ws, i, 7, m.getOfficeTel(), m.findErrorMsg("officeTel"));
-                addCell(ws, i, 8, m.getOfficeTel(), m.findErrorMsg("jxzc"));
-                addCell(ws, i, 9, m.getOfficeTel(), m.findErrorMsg("lczc"));
-                addCell(ws, i, 10, m.getOfficeTel(), m.findErrorMsg("xlzc"));
-                addCell(ws, i, 11, m.getOfficeTel(), m.findErrorMsg("xzzc"));
-                addCell(ws, i, 12, m.getOfficeTel(), m.findErrorMsg("introduction"));
+                addCell(ws, i, 8, m.getJxzc(), m.findErrorMsg("jxzc"));
+                addCell(ws, i, 9, m.getLczc(), m.findErrorMsg("lczc"));
+                addCell(ws, i, 10, m.getXlzc(), m.findErrorMsg("xlzc"));
+                addCell(ws, i, 11, m.getXzzc(), m.findErrorMsg("xzzc"));
+                addCell(ws, i, 12, m.getIntroduction(), m.findErrorMsg("introduction"));
                 addCell(ws, i, 13, m.getWorkPortal(), m.findErrorMsg("workPortal"));
                 i++;
             }
