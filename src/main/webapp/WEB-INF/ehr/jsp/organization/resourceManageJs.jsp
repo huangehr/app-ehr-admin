@@ -59,11 +59,12 @@
 							}
 						}
 						var data = [];
+						debugger;
 						$.each(rows, function (i, v) {
 							if((isLock==0 && v.id) || isLock==1)
 								data.push({
 									"id": v.id,
-									"orgResourceId": v.orgResourceId,
+									"organizationResourceId": v.organizationResourceId,
 									"organizationId": v.organizationId,
 									"resourceMetadataId": v.resourceMetadataId,
 									"resourceMetadataName": v.resourceMetadataName,
@@ -142,27 +143,24 @@
 				opratorRender: function (row){
 					debugger;
 					var vo = [
-						{type: 'edit', clkFun: "$.publish('grant:meta:modify',['"+ row['id'] +"', '"+ row['orgResourceId'] +"', '"+ row['resourceMetadataId'] +"', '"+ row['organizationId'] +"', 'modify'])"}
+						{type: 'edit', clkFun: "$.publish('grant:meta:modify',['"+ row['id'] +"', '"+ row['organizationResourceId'] +"', '"+ row['resourceMetadataId'] +"', '"+ row['organizationId'] +"', 'modify'])"}
 					];
 					return initGridOperator(vo);
 				},
 				//修改、新增点击事件
 				gotoModify : function (event, id, orgResId, resMetaId, organizationId, mode) {
-					debugger;
 					id = id || '';
 					curOprator = em;
 					var params = {id: id, mode: mode, orgResId: orgResId, resMetaId: resMetaId, organizationId: organizationId};
 					em.dialog = openedDialog = openDialog(em.urls.gotoModify, '维度授权', 500, 250, params);
 				},
 				//查询列表方法
-				find : function (organizationId, orgResourceId) {
-					debugger;
-					var params = !organizationId? em.params: (em.params = {extParms: '{"orgResId": "'+ orgResourceId +'"}', page:1, rows: 999});
+				find : function (organizationId, organizationResourceId) {
+					var params = !organizationId? em.params: (em.params = {extParms: '{"orgResId": "'+ organizationResourceId +'"}', page:1, rows: 999});
 					reloadGrid(this.grid, 1, params);
 				},
 				//公开方法
 				publishFunc : function (){
-					debugger;
 					var m = em;
 					$.subscribe('grant:meta:modify', m.gotoModify);
 				}

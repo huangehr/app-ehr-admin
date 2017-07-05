@@ -467,8 +467,8 @@ public class AppController extends BaseUIController {
         if (StringUtils.isEmpty(appId)||StringUtils.isEmpty(resourceId)) {
             return "";
         }
-        builder.addFilter("appId", "=", appId, "g1");
-        builder.addFilter("resourceId", "=", resourceId, "g1");
+        builder.addFilter("appId", "=", appId, null);
+        builder.addFilter("resourceId", "=", resourceId, null);
         builder.setPageNumber(1)
                 .setPageSize(1);
         String param = builder.toString();

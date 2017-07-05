@@ -29,7 +29,7 @@ public class OrgGrantController extends ExtendController<OrgGrantService>{
     public OrgGrantController() {
         this.init(
                 "/resource/grant/grid",        //列表页面url
-                "/resource/grant/rolesDialog"      //编辑页面url
+                "/resource/grant/orgDialog"      //编辑页面url
         );
     }
 
@@ -158,7 +158,7 @@ public class OrgGrantController extends ExtendController<OrgGrantService>{
     public Object saveMeta(String model) {
 
         try {
-            String url = service.comUrl + "/resources/orgMetadatas/grants";
+            String url = service.comUrl + "/resources/OrgMetadatas/grants";
             Map map = new HashMap<>();
             map.put("model", model);
             String resultStr = service.doPost(url, map);
@@ -169,7 +169,7 @@ public class OrgGrantController extends ExtendController<OrgGrantService>{
     }
 
     @RequestMapping("/gotoMetaGrant")
-    public Object gotoMetaGrant(Model model, String mode, String id, String rolesResId, String resMetaId, String organizationId){
+    public Object gotoMetaGrant(Model model, String mode, String id, String orgResId, String resMetaId, String organizationId){
         try {
             Envelop envelop;
             Map<String, Object> params = new HashMap<>();
@@ -178,10 +178,10 @@ public class OrgGrantController extends ExtendController<OrgGrantService>{
                 params.put("id",id);
                 envelop = getEnvelop(service.getModel(params));
             }else {
-                params.put("org_res_id",rolesResId);
+                params.put("Org_res_id",orgResId);
                 params.put("res_meta_id", resMetaId);
                 params.put("organization_id", organizationId);
-                envelop = getEnvelop(service.search("/resources/org_resource/metadata/grant", params));
+                envelop = getEnvelop(service.search("/resources/Org_resource/metadata/grant", params));
             }
 
             Object plan;
@@ -204,7 +204,7 @@ public class OrgGrantController extends ExtendController<OrgGrantService>{
     public Object orgLock(String data, int valid) {
 
         try {
-            String url = service.comUrl + "/resources/orgMetadatas/valid";
+            String url = service.comUrl + "/resources/OrgMetadatas/valid";
             Map map = new HashMap<>();
             map.put("data", data);
             map.put("valid", valid);
@@ -223,7 +223,7 @@ public class OrgGrantController extends ExtendController<OrgGrantService>{
     public Object orgSaveMeta(String model) {
 
         try {
-            String url = service.comUrl + "/resources/orgMetadatas/grants";
+            String url = service.comUrl + "/resources/OrgMetadatas/grants";
             Map map = new HashMap<>();
             map.put("model", model);
             String resultStr = service.doPost(url, map);

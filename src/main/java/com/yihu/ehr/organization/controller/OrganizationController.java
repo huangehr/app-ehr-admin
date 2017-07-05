@@ -715,8 +715,8 @@ public class OrganizationController extends BaseUIController {
         if (org.springframework.util.StringUtils.isEmpty(orgCode)|| org.springframework.util.StringUtils.isEmpty(resourceId)) {
             return "";
         }
-        builder.addFilter("organizationId", "=",orgCode, "g1");
-        builder.addFilter("resourceId", "=", resourceId, "g1");
+        builder.addFilter("organizationId", "=",orgCode, null);
+        builder.addFilter("resourceId", "=", resourceId, null);
         builder.setPageNumber(1)
                 .setPageSize(1);
         String param = builder.toString();
