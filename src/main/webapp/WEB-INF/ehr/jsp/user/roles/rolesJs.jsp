@@ -255,6 +255,7 @@
 					//资源授权页面跳转
 					$.subscribe('roles:resource:list', function (event, rolesId,name,code) {
 //					rolesMaster.savePageParamsToSession();
+						debugger;
 						var data = {
 							'rolesId':rolesId,
 							'rolesName':name,
