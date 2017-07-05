@@ -602,5 +602,22 @@ public class UserController extends BaseUIController {
 
     }
 
-
+    //查看是否有权限
+    @RequestMapping("/isRoleUser")
+    @ResponseBody
+    public boolean isRoleUser(String userId){
+        String url = "/roles/role_user/userRolesIds";
+        try {
+            Map<String,Object> params = new HashMap<>();
+            params.put("user_id",userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            if (envelop.isSuccessFlg() && null != envelop.getObj() && !"".equals(envelop.getObj())) {
+                return  true;
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+        }
+        return false;
+    }
 }
