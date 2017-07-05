@@ -241,7 +241,6 @@
                     {display: '简介', hide: true, name: 'introduction', width: '95', align: 'left', render: textRender}];
 
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
-                top.grid = grid;
                 searchFun();
             };
 

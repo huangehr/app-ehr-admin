@@ -145,7 +145,10 @@
                             return false;
                         }
                         var url = '${contextRoot}/report/analysisList?location='+location+'&orgName='+$(".span-location").html()+'&startTime='+self.$startDate.val()+'&endTime='+self.$endDate.val();
-                        $("#contentPage").load(url);
+                        if($("#inp_thirdParty").val()=="true"){//第三方跳转过来的
+                            url = '${contextRoot}/report/outAnalysisList?location='+location+'&orgName='+$(".span-location").html()+'&startTime='+self.$startDate.val()+'&endTime='+self.$endDate.val();
+                        }
+                        $("div[data-content-page]").load(url);
                     });
 
                     $(".div-head").on("click",".div-item",function(){

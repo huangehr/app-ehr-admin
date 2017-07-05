@@ -57,6 +57,7 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("outInitial")
     public String initialOut(Model model) {
+        model.addAttribute("thirdParty", "true");
         model.addAttribute("contentPage", "/report/trendAnalysis");
         return "generalView";
     }
@@ -91,6 +92,22 @@ public class ReportController extends BaseUIController {
         model.addAttribute("endTime",endTime);
         model.addAttribute("contentPage", "/report/analysisList");
         return "pageView";
+    }
+
+    /**
+     * 分析列表页面
+     * @param model
+     * @return
+     */
+    @RequestMapping("outAnalysisList")
+    public String outAnalysisList(Model model,String location,String orgName,String startTime,String endTime) {
+        model.addAttribute("location",location);
+        model.addAttribute("orgName",orgName);
+        model.addAttribute("startTime",startTime);
+        model.addAttribute("endTime",endTime);
+        model.addAttribute("thirdParty", "true");
+        model.addAttribute("contentPage", "/report/analysisList");
+        return "generalView";
     }
     
     //所有指标统计结果查询,初始化查询

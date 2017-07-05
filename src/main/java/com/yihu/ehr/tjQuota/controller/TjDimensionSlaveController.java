@@ -264,7 +264,7 @@ public class TjDimensionSlaveController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(quotaCode)) {
-            params.put("filter", "quotaCode?" + quotaCode);
+            params.put("filter", "quotaCode=" + quotaCode);
         }
         if (!StringUtils.isEmpty(name)) {
             stringBuffer.append("name?" + name + " g1;code?" + name + " g1;");

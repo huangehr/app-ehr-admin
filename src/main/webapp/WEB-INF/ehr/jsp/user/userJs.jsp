@@ -260,18 +260,29 @@
                     });
 					//查看应用权限
 					$.subscribe('user:feature:open', function (event, userId) {
-						self.userInfoDialog = $.ligerDialog.open({
-							title:'查看权限',
-							height: 650,
-							width: 600,
-							isDrag:true,
-							isResize:true,
-							url: '${contextRoot}/user/appFeatureInitial',
-							load: true,
-							urlParms: {
-								userId: userId,
-							}
-						});
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote("${contextRoot}/user/isRoleUser",{
+                            data:{userId:userId},
+                            async:false,
+                            success: function(data) {
+                                if(data){
+                                    self.userInfoDialog = $.ligerDialog.open({
+                                        title:'查看权限',
+                                        height: 650,
+                                        width: 600,
+                                        isDrag:true,
+                                        isResize:true,
+                                        url: '${contextRoot}/user/appFeatureInitial',
+                                        load: true,
+                                        urlParms: {
+                                            userId: userId,
+                                        }
+                                    });
+                                }else{
+                                    $.Notice.error('该用户无任何应用的授权信息。');
+                                }
+                            }
+                        });
 					});
                 }
             };
