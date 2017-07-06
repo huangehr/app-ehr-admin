@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script type="text/javascript" src="${staticRoot}/Scripts/homeRelationship.js"></script>
 <script>
     (function ($, win) {
@@ -13,7 +14,7 @@
 
         var cardInfoGrid = null;
         var archiveInfoGrid = null;
-
+        var doctorCardInfo = null;
         var cardFormInit = null;
         var archiveFormInit = null;
         // 表单校验工具类
@@ -21,7 +22,9 @@
         var dataModel = $.DataModel.init();
         var patientModel = "";
         var idCardNo="";
+        var typeTree = null;
         var patientDialogType = '${patientDialogType}';
+        var userId = '${userId}';
         if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
             patientModel =${patientModel}.obj;
             idCardNo = patientModel.idCardNo;
@@ -91,18 +94,18 @@
                 success: function (data) {
                     if(data.successFlg){
                         if (Util.isStrEquals(patientDialogType, 'addPatient')){
-                            win.parent.$.Notice.success('新增成功');
+                            $.Notice.success('新增成功');
                         }else{
-                            win.parent.$.Notice.success('修改成功');
+                            $.Notice.success('修改成功');
                         }
                     }else{
                         if (Util.isStrEquals(patientDialogType, 'addPatient')){
-                            win.parent.$.Notice.error('新增失败');
+                            $.Notice.error('新增失败');
                         }else{
-                            win.parent.$.Notice.error('修改失败');
+                            $.Notice.error('修改失败');
                         }
                     }
-                    win.parent.patientDialogClose();
+                    patientDialogClose();
                     //dialog.close();
                 }
             })
@@ -121,6 +124,22 @@
         }
 
         /* *************************** 函数定义结束******************************* */
+
+
+        //由跳转页面返回成员注册页面时的页面初始化-------------
+        function treeNodeInit (id){
+            if(!id){return}
+            function expandNode (id){
+                var level = $($('#'+id).parent()).parent().attr('outlinelevel')
+                if(level){
+                    var parentId = $($('#'+id).parent()).parent().attr('id')
+                    $($($('#'+id).parent()).prev()).children(".l-expandable-close").click()//展开节点
+                    expandNode(parentId);
+                }
+            }
+            expandNode(id);
+            typeTree.selectNode(id);
+        };
 
         /* *************************** 模块初始化 ***************************** */
         patientInfo = {
@@ -145,7 +164,10 @@
             $patientImgUpload: $("#div_patient_img_upload"),
             $patientCopyId:$("#inp_patientCopyId"),
             $picPath:$('#div_file_list'),
-
+            $tabList: $('.tab-list'),
+            $tabCon: $('.tab-con'),
+            $divResourceBrowseTree: $('#div_resource_browse_tree'),
+            $appRoleGridScrollbar: $(".div-appRole-grid-scrollbar"),
             init: function () {
                 var self = this;
                 $("#div_card_info").hide();
@@ -154,6 +176,8 @@
                 self.$gender.eq(0).attr("checked",'true');
                 self.initForm();
                 self.bindEvents();
+                self.$appRoleGridScrollbar.mCustomScrollbar({
+                });
 
                 self.$patientImgUpload.instance = self.$patientImgUpload.webupload({
                     server: "${contextRoot}/patient/updatePatient",
@@ -176,6 +200,11 @@
                         //dialog.close();
                     });
                 });
+                if(userId!="null"){
+                    $(".tab-list #user_jur").show();
+                    self.getTreeData();
+                }
+
             },
             initForm: function () {
                 var self = this;
@@ -219,6 +248,8 @@
                     if(!Util.isStrEmpty(pic)){
                         self.$picPath.html('<img src="${contextRoot}/patient/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
                     }
+
+                    doctorCardInfo.init();
                 }
             },
             initDDL: function (dictId, target) {
@@ -244,9 +275,92 @@
                     {name: '街道',maxlength: 200}
                 ]});
             },
+            getTreeData: function () {
+                var self = this;
+                typeTree = this.$divResourceBrowseTree.ligerSearchTree({
+                    nodeWidth: 200,
+                    url: '${contextRoot}/patient/appRolesList',
+                    parms:{userId: userId},
+                    idFieldName: 'id',
+                    parentIDFieldName :'parentDeptId',
+                    textFieldName: 'name',
+                    isExpand: false,
+                    enabledCompleteCheckbox:false,
+                    checkbox: true,
+                    async: false,
+                    onCheck:function (checkData,checked) {
+                            var data = checkData.data;
+                            var checkD = null;
+                            if(data.pid){//点中的是二级节点
+                                checkD = [data];
+                            }else{//点中根节点
+                                if(data.children){
+                                    checkD = data.children;
+                                }
+                            }
+                            if(checkD){
+                                if(checked){//选中
+                                    self.appendCheckData(checkD);
+                                }else{//取消选中
+                                    self.cancelCheckData(checkD);
+                                }
+                            }
 
+                    },
+                    onSuccess: function (data) {
+                        typeTree.setData(data.detailModelList);
+                        self.appendCheckData(data.obj || []);
+                    },
+                });
+            },
+            cancelCheckData:function(selectedData){
+                var rightData = $("#div_checked_data .div-item");
+                for(var i=0;i<selectedData.length;i++){
+                    for(var j=0;j<rightData.length;j++){
+                        if(selectedData[i].id==$(rightData[j]).attr("data-id")){
+                            $(rightData[j]).remove();
+                            break;
+                        }
+                    }
+                }
+            },
+            appendCheckData:function(data){
+                var resultHtml = "";
+                var appDom = $("#div_checked_data .div-header-content");
+                for(var i=0;i<data.length;i++) {
+                    var item = data[i];
+                    var roleId = item.id || item.roleId;
+                    var roleName = item.name || item.roleName;
+                    if (appDom.find(".div-item[data-id='" + roleId + "']").length == 0) {
+                        resultHtml += '<div class="h-40 div-item" data-id="'+roleId+'">'+
+                                         '<div class="div-main-content" title="'+roleName+'">'+roleName+'</div>'+
+                                        '<div class="div-delete-content"><a class="grid_delete" href="#" title="删除"></a></div>'+
+                                    '</div>';
+                    }
+                }
+                appDom.after(resultHtml);
+            },
             bindEvents: function () {
                 var self = this;
+                $("#div_checked_data").on("click",".grid_delete",function(){
+                    var itemId = $(this).closest(".div-item").attr("data-id");
+                    var selectedData = typeTree.getCheckedData();
+                    var rowdata = null;
+                    for(var i=0;i<selectedData.length;i++){
+                        if(selectedData[i].pid){
+                            if(selectedData[i].id==itemId){
+                                rowdata = selectedData[i];
+                                break;
+                            }
+                        }
+                    }
+                    if(rowdata) typeTree.cancelSelect(rowdata);//取消选中行
+                    $("#div_checked_data").find(".div-item[data-id="+itemId+"]").remove();
+                    if(typeTree.getCheckedData().length==1){//根节点
+                        typeTree.cancelSelect(typeTree.getCheckedData()[0]);//取消选中行
+                    }
+                })
+
                 $(".u-dropdown-icon").click(function(){
                     $('#inp_realName').click();
                 });
@@ -278,49 +392,70 @@
 
                 //修改人口信息
                 patientInfo.$updateBtn.click(function () {
-                    var picHtml = self.$picPath.children().length;
-                    if(validator.validate()){
-                        var addressList = self.$form.Fields.birthPlaceInfo.getValue();
-                        var homeAddressList = self.$form.Fields.homeAddressInfo.getValue();
-                        var workAddressList = self.$form.Fields.workAddressInfo.getValue();
-                        var values = $.extend({},self.$form.Fields.getValues(),{
-                            birthPlaceInfo: {
-                                province:  addressList.names[0] || null,
-                                city: addressList.names[1] || null,
-                                district: addressList.names[2] || null,
-                                street: addressList.names[3] || null
-                            },
-                            homeAddressInfo:{
-                                province:  homeAddressList.names[0] || null,
-                                city: homeAddressList.names[1] || null,
-                                district: homeAddressList.names[2] || null,
-                                street: homeAddressList.names[3] || null
-                            },
-                            workAddressInfo:{
-                                province:  workAddressList.names[0] || null,
-                                city: workAddressList.names[1] || null,
-                                district: workAddressList.names[2] || null,
-                                street: workAddressList.names[3] || null
+                    if($(".tab-list li.cur").html()=="角色授权"){//保存角色授权值
+                        var wait = $.Notice.waitting('正在加载中...');
+                        var saveData = [];
+                        var rightData = $("#div_checked_data .div-item");
+                        for(var j=0;j<rightData.length;j++){
+                            saveData.push({userId:userId,roleId:$(rightData[j]).attr("data-id")});
+                        }
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote('${contextRoot}/patient/appUserRolesSave', {data: {userId : userId, jsonData: JSON.stringify(saveData)},
+                            success: function (data) {
+                                wait.close();
+                                if(data.successFlg){
+                                    $.Notice.success('保存成功！');
+                                }else{
+                                    $.Notice.error(data.errorMsg);
+                                }
                             }
                         });
-                        var jsonData = JSON.stringify(values)+";"+patientDialogType;
-                        if(picHtml == 0){
-                            updatePatient(jsonData);
-//                        updatePatient(JSON.stringify(values));
-                        }else{
-                            var upload = self.$patientImgUpload.instance;
-                            var image = upload.getFiles().length;
-                            if(image){
-                                upload.options.formData.patientJsonData =   encodeURIComponent(jsonData);
-                                upload.upload();
-                                win.parent.patientDialogRefresh();
-                            }else{
-                                updatePatient(jsonData);
-                            }
-                        }
                     }else{
-                        return
+                        var picHtml = self.$picPath.children().length;
+                        if(validator.validate()){
+                            var addressList = self.$form.Fields.birthPlaceInfo.getValue();
+                            var homeAddressList = self.$form.Fields.homeAddressInfo.getValue();
+                            var workAddressList = self.$form.Fields.workAddressInfo.getValue();
+                            var values = $.extend({},self.$form.Fields.getValues(),{
+                                birthPlaceInfo: {
+                                    province:  addressList.names[0] || null,
+                                    city: addressList.names[1] || null,
+                                    district: addressList.names[2] || null,
+                                    street: addressList.names[3] || null
+                                },
+                                homeAddressInfo:{
+                                    province:  homeAddressList.names[0] || null,
+                                    city: homeAddressList.names[1] || null,
+                                    district: homeAddressList.names[2] || null,
+                                    street: homeAddressList.names[3] || null
+                                },
+                                workAddressInfo:{
+                                    province:  workAddressList.names[0] || null,
+                                    city: workAddressList.names[1] || null,
+                                    district: workAddressList.names[2] || null,
+                                    street: workAddressList.names[3] || null
+                                }
+                            });
+                            var jsonData = JSON.stringify(values)+";"+patientDialogType;
+                            if(picHtml == 0){
+                                updatePatient(jsonData);
+//                        updatePatient(JSON.stringify(values));
+                            }else{
+                                var upload = self.$patientImgUpload.instance;
+                                var image = upload.getFiles().length;
+                                if(image){
+                                    upload.options.formData.patientJsonData =   encodeURIComponent(jsonData);
+                                    upload.upload();
+                                    win.parent.patientDialogRefresh();
+                                }else{
+                                    updatePatient(jsonData);
+                                }
+                            }
+                        }else{
+                            return
+                        }
                     }
+
                 });
 
                 //重置密码
@@ -345,6 +480,19 @@
 
 
                 });
+                //tab
+                self.$tabList.on( 'click', 'li', function (e) {
+                    var index = $(this).index();
+                    if (index == 1) {
+                        $('.btm-btns').hide();
+                    } else {
+                        $('.btm-btns').show();
+                    }
+                    $(this).addClass('cur').siblings().removeClass('cur');
+                    self.$tabCon.hide().eq(index).show();
+                });
+
+
                 //关闭dailog的方法
                 patientInfo.$cancelBtn.click(function(){
                     win.parent.patientDialogClose();
@@ -352,6 +500,81 @@
                 })
             }
         };
+
+        doctorCardInfo = {
+            $doctorCardList: $('#doctorCardList'),
+            init: function () {
+                this.getDoctorCardInfoData();
+                this.bindEvents();
+            },
+            getDoctorCardInfoData: function () {
+                var me = this;
+                $.ajax({
+                    url: '${contextRoot}/patient/PatientCardByUserId',
+                    data: {
+                        ownerIdcard: idCardNo
+                    },
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (res) {
+                        var html = '';
+                        if (res.detailModelList != null && res.detailModelList.length > 0) {
+                            var d = res.detailModelList;
+                            for (var i = 0, len = d.length; i < len; i++) {
+                                var validityDateBegin = d[i].validityDateBegin==null?"":d[i].validityDateBegin.substring( 0, 9);
+                                var validityDateEnd = d[i].validityDateEnd==null?"":d[i].validityDateEnd.substring( 0, 9);
+                                html += ['<li class="card-l-item">',
+                                            '<div><span>' + d[i].cardType + '</span><a href="javascript:;" class="grid_delete" data-id="'  +  d[i].id +'"></a></div>',
+                                            '<ul class="first-ul">',
+                                                '<li><span>卡号: </span><span>' + d[i].cardNo + '</span></li>',
+                                                '<li><span>是否有效: </span><span>' + (d[i].status == 0 ? '无效' : '有效') + '</span></li>',
+                                            '</ul>',
+                                            '<ul class="last-ul">',
+                                                '<li><span>发卡机构: </span><span>' + (d[i].releaseOrg || '') + '</span></li>',
+                                                '<li><span>有效时间: </span><span>' + validityDateBegin + '</span> ~ <span>' + validityDateEnd + '</span></li>',
+                                            '</ul>',
+                                        '</li>'].join('');
+                            }
+                        } else {
+                            html += ['<li class="data-null">',
+                                        '<div class="null-page"></div>',
+                                        '<span>暂无数据</span>',
+                                    '</li>'].join('');
+                        }
+                        me.$doctorCardList.append(html);
+                    }
+                });
+            },
+            bindEvents: function () {
+                        var me = this;
+                        me.$doctorCardList.on( 'click', '.grid_delete', function () {
+                            var $that = $(this),
+                                $cardLItem =  $that.closest('.card-l-item'),
+                                id = $that.attr('data-id');
+                            $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                                if (yes) {
+                                    $.ajax({
+                                        url: '${contextRoot}/patient/deletePatientCardByCardId',
+                                        data: {
+                                            id: id
+                                        },
+                                        type: 'GET',
+                                        dataType: 'json',
+                                        success: function (res) {
+                                            if (res.successFlg) {
+                                                $cardLItem.remove();
+                                            } else {
+                                                $.Notice.error('删除失败');
+                                            }
+                                        }
+                                    });
+                                    console.log(id);
+                                }
+                            });
+                        });
+
+            }
+        }
 
         //卡管理
         cardFormInit = {

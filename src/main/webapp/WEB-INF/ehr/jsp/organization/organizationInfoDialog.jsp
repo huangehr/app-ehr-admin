@@ -312,7 +312,7 @@
 
     </div>
 </div>
-<div class="m-form-control pane-attribute-toolbar" id="div_footer">
+<div class="m-form-control pane-attribute-toolbar" id="div_footer" style="z-index: 999">
     <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar f-mr10" id="div_update_btn">
         <span><spring:message code="btn.save"/></span>
     </div>

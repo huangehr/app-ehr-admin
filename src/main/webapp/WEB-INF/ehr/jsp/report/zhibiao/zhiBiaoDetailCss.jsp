@@ -43,7 +43,7 @@
     position: absolute;
     left: -10px;
     top: -11px;
-    width: 670px;
+    width: 775px;
   }
 
   .pop_tab li.cur {
@@ -62,4 +62,12 @@
     padding: 0 14px;
   }
 
+  .btn:hover, .btn:focus, .btn.focus{color:#fff !important;}
+  #div_main_relation,#div_slave_relation{float: right;margin-right: 16px;width: calc(65% - 20px);height: 441px;border: 1px solid #DFDFDF;overflow: auto;overflow-x: hidden;}
+  .h-40{height:40px;}
+  .div-header{width: 23%;height: 40px;text-align: center;line-height: 40px;background: #EDF6FA;font-weight: bold;border-bottom: 1px solid #DFDFDF;border-right: 1px solid #DFDFDF;float: left;}
+  .div-opera-header{width: 8%;height: 40px;text-align: center;line-height: 40px;background: #EDF6FA;font-weight: bold;border-bottom: 1px solid #DFDFDF;border-right: 1px solid #DFDFDF;float: left;}
+  .div-main-content{width: 23%;height: 40px;text-align: center;line-height: 40px;border-bottom: 1px solid #DFDFDF;border-right: 1px solid #DFDFDF;float: left;font-size: 12px;overflow: hidden;}
+  .div-main-content input{width: calc(100% - 10px);height: 30px;line-height: 30px;padding: 3px;margin: 0 5px;}
+  .div-delete-content{width: 8%; height: 40px; border-bottom: 1px solid #DFDFDF; border-right: 1px solid #DFDFDF;float: left;}
 </style>

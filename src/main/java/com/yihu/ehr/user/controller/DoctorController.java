@@ -189,7 +189,7 @@ public class DoctorController extends BaseUIController {
                     updateDoctor.setLczc(doctorDetailModel.getLczc());
                     updateDoctor.setXlzc(doctorDetailModel.getXlzc());
                     updateDoctor.setXzzc(doctorDetailModel.getXzzc());
-
+                    updateDoctor.setIdCardNo(doctorDetailModel.getIdCardNo());
                     imageId = fileUpload(String.valueOf(doctorId),restStream,imageName);
                     if (!StringUtils.isEmpty(imageId))
                         updateDoctor.setPhoto(imageId);

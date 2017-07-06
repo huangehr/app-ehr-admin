@@ -52,7 +52,11 @@
 		        	var self = this;
 		        	retrieve.$back.click(function(){
 		        		var url = '${contextRoot}/report/initial';
-                        $("#contentPage").load(url);
+						if($("#inp_thirdParty").val()=="true") {//第三方跳转过来的
+							url = '${contextRoot}/report/outInitial';
+						}
+						$("div[data-content-page]").empty();
+						$("div[data-content-page]").load(url);
 		        	});
 		        	$(".div-head").on("click",".div-item",function(){
                         var quotaId = $(this).attr("data-quotaId");

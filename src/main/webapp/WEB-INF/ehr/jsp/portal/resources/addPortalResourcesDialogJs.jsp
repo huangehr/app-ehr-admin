@@ -77,10 +77,10 @@ $(function () {
             });
             self.$uploader.instance.on('uploadSuccess', function (file, resp) {
                 if(!resp.successFlg)
-                    win.parent.$.Notice.error(resp.errorMsg);
+                    $.Notice.error(resp.errorMsg);
                 else
-                    win.parent.$.Notice.success('新增成功');
-                    win.parent.closeAddPortalResourcesInfoDialog(function () {
+                   $.Notice.success('新增成功');
+                   closeAddPortalResourcesInfoDialog(function () {
                 });
             });
         },
@@ -162,8 +162,8 @@ $(function () {
                         data: {portalResourcesModelJsonData: modelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddPortalResourcesInfoDialog(function () {
-                                    win.parent.$.Notice.success('新增成功');
+                                closeAddPortalResourcesInfoDialog(function () {
+                                    $.Notice.success('新增成功');
                                 });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
@@ -219,14 +219,17 @@ $(function () {
                         processData: false,
                         success: function (returndata) {
                             if(returndata != "fail"){
-                                alert("上传成功");
+//                                alert("上传成功");
+                                $.Notice.success('上传成功');
                                 fileUrl = returndata;
                             }else{
-                                alert("上传失败");
+//                                alert("上传失败");
+                                $.Notice.success('上传失败');
                             }
                         },
                         error: function (returndata) {
-                            alert("上传失败");
+//                            alert("上传失败");
+                            $.Notice.success('上传失败');
                         }
                     });
                     return fileUrl;

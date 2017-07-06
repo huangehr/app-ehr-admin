@@ -52,22 +52,19 @@ public class LogController extends BaseUIController {
      */
     @RequestMapping("searchLogs")
     @ResponseBody
-    public Object searchLogs(String logType,String data,String startTime ,String endTime ,String caller, int page, int rows) {
+    public Object searchLogs(String type,String startTime ,String endTime ,String caller, int page, int rows) {
         String url = "/getLogList";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        if (!StringUtils.isEmpty(logType)) {
-            params.put("logType", logType);
-        }
-        if (!StringUtils.isEmpty(data)) {
-            params.put("data", data);
+        if (!StringUtils.isEmpty(type)) {
+            params.put("logType", type);
         }
         if (!StringUtils.isEmpty(startTime)) {
-            params.put("startTime", startTime);
+            params.put("startDate", startTime);
         }
         if (!StringUtils.isEmpty(endTime)) {
-            params.put("endTime", endTime);
+            params.put("endDate", endTime);
         }
         if (!StringUtils.isEmpty(caller)) {
             params.put("caller", caller);

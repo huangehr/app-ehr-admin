@@ -119,8 +119,8 @@
                         data: {portalSettingModelJsonData: modelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddPortalSettingInfoDialog(function () {
-                                    win.parent.$.Notice.success('新增成功');
+                               closeAddPortalSettingInfoDialog(function () {
+                                    $.Notice.success('新增成功');
                                 });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);

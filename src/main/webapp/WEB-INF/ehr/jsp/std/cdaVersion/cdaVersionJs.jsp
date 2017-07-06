@@ -86,6 +86,10 @@
 //								}
 								//html ='<a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "cdaVersion:commitVersion", row.version,row.inStage,0) + '"></a>'
 								var html = '';
+                                if (row.inStage == false) {
+                                    return '';
+                                }
+
 								<sec:authorize url="/cdaVersion/deleteStageVersion">
 								html = '<a class="grid_delete" name="delete_click" style="" title="删除"' +
 											' onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "cdaVersion:del", row.version,row.inStage,0) + '"></a>';
@@ -145,7 +149,7 @@
 										dialog.close();
 										if (data.successFlg) {
 											masters.reloadGrid();
-											win.parent.$.Notice.success('CDA版本新增成功');
+											$.Notice.success('CDA版本新增成功');
 										} else {
 											window.top.$.Notice.error('CDA版本新增失败');
 										}

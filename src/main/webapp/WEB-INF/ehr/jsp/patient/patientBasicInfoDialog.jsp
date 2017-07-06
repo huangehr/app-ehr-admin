@@ -1,8 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<style>
+    .btm-btns{position: absolute;bottom: 0;right: 0;}
+    .tab-con{position: absolute;left: 0;right: 0;top: 50px;bottom: 0;}
+    /*div.tab-con-info{padding-bottom: 60px}*/
+    .l-dialog-body{position: relative;overflow: hidden}
+    .card-l-item{padding: 0 10px;margin-bottom: 10px}
+    .card-l-item div{height:30px;line-height:30px;position:relative;padding: 0 10px;border-width: 1px 1px 0 1px;border-style: solid;border-color: #ccc;background: #f1f1f1;}
+    .card-l-item div span {display: block}
+    .card-l-item div a {position: absolute;right: 0;top: 0}
+    .card-l-item ul{width: 100%;}
+    .card-l-item ul li{display: inline-block;width: 49%;height:30px;line-height:30px;padding: 0 10px;}
+    .first-ul{border-width: 1px 1px 0 1px;border-style: solid;border-color: #ccc}
+    .last-ul{border-width: 0 1px 1px 1px;border-style: solid;border-color: #ccc}
+    .grid_delete{height: 30px;}
+    .data-null{margin-top: 90px;position: relative}
+    .null-page{width: 260px;height: 163px;background: url("${contextRoot}/develop/images/shujukong_bg.png") no-repeat center;margin: 0 auto;}
+    .data-null span {width:100%;display:block;text-align: center;padding: 15px;font-size: 16px;color: #999;}
+</style>
 <div class="pop_tab">
-    <ul>
+    <ul class="tab-list">
         <li class="cur" id="btn_basic">基础属性</li>
+        <li id="card_info">就诊卡信息</li>
+        <li id="user_jur" style="display: none;">角色授权</li>
         <%--<li id="btn_card" >卡管理</li>--%>
         <%--<li id="btn_archive" >档案管理</li>--%>
         <%--<li id="btn_home_relation" >家庭关系</li>--%>
@@ -10,7 +30,7 @@
     </ul>
 </div>
 <!--######人口基本管理 > 人口基本信息对话框模板页######-->
-<div id="div_patient_info_form" data-role-form class="m-form-inline m-form-readonly f-mt20 f-pr">
+<div id="div_patient_info_form" data-role-form class="tab-con m-form-inline m-form-readonly f-mt20 f-pr">
     <div id="div_patient_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
         <!--用来存放item-->
         <div id="div_file_list" class="uploader-list" data-attr-scan></div>
@@ -113,6 +133,41 @@
         <%--<div id="div_file_list" class="uploader-list"></div>--%>
     <%--</div>--%>
 </div>
+
+
+
+<%--new add--%>
+<%--就诊卡信息--%>
+<div class="tab-con m-form-inline" style="display: none">
+    <div class="tab-con-info">
+        <ul id="doctorCardList">
+            <%--就诊卡列表--%>
+        </ul>
+    </div>
+</div>
+
+<%--new add--%>
+<%--角色授权--%>
+<div class="tab-con m-form-inline" style="display: none;width: 600px;height: 420px;margin-left: 10px;">
+    <div class="tab-con-info div-appRole-grid-scrollbar" style="width: 260px;height: 470px;border:1px solid #dcdcdc;display: inline-block;">
+        <%--树--%>
+        <div id="div_resource_browse_tree"></div>
+    </div>
+    <div style="width: 20px;display: inline-block;">
+        <div style="background: url(${staticRoot}/images/zhixiang_icon.png) no-repeat;width: 20px;height: 40px;padding-top: 220px;margin-left: 2px;"></div>
+    </div>
+    <div class="div-appRole-grid-scrollbar" id="div_checked_data" style="width: 260px;height: 470px;border:1px solid #dcdcdc;display: inline-block;background: #fff;">
+        <div class="h-40 div-header-content">
+            <div class="div-header">角色</div>
+            <%--<div class="div-opera-header">操作</div>--%>
+        </div>
+        <%--<div class="h-40 div-item">--%>
+        <%--<div class="div-main-content" title="信息共享交换平台">信息共享交换平台</div>--%>
+        <%--<div class="div-delete-content"><a class="grid_delete" href="#" title="删除"></a></div>--%>
+        <%--</div>--%>
+    </div>
+</div>
+
 
 <!--######卡管理 > 卡信息对话框模板页######-->
 <div id="div_card_info" data-role-form class="m-form-inline">

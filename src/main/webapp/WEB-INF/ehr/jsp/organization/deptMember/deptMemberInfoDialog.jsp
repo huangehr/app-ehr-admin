@@ -32,8 +32,8 @@
 	<div class="m-form-group">
 		<label>上级用户<spring:message code="spe.colon"/></label>
 		<div class="m-form-control ">
-			<input type="text" id="inp_parentUserId"  data-type="select"  class="required useTitle ajax f-h28 f-w240"
-				   placeholder="请选择上级用户"  data-attr-scan="parentUserId">
+			<input type="text" id="inp_parentUserId"  data-type="select"  class="useTitle ajax f-h28 f-w240"
+				   data-attr-scan="parentUserId">
 		</div>
 	</div>
 

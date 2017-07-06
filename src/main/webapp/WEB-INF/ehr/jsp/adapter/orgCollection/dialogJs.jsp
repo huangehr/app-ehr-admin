@@ -7,15 +7,15 @@
         var Util = $.Util;
         var infoForm = null;
         var jValidation = $.jValidation;
-        var orgCode = parent.getOrgCode();
-        var seq = parent.getSeq();
+        var orgCode = getOrgCode();
+        var seq = getSeq();
         var mode = '${mode}';
         if(!Util.isStrEquals(mode,'new')){
             <%--var orgDataSetJsonModel = '${info}';--%>
 //            var info = $.parseJSON(orgDataSetJsonModel);
             var info = ${info};
         }
-        var cfgModel = parent.getDialogOpener();
+        var cfgModel = getDialogOpener();
         var cfg = [
             {new:'/orgdataset/createOrgDataSet', modify:'/orgdataset/updateOrgDataSet'},
             {new:'/orgdataset/createOrgMetaData', modify:'/orgdataset/updateOrgMetaData'},
@@ -109,8 +109,8 @@
                         data: {jsonDataModel:JSON.stringify(adapterModel)},
                         success: function(data) {
                             if(data.successFlg){
-                                parent.reloadMasterGrid();
-                                parent.closeDialog( '保存成功！');
+                                reloadMasterGrid();
+                                closeDialog( '保存成功！');
                             }else{
                                 if(data.errorMsg)
                                     $.Notice.error( data.errorMsg);
@@ -127,7 +127,7 @@
 
                 });
                 this.$btnCancel.click(function () {
-                    parent.closeDialog();
+                    closeDialog();
                 });
             },
             validate : function (values) {

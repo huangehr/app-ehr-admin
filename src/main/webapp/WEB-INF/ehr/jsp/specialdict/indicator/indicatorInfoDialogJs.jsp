@@ -117,7 +117,7 @@
 							data:  {dictJson:JSON.stringify(indicatorModel),mode:mode},
 							success: function (data) {
 								if(data.successFlg){
-									parent.reloadIndicatorInfoGrid();
+									reloadIndicatorInfoGrid();
 									$.Notice.success('操作成功');
 									win.closeIndicatorInfoDialog();
 								}else{

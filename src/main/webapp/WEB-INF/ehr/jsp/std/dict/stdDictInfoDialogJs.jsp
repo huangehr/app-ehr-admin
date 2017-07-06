@@ -68,7 +68,7 @@
             },
             initDDL: function (mode, target) {
                 var dataModel = $.DataModel.init();
-                var strVersionCode = parent.getStrVersion();
+                var strVersionCode = getStrVersion();
                 var url = '';
                 if(mode==1){
                     url = "${contextRoot}/cdadict/getStdSourceList";
@@ -144,7 +144,7 @@
                 this.$btnSave.click(function () {
                     self.$btnSave.attr('disabled','disabled');
                     var values = self.$form.Fields.getValues();
-                    var strVersionCode = parent.getStrVersion();
+                    var strVersionCode = getStrVersion();
                     var data = {
                         cdaVersion:strVersionCode,
                         dictId:values.id,
@@ -166,8 +166,8 @@
                                 var app = data.obj;
                                 //$.Notice.success( '操作成功！');
                                 //调用主页面接口，重新刷新Grid
-                                parent.reloadMasterGrid();
-                                parent.closeDialog('left', '保存成功！');
+                                reloadMasterGrid();
+                                closeDialog('left', '保存成功！');
 //                                dialog.close();
                             }else{
                                 $.Notice.error(data.errorMsg);
@@ -183,7 +183,7 @@
                 });
 
                 this.$btnCancel.click(function () {
-                    parent.closeDialog('left');
+                    closeDialog('left');
 //                    dialog.close();
                 });
             }

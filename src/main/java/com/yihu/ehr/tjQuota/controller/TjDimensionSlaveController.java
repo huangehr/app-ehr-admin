@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -96,7 +97,7 @@ public class TjDimensionSlaveController extends BaseUIController {
     @ResponseBody
     public Object updateTjDimensionSlave(String tjDimensionSlaveModelJsonData, HttpServletRequest request) throws IOException {
 
-        String url = "/tjDimensionSlave/";
+        String url = "/tj/tjDimensionSlave";
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
@@ -108,8 +109,8 @@ public class TjDimensionSlaveController extends BaseUIController {
 
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
-                Long tjDimensionSlaveId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tjDimensionSlave/" + tjDimensionSlaveId);
+                Long id = detailModel.getId();
+                resultStr = templates.doGet(comUrl + "/tj/tjDimensionSlaveId/" + id);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDimensionSlaveModel updateTjDimensionSlave = getEnvelopModel(envelop.getObj(), TjDimensionSlaveModel.class);
@@ -117,11 +118,10 @@ public class TjDimensionSlaveController extends BaseUIController {
                     updateTjDimensionSlave.setCode(detailModel.getCode());
                     updateTjDimensionSlave.setName(detailModel.getName());
                     updateTjDimensionSlave.setType(detailModel.getType());
-                    updateTjDimensionSlave.setDel(detailModel.getDel());
+                    updateTjDimensionSlave.setStatus(detailModel.getStatus());
                     updateTjDimensionSlave.setRemark(detailModel.getRemark());
-                    updateTjDimensionSlave.setCreateTime(new Date());
-                    updateTjDimensionSlave.setCreateUser(userDetailModel.getId());
-                    updateTjDimensionSlave.setCreateUserName(userDetailModel.getRealName());
+                    updateTjDimensionSlave.setUpdateUser(userDetailModel.getId());
+                    updateTjDimensionSlave.setUpdateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDimensionSlave));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -131,9 +131,8 @@ public class TjDimensionSlaveController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(new Date());
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
@@ -153,7 +152,7 @@ public class TjDimensionSlaveController extends BaseUIController {
     @RequestMapping("deleteTjDimensionSlave")
     @ResponseBody
     public Object deleteTjDimensionSlave(Long tjDimensionSlaveId) {
-        String url = "/tjDimensionSlave/" + tjDimensionSlaveId;
+        String url = "/tj/tjDimensionSlave";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -178,4 +177,112 @@ public class TjDimensionSlaveController extends BaseUIController {
     }
 
 
+    /**
+     * 根据id获取消息
+     * @param model
+     * @param id
+     * @return
+     */
+    @RequestMapping("getTjDimensionSlaveById")
+    @ResponseBody
+    public TjDimensionSlaveModel getTjDimensionSlaveById(Model model, Long id ) {
+        String url ="/tj/tjDimensionSlaveId/" +id;
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop ep = getEnvelop(resultStr);
+            TjDimensionSlaveModel detailModel = toModel(toJson(ep.getObj()),TjDimensionSlaveModel.class);
+            return detailModel;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 校验名称是否唯一
+     * @param name
+     * @return
+     */
+    @RequestMapping("isNameExists")
+    @ResponseBody
+    public boolean isNameExists(String name) {
+        String url = "/tj/tjDimensionSlaveName" ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("name", name);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
+
+    /**
+     * 校验code是否唯一
+     * @param code
+     * @return
+     */
+    @RequestMapping("isCodeExists")
+    @ResponseBody
+    public boolean isCodeExists(String code) {
+        String url = "/tj/tjDimensionSlaveCode" ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("code", code);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
+
+    @RequestMapping("/getTjDimensionSlaveInfo")
+    @ResponseBody
+    public Object getTjDimensionSlaveInfo(String quotaCode, String name, int page, int rows){
+        String url = "/tj/getTjDimensionSlaveInfoList";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(quotaCode)) {
+            params.put("filter", "quotaCode=" + quotaCode);
+        }
+        if (!StringUtils.isEmpty(name)) {
+            stringBuffer.append("name?" + name + " g1;code?" + name + " g1;");
+        }
+        String filters = stringBuffer.toString();
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception ex) {
+            LogService.getLogger(TjDimensionMainController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 }

@@ -338,6 +338,17 @@
                 },
                 </sec:authorize>
 
+                // 3-7 - 资源浏览
+                <sec:authorize url="/resourceBrowse/browse">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 37,
+                    text: '<spring:message code="title.resource.browse"/>',
+                    url: '${contextRoot}/resourceBrowse/browse'
+                },
+                </sec:authorize>
+
                 // 4- 全程健康档案
                 <sec:authorize url="Ehr_Archive_Manager">
                 {
@@ -358,16 +369,16 @@
                 },
                 </sec:authorize>
 
-                // 4-1 居民档案管理
-                <sec:authorize url="userCards/archiveRelation/initial">
-                {
-                    pid: 4,
-                    level:2,
-                    id: 42,
-                    text: '<spring:message code="title.patient.archiveRelation"/>',
-                    url: '${contextRoot}/userCards/archiveRelation/initial'
-                },
-                </sec:authorize>
+                <%--// 4-1 居民档案管理--%>
+                <%--<sec:authorize url="userCards/archiveRelation/initial">--%>
+                <%--{--%>
+                    <%--pid: 4,--%>
+                    <%--level:2,--%>
+                    <%--id: 42,--%>
+                    <%--text: '<spring:message code="title.patient.archiveRelation"/>',--%>
+                    <%--url: '${contextRoot}/userCards/archiveRelation/initial'--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 // 4-2 居民档案申领审核
                 <sec:authorize url="/archive/apply/initial">
@@ -380,16 +391,16 @@
                 },
                 </sec:authorize>
 
-                // 4-3- 就诊卡管理
-                <sec:authorize url="/medicalCards/initialPageView">
-                {
-                    pid: 4,
-                    level:2,
-                    id: 44,
-                    text: '<spring:message code="title.card.manage"/>',
-                    url: '${contextRoot}/medicalCards/initialPageView'
-                },
-                </sec:authorize>
+                <%--// 4-3- 就诊卡管理--%>
+                <%--<sec:authorize url="/medicalCards/initialPageView">--%>
+                <%--{--%>
+                    <%--pid: 4,--%>
+                    <%--level:2,--%>
+                    <%--id: 44,--%>
+                    <%--text: '<spring:message code="title.card.manage"/>',--%>
+                    <%--url: '${contextRoot}/medicalCards/initialPageView'--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 // 4-4 就诊卡申领审核
                 <sec:authorize url="/userCards/initial">
@@ -428,6 +439,39 @@
                     id: 51,
                     text: '<spring:message code="title.index.management"/>',
                     url: '${contextRoot}/zhibiao/initial'
+                },
+                </sec:authorize>
+
+                //  5-2 指标分类管理
+                <sec:authorize url="/organization/Initial">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 52,
+                    text: '<spring:message code="title.health.manage"/>',
+                    url: '${contextRoot}/health/initial'
+                },
+                </sec:authorize>
+
+                // 5-4 - 指标配置管理
+                <sec:authorize url="/zhibiaoconfig/initial">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 54,
+                    text: '<spring:message code="title.index.config.management"/>',
+                    url: '${contextRoot}/zhibiaoconfig/initial'
+                },
+                </sec:authorize>
+
+                // 5-5 - 趋势分析
+                <sec:authorize url="Ehr_Master_Centre">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 55,
+                    text: '<spring:message code="title.trend.analysis"/>',
+                    url: '${contextRoot}/report/initial'
                 },
                 </sec:authorize>
 

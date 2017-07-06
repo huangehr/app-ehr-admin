@@ -2,10 +2,13 @@ package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
+import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Cell;
 import jxl.Workbook;
@@ -16,7 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +41,34 @@ public class ResourceBrowseController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+    @RequestMapping("/browse")
+    public String resourceBrowse(Model model) {
+        model.addAttribute("contentPage", "/resource/browse/resourceView");
+        return "pageView";
+    }
+
+    @RequestMapping("/browseCenter")
+    public String browseCenter(Model model) {
+        model.addAttribute("contentPage", "/resource/browse/resourceDataView");
+        return "pageView";
+    }
+
+    @RequestMapping("/searchResourceList")
+    @ResponseBody
+    public Object searchResourceList() {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "/resources/categories";
+        String resultStr = "";
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+
+        }
+        return envelop;
+    }
 
     @RequestMapping("/initial")
     public String resourceBrowseInitial(Model model) {
@@ -63,13 +95,13 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/searchResourceData")
     @ResponseBody
-    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows,HttpServletRequest request) {
+    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String url = "/resources/ResourceBrowses/getResourceData";
         //当前用户机构
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         params.put("orgCode", userDetailModel.getOrganization());
         params.put("resourcesCode", resourcesCode);
         params.put("queryCondition", searchParams);
@@ -281,5 +313,63 @@ public class ResourceBrowseController extends BaseUIController {
             e.printStackTrace();
         }
         return value;
+    }
+
+    @RequestMapping("browseBefore")
+    public String resourceBrowseBefore(Model model) {
+        Envelop envelop = new Envelop();
+        String resultStr = "";
+        List<RsCategoryModel> list=new ArrayList<RsCategoryModel>();
+        try {
+            RsCategoryModel rsModel=new RsCategoryModel();
+            rsModel.setId("0dae002159535497b3865e129433e933");
+            rsModel.setName("全员人口个案库");
+            list.add(rsModel);
+            rsModel=new RsCategoryModel();
+            rsModel.setId("0dae0021595354a8b3865e129433e934");
+            rsModel.setName("医疗资源库");
+            list.add(rsModel);
+            rsModel=new RsCategoryModel();
+            rsModel.setId("0dae0021595354c4b3865e129433e935");
+            rsModel.setName("健康档案库");
+            list.add(rsModel);
+            rsModel=new RsCategoryModel();
+            rsModel.setId("0dae0021595354cfb3865e129433e936");
+            rsModel.setName("电子病历库");
+            list.add(rsModel);
+            rsModel=new RsCategoryModel();
+            rsModel.setId("0dae0021595354d6b3865e129433e937");
+            rsModel.setName("生命体征库");
+            list.add(rsModel);
+            envelop.setDetailModelList(list);
+            envelop.setSuccessFlg(true);
+            resultStr =  toJson(envelop);
+            model.addAttribute("list",list);
+            model.addAttribute("resultStr",resultStr);
+            model.addAttribute("contentPage", "/resource/browse/resourceBrowseBefore");
+
+            return "pageView";
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("字典查询失败");
+        }
+        model.addAttribute("contentPage", "/resource/browse/resourceBrowseBefore");
+        return "pageView";
+    }
+
+    //获取所有平台应用下的角色组用于下拉框
+    @RequestMapping("/resourceBrowseTree")
+    @ResponseBody
+    public Object getResourceBrowseTree(){
+        try {
+            String url = "/resourceBrowseTree";
+            Map<String,Object> params = new HashMap<>();
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+//            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceBrowseController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
     }
 }

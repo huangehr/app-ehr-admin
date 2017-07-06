@@ -115,8 +115,8 @@ public class PortalNoticesController extends BaseUIController {
         Envelop result = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        String[] strings = URLDecoder.decode(portalNoticeModelJsonData, "UTF-8").split(";");
-        PortalNoticeDetailModel detailModel = toModel(strings[0], PortalNoticeDetailModel.class);
+        String strings = URLDecoder.decode(portalNoticeModelJsonData, "UTF-8");
+        PortalNoticeDetailModel detailModel = toModel(strings, PortalNoticeDetailModel.class);
         RestTemplates templates = new RestTemplates();
 
         try {

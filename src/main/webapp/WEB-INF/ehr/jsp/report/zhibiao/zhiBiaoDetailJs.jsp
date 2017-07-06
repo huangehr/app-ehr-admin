@@ -11,149 +11,60 @@
 
             /* ************************** 全局变量定义 **************************** */
             var Util = $.Util;
-            var dictRetrieve = null;
             var dictMaster = null;
-            var conditionArea = null;
-
-            var entryRetrieve = null;
             var entryMater = null;
-
-            var versionStage = null;
-            var selectRowObj = null;
-            var isSaveSelectStatus = false;
+            var jValidation = $.jValidation;  // 表单校验工具类
+            var validator = null;
+            var validator1 = null;
+            var quotaId = null;
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
-
-                conditionArea.init();
-                conditionArea.resizeContent();
-                entryRetrieve.init();
                 entryMater.init();
             }
 
-            function getStagedByValue()
-            {
-                var _value = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                if (!_value && _value == "") return false;
-                var data = $("#stdDictVersion").ligerComboBox().data;
-                for(var i =0;i<data.length;i++)
-                {
-                    if(data[i].version==_value)
-                    {
-                        return data[i].inStage;
-                    }
-                }
-                return false;
-            }
 
             /* *************************** 标准字典模块初始化 ***************************** */
-            conditionArea = {
-                $element: $('#conditionArea'),
-                $stdDictVersion: $('#stdDictVersion'),
-
-                init: function () {
-                    this.rendBarTools();
-                },
-                resizeContent:function(){
-//                    var contentW = $('#grid_content').width();
-//                    var leftW = $('#div_left').width();
-//                    $('#div_right').width(contentW - leftW - 20);
-                },
-                //初始化工具栏
-                rendBarTools : function(){
-                    function onUploadSuccess(g, result){
-                        if(result=='suc')
-                            $.Notice.success("导入成功");
-                        else{
-                            result = eval('(' + result + ')')
-                            var url = "${contextRoot}/resource/dict/downLoadErrInfo?f="+ result.eFile[1] + "&datePath=" + result.eFile[0];
-                            $.ligerDialog.open({
-                                height: 80,
-                                content: "请下载&nbsp;<a target='diframe' href='"+ url +"'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
-                            });
-                        }
-                    }
-                     function onDlgClose(){
-                        dictMaster.reloadGrid();
-                    }
-                   function onBeforeUpload(){
-                       if(!versionStage)
-                       {
-                           $.Notice.error("已发布版本不可新增，请确认!");
-                           return false;
-                       }else{
-                           return true;
-                       }
-                   };
-                    $('#upd').uploadFile({
-                        url: "${contextRoot}/cdadict/importFromExcel",
-                        onUploadSuccess: onUploadSuccess,
-                        onDlgClose: onDlgClose,
-                        onBeforeUpload:onBeforeUpload
-                    });
-
-                },
-                event:function(){
-                    $("#div_file_export").click(function(){
-                        var versionCode = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                        var versionName = $("#stdDictVersion").ligerGetComboBoxManager().getText();
-                        window.open("${contextRoot}/cdadict/exportToExcel?versionCode="+versionCode+"&versionName="+versionName,"标准字典导出");
-                    });
-                }
-            };
-
-            dictRetrieve = {
-                $element: $('#dictRetrieve'),
-                $searchNm: $('#searchNm'),
-                $addBtn: $('#btn_create'),
-
-                init: function () {
-
-                    this.$searchNm.ligerTextBox({
-                        width: 240, isSearch: true, search: function () {
-                            dictMaster.reloadGrid(1);
-                        }
-                    });
-                    this.$element.show();
-                    window.form = this.$element;
-                }
-            };
-
-            entryRetrieve = {
-                $element: $('#entryRetrieve'),
+            entryMater = {
+                grid: null,
+                slaveGrid: null,
                 $searchNm: $('#searchNmEntry'),
-
+                $slaSearchNm: $('#searchNmSlaEntry'),
+                $quotaCode:$("#inp_quotaCode").val(),
                 init: function () {
+                    var self = this;
+                    quotaId = self.$quotaCode;
                     this.$searchNm.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
-                            entryMater.reloadGrid(1);
+                            self.reloadGrid();
                         }
                     });
-                    this.$element.show();
-                    window.form = this.$element;
-                }
-            };
-
-            entryMater = {
-                entryInfoDialog: null,
-                grid: null,
-                grid1: null,
-                init: function () {
-                    if (this.grid)
-                        return;
+                    this.$slaSearchNm.ligerTextBox({
+                        width: 200, isSearch: true, search: function () {
+                            self.reloadGrid();
+                        }
+                    });
+                    debugger
+                    $("#div_relation_grid").show()
+                    $("#div_slave_grid").hide();
+                    $(".div-slave-search").hide();
+                    this.loadMainGrid();//加载主维度值
+                    this.loadSlaveGrid();//加载细维度值
+                    this.bindEvents();
+                },
+                loadMainGrid:function(){
+                    var self = this;
                     this.grid = $("#div_relation_grid").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/cdadict/getCdaDictList',
-                        width:" calc(50% - 20px)",
+                        url: '${contextRoot}/tjDimensionMain/getTjDimensionMainInfo',
+                        width:" calc(35% - 20px)",
                         height:"450px",
                         parms: {
-                            searchNm: "",
-                            strVersionCode: "592814c2898a"
+                            quotaCode: this.$quotaCode,
+                            name:""
                         },
                         columns: [
                             {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
-                            {display: '编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '名称', name: 'name', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '维度', name: 'name', width: '34%', isAllowHide: false, align: 'left'}
+                            {display: '编码', name: 'code', width: '50%', isAllowHide: false, align: 'left'},
+                            {display: '名称', name: 'name', width: '50%', isAllowHide: false, align: 'left'},
                         ],
                         //delayLoad:true,
                         selectRowButtonOnly: false,
@@ -161,154 +72,266 @@
                         unSetValidateAttr: false,
                         allowHideColumn: false,
                         checkbox: true,
-                        onDblClickRow: function (row) {
-                            //$.publish('entry:dictInfo:open',[row.id, row.dictId, 'modify']);
-                        }
-                    }));
-
-                    this.grid1 = $("#div_relation_grid1").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/cdadict/getCdaDictList',
-                        parms: {
-                            searchNm: "",
-                            strVersionCode: "592814c2898a"
+                        onSuccess:function(data){
+                            self.mainCheckedData(data.obj,"1");
                         },
-                        width:" calc(50% - 20px)",
+                        //默认选中
+                        isChecked:function(row){
+                            if(row.checked=="1")
+                            {
+                                return true;
+                            }
+                            else{
+                                return false;
+                            }
+                        },
+                        //选中修改值
+                        onCheckRow:function(checked,data,rowid,rowdata)
+                        {
+                            //修改行checked值
+                            if(checked){
+                                data.checked ="1";
+                                self.mainCheckedData([data],"1");
+                            }else{
+                                data.checked ="0";
+                                self.deleteMainData(data);
+                            }
+                        },
+                        //全选事件
+                        onCheckAllRow:function(){
+                            var selectedData = self.grid.getSelectedRows();
+                            if(selectedData.length>0){
+                                self.mainCheckedData(selectedData,"1");
+                            }else{
+                                var currentData =  self.grid.getData();
+                                for(var i=0;i<currentData.length;i++){
+                                    if($("#div_main_relation").find(".div-item[data-code='"+currentData[i].code+"']").length>0){
+                                        self.deleteMainData(currentData[i]);
+                                    }
+                                }
+                            }
+
+                        },
+                    }));
+                    // 自适应宽度
+                    this.grid.adjustToWidth();
+                },
+                loadSlaveGrid:function(){
+                    var self = this;
+                    this.slaveGrid = $("#div_slave_grid").ligerGrid($.LigerGridEx.config({
+                        url: '${contextRoot}/tjDimensionSlave/getTjDimensionSlaveInfo',
+                        width:" calc(35% - 20px)",
                         height:"450px",
+                        parms: {
+                            quotaCode: this.$quotaCode,
+                            name:""
+                        },
                         columns: [
                             {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
-                            {display: '编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '名称', name: 'name', width: '33%', isAllowHide: false, align: 'left'},
-                            {display: '维度', name: 'name', width: '34%', isAllowHide: false, align: 'left'}
+                            {display: '编码', name: 'code', width: '50%', isAllowHide: false, align: 'left'},
+                            {display: '名称', name: 'name', width: '50%', isAllowHide: false, align: 'left'},
                         ],
                         //delayLoad:true,
                         selectRowButtonOnly: false,
                         validate: true,
                         unSetValidateAttr: false,
                         allowHideColumn: false,
-                        onDblClickRow: function (row) {
-                            //$.publish('entry:dictInfo:open',[row.id, row.dictId, 'modify']);
-                        }
+                        checkbox: true,
+                        onSuccess:function(data){
+                            self.mainCheckedData(data.obj,"2");
+                        },
+                        //默认选中
+                        isChecked:function(row){
+                            if(row.checked=="1")
+                            {
+                                return true;
+                            }
+                            else{
+                                return false;
+                            }
+                        },
+                        //选中修改值
+                        onCheckRow:function(checked,data,rowid,rowdata)
+                        {
+                            //修改行checked值
+                            if(checked){
+                                data.checked ="1";
+                                self.mainCheckedData([data],"2");
+                            }else{
+                                data.checked ="0";
+                                self.deleteSlaveData(data);
+                            }
+                        },
+                        //全选事件
+                        onCheckAllRow:function(){
+                            var selectedData = self.grid.getSelectedRows();
+                            if(selectedData.length>0){
+                                self.mainCheckedData(selectedData,"1");
+                            }else{
+                                var currentData =  self.grid.getData();
+                                for(var i=0;i<currentData.length;i++){
+                                    if($("#div_slave_relation").find(".div-item[data-code='"+currentData[i].code+"']").length>0){
+                                        self.deleteSlaveData(currentData[i]);
+                                    }
+                                }
+                            }
+
+                        },
                     }));
-                    this.bindEvents();
                     // 自适应宽度
-                    this.grid.adjustToWidth();
+                    this.slaveGrid.adjustToWidth();
                 },
-                reloadGrid: function (curPage, dictId) {
-                    var searchNmEntry = $("#searchNmEntry").val();
-                    var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                    var dictId = dictId == '' ? -1 : dictMaster.grid.getSelectedRow().id;
+                deleteMainData:function(data){
+                    $("#div_main_relation").find(".div-item[data-code="+data.code+"]").remove();
+                },
+                deleteSlaveData:function(data){
+                    $("#div_slave_relation").find(".div-item[data-code="+data.code+"]").remove();
+                },
+                mainCheckedData:function(data,flag){
+                    var resultHtml = "";
+                    var appDom = flag=="1"?$("#div_main_relation"):$("#div_slave_relation");
+                    for(var i=0;i<data.length;i++){
+                        var item = data[i];
+                        var mainCode = item.code || item.mainCode || item.slaveCode;
+                        if(appDom.find(".div-item[data-code='"+mainCode+"']").length==0){
+                            var dictSql = item.dictSql || "";
+                            var keyVal = item.keyVal || "";
+                            resultHtml+='<div class="h-40 div-item" data-id="'+item.id+'" data-code="'+mainCode+'"  data-name="'+item.name+'" >'+
+                                    '<div class="div-main-content">'+mainCode+'</div>'+
+                                    '<div class="div-main-content" title="'+item.name+'">'+item.name+'</div>'+
+                                    '<div class="div-main-content">'+
+                                    '<input type="text" value="'+dictSql+'" class="required inp-dictSql">'+
+                                    '</div>'+
+                                    '<div class="div-main-content">'+
+                                    '<input type="text" value="'+keyVal+'" class="required inp-keyVal">'+
+                                    '</div>'+
+                                    '<div class="div-delete-content">'+
+                                    '<a class="grid_delete" href="#" title="删除"></a>'+
+                                    '</div>'+
+                                    '</div>';
+                        }
+                    }
+                    appDom.append(resultHtml);
+                },
+                reloadGrid: function () {
+                    var searchNmEntry = this.$searchNm.val();
+                    var curGrid = this.grid;
+                    var reqUrl = '${contextRoot}/tjDimensionMain/getTjDimensionMainInfo';
+                    if($(".pop_tab li.cur").index()==1){//细维度
+                        searchNmEntry = this.$slaSearchNm.val();
+                        curGrid = this.slaveGrid;
+                        reqUrl = '${contextRoot}/tjDimensionSlave/getTjDimensionSlaveInfo';
+                    }
                     var values = {
-                        searchNmEntry: searchNmEntry,
-                        strVersionCode: stdDictVersion,
-                        dictId: dictId
+                        quotaCode: this.$quotaCode,
+                        name:searchNmEntry
                     };
-                    Util.reloadGrid.call(this.grid, '${contextRoot}/cdadict/searchDictEntryList', values, curPage);
+                    Util.reloadGrid.call(curGrid,reqUrl, values, 1);
                 },
                 bindEvents: function () {
-                    //窗体改变大小事件
-                    $(window).bind('resize', function () {
-                        conditionArea.resizeContent();
-                    });
-                    //
-                    $.subscribe('entry:dictInfo:open', function (event, id, dictId, mode) {
-                        if (!dictMaster.grid.getSelectedRow()) {
-                            $.Notice.warn('请先添加标准字典数据！');
-                            return;
-                        }
-                        var title = '';
-                        //只有new 跟 modify两种模式会到这个函数
-                        if (mode == 'modify') {
-                            title = '修改字典项';
-                        }
-                        else {
+                    var self = this;
+                    validator =  new jValidation.Validation($("#div_main_relation"), {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
 
-                            if(!versionStage)
-                            {
-                                $.Notice.error("已发布版本不可新增，请确认!");
-                                return;
-                            }
-                            dictId = dictMaster.grid.getSelectedRow().id;
-                            title = '新增字典项';
+                    }});
+
+                    validator1 =  new jValidation.Validation($("#div_slave_relation"), {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
+
+                    }});
+
+                    $(".pop_tab ul").on("click","li",function(){
+                        $(".pop_tab ul").find("li").removeClass("cur");
+                        $(this).addClass("cur");
+                        if($(this).index()==0){
+                            $(".div-main-search").show();
+                            $(".div-slave-search").hide();
+                            $("#div_relation_grid").show();
+                            $("#div_slave_grid").hide();
+                            $("#div_main_relation").show();
+                            $("#div_slave_relation").hide();
+                            self.grid.setWidth("100%");
+                            self.grid.adjustToWidth();
+                        }else{
+                            $(".div-main-search").hide();
+                            $(".div-slave-search").show();
+                            $("#div_relation_grid").hide();
+                            $("#div_slave_grid").show();
+                            $("#div_main_relation").hide();
+                            $("#div_slave_relation").show();
+                            self.slaveGrid.setWidth("100%");
+                            self.slaveGrid.adjustToWidth();
                         }
-                        var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                        entryMater.entryInfoDialog = $.ligerDialog.open({
-                            height: 360,
-                            width: 460,
-                            title: title,
-                            url: '${contextRoot}/cdadict/template/dictEntryInfo',
-                            urlParms: {
-                                id: id,
-                                dictId: dictId,
-                                mode: mode,
-                                strVersionCode: stdDictVersion,
-                                staged:versionStage
-                            },
-                            isHidden: false,
-                            opener: true,
-                            load: true
-                        });
+
                     });
 
-                    $.subscribe('entry:dictInfoGrid:delete', function (event, ids) {
-
-                        if(!versionStage)
-                        {
-                            $.Notice.error("已发布版本不可删除，请确认!");
-                            return;
-                        }
-                        var delLen = 1;
-                        if (!ids) {
-                            var rows = entryMater.grid.getSelectedRows();
-                            if (rows.length == 0) {
-                                $.Notice.warn('请选择要删除的数据行！');
-                                return;
-                            }
-                            delLen = rows.length;
-                            for (var i = 0; i < rows.length; i++) {
-                                ids += ',' + rows[i].id;
-                            }
-                            ids = ids.length > 0 ? ids.substring(1, ids.length) : ids;
-                        }
-
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
-                            if (r) {
+                    $("#div_save").click(function(){
+                            var validate = $(".pop_tab li.cur").index()==0?validator.validate():validator1.validate();
+                            if(validate){
+                                var wait = $.Notice.waitting('正在加载中...');
+                                var saveData = [];
+                                var quotaCode = null
+                                var reqUrl = '${contextRoot}/tjQuotaDimensionMain/addTjQuotaDimensionMain';
+                                if($(".pop_tab li.cur").index()==0){
+                                    var divItem = $("#div_main_relation").find(".div-item");
+                                    $.each(divItem,function(key,value){
+                                        var ob = {id:$(value).attr("data-id"),quotaCode:self.$quotaCode,mainCode:$(value).attr("data-code"),dictSql:$(value).find(".inp-dictSql").val(),keyVal:$(value).find(".inp-keyVal").val()}
+                                        saveData.push(ob);
+                                    })
+                                }else{
+                                     reqUrl = '${contextRoot}/tjQuotaDimensionMain/addTjQuotaDimensionSlave';
+                                    var divItem = $("#div_slave_relation").find(".div-item");
+                                    $.each(divItem,function(key,value){
+                                        var ob = {id:$(value).attr("data-id"),quotaCode:self.$quotaCode,slaveCode:$(value).attr("data-code"),dictSql:$(value).find(".inp-dictSql").val(),keyVal:$(value).find(".inp-keyVal").val()}
+                                        saveData.push(ob);
+                                    })
+                                }
                                 var dataModel = $.DataModel.init();
-                                var stdDictVersion = $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-                                dataModel.updateRemote('${contextRoot}/cdadict/deleteDictEntryList', {
-                                    data: {id: ids, cdaVersion: stdDictVersion},
+                                if (saveData.length == 0) {
+                                    quotaCode = quotaId;
+                                }
+                                dataModel.updateRemote(reqUrl, {data: {quotaCode : quotaCode, jsonModel: JSON.stringify(saveData)},
                                     success: function (data) {
-                                        $.Notice.success('操作成功！');
-                                        entryMater.reloadGrid(Util.checkCurPage.call(entryMater.grid, delLen));
+                                        wait.close();
+                                        if(data.successFlg){
+                                            $.Notice.success('保存成功！');
+                                        }else{
+                                            $.Notice.error(data.errorMsg);
+                                        }
                                     }
                                 });
                             }
-                        })
+                    })
 
-                    });
+                    $("#div_main_relation").on("click",".grid_delete",function(){
+                        var itemCode = $(this).closest(".div-item").attr("data-code");
+                        var selectedData = self.grid.getSelectedRows();
+                        var rowdata = null;
+                        for(var i=0;i<selectedData.length;i++){
+                            if(selectedData[i].code==itemCode){
+                                rowdata = selectedData[i];
+                                break;
+                            }
+                        }
+                        if(rowdata) self.grid.unselect(rowdata);//取消选中行
+                        $("#div_main_relation").find(".div-item[data-code="+itemCode+"]").remove();
+                    })
+
+                    $("#div_slave_relation").on("click",".grid_delete",function(){
+                        var itemCode = $(this).closest(".div-item").attr("data-code");
+                        var selectedData = self.grid.getSelectedRows();
+                        var rowdata = null;
+                        for(var i=0;i<selectedData.length;i++){
+                            if(selectedData[i].code==itemCode){
+                                rowdata = selectedData[i];
+                                break;
+                            }
+                        }
+                        if(rowdata) self.grid.unselect(rowdata);//取消选中行
+                        $("#div_slave_relation").find(".div-item[data-code="+itemCode+"]").remove();
+                    })
                 },
-                closeDl: function () {
-                    this.entryInfoDialog.close();
-                }
             };
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadMasterGrid = function () {
-                dictMaster.reloadGrid();
-            };
-            win.getStrVersion = function () {
-                return $("#stdDictVersion").ligerGetComboBoxManager().getValue();
-            };
-            win.reloadEntryMasterGrid = function () {
-                entryMater.reloadGrid();
-            };
-            win.closeDialog = function (type, msg) {
-                if (type == 'right')
-                    entryMater.closeDl();
-                else
-                    dictMaster.dictInfoDialog.close();
-                if (msg)
-                    $.Notice.success(msg);
-            };
+
             /* *************************** 页面功能 **************************** */
             pageInit();
         });

@@ -134,7 +134,7 @@
                     if (values.organization.keys.length > 1){
                         values.organization = values.organization.keys[2];
                         if(!isNotEmpty(values.organization)){
-                            win.parent.$.Notice.error('请选择机构进行查询！');
+                            $.Notice.error('请选择机构进行查询！');
                         }
                     }
                     else{
@@ -167,7 +167,7 @@
                                     data: {beginTime: values.beginTime,endTime:values.endTime,organization:values.organization},
                                     success: function (data) {
                                         if (data.successFlg) {
-                                             win.parent.$.Notice.success('日记清空成功！');
+                                             $.Notice.success('日记清空成功！');
                                              master.reloadGrid();
                                         } else {
                                             window.top.$.Notice.error(data.errorMsg);
@@ -176,7 +176,7 @@
                                 })
                             })
                         }else{
-                            win.parent.$.Notice.error('请先输入查询条件后进行清空操作！');
+                            $.Notice.error('请先输入查询条件后进行清空操作！');
                         }
 
                     })

@@ -74,10 +74,10 @@
                 });
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     if(!resp.successFlg)
-                        win.parent.$.Notice.error(resp.errorMsg);
+                        $.Notice.error(resp.errorMsg);
                     else
-                        win.parent.$.Notice.success('新增成功');
-                        win.parent.closeAddUserInfoDialog(function () {
+                        $.Notice.success('新增成功');
+                        closeAddUserInfoDialog(function () {
                         });
                 });
 
@@ -199,16 +199,25 @@
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
-                            return checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                            var checkIdCard=checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                            if(checkIdCard){
+                           inputSourceByIdCard(idCard);
+                            }
+                            return checkIdCard;
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
                             var email = $("#inp_userEmail").val();
                             return checkDataSourceName('email', email, "该邮箱已存在");
                         }
+//                        新增用户手机号验证
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
+                            var telephone = $("#inp_userTel").val();
+                            return checkDataSourceName('telephone', telephone, "该手机号码已存在");
+                        }
 
                     }
                 });
-                //唯一性验证--账号/身份证号(字段名、输入值、提示信息）
+                //唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证
                 function checkDataSourceName(type, inputValue, errorMsg) {
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
@@ -227,9 +236,39 @@
                     return result;
                 }
 
+                function inputSourceByIdCard(inputValue) {
+                    var result = new jValidation.ajax.Result();
+                    var dataModel = $.DataModel.init();
+                    dataModel.fetchRemote("${contextRoot}/user/getPatientInUserByIdCardNo", {
+                        data: {idCardNo: inputValue},
+                        async: false,
+                        success: function(data) {
+                            var model = data.obj;
+                            if(model.name) {
+                             self.$userName.val(model.name);
+                            }
+                            if(model.gender){
+                            self.$sex.val(model.gender);
+                            }
+                            if(model.martialStatus) {
+                                self.$inp_select_marriage.val(model.martialStatus);
+                            }
+                            if(model.email){
+                            self.$userEmail.val(model.email);
+                            }
+                            if(model.telephoneNo){
+                            self.$userTel.val(model.telephoneNo);
+                            }
+                        },
+                        error: function () {
+                            // alert(1)
+                        }
+                    });
+                    return result;
+                }
+
                 //新增的点击事件
                 this.$addUserBtn.click(function () {
-                    debugger;
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
 					var roles = addUserInfo.roleIds(addUser.role);
@@ -298,9 +337,11 @@
                         data: {userModelJsonData: userModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddUserInfoDialog(function () {
-                                    win.parent.$.Notice.success('用户新增成功');
-                                });
+                                $.Notice.success('新增成功');
+//                                win.closeAddUserInfoDialog();
+//                               closeAddUserInfoDialog(function () {
+//                                   $.Notice.success('新增成功');
+//                                });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
                             }
@@ -386,6 +427,24 @@
 				return roleArray.join(",");
 			}
         };
+
+        win.closeAddUserInfoDialog = function (callback) {
+            isFirstPage = false;
+            if(callback){
+                dialog.close();
+            }
+        };
+//        win.closeDialog = function (msg) {
+//            dialog.close();
+//           }
+//        function reloadGrid (params) {
+//            if (isFirstPage){
+//                this.grid.options.newPage = 1;
+//            }
+//            this.grid.setOptions({parms: params});
+//            this.grid.loadData(true);
+//            isFirstPage = true;
+//        }
 
         /* ************************* 模块初始化结束 ************************** */
 

@@ -16,10 +16,10 @@
 
     .pop-item a{display: block;color: #555a5f;}
     .pop-item a:hover{background: #00a0e9;color: #fff;}
-    .pop-win{width: 400px;/*height: 200px;*/position: fixed;left:50%;top: 50%;-webkit-transform: translate(-50%,-50%);-moz-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);-o-transform: translate(-50%,-50%);transform: translate(-50%,-50%);z-index: 999;background: #fff;border: 1px solid #ccc;padding-bottom: 74px;}
+    .pop-win{width: 460px;/*height: 200px;*/position: fixed;left:50%;top: 50%;-webkit-transform: translate(-50%,-50%);-moz-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);-o-transform: translate(-50%,-50%);transform: translate(-50%,-50%);z-index: 999;background: #fff;border: 1px solid #ccc;padding-bottom: 74px;}
     .pop-form{padding: 17px 0 0 0;}
     .pop-form label{display: block;position: relative;float: left;width: 130px;height: 30px;line-height: 30px;text-align: right;min-height: 1px;padding-right: 10px;padding-left: 10px;font-weight: normal;}
-    .pop-form input{height: 28px;line-height: 28px;padding: 0 10px;vertical-align: middle;background-color: #fff;width: 185px;margin: 0;outline: none;color: #555555;}
+    .pop-form input{height: 28px;line-height: 28px;padding: 0 10px;vertical-align: middle;background-color: #fff;width: 238px;margin: 0;outline: none;color: #555555;margin-top: 1px;}
     .btns{width: 100%;position: absolute;text-align: center;bottom: 0;left: 0;padding: 20px;}
     .btn{display: inline-block;width: 98px;height: 35px;line-height: 23px;text-align: center;color: #fff;font-size: 13px;font-weight: 600;margin: 0 10px;}
     .btn:hover,.btn:focus{color: #fff;}
@@ -27,6 +27,7 @@
     .cancel-btn{background: #B9C8D2;}
     .pop-tit{height: 40px;line-height: 40px;font-size: 15px;font-weight: 600;padding-left: 10px;color: #fff;background: #2D9BD2;}
     .pop-f-hide{display: none}
+    .pop-form .l-checkbox-wrapper{margin-top: 7px;}
 </style>
 
 <div class="f-dn" data-head-title="true">部门成员添加</div>
@@ -37,7 +38,8 @@
             <span class="f-ml20 f-fwb">部门与成员管理</span>
             <span class="f-ml20">机构全称：</span><input value="${orgName}" class="f-fwb f-mt10" readonly id="h_org_name"/>
             <span class="f-ml20">机构代码：</span><input value="${orgCode}" class="f-mt10" readonly id="h_org_code"/>
-            <input type="hidden" id="h_org_id" value="${orgId}"></input>
+            <input type="hidden" id="h_org_id" value="${orgId}"/>
+            <input type="hidden" id="h_org_type" value="${orgType}"/>
         </div>
     </div>
     <!-- ####### 查询条件部分 ####### -->

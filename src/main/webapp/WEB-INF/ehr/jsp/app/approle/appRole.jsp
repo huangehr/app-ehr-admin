@@ -2,13 +2,13 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <!--######应用角色页面Title设置######-->
-<div class="f-dn" data-head-title="true">应用角色</div>
+<div class="f-dn" data-head-title="true">应用分组</div>
 <div id="div_wrapper">
     <!-- ####### 应用角色部分 ####### -->
     <div class="f-mw25 f-ds1 f-fl">
         <div class="f-mt10 f-ml10">
             <!--输入框-->
-            <span class="f-fl f-lh30">平台应用：</span>
+            <%--<span class="f-fl f-lh30">平台应用：</span>--%>
             <div class="f-fl">
                 <input type="text" id="inp_appRole_search" placeholder="请输入应用名称" class="f-ml10 inp_appRole_com_search"/>
             </div>
@@ -25,9 +25,9 @@
 
         <div class="f-mt10 f-ml10 f-fl f-mb10 f-mw99">
             <!--输入框-->
-            <span class="f-fl f-lh30">应用角色组：</span>
+            <span class="f-fl f-lh30">应用分组：</span>
             <div class="f-fl">
-                <input type="text" id="inp_appRole_group_search" placeholder="请输入角色组编码或名称" class="f-ml10 inp_appRole_com_search"/>
+                <input type="text" id="inp_appRole_group_search" placeholder="请输入分组编码或名称" class="f-ml10 inp_appRole_com_search"/>
             </div>
 			<sec:authorize url="/appRole/saveAppRoleGroup">
 				<div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar f-fr f-mr10" id="div_add_appRoleGroup_btn">

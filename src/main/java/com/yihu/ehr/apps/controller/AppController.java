@@ -467,8 +467,8 @@ public class AppController extends BaseUIController {
         if (StringUtils.isEmpty(appId)||StringUtils.isEmpty(resourceId)) {
             return "";
         }
-        builder.addFilter("appId", "=", appId, "g1");
-        builder.addFilter("resourceId", "=", resourceId, "g1");
+        builder.addFilter("appId", "=", appId, null);
+        builder.addFilter("resourceId", "=", resourceId, null);
         builder.setPageNumber(1)
                 .setPageSize(1);
         String param = builder.toString();
@@ -542,6 +542,22 @@ public class AppController extends BaseUIController {
         } catch (Exception e) {
             e.printStackTrace();
             return failedSystem();
+        }
+    }
+
+    //获取平台应用
+    @RequestMapping("/getAppTreeByType")
+    @ResponseBody
+    public Object getAppTreeByType(){
+        try {
+            String url = "/getAppTreeByType";
+            Map<String,Object> params = new HashMap<>();
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+//            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
         }
     }
 

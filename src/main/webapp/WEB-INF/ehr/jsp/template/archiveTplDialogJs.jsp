@@ -19,7 +19,7 @@
             var addArchiveTplInfo = null;
             var mode = '${mode}';
             var model = ${model};
-            var version = parent.getVersion();
+            var version = getVersion();
             var msg = mode == 'new' ? '新增' : mode=='copy'? '复制' : "修改";
             var firstInit = true;
             /* ************************** 变量定义结束 **************************** */
@@ -182,8 +182,8 @@
                                 success: function (data) {
                                     if (data.successFlg) {
                                         $.Notice.success( msg + '成功');
-                                        parent.reloadGrids();
-                                        parent.closeDialog();
+                                        reloadGrids();
+                                        closeDialog();
                                     } else if(data.errorMsg){
                                         $.Notice.error(data.errorMsg);
                                     }else {
@@ -198,7 +198,7 @@
                     });
 
                     self.$cancelBtn.click(function () {
-                        parent.closeDialog();
+                        closeDialog();
                     });
                 }
 

@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
+import com.yihu.ehr.agModel.org.RsOrgResourceModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.model.org.MRsOrgResource;
 import com.yihu.ehr.patient.controller.PatientController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.url.URLQueryBuilder;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -565,6 +568,176 @@ public class OrganizationController extends BaseUIController {
         }
         return url;
     }
+
+
+
+
+  //资源授权
+  //-------------------------------------------------------角色组---资源授权管理---开始----------------
+  @RequestMapping("/resource/initial")
+  public String resourceInitial(Model model, String backParams){
+      model.addAttribute("backParams",backParams);
+      model.addAttribute("contentPage", "organization/resource");
+      return "pageView";
+  }
+
+    //获取角色组已授权资源ids集合
+    @RequestMapping("/orgResourceIds")
+    @ResponseBody
+    public  Object getOrgResourceIds(String orgCode){
+        Envelop envelop = new Envelop();
+        List<String> list = new ArrayList<>();
+        envelop.setSuccessFlg(false);
+        envelop.setDetailModelList(list);
+        URLQueryBuilder builder = new URLQueryBuilder();
+        if (org.springframework.util.StringUtils.isEmpty(orgCode)) {
+            return envelop;
+        }
+        builder.addFilter("organizationId", "=", orgCode, null);
+        builder.setPageNumber(1)
+                .setPageSize(999);
+        String param = builder.toString();
+        String url = "/resources/OrgGrants";
+        String resultStr = "";
+        try {
+            RestTemplates template = new RestTemplates();
+            resultStr = template.doGet(comUrl+url+"?"+param);
+            Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
+            if(resultGet.isSuccessFlg()&&resultGet.getDetailModelList().size()!=0){
+                List<RsOrgResourceModel> rsOrgModels = (List<RsOrgResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsOrgResourceModel>(),RsOrgResourceModel.class);
+                for(RsOrgResourceModel m : rsOrgModels){
+                    list.add(m.getResourceId());
+                }
+                envelop.setSuccessFlg(true);
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+        }
+        envelop.setSuccessFlg(true);
+        envelop.setDetailModelList(list);
+        return envelop;
+    }
+
+    @RequestMapping("/org")
+    @ResponseBody
+    public Object getOrgById(String orgCode){
+        Envelop envelop = new Envelop();
+        try{
+            String url = "/orgCode/"+orgCode;
+            RestTemplates template = new RestTemplates();
+            String envelopStr = template.doGet(comUrl+url);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+        }
+        envelop.setSuccessFlg(false);
+        return envelop;
+    }
+
+    //资源授权orgCode+resourceIds
+    @RequestMapping("/resource/OrgGrants")
+    @ResponseBody
+    public Object resourceGrant(String orgCode,String resourceIds){
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/resources/Org/"+orgCode+"/grant";
+            Map<String,Object> params = new HashMap<>();
+            params.put("orgCode", orgCode);
+            params.put("resourceIds", resourceIds);
+            String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception ex) {
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+        }
+        envelop.setSuccessFlg(false);
+        return envelop;
+    }
+
+    //批量、单个取消资源授权
+    @RequestMapping("/resource/cancel")
+    @ResponseBody
+    public Object resourceGrantCancel(String orgCode,String resourceIds){
+        Envelop envelop = new Envelop();
+        envelop.setSuccessFlg(false);
+        if(org.springframework.util.StringUtils.isEmpty(orgCode)){
+            envelop.setErrorMsg("机构code不能为空！");
+            return envelop;
+        }
+        if(org.springframework.util.StringUtils.isEmpty(resourceIds)){
+            envelop.setErrorMsg("资源id不能为空！");
+            return envelop;
+        }
+        try {
+            //先获取授权关系表的ids
+            String url = "/resources/OrgGrants/no_paging";
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","organizationId="+orgCode+";resourceId="+resourceIds);
+            String envelopStrGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
+            String ids = "";
+            if(envelopGet.isSuccessFlg()&&envelopGet.getDetailModelList().size()!=0){
+                List<MRsOrgResource> list = (List<MRsOrgResource>)getEnvelopList(envelopGet.getDetailModelList(),
+                        new ArrayList<MRsOrgResource>(),MRsOrgResource.class);
+                for(MRsOrgResource m:list){
+                    ids += m.getId()+",";
+                }
+                ids = ids.substring(0,ids.length()-1);
+            }
+            //取消资源授权
+            if(!org.springframework.util.StringUtils.isEmpty(ids)){
+                String urlCancel = "/resources/OrgGrants";
+                Map<String,Object> args = new HashMap<>();
+                args.put("ids",ids);
+                String result = HttpClientUtil.doDelete(comUrl+urlCancel,args,username,password);
+                return result;
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
+    //修改、查看授权资源
+    //-------------------------------------------------------角色组---资源授权管理---结束----------------
+
+    //-------------------------------------------------------角色组----资源----数据元--管理开始--------------
+    @RequestMapping("/resourceManage/initial")
+    public String resourceManageInitial(Model model,String orgCode,String resourceId, String dataModel){
+        model.addAttribute("dataModel",dataModel);
+        model.addAttribute("orgRsId",getOrgResId(orgCode,resourceId));
+        model.addAttribute("contentPage", "organization/resourceManage");
+        return "pageView";
+    }
+    //获取角色组-资源关联关系id
+    public String getOrgResId(String orgCode,String resourceId) {
+        URLQueryBuilder builder = new URLQueryBuilder();
+        if (org.springframework.util.StringUtils.isEmpty(orgCode)|| org.springframework.util.StringUtils.isEmpty(resourceId)) {
+            return "";
+        }
+        builder.addFilter("organizationId", "=",orgCode, null);
+        builder.addFilter("resourceId", "=", resourceId, null);
+        builder.setPageNumber(1)
+                .setPageSize(1);
+        String param = builder.toString();
+        String url = "/resources/OrgGrants";
+        String resultStr = "";
+        try {
+            RestTemplates template = new RestTemplates();
+            resultStr = template.doGet(comUrl+url+"?"+param);
+            Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
+            if(resultGet.isSuccessFlg()){
+                List<RsOrgResourceModel> rsOrgModels = (List<RsOrgResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsOrgResourceModel>(),RsOrgResourceModel.class);
+                RsOrgResourceModel resourceModel = rsOrgModels.get(0);
+                return resourceModel.getId();
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+        }
+        return "";
+    }
+
+
 
 
 }

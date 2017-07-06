@@ -13,7 +13,7 @@
 			var isFirstPage = true;
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
-				resizeContent();
+//				resizeContent();
 				retrieve.init();
 				appMaster.init();
 				rolesMaster.init();
@@ -34,6 +34,7 @@
 			}
 			/* *************************** 标准字典模块初始化 ***************************** */
 			retrieve = {
+				$element: $('#std_roles'),
 				$search:$('#inp_search'),
 				$searchNm:$('#inp_searchNm'),
 				init: function () {
@@ -117,18 +118,25 @@
 								display: '操作', name: 'operator', width: '30%', render: function (row) {
 								var jsonStr = JSON.stringify(row);
 								var html = '';
+
+
 								<sec:authorize url="/appRole/updateFeatureConfig">
 									html = '<a class="label_a" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"limits") + '>权限配置</a>';
 								</sec:authorize>
 								<sec:authorize url="Role_User_Setting">
 									html += '<a class="label_a" style="margin-left:15px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"users") + '>人员配置</a>';
 								</sec:authorize>
+
+								html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+
+
 								<sec:authorize url="/userRoles/update">
 									html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:infoDialog:open", row.id, 'modify') + '"></a>';
 								</sec:authorize>
 								<sec:authorize url="/userRoles/delete">
 									html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:info:delete", row.id, 'delete') + '"></a>';
 								</sec:authorize>
+
 								return html;
 							}}
 						],
@@ -151,6 +159,16 @@
 					};
 					reloadRolesGrid.call(this,values);
                     $("#div_std_app_grid .l-bar-message").css({"left":"56%"}).html("共"+appMaster.appGrid.data.totalCount+"条");
+				},
+				//获取当前页面检索条件及页面分页信息,并保存到session中
+				savePageParamsToSession: function(){
+					alert(retrieve);
+					alert(retrieve.$element);
+					alert(retrieve.$element.Fields);
+					var values = retrieve.$element.Fields.getValues();
+					values.page = parseInt($('.pcontrol input', master.grid.toolbar).val());
+					values.pageSize = $(".l-bar-selectpagesize select", master.grid.toolbar).val();
+					sessionStorage.setItem("appPageParams",JSON.stringify(values));
 				},
 				bindEvents:function(){
 					//查询列表
@@ -233,6 +251,21 @@
 							isHidden: false,
 							load: true
 						})
+					});
+					//资源授权页面跳转
+					$.subscribe('roles:resource:list', function (event, rolesId,name,code) {
+//					rolesMaster.savePageParamsToSession();
+						debugger;
+						var data = {
+							'rolesId':rolesId,
+							'rolesName':name,
+							'code':code,
+							'categoryIds':'',
+							'sourceFilter':'',
+						}
+						var url = '${contextRoot}/userRoles/resource/initial?';
+						$("#contentPage").empty();
+						$("#contentPage").load(url,{backParams:JSON.stringify(data)});
 					});
 
 					<%--$.subscribe("roles:users:open",function(events,id,rolesName){--%>

@@ -52,7 +52,7 @@
             });
 
             $('#btn_cancel').click(function () {
-                parent.closeDialog();
+                closeDialog();
             });
         };
 

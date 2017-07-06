@@ -596,7 +596,7 @@
             var _res = eval(data);
             if (_res.successFlg) {
               $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                parent.cda.list.top.dialog_cda_detail.close();
+                cda.list.top.dialog_cda_detail.close();
               }, null);
             }
             else {
@@ -636,7 +636,7 @@
         success: function (data) {
           if (data.successFlg) {
             $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-              parent.cda.list.top.dialog_cda_detail.close();
+              cda.list.top.dialog_cda_detail.close();
             }, null);
           }
           else {
@@ -759,7 +759,7 @@
             break;
           case'btn_close':
 
-            parent.cda.list.top.dialog_cda_detail.close();
+            cda.list.top.dialog_cda_detail.close();
             break;
           case'btn-submit':
             cda.attr.saveRelationship();

@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +56,7 @@ public class TjDataSourceController extends BaseUIController {
     //查询
     @RequestMapping("/getTjDataSource")
     @ResponseBody
-    public Object searchTjDataSource(String name, int page, int rows){
+    public Object searchTjDataSource(String name,String searchParm, int page, int rows){
         String url = "/tj/getTjDataSourceList";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -65,6 +64,9 @@ public class TjDataSourceController extends BaseUIController {
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(name)) {
             stringBuffer.append("name?" + name );
+        }
+        if (!StringUtils.isEmpty(searchParm)) {
+            stringBuffer.append("name?" + searchParm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
@@ -96,7 +98,7 @@ public class TjDataSourceController extends BaseUIController {
     @ResponseBody
     public Object updateTjDataSource(String tjDataSourceModelJsonData, HttpServletRequest request) throws IOException {
 
-        String url = "/tjDataSource/";
+        String url = "/tj/addTjDataSource";
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
@@ -109,7 +111,7 @@ public class TjDataSourceController extends BaseUIController {
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
                 Long tjDataSourceId = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tjDataSource/" + tjDataSourceId);
+                resultStr = templates.doGet(comUrl + "/tj/getTjDataSourceById/" + tjDataSourceId);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
                     TjDataSourceModel updateTjDataSource = getEnvelopModel(envelop.getObj(), TjDataSourceModel.class);
@@ -119,9 +121,8 @@ public class TjDataSourceController extends BaseUIController {
                     updateTjDataSource.setType(detailModel.getType());
                     updateTjDataSource.setStatus(detailModel.getStatus());
                     updateTjDataSource.setRemark(detailModel.getRemark());
-                    updateTjDataSource.setCreateTime(new Date());
-                    updateTjDataSource.setCreateUser(userDetailModel.getId());
-                    updateTjDataSource.setCreateUserName(userDetailModel.getRealName());
+                    updateTjDataSource.setUpdateUser(userDetailModel.getId());
+                    updateTjDataSource.setUpdateUserName(userDetailModel.getRealName());
                     params.add("model", toJson(updateTjDataSource));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -131,9 +132,8 @@ public class TjDataSourceController extends BaseUIController {
                     return result;
                 }
             } else {
-                detailModel.setUpdateTime(new Date());
-                detailModel.setUpdateUser(userDetailModel.getId());
-                detailModel.setUpdateUserName(userDetailModel.getRealName());
+                detailModel.setCreateUser(userDetailModel.getId());
+                detailModel.setCreateUserName(userDetailModel.getRealName());
                 params.add("model", toJson(detailModel));
                 resultStr = templates.doPost(comUrl + url, params);
             }
@@ -153,12 +153,11 @@ public class TjDataSourceController extends BaseUIController {
     @RequestMapping("deleteTjDataSource")
     @ResponseBody
     public Object deleteTjDataSource(Long tjDataSourceId) {
-        String url = "/tjDataSource/" + tjDataSourceId;
+        String url = "/tj/deletetTjDataSource" ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
-
         params.put("id", tjDataSourceId);
         try {
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
@@ -177,5 +176,78 @@ public class TjDataSourceController extends BaseUIController {
         }
     }
 
+    /**
+     * 根据id获取消息
+     * @param model
+     * @param id
+     * @return
+     */
+    @RequestMapping("getTjDataSourceById")
+    @ResponseBody
+    public TjDataSourceModel getTjQuotaById(Model model, Long id ) {
+        String url ="/tj/getTjDataSourceById/" +id;
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        TjDataSourceModel detailModel = null;
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop ep = getEnvelop(resultStr);
+            detailModel = toModel(toJson(ep.getObj()),TjDataSourceModel.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return detailModel;
+    }
 
+    /**
+     * 校验name是否唯一,true已存在
+     * @param name
+     * @return
+     */
+    @RequestMapping("hasExistsName")
+    @ResponseBody
+    public boolean hasExistsName(String name) {
+        String url = "/tj/tjDataSourceExistsName/" + name ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("name", name);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
+
+    /**
+     * 校验code是否唯一
+     * @param code
+     * @return
+     */
+    @RequestMapping("hasExistsCode")
+    @ResponseBody
+    public boolean hasExistsCode(String code) {
+        String url = "/tj/tjDataSourceExistsCode/" + code ;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        params.put("code", code);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
 }

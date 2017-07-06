@@ -352,7 +352,7 @@
             if (_res.successFlg) {
               //alert($.i18n.prop('message.save.success'));
               $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                parent.cdaType.list.top.dialog_cdatype_detail.close();
+                cdaType.list.top.dialog_cdatype_detail.close();
               }, null);
             }
             else {
@@ -370,7 +370,7 @@
         cdaType.attr.save();
       });
       $("#btn_close").click(function () {
-        parent.cdaType.list.top.dialog_cdatype_detail.close();
+        cdaType.list.top.dialog_cdatype_detail.close();
       });
     }
   }

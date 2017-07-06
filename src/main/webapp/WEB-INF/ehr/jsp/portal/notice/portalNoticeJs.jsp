@@ -88,8 +88,8 @@
                             var mode = 'view';
                             var wait = $.Notice.waitting("请稍后...");
                             var rowDialog = $.ligerDialog.open({
-                                height: 800,
-                                width: 600,
+                                height: 550,
+                                width: 750,
                                 isDrag:true,
                                 //isResize:true,
                                 title:'公告基本信息',

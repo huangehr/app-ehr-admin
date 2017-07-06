@@ -136,8 +136,8 @@
                         },
                         success: function (data) {
                             if (data.successFlg) {
-                                win.parent.closeAddPortalNoticeInfoDialog(function () {
-                                    win.parent.$.Notice.success('新增成功');
+                                closeAddPortalNoticeInfoDialog(function () {
+                                    $.Notice.success('新增成功');
                                 });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);

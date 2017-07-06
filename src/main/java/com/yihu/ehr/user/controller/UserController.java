@@ -1,6 +1,7 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
@@ -86,7 +87,7 @@ public class UserController extends BaseUIController {
 
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName=" + searchNm );
+            stringBuffer.append("realName"+ PageParms.LIKE + searchNm );
         }
         if (!StringUtils.isEmpty(searchOrg)) {
             stringBuffer.append("organization=" + searchOrg);
@@ -581,5 +582,42 @@ public class UserController extends BaseUIController {
         }
     }
 
+    @RequestMapping("/getPatientInUserByIdCardNo")
+    @ResponseBody
+    public Object getUserByIdCardNo(String idCardNo) {
+        String getUserUrl = "/getPatientInUserByIdCardNo";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id_card_no",idCardNo);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + getUserUrl, params, username, password);
+            Envelop envelop = objectMapper.readValue(resultStr,Envelop.class);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
 
+    }
+
+    //查看是否有权限
+    @RequestMapping("/isRoleUser")
+    @ResponseBody
+    public boolean isRoleUser(String userId){
+        String url = "/roles/role_user/userRolesIds";
+        try {
+            Map<String,Object> params = new HashMap<>();
+            params.put("user_id",userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            if (envelop.isSuccessFlg() && null != envelop.getObj() && !"".equals(envelop.getObj())) {
+                return  true;
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+        }
+        return false;
+    }
 }

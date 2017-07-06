@@ -211,14 +211,17 @@
                         processData: false,
                         success: function (returndata) {
                             if(returndata != "fail"){
-                                alert("上传成功");
+//                                alert("上传成功");
+                                $.Notice.success('上传成功');
                                 fileUrl = returndata;
                             }else{
-                                alert("上传失败");
+//                                alert("上传失败");
+                                $.Notice.success('上传失败');
                             }
                         },
                         error: function (returndata) {
-                            alert("上传失败");
+//                            alert("上传失败");
+                            $.Notice.success('上传失败');
                         }
                     });
                     return fileUrl;

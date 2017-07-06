@@ -105,7 +105,7 @@ public class AppRoleController extends BaseUIController {
         String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;code?"+searchNm+" g1;name?"+searchNm+" g1;appId="+appRoleId+" g2";
         if(gridType.equals("appRole")){
             url = "/apps";
-            filters = StringUtils.isEmpty(searchNm)?"sourceType=1":"sourceType=1 g0;name?"+searchNm+" g1";
+            filters = StringUtils.isEmpty(searchNm)?"":"name?"+searchNm+" g1";
         }
         params.put("filters", filters);
         params.put("page", page);
