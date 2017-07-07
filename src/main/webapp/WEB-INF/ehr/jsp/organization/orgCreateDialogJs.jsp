@@ -87,7 +87,7 @@
                 this.$orgCode.ligerTextBox({width: 140});
                 this.$fullName.ligerTextBox({width: 140});
                 this.$shortName.ligerTextBox({width: 140});
-                this.$location.ligerComboBox({width: 140});
+                this.$location.ligerComboBox({width: 290});
 
                 this.$traffic.ligerTextBox({width: 140});
                 this.$ing.ligerTextBox({width: 140});

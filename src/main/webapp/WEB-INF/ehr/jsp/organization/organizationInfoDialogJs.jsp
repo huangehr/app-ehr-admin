@@ -92,7 +92,7 @@
                 this.$orgCode.ligerTextBox({width: 140});
                 this.$fullName.ligerTextBox({width: 140});
                 this.$shortName.ligerTextBox({width: 140});
-                this.$location.ligerComboBox({width: 140});
+                this.$location.ligerComboBox({width: 290});
                 this.$orgType.ligerComboBox({width: 140});
 //                this.$tags.ligerTextBox({width: 240, height: 56});
                 this.$admin.ligerTextBox({width: 140, height: 28});

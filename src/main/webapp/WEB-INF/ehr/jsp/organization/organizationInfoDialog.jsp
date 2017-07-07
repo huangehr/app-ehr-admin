@@ -142,8 +142,6 @@
                     </div>
                 </div>
             </li>
-        </ul>
-        <ul class="list-item">
             <li>
                 <div class="m-form-group">
                     <label><spring:message code="lbl.local"/><spring:message code="spe.colon"/></label>
@@ -152,6 +150,10 @@
                     </div>
                 </div>
             </li>
+
+        </ul>
+        <ul class="list-item">
+
             <li>
                 <div class="m-form-group">
                     <label>交通路线</label>
