@@ -203,13 +203,13 @@
                         }
                         orgModel.administrativeDivision = administrative_division;
                         //用于存储机构最小划分区域的id -追加 end by zdm
-						var addressModel = {
-							cprovine:  orgAddress.names[0],
-							city: orgAddress.names[1],
-							district: orgAddress.names[2],
-							town: "",
-							street: orgAddress.names[3]
-						};
+                        var addressModel = {
+                            province: orgAddress.names[0],
+                            city: orgAddress.names[1],
+                            district: orgAddress.names[2],
+                            town: "",
+                            street: orgAddress.names[3]
+                        };
 
                         if (Util.isStrEmpty(orgImgHtml)) {
                             updateOrg(orgModel,addressModel,'new');
