@@ -73,12 +73,16 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             List saveLs = new ArrayList<>();
             //获取医生表里面的手机号码
             Set<String> phones = findExistPhoneInDoctor(toJson(excelReader.getRepeat().get("phone")));
+            //获取医生表里面的身份证号码
+            Set<String> idCardNos = findExistIdCardNoInDoctor(toJson(excelReader.getRepeat().get("idCardNo")));
             //获取账户表里面的手机号码
             Set<String> userPhones = findExistPhoneInUser(toJson(excelReader.getRepeat().get("phone")));
             //获取医生表里面的邮箱
             Set<String> emails = findExistEmailInDoctor(toJson(excelReader.getRepeat().get("email")));
             //获取账户表里面的邮箱
             Set<String> userEmails = findExistEmailInUser(toJson(excelReader.getRepeat().get("email")));
+            //获取医生表里面的身份证号码
+            Set<String> userIdCardNos = findExistIdCardNoInUser(toJson(excelReader.getRepeat().get("idCardNo")));
 
 
             writerResponse(response, 35+"", "l_upd_progress");
@@ -86,14 +90,14 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             for(int i=0; i<correctLs.size(); i++){
                 model = correctLs.get(i);
                 //, Set<String> emails, Set<String> userEmails
-                if(validate(model, phones,userPhones,emails,userEmails)==0)
+                if(validate(model, phones,userPhones,emails,userEmails,idCardNos,userIdCardNos)==0)
                     errorLs.add(model);
                 else
                     saveLs.add(model);
             }
             for(int i=0; i<errorLs.size(); i++){
                 model = errorLs.get(i);
-                validate(model, phones, userPhones,emails,userEmails);
+                validate(model, phones, userPhones,emails,userEmails,idCardNos,userIdCardNos);
             }
             writerResponse(response, 55+"", "l_upd_progress");
             Map rs = new HashMap<>();
@@ -186,6 +190,28 @@ public class DoctorImportController extends ExtendController<DoctorService> {
 
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
     }
+    //根据身份证号码在doctor表获取数据
+    private Set<String> findExistIdCardNoInDoctor(String idCardNos) throws Exception {
+        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
+        conditionMap.add("idCardNos", idCardNos);
+
+        RestTemplates template = new RestTemplates();
+        String rs = template.doPost(service.comUrl + "/doctor/idCardNo/existence", conditionMap);
+
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
+    //根据身份证号码在user表获取数据
+    private Set<String> findExistIdCardNoInUser(String idCardNos) throws Exception {
+        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
+        conditionMap.add("idCardNos", idCardNos);
+
+        RestTemplates template = new RestTemplates();
+        String rs = template.doPost(service.comUrl + "/user/idCardNo/existence", conditionMap);
+
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
+
+
     //根据电话号码在user表获取数据
     private Set<String> findExistPhoneInUser(String phones) throws Exception {
         MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
@@ -197,7 +223,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     }
 
 
-    private int validate(DoctorMsgModel model, Set<String> phones, Set<String> userPhones, Set<String> emails, Set<String> userEmails){
+    private int validate(DoctorMsgModel model, Set<String> phones, Set<String> userPhones, Set<String> emails, Set<String> userEmails,Set<String> idCardNos,Set<String> userIdCardNos){
         int rs = 1;
        boolean existFlag=searchUsers(model.getIdCardNo(),model.getPhone());
         //医生表
@@ -205,12 +231,25 @@ public class DoctorImportController extends ExtendController<DoctorService> {
               model.addErrorMsg("phone", "该电话号码在医生表已存在，请核对！");
               rs = 0;
         }
+        //医生表
+        if(idCardNos.contains(model.getIdCardNo())){
+            model.addErrorMsg("idCardNo", "该身份证号码在医生表已存在，请核对！");
+            rs = 0;
+        }
         //账户表
         if(userPhones.contains(model.getPhone())){
             //账户表中存在此电话号码，但不是此人的账户，则判断为该电话号码重复。
             if(!existFlag) {
             model.addErrorMsg("phone", "该电话号码对应的账户已存在，请核对！");
             rs = 0;
+            }
+        }
+        //账户表
+        if(userIdCardNos.contains(model.getIdCardNo())){
+            //账户表中存在此电话号码，但不是此人的账户，则判断为该电话号码重复。
+            if(!existFlag) {
+                model.addErrorMsg("idCardNo", "该身份证号码对应的账户已存在，请核对！");
+                rs = 0;
             }
         }
         //医生表
@@ -284,6 +323,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             repeat.put("phone", new HashSet<String>());
             repeat.put("code", new HashSet<String>());
             repeat.put("email", new HashSet<String>());
+            repeat.put("idCardNo", new HashSet<String>());
             for(DoctorMsgModel model : doctorMsgModels){
                 model.validate(repeat);
             }
@@ -291,10 +331,14 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             Set<String> phones = findExistPhoneInDoctor(toJson(repeat.get("phone")));
             //获取账户表里面的手机号码
             Set<String> userPhones = findExistPhoneInUser(toJson(repeat.get("phone")));
+            //获取医生表里面的身份证号码
+            Set<String> idCardNos = findExistIdCardNoInDoctor(toJson(repeat.get("idCardNo")));
             //获取医生表里面的邮箱
             Set<String> emails = findExistEmailInDoctor(toJson(repeat.get("email")));
             //获取账户表里面的邮箱
             Set<String> userEmails = findExistEmailInUser(toJson(repeat.get("email")));
+            //获取医生表里面的身份证号码
+            Set<String> userIdCardNos = findExistIdCardNoInUser(toJson(repeat.get("idCardNo")));
 //            Set<String> existIds = findExistId(toJson(repeat.get("id")));
 //            String domains = getSysDictEntries(31);
 //            String columnTypes = getSysDictEntries(30);
@@ -304,7 +348,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             List saveLs = new ArrayList<>();
             for(int i=0; i<doctorMsgModels.size(); i++){
                 model = doctorMsgModels.get(i);
-                if(validate(model, phones, userPhones,emails,userEmails)==0|| model.errorMsg.size()>0) {
+                if(validate(model, phones, userPhones,emails,userEmails,idCardNos,userIdCardNos)==0|| model.errorMsg.size()>0) {
                     all.set(all.indexOf(model), model);
                 }else{
                     saveLs.add(model);
@@ -382,7 +426,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(idCardNo)) {
-            stringBuffer.append("idCardNo=" + idCardNo+ ";");
+            stringBuffer.append("id_card_no=" + idCardNo+ ";");
         }
         if (!StringUtils.isEmpty(phone)) {
             stringBuffer.append("telephone=" + phone+ ";");

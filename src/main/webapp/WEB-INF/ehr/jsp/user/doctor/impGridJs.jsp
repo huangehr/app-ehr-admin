@@ -125,6 +125,12 @@
                     if(field.indexOf('email')!=-1){
                         return uniqValid(urls.userExistence, "email="+val, "该邮箱在账户表中已存在！");
                     }
+                    if(field.indexOf('idCardNo')!=-1){
+                        return uniqValid(urls.doctorExistence, "id_card_no="+val, "该身份证号在医生表中已存在！");
+                    }
+                    if(field.indexOf('idCardNo')!=-1){
+                        return uniqValid(urls.userExistence, "id_card_no="+val, "该身份证号在账户表中已存在！");
+                    }
 //                    if(field.indexOf('officeTel')!=-1){
 //                        return uniqValid(urls.existence, "code="+val, "该办公电话已存在！");
 //                    }
@@ -177,7 +183,7 @@
                 else{
                     var ajaxClz = ['required'];
 //                    if( column.name=='id') ajaxClz.push('validate-meta-id');
-                    if( column.name=='email' || column.name=='phone') ajaxClz.push('ajax');
+                    if( column.name=='idCardNo' || column.name=='email' || column.name=='phone') ajaxClz.push('ajax');
                     html = '<input data-old-val="'+ val +'" type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
                     html += '<script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
                 }
