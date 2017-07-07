@@ -538,7 +538,7 @@
         });
 
         uploader.onError = function( code ) {
-            alert( 'Eroor: ' + code );
+            $.ligerDialog.error(code);
         };
         uploader.on('uploadSuccess', function(file,response) {
 
