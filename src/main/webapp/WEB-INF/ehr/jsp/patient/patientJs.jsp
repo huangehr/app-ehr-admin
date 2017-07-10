@@ -189,7 +189,7 @@
                         var wait =  $.Notice.waitting("正在加载...");
                         patientDialog = $.ligerDialog.open({
                             isHidden:false,
-                            title:'新增人口信息',
+                            title:'新增居民信息',
                             width:600,
                             height:600,
                             load: true,
@@ -211,7 +211,7 @@
                       var wait =  $.Notice.waitting("正在加载...");
                       patientDialog = $.ligerDialog.open({
                             isHidden:false,
-                            title:'修改人口信息',
+                            title:'修改居民信息',
                             width:600,
                             height:600,
                             load: true,
