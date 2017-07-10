@@ -189,36 +189,43 @@
             },
 
             bindEvents: function () {
+                debugger
                 var self = this;
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
+                        var isCheck = false;
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_loginCode')) {
                             var loginCode = $("#inp_loginCode").val();
-                            return checkDataSourceName('login_code', loginCode, "该账号已存在");
+                            var reObj = checkDataSourceName('login_code', loginCode, "该账号已存在");
+                            isCheck = reObj.result;
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
-                            var checkIdCard=checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
-                            if(checkIdCard){
-                           inputSourceByIdCard(idCard);
+                            var reObj = checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                            isCheck = reObj.result;
+                            debugger
+                            if(!isCheck){
+                                inputSourceByIdCard(idCard);
                             }
-                            return checkIdCard;
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
                             var email = $("#inp_userEmail").val();
-                            return checkDataSourceName('email', email, "该邮箱已存在");
+                            var reObj = checkDataSourceName('email', email, "该邮箱已存在");
+                            isCheck = reObj.result;
                         }
 //                        新增用户手机号验证
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
                             var telephone = $("#inp_userTel").val();
-                            return checkDataSourceName('telephone', telephone, "该手机号码已存在");
+                            var reObj = checkDataSourceName('telephone', telephone, "该手机号码已存在");
+                            isCheck = reObj.result;
                         }
-
+                        return isCheck;
                     }
                 });
                 //唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证
                 function checkDataSourceName(type, inputValue, errorMsg) {
+                    debugger
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
                     dataModel.fetchRemote("${contextRoot}/user/existence", {
@@ -230,6 +237,7 @@
                                 result.setErrorMsg(errorMsg);
                             } else {
                                 result.setResult(true);
+                                result.setErrorMsg('');
                             }
                         }
                     });
@@ -244,20 +252,22 @@
                         async: false,
                         success: function(data) {
                             var model = data.obj;
-                            if(model.name) {
-                             self.$userName.val(model.name);
-                            }
-                            if(model.gender){
-                            self.$sex.val(model.gender);
-                            }
-                            if(model.martialStatus) {
-                                self.$inp_select_marriage.val(model.martialStatus);
-                            }
-                            if(model.email){
-                            self.$userEmail.val(model.email);
-                            }
-                            if(model.telephoneNo){
-                            self.$userTel.val(model.telephoneNo);
+                            if (model != null) {
+                                if(model.name) {
+                                    self.$userName.val(model.name);
+                                }
+                                if(model.gender){
+                                    self.$sex.val(model.gender);
+                                }
+                                if(model.martialStatus) {
+                                    self.$inp_select_marriage.val(model.martialStatus);
+                                }
+                                if(model.email){
+                                    self.$userEmail.val(model.email);
+                                }
+                                if(model.telephoneNo){
+                                    self.$userTel.val(model.telephoneNo);
+                                }
                             }
                         },
                         error: function () {
