@@ -372,4 +372,20 @@ public class ResourceBrowseController extends BaseUIController {
             return failed(ErrorCode.SystemError.toString());
         }
     }
+
+    //根据视图分类的id-CategoryId获取数据集
+    @RequestMapping("/getResourceByCategoryId")
+    @ResponseBody
+    public Object getResourceByCategoryId(String categoryId){
+        try {
+            String url = "/getResourceByCategoryId";
+            Map<String,Object> params = new HashMap<>();
+            params.put("categoryId",categoryId);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceBrowseController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
 }
