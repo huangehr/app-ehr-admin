@@ -204,10 +204,7 @@
                             var idCard = $("#inp_idCard").val();
                             var reObj = checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
                             isCheck = reObj.result;
-                            debugger
-                            if(!isCheck){
-                                inputSourceByIdCard(idCard);
-                            }
+                            inputSourceByIdCard(idCard);
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
                             var email = $("#inp_userEmail").val();
