@@ -259,19 +259,7 @@
                                     self.$sex.val(model.gender);
                                 }
                                 if(model.martialStatus) {
-//                                    self.$inp_select_marriage.val(model.martialStatus);
-                                    self.$inp_select_marriage.ligerComboBox({
-                                        url: '${contextRoot}/dict/searchDictEntryList',
-                                        valueField: 'code',
-                                        textField: 'value',
-                                        dataParmName: 'detailModelList',
-                                        urlParms: {
-                                            dictId: 4
-                                        },
-                                        onSuccess: function () {
-                                            self.$form.Fields.fillValues({martialStatus: model.martialStatus});
-                                        }
-                                    });
+                                    self.$inp_select_marriage.val(model.martialStatus);
                                 }
                                 if(model.email){
                                     self.$userEmail.val(model.email);
