@@ -426,7 +426,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(idCardNo)) {
-            stringBuffer.append("id_card_no=" + idCardNo+ ";");
+            stringBuffer.append("idCardNo=" + idCardNo+ ";");
         }
         if (!StringUtils.isEmpty(phone)) {
             stringBuffer.append("telephone=" + phone+ ";");
