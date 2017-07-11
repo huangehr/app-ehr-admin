@@ -194,33 +194,32 @@
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
-                        var isCheck = false;
+                        var checkObj = { result:true, errorMsg: ''};
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_loginCode')) {
                             var loginCode = $("#inp_loginCode").val();
-                            var reObj = checkDataSourceName('login_code', loginCode, "该账号已存在");
-                            isCheck = reObj.result;
+                            checkObj = checkDataSourceName('login_code', loginCode, "该账号已存在");
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
-                            var reObj = checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
-                            isCheck = reObj.result;
-                            debugger
-                            if(!isCheck){
+                            checkObj = checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                            if (checkObj.result) {
                                 inputSourceByIdCard(idCard);
                             }
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
                             var email = $("#inp_userEmail").val();
-                            var reObj = checkDataSourceName('email', email, "该邮箱已存在");
-                            isCheck = reObj.result;
+                            checkObj = checkDataSourceName('email', email, "该邮箱已存在");
                         }
 //                        新增用户手机号验证
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
                             var telephone = $("#inp_userTel").val();
-                            var reObj = checkDataSourceName('telephone', telephone, "该手机号码已存在");
-                            isCheck = reObj.result;
+                            checkObj = checkDataSourceName('telephone', telephone, "该手机号码已存在");
                         }
-                        return isCheck;
+                        if (!checkObj.result) {
+                            return checkObj;
+                        } else {
+                            return checkObj.result;
+                        }
                     }
                 });
                 //唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证
