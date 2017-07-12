@@ -46,6 +46,7 @@
                 this.bindEvents();
                 if (id != '-1') {
                     this.getZBInfo(this.setZBInfo , this);
+                    $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
             parentSelected:function(pid, name){

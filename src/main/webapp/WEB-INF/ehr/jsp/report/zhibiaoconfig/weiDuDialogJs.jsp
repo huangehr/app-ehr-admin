@@ -36,6 +36,7 @@
                 this.bindEvents();
                 if(this.$weiDuId.val()!="" && this.$weiDuId.val()!=undefined){//修改
                     this.getTjDimensionMainByID();
+                    $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
             initForm: function () {
