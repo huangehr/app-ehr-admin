@@ -96,7 +96,7 @@
     <div class="m-form-group" id="inp_introduction_div">
         <label><spring:message code="lbl.doctor.introduction"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control">
-            <textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="introduction" ></textarea>
+            <textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="introduction" style="pointer-events:auto"></textarea>
         </div>
     </div>
     <div id="div_toolbar" class="m-form-control pane-attribute-toolbar">
