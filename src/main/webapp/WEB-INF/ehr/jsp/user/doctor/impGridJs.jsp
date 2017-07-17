@@ -10,6 +10,9 @@
                 list: '${contextRoot}/doctorImport/importLs',
                 userExistence: "${contextRoot}/doctorImport/userIsExistence",
                 doctorExistence: "${contextRoot}/doctorImport/doctorIsExistence",
+                orgExistence: "${contextRoot}/doctorImport/orgCodeIsExistence",
+                orgDeptExistence: "${contextRoot}/doctorImport/deptIsExistence",
+
                 batchSave: "${contextRoot}/doctorImport/batchSave",
                 downLoad: "${contextRoot}/doctorImport/downLoadErrInfo",
                 <%--dictCombo: "${contextRoot}/doctorImport/searchCombo"--%>
@@ -30,7 +33,6 @@
                         var formData = $form.Fields.getValues();
                         var model = [], f, m;
 
-                        debugger;
                         for(var k in formData){
                             f = k.split('_');
                             m = model[f[1]] || {};
@@ -98,10 +100,14 @@
             function onAfterShowData(data){
                 $('.l-grid-row-cell-inner').attr('title', '');
                 validator = initValidate($form, function (elm) {
+                    debugger;
                     var field = $(elm).attr('id');
                     var val = $('#' + field).val();
                     var oldVal = $(elm).attr('data-old-val');
                     var errMsg = $(elm).attr('err-msg');
+                    var o= field.split('_');
+                    var code='orgCode'+'_'+o[1];
+                    var fullName='orgFullName'+'_'+o[1];
                     if(oldVal==val && errMsg && errMsg!='undefined' && errMsg!=''){
                         var result = new $.jValidation.ajax.Result();
                         result.setResult(false);
@@ -131,9 +137,28 @@
                     if(field.indexOf('idCardNo')!=-1){
                         return uniqValid(urls.userExistence, "id_card_no="+val, "该身份证号在账户表中已存在！");
                     }
-//                    if(field.indexOf('officeTel')!=-1){
-//                        return uniqValid(urls.existence, "code="+val, "该办公电话已存在！");
-//                    }
+                    if(field.indexOf('orgCode')!=-1){
+                        debugger;
+                        var result=uniqValid(urls.orgExistence, "orgCode="+val+";fullName="+ $('#' + fullName).val(), "该机构代码或机构名称不正确！");
+                        if(result.result){
+                            $("#orgFullName_"+o[1]).attr('err-msg',null);
+                            $("#orgFullName_"+o[1]).parent().attr('class',"l-text j-text-wrapper");
+                        }
+                        return result;
+                    }
+                    if(field.indexOf('orgFullName')!=-1){
+                        debugger;
+                        var result=uniqValid(urls.orgExistence, "orgCode="+$('#' + code).val()+";fullName="+val, "该机构代码或机构名称不正确！");
+                        if(result.result){
+                            $("#orgCode_"+o[1]).attr('err-msg',null);
+                            $("#orgCode_"+o[1]).parent().attr('class',"l-text j-text-wrapper");
+                        }
+                        return result;
+
+                    }
+                    if(field.indexOf('orgDeptName')!=-1){
+                        return uniqValid(urls.orgDeptExistence, "orgCode="+$('#' + code).val()+ ";orgFullName="+$('#' + fullName).val()+";deptName="+val, "该机构部门不存在！");
+                    }
                 });
                 validator.validate();
             }
@@ -183,7 +208,7 @@
                 else{
                     var ajaxClz = ['required'];
 //                    if( column.name=='id') ajaxClz.push('validate-meta-id');
-                    if( column.name=='idCardNo' || column.name=='email' || column.name=='phone') ajaxClz.push('ajax');
+                    if( column.name=='idCardNo' || column.name=='email' || column.name=='phone'|| column.name=='orgCode'|| column.name=='orgFullName'|| column.name=='orgDeptName') ajaxClz.push('ajax');
                     html = '<input data-old-val="'+ val +'" type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
                     html += '<script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
                 }
@@ -231,14 +256,21 @@
                     {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                     }},
-                    {display: '医生账号', name: 'code', width: '130', align: 'left', render: textRender},
+                    {display: '医生账号', name: 'code', width: '110', align: 'left', render: textRender},
                     {display: '姓名', name: 'name', width: '93', align: 'left', render: textRender},
                     {display: '身份证号', name: 'idCardNo', width: '151', align: 'left', render: textRender},
-                    {display: '性别', name: 'sex', width: '60', align: 'left', render: selRender},
-                    {display: '医生专长', name: 'skill', width: '148', align: 'left', render: textRender},
-                    {display: '邮箱', name: 'email', width: '150', align: 'left', render: textRender},
-                    {display: '联系电话', name: 'phone', width: '120', align: 'left', render: textRender},
-                    {display: '办公电话（固）', name: 'officeTel', width: '140', align: 'left', render: textRender},
+                    {display: '性别',hide: true, name: 'sex', width: '40', align: 'left', render: selRender},
+                    {display: '机构代码', name: 'orgCode', width: '110', align: 'left', render: textRender},
+                    {display: '机构名称', name: 'orgFullName', width: '110', align: 'left', render: textRender},
+                    {display: '部门名称', name: 'orgDeptName', width: '100', align: 'left', render: textRender},
+
+                    {display: '医生专长', hide: true,name: 'skill', width: '148', align: 'left', render: textRender},
+                    {display: '邮箱', name: 'email', width: '140', align: 'left', render: textRender},
+                    {display: '联系电话', name: 'phone', width: '125', align: 'left', render: textRender},
+                    {display: '办公电话（固）',hide: true, name: 'officeTel', width: '140', align: 'left', render: textRender},
+
+
+
                     {display: '医生门户首页',  hide: true,name: 'workPortal', width: '95', align: 'left', render: textRender},
                     {display: '教学职称',  hide: true,name: 'jxzc', width: '95', align: 'left', render: textRender},
                     {display: '临床职称',  hide: true,name: 'lczc', width: '95', align: 'left', render: textRender},
