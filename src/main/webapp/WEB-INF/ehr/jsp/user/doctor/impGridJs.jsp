@@ -141,8 +141,9 @@
                         debugger;
                         var result=uniqValid(urls.orgExistence, "orgCode="+val+";fullName="+ $('#' + fullName).val(), "该机构代码或机构名称不正确！");
                         if(result.result){
-                            $("#orgFullName_"+o[1]).attr('err-msg',null);
-                            $("#orgFullName_"+o[1]).parent().attr('class',"l-text j-text-wrapper");
+                            $.jValidation.Validation.reset("#orgFullName_"+o[1]);
+                        } else {
+                            $.jValidation.Validation.showErrorMsg('ajax', "#orgFullName_"+o[1], "该机构代码或机构名称不正确！");
                         }
                         return result;
                     }
@@ -150,8 +151,9 @@
                         debugger;
                         var result=uniqValid(urls.orgExistence, "orgCode="+$('#' + code).val()+";fullName="+val, "该机构代码或机构名称不正确！");
                         if(result.result){
-                            $("#orgCode_"+o[1]).attr('err-msg',null);
-                            $("#orgCode_"+o[1]).parent().attr('class',"l-text j-text-wrapper");
+                            $.jValidation.Validation.reset("#orgCode_"+o[1]);
+                        } else {
+                            $.jValidation.Validation.showErrorMsg('ajax', "#orgCode_"+o[1], "该机构代码或机构名称不正确！");
                         }
                         return result;
 
