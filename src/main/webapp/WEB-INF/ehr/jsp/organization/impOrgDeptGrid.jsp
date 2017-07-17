@@ -23,7 +23,7 @@
 
   <!--###### 查询明细列表 ######-->
   <div id="gridForm" data-role-form>
-    <div id="impGrid" >
+    <div id="impGrid" style="margin: 0 10px;">
 
     </div>
   </div>

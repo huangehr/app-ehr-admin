@@ -40,8 +40,7 @@
 
             var $form =  $("#gridForm"), validator;
             function onAfterShowData(data){
-                debugger
-                $('.l-grid-row-cell-inner').attr('title', '');
+//                $('.l-grid-row-cell-inner').attr('title', '');
                 validator = initValidate($form, function (elm) {
                     var field = $(elm).attr('id');
                     var val = $('#' + field).val();
@@ -76,14 +75,14 @@
                 var html;
                 if(!errMsg || errMsg=='' || errMsg=='undefined'){
                     html = '<input type="hidden" id="'+ id +'" data-attr-scan="'+ id +'" value="'+ val +'"/>';
-                    html += val;
+                    html += '<label title="'+val+'" style="font-weight:initial;">'+val+'</label>';
                 }
                 else{
                     var ajaxClz = ['required'];
 //                    if( column.name=='id') ajaxClz.push('validate-meta-id');
                     if( column.name=='code' || column.name=='orgCode') ajaxClz.push('ajax');
-                    html = '<input data-old-val="'+ val +'" type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
-                    html += '<script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
+                    html = '<input data-old-val="'+ val +'" title="'+ val+'" type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
+                    html += '<script>initText("'+ id +'"," '+ column.width +'", "'+ val +'")<\/script>';
                 }
                 return html;
             }
@@ -98,19 +97,30 @@
                     {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                      }},
-                    {display: '部门编号', name: 'code', width: 100, align: 'left', render: textRender},
-                    {display: '部门名称', name: 'name', width: 100, align: 'left', render: textRender},
-                    {display: '父级部门编号', name: 'parentDeptId', width: 100, align: 'left', render: textRender},
-                    {display: '父级部门名称', name: 'parentDeptName', width: 100, align: 'left', render: textRender},
-                    {display: '科室电话', name: 'phone', width: 100, align: 'left', render: textRender},
-                    {display: '科室荣誉(国家重点科室,省级重点科室,医院特色专科)', name: 'gloryId', width: 300, align: 'left', render: textRender},
-                    {display: '机构代码', name: 'orgCode', width: 100, align: 'left', render: textRender},
-                    {display: '所属机构', name: 'orgName', width: 100, align: 'left', render: textRender},
-                    {display: '科室介绍', name: 'introduction', width: 100, align: 'left', render: textRender},
-                    {display: '科室位置', name: 'place', width: 100, align: 'left', render: textRender},
-                    {display: '科室类型', name: 'pyCode', width: 100, align: 'left', render: textRender}];
+                    {display: '部门编号', name: 'code', width: '9%', align: 'left', render: textRender},
+                    {display: '部门名称', name: 'name', width: '5%', align: 'left', render: textRender},
+                    {display: '父级部门编号', name: 'parentDeptId', width: '7%', align: 'left', render: textRender},
+                    {display: '父级部门名称', name: 'parentDeptName', width: '7%', align: 'left', render: textRender},
+                    {display: '科室电话', name: 'phone', width: '10%', align: 'left', render: textRender},
+                    {display: '科室荣誉(国家重点科室,省级重点科室,医院特色专科)', name: 'gloryId', width: '12%', align: 'left', render: textRender},
+                    {display: '机构代码', name: 'orgCode', width: '10%', align: 'left', render: textRender},
+                    {display: '所属机构', name: 'orgName', width: '10%', align: 'left', render: textRender},
+                    {display: '科室介绍', name: 'introduction', width: '10%', align: 'left', render: textRender},
+                    {display: '科室位置', name: 'place', width: '10%', align: 'left', render: textRender},
+                    {display: '科室类型', name: 'pyCode', width: '10%', align: 'left', render: textRender}];
 
-                grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, width:1300, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
+                grid = $('#impGrid').ligerGrid($.LigerGridEx.config({
+                    url: urls.list,
+                    columns:columns,
+                    height: 520,
+                    pageSize:10,
+                    pageSizeOptions:[10, 15],
+                    delayLoad: true,
+                    checkbox: false,
+                    onAfterShowData: onAfterShowData
+                }))
+                grid.adjustToWidth();
+                    //initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
                 searchFun();
             };
 
