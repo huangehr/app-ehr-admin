@@ -25,6 +25,15 @@
                 this.grid.loadData(true);
             }
 
+            function onUploadSuccess(g, result){
+                debugger;
+                if(result)
+                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+                else
+                    $.Notice.success("导入成功！");
+            }
+
+            $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess});
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
