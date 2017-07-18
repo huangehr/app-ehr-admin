@@ -47,6 +47,19 @@
                     <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span><spring:message code="btn.create"/></span>
                     </div>
+                    <div id="div_down_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                        <sec:authorize url="/ehr/template">
+                            <a href="<%=request.getContextPath()%>/template/部门机构导入模板.xls"
+                               style="color: #fff">
+                                下载模版
+                            </a>
+                        </sec:authorize>
+                    </div>
+                    <div id="div_upload_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                        <sec:authorize url="/orgDeptImport/importOrgDept">
+                            <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px" ></div>
+                        </sec:authorize>
+                    </div>
                 </sec:authorize>
             </div>
         </div>
