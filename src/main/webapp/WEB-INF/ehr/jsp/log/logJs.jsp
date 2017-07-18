@@ -87,9 +87,11 @@
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '记录时间', name: 'time', width: '20%'},
-                            {display: '用户ID', name: 'caller', width: '20%'},
-                            {display: '数据', name: 'data', width: '60%'}
+                            {display: '记录时间', name: 'time', width: '10%'},
+                            {display: '用户ID', name: 'caller', width: '10%'},
+                            {display: '响应Code', name: 'responseCode', width: '10%'},
+                            {display: '响应时间', name: 'responseTime', width: '10%'},
+                            {display: '响应结果', name: 'response', width: '60%'}
                         ],
                         enabledEdit: true,
                         validate: true,
@@ -132,7 +134,10 @@
                         columns: [
                             {display: '记录时间', name: 'time', width: '20%'},
                             {display: '用户ID', name: 'caller', width: '20%'},
-                            {display: '数据', name: 'params', width: '60%'}
+                            {display: '响应Code', name: 'responseCode', width: '10%'},
+                            {display: '响应时间', name: 'responseTime', width: '10%'},
+                            {display: '响应结果', name: 'response', width: '60%'}
+//                            {display: '数据', name: 'params', width: '60%'}
                         ],
                         enabledEdit: true,
                         validate: true,
