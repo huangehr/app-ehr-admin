@@ -123,7 +123,8 @@
                             {display: '注册时间', name: 'registerTime', width: '15%', minColumnWidth: 20,align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '20%', render: function (row) {
-                                var html = '<a href="javascript:void(0)" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoDialog:open", row.idCardNo) + '">档案查询</a>';
+                                var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientBroswerInfoDialog:open", row.idCardNo) + '">档案查询</a>';
+
                                 html += '<sec:authorize url="/patient/updatePatient"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:patientInfoModifyDialog:open", row.idCardNo,row.userId) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/patient/deletePatient"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:delete", row.idCardNo) + '"></a></sec:authorize>';
                                 return html;
@@ -250,8 +251,8 @@
                             }
                         });
                     });
-                    $.subscribe('patient:patientInfoDialog:open',function (event,id) {
-                        self.showUserInfo(id);
+                    $.subscribe('patient:patientBroswerInfoDialog:open',function (event,idCardNo) {
+                        window.open('${contextRoot}/login/broswerSignin?idCardNo='+idCardNo,'_blank');
                     })
                 }
             };

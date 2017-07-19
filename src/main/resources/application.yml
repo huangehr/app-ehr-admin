@@ -31,6 +31,7 @@ app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
+  browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
@@ -43,6 +44,7 @@ service-gateway:
   adaption: http://192.168.1.221:10000/api/v1.0/adapter
   template: http://192.168.1.221:10000/api/v1.0/template
   standard: http://192.168.1.221:10000/api/v1.0/std
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
 fast-dfs:
   tracker-server: 172.19.103.54:22122
 
@@ -57,6 +59,7 @@ app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
+  browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
@@ -69,6 +72,7 @@ service-gateway:
   adaption: http://localhost:10000/api/v1.0/adapter
   template: http://localhost:10000/api/v1.0/template
   standard: http://localhost:10000/api/v1.0/std
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
 fast-dfs:
   tracker-server: 172.19.103.54:22122
 
@@ -83,6 +87,7 @@ app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
+  browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
@@ -95,6 +100,7 @@ service-gateway:
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
   template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
 
 fast-dfs:
   tracker-server: 172.19.103.13:22122
@@ -110,6 +116,7 @@ app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
+  browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
 service-gateway:
   username: user
@@ -122,6 +129,7 @@ service-gateway:
   adaption: http://11.1.2.21:10000/api/v1.0/adapter
   template: http://11.1.2.21:10000/api/v1.0/template
   standard: http://11.1.2.21:10000/api/v1.0/std
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
 
 fast-dfs:
   tracker-server: 11.1.2.9:22122

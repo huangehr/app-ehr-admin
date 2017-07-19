@@ -3,6 +3,7 @@ package com.yihu.ehr.login.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
+import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.AccessToken;
 import com.yihu.ehr.common.utils.EnvelopExt;
@@ -24,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -55,6 +57,8 @@ public class LoginController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Value("${service-gateway.BrowseClienturl}")
+    private String browseClienturl;
     @Value("${app.oauth2authorize}")
     private String authorize;
     @Value("${app.clientId}")
@@ -63,6 +67,8 @@ public class LoginController extends BaseUIController {
     private String qcReportClientId;
     @Value("${app.resourceBrowseClientId}")
     private String resourceBrowseClientId;
+    @Value("${app.browseClientId}")
+    public String browseClientId;
 
     @RequestMapping(value = "")
     public String login(Model model) {
@@ -125,6 +131,10 @@ public class LoginController extends BaseUIController {
                 String ex = this.objectMapper.writeValueAsString(envelop.getObj());
                 UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
                 request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                request.getSession().setAttribute("isLogin", true);
+                request.getSession().setAttribute("token", accessToken);
+                request.getSession().setAttribute("loginName", loginName);
+                request.getSession().setAttribute("userId", userDetailModel.getId());
 
                 //获取用户角色信息
                 List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
@@ -435,17 +445,7 @@ public class LoginController extends BaseUIController {
         String resultStr = "";
 
         try {
-            if (StringUtils.isEmpty(password)) {
-                url = "/users";
-                params.put("filters", "loginCode=" + userName);
-                params.put("page", 1);
-                params.put("size", 15);
-                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
-            } else {
-                url = "/users/verification/" + userName;
-                params.put("psw", password);
-                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
-            }
+
             envelop = mapper.readValue(resultStr, Envelop.class);
             if (!envelop.isSuccessFlg()) {
                 envelop.setSuccessFlg(false);
@@ -534,6 +534,23 @@ public class LoginController extends BaseUIController {
         model.addAttribute("contentPage", "login/signinResource");
         model.addAttribute("successFlg", true);
         return "generalView";
+    }
+
+    /*
+   单点登录
+    */
+    @RequestMapping(value = "/broswerSignin",method = RequestMethod.GET)
+    public void signin(Model model,HttpServletRequest request,HttpServletResponse response,String idCardNo) throws Exception
+    {
+        String clientId=browseClientId;
+        String url=browseClienturl+"/common/login/signin?idCardNo="+idCardNo;
+        //response.sendRedirect("http://localhost:10260/oauth/authorize?response_type=token&client_id=111111&redirect_uri=http://localhost:8011/login/test&user=me");
+        //获取code
+        AccessToken token = (AccessToken)request.getSession().getAttribute("token");
+        String user = token.getUser();
+        model.addAttribute("model",request.getSession());
+        model.addAttribute("idCardNo",idCardNo);
+        response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
     }
 
 }
