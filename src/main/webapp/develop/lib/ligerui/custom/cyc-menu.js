@@ -12,7 +12,9 @@ $(function(){
         if(MenuId){
             var arr=MenuId.split(",")
             for(var i=0;i<arr.length;i++){
-                $("a[data-find='"+arr[i]+"']").click();
+                if(i==(arr.length-1)){//只触发一次事件
+                    $("a[data-find='"+arr[i]+"']").click();
+                }
                 if(i>2){
                     $("a[data-find='"+arr[2]+"']").closest("ul").find("ul").attr("style","")
                 }
