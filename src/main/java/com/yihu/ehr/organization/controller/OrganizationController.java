@@ -12,9 +12,11 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.GetInfoService;
 import com.yihu.ehr.util.url.URLQueryBuilder;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +55,9 @@ public class OrganizationController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    
+    @Autowired
+    private GetInfoService getInfoService;
 
     @RequestMapping("initial")
     public String orgInitial(Model model) {
@@ -146,6 +151,22 @@ public class OrganizationController extends BaseUIController {
             if (!StringUtils.isEmpty(orgType)) {
                 filters += "orgType=" + orgType + ";";
             }
+
+            String orgCode = getInfoService.getOrgCode();
+            String districtList = getInfoService.getDistrictList();
+
+           /* if (!StringUtils.isEmpty(orgCode)) {
+                filters += "orgCode=" + orgCode + ";";
+            } else {
+                filters += "orgCode=" + null + ";";
+            }*/
+            filters += StringUtils.isEmpty(orgCode) ? "orgCode=" + null + " g2;" : "orgCode=" + orgCode + " g2;";
+            filters += StringUtils.isEmpty(districtList) ? "location=-1 g2;" : "location=" + districtList + " g2;";
+//            if (!StringUtils.isEmpty(districtList)) {
+//                filters += "location=" + districtList + ";";
+//            } else {
+//                filters += "location=-1;";
+//            }
            /* //添加地址过滤条件
             if (!"".equals(addrIds)) {
                 filters += "location=" + addrIds + ";";

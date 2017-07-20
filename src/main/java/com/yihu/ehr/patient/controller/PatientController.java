@@ -12,8 +12,10 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.service.GetInfoService;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,6 +51,8 @@ public class PatientController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Autowired
+    private GetInfoService getInfoService;
 
     public PatientController() {
     }
@@ -408,10 +412,11 @@ public class PatientController extends BaseUIController {
     @RequestMapping("searchPatientByParams")
     @ResponseBody
     public Object searchPatientByParams(String searchNm,String gender, String province, String city, String district, String searchRegisterTimeStart,String searchRegisterTimeEnd,int page, int rows) {
-        String url = "/populationsByParams";
+        String url = "/populationsByParams2";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
+        String districtList = getInfoService.getDistrictList();
         params.put("search", searchNm.trim());
         params.put("gender", gender);
         params.put("page", page);
@@ -421,6 +426,7 @@ public class PatientController extends BaseUIController {
         params.put("home_district", district);
         params.put("searchRegisterTimeStart", searchRegisterTimeStart);
         params.put("searchRegisterTimeEnd", searchRegisterTimeEnd);
+        params.put("districtList", org.apache.commons.lang.StringUtils.isBlank(districtList) ? "-1" : districtList);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;

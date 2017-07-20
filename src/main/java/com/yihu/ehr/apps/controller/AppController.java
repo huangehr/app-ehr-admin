@@ -11,9 +11,11 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.GetInfoService;
 import com.yihu.ehr.util.url.URLQueryBuilder;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +49,8 @@ public class AppController extends BaseUIController {
 
 //    @Autowired
 //    private RestTemplates template;
+    @Autowired
+    private GetInfoService getInfoService;
 
     @RequestMapping("template/appInfo")
     public String appInfoTemplate(Model model, String appId, String mode) {
@@ -111,6 +115,13 @@ public class AppController extends BaseUIController {
         if (!StringUtils.isEmpty(status)) {
             builder.addFilter("status", "=", status, null);
         }
+        String orgCode = getInfoService.getOrgCode();
+        if (!StringUtils.isEmpty(orgCode)) {
+            builder.addFilter("org", "=", orgCode, null);
+        } else {
+            builder.addFilter("org", "=", null, null);
+        }
+
         builder.setPageNumber(page)
                 .setPageSize(rows);
         String param = builder.toString();
