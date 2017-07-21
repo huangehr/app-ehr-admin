@@ -22,7 +22,8 @@
                     },
                     success: function (data) {
                         if(data.successFlg){
-                            location.href = '${contextRoot}/resourceBrowse/browseCenter#signin';
+                            <%--location.href = '${contextRoot}/resourceBrowse/browseCenter#signin';--%>
+                            location.href = '${contextRoot}/resourceBrowse/browseNewCenter#signin';
                         }else{
                             location.href = '${contextRoot}/login';
                         }
