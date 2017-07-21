@@ -4,6 +4,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="${contextRoot}/develop/common/flod.css">
+<style>
+    #upd>div{left: 0}
+</style>
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">机构管理</div>
 
@@ -57,7 +60,7 @@
                     </div>
                     <div id="div_upload_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <sec:authorize url="/orgDeptImport/importOrgDept">
-                            <div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px" ></div>
+                            <div id="upd" class="f-fr" style="overflow: hidden; width: 84px" ></div>
                         </sec:authorize>
                     </div>
                 </sec:authorize>
