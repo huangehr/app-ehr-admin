@@ -89,12 +89,12 @@ public class DoctorController extends BaseUIController {
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("name?" + searchNm + ";");
         }
-        String userId = getInfoService.getUserId();
+       /* String userId = getInfoService.getUserId();
         if (!StringUtils.isEmpty(userId)) {
             stringBuffer.append("userId=" + userId + ";");
         } else {
             stringBuffer.append("userId=" + "-1" + ";");
-        }
+        }*/
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);

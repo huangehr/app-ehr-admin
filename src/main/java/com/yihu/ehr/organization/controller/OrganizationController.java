@@ -152,16 +152,16 @@ public class OrganizationController extends BaseUIController {
                 filters += "orgType=" + orgType + ";";
             }
 
-            String orgCode = getInfoService.getOrgCode();
-            String districtList = getInfoService.getDistrictList();
+           /* String orgCode = getInfoService.getOrgCode();*/
+           /* String districtList = getInfoService.getDistrictList();*/
 
            /* if (!StringUtils.isEmpty(orgCode)) {
                 filters += "orgCode=" + orgCode + ";";
             } else {
                 filters += "orgCode=" + null + ";";
             }*/
-            filters += StringUtils.isEmpty(orgCode) ? "orgCode=" + null + " g2;" : "orgCode=" + orgCode + " g2;";
-            filters += StringUtils.isEmpty(districtList) ? "location=-1 g2;" : "location=" + districtList + " g2;";
+            /*filters += StringUtils.isEmpty(orgCode) ? "orgCode=" + null + " g2;" : "orgCode=" + orgCode + " g2;";*/
+            /*filters += StringUtils.isEmpty(districtList) ? "location=-1 g2;" : "location=" + districtList + " g2;";*/
 //            if (!StringUtils.isEmpty(districtList)) {
 //                filters += "location=" + districtList + ";";
 //            } else {

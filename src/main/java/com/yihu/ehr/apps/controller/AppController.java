@@ -115,12 +115,12 @@ public class AppController extends BaseUIController {
         if (!StringUtils.isEmpty(status)) {
             builder.addFilter("status", "=", status, null);
         }
-        String orgCode = getInfoService.getOrgCode();
+       /* String orgCode = getInfoService.getOrgCode();
         if (!StringUtils.isEmpty(orgCode)) {
             builder.addFilter("org", "=", orgCode, null);
         } else {
             builder.addFilter("org", "=", null, null);
-        }
+        }*/
 
         builder.setPageNumber(page)
                 .setPageSize(rows);
