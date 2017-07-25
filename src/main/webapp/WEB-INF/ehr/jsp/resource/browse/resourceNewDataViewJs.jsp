@@ -156,11 +156,11 @@
                         dataType: 'json',
                         success: function (data) {
                             if (data.successFlg == true) {
-                                var d = data.detailModelList;
+                                var d = data.obj;
                                 for (var i = 0, len = d.length; i < len; i++) {
                                     regions.push({
-                                        text: d[i],
-                                        id: d[i]
+                                        text: d[i].name,
+                                        id: d[i].name
                                     });
                                 }
                                 self.$inpRegion.ligerComboBox({
@@ -183,11 +183,11 @@
                         dataType: 'json',
                         success: function (data) {
                             if (data.successFlg) {
-                                var d = data.detailModelList;
+                                var d = data.obj;
                                 for (var i = 0, len = d.length; i < len; i++) {
                                     mechanisms.push({
-                                        text: d[i],
-                                        id: d[i]
+                                        text: d[i].fullName,
+                                        id: d[i].fullName
                                     });
                                 }
                                 self.$inpMechanism.ligerComboBox({
@@ -362,7 +362,7 @@
                     var searchBo = false;
 
 
-                    self.$ddSeach.on('mouseover', function (e) {
+                    self.$ddSeach.on('click', function (e) {
                         e.stopPropagation();
                         if (self.$resourceInfoGrid.html() == '') {
                             return;
@@ -373,18 +373,24 @@
                             self.$popSCon.css('display', 'block');
                         }
                     });
-                    self.$ddSeach.on('mouseout', function (e) {
-                        if ($(e.target).hasClass('l-table-checkbox') ||
-                                $(e.target).hasClass('l-trigger-icon') ||
-                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
-                                $(e.target).hasClass('l-text-field') ||
-                                $(e.target).hasClass('clear-s')) {
-                            return;
-                        }
-                        self.$popMain.css('display', 'none');
-                        self.$sjIcon.css('display', 'none');
-                        self.$popSCon.css('display', 'none');
-                    });
+//                    self.$ddSeach.on('mouseout', '.pop-s-con', function (e) {
+//                        console.log($(e.target).attr('class'));
+//                        if ($(e.target).hasClass('l-table-checkbox') ||
+//                                $(e.target).hasClass('l-trigger-icon') ||
+//                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
+//                                $(e.target).hasClass('l-text-field') ||
+//                                $(e.target).hasClass('j-text-wrapper') ||
+//                                $(e.target).hasClass('u-btn-large') ||
+//                                $(e.target).hasClass('inp-label') ||
+//                                $(e.target).hasClass('pop-s-con') ||
+//                                $(e.target).hasClass('f-mt6') ||
+//                                $(e.target).hasClass('clear-s')) {
+//                            return;
+//                        }
+//                        self.$popMain.css('display', 'none');
+//                        self.$sjIcon.css('display', 'none');
+//                        self.$popSCon.css('display', 'none');
+//                    });
 
                     //返回资源注册页面
                     $('#btn_back').click(function(){
