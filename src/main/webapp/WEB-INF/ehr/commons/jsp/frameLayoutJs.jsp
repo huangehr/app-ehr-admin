@@ -443,7 +443,7 @@
                 </sec:authorize>
 
                 //  5-2 指标分类管理
-                <sec:authorize url="/organization/Initial">
+                <sec:authorize url="/health/initial">
                 {
                     pid: 5,
                     level: 2,
@@ -465,7 +465,7 @@
                 </sec:authorize>
 
                 // 5-5 - 趋势分析
-                <sec:authorize url="Ehr_Master_Centre">
+                <%--<sec:authorize url="Ehr_Master_Centre">
                 {
                     pid: 5,
                     level: 2,
@@ -473,7 +473,7 @@
                     text: '<spring:message code="title.trend.analysis"/>',
                     url: '${contextRoot}/report/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 // 6- 信息安全管理
                 <sec:authorize url="Ehr_Security_Centre">
@@ -496,7 +496,7 @@
                 </sec:authorize>
 
                 // 6-2 -身份认证
-                <sec:authorize url="/authentication/initial">
+                <%--<sec:authorize url="/authentication/initial">
                 {
                     pid: 6,
                     level: 2,
@@ -504,7 +504,7 @@
                     text: '<spring:message code="title.patient.apply"/>',
                     url: '${contextRoot}/authentication/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 // 6-3 安全管理中心 - 角色管理
                 <sec:authorize url="/userRoles/initial">
