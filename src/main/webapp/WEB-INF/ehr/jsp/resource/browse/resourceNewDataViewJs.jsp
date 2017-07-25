@@ -367,10 +367,27 @@
                         if (self.$resourceInfoGrid.html() == '') {
                             return;
                         }
+                        if ($(e.target).hasClass('l-table-checkbox') ||
+                                $(e.target).hasClass('l-trigger-icon') ||
+                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
+                                $(e.target).hasClass('l-text-field') ||
+                                $(e.target).hasClass('j-text-wrapper') ||
+                                $(e.target).hasClass('u-btn-large') ||
+                                $(e.target).hasClass('inp-label') ||
+                                $(e.target).hasClass('pop-s-con') ||
+                                $(e.target).hasClass('f-mt6') ||
+                                e.target.tagName.toLocaleLowerCase() == 'span' ||
+                                $(e.target).hasClass('clear-s')) {
+                            return;
+                        }
                         if (self.$popMain.css('display') == 'none') {
                             self.$popMain.css('display', 'block');
                             self.$sjIcon.css('display', 'block');
                             self.$popSCon.css('display', 'block');
+                        } else {
+                            self.$popMain.css('display', 'none');
+                            self.$sjIcon.css('display', 'none');
+                            self.$popSCon.css('display', 'none');
                         }
                     });
 //                    self.$ddSeach.on('mouseout', '.pop-s-con', function (e) {
