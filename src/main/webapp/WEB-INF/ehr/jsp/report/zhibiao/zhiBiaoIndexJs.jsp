@@ -256,7 +256,7 @@
                             opener: true,
                             load: true,
                             urlParms: {
-                                quotaCode:code
+                                quotaCode:code.trim()
                             },
                             onLoaded:function() {
 
