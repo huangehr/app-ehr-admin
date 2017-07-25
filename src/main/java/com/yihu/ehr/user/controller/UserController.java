@@ -8,6 +8,7 @@ import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.geography.controller.AddressController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -15,6 +16,7 @@ import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,6 +61,9 @@ public class UserController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+    @Autowired
+    private AddressController addressController;
 
     @RequestMapping("initial")
     public String userInitial(Model model) {
@@ -623,10 +628,10 @@ public class UserController extends BaseUIController {
         return false;
     }
 
-    @RequestMapping(value = "/getDistrictByUserId", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/getDistrictByUserId")
     @ResponseBody
     public Object getDistrictByUserId() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+       /* HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session = request.getSession();
         UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/getDistrictByUserId";
@@ -641,13 +646,33 @@ public class UserController extends BaseUIController {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
+        }*/
+        String url = "/geography_entries/pid/350200";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        try{
+            resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            if (envelop.isSuccessFlg()) {
+                result.setObj(envelop.getDetailModelList());
+                result.setSuccessFlg(true);
+                return result;
+            }else{
+                result.setSuccessFlg(false);
+                return result;
+            }
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
         }
     }
 
-    @RequestMapping(value = "/getOrgByUserId", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/getOrgByUserId")
     @ResponseBody
     public Object getOrgByUserId() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        /*HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session = request.getSession();
         UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/getOrgByUserId";
@@ -662,6 +687,9 @@ public class UserController extends BaseUIController {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
-        }
+        }*/
+        Envelop envelop = new Envelop();
+        envelop = (Envelop)addressController.getOrgs("福建省", "厦门市");
+        return envelop;
     }
 }
