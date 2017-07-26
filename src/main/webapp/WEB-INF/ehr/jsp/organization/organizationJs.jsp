@@ -2,6 +2,10 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
     (function ($, win) {
         $(function () {
