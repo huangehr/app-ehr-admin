@@ -398,4 +398,28 @@ public class TjQuotaController extends BaseUIController {
             return envelop;
         }
     }
+
+    /**
+     * 获取quotaCode查询是否配置维度
+     * @param
+     * @return
+     */
+    @RequestMapping("hasConfigDimension")
+    @ResponseBody
+    public boolean hasConfigDimension(String quotaCode) throws Exception {
+        String url = "/tj/hasConfigDimension";
+        String resultStr = "";
+        Map<String, Object> params = new HashMap<>();
+
+        params.put("quotaCode", quotaCode);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (resultStr.equals("true")) {
+                return  true;
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        return  false;
+    }
 }
