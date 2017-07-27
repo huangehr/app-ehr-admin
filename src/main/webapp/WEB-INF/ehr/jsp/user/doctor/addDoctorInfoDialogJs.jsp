@@ -109,13 +109,23 @@
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
+                        var checkObj = { result:true, errorMsg: ''};
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_code')) {
                             var code = $("#inp_code").val();
-                            return checkDataSourceName('code', code, "该账号已存在");
+                            checkObj= checkDataSourceName('code', code, "该账号已存在");
                         }
-                        if (Util.isStrEquals($(elm).attr("idCardNo"), 'inp_idCard')) {
-                            var CardNo = $("#inp_idCard").val();
-                            return checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_idCardNo')) {
+                            var CardNo = $("#inp_idCardNo").val();
+                            checkObj= checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
+                        }
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_phone')) {
+                            var phone = $("#inp_phone").val();
+                            checkObj= checkDataSourceName('phone', phone, "该电话号码已存在");
+                        }
+                        if (!checkObj.result) {
+                            return checkObj;
+                        } else {
+                            return checkObj.result;
                         }
                     }
                 });
@@ -170,9 +180,8 @@
                         data: {doctorModelJsonData: doctorModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                closeAddDoctorInfoDialog(function () {
-                                    $.Notice.success('医生新增成功');
-                                });
+                                $.Notice.success('医生新增成功');
+//                                win.closeAddDoctorInfoDialog();
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
                             }
