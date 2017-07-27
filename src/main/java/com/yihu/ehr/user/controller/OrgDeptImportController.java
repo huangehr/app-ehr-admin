@@ -63,6 +63,7 @@ public class OrgDeptImportController extends ExtendController<OrgDeptService> {
             Set<String> codes = findExistCodeInOrgDept(toJson(excelReader.getRepeat().get("code")));
             //获取机构表的机构编码
             Set<String> orgCodes = findExistOrgCodeInOrganization(toJson(excelReader.getRepeat().get("orgCode")));
+//            Set<String> orgNames = findExistOrgNameInOrgDept(toJson(excelReader.getRepeat().get("name")));
 
 
             writerResponse(response, 35+"", "l_upd_progress");
@@ -124,12 +125,28 @@ public class OrgDeptImportController extends ExtendController<OrgDeptService> {
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
     }
 
+    private Set<String> findExistOrgNameInOrgDept(String orgName) throws Exception {
+        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
+        conditionMap.add("name", orgName);
+
+        RestTemplates template = new RestTemplates();
+        String rs = template.doPost(service.comUrl + "/name/existence", conditionMap);
+
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
+
     private int validate(OrgDeptMsgModel model, Set<String> codes, Set<String> orgCodes){
         int rs = 1;
         if(codes.contains(model.getCode())){
             model.addErrorMsg("code", "该部门编号在部门表已存在，请核对！");
             rs = 0;
         }
+
+        if("".equals(model.getName())){
+            model.addErrorMsg("name", "部门名称不能为空，请核对！");
+            rs = 0;
+        }
+
         if(!orgCodes.contains(model.getOrgCode())){
             model.addErrorMsg("orgCode", "该机构代码不存在，请核对！");
             rs = 0;

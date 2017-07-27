@@ -20,6 +20,7 @@ public class OrgDeptMsgModel extends ExcelUtil implements Validation {
     @ValidRepeat
     private String code;
     @Location(x=1)
+    @ValidRepeat
     private String name;
     @Location(x=2)
 //    @ValidRepeat
@@ -141,9 +142,14 @@ public class OrgDeptMsgModel extends ExcelUtil implements Validation {
             addErrorMsg("code", "部门编号重复！" );
         }
 
+        if(!repeatMap.get("name").add(name)){
+//            valid = 0;
+//            addErrorMsg("name", "部门名称重复！" );
+        }
+
         if(!repeatMap.get("orgCode").add(orgCode)){
-            valid = 0;
-            addErrorMsg("orgCode", "机构代码重复！" );
+//            valid = 0;
+//            addErrorMsg("orgCode", "机构代码重复！" );
         }
         return valid;
     }
