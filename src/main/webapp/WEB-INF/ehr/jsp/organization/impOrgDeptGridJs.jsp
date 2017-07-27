@@ -80,7 +80,7 @@
                 else{
                     var ajaxClz = ['required'];
 //                    if( column.name=='id') ajaxClz.push('validate-meta-id');
-                    if( column.name=='code' || column.name=='orgCode') ajaxClz.push('ajax');
+                    if( column.name=='code' || column.name=='orgCode' || column.name=='name') ajaxClz.push('ajax');
                     html = '<input data-old-val="'+ val +'" title="'+ val+'" type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
                     html += '<script>initText("'+ id +'"," '+ column.width +'", "'+ val +'")<\/script>';
                 }
@@ -97,15 +97,15 @@
                     {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                      }},
-                    {display: '部门编号', name: 'code', width: '9%', align: 'left', render: textRender},
+                    {display: '部门编号', name: 'code', width: '10%', align: 'left', render: textRender},
                     {display: '部门名称', name: 'name', width: '5%', align: 'left', render: textRender},
-                    {display: '父级部门编号', name: 'parentDeptId', width: '7%', align: 'left', render: textRender},
-                    {display: '父级部门名称', name: 'parentDeptName', width: '7%', align: 'left', render: textRender},
-                    {display: '科室电话', name: 'phone', width: '10%', align: 'left', render: textRender},
-                    {display: '科室荣誉(国家重点科室,省级重点科室,医院特色专科)', name: 'gloryId', width: '12%', align: 'left', render: textRender},
+                    {display: '父级部门编号', name: 'parentDeptId', width: '7%',hide: true, align: 'left', render: textRender},
+                    {display: '父级部门名称', name: 'parentDeptName', width: '7%',hide: true, align: 'left', render: textRender},
+                    {display: '科室电话', name: 'phone', width: '12%', align: 'left', render: textRender},
+                    {display: '科室荣誉(国家重点科室,省级重点科室,医院特色专科)', name: 'gloryId', width: '20%', align: 'left', render: textRender},
                     {display: '机构代码', name: 'orgCode', width: '10%', align: 'left', render: textRender},
                     {display: '所属机构', name: 'orgName', width: '10%', align: 'left', render: textRender},
-                    {display: '科室介绍', name: 'introduction', width: '10%', align: 'left', render: textRender},
+                    {display: '科室介绍', name: 'introduction', width: '13%', align: 'left', render: textRender},
                     {display: '科室位置', name: 'place', width: '10%', align: 'left', render: textRender},
                     {display: '科室类型', name: 'pyCode', width: '10%', align: 'left', render: textRender}];
 
