@@ -39,7 +39,7 @@
             </div>
             <div class="m-form-control f-ml10">
                 <!--按钮:查询 & 新增-->
-                <sec:authorize url="/organization/searchOrgs">
+                <sec:authorize url="/ehr/organization/searchOrgs">
                     <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span><spring:message code="btn.search"/></span>
                     </div>
@@ -50,20 +50,21 @@
                     <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span><spring:message code="btn.create"/></span>
                     </div>
+                </sec:authorize>
+                <sec:authorize url="/ehr/organization/template">
                     <div id="div_down_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
-                        <sec:authorize url="/ehr/organization/template">
                             <a href="<%=request.getContextPath()%>/template/部门机构导入模板.xls"
                                style="color: #fff">
                                 下载模版
                             </a>
-                        </sec:authorize>
-                    </div>
-                    <div id="div_upload_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
-                        <sec:authorize url="/orgDeptImport/importOrgDept">
-                            <div id="upd" class="f-fr" style="overflow: hidden; width: 84px" ></div>
-                        </sec:authorize>
                     </div>
                 </sec:authorize>
+                <sec:authorize url="/orgDeptImport/importOrgDept">
+                    <div id="div_upload_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                            <div id="upd" class="f-fr" style="overflow: hidden; width: 84px" ></div>
+                    </div>
+                </sec:authorize>
+
             </div>
         </div>
     </div>
