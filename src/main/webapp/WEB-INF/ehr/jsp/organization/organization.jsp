@@ -51,7 +51,7 @@
                         <span><spring:message code="btn.create"/></span>
                     </div>
                     <div id="div_down_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
-                        <sec:authorize url="/ehr/template">
+                        <sec:authorize url="/ehr/organization/template">
                             <a href="<%=request.getContextPath()%>/template/部门机构导入模板.xls"
                                style="color: #fff">
                                 下载模版

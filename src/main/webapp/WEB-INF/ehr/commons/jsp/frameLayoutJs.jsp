@@ -114,7 +114,7 @@
                 </sec:authorize>
 
                 //  1-4 卫生机构
-                <sec:authorize url="/organization/Initial">
+                <sec:authorize url="/ehr/organization/Initial">
                 {
                     pid: 1,
                     level: 2,
