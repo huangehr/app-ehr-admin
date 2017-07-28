@@ -424,7 +424,7 @@
                 </sec:authorize>
 
                 // 5 - 质量监控报告
-                <sec:authorize url="Ehr_Master_Centre">
+                <sec:authorize url="Ehr_Data_Centre">
                 {
                     id: 5,
                     level:1,
