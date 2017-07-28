@@ -28,7 +28,7 @@
                         <span><spring:message code="btn.create"/></span>
                     </div>
                     <div id="div_down_doctor" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
-                       <sec:authorize url="/ehr/template">
+                       <sec:authorize url="/ehr/doctorTemplate">
                             <a href="<%=request.getContextPath()%>/template/医护人员导入模板.xls"
                                style="color: #fff">
                                 下载模版
