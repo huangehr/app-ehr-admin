@@ -6,6 +6,7 @@
     (function ($, win) {
         $(function () {
             /* ************************** 变量定义 ******************************** */
+            var versionNum = $('#inp_searchVersion_val').val();
             // 通用工具类库
             var Util = $.Util;
 
@@ -54,27 +55,33 @@
                 initForm: function () {
                     var self = this;
                     self.$title.ligerTextBox({width: 240});
-                    this.initCombo(self.$dataset, urls.cdaDocument, {});
-                    self.versionNo = self.$versionNo.ligerComboBox({
-                        url: '${contextRoot}/adapter/versions',
-                        valueField: 'version',
-                        textField: 'versionName',
-                        dataParmName: 'detailModelList',
-                        width: 240,
-                        onSelected: function (value) {
-                            var parms = {
-                                version: value,
-                                searchName: ""
-                            }
-                            self.cda.reload(parms);
-                            if(firstInit){
-                                if(model.cdaDocumentId){
-                                    self.cda.setValue(model.cdaDocumentId);
-                                    self.cda.setText(model.cdaDocumentName);
-                                }
-                                firstInit = false;
-                            }
-                        }
+                    <%--self.versionNo = self.$versionNo.ligerComboBox({--%>
+                        <%--url: '${contextRoot}/adapter/versions',--%>
+                        <%--valueField: 'version',--%>
+                        <%--textField: 'versionName',--%>
+                        <%--dataParmName: 'detailModelList',--%>
+                        <%--width: 240,--%>
+                        <%--onSelected: function (value) {--%>
+                            <%--var parms = {--%>
+                                <%--version: value,--%>
+                                <%--searchName: ""--%>
+                            <%--}--%>
+                            <%--self.cda.reload(parms);--%>
+                            <%--if(firstInit){--%>
+                                <%--if(model.cdaDocumentId){--%>
+                                    <%--self.cda.setValue(model.cdaDocumentId);--%>
+                                    <%--self.cda.setText(model.cdaDocumentName);--%>
+                                <%--}--%>
+                                <%--firstInit = false;--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--});--%>
+                    self.versionNo = self.$versionNo.ligerTextBox({width: 240,disabled:true});
+                    self.versionNo.setValue(versionNum);
+
+
+                    this.initCombo(self.$dataset, urls.cdaDocument, {
+                        version: versionNum
                     });
 
                     this.$org.addressDropdown({
@@ -100,9 +107,8 @@
                     $('#inp_versionNo_wrap').addClass('u-ui-readonly');
                     if(mode=='new' && !Util.isStrEmpty(model.organizationCode))
 //                        $('#inp_org_wrap').addClass('u-ui-readonly');
-
+                    this.$form.liger.get('div_addArchiveTpl_form');
                     this.$form.attrScan();
-
                     this.$form.Fields.fillValues({
                         id: model.id,
                         title: mode=='copy'? '': model.title,
@@ -110,9 +116,9 @@
                         organizationCode: [model.province, model.city, model.organizationCode]
                     });
 
-                    var versionMgr = this.$versionNo.ligerGetComboBoxManager();
-                    versionMgr.selectValue(version.v);
-                    versionMgr.setText(version.n);
+//                    var versionMgr = this.$versionNo.ligerGetTextBoxManager();
+//                    versionMgr.selectValue(version.v);
+//                    versionMgr.setText(version.n);
 
                     $('#oldTitle').val(model.title);
                     $('#inp_versionNo').focus();
@@ -167,6 +173,7 @@
                         };
                     }
                     self.$addBtn.click(function () {
+                        debugger
                         if (validator.validate()) {
                             var TemplateModel = self.$form.Fields.getValues();
                             TemplateModel.organizationCode = TemplateModel.organizationCode.keys[2];

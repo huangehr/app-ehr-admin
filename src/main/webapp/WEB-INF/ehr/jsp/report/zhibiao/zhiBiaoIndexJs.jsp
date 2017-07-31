@@ -163,7 +163,7 @@
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/deleteTjDataSave"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:execu", row.id) + '">任务执行</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">任务执行</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:result:selectResult", row.id) + '">结果查询</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
                                     return html;
@@ -256,7 +256,7 @@
                             opener: true,
                             load: true,
                             urlParms: {
-                                quotaCode:code
+                                quotaCode:code.trim()
                             },
                             onLoaded:function() {
 
@@ -264,17 +264,26 @@
                         });
                     });
 
-                    $.subscribe('zhibiao:execu', function (event, id) {
+                    $.subscribe('zhibiao:execu', function (event, id, quotaCode) {
                         $.Notice.confirm('确认要执行所选指标？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
-                                dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
-                                    data: {tjQuotaId: parseInt(id)},
+                                dataModel.updateRemote('${contextRoot}/tjQuota/hasConfigDimension', {
+                                    data: {quotaCode: quotaCode},
                                     success: function (data) {
-                                        if(data.successFlg){
-                                            $.Notice.success('执行成功！');
+                                        if(data){
+                                            dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
+                                                data: {tjQuotaId: parseInt(id)},
+                                                success: function (data) {
+                                                    if(data.successFlg){
+                                                        $.Notice.success('执行成功！');
+                                                    }else{
+                                                        $.Notice.error(data.errorMsg);
+                                                    }
+                                                }
+                                            });
                                         }else{
-                                            $.Notice.error(data.errorMsg);
+                                            $.Notice.error("请先在维度配置中配置主维度");
                                         }
                                     }
                                 });

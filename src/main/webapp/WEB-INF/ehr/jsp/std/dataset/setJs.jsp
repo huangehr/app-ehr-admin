@@ -30,7 +30,7 @@
         isSaveSelectStatus: false,
         versionStage:null,
         init: function () {
-            this.top = $.Util.getTopWindowDOM();
+//            this.top = $.Util.getTopWindowDOM();
             this.columns = [
                 {display: '数据集编码', name: 'code', align: 'left', width: '33%'},
                 {display: '数据集名称', name: 'name', align: 'left', width: '34%'},
@@ -301,10 +301,10 @@
             }
         },
         showDialog: function (_tital, _url, _height, _width, callback) {
-            if (set.list.top == null) {
-                set.list.top = $.Util.getTopWindowDOM();
-            }
-            set.list.top.dialog_set_detail = $.ligerDialog.open({
+//            if (set.list.top == null) {
+//                set.list.top = $.Util.getTopWindowDOM();
+//            }
+            set.list.dialog_set_detail = $.ligerDialog.open({
                 title: _tital,
                 url: _url,
                 height: _height,
@@ -651,7 +651,7 @@
                             //alert($.i18n.prop('message.save.success'));
                             $.ligerDialog.alert("保存成功", "提示", "success", function () {
                                 set.list.isReload = true;
-                                set.list.top.dialog_set_detail.close();
+                                set.list.dialog_set_detail.close();
                             }, null);
                         }
                         else {
@@ -674,7 +674,7 @@
                 }
             });
             $("#btn_close").click(function () {
-                set.list.top.dialog_set_detail.close();
+                set.list.dialog_set_detail.close();
             });
         }
     };
@@ -870,7 +870,7 @@
                         if (_res.successFlg) {
                             $.ligerDialog.alert("保存成功!", "提示", "success", function () {
                                 set.list.isReload = true;
-                                set.list.top.dialog_set_detail.close();
+                                set.list.dialog_set_detail.close();
                             }, null);
                         }
                         else {
@@ -920,7 +920,7 @@
                 }
             });
             $("#btn_close").click(function () {
-                set.list.top.dialog_set_detail.close();
+                set.list.dialog_set_detail.close();
             });
             //给数据元主键和是否空值的选择
             $("#primaryKey").click(function () {

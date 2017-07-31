@@ -19,6 +19,7 @@ public class OrgDeptMsgModelReader extends AExcelReader {
             int j = 0, rows;
             OrgDeptMsgModel p;
             getRepeat().put("code", new HashSet<>());
+            getRepeat().put("name", new HashSet<>());
             getRepeat().put("orgCode", new HashSet<>());
 
             for (Sheet sheet : sheets) {

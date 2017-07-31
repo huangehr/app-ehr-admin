@@ -226,20 +226,20 @@
             else { jq_search[0].addEventListener("input", base.getSearch, false); };
         },
         getSearch: function () {
-            base.grid.options.data = $.extend(true, {}, { Rows: top.result });
+            base.grid.options.data = $.extend(true, {}, { Rows: result });
             base.grid.loadData(base.getWhere());
         }
     };
     list.dataset=function(versionCode,cda_id){
-        var top = $.Util.getTopWindowDOM();
-        if (top.list_dataset_storage == null) { top.list_dataset_storage = []; }
+        // var top = $.Util.getTopWindowDOM();
+        if (list_dataset_storage == null) { list_dataset_storage = []; }
         base.init({
-            win: top.dialog_cda_detail,
-            storage: top.list_dataset_storage,
+            win: dialog_cda_detail,
+            storage: list_dataset_storage,
             callback: function () {
-                top.list_dataset_savedata = top.list_dataset_storage;
-                if (top.list_dataSet_callback != undefined) {
-                    top.list_dataSet_callback();
+                list_dataset_savedata = list_dataset_storage;
+                if (list_dataSet_callback != undefined) {
+                    list_dataSet_callback();
                 }
             },
             multiple: $.Util.getUrlQueryString("multiple") != 0 ? true : false,
