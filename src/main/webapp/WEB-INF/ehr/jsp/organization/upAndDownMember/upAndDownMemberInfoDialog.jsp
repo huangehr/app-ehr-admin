@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <style>
 	.l-text {
-		width: 220px;
+		width: 240px;
 	}
 
 </style>

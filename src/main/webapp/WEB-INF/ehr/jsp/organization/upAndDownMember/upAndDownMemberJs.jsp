@@ -204,8 +204,8 @@
 						}
 						if(mode == "newDown"){title = "新增下级成员";}
 						master.rsInfoDialog = $.ligerDialog.open({
-							height:350,
-							width:500,
+							height:220,
+							width:450,
 							title:title,
 							url:'${contextRoot}/upAndDownMember/infoInitial',
 							urlParms:{
