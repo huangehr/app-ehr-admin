@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by wq on 2016/5/17.
@@ -104,7 +106,17 @@ public class ResourceBrowseController extends BaseUIController {
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         params.put("orgCode", userDetailModel.getOrganization());
         params.put("resourcesCode", resourcesCode);
-        params.put("queryCondition", searchParams);
+        Pattern pattern = Pattern.compile("\\[.+?\\]");
+        Matcher matcher = pattern.matcher(searchParams);
+        if(matcher.find()) {
+            if(searchParams.contains("{") || searchParams.contains("}")) {
+                params.put("queryCondition", searchParams);
+            }else {
+                params.put("queryCondition", "");
+            }
+        }else {
+            params.put("queryCondition", "");
+        }
         params.put("page", page);
         params.put("size", rows);
         try {
