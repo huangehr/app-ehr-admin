@@ -1104,7 +1104,7 @@ public class DataSetsController extends BaseUIController {
 //            Map<String, String> stdSources = findStdSources(excelReader.getRepeat().get("referenceCode").toString().replace("[", "").replace("]", "").replace(" ", ""));
         Map<String, String> stdSources = null;
         Map<String, String> dicts = findStdDict(version);
-        String columnTypes = "VARCHAR,INT,FLOAT,DOUBLE,CHAR,TEXT,DATE";
+        String columnTypes = "VARCHAR,INT,FLOAT,DOUBLE,CHAR,TEXT,DATE,DATETIME,NUMERIC,TINYINT";
         writerResponse(response, 45+"", "l_upd_progress");
         DataSetMsg model;
         boolean valid;
