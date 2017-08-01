@@ -94,10 +94,10 @@
 							page:searchParms.page
                         },
                         columns: [
-							{ display: 'APP ID',name: 'id', width: '10%',isAllowHide: false},
-							{ display: 'APP Secret', name: 'secret', width: '11%', minColumnWidth: 60,},
-                            { display: '应用名称', name: 'name',width: '15%', isAllowHide: false,align:'left' },
-                            { display: '应用来源', name: 'sourceType',width: '6%',isAllowHide: false,render:function(row){
+							{ display: 'APP ID',name: 'id', width: '10%',isAllowHide: false,hide:true},
+							{ display: 'APP Secret', name: 'secret', width: '11%', minColumnWidth: 60, hide:true},
+                            { display: '应用名称', name: 'name',width: '20%', isAllowHide: false,align:'left' },
+                            { display: '应用来源', name: 'sourceType',width: '10%',isAllowHide: false,render:function(row){
                                 if (row.sourceType==1) {
                                     return '平台';
                                 } else {
@@ -105,9 +105,9 @@
                                 }
                             }
                             },
-							{ display: '机构代码', name: 'org',width: '8%',align:'left'},
-							{ display: '机构名称', name: 'orgName',width: '15%',align:'left'},
-							{ display: '类型', name: 'catalogName', width: '8%'},
+							{ display: '机构代码', name: 'org',width: '10%',align:'left'},
+							{ display: '机构名称', name: 'orgName',width: '18%',align:'left'},
+							{ display: '类型', name: 'catalogName', width: '10%'},
 //                          { display: '回调URL', name: 'url', width: '15%',align:'left'},
 							{ display: '审核', name: 'checkStatus', width: '8%',minColumnWidth: 20,render: function (row){
 								if(Util.isStrEquals( row.status,'WaitingForApprove')) {
@@ -122,7 +122,7 @@
 								}
 							}},
 //							{ display: '已授权资源', name: 'resourceNames', width: '8%',align:'left'},
-							{ display: '操作', name: 'operator', width: '20%', render: function (row) {
+							{ display: '操作', name: 'operator', width: '25%', render: function (row) {
 								var html = '';
 								if(Util.isStrEquals( row.status,'WaitingForApprove') || Util.isStrEquals( row.status,'Approved')){
 									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';

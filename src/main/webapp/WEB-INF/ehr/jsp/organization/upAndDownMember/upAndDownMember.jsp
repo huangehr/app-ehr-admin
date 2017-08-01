@@ -45,6 +45,7 @@
         <div id="div_right" class="div-resource-browse">
             <div class="right-retrieve">
                 <input type="hidden" id="categoryId" />
+                <input type="hidden" id="userId" />
                 <input type="hidden" id="categoryOrgId" />
                 <div class="f-db f-pt10 f-pb10 f-ml10">
                     <!--输入框-->

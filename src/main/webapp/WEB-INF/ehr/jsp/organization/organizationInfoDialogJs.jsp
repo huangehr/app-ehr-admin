@@ -77,6 +77,9 @@
             $selectPublicKeyValidTime: $("#div_publicKey_validTime"),
             $selectPublicKeyStartTime: $("#div_publicKey_startTime"),
             $filePicker: $("#div_file_picker"),
+            $publicKeyInfo: $("#publicKeyInfo"),
+            $publicKeyInfoDiv:$("#publicKeyInfoDiv"),
+            $parentPublicKey:$("#parentPublicKey"),
 
             $affirmBtn: $('#div_affirm_btn'),
 
@@ -124,7 +127,7 @@
                 this.$legalPerson.ligerTextBox({width: 140});
                 this.$zxy.ligerComboBox({width: 140});
                 this.$settledWay.ligerComboBox({width: 140});
-
+                this.$publicKeyInfo.ligerTextBox({width: 140});
                 this.initDDL(orgTypeDictId, this.$orgType);
                 this.initDDL(settledWayDictId, this.$settledWay);
                 this.initDDL(hosTypeDictId,this.$hosType);
@@ -169,6 +172,11 @@
                 this.$publicKeyMessage.val(org.publicKey);
                 this.$publicKeyValidTime.html(org.validTime);
                 this.$publicKeyStartTime.html(org.startTime);
+                if (org.publicKey != null && org.publicKey != undefined) {
+                    this.$publicKeyInfo.val("已分配");
+                } else {
+                    this.$publicKeyInfo.val("未分配");
+                }
                 $("#parentHosId").ligerGetComboBoxManager().setValue(org.parentHosId);
                 $("#parentHosId").ligerGetComboBoxManager().setText(org.parentHosName);
 
@@ -178,9 +186,10 @@
                     this.$form.addClass("m-form-readonly");
                     this.$publicKey.hide();
                     this.$footer.hide();
-                    this.$selectPublicKeyMessage.show();
-                    this.$selectPublicKeyValidTime.show();
-                    this.$selectPublicKeyStartTime.show();
+                    this.$publicKeyInfoDiv.show();
+//                    this.$selectPublicKeyMessage.show();
+//                    this.$selectPublicKeyValidTime.show();
+//                    this.$selectPublicKeyStartTime.show();
                     this.$filePicker.addClass("hidden");
                     $("#filePicker2").hide();
                     $('#div_organization_info_form textarea').attr("disabled","disabled");
@@ -189,6 +198,7 @@
                 }
                 if ('${mode}' == 'modify') {
                     //this.$publicManage.hide();
+                    this.$parentPublicKey.show();
                 }
                 var pic = org.imgRemotePath;
                 if (!Util.isStrEmpty(pic)) {

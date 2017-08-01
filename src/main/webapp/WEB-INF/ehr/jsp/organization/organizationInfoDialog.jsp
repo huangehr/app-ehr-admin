@@ -206,6 +206,14 @@
                 </div>
             </li>
             <li>
+                <div class="m-form-group" hidden="hidden" id="publicKeyInfoDiv">
+                    <label>公钥信息<spring:message code="spe.colon"/></label>
+                    <div class="l-text-wrapper m-form-control ">
+                        <input type="text" id="publicKeyInfo" class="useTitle"/>
+                    </div>
+                </div>
+            </li>
+            <li>
                 <div class="m-form-group">
                     <label><spring:message code="lbl.tip"/><spring:message code="spe.colon"/></label>
                     <div class="l-text-wrapper m-form-control">
@@ -258,7 +266,7 @@
             </div>
         </div>
 
-        <div>
+        <div id="parentPublicKey" hidden="hidden">
             <h3 class="list-title">公钥管理</h3>
             <div class="list-con">
                 <ul class="list-item">
@@ -289,7 +297,7 @@
                 <ul class="list-item">
                     <li>
                         <div class="m-form-group" hidden="hidden" id="div_publicKeyMessage">
-                            <label class="lbl-public-key">公钥信息<spring:message code="spe.colon"/></label>
+                            <label class="lbl-public-key"></label>
                             <div class="l-text-wrapper m-form-control">
                                 <textarea type="text" class="required useTitle u-public-key-msg o-textarea" data-attr-scan="publicKey" readonly="readonly"></textarea>
                             </div>
@@ -298,7 +306,7 @@
                 </ul>
             </div>
         </div>
-    </div>
+</div>
 
         <div id="div_public_manage" class="u-public-manage">
             <div class="l-button u-btn u-btn-small u-btn-cancel f-ib f-vam u-btn-color f-mb10" id="div_allot_publicKey">
