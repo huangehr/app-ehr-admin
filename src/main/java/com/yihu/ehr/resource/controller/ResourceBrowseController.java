@@ -80,6 +80,22 @@ public class ResourceBrowseController extends BaseUIController {
         return envelop;
     }
 
+    @RequestMapping("/searchResourceCustomizeList")
+    @ResponseBody
+    public Object searchCustomizeResourceList() {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "/resources/customize_list";
+        String resultStr = "";
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+
+        }
+        return envelop;
+    }
+
     @RequestMapping("/initial")
     public String resourceBrowseInitial(Model model) {
         model.addAttribute("contentPage", "/resource/resourcebrowse/resourceBrowse");
