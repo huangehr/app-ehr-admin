@@ -92,12 +92,13 @@
                        allowHideColumn:false,
                         columns: [
                             {display: '姓名', name: 'name', width: '10%',align: 'left'},
+                            {display: '类别', name: 'roleType', width: '5%',align: 'left'},
                             {display: '性别', name: 'sex', width: '5%'},
-                            {display: '专长', name: 'skill', width: '10%', resizable: true,align: 'left'},
+                            {display: '专长', name: 'skill', width: '8%', resizable: true,align: 'left'},
                             {display: '职称', name: 'lczc', width: '10%', resizable: true,align: 'left'},
                             {display: '手机号码', name: 'phone', width: '10%', resizable: true,align: 'left'},
                             {display: '邮箱', name: 'email', width: '13%', resizable: true,align: 'left'},
-                            {display: '医生主页', name: 'workPortal', width: '18%', resizable: true,align: 'left'},
+                            {display: '医生主页', name: 'workPortal', width: '15%', resizable: true,align: 'left'},
                             {
                                 display: '生/失效',
                                 name: 'status',

@@ -196,6 +196,7 @@
                 self.$zhixingDate.ligerDateEditor({width:240,showTime: true,onChangeDate:function(val){
                     self.$zhixingDate.val(val+":00");
                 }});
+                self.$zhixingDate.attr('readonly',true);
                 $("#txtM").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtH").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtD").ligerSpinner({width: 208,type: 'int',minValue:1});

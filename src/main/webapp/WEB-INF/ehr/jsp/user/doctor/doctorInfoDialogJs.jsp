@@ -21,6 +21,8 @@
         var allData = ${allData};
         var doctor = allData.obj;
 
+        var roleTypeDictId = 15;
+
         /* ************************** 变量定义结束 **************************** */
 
         /* *************************** 函数定义 ******************************* */
@@ -54,6 +56,7 @@
             $imageShow: $("#div_file_list"),
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
+            $roleType:$("#inp_roleType"),
 
             init: function () {
 				var self = this;
@@ -97,6 +100,7 @@
                 this.$xlzc.ligerTextBox({width: 240});
                 this.$zxzc.ligerTextBox({width: 240});
                 this.$introduction.ligerTextBox({width:600,height:100 });
+                this.initDDL(roleTypeDictId, this.$roleType);
                 this.$sex.ligerRadio();
                 $imageShow: $('#div_file_list'),
                 this.$form.attrScan();
@@ -117,7 +121,8 @@
                     jxzc: doctor.jxzc,
                     lczc: doctor.lczc,
                     xlzc: doctor.xlzc,
-                    xzzc: doctor.xzzc
+                    xzzc: doctor.xzzc,
+                    roleType: doctor.roleType
                 });
 
 
@@ -132,7 +137,15 @@
                     this.$filePicker.hide();
                 }
             },
-
+            initDDL: function (dictId, target) {
+                target.ligerComboBox({
+                    url: "${contextRoot}/dict/searchDictEntryList",
+                    dataParmName: 'detailModelList',
+                    urlParms: {dictId: dictId},
+                    valueField: 'code',
+                    textField: 'value'
+                });
+            },
             bindEvents: function () {
                 var self = this;
                 var validator = new jValidation.Validation(this.$form, {

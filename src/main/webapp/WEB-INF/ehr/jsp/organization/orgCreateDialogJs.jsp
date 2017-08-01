@@ -155,10 +155,10 @@
                     if(Util.isStrEquals($(elm).attr('id'),'org_code')){
                         var result = new jValidation.ajax.Result();
                         var orgCode = self.$orgCode.val();
-                       /* if(!/^[a-z0-9A-Z]+[-]*[a-z0-9A-Z]+$/.test(orgCode)){
+                        if(!/^[a-z0-9A-Z]+[-]*[a-z0-9A-Z]+$/.test(orgCode)){
                             result.setResult(true);
                             return result;
-                        }*/
+                        }
                         var dataModel = $.DataModel.init();
                         dataModel.fetchRemote("${contextRoot}/organization/validationOrg", {
                             data: {orgCode:orgCode},

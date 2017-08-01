@@ -1118,7 +1118,7 @@
             } else
                 return true;
         }],
-        ['validate-org-code', /^[0-9A-Z]{8}[-][0-9A-Z]{1}$/],
+        ['validate-org-code', /^[a-z0-9A-Z]+[-]*[a-z0-9A-Z]+$/],
         ['validate-special-char', function (v, elm, args, metadata) {
             var pattern = new RegExp("[']");
             if (pattern.test(v))
