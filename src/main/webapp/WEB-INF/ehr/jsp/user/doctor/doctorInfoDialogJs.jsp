@@ -21,7 +21,7 @@
         var allData = ${allData};
         var doctor = allData.obj;
 
-        var roleTypeDictId = 15;
+        var roleTypeDictId = 13;
 
         /* ************************** 变量定义结束 **************************** */
 
