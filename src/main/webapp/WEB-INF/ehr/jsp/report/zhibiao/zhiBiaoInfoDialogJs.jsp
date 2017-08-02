@@ -479,12 +479,14 @@
                 //新增/修改指标
                 zhiBiaoInfo.$updateBtn.click(function () {
                     if(validator.validate()){
+                        debugger
                         var result = self.setInterval();
                         if(!result) return;
                         var values = self.$form.Fields.getValues();
                         values.cron = txtCronExpression;
                         values.execType = $('input[name=jobType]:checked').val();
-                        values.execTime = $('#execTime').val();
+//                        values.execTime = $('#execTime').val();
+                        values.execTime = $('#inp_zhixing_date').val();
                         values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
                         values.tjQuotaDataSaveModel = {saveCode:dataStorageSelectedVal,configJson:self.$inpDataStorageJson.val()};
                         if (id != '-1') {
@@ -495,7 +497,7 @@
                             async: false,
                             type: 'post',
                             success: function (data) {
-                                if (data.successFlg) {
+                                if (!data.successFlg) {
                                     closeZhiBiaoInfoDialog(function () {
                                         if(id != '-1'){//修改
                                             $.Notice.success('修改成功');
@@ -504,7 +506,7 @@
                                         }
                                     });
                                 } else {
-                                    window.top.$.Notice.error(data.errorMsg);
+                                    $.Notice.error(data.errorMsg);
                                 }
                             }
                         });
