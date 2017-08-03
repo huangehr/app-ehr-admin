@@ -83,8 +83,8 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('新增成功');
-                        closeAddDoctorInfoDialog(function () {
-                        });
+                        win.parent.closeAddDoctorInfoDialog();
+                        win.parent.reloadMasterUpdateGrid();
                 });
             },
             initForm: function () {
@@ -193,9 +193,10 @@
                         success: function (data) {
                             if (data.successFlg) {
                                 $.Notice.success('医生新增成功');
-//                                win.closeAddDoctorInfoDialog();
+                                win.parent.closeAddDoctorInfoDialog();
+                                win.parent.reloadMasterUpdateGrid();
                             } else {
-                                window.top.$.Notice.error(data.errorMsg);
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })
@@ -206,7 +207,6 @@
                 });
             }
         };
-
         /* ************************* 模块初始化结束 ************************** */
 
         /* *************************** 页面初始化 **************************** */
