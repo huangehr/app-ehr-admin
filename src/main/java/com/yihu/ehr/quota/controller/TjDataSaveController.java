@@ -1,13 +1,12 @@
-package com.yihu.ehr.tjQuota.controller;
+package com.yihu.ehr.quota.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
+import com.yihu.ehr.agModel.tj.TjDataSaveModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,9 +30,9 @@ import java.util.Map;
  * Created by llh on 2017/5/9.
  */
 @Controller
-@RequestMapping("/tjDimensionSlave")
+@RequestMapping("/tjDataSave")
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class TjDimensionSlaveController extends BaseUIController {
+public class TjDataSaveController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -43,29 +41,32 @@ public class TjDimensionSlaveController extends BaseUIController {
     private String comUrl;
 
     /**
-     * 从维度
+     *数据存储
      * @param model
      * @return
      */
     @RequestMapping("initial")
     public String initial(Model model) {
-        model.addAttribute("contentPage", "/report/zhibiao/dimensionSlave");
+        model.addAttribute("contentPage", "/report/zhibiao/dataSave");
         return "pageView";
     }
 
 
     
-    //查询
-    @RequestMapping("/getTjDimensionSlave")
+    //查询统计主维度
+    @RequestMapping("/getTjDataSave")
     @ResponseBody
-    public Object searchTjDimensionSlave(String name, int page, int rows){
-        String url = "/tj/getTjDimensionSlaveList";
+    public Object searchTjDataSave(String name, String searchParm,int page, int rows){
+        String url = "/tj/getTjDataSaveList";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(name)) {
             stringBuffer.append("name?" + name );
+        }
+        if (!StringUtils.isEmpty(searchParm)) {
+            stringBuffer.append("name?" + searchParm );
         }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
@@ -77,7 +78,7 @@ public class TjDimensionSlaveController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(TjDimensionSlaveController.class).error(ex.getMessage());
+            LogService.getLogger(TjDataSaveController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
@@ -88,41 +89,41 @@ public class TjDimensionSlaveController extends BaseUIController {
 
     /**
      * 新增修改
-     * @param tjDimensionSlaveModelJsonData
+     * @param tjDataSaveModelJsonData
      * @param request
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updateTjDimensionSlave", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updateTjDataSave", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updateTjDimensionSlave(String tjDimensionSlaveModelJsonData, HttpServletRequest request) throws IOException {
+    public Object updateTjDataSave(String tjDataSaveModelJsonData, HttpServletRequest request) throws IOException {
 
-        String url = "/tj/tjDimensionSlave";
+        String url = "/tj/addTjDataSave";
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
         UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        String[] strings = URLDecoder.decode(tjDimensionSlaveModelJsonData, "UTF-8").split(";");
-        TjDimensionSlaveModel detailModel = toModel(strings[0], TjDimensionSlaveModel.class);
+        String[] strings = URLDecoder.decode(tjDataSaveModelJsonData, "UTF-8").split(";");
+        TjDataSaveModel detailModel = toModel(strings[0], TjDataSaveModel.class);
         RestTemplates templates = new RestTemplates();
 
         try {
             if (!StringUtils.isEmpty(detailModel.getId())) {
-                Long id = detailModel.getId();
-                resultStr = templates.doGet(comUrl + "/tj/tjDimensionSlaveId/" + id);
+                Long tjDataSaveId = detailModel.getId();
+                resultStr = templates.doGet(comUrl + "/tj/getTjDataSaveById/" + tjDataSaveId);
                 Envelop envelop = getEnvelop(resultStr);
                 if (envelop.isSuccessFlg()) {
-                    TjDimensionSlaveModel updateTjDimensionSlave = getEnvelopModel(envelop.getObj(), TjDimensionSlaveModel.class);
+                    TjDataSaveModel updateTjDataSave = getEnvelopModel(envelop.getObj(), TjDataSaveModel.class);
 
-                    updateTjDimensionSlave.setCode(detailModel.getCode());
-                    updateTjDimensionSlave.setName(detailModel.getName());
-                    updateTjDimensionSlave.setType(detailModel.getType());
-                    updateTjDimensionSlave.setStatus(detailModel.getStatus());
-                    updateTjDimensionSlave.setRemark(detailModel.getRemark());
-                    updateTjDimensionSlave.setUpdateUser(userDetailModel.getId());
-                    updateTjDimensionSlave.setUpdateUserName(userDetailModel.getRealName());
-                    params.add("model", toJson(updateTjDimensionSlave));
+                    updateTjDataSave.setCode(detailModel.getCode());
+                    updateTjDataSave.setName(detailModel.getName());
+                    updateTjDataSave.setType(detailModel.getType());
+                    updateTjDataSave.setStatus(detailModel.getStatus());
+                    updateTjDataSave.setRemark(detailModel.getRemark());
+                    updateTjDataSave.setUpdateUser(userDetailModel.getId());
+                    updateTjDataSave.setUpdateUserName(userDetailModel.getRealName());
+                    params.add("model", toJson(updateTjDataSave));
 
                     resultStr = templates.doPost(comUrl + url, params);
                 } else {
@@ -146,19 +147,19 @@ public class TjDimensionSlaveController extends BaseUIController {
 
     /**
      * 删除消息
-     * @param tjDimensionSlaveId
+     * @param tjDataSaveId
      * @return
      */
-    @RequestMapping("deleteTjDimensionSlave")
+    @RequestMapping("deleteTjDataSave")
     @ResponseBody
-    public Object deleteTjDimensionSlave(Long tjDimensionSlaveId) {
-        String url = "/tj/tjDimensionSlave";
+    public Object deleteTjDataSave(Long tjDataSaveId) {
+        String url = "/tj/deleteTjDataSave";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
-        params.put("id", tjDimensionSlaveId);
+        params.put("id", tjDataSaveId);
         try {
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             result = mapper.readValue(resultStr, Envelop.class);
@@ -176,40 +177,41 @@ public class TjDimensionSlaveController extends BaseUIController {
         }
     }
 
-
     /**
      * 根据id获取消息
      * @param model
      * @param id
      * @return
      */
-    @RequestMapping("getTjDimensionSlaveById")
+    @RequestMapping("getTjDataSaveById")
     @ResponseBody
-    public TjDimensionSlaveModel getTjDimensionSlaveById(Model model, Long id ) {
-        String url ="/tj/tjDimensionSlaveId/" +id;
+    public TjDataSaveModel getTjQuotaById(Model model, Long id ) {
+        String url ="/tj/getTjDataSaveById/" +id;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
+        TjDataSaveModel detailModel = null;
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop ep = getEnvelop(resultStr);
-            TjDimensionSlaveModel detailModel = toModel(toJson(ep.getObj()),TjDimensionSlaveModel.class);
-            return detailModel;
+             detailModel = toModel(toJson(ep.getObj()),TjDataSaveModel.class);
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
         }
+        return detailModel;
+
     }
 
     /**
-     * 校验名称是否唯一
+     * 校验name是否唯一,true已存在
      * @param name
      * @return
      */
-    @RequestMapping("isNameExists")
+    @RequestMapping("hasExistsName")
     @ResponseBody
-    public boolean isNameExists(String name) {
-        String url = "/tj/tjDimensionSlaveName" ;
+    public boolean hasExistsName(String name) {
+        String url = "/tj/dataSaveExistsName/"+ name ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -219,8 +221,6 @@ public class TjDimensionSlaveController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             if (resultStr.equals("true")) {
                 return  true;
-            } else {
-
             }
         } catch (Exception e) {
             e.getMessage();
@@ -233,10 +233,10 @@ public class TjDimensionSlaveController extends BaseUIController {
      * @param code
      * @return
      */
-    @RequestMapping("isCodeExists")
+    @RequestMapping("hasExistsCode")
     @ResponseBody
-    public boolean isCodeExists(String code) {
-        String url = "/tj/tjDimensionSlaveCode" ;
+    public boolean hasExistsCode(String code) {
+        String url = "/tj/dataSaveExistsCode/" + code ;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -246,43 +246,10 @@ public class TjDimensionSlaveController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             if (resultStr.equals("true")) {
                 return  true;
-            } else {
-
             }
         } catch (Exception e) {
             e.getMessage();
         }
         return  false;
-    }
-
-    @RequestMapping("/getTjDimensionSlaveInfo")
-    @ResponseBody
-    public Object getTjDimensionSlaveInfo(String quotaCode, String name, int page, int rows){
-        String url = "/tj/getTjDimensionSlaveInfoList";
-        String resultStr = "";
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(quotaCode)) {
-            params.put("filter", "quotaCode=" + quotaCode);
-        }
-        if (!StringUtils.isEmpty(name)) {
-            stringBuffer.append("name?" + name + " g1;code?" + name + " g1;");
-        }
-        String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-        params.put("page", page);
-        params.put("size", rows);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
-        } catch (Exception ex) {
-            LogService.getLogger(TjDimensionMainController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
-        }
     }
 }

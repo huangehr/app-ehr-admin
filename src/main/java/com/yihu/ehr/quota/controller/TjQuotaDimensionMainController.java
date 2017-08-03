@@ -1,4 +1,4 @@
-package com.yihu.ehr.tjQuota.controller;
+package com.yihu.ehr.quota.controller;
 
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
