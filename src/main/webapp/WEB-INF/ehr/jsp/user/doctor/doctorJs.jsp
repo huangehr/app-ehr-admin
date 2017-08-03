@@ -274,6 +274,9 @@
                 }
                 master.doctorInfoDialog.close();
             };
+            win.showAddSuccPop = function () {
+                $.Notice.success('医生新增成功');
+            };
             /* ************************* Dialog页面回调接口结束 ************************** */
             /* *************************** 页面初始化 **************************** */
             pageInit();

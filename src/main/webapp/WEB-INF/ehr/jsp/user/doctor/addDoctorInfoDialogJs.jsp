@@ -83,8 +83,8 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('新增成功');
-                        win.parent.closeAddDoctorInfoDialog();
-                        win.parent.reloadMasterUpdateGrid();
+                        closeAddDoctorInfoDialog(function () {
+                        });
                 });
             },
             initForm: function () {
@@ -192,9 +192,9 @@
                         data: {doctorModelJsonData: doctorModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('医生新增成功');
-                                win.parent.closeAddDoctorInfoDialog();
                                 win.parent.reloadMasterUpdateGrid();
+                                win.parent.showAddSuccPop();
+                                win.parent.closeAddDoctorInfoDialog();
                             } else {
                                 $.Notice.error(data.errorMsg);
                             }
@@ -203,7 +203,7 @@
                 }
 
                 self.$cancelBtn.click(function () {
-                    dialog.close();
+                    win.parent.closeAddDoctorInfoDialog();
                 });
             }
         };
