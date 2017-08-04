@@ -178,7 +178,7 @@
 					var self = this;
 					//新增修改
 					$('#btn_addDown').click(function(){
-						$.publish("rs:info:open",['','newDown',categoryId,categoryOrgId]);
+						$.publish("rs:info:open",['','newDown',categoryId,categoryOrgId,categoryName]);
 					});
 					$('#btn_search').click(function(){
 						categoryOrgId='';
@@ -196,10 +196,10 @@
 					});
 
 
-					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId){
+					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId,categoryName){
 						var title = "";
 						if(categoryId == ''|| categoryId==undefined ){
-							$.Notice.error('请在坐边选中一个成员');
+							$.Notice.error('请在左边选中一个成员');
 							return ;
 						}
 						if(mode == "newDown"){title = "新增下级成员";}
@@ -211,6 +211,7 @@
 							urlParms:{
 								id:resourceId,
 								mode:mode,
+								categoryName:categoryName,
 								categoryId:categoryId,
 								categoryOrgId:categoryOrgId,
 							},
