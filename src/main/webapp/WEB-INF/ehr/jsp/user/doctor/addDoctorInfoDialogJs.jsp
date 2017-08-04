@@ -192,21 +192,21 @@
                         data: {doctorModelJsonData: doctorModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('医生新增成功');
-//                                win.closeAddDoctorInfoDialog();
+                                win.parent.reloadMasterUpdateGrid();
+                                win.parent.showAddSuccPop();
+                                win.parent.closeAddDoctorInfoDialog();
                             } else {
-                                window.top.$.Notice.error(data.errorMsg);
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })
                 }
 
                 self.$cancelBtn.click(function () {
-                    dialog.close();
+                    win.parent.closeAddDoctorInfoDialog();
                 });
             }
         };
-
         /* ************************* 模块初始化结束 ************************** */
 
         /* *************************** 页面初始化 **************************** */
