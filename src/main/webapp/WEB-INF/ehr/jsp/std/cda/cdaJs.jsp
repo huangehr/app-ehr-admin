@@ -31,7 +31,7 @@
     manager: null,
     versionStage: null,
     init: function () {
-//      this.top = $.Util.getTopWindowDOM();
+      this.top = $.Util.getTopWindowDOM();
       //CDA 列名
       this.columns = [
         {display: 'CDA编码', name: 'code', align: 'left'},
@@ -300,7 +300,7 @@
 
     showDialog: function (_tital, _url, _height, _width, callback) {
 
-      cda.list.dialog_cda_detail = $.ligerDialog.open({
+      cda.list.top.dialog_cda_detail = $.ligerDialog.open({
         title: _tital,
         url: _url,
         height: _height,
@@ -444,7 +444,7 @@
     cda_form: $("#div_cda_info_form"),
 
     init: function () {
-//      this.top = $.Util.getTopWindowDOM();
+      this.top = $.Util.getTopWindowDOM();
       var versionCode = $.Util.getUrlQueryString('versioncode');
       $("#hdversion").val(versionCode);
       var cdaId = $.Util.getUrlQueryString('id');
@@ -596,7 +596,7 @@
             var _res = eval(data);
             if (_res.successFlg) {
               $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                cda.list.dialog_cda_detail.close();
+                cda.list.top.dialog_cda_detail.close();
               }, null);
             }
             else {
@@ -614,8 +614,8 @@
       var u = cda.attr;
 
       u.relationIds = "";
-      for (var i = 0; i < u.list_dataset_storage.length; i++) {
-        var datasets = u.list_dataset_storage[i];
+      for (var i = 0; i < u.top.list_dataset_storage.length; i++) {
+        var datasets = u.top.list_dataset_storage[i];
         if (i == 0) {
           u.relationIds += datasets.id;
         } else {
@@ -636,7 +636,7 @@
         success: function (data) {
           if (data.successFlg) {
             $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-              cda.list.dialog_cda_detail.close();
+              cda.list.top.dialog_cda_detail.close();
             }, null);
           }
           else {
@@ -653,10 +653,10 @@
         dataType: "json",
         data: {strCdaId: cdaid, strVersionCode: strVersionCode},
         success: function (data) {
-          cda.attr.list_dataset_storage = [];
+          cda.attr.top.list_dataset_storage = [];
           if (data != null) {
             var _res = eval(data);
-            cda.attr.list_dataset_storage = _res.detailModelList;
+            cda.attr.top.list_dataset_storage = _res.detailModelList;
           }
         },
         complete: function () {
@@ -671,15 +671,15 @@
     },
     //获取关联关系页面
     getRelationshipView: function () {
-      cda.attr.list_dataSet_callback = function () {
+      cda.attr.top.list_dataSet_callback = function () {
         cda.attr.saveRelationship();
       }
       var versionId = $("#hdversion").val();
-      cda.attr.get_relation_xml = function (setId, VersionCode) {
+      cda.attr.top.get_relation_xml = function (setId, VersionCode) {
         cda.attr.getXMLInfoByDataSetId(setId, VersionCode);
       }
 
-      cda.attr.versionCode = versionId;
+      cda.attr.top.versionCode = versionId;
 
       var cdaId = $("#hdId").val();
       cda.attr.showEditBox();
@@ -759,7 +759,7 @@
             break;
           case'btn_close':
 
-            cda.list.dialog_cda_detail.close();
+            cda.list.top.dialog_cda_detail.close();
             break;
           case'btn-submit':
             cda.attr.saveRelationship();
@@ -786,11 +786,11 @@
   };
   var formKindEditor = {
     editor: {},
-//    content: top.win_editor_storage,
+    content: top.win_editor_storage,
 
     init: function () {
       var editor = kindEditor.bulidKindEditor("textarea[name='txb_Immed_Temp']")
-      editor.html("");
+      editor.html(formKindEditor.content);
       //formKindEditor.event(editor);
     }
   }
