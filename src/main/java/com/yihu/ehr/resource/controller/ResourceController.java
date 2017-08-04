@@ -166,6 +166,7 @@ public class ResourceController extends BaseUIController {
                 updateModel.setRsInterface(model.getRsInterface());
                 updateModel.setGrantType(model.getGrantType());
                 updateModel.setDescription(model.getDescription());
+                updateModel.setDataSource(model.getDataSource());
                 String updateModelJson = objectMapper.writeValueAsString(updateModel);
                 Map<String,Object> params = new HashMap<>();
                 params.put("resource",updateModelJson);

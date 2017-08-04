@@ -56,13 +56,11 @@ public class ResourceBrowseController extends BaseUIController {
         return "pageView";
     }
 
-
     @RequestMapping("/browseNewCenter")
     public String browseNewCenter(Model model) {
         model.addAttribute("contentPage", "/resource/browse/resourceNewDataView");
         return "pageView";
     }
-
 
     @RequestMapping("/searchResourceList")
     @ResponseBody
@@ -80,7 +78,7 @@ public class ResourceBrowseController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping("/searchResourceCustomizeList")
+    @RequestMapping("/searchCustomizeResourceList")
     @ResponseBody
     public Object searchCustomizeResourceList() {
         Envelop envelop = new Envelop();
@@ -92,6 +90,35 @@ public class ResourceBrowseController extends BaseUIController {
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
 
+        }
+        return envelop;
+    }
+
+    @RequestMapping("/searchCustomizeResourceData")
+    @ResponseBody
+    public Object searchCustomizeResourceData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String resultStr = "";
+        String url = "/resources/customize_data";
+        //当前用户机构
+        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        params.put("resourcesCode", resourcesCode);
+        params.put("metaData", metaData);
+        params.put("orgCode", userDetailModel.getOrganization());
+        /**
+         * 暂未进行控制
+         */
+        params.put("appId", "JKZL");
+        params.put("queryCondition", searchParams);
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("数据检索失败");
         }
         return envelop;
     }
