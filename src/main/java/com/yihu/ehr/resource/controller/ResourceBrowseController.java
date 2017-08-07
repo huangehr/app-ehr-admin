@@ -78,51 +78,6 @@ public class ResourceBrowseController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping("/searchCustomizeResourceList")
-    @ResponseBody
-    public Object searchCustomizeResourceList() {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String url = "/resources/customize_list";
-        String resultStr = "";
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = toModel(resultStr, Envelop.class);
-        } catch (Exception e) {
-
-        }
-        return envelop;
-    }
-
-    @RequestMapping("/searchCustomizeResourceData")
-    @ResponseBody
-    public Object searchCustomizeResourceData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String resultStr = "";
-        String url = "/resources/customize_data";
-        //当前用户机构
-        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        params.put("resourcesCode", resourcesCode);
-        params.put("metaData", metaData);
-        params.put("orgCode", userDetailModel.getOrganization());
-        /**
-         * 暂未进行控制
-         */
-        params.put("appId", "JKZL");
-        params.put("queryCondition", searchParams);
-        params.put("page", page);
-        params.put("size", rows);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = toModel(resultStr, Envelop.class);;
-        } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("数据检索失败");
-        }
-        return envelop;
-    }
-
     @RequestMapping("/initial")
     public String resourceBrowseInitial(Model model) {
         model.addAttribute("contentPage", "/resource/resourcebrowse/resourceBrowse");
@@ -192,7 +147,6 @@ public class ResourceBrowseController extends BaseUIController {
         String resultStr = getColumns(dictId);
         return resultStr;
     }
-
 
     @RequestMapping("/getRsDictEntryList")
     @ResponseBody
