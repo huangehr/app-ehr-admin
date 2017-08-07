@@ -45,8 +45,8 @@
             var grid = base.grid = jq_pane.ligerGrid($.LigerGridEx.config(param));
             //console.log($.LigerGridEx.config(param));
             if (!base.p.multiple) {
-                var chkObj = $("#pane-list .l-grid-hd-cell-checkbox");
-                chkObj.empty().removeClass("l-grid-hd-cell-checkbox");
+                var chkObj = $("#pane-list .l-grid-row-cell-btn-checkbox");
+                chkObj.empty().removeClass("l-grid-row-cell-btn-checkbox");
             }
         },
         bindBtn: function () {

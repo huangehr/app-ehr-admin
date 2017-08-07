@@ -11,7 +11,7 @@ cdaType.list = {
     columns: [],
     TypeSearch: null,
     init: function () {
-        // this.top = $.Util.getTopWindowDOM();
+        this.top = $.Util.getTopWindowDOM();
         //CDA 列名
         this.columns = [
 
@@ -112,7 +112,7 @@ cdaType.list = {
     },
     showDialog: function (_tital, _url, _height, _width, callback) {
 
-        cdaType.list.dialog_cdatype_detail = $.ligerDialog.open({
+        cdaType.list.top.dialog_cdatype_detail = $.ligerDialog.open({
             title: _tital,
             url: _url,
             height: _height,
@@ -339,7 +339,7 @@ cdaType.attr = {
                     if (_res.successFlg) {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                            parent.cdaType.list.dialog_cdatype_detail.close();
+                            parent.cdaType.list.top.dialog_cdatype_detail.close();
                         }, null);
                     }
                     else {
@@ -357,7 +357,7 @@ cdaType.attr = {
             cdaType.attr.save();
         });
         $("#btn_close").click(function () {
-            parent.cdaType.list.dialog_cdatype_detail.close();
+            parent.cdaType.list.top.dialog_cdatype_detail.close();
         });
     }
 }
