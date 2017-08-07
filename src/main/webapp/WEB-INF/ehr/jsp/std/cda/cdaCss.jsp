@@ -10,8 +10,8 @@
 <style>
 
     input, #cdaVersion {
-        font-family: SimSun;
-        font-size: 14px;
+        font-family: Microsoft YaHei;
+        font-size: 10px;
         height: 30px;
         width: 240px;
     }

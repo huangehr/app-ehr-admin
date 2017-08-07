@@ -43,8 +43,8 @@
         }
         .right-gmenu .u-grid .grid-body tr:not(.jqgfirstrow) { height: 60px; font-size: 12px; text-align: center; }
         input {
-            font-family: SimSun;
-            font-size: 14px;
+            font-family: Microsoft YaHei;
+            font-size: 10px;
             height: 30px;
             width: 240px;
         }
