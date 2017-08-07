@@ -121,10 +121,11 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
 
 
     @RequestMapping("/infoInitial")
-    public String OrgDeptMembersInfoInitial(Model model,String mode,String categoryId,String categoryOrgId){
+    public String OrgDeptMembersInfoInitial(Model model,String mode,String categoryId,String categoryOrgId,String categoryName){
         model.addAttribute("mode",mode);
         model.addAttribute("categoryId",categoryId);
         model.addAttribute("categoryOrgId",categoryOrgId);
+        model.addAttribute("categoryName",categoryName);
         model.addAttribute("contentPage","/organization/upAndDownMember/upAndDownMemberInfoDialog");
         return "simpleView";
     }
@@ -132,7 +133,7 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
     //更新
     @RequestMapping("/updateOrgDeptMember")
     @ResponseBody
-    public Object updateOrgDeptMember(String dataJson,String pUserId){
+    public Object updateOrgDeptMember(String dataJson,String pUserId,String parentUserName){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         try{
@@ -141,6 +142,7 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
                 envelop.setErrorMsg("用户不能为空！");
                 return envelop;
             }
+            model.setParentUserName(parentUserName);
             Map<String, Object> params = new HashMap<>();
             String urlGet = "";
             String envelopStr ="";
@@ -173,7 +175,8 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
                 return envelop;
             }
             model.setParentUserId(pUserId);
-            model.setParentUserName(updateModel.getParentUserName());
+//            model.setParentUserName(updateModel.getParentUserName());
+            model.setParentUserName(parentUserName);
             model.setDeptId(updateModel.getDeptId());
             model.setDeptName(updateModel.getDeptName());
             model.setOrgId(updateModel.getOrgId());

@@ -25,6 +25,7 @@
 			$code: $("#inp_code"),
 			$interface: $("#inp_interface"),
 			$grantType: $('input[name="grantType"]', this.$form),
+			$dataSource: $('input[name="dataSource"]', this.$form),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -39,6 +40,7 @@
 				this.$code.ligerTextBox({width:240});
 				this.$description.ligerTextBox({width:240, height: 120 });
 				this.$grantType.ligerRadio();
+				this.$dataSource.ligerRadio();
 				var mode = '${mode}';
 				if(mode == 'view'){
 					rsInfoForm.$form.addClass('m-form-readonly');
@@ -61,6 +63,7 @@
 						categoryId:info.categoryId,
 						rsInterface:info.rsInterface,
 						grantType:info.grantType,
+						dataSource:info.dataSource,
 						description:info.description
 					});
 					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
@@ -69,8 +72,10 @@
 				this.$form.show();
 			},
 			initDDL: function () {
+				debugger
 				this.$grantType.eq(1).attr("checked", 'true')
-				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
+				this.$dataSource.eq(0).attr("checked", 'true')
+				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
 					dataParmName: 'detailModelList',

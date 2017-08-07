@@ -9,7 +9,7 @@
 		var rsInfoForm = null;
 		var jValidation = $.jValidation;
 		var mode = '${mode}';
-
+		var categoryName='${categoryName}';
 		var categoryIdOld = '${categoryId}';
 		var categoryOrgId = '${categoryOrgId}';
 		var type = '${type}'
@@ -22,7 +22,8 @@
 		rsInfoForm = {
 			$form: $("#div_rs_info_form"),
 			$userId: $("#inp_userId"),
-
+			$userNames: $('#userName'),
+			$userName: $('#inp_userId').val(),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
 
@@ -47,11 +48,16 @@
 					onSubmit: false,
 					onElementValidateForAjax: function(elm){}
 				});
+				self.$userId.on('change',function () {
+					var name = $(this).val();
+					self.$userNames.val(name);
+				});
 
 				this.$btnSave.click(function () {
 					if(validator.validate() == false){
 						return
 					}
+debugger;
 					var values = self.$form.Fields.getValues();
 					var userId = values.userId;
 					if(userId == categoryIdOld){
@@ -66,7 +72,8 @@
 					dataModel.updateRemote("${contextRoot}/upAndDownMember/updateOrgDeptMember", {
 						data:{
 							dataJson:JSON.stringify(values),
-							pUserId:categoryIdOld
+							pUserId:categoryIdOld,
+							parentUserName:categoryName
 						},
 						success: function(data) {
 							if (data.successFlg) {
