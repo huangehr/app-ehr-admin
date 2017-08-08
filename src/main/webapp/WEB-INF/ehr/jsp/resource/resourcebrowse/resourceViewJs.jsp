@@ -137,7 +137,16 @@
             resourceBrowseMaster = {
                 init: function () {
                     var self = retrieve;
-                    var columnModel = new Array();
+                    var columnModel = new Array(),
+                        //基本信息
+                        defArr = [
+                                  {"key": 'patient_name', "name": "病人姓名"},
+                                  {"key": 'event_type', "name": "就诊类型"},
+                                  {"key": 'org_name', "name": "机构名称"},
+                                  {"key": 'org_code', "name": "机构编号"},
+                                  {"key": 'event_date', "name": "时间"},
+                                  {"key": 'demographic_id', "name": "病人身份证号码"}
+                        ];
                     //获取列名
                     if (!Util.isStrEmpty(resourcesCode)) {
                         dataModel.fetchRemote("${contextRoot}/resourceView/getGridCloumnNames", {
@@ -145,7 +154,11 @@
                                 dictId: resourcesCode
                             },
                             success: function (data) {
-
+                                if (data.length > 0) {
+                                    for (var j = 0, len = defArr.length; j < len; j++) {
+                                        columnModel.push({display: defArr[j].name, name: defArr[j].key, width: 100});
+                                    }
+                                }
                                 for (var i = 0; i < data.length; i++) {
                                     columnModel.push({display: data[i].value, name: data[i].code, width: 100});
                                 }

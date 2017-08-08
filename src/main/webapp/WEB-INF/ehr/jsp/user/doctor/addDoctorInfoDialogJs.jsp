@@ -134,6 +134,10 @@
                             var phone = $("#inp_phone").val();
                             checkObj= checkDataSourceName('phone', phone, "该电话号码已存在");
                         }
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_email')) {
+                            var email = $("#inp_email").val();
+                            checkObj= checkDataSourceName('email', email, "该邮箱已存在");
+                        }
                         if (!checkObj.result) {
                             return checkObj;
                         } else {

@@ -19,7 +19,7 @@ set.list = {
     isSaveSelectStatus: false,
     versionStage:null,
     init: function () {
-        // this.top = $.Util.getTopWindowDOM();
+        this.top = $.Util.getTopWindowDOM();
         this.columns = [
             {display: '数据集编码', name: 'code', align: 'left', width: '33%'},
             {display: '数据集名称', name: 'name', align: 'left', width: '34%'},
@@ -125,7 +125,7 @@ set.list = {
     getVersionList: function () {
         var u = set.list;
         $.ajax({
-           // url: u._url + "/cdadict/getCdaVersionList",
+            // url: u._url + "/cdadict/getCdaVersionList",
             //调通测试暂时使用
             url: u._url + "/cdaVersion/getVersionList",
             type: "post",
@@ -267,10 +267,10 @@ set.list = {
         }
     },
     showDialog: function (_tital, _url, _height, _width, callback) {
-        // if (set.list.top == null) {
-        //     set.list.top = $.Util.getTopWindowDOM();
-        // }
-        set.list.dialog_set_detail = $.ligerDialog.open({
+        if (set.list.top == null) {
+            set.list.top = $.Util.getTopWindowDOM();
+        }
+        set.list.top.dialog_set_detail = $.ligerDialog.open({
             title: _tital,
             url: _url,
             height: _height,
@@ -526,7 +526,7 @@ set.attr = {
             type: "post",
             dataType: "json",
             async:false,
-           // data: {strVersionCode: cdaVersion},
+            // data: {strVersionCode: cdaVersion},
             //data: {version: cdaVersion},
             success: function (data) {
                 //var result = eval(data.result);
@@ -617,7 +617,7 @@ set.attr = {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
                             parent.set.list.isReload = true;
-                            parent.set.list.dialog_set_detail.close();
+                            parent.set.list.top.dialog_set_detail.close();
                         }, null);
                     }
                     else {
@@ -640,7 +640,7 @@ set.attr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.dialog_set_detail.close();
+            parent.set.list.top.dialog_set_detail.close();
         });
     }
 };
@@ -660,12 +660,12 @@ set.elementAttr = {
         {
             console.log(staged);
             $("#btn_save").hide();
-             set.elementAttr.element_form.addClass("m-form-readonly");
-             set.elementAttr.element_form.find("input").each(function(){
-                 if($(this).attr("data-type")!="select"){
-                     $(this).css("border","#D0D0D0 1px solid");
-                 }
-             });
+            set.elementAttr.element_form.addClass("m-form-readonly");
+            set.elementAttr.element_form.find("input").each(function(){
+                if($(this).attr("data-type")!="select"){
+                    $(this).css("border","#D0D0D0 1px solid");
+                }
+            });
         }
         //this.getDictList();
         this.getElementInfo();
@@ -836,7 +836,7 @@ set.elementAttr = {
                     if (_res.successFlg) {
                         $.ligerDialog.alert("保存成功!", "提示", "success", function () {
                             parent.set.list.isReload = true;
-                            parent.set.list.dialog_set_detail.close();
+                            parent.set.list.top.dialog_set_detail.close();
                         }, null);
                     }
                     else {
@@ -881,12 +881,12 @@ set.elementAttr = {
             });
 
         $("#btn_save").click(function () {
-           if (validator.validate()) {
+            if (validator.validate()) {
                 set.elementAttr.save();
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.dialog_set_detail.close();
+            parent.set.list.top.dialog_set_detail.close();
         });
         //给数据元主键和是否空值的选择
         $("#primaryKey").click(function () {
