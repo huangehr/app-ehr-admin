@@ -283,6 +283,18 @@
                 },
                 </sec:authorize>
 
+                // 3-8 综合查询
+                <sec:authorize url="/resourceBrowse/customQuery">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 31,
+                    text: '<spring:message code="title.resource.resourceBrowse.customQuery"/>',
+                    url: '${contextRoot}/resourceBrowse/customQuery'
+                },
+                </sec:authorize>
+
+
                 // 3-2 - 字典
                 <sec:authorize url="/resource/dict/initial">
                 {
