@@ -145,7 +145,7 @@
                                 display: '复制模版', name: 'operator', width: '10%', render: function (row) {
 
                                 var html = ''
-                                    <sec:authorize url="/template/update">
+                                    <sec:authorize url="/template/updateCopy">
                                     + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'copy') + '">复制</a>';
                                 </sec:authorize>
 
