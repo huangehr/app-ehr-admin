@@ -338,7 +338,7 @@
                         url: '${contextRoot}/resourceCustomize/searchCustomizeData',
                         parms: {searchParams: '', resourcesCode: '', metaData: ''},
                         columns: columnModel,
-                        height: windowHeight - 110,
+//                        height: windowHeight - 110,
                         checkbox: true,
                         onSelectRow:function () {
                             if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){
@@ -391,15 +391,14 @@
                 getQuerySearchData: function () {
                     var self = retrieve;
                     var pModel = self.$newSearch.children('div'),
-                            jsonData = [],
-                            value = null;
+                            jsonData = [];
                     var resetInp = $(pModel.find('.inp-reset'));
                     for (var i = 0; i < resetInp.length; i++) {
                         var code = $(resetInp[i]).attr('data-code'),
-                                value = $(resetInp[i]).liger().getValue(),
-                                valArr = [];
+                            value = $(resetInp[i]).liger().getValue(),
+                            valArr = [];
                         if (typeof value != 'string' && value instanceof Date) {
-                            value = value.format('yyyy-MM-dd');
+                            value = value.format('yyyy-MM-dd') + 'T00:00:00Z';
                         }
                         valArr = value ? value.split(';') : [];
                         for (var j = 0, len = valArr.length; j < len; j++) {
@@ -495,6 +494,9 @@
                         if (self.$resourceInfoGrid.html() == '') {
                             return;
                         }
+                        if (selectData.length <= 0) {
+                            return;
+                        }
                         if ($(e.target).hasClass('l-table-checkbox') ||
                                 $(e.target).hasClass('l-trigger-icon') ||
                                 $(e.target).hasClass('l-box-dateeditor-absolute') ||
@@ -551,12 +553,22 @@
                     self.$outSelExcelBtn.click(function () {
                         var jsonDatas = [];
                         var rowData = resourceInfoGrid.getSelectedRows();
-                        $.each(rowData,function (key,value) {
-                            var jsonParam = {andOr: "OR", field: "rowkey", condition: "=", value: ""};
-                            jsonParam.value = value.rowkey;
-                            jsonDatas.push(jsonParam);
-                        });
-                        outExcel(rowData, rowData.length,JSON.stringify(jsonDatas));
+//                        $.each(rowData,function (key,value) {
+//                            var jsonParam = {andOr: "OR", field: "rowkey", condition: "=", value: ""};
+//                            jsonParam.value = value.rowkey;
+//                            jsonDatas.push(jsonParam);
+//                        });
+                        var metaData = [];
+                        for (var i = 0, len = selectData.length; i < len; i++) {
+                            var data = selectData[i].data
+                            if (data.level == 2) {
+                                metaData.push({
+                                    code: data.code,
+                                    name: data.name
+                                });
+                            }
+                        }
+                        window.open("${contextRoot}/resourceCustomize/outSelectExcel?selectData=" + JSON.stringify(rowData) + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
                     });
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
@@ -591,7 +603,18 @@
                             valueList.push(values);
                             values = [];
                         }
-                        window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + masterArr + "&searchParams=" + RSsearchParams, "资源数据导出");
+
+                        var metaData = [];
+                        for (var i = 0, len = selectData.length; i < len; i++) {
+                            var data = selectData[i].data
+                            if (data.level == 2) {
+                                metaData.push({
+                                    code: data.code,
+                                    name: data.name
+                                });
+                            }
+                        }
+                        window.open("${contextRoot}/resourceCustomize/outExcel?size=" + size + "&resourcesCode=" + masterArr + "&searchParams=" + queryCondition + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
                     }
                 }
             };

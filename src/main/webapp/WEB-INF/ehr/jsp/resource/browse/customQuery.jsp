@@ -54,7 +54,7 @@
     .sj-icon,.sj-sj-icon{width:0;height:0;  border-width:0 10px 10px;border-style:solid;position: absolute}
     .sj-icon{border-color:transparent transparent #ccc;bottom: 2px;right: -3px;z-index: 999}
     .sj-sj-icon{border-color:transparent transparent #fff;bottom: -11px;right: -10px}
-    .pop-s-con{width: 760px;padding: 10px;position: absolute;right: -205px;top: 8px;background: #fff;border: 1px solid #ccc;padding-bottom: 55px;z-index: 998;overflow: auto}
+    .pop-s-con{width: 760px;padding: 10px;position: absolute;right: -280px;top: 8px;background: #fff;border: 1px solid #ccc;padding-bottom: 55px;z-index: 998;overflow: auto}
     .pop-btns{position: absolute;bottom: 10px;right: 10px;z-index: 999}
     .inp-text{display: inline-block;vertical-align: middle;    font-size: 12px;}
     .inp-label{width: 95px;vertical-align: middle;text-align: right;font-size: 12px;padding-right: 10px;margin-bottom: 0}
@@ -64,10 +64,10 @@
 
 
 <!--######资源浏览页面Title设置######-->
-<div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb f-dn" style="display: block;">位置：
-    <span id="span_nav_breadcrumb_content" data-sesson="3,37"><span class="strong">数据资源中心</span> &gt;
-        <span class="on">自定义查询</span> </span>
-</div>
+<%--<div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb f-dn" style="display: block;">位置：--%>
+    <%--<span id="span_nav_breadcrumb_content" data-sesson="3,37"><span class="strong">数据资源中心</span> &gt;--%>
+        <%--<span class="on">自定义查询</span> </span>--%>
+<%--</div>--%>
 
 <div style="height: calc(100% - 50px);width: 300px;float: left;border:1px solid #dcdcdc;margin-left: 10px;margin-bottom: 10px;">
     <%--<div class="m-retrieve-area f-h40 f-pr m-form-inline" style="border-bottom:1px solid #dcdcdc;">--%>
