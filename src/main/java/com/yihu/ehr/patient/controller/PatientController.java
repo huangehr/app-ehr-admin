@@ -194,6 +194,33 @@ public class PatientController extends BaseUIController {
         }
     }
 
+    /**
+     * 检查身份证是否已经存在
+     */
+    @RequestMapping("checkTelphoneNumber")
+    @ResponseBody
+    public Object checkTelphoneNumber(String searchNm) {
+        String url = "/populations/telphoneNumberIs_exist/" + searchNm;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("telphone_number", searchNm);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            if (Boolean.parseBoolean(resultStr)) {
+                result.setSuccessFlg(true);
+            } else {
+                result.setSuccessFlg(false);
+            }
+            return result;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+
     @RequestMapping(value = "updatePatient")
     @ResponseBody
     //注册或更新病人信息Header("Content-type: text/html; charset=UTF-8")
