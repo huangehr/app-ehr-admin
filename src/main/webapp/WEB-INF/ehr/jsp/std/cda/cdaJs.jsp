@@ -688,7 +688,7 @@
       cda.attr.getXMLFileByCdaId();
     },
     showEditBox: function () {
-      formKindEditor.init();
+//      formKindEditor.init();
       var data = "<root><name></name></root>"
       kindEditor.editor.text(data);
 
@@ -784,16 +784,16 @@
     }
 
   };
-  var formKindEditor = {
-    editor: {},
-    content: top.win_editor_storage,
-
-    init: function () {
-      var editor = kindEditor.bulidKindEditor("textarea[name='txb_Immed_Temp']")
-      editor.html(formKindEditor.content);
-      //formKindEditor.event(editor);
-    }
-  }
+//  var formKindEditor = {
+//    editor: {},
+//    content: top.win_editor_storage,
+//
+//    init: function () {
+//      var editor = kindEditor.bulidKindEditor("textarea[name='txb_Immed_Temp']")
+//      editor.html(formKindEditor.content);
+//      //formKindEditor.event(editor);
+//    }
+//  }
 
 
   $(function(){
