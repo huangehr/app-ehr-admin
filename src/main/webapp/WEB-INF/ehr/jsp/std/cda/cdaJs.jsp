@@ -797,7 +797,6 @@
         }
 
     };
-    var aa;
     //  var formKindEditor = {
     //    editor: {},
     //    content: top.win_editor_storage,
