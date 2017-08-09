@@ -434,10 +434,13 @@
                     var searchBo = false;
                     
                     self.$generateView.on('click', function () {
-                        console.log(defArr)
                         var sd = selectData,
                             qc = queryCondition,
                             dd = defArr;
+                        if (sd.length <= 0) {
+                            $.Notice.error('请先选择数据');
+                            return;
+                        }
                         $.ligerDialog.confirm("确认是否生成视图？", function (yes) {
                             var md = [];
                             if(yes){
