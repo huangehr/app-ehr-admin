@@ -389,6 +389,31 @@
                         return result;
                     }
                 }});
+                var telephoneNo = self.$form.Fields.telephoneNo.getValue();
+                var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
+                    if(Util.isStrEquals($(elm).attr('id'),'inp_patientTel')){
+//                        var copyCardNo = self.$patientCopyId.val();
+                        var result = new jValidation.ajax.Result();
+                        var telephoneNo = self.$patientTel.val();
+                        var dataModel = $.DataModel.init();
+//                        if(Util.isStrEquals(idCardNo,copyCardNo)){
+//                            return true;
+//                        }
+                        dataModel.fetchRemote("${contextRoot}/patient/checkTelphoneNumber", {
+                            data: {searchNm:telephoneNo},
+                            async: false,
+                            success: function (data) {
+                                if (!data.successFlg) {
+                                    result.setResult(true);
+                                } else {
+                                    result.setResult(false);
+                                    result.setErrorMsg("该电话号码已被使用");
+                                }
+                            }
+                        });
+                        return result;
+                    }
+                }});
 
                 //修改人口信息
                 patientInfo.$updateBtn.click(function () {
