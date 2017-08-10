@@ -215,6 +215,7 @@
                 },
                 loadTree:function(){
                     var self = this;
+                    debugger
                     leftTree = $("#div-left-tree").ligerSearchTree({
                         nodeWidth: 180,
                         url: '${contextRoot}/resourceCustomize/searchCustomizeList',
@@ -364,29 +365,6 @@
                 },
                 reloadResourcesGrid: function (searchParams) {
                     reloadGrid.call(this, '${contextRoot}/resourceCustomize/searchCustomizeData', searchParams);
-                },
-                getReqPromise:function(url, params){
-                    return new Promise(function(resolve, reject) {
-                        var dataModel = $.DataModel.init();
-                        return new Promise(function(resolve, reject) {
-                            dataModel.fetchRemote(url, {
-                                data: params,
-                                async: false,
-                                success: function (res) {
-                                    resolve(res);
-                                }
-                            });
-                        });
-                    });
-                },
-                getGridCloumn: function () {
-                    return Promise.all(_.map(selectData, function (data) {
-                        if (data.pid != '') {
-                            return resourceBrowseMaster.getReqPromise(paramModel.url[1], {
-                                dictId: resourcesCode
-                            });
-                        }
-                    }));
                 },
                 getQuerySearchData: function () {
                     var self = retrieve;
