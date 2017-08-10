@@ -23,7 +23,7 @@
             var gotoModify = function (event, id, mode) {
                 mode = mode || 'new';
                 id = id || '';
-                editDialog = openDialog(urls.gotoModify, mode=='new'?'新增':'修改', 440, 560, {id: id, mode: mode});
+                editDialog = openDialog(urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode});
             }
 
 
@@ -74,10 +74,13 @@
             //初始化表格
             var rendGrid = function(){
                 var columns = [
-                    {display: '资源标准编码', name: 'id', width: '20%', align: 'left'},
+                    {display: '资源标准编码', name: 'id', width: '10%', align: 'left'},
                     {display: '业务领域', name: 'domainName', width: '10%', align: 'left'},
                     {display: '内部标识符', name: 'stdCode', width: '15%', align: 'left'},
                     {display: '数据元名称', name: 'name', width: '10%', align: 'left'},
+                    {display: '数据来源', name: 'dataSource', width: '10%', align: 'left', render: function (row) {
+                        return row.dataSource ==1 ? '档案数据' : '统计数据';
+                    }},
                     {display: '类型', name: 'columnTypeName', width: '10%', align: 'left'},
                     {display: '关联字典', name: 'dictName', width: '10%', align: 'left'},
                     {display: '是否可为空', name: 'nullAble', width: '10%', align: 'left', render: function (row) {
