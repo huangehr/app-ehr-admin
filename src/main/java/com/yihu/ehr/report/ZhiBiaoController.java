@@ -45,6 +45,20 @@ public class ZhiBiaoController extends BaseUIController {
         return "simpleView";
     }
 
+
+    /**
+     * 指标图表配置
+     * @param model
+     * @return
+     */
+    @RequestMapping("zhiBiaoChartConfigure")
+    public String zhiBiaoChartConfigure(Model model,String quotaCode, String quotaName) {
+        model.addAttribute("quotaCode", quotaCode);
+        model.addAttribute("quotaName", quotaName);
+        model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoChartConfigure");
+        return "simpleView";
+    }
+
     /**
      * 新增/编辑指标页
      * @param model
