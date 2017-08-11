@@ -221,7 +221,7 @@ public class HealthBusinessController extends BaseUIController {
     @RequestMapping("/getAllHealthBusinessList")
     @ResponseBody
     public Object getAllHealthBusinessList(){
-        String url = "/healthBusiness/list";
+        String url = "/healthBusiness/getHealthBusinessChild";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
