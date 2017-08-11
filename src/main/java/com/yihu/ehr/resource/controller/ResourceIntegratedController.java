@@ -28,11 +28,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 资源综合查询数据服务控制器
  * Created by Sxy on 2017/08/01.
  */
 @Controller
-@RequestMapping("/resourceCustomize")
-public class ResourceCustomizeController extends BaseUIController {
+@RequestMapping("/resourceIntegrated")
+public class ResourceIntegratedController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
@@ -41,31 +42,31 @@ public class ResourceCustomizeController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     /**
-     * 资源列表数
+     * 综合查询档案数据列表树
      * @return
      */
-    @RequestMapping(value = "/searchCustomizeList", method = RequestMethod.GET)
+    @RequestMapping(value = "/getMetadataList", method = RequestMethod.GET)
     @ResponseBody
-    public Object searchCustomizeResourceList() {
+    public Object getMetadataList() {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String url = "/resources/customize_list";
+        String url = "/resources/integrated/metadata_list";
         String resultStr = "";
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("数据检索失败");
+            envelop.setErrorMsg("综合查询档案数据列表树获取失败");
         }
         return envelop;
     }
 
     /**
-     * 资源检索
+     * 综合查询档案数据检索
      * @param resourcesCode
      * @param metaData
      * @param searchParams
@@ -74,16 +75,16 @@ public class ResourceCustomizeController extends BaseUIController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/searchCustomizeData", method = RequestMethod.GET)
+    @RequestMapping(value = "/searchMetadataData", method = RequestMethod.GET)
     @ResponseBody
-    public Object searchCustomizeResourceData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
+    public Object searchMetadataData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         if(resourcesCode == null || resourcesCode.equals("")) {
             return envelop;
         }
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String url = "/resources/customize_data";
+        String url = "/resources/integrated/metadata_data";
         //当前用户机构
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         params.put("resourcesCode", resourcesCode);
@@ -107,62 +108,134 @@ public class ResourceCustomizeController extends BaseUIController {
             envelop = toModel(resultStr, Envelop.class);;
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("数据检索失败");
+            envelop.setErrorMsg("综合查询档案数据检索失败");
         }
         return envelop;
     }
 
     /**
-     * 自定义资源视图保存
+     * 综合查询指标统计列表树
+     * @return
+     */
+    @RequestMapping(value = "/getQuotaList", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getQuotaList() {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String url = "/resources/integrated/quota_list";
+        String resultStr = "";
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("综合查询指标统计列表树获取失败");
+        }
+        return envelop;
+    }
+
+    /**
+     * 综合查询指标统计数据检索
+     * @return
+     */
+    @RequestMapping(value = "/searchQuotaData", method = RequestMethod.GET)
+    @ResponseBody
+    public Object searchQuotaData(String tjQuotaIds, String searchParams, int page, int rows) {
+        Envelop result = new Envelop();
+        List<Object> resultList = new ArrayList<Object>();
+        String url = "/tj/tjGetQuotaResult";
+        List<Long> tjQuotaIdList;
+        boolean isFailed = false;
+        try {
+            tjQuotaIdList = (List<Long>) objectMapper.readValue(tjQuotaIds, List.class);
+        }catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg("参数有误");
+            return result;
+        }
+        try {
+            if (tjQuotaIdList != null && tjQuotaIdList.size() > 0) {
+                for (Long id : tjQuotaIdList) {
+                    Envelop envelop = new Envelop();
+                    Map<String, Object> params = new HashMap<String, Object>();
+                    params.put("id", id);
+                    params.put("pageNo", page);
+                    params.put("pageSize", rows);
+                    params.put("filters", searchParams);
+                    String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                    envelop = toModel(resultStr, Envelop.class);
+                    resultList.add(envelop);
+                    if(!envelop.isSuccessFlg()) {
+                        isFailed = true;
+                    }
+                }
+            }
+        }catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+        if(isFailed) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg("请求结果有误");
+            return result;
+        }
+        /**
+         * 请在以下处理结果集
+         */
+        return result;
+    }
+
+    /**
+     * 综合查询视图保存
      * @param dataJson
      * @return
      */
-    @RequestMapping(value = "/updateCustomizeData", method = RequestMethod.POST)
-    @ResponseBody
-    public Object createCustomizeResource(String dataJson){
+    @RequestMapping(value = "/updateResource", method = RequestMethod.POST)
+    public Object updateResource(String dataJson) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String url = "/resources/customize_update";
+        String url = "/resources/integrated/update_resource";
         params.put("dataJson", dataJson);
         try {
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            LogService.getLogger(ResourceController.class).error(e.getMessage());
+            LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
 
     /**
-     * 自定义视图搜索条件更新
+     * 综合查询搜索条件更新
      * @param dataJson
      * @return
      */
-    @RequestMapping(value = "/updateCustomizeData", method = RequestMethod.PUT)
+    @RequestMapping(value = "/updateResourceQuery", method = RequestMethod.PUT)
     @ResponseBody
-    public Object updateCustomizeResource(String dataJson){
+    public Object updateResourceQuery(String dataJson){
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String url = "/resources/customize_update";
+        String url = "/resources/integrated/update_resource_query";
         params.put("dataJson", dataJson);
         try {
             String resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            LogService.getLogger(ResourceController.class).error(e.getMessage());
+            LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
 
-    //综合查询数据导出
+    //综合查询档案数据导出
     @RequestMapping(value = "/outExcel", method = RequestMethod.GET)
     public void outExcel(HttpServletRequest request, HttpServletResponse response, Integer size, String resourcesCode, String searchParams, String metaData) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String fileName = "综合查询资源数据";
+        String fileName = "综合查询档案数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
         try {
             response.setContentType("octets/stream");
@@ -175,8 +248,7 @@ public class ResourceCustomizeController extends BaseUIController {
              * 初始化基础数据
              */
             sheet = initBaseInfo(sheet);
-            ObjectMapper mapper = new ObjectMapper();
-            List<Map<String, String>> metaDataSrcList = mapper.readValue(metaData, List.class);
+            List<Map<String, String>> metaDataSrcList = objectMapper.readValue(metaData, List.class);
             List<String> metaDataList = new ArrayList<String>();
             for(int i = 0; i < metaDataSrcList.size(); i ++) {
                 Map<String, String> temp = metaDataSrcList.get(i);
@@ -188,7 +260,7 @@ public class ResourceCustomizeController extends BaseUIController {
             //当前用户机构
             UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
             params.put("resourcesCode", resourcesCode);
-            params.put("metaData", mapper.writeValueAsString(metaDataList));
+            params.put("metaData", objectMapper.writeValueAsString(metaDataList));
             /**
              * 待确认
              */
@@ -219,15 +291,21 @@ public class ResourceCustomizeController extends BaseUIController {
             os.close();
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("数据导出失败");
+            envelop.setErrorMsg("综合查询档案数据导出失败");
         }
         envelop.setSuccessFlg(true);
     }
 
+    /**
+     * 综合查询档案数据已选数据导出
+     * @param response
+     * @param selectData
+     * @param metaData
+     */
     @RequestMapping(value = "/outSelectExcel", method = RequestMethod.GET)
     public void outSelectExcel(HttpServletResponse response, String selectData, String metaData) {
         Envelop envelop = new Envelop();
-        String fileName = "综合查询选中数据";
+        String fileName = "综合查询档案数据已选数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
         try {
             response.setContentType("octets/stream");
@@ -240,14 +318,13 @@ public class ResourceCustomizeController extends BaseUIController {
              * 初始化基础数据
              */
             sheet = initBaseInfo(sheet);
-            ObjectMapper mapper = new ObjectMapper();
-            List<Map<String, String>> metaDataSrcList = mapper.readValue(metaData, List.class);
+            List<Map<String, String>> metaDataSrcList = objectMapper.readValue(metaData, List.class);
             for(int i = 0; i < metaDataSrcList.size(); i ++) {
                 Map<String, String> temp = metaDataSrcList.get(i);
                 sheet.addCell(new Label(i + 6, 0, String.valueOf(temp.get("code"))));
                 sheet.addCell(new Label(i + 6, 1, String.valueOf(temp.get("name"))));
             }
-            List<Object> selectDataList = mapper.readValue(selectData, List.class);
+            List<Object> selectDataList = objectMapper.readValue(selectData, List.class);
             Cell[] cells = sheet.getRow(0);
             /**
              * 填充数据
@@ -261,7 +338,7 @@ public class ResourceCustomizeController extends BaseUIController {
             os.close();
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("数据导出失败");
+            envelop.setErrorMsg("综合查询档案数据已选数据导出失败");
         }
         envelop.setSuccessFlg(true);
     }
@@ -309,5 +386,6 @@ public class ResourceCustomizeController extends BaseUIController {
         }
         return sheet;
     }
+
 
 }
