@@ -26,7 +26,8 @@
 			$remark: $("#inp_remark"),
 //			$deptId: $("#inp_deptId"),
 			$parentUserId: $("#inp_parentUserId"),
-
+			$userNames: $('#userName'),
+			$parentUserNames: $('#parentUserName'),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
 
@@ -41,9 +42,11 @@
 
 				this.$dutyName.ligerTextBox({width:240});
 				this.$remark.ligerTextBox({width:240, height: 120 });
-				this.$userId.customCombo('${contextRoot}/deptMember/getUserList', p, undefined, undefined, false);
+				<%--this.$userId.customCombo('${contextRoot}/deptMember/getUserList', p, undefined, undefined, false);--%>
+				this.$userId.customCombo('${contextRoot}/deptMember/getUserList');
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
-				this.$parentUserId.customCombo(url, p, undefined, undefined, false);
+//				this.$parentUserId.customCombo(url, p, undefined, undefined, false);
+				this.$parentUserId.customCombo(url);
 				<%--this.$deptId.customCombo('${contextRoot}/deptMember/getDeptList');--%>
 
 				var mode = '${mode}';
@@ -85,6 +88,14 @@
 					immediate: true,
 					onSubmit: false,
 					onElementValidateForAjax: function(elm){}
+				});
+				self.$userId.on('change',function () {
+					var name = $(this).val();
+					self.$userNames.val(name);
+				});
+				self.$parentUserId.on('change',function () {
+					var name = $(this).val();
+					self.$parentUserNames.val(name);
 				});
 
 				this.$btnSave.click(function () {

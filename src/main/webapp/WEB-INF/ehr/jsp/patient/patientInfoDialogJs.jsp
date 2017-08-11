@@ -340,6 +340,24 @@
                 }
                 appDom.after(resultHtml);
             },
+            checkData: function (url, val, msg) {
+                var dataModel = $.DataModel.init();
+                var result = new jValidation.ajax.Result();
+                dataModel.fetchRemote(url, {
+                    data: {searchNm: val},
+                    async: false,
+                    success: function (data) {
+                        debugger
+                        if (!data.successFlg) {
+                            result.setResult(true);
+                        } else {
+                            result.setResult(false);
+                            result.setErrorMsg(msg);
+                        }
+                    }
+                });
+                return result;
+            },
             bindEvents: function () {
                 var self = this;
                 $("#div_checked_data").on("click",".grid_delete",function(){
@@ -364,32 +382,32 @@
                 $(".u-dropdown-icon").click(function(){
                     $('#inp_realName').click();
                 });
-                var idCardNo = self.$form.Fields.idCardNo.getValue();
-                var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    if(Util.isStrEquals($(elm).attr('id'),'inp_idCardNo')){
-                        var copyCardNo = self.$patientCopyId.val();
-                        var result = new jValidation.ajax.Result();
-                        var idCardNo = self.$idCardNo.val();
-                        var dataModel = $.DataModel.init();
-                        if(Util.isStrEquals(idCardNo,copyCardNo)){
-                            return true;
-                        }
-                        dataModel.fetchRemote("${contextRoot}/patient/checkIdCardNo", {
-                            data: {searchNm:idCardNo},
-                            async: false,
-                            success: function (data) {
-                                if (!data.successFlg) {
-                                    result.setResult(true);
-                                } else {
-                                    result.setResult(false);
-                                    result.setErrorMsg("该身份证已被使用");
+//                var idCardNo = self.$form.Fields.idCardNo.getValue();
+                var validator =  new jValidation.Validation(
+                        this.$form, {
+                            immediate: true,
+                            onSubmit: false,
+                            onElementValidateForAjax:function(elm){
+                                var dataModel = $.DataModel.init();
+                                var result = new jValidation.ajax.Result();
+                                if(Util.isStrEquals($(elm).attr('id'),'inp_idCardNo')){
+                                    var copyCardNo = self.$patientCopyId.val();
+                                    var idCardNo = self.$idCardNo.val();
+                                    var url = '${contextRoot}/patient/checkIdCardNo';
+                                    if(Util.isStrEquals(idCardNo,copyCardNo)){
+                                        return true;
+                                    }
+                                    result = self.checkData(url, idCardNo, "该身份证已被使用");
                                 }
-                            }
-                        });
-                        return result;
-                    }
-                }});
 
+                                if(Util.isStrEquals($(elm).attr('id'),'inp_patientTel')){
+                                    var telephoneNo = self.$patientTel.val();
+                                    var url = '${contextRoot}/patient/checkTelphoneNumber';
+                                    result = self.checkData(url, telephoneNo, "该电话号码已被使用");
+                                }
+                                return result;
+
+                }});
                 //修改人口信息
                 patientInfo.$updateBtn.click(function () {
                     if($(".tab-list li.cur").html()=="角色授权"){//保存角色授权值

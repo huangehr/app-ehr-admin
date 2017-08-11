@@ -48,7 +48,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * 综合查询档案数据列表树
      * @return
      */
-    @RequestMapping(value = "/getMetadataList", method = RequestMethod.GET)
+    @RequestMapping(value = "/getMetadataList", method = RequestMethod.POST)
     @ResponseBody
     public Object getMetadataList() {
         Envelop envelop = new Envelop();
@@ -75,7 +75,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/searchMetadataData", method = RequestMethod.GET)
+    @RequestMapping(value = "/searchMetadataData", method = RequestMethod.POST)
     @ResponseBody
     public Object searchMetadataData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();

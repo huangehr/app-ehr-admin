@@ -159,24 +159,28 @@
         });
 
         if(!d) {
-            self.mScroller = gridScroll.mCustomScrollbar({
-                theme:"minimal-dark",
-                axis:"yx",
-                callbacks:{
-                    whileScrolling: function(){
-                        self.gridheader[0].scrollLeft = -this.mcs.left;
-                        self.f.gridbody[0].scrollTop = -this.mcs.top;
-                        //$('.l-grid-editor',self.element).top - self.f.gridbody[0].scrollTop;
-                        // 修复滚动条滚动时，gridbody高度不变导致数据无法显示问题
-                        self.gridbody.css({
-                            height:$('.l-grid-body-table', self.element).height()
-                        });
-                    },
-                    onScroll: function () {
-                        //updateScroller.apply(self, arguments);
+            try {
+                self.mScroller = gridScroll.mCustomScrollbar({
+                    theme:"minimal-dark",
+                    axis:"yx",
+                    callbacks:{
+                        whileScrolling: function(){
+                            self.gridheader[0].scrollLeft = -this.mcs.left;
+                            self.f.gridbody[0].scrollTop = -this.mcs.top;
+                            //$('.l-grid-editor',self.element).top - self.f.gridbody[0].scrollTop;
+                            // 修复滚动条滚动时，gridbody高度不变导致数据无法显示问题
+                            self.gridbody.css({
+                                height:$('.l-grid-body-table', self.element).height()
+                            });
+                        },
+                        onScroll: function () {
+                            //updateScroller.apply(self, arguments);
+                        }
                     }
-                }
-            });
+                });
+            } catch (e) {
+                // console.log(e.message);
+            }
         }
 
 
@@ -241,7 +245,6 @@
                         this.toggleLoading(true);
                     },
                     onAfterShowData: function () {
-
                         updateScroller.apply(this, arguments);
                         //var left = parseInt($('.mCSB_scrollTools_horizontal .mCSB_dragger').css('left'));
                         opts.onAfterShowData&&opts.onAfterShowData.apply(this, arguments);
@@ -255,7 +258,6 @@
                         }
                     },
                     onAfterAddRow: function () {
-
                         updateScroller.apply(this, arguments);
                         $(".m-custom-scroll",this.gridview2).mCustomScrollbar("scrollTo","bottom");
                     },

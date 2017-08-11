@@ -20,14 +20,14 @@
     <div class="m-form-group">
         <label>资源编码<spring:message code="spe.colon"/></label>
         <!--<div class="m-form-control essential ">-->
-        <div class="m-form-control">
+        <div class="m-form-control l-text-wrapper essential">
             <input id="inp_code" class="required useTitle ajax validate-special-char f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
         </div>
     </div>
     <div class="m-form-group">
         <label>资源接口<spring:message code="spe.colon"/></label>
         <!--<div class="m-form-control essential ">-->
-        <div class="m-form-control">
+        <div class="m-form-control l-text-wrapper essential">
             <input id="inp_interface" class="required useTitle f-h28 f-w240 validate-special-char" data-type="select" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="rsInterface"/>
         </div>
     </div>
