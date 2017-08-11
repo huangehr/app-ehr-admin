@@ -36,23 +36,24 @@
                             self.reloadGrid();
                         }
                     });
-                    this.loadMainGrid();//加载主维度值
+                    this.loadMainGrid();//加载指标图表
                     this.bindEvents();
                 },
                 loadMainGrid:function(){
                     var self = this;
                     this.grid = $("#div_relation_grid").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/tjDimensionMain/getTjDimensionMainInfo',
+                        url: '${contextRoot}/tjQuota/getTjQuotaChartList',
                         width:"300px",
                         height:"450px",
                         parms: {
-                            quotaCode: this.$quotaCode,
-                            name:""
+                            quotaCode:quotaId,
+                            name:"",
+                            dictId: 91
                         },
                         columns: [
                             {display: 'id', name: 'id', hide: true},
-                            {display: '编码', name: 'code', width: '50%', isAllowHide: false, align: 'left'},
-                            {display: '名称', name: 'name', width: '50%', isAllowHide: false, align: 'left'},
+                            {display: '编号', name: 'code', width: '50%', isAllowHide: false, align: 'left'},
+                            {display: '名称', name: 'value', width: '50%', isAllowHide: false, align: 'left'}
                         ],
                         //delayLoad:true,
                         selectRowButtonOnly: false,
@@ -65,8 +66,7 @@
                         },
                         //默认选中
                         isChecked:function(row){
-                            if(row.checked=="1")
-                            {
+                            if(row.checked=="1"){
                                 return true;
                             }
                             else{
@@ -74,8 +74,7 @@
                             }
                         },
                         //选中修改值
-                        onCheckRow:function(checked,data,rowid,rowdata)
-                        {
+                        onCheckRow:function(checked,data,rowid,rowdata){
                             //修改行checked值
                             if(checked){
                                 data.checked ="1";
@@ -98,7 +97,6 @@
                                     }
                                 }
                             }
-
                         },
                     }));
                     // 自适应宽度
@@ -112,13 +110,13 @@
                     var appDom = flag=="1"?$("#div_main_relation"):$("#div_slave_relation");
                     for(var i=0;i<data.length;i++){
                         var item = data[i];
-                        var mainCode = item.code || item.mainCode || item.slaveCode;
+                        var mainCode = item.code;
                         if(appDom.find(".div-item[data-code='"+mainCode+"']").length==0){
                             var dictSql = item.dictSql || "";
                             var keyVal = item.keyVal || "";
                             resultHtml+='<div class="h-40 div-item" data-id="'+item.id+'" data-code="'+mainCode+'"  data-name="'+item.name+'" >'+
                                     '<div class="div-main-content">'+mainCode+'</div>'+
-                                    '<div class="div-main-content" title="'+item.name+'">'+item.name+'</div>'+
+                                    '<div class="div-main-content" title="'+item.value+'">'+item.value+'</div>'+
                                     '<div class="div-delete-content">'+
                                     '<a class="grid_delete" href="#" title="删除"></a>'+
                                     '</div>'+
@@ -130,10 +128,11 @@
                 reloadGrid: function () {
                     var searchNmEntry = this.$searchNm.val();
                     var curGrid = this.grid;
-                    var reqUrl = '${contextRoot}/tjDimensionMain/getTjDimensionMainInfo';
+                    var reqUrl = '${contextRoot}/tjQuota/getTjQuotaChartList';
                     var values = {
                         quotaCode: this.$quotaCode,
-                        name:searchNmEntry
+                        name:searchNmEntry,
+                        dictId: 91
                     };
                     Util.reloadGrid.call(curGrid,reqUrl, values, 1);
                 },
@@ -144,12 +143,13 @@
                     }});
 
                     $("#div_save").click(function(){
+                        debugger
                         var validate = $(".pop_tab li.cur").index()==0?validator.validate():validator1.validate();
                         if(validate){
                             var wait = $.Notice.waitting('正在加载中...');
                             var saveData = [];
                             var quotaCode = null
-                            var reqUrl = '${contextRoot}/tjQuotaDimensionMain/addTjQuotaDimensionMain';
+                            var reqUrl = '${contextRoot}/tjQuotaDimensionMain/addTjQuotaChart';
                             var divItem = $("#div_main_relation").find(".div-item");
                             $.each(divItem,function(key,value){
                                 var ob = {id:$(value).attr("data-id"),quotaCode:self.$quotaCode,mainCode:$(value).attr("data-code"),dictSql:$(value).find(".inp-dictSql").val(),keyVal:$(value).find(".inp-keyVal").val()}

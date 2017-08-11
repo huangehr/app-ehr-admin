@@ -34,8 +34,8 @@
                     </div>
                     <div id="div_main_relation">
                         <div class="h-40 div-header-content">
-                            <div class="div-header">编码</div>
-                            <div class="div-header">图表</div>
+                            <div class="div-header">编号</div>
+                            <div class="div-header">名称</div>
                             <div class="div-opera-header">操作</div>
                         </div>
                     </div>
