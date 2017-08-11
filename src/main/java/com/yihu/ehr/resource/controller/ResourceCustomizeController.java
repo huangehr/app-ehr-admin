@@ -47,7 +47,7 @@ public class ResourceCustomizeController extends BaseUIController {
      * 资源列表数
      * @return
      */
-    @RequestMapping(value = "/searchCustomizeList", method = RequestMethod.GET)
+    @RequestMapping(value = "/searchCustomizeList")
     @ResponseBody
     public Object searchCustomizeResourceList() {
         Envelop envelop = new Envelop();
@@ -74,7 +74,7 @@ public class ResourceCustomizeController extends BaseUIController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/searchCustomizeData", method = RequestMethod.GET)
+    @RequestMapping(value = "/searchCustomizeData")
     @ResponseBody
     public Object searchCustomizeResourceData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
