@@ -75,6 +75,21 @@ public class ResourceController extends BaseUIController {
         }
         return "simpleView";
     }
+
+    //    指标配置
+    @RequestMapping("/resourceConfigue")
+    public String resourceConfigue(Model model, String id){
+        model.addAttribute("resourceId", id);
+        model.addAttribute("contentPage","/resource/resourcemanage/resoureConfigure");
+        return "simpleView";
+    }
+    //    指标预览
+    @RequestMapping("/resourceShow")
+    public String resourceShow(Model model){
+        model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
+        return "simpleView";
+    }
+
     //配置授权浏览页面跳转
     @RequestMapping("/switch")
     public String switchToPage(Model model,String pageName,String resourceId){
@@ -352,16 +367,11 @@ public class ResourceController extends BaseUIController {
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(resourceId)) {
             params.put("filters", "resourceId=" + resourceId);
         }
         if (!StringUtils.isEmpty(name)) {
             params.put("quotaName", name);
-        }
-        String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
         }
         params.put("page", page);
         params.put("pageSize", rows);
