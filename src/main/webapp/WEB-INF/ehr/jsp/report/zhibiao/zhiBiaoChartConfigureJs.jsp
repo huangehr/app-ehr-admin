@@ -150,8 +150,8 @@
                         var divItem = $("#div_main_relation").find(".div-item");
                         $.each(divItem,function(key,value){
                             var ob = {
-                                code:$(value).attr("data-code"),
-                                value:$(value).attr("data-name")
+                                chartId:$(value).attr("data-code"),
+                                quotaCode : self.$quotaCode
                             }
                             saveData.push(ob);
                         })
@@ -160,7 +160,7 @@
                             success: function (data) {
                                 wait.close();
                                 if(data.successFlg){
-                                    $.Notice.success('保存成功！');
+                                    win.parent.closeChartConfigDialog();
                                 }else{
                                     $.Notice.error(data.errorMsg);
                                 }

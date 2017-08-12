@@ -389,6 +389,7 @@
 
             win.closeChartConfigDialog = function () {
                 dictMaster.chartConfigDialog.close();
+                $.Notice.success('保存成功！');
             }
 
             win.closeZhiBiaoInfoDialog = function (callback) {
