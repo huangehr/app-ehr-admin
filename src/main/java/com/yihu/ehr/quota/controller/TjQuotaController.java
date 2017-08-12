@@ -20,11 +20,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.client.RestClientException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -145,6 +148,7 @@ public class TjQuotaController extends BaseUIController {
                     updateTjQuota.setUpdateUserName(userDetailModel.getRealName());
                     updateTjQuota.setTjQuotaDataSaveModel(detailModel.getTjQuotaDataSaveModel());
                     updateTjQuota.setTjQuotaDataSourceModel(detailModel.getTjQuotaDataSourceModel());
+                    updateTjQuota.setTjQuotaChartModel(detailModel.getTjQuotaChartModel());
                     params.add("model", toJson(updateTjQuota));
 
                     resultStr = templates.doPost(comUrl + url, params);
@@ -419,4 +423,113 @@ public class TjQuotaController extends BaseUIController {
         }
         return  false;
     }
+
+
+    //带检索分页的查找指标方法,用于下拉框
+    @RequestMapping("/rsQuota")
+    @ResponseBody
+    public Object searchRsQuota(String searchParm,int page,int rows){
+        String url = "/tj/getTjQuotaList";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(searchParm)) {
+            stringBuffer.append("name?" + searchParm +";");
+        }
+        params.put("filters", "");
+        String filters = stringBuffer.toString();
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            String envelopStrGet = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
+            List<TjQuotaModel> tjQuotaModelList = new ArrayList<>();
+            List<Map> list = new ArrayList<>();
+            if(envelopGet.isSuccessFlg()){
+                tjQuotaModelList = (List<TjQuotaModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<TjQuotaModel>(),TjQuotaModel.class);
+                for (TjQuotaModel m:tjQuotaModelList){
+                    Map map = new HashMap<>();
+                    map.put("id",m.getCode());
+                    map.put("name",m.getName());
+                    list.add(map);
+                }
+                envelopGet.setDetailModelList(list);
+                return envelopGet;
+            }
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(TjQuotaController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+
+    @RequestMapping("/getTjQuotaChartList")
+    @ResponseBody
+    public Object getQuotaChartList(String quotaCode,String name,int dictId,int page,int rows){
+        String url = "/tj/getTjQuotaChartList";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("filters", "");
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(quotaCode)) {
+            stringBuffer.append( "quotaCode=" + quotaCode);
+        }
+        if (!StringUtils.isEmpty(name)) {
+            stringBuffer.append("value?" + name );
+        }
+        String filters = stringBuffer.toString();
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        String filter = "";
+        if (!StringUtils.isEmpty(dictId)) {
+            filter = "dictId=" + dictId;
+        }
+        params.put("dictfilter", filter);
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception ex) {
+            LogService.getLogger(TjQuotaController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    /**
+     * 添加主维度子表
+     * @param jsonModel 维度子表信息的json串
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "addTjQuotaChart", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object addTjQuotaChart(String quotaCode, String jsonModel, HttpServletRequest request) throws IOException {
+        String url = "/tj/batchTjQuotaChart";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("model", jsonModel);
+        RestTemplates templates = new RestTemplates();
+        try {
+            resultStr = templates.doPost(comUrl + url, params);
+        } catch (RestClientException e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+        return resultStr;
+    }
+
 }

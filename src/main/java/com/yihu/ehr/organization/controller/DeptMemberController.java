@@ -191,6 +191,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 updateModel.setUserName(model.getUserName());
                 updateModel.setDutyName(model.getDutyName());
                 updateModel.setParentUserId(model.getParentUserId());
+                updateModel.setParentUserName(model.getParentUserName());
                 updateModel.setRemark(model.getRemark());
                 String updateModelJson = objectMapper.writeValueAsString(updateModel);
 

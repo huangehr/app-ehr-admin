@@ -61,6 +61,18 @@ public class ResourceBrowseController extends BaseUIController {
         model.addAttribute("contentPage", "/resource/browse/resourceNewDataView");
         return "pageView";
     }
+    @RequestMapping("/customQuery")
+    public String customQuery(Model model) {
+        model.addAttribute("contentPage", "/resource/browse/customQuery");
+        return "pageView";
+    }
+    @RequestMapping("/infoInitial")
+    public String customQueryDialogView(String queryCondition, String metadatas,Model model) {
+        model.addAttribute("queryCondition", queryCondition);
+        model.addAttribute("metadatas", metadatas);
+        model.addAttribute("contentPage", "/resource/browse/customQueryDialogView");
+        return "pageView";
+    }
 
     @RequestMapping("/searchResourceList")
     @ResponseBody
@@ -110,7 +122,9 @@ public class ResourceBrowseController extends BaseUIController {
         String url = "/resources/ResourceBrowses/getResourceData";
         //当前用户机构
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        params.put("orgCode", userDetailModel.getOrganization());
+        String orgCode = userDetailModel.getOrganization();
+        params.put("orgCode", orgCode);
+        //params.put("orgCode", "41872607-9");
         params.put("resourcesCode", resourcesCode);
         Pattern pattern = Pattern.compile("\\[.+?\\]");
         Matcher matcher = pattern.matcher(searchParams);

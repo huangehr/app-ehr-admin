@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<script src="${contextRoot}/develop/lib/plugin/underscore/underscore.js"></script>
 <script>
     (function ($, win) {
         $(function () {
@@ -36,6 +36,9 @@
 
             var dataModel = $.DataModel.init();
 
+
+            var selectData = [];
+            var masterArr = '', childArr = '', queryCondition = '', defArr = [], rsInfoDialog = null;
             /* *************************** 函数定义 ******************************* */
             /**
              * 页面初始化。
@@ -103,7 +106,7 @@
                 $addSearchDom: $('#addSearchDom'),
                 GridCloumnNamesData: [],
                 index: 0,
-
+                $generateView: $('#generateView'),
                 init: function () {
                     var self = this;
                     //还没选择时给默认值保持样式不变
@@ -207,91 +210,101 @@
                     self.$inpEndTime.ligerDateEditor({
                         format: 'yyyy-MM-dd'
                     });
+                    self.$inpStarTime.attr('readonly',true);
+                    self.$inpEndTime.attr('readonly',true);
                 },
                 loadTree:function(){
                     var self = this;
+                    debugger
                     leftTree = $("#div-left-tree").ligerSearchTree({
                         nodeWidth: 180,
-                        url: '${contextRoot}/resourceBrowse/resourceBrowseTree',
-//                        parms:{},
-                        idFieldName: 'id',
-//                        parentIDFieldName: 'parent_hos_id',
+                        url: '${contextRoot}/resourceIntegrated/getMetadataList',
+                        idFieldName: 'code',
                         textFieldName: 'name',
                         isExpand: false,
                         enabledCompleteCheckbox:false,
-                        checkbox: false,
+                        checkbox: true,
                         async: false,
-                        onSelect:function (data,target) {
-                            if(data.data.pid!=""){//二级节点，才查询
-                                var resultData  = data.data;
-                                queryParam.resourceSub = resultData.name;
-                                queryParam.resourceId = resultData.id;
-                                queryParam.resourceName = $($(data.target.parentElement.parentElement).find(".l-body span")[0]).html();
-                                queryParam.resourceCode = resultData.code;
-                                resourcesCode = queryParam.resourceCode;
-                                resourceBrowseMaster.init();
-                                console.log(resourceInfoGrid);
-                                if(resourceInfoGrid){
-                                    resourceBrowseMaster.reloadResourcesGrid({
-                                        searchParams: queryParam,
-                                        resourcesCode: resourcesCode
-                                    });
-                                    paramModel.dictId[1] = resourcesCode;
-                                    self.getSearchData(1, 1);
+                        onCheck:function (data,target) {
+//                            console.log(this.getChecked());
+                            var ma = [], ca = [], sjyArr = [];
+                            selectData = this.getChecked();
+                            if (selectData.length > 0) {
+                                for (var i = 0, len = selectData.length; i < len; i++) {
+                                    switch (selectData[i].data.level) {
+                                        case '1':
+                                            ma.push(selectData[i].data.code);
+                                            break;
+                                        case '2':
+                                            sjyArr.push(selectData[i].data);
+                                            ca.push(selectData[i].data.code);
+                                            break;
+                                    }
                                 }
+                                resourceBrowseMaster.init();
+                                masterArr = JSON.stringify(ma);
+                                childArr = JSON.stringify(ca);
+                                queryCondition = resourceBrowseMaster.getQuerySearchData();
+                                resourceBrowseMaster.reloadResourcesGrid({
+                                    metaData: childArr,
+                                    resourcesCode: masterArr,
+                                    searchParams: queryCondition
+                                });
+                                //初始化
+                                self.index = 0;
+                                self.$addSearchDom.html('');
+                                self.GridCloumnNamesData = sjyArr;
+                                self.setSearchData();
+                            } else {
+                                self.index = 0;
+                                self.$addSearchDom.html('');
+                                self.GridCloumnNamesData = [];
+                                masterArr = '';
+                                childArr = '';
+                                queryCondition = '';
+                                selectData = [];
+                                resourceBrowseMaster.init();
                             }
                         },
                         onSuccess: function (data) {
-                            var detailModelList = data.detailModelList;
-                            for(var i=0;i<detailModelList.length;i++){
-                                var rsResourceslist = detailModelList[i].rsResourceslist;
-                                detailModelList[i].children = rsResourceslist;
+                            var detailModelList = data.detailModelList,
+                                dmList = [];
+                            if (detailModelList) {
+                                for(var i=0;i<detailModelList.length;i++){
+                                    if (detailModelList[i].level == 0) {
+                                        defArr = detailModelList[i].baseInfo;
+                                    } else {
+                                        var rsResourceslist = detailModelList[i].metaDataList;
+                                        detailModelList[i].children = rsResourceslist;
+                                        dmList.push(detailModelList[i]);
+                                    }
+                                }
+                                leftTree.setData(dmList);
+                                $("#div-left-tree li div span ,#div_configFun_featrue_org_grid li div span").css({
+                                    "line-height": "22px",
+                                    "height": "22px"
+                                });
+                            } else {
+                                $.Notice.error('暂无数据');
                             }
-                            leftTree.setData(detailModelList);
-                            $("#div-left-tree li div span ,#div_configFun_featrue_org_grid li div span").css({
-                                "line-height": "22px",
-                                "height": "22px"
-                            });
-
                         },
 
                     });
                 },
-                //获取列表字段
-                getSearchData: function (url, paramDatas) {
-                    var me = this;
-                    $.ajax({
-                        url: paramModel.url[url],
-                        dataType: 'json',
-                        type: 'GET',
-                        data:{
-                            dictId: paramModel.dictId[url]
-                        },
-                        success: function (data) {
-                            if (data && data.length > 0) {
-                                //初始化
-                                me.index = 0;
-                                me.$addSearchDom.html('');
-                                me.GridCloumnNamesData = data;
-                                me.setSearchData();
-                            }
-                        }
-                    })
-                },
                 //筛选存在数据字典中的字段
-                setSearchData: function () {
+                setSearchData: function (d) {
                     var me = this,
                         data = me.GridCloumnNamesData;
-                    if (data[me.index].dict && !Util.isStrEquals(data[me.index].dict, 0) && data[me.index].dict != '') {
+                    if (data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
                         var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
+                                html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].name + ': </label>',
                                     '<div class="inp-text">',
                                     '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
                                     '</div>'].join('');
                         $div.append(html);
                         var inp = $div.find('input').ligerComboBox({
                             url: paramModel.url[3],
-                            parms: {dictId: data[me.index].dict},
+                            parms: {dictId: data[me.index].dictCode},
                             valueField: 'code',
                             textField: 'name',
                             width: '240',
@@ -310,73 +323,159 @@
             resourceBrowseMaster = {
                 init: function () {
                     var self = retrieve;
-                    var columnModel = new Array(),
-                            //基本信息
-                            defArr = [
-                                {"key": 'patient_name', "name": "病人姓名"},
-                                {"key": 'event_type', "name": "就诊类型"},
-                                {"key": 'org_name', "name": "机构名称"},
-                                {"key": 'org_code', "name": "机构编号"},
-                                {"key": 'event_date', "name": "时间"},
-                                {"key": 'demographic_id', "name": "病人身份证号码"}
-                            ];
-                    //获取列名
-                    if (!Util.isStrEmpty(resourcesCode)) {
-                        dataModel.fetchRemote("${contextRoot}/resourceView/getGridCloumnNames", {
-                            data: {
-                                dictId: resourcesCode
-                            },
-                            async: false,
-                            success: function (data) {
-                                for (var j = 0, len = defArr.length; j < len; j++) {
-                                    columnModel.push({display: defArr[j].name, name: defArr[j].key, width: 100});
-                                }
-                                for (var i = 0; i < data.length; i++) {
-                                    columnModel.push({display: data[i].value, name: data[i].code, width: 100});
-                                }
-                                resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
-                                    url: '${contextRoot}/resourceBrowse/searchResourceData',
-                                    parms: {searchParams: '', resourcesCode: resourcesCode},
-                                    columns: columnModel,
-                                    height: windowHeight - 110,
-                                    checkbox: true,
-                                    onSelectRow:function () {
-                                        if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){
-                                            self.$outSelExcelBtn.css('background','#B9C8D2');
-                                        }else{
-                                            self.$outSelExcelBtn.css('background','#2D9BD2');
-                                        }
-                                    },
-                                    onUnSelectRow:function () {
-                                        if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){
-                                            self.$outSelExcelBtn.css('background','#B9C8D2');
-                                        }else{
-                                            self.$outSelExcelBtn.css('background','#2D9BD2');
-                                        }
-                                    },
-                                    onAfterShowData:function () {
-                                        self.$outAllExcelBtn.css('background','#B9C8D2');
-                                        if (resourceInfoGrid.data.detailModelList.length > 0){
-                                            self.$outAllExcelBtn.css('background','#2D9BD2');
-                                        }
-                                    }
-                                }));
-                            }
-                        });
+                    var columnModel = new Array();
+                    if (selectData.length > 0) {
+                        for (var j = 0, len = defArr.length; j < len; j++) {
+                            columnModel.push({display: defArr[j].name, name: defArr[j].code, width: 100});
+                        }
                     }
+                    //获取列名
+                    for (var i = 0, len = selectData.length; i < len; i++) {
+                        if (selectData[i].data.level == '2') {
+                            columnModel.push({display: selectData[i].data.name, name: selectData[i].data.code, width: 100});
+                        }
+                    }
+                    resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
+                        url: '${contextRoot}/resourceIntegrated/searchMetadataData',
+                        parms: {searchParams: '', resourcesCode: '', metaData: ''},
+                        columns: columnModel,
+//                        height: windowHeight - 110,
+                        checkbox: true,
+                        onSelectRow:function () {
+                            if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){
+                                self.$outSelExcelBtn.css('background','#B9C8D2');
+                            }else{
+                                self.$outSelExcelBtn.css('background','#2D9BD2');
+                            }
+                        },
+                        onUnSelectRow:function () {
+                            if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){
+                                self.$outSelExcelBtn.css('background','#B9C8D2');
+                            }else{
+                                self.$outSelExcelBtn.css('background','#2D9BD2');
+                            }
+                        },
+                        onAfterShowData:function () {
+                            self.$outAllExcelBtn.css('background','#B9C8D2');
+                            if (resourceInfoGrid.data.detailModelList.length > 0){
+                                self.$outAllExcelBtn.css('background','#2D9BD2');
+                            }
+                        }
+                    }));
                 },
                 reloadResourcesGrid: function (searchParams) {
-                    reloadGrid.call(this, '${contextRoot}/resourceView/searchResourceData', searchParams);
+                    reloadGrid.call(this, '${contextRoot}/resourceIntegrated/searchMetadataData', searchParams);
                 },
-
+                getQuerySearchData: function () {
+                    var self = retrieve;
+                    var pModel = self.$newSearch.children('div'),
+                            jsonData = [];
+                    var resetInp = $(pModel.find('.inp-reset'));
+                    for (var i = 0; i < resetInp.length; i++) {
+                        var code = $(resetInp[i]).attr('data-code'),
+                            value = $(resetInp[i]).liger().getValue(),
+                            valArr = [];
+                        if (typeof value != 'string' && value instanceof Date) {
+                            value = value.format('yyyy-MM-dd') + 'T00:00:00Z';
+                        }
+                        valArr = value ? value.split(';') : [];
+                        for (var j = 0, len = valArr.length; j < len; j++) {
+                            var values = {andOr: '', condition: '', field: '', value: ''};
+                            values.field = code;
+                            if (valArr[j] && valArr[j] != '') {
+                                values.andOr = 'OR';
+                                values.condition = '=';
+                                if ($(resetInp[i]).attr('id') == 'inpStarTime') {
+                                    values.andOr = 'AND';
+                                    values.condition = '>';
+                                }
+                                if ($(resetInp[i]).attr('id') == 'inpEndTime') {
+                                    values.andOr = 'AND';
+                                    values.condition = '<';
+                                }
+                                values.value = valArr[j];
+                                jsonData.push(values);
+                            }
+                        }
+                    }
+                    for (var j = 0; j < jsonData.length; j++) {
+                        if (Util.isStrEmpty(jsonData[j].value) || Util.isStrEmpty(jsonData[j].field)) {
+                            jsonData.splice(j, 1);
+                            j--;
+                        }
+                    }
+                    jsonData = RSsearchParams = Util.isStrEquals(jsonData.length, 0) ? "" : JSON.stringify(jsonData);
+                    return jsonData;
+                },
                 bindEvents: function () {
                     var self = retrieve;
                     var searchBo = false;
+                    
+                    self.$generateView.on('click', function () {
+                        var sd = selectData,
+                            qc = queryCondition,
+                            dd = defArr;
+                        if (sd.length <= 0) {
+                            $.Notice.error('请先选择数据');
+                            return;
+                        }
+                        $.ligerDialog.confirm("确认是否生成视图？", function (yes) {
+                            var md = [];
+                            if(yes){
+                                if (sd.length > 0) {
+//                                    for (var j = 0, len = dd.length; j < len; j++) {
+//                                        var data = dd[j];
+//                                        md.push({
+//                                            resourcesId: '',
+//                                            metadataId: data.code,
+//                                            groupType: '',
+//                                            groupData: '',
+//                                            description: data.name
+//                                        });
+//                                    }
+                                    for (var i = 0, len = sd.length; i < len; i++) {
+                                        var data = sd[i].data
+                                        if (data.level == 2) {
+                                            md.push({
+                                                resourcesId: '',
+                                                metadataId: data.code,
+                                                groupType: data.groupType,
+                                                groupData: data.groupData,
+                                                description: data.description
+                                            });
+                                        }
+                                    }
 
+                                    var wait = $.Notice.waitting("请稍后...");
+                                    rsInfoDialog = $.ligerDialog.open({
+                                        height:550,
+                                        width:500,
+                                        title:'新增资源',
+                                        url:'${contextRoot}/resourceBrowse/infoInitial',
+                                        urlParms:{
+                                            queryCondition: qc,
+                                            metadatas: JSON.stringify(md)
+                                        },
+                                        load:true,
+                                        show:false,
+                                        isHidden:false,
+                                        onLoaded:function(){
+                                            wait.close(),
+                                                    rsInfoDialog.show()
+                                        }
+                                    });
+                                    rsInfoDialog.hide();
+                                }
+                            }
+                        })
+                    });
 
                     self.$ddSeach.on('click', function (e) {
                         e.stopPropagation();
                         if (self.$resourceInfoGrid.html() == '') {
+                            return;
+                        }
+                        if (selectData.length <= 0) {
                             return;
                         }
                         if ($(e.target).hasClass('l-table-checkbox') ||
@@ -402,77 +501,26 @@
                             self.$popSCon.css('display', 'none');
                         }
                     });
-//                    self.$ddSeach.on('mouseout', '.pop-s-con', function (e) {
-//                        console.log($(e.target).attr('class'));
-//                        if ($(e.target).hasClass('l-table-checkbox') ||
-//                                $(e.target).hasClass('l-trigger-icon') ||
-//                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
-//                                $(e.target).hasClass('l-text-field') ||
-//                                $(e.target).hasClass('j-text-wrapper') ||
-//                                $(e.target).hasClass('u-btn-large') ||
-//                                $(e.target).hasClass('inp-label') ||
-//                                $(e.target).hasClass('pop-s-con') ||
-//                                $(e.target).hasClass('f-mt6') ||
-//                                $(e.target).hasClass('clear-s')) {
-//                            return;
-//                        }
-//                        self.$popMain.css('display', 'none');
-//                        self.$sjIcon.css('display', 'none');
-//                        self.$popSCon.css('display', 'none');
-//                    });
-
                     //返回资源注册页面
-                    $('#btn_back').click(function(){
-                        $('#contentPage').empty();
-                        $('#contentPage').load('${contextRoot}/resource/resourceManage/initial');
-                    });
+                    <%--$('#btn_back').click(function(){--%>
+                        <%--$('#contentPage').empty();--%>
+                        <%--$('#contentPage').load('${contextRoot}/resource/resourceManage/initial');--%>
+                    <%--});--%>
 
                     //检索
                     self.$SearchBtn.click(function (e) {
                         e.stopPropagation();
                         e.preventDefault();
+
+                        self.index = 0;
                         var pModel = self.$newSearch.children('div'),
-                            jsonData = [],
-                            value = null;
-                        var resetInp = $(pModel.find('.inp-reset'));
-                        for (var i = 0; i < resetInp.length; i++) {
-                            var code = $(resetInp[i]).attr('data-code'),
-                                value = $(resetInp[i]).liger().getValue(),
-                                valArr = [];
-                            if (typeof value != 'string' && value instanceof Date) {
-                                value = value.format('yyyy-MM-dd');
-                            }
-                            valArr = value ? value.split(';') : [];
-                            for (var j = 0, len = valArr.length; j < len; j++) {
-                                var values = {andOr: '', condition: '', field: '', value: ''};
-                                values.field = code;
-                                if (valArr[j] && valArr[j] != '') {
-                                    values.andOr = 'OR';
-                                    values.condition = '=';
-                                    if ($(resetInp[i]).attr('id') == 'inpStarTime') {
-                                        values.andOr = 'AND';
-                                        values.condition = '>';
-                                    }
-                                    if ($(resetInp[i]).attr('id') == 'inpEndTime') {
-                                        values.andOr = 'AND';
-                                        values.condition = '<';
-                                    }
-                                    values.value = valArr[j];
-                                    jsonData.push(values);
-                                }
-                            }
-                        }
-                        for (var j = 0; j < jsonData.length; j++) {
-                            if (Util.isStrEmpty(jsonData[j].value) || Util.isStrEmpty(jsonData[j].field)) {
-                                jsonData.splice(j, 1);
-                                j--;
-                            }
-                        }
-                        jsonData = RSsearchParams = Util.isStrEquals(jsonData.length, 0) ? "" : JSON.stringify(jsonData);
-                        console.log(Util.isStrEmpty(jsonData)?"查询条件为空或查询的值为空":jsonData);
+                                jsonData = [],
+                                value = null;
+                        queryCondition = resourceBrowseMaster.getQuerySearchData();
                         resourceBrowseMaster.reloadResourcesGrid({
-                            searchParams: jsonData,
-                            resourcesCode: resourcesCode
+                            metaData: childArr,
+                            resourcesCode: masterArr,
+                            searchParams: queryCondition
                         });
 
                         self.$popMain.css('display', 'none');
@@ -486,12 +534,22 @@
                     self.$outSelExcelBtn.click(function () {
                         var jsonDatas = [];
                         var rowData = resourceInfoGrid.getSelectedRows();
-                        $.each(rowData,function (key,value) {
-                            var jsonParam = {andOr: "OR", field: "rowkey", condition: "=", value: ""};
-                            jsonParam.value = value.rowkey;
-                            jsonDatas.push(jsonParam);
-                        });
-                        outExcel(rowData, rowData.length,JSON.stringify(jsonDatas));
+//                        $.each(rowData,function (key,value) {
+//                            var jsonParam = {andOr: "OR", field: "rowkey", condition: "=", value: ""};
+//                            jsonParam.value = value.rowkey;
+//                            jsonDatas.push(jsonParam);
+//                        });
+                        var metaData = [];
+                        for (var i = 0, len = selectData.length; i < len; i++) {
+                            var data = selectData[i].data
+                            if (data.level == 2) {
+                                metaData.push({
+                                    code: data.code,
+                                    name: data.name
+                                });
+                            }
+                        }
+                        window.open("${contextRoot}/resourceIntegrated/outSelectExcel?selectData=" + JSON.stringify(rowData) + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
                     });
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
@@ -526,7 +584,18 @@
                             valueList.push(values);
                             values = [];
                         }
-                        window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
+
+                        var metaData = [];
+                        for (var i = 0, len = selectData.length; i < len; i++) {
+                            var data = selectData[i].data
+                            if (data.level == 2) {
+                                metaData.push({
+                                    code: data.code,
+                                    name: data.name
+                                });
+                            }
+                        }
+                        window.open("${contextRoot}/resourceIntegrated/outExcel?size=" + size + "&resourcesCode=" + masterArr + "&searchParams=" + queryCondition + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
                     }
                 }
             };
@@ -540,6 +609,9 @@
             }
             /* ************************* 模块初始化结束 ************************** */
 
+            win.closeRsInfoDialog = function (callback) {
+                rsInfoDialog.close();
+            };
             /* *************************** 页面初始化 **************************** */
             pageInit();
             /* ************************* 页面初始化结束 ************************** */

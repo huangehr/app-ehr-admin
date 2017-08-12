@@ -25,10 +25,10 @@
                 //只有new 跟 modify两种模式会到这个函数
                 if (mode == 'modify') {
                     title = '修改适配方案';
-                    height = 500;
+                    height = 520;
                 } else if (mode == 'new') {
                     title = '新增适配方案';
-                    height = 470;
+                    height = 520;
                 }
                 target.adapterInfoDialog = $.ligerDialog.open({
                     height: height,

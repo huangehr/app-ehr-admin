@@ -114,6 +114,7 @@
             dictMaster = {
                 dictInfoDialog: null,
                 detailDialog:null,
+                chartConfigDialog: null,
                 grid: null,
                 $searchNm: $('#searchNm'),
                 init: function () {
@@ -159,8 +160,10 @@
 //                                {display: '备注', name: 'remark', width: '8%', isAllowHide: false, align: 'left'},
                                 {
                                     display: '操作', name: 'operator', width: '40%', align: 'center',render: function (row) {
+
                                     var html = '';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:tubiao:config", row.code, row.name) + '">图表配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/deleteTjDataSave"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">任务执行</a></sec:authorize>';
@@ -263,6 +266,25 @@
                             }
                         });
                     });
+                    
+                    $.subscribe('zhibiao:tubiao:config', function (event, code, name) {
+                        dictMaster.chartConfigDialog = $.ligerDialog.open({
+                            title:'图表配置',
+                            height: 700,
+                            width: 700,
+                            url: '${contextRoot}/zhibiao/zhiBiaoChartConfigure',
+                            isHidden: false,
+                            opener: true,
+                            load: true,
+                            urlParms: {
+                                quotaCode:code.trim(),
+                                quotaName: name.trim()
+                            },
+                            onLoaded:function() {
+
+                            }
+                        });
+                    })
 
                     $.subscribe('zhibiao:execu', function (event, id, quotaCode) {
                         $.Notice.confirm('确认要执行所选指标？', function (r) {
@@ -364,6 +386,12 @@
                 if (msg)
                     $.Notice.success(msg);
             };
+
+            win.closeChartConfigDialog = function () {
+                dictMaster.chartConfigDialog.close();
+                $.Notice.success('保存成功！');
+            }
+
             win.closeZhiBiaoInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
