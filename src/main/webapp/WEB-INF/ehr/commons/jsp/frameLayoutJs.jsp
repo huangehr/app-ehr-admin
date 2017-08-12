@@ -349,6 +349,17 @@
                 },
                 </sec:authorize>
 
+                // 3-8 - 资源报表分类
+                <sec:authorize url="/resource/reportCategory/index">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 38,
+                    text: '资源报表分类',
+                    url: '${contextRoot}/resource/reportCategory/index'
+                },
+                </sec:authorize>
+
                 // 4- 全程健康档案
                 <sec:authorize url="Ehr_Archive_Manager">
                 {
