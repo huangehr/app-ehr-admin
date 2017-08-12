@@ -130,7 +130,7 @@
                         d = {
                             queryCondition: queryCondition,metadatas: JSON.parse(metadatas),resource: values
                         };
-                    dataModel.updateRemote("${contextRoot}/resourceCustomize/updateCustomizeData", {
+                    dataModel.updateRemote("${contextRoot}/resourceIntegrated/updateResource", {
                         data:{dataJson: JSON.stringify(d)},
                         type: 'POST',
                         success: function(data) {

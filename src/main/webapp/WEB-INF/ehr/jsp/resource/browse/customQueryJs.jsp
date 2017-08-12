@@ -218,7 +218,7 @@
                     debugger
                     leftTree = $("#div-left-tree").ligerSearchTree({
                         nodeWidth: 180,
-                        url: '${contextRoot}/resourceCustomize/searchCustomizeList',
+                        url: '${contextRoot}/resourceIntegrated/getMetadataList',
                         idFieldName: 'code',
                         textFieldName: 'name',
                         isExpand: false,
@@ -336,7 +336,7 @@
                         }
                     }
                     resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/resourceCustomize/searchCustomizeData',
+                        url: '${contextRoot}/resourceIntegrated/searchMetadataData',
                         parms: {searchParams: '', resourcesCode: '', metaData: ''},
                         columns: columnModel,
 //                        height: windowHeight - 110,
@@ -364,7 +364,7 @@
                     }));
                 },
                 reloadResourcesGrid: function (searchParams) {
-                    reloadGrid.call(this, '${contextRoot}/resourceCustomize/searchCustomizeData', searchParams);
+                    reloadGrid.call(this, '${contextRoot}/resourceIntegrated/searchMetadataData', searchParams);
                 },
                 getQuerySearchData: function () {
                     var self = retrieve;
@@ -549,7 +549,7 @@
                                 });
                             }
                         }
-                        window.open("${contextRoot}/resourceCustomize/outSelectExcel?selectData=" + JSON.stringify(rowData) + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
+                        window.open("${contextRoot}/resourceIntegrated/outSelectExcel?selectData=" + JSON.stringify(rowData) + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
                     });
                     //导出全部结果
                     self.$outAllExcelBtn.click(function () {
@@ -595,7 +595,7 @@
                                 });
                             }
                         }
-                        window.open("${contextRoot}/resourceCustomize/outExcel?size=" + size + "&resourcesCode=" + masterArr + "&searchParams=" + queryCondition + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
+                        window.open("${contextRoot}/resourceIntegrated/outExcel?size=" + size + "&resourcesCode=" + masterArr + "&searchParams=" + queryCondition + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
                     }
                 }
             };
