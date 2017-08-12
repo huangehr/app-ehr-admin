@@ -112,9 +112,8 @@
                         var item = data[i];
                         var mainCode = item.code;
                         if(appDom.find(".div-item[data-code='"+mainCode+"']").length==0){
-                            var dictSql = item.dictSql || "";
-                            var keyVal = item.keyVal || "";
-                            resultHtml+='<div class="h-40 div-item" data-id="'+item.id+'" data-code="'+mainCode+'"  data-name="'+item.name+'" >'+
+                            debugger
+                            resultHtml+='<div class="h-40 div-item" data-id="'+item.code+'" data-code="'+mainCode+'"  data-name="'+item.value+'" >'+
                                     '<div class="div-main-content">'+mainCode+'</div>'+
                                     '<div class="div-main-content" title="'+item.value+'">'+item.value+'</div>'+
                                     '<div class="div-delete-content">'+
@@ -144,32 +143,29 @@
 
                     $("#div_save").click(function(){
                         debugger
-                        var validate = $(".pop_tab li.cur").index()==0?validator.validate():validator1.validate();
-                        if(validate){
-                            var wait = $.Notice.waitting('正在加载中...');
-                            var saveData = [];
-                            var quotaCode = null
-                            var reqUrl = '${contextRoot}/tjQuotaDimensionMain/addTjQuotaChart';
-                            var divItem = $("#div_main_relation").find(".div-item");
-                            $.each(divItem,function(key,value){
-                                var ob = {id:$(value).attr("data-id"),quotaCode:self.$quotaCode,mainCode:$(value).attr("data-code"),dictSql:$(value).find(".inp-dictSql").val(),keyVal:$(value).find(".inp-keyVal").val()}
-                                saveData.push(ob);
-                            })
-                            var dataModel = $.DataModel.init();
-                            if (saveData.length == 0) {
-                                quotaCode = quotaId;
+                        var wait = $.Notice.waitting('正在加载中...');
+                        var saveData = [];
+                        var quotaCode = null
+                        var reqUrl = '${contextRoot}/tjQuota/addTjQuotaChart';
+                        var divItem = $("#div_main_relation").find(".div-item");
+                        $.each(divItem,function(key,value){
+                            var ob = {
+                                code:$(value).attr("data-code"),
+                                value:$(value).attr("data-name")
                             }
-                            dataModel.updateRemote(reqUrl, {data: {quotaCode : quotaCode, jsonModel: JSON.stringify(saveData)},
-                                success: function (data) {
-                                    wait.close();
-                                    if(data.successFlg){
-                                        $.Notice.success('保存成功！');
-                                    }else{
-                                        $.Notice.error(data.errorMsg);
-                                    }
+                            saveData.push(ob);
+                        })
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote(reqUrl, {data: {quotaCode : self.$quotaCode, jsonModel: JSON.stringify(saveData)},
+                            success: function (data) {
+                                wait.close();
+                                if(data.successFlg){
+                                    $.Notice.success('保存成功！');
+                                }else{
+                                    $.Notice.error(data.errorMsg);
                                 }
-                            });
-                        }
+                            }
+                        });
                     });
                     //操作-删除
                     $("#div_main_relation").on("click",".grid_delete",function(){
