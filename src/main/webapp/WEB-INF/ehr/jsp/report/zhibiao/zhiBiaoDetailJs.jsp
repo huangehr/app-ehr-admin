@@ -277,7 +277,7 @@
                                         saveData.push(ob);
                                     })
                                 }else{
-                                     reqUrl = '${contextRoot}/tjQuotaDimensionMain/addTjQuotaDimensionSlave';
+                                     reqUrl = '${contextRoot}/tjQuota/addTjQuotaDimensionSlave';
                                     var divItem = $("#div_slave_relation").find(".div-item");
                                     $.each(divItem,function(key,value){
                                         var ob = {id:$(value).attr("data-id"),quotaCode:self.$quotaCode,slaveCode:$(value).attr("data-code"),dictSql:$(value).find(".inp-dictSql").val(),keyVal:$(value).find(".inp-keyVal").val()}
