@@ -283,7 +283,7 @@
                 },
                 </sec:authorize>
 
-                // 3-8 综合查询
+                // 3-1 综合查询
                 <sec:authorize url="/resourceBrowse/customQuery">
                 {
                     pid: 3,
@@ -328,7 +328,7 @@
                 },
                 </sec:authorize>
 
-                // 3-5 - 资源注册
+                // 3-5 - 资源注册 - 视图管理
                 <sec:authorize url="/resource/resourceManage/initial">
                 {
                     pid: 3,
