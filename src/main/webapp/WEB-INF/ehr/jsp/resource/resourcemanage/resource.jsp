@@ -23,11 +23,16 @@
         </div>
         <!--资源浏览详情-->
         <div id="div_right" class="div-resource-browse">
-            <div class="right-retrieve">
-                <div class="f-db f-pt10 f-pb10 f-ml10">
+            <div class="right-retrieve m-form-inline">
+                <div class="f-db f-pt10 f-pb10 f-ml10 m-form-group">
                     <!--输入框-->
-                    <input type="text" id="inp_searchNm" placeholder="请输入资源代码或名称" class="f-ml10 f-h28 f-w240"
-                           data-attr-scan="searchNm"/>
+                    <div class="m-form-control">
+                        <input type="text" id="inp_searchNm" placeholder="请输入资源代码或名称" class="f-ml10 f-h28 f-w240"
+                               data-attr-scan="searchNm"/>
+                    </div>
+                    <div class="m-form-control f-ml10">
+                        <input type="text" id="droDList" placeholder="请选择数据来源">
+                    </div>
                 </div>
                 <div class="f-db f-fr f-pt10 f-mr10">
                     <sec:authorize url="/resource/resourceManage/infoInitial">
