@@ -61,13 +61,12 @@
             }
 
             var loading = $.ligerDialog.waitting("正在保存数据...");
-            $('#btnSave').attr('disabled', 'disabled');
 
             var formFieldsVal = $form.Fields.getValues();
             formFieldsVal.id = $("#id").val();
             formFieldsVal.code = $("#code").val();
             formFieldsVal.name = $("#name").val();
-//            formFieldsVal.pid = $("#pid").val().trim() == "" ? 0 : parentSelectedVal;
+            formFieldsVal.pid = $("#pid").ligerComboBox().getValue();
             formFieldsVal.remark = $("#remark").val();
 
             dataModel.fetchRemote("${contextRoot}/resource/reportCategory/save", {
@@ -86,7 +85,6 @@
                 },
                 error: function () {
                     $.Notice.error('保存发生异常');
-                    $('#btnSave').removeAttr('disabled');
                 },
                 complete: function () {
                     loading.close();

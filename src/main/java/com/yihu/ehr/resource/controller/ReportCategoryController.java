@@ -104,19 +104,12 @@ public class ReportCategoryController extends BaseUIController {
      */
     @RequestMapping("/save")
     @ResponseBody
-    public Object save(String dataJson, String mode) {
-        String result = null;
+    public Object save(String data) {
+        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
 
-        if (StringUtils.isEmpty(mode)) {
-            return failed("操作类别不能为空！");
-        }
-        if (StringUtils.isEmpty(dataJson)) {
-            return failed("空数据！");
-        }
-
         try {
-            RsReportCategoryModel model = objectMapper.readValue(dataJson, RsReportCategoryModel.class);
+            RsReportCategoryModel model = objectMapper.readValue(data, RsReportCategoryModel.class);
             if (StringUtils.isEmpty(model.getCode())) {
                 return failed("编码不能为空！");
             }
@@ -124,19 +117,32 @@ public class ReportCategoryController extends BaseUIController {
                 return failed("名称不能为空！");
             }
 
-            params.put("rsReportCategory", dataJson);
-
-            if (StringUtils.equalsIgnoreCase(mode, "new")) {
-                result = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportCategoryAdd, params, username, password);
+            if (model.getId() == null) {
+                // 新增
+                params.put("rsReportCategory", data);
+                return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportCategorySave, params, username, password);
             } else {
-                if (model.getId() == null) {
-                    return failed("ID不能为空！");
+                // 修改
+                String urlGet = comUrl + "/resources/reportCategory/" + model.getId();
+                String envelopGetStr = HttpClientUtil.doGet(comUrl + urlGet, username, password);
+                Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+                if (!envelopGet.isSuccessFlg()) {
+                    envelop.setErrorMsg("获取资源报表分类信息失败！");
+                    return envelop;
                 }
-                result = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportCategoryUpdate, params, username, password);
+
+                RsReportCategoryModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportCategoryModel.class);
+                updateModel.setCode(model.getCode());
+                updateModel.setName(model.getName());
+                updateModel.setPid(model.getPid());
+                updateModel.setRemark(model.getRemark());
+
+                params.put("rsReportCategory", objectMapper.writeValueAsString(updateModel));
+                return HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportCategorySave, params, username, password);
             }
-            return result;
-        } catch (Exception ex) {
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
