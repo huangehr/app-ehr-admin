@@ -45,7 +45,6 @@
     }
 
     function bindEvents() {
-        debugger;
         var validator = customFormValidator();
 
         // 保存
@@ -87,39 +86,41 @@
     function customFormValidator() {
         return new $.jValidation.Validation($form, {
             immediate: true,
-            onSubmit: false,
             onElementValidateForAjax: function (el) {
                 var elId = $(el).attr("id");
                 switch(elId) {
                     case 'code':
                         var code = $("#code").val();
-                        if($.Util.isStrEquals(code, detailModel.code)) {
+                        if(!$.Util.isStrEquals(code, detailModel.code)) {
                             var ulr = "${contextRoot}/resource/reportCategory/isUniqueCode";
-                            return validateByAjax(ulr, {id: detailModel.id, code: code}, "该编码已存在，请重新填写！");
+                            return validateByAjax(ulr, {id: detailModel.id, code: code});
                         }
+                        break;
                     case 'name':
                         var name = $("#name").val();
-                        if($.Util.isStrEquals(name, detailModel.name)) {
+                        if(!$.Util.isStrEquals(name, detailModel.name)) {
                             var ulr = "${contextRoot}/resource/reportCategory/isUniqueName";
-                            return validateByAjax(ulr, {id: detailModel.id, name: name}, "已名称存在，请重新填写！");
+                            return validateByAjax(ulr, {id: detailModel.id, name: name});
                         }
+                        break;
                 }
             }
         });
     }
 
     // 通过 jValidation 进行异步验证
-    function validateByAjax(url, params, msg) {
-        var result = new jValidation.ajax.Result();
+    function validateByAjax(url, params) {
+        var result = new $.jValidation.ajax.Result();
         var dataModel = $.DataModel.init();
         dataModel.fetchRemote(url, {
             data: params,
+            async: false,
             success: function (data) {
                 if (data.successFlg) {
                     result.setResult(true);
                 } else {
                     result.setResult(false);
-                    result.setErrorMsg(msg);
+                    result.setErrorMsg(data.errorMsg);
                 }
             }
         });

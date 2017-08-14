@@ -179,7 +179,7 @@ public class ReportCategoryController extends BaseUIController {
         try {
             params.put("id", id);
             params.put("code", code);
-            return HttpClientUtil.doGet(ServiceApi.Resources.RsReportCategoryIsUniqueCode, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportCategoryIsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
             LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
@@ -197,8 +197,8 @@ public class ReportCategoryController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         try {
             params.put("id", id);
-            params.put("code", name);
-            return HttpClientUtil.doGet(ServiceApi.Resources.RsReportCategoryIsUniqueName, params, username, password);
+            params.put("name", name);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportCategoryIsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
             LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());

@@ -13,14 +13,14 @@
     <div class="m-form-group">
         <label>名称：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-50 required"
+            <input type="text" class="f-w240 max-length-50 required ajax"
                    id="name" data-attr-scan="name">
         </div>
     </div>
     <div class="m-form-group">
         <label>编码：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-50 required"
+            <input type="text" class="f-w240 max-length-50 required ajax"
                    id="code" data-attr-scan="code">
         </div>
     </div>
