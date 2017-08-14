@@ -115,7 +115,9 @@
                         {name: '街道', maxlength: 200}
                     ]
                 });
-
+                this.$location.parent().find('.u-select-title').css({
+                    width: '100%'
+                })
                 this.$traffic.ligerTextBox({width: 140});
                 this.$ing.ligerTextBox({width: 140});
                 this.$lat.ligerTextBox({width: 140});
