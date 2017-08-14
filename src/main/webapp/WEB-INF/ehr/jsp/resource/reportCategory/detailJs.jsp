@@ -42,36 +42,20 @@
             pid: detailModel.pid,
             remark: detailModel.remark
         });
-        $form.show();
     }
 
     function bindEvents() {
-        var validator = new $.jValidation.Validation($form, {
-            immediate: true,
-            onSubmit: false,
-            onElementValidateForAjax: function (el) {
-            }
-        });
+        debugger;
+        var validator = customFormValidator();
 
-        // 新增/修改
+        // 保存
         $('#btnSave').click(function () {
-            debugger;
-            if (!validator.validate()) {
-                return;
-            }
+            if (!validator.validate()) { return; }
 
             var loading = $.ligerDialog.waitting("正在保存数据...");
-
-            var formFieldsVal = $form.Fields.getValues();
-            formFieldsVal.id = $("#id").val();
-            formFieldsVal.code = $("#code").val();
-            formFieldsVal.name = $("#name").val();
-            formFieldsVal.pid = $("#pid").ligerComboBox().getValue();
-            formFieldsVal.remark = $("#remark").val();
-
             dataModel.fetchRemote("${contextRoot}/resource/reportCategory/save", {
                 type: 'post',
-                data: {data: JSON.stringify(formFieldsVal)},
+                data: {data: JSON.stringify($form.Fields.getValues())},
                 success: function (data) {
                     if (data.successFlg) {
                         if (detailModel.id) {
@@ -79,6 +63,7 @@
                         } else {
                             window.closeDetailDialog('修改成功');
                         }
+                        window.reloadMasterGrid();
                     } else {
                         $.Notice.error(data.errorMsg);
                     }
@@ -96,6 +81,49 @@
         $('#btnClose').click(function () {
             window.closeDetailDialog();
         })
+    }
+
+    // 表单验证
+    function customFormValidator() {
+        return new $.jValidation.Validation($form, {
+            immediate: true,
+            onSubmit: false,
+            onElementValidateForAjax: function (el) {
+                var elId = $(el).attr("id");
+                switch(elId) {
+                    case 'code':
+                        var code = $("#code").val();
+                        if($.Util.isStrEquals(code, detailModel.code)) {
+                            var ulr = "${contextRoot}/resource/reportCategory/isUniqueCode";
+                            return validateByAjax(ulr, {id: detailModel.id, code: code}, "该编码已存在，请重新填写！");
+                        }
+                    case 'name':
+                        var name = $("#name").val();
+                        if($.Util.isStrEquals(name, detailModel.name)) {
+                            var ulr = "${contextRoot}/resource/reportCategory/isUniqueName";
+                            return validateByAjax(ulr, {id: detailModel.id, name: name}, "已名称存在，请重新填写！");
+                        }
+                }
+            }
+        });
+    }
+
+    // 通过 jValidation 进行异步验证
+    function validateByAjax(url, params, msg) {
+        var result = new jValidation.ajax.Result();
+        var dataModel = $.DataModel.init();
+        dataModel.fetchRemote(url, {
+            data: params,
+            success: function (data) {
+                if (data.successFlg) {
+                    result.setResult(true);
+                } else {
+                    result.setResult(false);
+                    result.setErrorMsg(msg);
+                }
+            }
+        });
+        return result;
     }
 
 </script>

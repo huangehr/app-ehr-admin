@@ -15,7 +15,6 @@
     });
 
     function init() {
-//        debugger;
         $('#searchNm').ligerTextBox({
             width: 200, isSearch: true, search: function () {
                 reloadGrid(1);
@@ -29,7 +28,7 @@
                 url: '${contextRoot}/resource/reportCategory/getTreeData',
                 parms: {name: ""},
                 columns: [
-                    {display: 'id', name: 'id', hide: true},
+                    {display: 'ID', name: 'id', hide: true},
                     {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
                     {display: '编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
                     {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},

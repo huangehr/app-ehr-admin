@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class ReportCategoryController extends BaseUIController {
         Object detailModel = new RsReportCategoryModel();
         try {
             if (id != null) {
-                String url = comUrl + "/resources/reportCategory/" + id;
+                String url = comUrl + ServiceApi.Resources.RsReportCategoryPrefix + id;
                 String result = doGet(url, username, password);
                 detailModel = objectMapper.readValue(result, Envelop.class).getObj();
             }
@@ -100,7 +101,7 @@ public class ReportCategoryController extends BaseUIController {
     }
 
     /**
-     * 新增、修改
+     * 保存
      */
     @RequestMapping("/save")
     @ResponseBody
@@ -123,8 +124,8 @@ public class ReportCategoryController extends BaseUIController {
                 return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportCategorySave, params, username, password);
             } else {
                 // 修改
-                String urlGet = comUrl + "/resources/reportCategory/" + model.getId();
-                String envelopGetStr = HttpClientUtil.doGet(comUrl + urlGet, username, password);
+                String urlGet = comUrl + ServiceApi.Resources.RsReportCategoryPrefix + model.getId();
+                String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
                 if (!envelopGet.isSuccessFlg()) {
                     envelop.setErrorMsg("获取资源报表分类信息失败！");
@@ -159,10 +160,48 @@ public class ReportCategoryController extends BaseUIController {
             }
             Map<String, Object> params = new HashMap<>();
             params.put("id", id);
-            String url = ServiceApi.Resources.RsReportCategoryDelete + "/" + id;
+            String url = comUrl + ServiceApi.Resources.RsReportCategoryPrefix + "/delete" + id;
             return HttpClientUtil.doDelete(comUrl + url, params, username, password);
         } catch (Exception ex) {
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    /**
+     * 验证资源报表分类编码是否唯一
+     */
+    @RequestMapping("/isUniqueCode")
+    @ResponseBody
+    public Object isUniqueCode(@RequestParam Integer id, @RequestParam String code) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        try {
+            params.put("id", id);
+            params.put("code", code);
+            return HttpClientUtil.doGet(ServiceApi.Resources.RsReportCategoryIsUniqueCode, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    /**
+     * 验证资源报表分类名称是否唯一
+     */
+    @RequestMapping("/isUniqueName")
+    @ResponseBody
+    public Object isUniqueName(@RequestParam Integer id, @RequestParam String name) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        try {
+            params.put("id", id);
+            params.put("code", name);
+            return HttpClientUtil.doGet(ServiceApi.Resources.RsReportCategoryIsUniqueName, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
