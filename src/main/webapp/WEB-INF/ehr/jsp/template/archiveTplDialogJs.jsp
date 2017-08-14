@@ -103,11 +103,12 @@
                             }
                         ]
                     });
-
+debugger
                     $('#inp_versionNo_wrap').addClass('u-ui-readonly');
                     if(mode=='new' && !Util.isStrEmpty(model.organizationCode))
 //                        $('#inp_org_wrap').addClass('u-ui-readonly');
 //                    this.$form.liger.get('div_addArchiveTpl_form');
+                    this.$form.ligerForm();//初始化表单
                     this.$form.attrScan();
                     this.$form.Fields.fillValues({
                         id: model.id,

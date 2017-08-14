@@ -17,7 +17,7 @@
     <div class="m-form-group">
         <label>版本号：</label>
 
-        <div id="inp_versionNo_wrap" class="l-text-wrapper m-form-control essential f-pr0">
+        <div id="inp_versionNo_wrap" class="l-text-wrapper m-form-control essential">
             <input type="text" id="inp_versionNo" class="required  useTitle f-w238 " placeholder="请输入版本号" required-title=<spring:message code="lbl.must.input"/> data-type="select"
                    data-attr-scan="cdaVersion"/>
         </div>

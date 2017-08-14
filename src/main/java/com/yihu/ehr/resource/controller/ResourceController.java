@@ -386,7 +386,7 @@ public class ResourceController extends BaseUIController {
         }
     }
 
-    @RequestMapping(value = "/addResourceQuota")
+    @RequestMapping(value = "/addResourceQuota", produces = "text/html;charset=UTF-8")
     @ResponseBody
     public Object addResourceQuota(String quotaCode, String jsonModel, HttpServletRequest request) throws IOException {
         String url = "/batchAddResourceQuota";
