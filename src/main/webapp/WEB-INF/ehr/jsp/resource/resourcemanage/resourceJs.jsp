@@ -278,8 +278,7 @@
                             url:'${contextRoot}/resource/resourceManage/resourceShow',
                             urlParms:{
                                 id:resourceId,
-                                mode:mode,
-                                categoryId:categoryId,
+                                mode:mode
                             },
                             load:true,
                             show:false,

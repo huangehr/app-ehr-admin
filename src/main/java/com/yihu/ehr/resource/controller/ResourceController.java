@@ -83,12 +83,6 @@ public class ResourceController extends BaseUIController {
         model.addAttribute("contentPage","/resource/resourcemanage/resoureConfigure");
         return "simpleView";
     }
-    //    指标预览
-    @RequestMapping("/resourceShow")
-    public String resourceShow(Model model){
-        model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
-        return "simpleView";
-    }
 
     //配置授权浏览页面跳转
     @RequestMapping("/switch")
@@ -389,7 +383,7 @@ public class ResourceController extends BaseUIController {
     @RequestMapping(value = "/addResourceQuota", produces = "text/html;charset=UTF-8")
     @ResponseBody
     public Object addResourceQuota(String quotaCode, String jsonModel, HttpServletRequest request) throws IOException {
-        String url = "/batchAddResourceQuota";
+        String url = "/resourceQuota/batchAddResourceQuota";
         String resultStr = "";
         Envelop result = new Envelop();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -403,5 +397,24 @@ public class ResourceController extends BaseUIController {
             return result;
         }
         return resultStr;
+    }
+
+
+    //    指标预览
+    @RequestMapping("/resourceShow")
+    public String resourceShow(String id ,Model model){
+        String url = "/resources/getRsQuotaPreview";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("filter", "resourceId=" + id);
+        RestTemplates templates = new RestTemplates();
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
+        return "simpleView";
     }
 }
