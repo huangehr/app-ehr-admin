@@ -99,7 +99,7 @@
     }
 
     function reloadGrid() {
-        var params = {name: $('#searchNm').val()};
+        var params = {codeName: $('#searchNm').val()};
         $.Util.reloadGrid.call(grid, '${contextRoot}/resource/reportCategory/getTreeData', params);
     }
 
