@@ -185,8 +185,21 @@ public class TjQuotaController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
-        params.put("id", tjQuotaId);
+        //判断资源视图中有没有用到此视图，有用到 不允许删除
+        String resQuotaUrl = "/resourceQuota/searchByQuotaId";
+
         try {
+            params.put("quotaId", tjQuotaId);
+            resultStr = HttpClientUtil.doGet(comUrl + resQuotaUrl, params, username, password);
+            result = mapper.readValue(resultStr, Envelop.class);
+            if(result.getObj() != null){
+                result.setSuccessFlg(false);
+                result.setErrorMsg("指标在视图中被使用暂时不能删除，若要删除先解除资源视图中指标关系");
+                return result;
+            }
+
+            params.clear();
+            params.put("id", tjQuotaId);
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             result = mapper.readValue(resultStr, Envelop.class);
             if (result.isSuccessFlg()) {

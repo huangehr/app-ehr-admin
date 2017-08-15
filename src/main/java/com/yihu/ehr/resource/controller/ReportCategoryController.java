@@ -155,15 +155,12 @@ public class ReportCategoryController extends BaseUIController {
     @ResponseBody
     public Object delete(String id) {
         try {
-            if (id == null) {
-                return failed("ID不能为空！");
-            }
             Map<String, Object> params = new HashMap<>();
             params.put("id", id);
-            String url = comUrl + ServiceApi.Resources.RsReportCategoryPrefix + "/delete" + id;
-            return HttpClientUtil.doDelete(comUrl + url, params, username, password);
-        } catch (Exception ex) {
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+            return HttpClientUtil.doDelete(comUrl + ServiceApi.Resources.RsReportCategoryDelete, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }

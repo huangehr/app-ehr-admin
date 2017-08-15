@@ -4,7 +4,7 @@
 <script>
     var detailModel = ${detailModel};
     var dataModel = $.DataModel.init();
-    var validator = null;
+    var validator;
     var $form = $("#reportCategoryForm");
 
     $(function () {
@@ -12,6 +12,7 @@
     });
 
     function init() {
+        validator = customFormValidator();
         initForm();
         bindEvents();
     }
@@ -45,8 +46,6 @@
     }
 
     function bindEvents() {
-        var validator = customFormValidator();
-
         // 保存
         $('#btnSave').click(function () {
             if (!validator.validate()) { return; }
@@ -82,25 +81,27 @@
         })
     }
 
-    // 表单验证
+    // 表单验证对象
     function customFormValidator() {
         return new $.jValidation.Validation($form, {
             immediate: true,
             onElementValidateForAjax: function (el) {
+                debugger;
+                var id = detailModel.id || -1; // 新增时传-1。
                 var elId = $(el).attr("id");
                 switch(elId) {
                     case 'code':
                         var code = $("#code").val();
                         if(!$.Util.isStrEquals(code, detailModel.code)) {
                             var ulr = "${contextRoot}/resource/reportCategory/isUniqueCode";
-                            return validateByAjax(ulr, {id: detailModel.id, code: code});
+                            return validateByAjax(ulr, {id: id, code: code});
                         }
                         break;
                     case 'name':
                         var name = $("#name").val();
                         if(!$.Util.isStrEquals(name, detailModel.name)) {
                             var ulr = "${contextRoot}/resource/reportCategory/isUniqueName";
-                            return validateByAjax(ulr, {id: detailModel.id, name: name});
+                            return validateByAjax(ulr, {id: id, name: name});
                         }
                         break;
                 }
@@ -122,6 +123,9 @@
                     result.setResult(false);
                     result.setErrorMsg(data.errorMsg);
                 }
+            },
+            error: function () {
+                $.Notice.error('验证发生异常');
             }
         });
         return result;
