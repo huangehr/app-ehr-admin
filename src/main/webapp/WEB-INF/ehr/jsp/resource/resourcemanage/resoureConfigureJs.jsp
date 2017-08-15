@@ -17,11 +17,12 @@
             var validator = null;
             var validator1 = null;
             var quotaId = null;
+            var resourceId = '${resourceId}';
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 entryMater.init();
             }
-
+            var domIdArr = [];
 
             /* *************************** 标准字典模块初始化 ***************************** */
             entryMater = {
@@ -36,51 +37,87 @@
                             self.reloadGrid();
                         }
                     });
-                    this.loadMainGrid();//加载指标图表
+                    this.loadMainGrid();//加载主维度值
                     this.bindEvents();
                 },
                 loadMainGrid:function(){
                     var self = this;
                     this.grid = $("#div_relation_grid").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/tjQuota/getTjQuotaChartList',
-                        width:"300px",
+                        url: '${contextRoot}/resource/resourceManage/getResourceQuotaInfo',
+                        width:"380px",
                         height:"450px",
                         parms: {
-                            quotaCode:quotaId,
-                            name:"",
-                            dictId: 91
+                            resourceId: resourceId,
+                            name:""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: '编号', name: 'code', width: '50%', isAllowHide: false, align: 'left'},
-                            {display: '名称', name: 'value', width: '50%', isAllowHide: false, align: 'left'}
+                            {display: '指标分类', name: 'quotaTypeName', width: '35%', isAllowHide: false, align: 'left'},
+                            {display: '指标名称', name: 'quotaName', width: '35%', isAllowHide: false, align: 'left'},
+                            {display: '图表选择', name: 'name', width: '30%', isAllowHide: false, align: 'left',                                          render:function (row) {
+                                var domId = row.__id,
+                                    chartTypeArr = (row.chartType).split(',');
+                                var html = ['<select id="' + domId + '" style="width: 100%">'];
+                                for (var i = 0, len = chartTypeArr.length; i < len; i++) {
+                                    var c = '';
+                                    if (chartTypeArr[i] == row.quotaChart) {
+                                        c = 'checked';
+                                    }
+                                    switch (chartTypeArr[i]) {
+                                        case '1':
+                                            html.push('<option value="1" ' + c + '>柱状图</option>');
+                                            break;
+                                        case '2':
+                                            html.push('<option value="2" ' + c + '>折线图</option>');
+                                            break;
+                                        case '3':
+                                            html.push('<option value="1" ' + c + '>曲线图</option>');
+                                            break;
+                                        case '4':
+                                            html.push('<option value="1" ' + c + '>饼状图</option>');
+                                            break;
+                                    }
+                                }
+                                html.push('</select>');
+                                return html.join('');
+                            }}
                         ],
                         //delayLoad:true,
-                        selectRowButtonOnly: false,
+                        selectRowButtonOnly: true,
                         validate: true,
                         unSetValidateAttr: false,
                         allowHideColumn: false,
                         checkbox: true,
+                        rownumbers: false,
                         onSuccess:function(data){
+                            debugger
                             self.mainCheckedData(data.obj,"1");
                         },
                         //默认选中
                         isChecked:function(row){
-                            if(row.checked=="1"){
+                            if(row.flag)
+                            {
                                 return true;
                             }
                             else{
                                 return false;
                             }
                         },
+                        onToNext: function () {
+                            domIdArr = [];
+                        },
                         //选中修改值
-                        onCheckRow:function(checked,data,rowid,rowdata){
+                        onCheckRow:function(checked,data,rowid,rowdata)
+                        {
                             //修改行checked值
+//                            下拉框值
+                            var selectVal = $('#'+data.__id).val();
                             if(checked){
                                 data.checked ="1";
+                                data.quotaChart = selectVal;
                                 self.mainCheckedData([data],"1");
                             }else{
                                 data.checked ="0";
+                                data.quotaChart = '';
                                 self.deleteMainData(data);
                             }
                         },
@@ -90,35 +127,54 @@
                             if(selectedData.length>0){
                                 self.mainCheckedData(selectedData,"1");
                             }else{
+
                                 var currentData =  self.grid.getData();
                                 for(var i=0;i<currentData.length;i++){
-                                    if($("#div_main_relation").find(".div-item[data-code='"+currentData[i].code+"']").length>0){
+                                    if($("#div_main_relation").find(".div-item[data-code='" +
+                                                    ('div' + currentData[i].quotaId) +"']").length>0){
                                         self.deleteMainData(currentData[i]);
                                     }
                                 }
                             }
+
                         },
                     }));
                     // 自适应宽度
                     this.grid.adjustToWidth();
                 },
+//                移除行（右侧表格）
                 deleteMainData:function(data){
-                    $("#div_main_relation").find(".div-item[data-code="+data.code+"]").remove();
+                    $("#div_main_relation").find(".div-item[data-code=" + ('div' + data.quotaId) + "]").remove();
                 },
                 mainCheckedData:function(data,flag){
                     var resultHtml = "";
-                    var appDom = flag=="1"?$("#div_main_relation"):$("#div_slave_relation");
+                    var appDom = $("#div_main_relation");
                     for(var i=0;i<data.length;i++){
                         var item = data[i];
-                        var mainCode = item.code;
+                        var mainCode = 'div' + item.quotaId;
                         if(appDom.find(".div-item[data-code='"+mainCode+"']").length==0){
-                            debugger
-                            resultHtml+='<div class="h-40 div-item" data-id="'+item.code+'" data-code="'+mainCode+'"  data-name="'+item.value+'" >'+
-                                    '<div class="div-main-content">'+mainCode+'</div>'+
-                                    '<div class="div-main-content" title="'+item.value+'">'+item.value+'</div>'+
-                                    '<div class="div-delete-content">'+
-                                    '<a class="grid_delete" href="#" title="删除"></a>'+
-                                    '</div>'+
+                            var cName = '';
+                            switch (item.quotaChart) {
+                                case '1':
+                                    cName = '柱状图';
+                                    break;
+                                case '2':
+                                    cName = '折线图';
+                                    break;
+                                case '3':
+                                    cName = '曲线图';
+                                    break;
+                                case '4':
+                                    cName = '饼状图';
+                                    break;
+                            }
+                            resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName + '" data-qchart="' + item.quotaChart + '" >'+
+                                        '<div class="div-main-content">'+ item.quotaTypeName +'</div>'+
+                                        '<div class="div-main-content">'+ item.quotaName +'</div>'+
+                                        '<div class="div-main-content">'+cName+'</div>'+
+                                        '<div class="div-delete-content">'+
+                                            '<a class="grid_delete" href="#" title="删除"></a>'+
+                                        '</div>'+
                                     '</div>';
                         }
                     }
@@ -127,11 +183,10 @@
                 reloadGrid: function () {
                     var searchNmEntry = this.$searchNm.val();
                     var curGrid = this.grid;
-                    var reqUrl = '${contextRoot}/tjQuota/getTjQuotaChartList';
+                    var reqUrl = '${contextRoot}/resource/resourceManage/getResourceQuotaInfo';
                     var values = {
-                        quotaCode: this.$quotaCode,
-                        name:searchNmEntry,
-                        dictId: 91
+                        resourceId: resourceId,
+                        name:searchNmEntry
                     };
                     Util.reloadGrid.call(curGrid,reqUrl, values, 1);
                 },
@@ -142,25 +197,26 @@
                     }});
 
                     $("#div_save").click(function(){
-                        debugger
                         var wait = $.Notice.waitting('正在加载中...');
                         var saveData = [];
                         var quotaCode = null
-                        var reqUrl = '${contextRoot}/tjQuota/addTjQuotaChart';
+                        var reqUrl = '${contextRoot}/resource/resourceManage/addResourceQuota';
                         var divItem = $("#div_main_relation").find(".div-item");
                         $.each(divItem,function(key,value){
                             var ob = {
-                                chartId:$(value).attr("data-code"),
-                                quotaCode : self.$quotaCode
+                                quotaId:$(value).attr("data-id"),
+                                resourceId: resourceId,
+                                quotaTypeName:$(value).attr("data-name"),
+                                quotaChart:$(value).attr("data-qchart")
                             }
                             saveData.push(ob);
                         })
                         var dataModel = $.DataModel.init();
-                        dataModel.updateRemote(reqUrl, {data: {quotaCode : self.$quotaCode, jsonModel: JSON.stringify(saveData)},
+                        dataModel.updateRemote(reqUrl, {data: {quotaCode : resourceId, jsonModel: JSON.stringify(saveData)},
                             success: function (data) {
                                 wait.close();
                                 if(data.successFlg){
-                                    win.parent.closeChartConfigDialog();
+                                    $.Notice.success('保存成功！');
                                 }else{
                                     $.Notice.error(data.errorMsg);
                                 }
@@ -182,7 +238,7 @@
                         $("#div_main_relation").find(".div-item[data-code="+itemCode+"]").remove();
                     });
                     $('#div_close').on('click',function () {
-                        win.parent.closeChartConfigDialog();
+                        win.parent.closeZhibaioConfigueDialog();
                     });
                 }
             };

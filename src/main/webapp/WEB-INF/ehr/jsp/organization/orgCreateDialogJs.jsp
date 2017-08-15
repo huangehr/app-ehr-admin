@@ -127,6 +127,9 @@
                     {name: '街道', maxlength: 200}
                 ]});
 
+                this.$location.parent().find('.u-select-title').css({
+                    width: '100%'
+                })
                 this.$admin.ligerTextBox({width: 140, height:28});
                 this.$tags.ligerTextBox({width: 140, height:28});
                 this.$tel.ligerTextBox({width: 140, height:28});

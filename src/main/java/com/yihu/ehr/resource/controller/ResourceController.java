@@ -8,14 +8,20 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestClientException;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +75,15 @@ public class ResourceController extends BaseUIController {
         }
         return "simpleView";
     }
+
+    //    指标配置
+    @RequestMapping("/resourceConfigue")
+    public String resourceConfigue(Model model, String id){
+        model.addAttribute("resourceId", id);
+        model.addAttribute("contentPage","/resource/resourcemanage/resoureConfigure");
+        return "simpleView";
+    }
+
     //配置授权浏览页面跳转
     @RequestMapping("/switch")
     public String switchToPage(Model model,String pageName,String resourceId){
@@ -337,5 +352,69 @@ public class ResourceController extends BaseUIController {
             LogService.getLogger(ResourceController.class).error(ex.getMessage());
         }
         return envelopStr;
+    }
+
+    @RequestMapping("/getResourceQuotaInfo")
+    @ResponseBody
+    public Object getResourceQuotaInfo(String resourceId, String name, int page, int rows){
+        String url = "/resources/getQuotaList";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        if (!StringUtils.isEmpty(resourceId)) {
+            params.put("filters", "resourceId=" + resourceId);
+        }
+        if (!StringUtils.isEmpty(name)) {
+            params.put("quotaName", name);
+        }
+        params.put("page", page);
+        params.put("pageSize", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception ex) {
+            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    @RequestMapping(value = "/addResourceQuota", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object addResourceQuota(String quotaCode, String jsonModel, HttpServletRequest request) throws IOException {
+        String url = "/resourceQuota/batchAddResourceQuota";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("model", jsonModel);
+        RestTemplates templates = new RestTemplates();
+        try {
+            resultStr = templates.doPost(comUrl + url, params);
+        } catch (RestClientException e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+        return resultStr;
+    }
+
+
+    //    指标预览
+    @RequestMapping("/resourceShow")
+    public String resourceShow(String id ,Model model){
+        String url = "/resources/getRsQuotaPreview";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("filter", "resourceId=" + id);
+        RestTemplates templates = new RestTemplates();
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
+        return "simpleView";
     }
 }

@@ -70,6 +70,8 @@
 				$resourceInfoGrid: $("#div_resource_info_grid"),
 				$search: $("#inp_search"),
 				$searchNm: $('#inp_searchNm'),
+
+                $droDList: $('#droDList'),
 				init: function () {
 					var self = this;
 					var categoryName = '';
@@ -100,6 +102,19 @@
 						reloadGrid(parms);
 					}});
 					self.getResourceBrowseTree();
+
+                    self.$droDList.ligerComboBox({
+                        data: [{
+                            id: '0',
+                            text: '全部'
+                        },{
+                            id: '1',
+                            text: '档案数据'
+                        },{
+                            id: '2',
+                            text: '指标统计'
+                        }]
+                    });
 				},
 				getResourceBrowseTree: function () {
 					typeTree = this.$resourceBrowseTree.ligerSearchTree({
@@ -155,6 +170,10 @@
 							{display: '操作', name: 'operator', width: '32%', render: function (row) {
 								var html = '';
 								html += '<sec:authorize url="/resource/defaultParam/initial"><a class="label_a" title="默认参数配置" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:param:list:open", row.id,row.code) + '">默认参数配置</a></sec:authorize>';
+
+                                html += '<sec:authorize url="/resourceConfiguration/zhibaioConfigue"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioConfigue",row.id) + '">指标配置</a></sec:authorize>';
+                                html += '<sec:authorize url="/resourceConfiguration/zhibaioShow"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioShow",row.id,row.name,row.categoryName) + '">指标预览</a></sec:authorize>';
+
 								html += '<sec:authorize url="/resourceConfiguration/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1") + '">配置</a></sec:authorize>';
 								if(row.grantType == '0'){
 									html += '<sec:authorize url="/resource/grant/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1") + '">授权</a></sec:authorize>';
@@ -224,6 +243,55 @@
 						});
 						master.rsInfoDialog.hide();
 					});
+
+
+                    //指标配置
+                    $.subscribe("rs:switch:zhibaioConfigue",function(event, resourceId){
+                        var title = "指标配置";
+                        var wait = $.Notice.waitting("请稍后...");
+                        master.zhibaioConfigueDialog = $.ligerDialog.open({
+                            height:700,
+                            width:900,
+                            title:title,
+                            url:'${contextRoot}/resource/resourceManage/resourceConfigue',
+                            urlParms:{
+                                id:resourceId
+                            },
+                            load:true,
+                            show:false,
+                            isHidden:false,
+                            onLoaded:function(){
+                                wait.close(),
+                                master.zhibaioConfigueDialog.show()
+                            }
+                        });
+                        master.zhibaioConfigueDialog.hide();
+                    });
+                    //指标预览
+                    $.subscribe("rs:switch:zhibaioShow",function(event,resourceId,mode,categoryId){
+                        var title = "指标预览";
+                        var wait = $.Notice.waitting("请稍后...");
+                        master.zhibaioShowDialog = $.ligerDialog.open({
+                            height:550,
+                            width:500,
+                            title:title,
+                            url:'${contextRoot}/resource/resourceManage/resourceShow',
+                            urlParms:{
+                                id:resourceId,
+                                mode:mode
+                            },
+                            load:true,
+                            show:false,
+                            isHidden:false,
+                            onLoaded:function(){
+                                wait.close(),
+                                master.zhibaioShowDialog.show()
+                            }
+                        });
+                        master.zhibaioShowDialog.hide();
+                    });
+
+
 					//删除
 					$.subscribe('rs:info:delete',function(event,id){
 						$.ligerDialog.confirm("确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
@@ -300,6 +368,9 @@
 				isFirstPage = false;
 				master.rsInfoDialog.close();
 			};
+            win.closeZhibaioConfigueDialog = function (callback) {
+                master.zhibaioConfigueDialog.close();
+            };
 			//新增、修改（资源分类有修改情况）定位
 			win.locationTree = function(callbackParams){
 				if(!callbackParams){

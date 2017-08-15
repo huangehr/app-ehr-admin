@@ -165,8 +165,10 @@
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:tubiao:config", row.code, row.name) + '">图表配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/deleteTjDataSave"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">任务执行</a></sec:authorize>';
+                                   if(row.status != -1){
+                                       html += '<sec:authorize url="/tjQuota/deleteTjDataSave"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
+                                       html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">任务执行</a></sec:authorize>';
+                                   }
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:result:selectResult", row.id) + '">结果查询</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
                                     return html;
@@ -389,6 +391,7 @@
 
             win.closeChartConfigDialog = function () {
                 dictMaster.chartConfigDialog.close();
+                $.Notice.success('保存成功！');
             }
 
             win.closeZhiBiaoInfoDialog = function (callback) {

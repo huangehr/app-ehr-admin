@@ -123,11 +123,8 @@ public class ResourceBrowseController extends BaseUIController {
         //当前用户机构
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String orgCode = userDetailModel.getOrganization();
-
         params.put("orgCode", orgCode);
-
-//        params.put("orgCode", "41872607-9");
-
+        //params.put("orgCode", "41872607-9");
         params.put("resourcesCode", resourcesCode);
         Pattern pattern = Pattern.compile("\\[.+?\\]");
         Matcher matcher = pattern.matcher(searchParams);

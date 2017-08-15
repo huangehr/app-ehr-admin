@@ -283,7 +283,7 @@
                 },
                 </sec:authorize>
 
-                // 3-8 综合查询
+                // 3-1 综合查询
                 <sec:authorize url="/resourceBrowse/customQuery">
                 {
                     pid: 3,
@@ -328,7 +328,7 @@
                 },
                 </sec:authorize>
 
-                // 3-5 - 资源注册
+                // 3-5 - 资源注册 - 视图管理
                 <sec:authorize url="/resource/resourceManage/initial">
                 {
                     pid: 3,
@@ -358,6 +358,17 @@
                     id: 37,
                     text: '<spring:message code="title.resource.browse"/>',
                     url: '${contextRoot}/resourceBrowse/browse'
+                },
+                </sec:authorize>
+
+                // 3-8 - 资源报表分类
+                <sec:authorize url="/resource/reportCategory/index">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 38,
+                    text: '资源报表分类',
+                    url: '${contextRoot}/resource/reportCategory/index'
                 },
                 </sec:authorize>
 
