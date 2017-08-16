@@ -42,6 +42,16 @@ public class LogController extends BaseUIController {
         model.addAttribute("contentPage", "/log/log");
         return "pageView";
     }
+    /**
+     * 列表页
+     * @param model
+     * @return
+     */
+    @RequestMapping("logInfo")
+    public String logInfo(Model model) {
+        model.addAttribute("contentPage", "/log/logInfo");
+        return "simpleView";
+    }
 
     /**
      * 查找日志

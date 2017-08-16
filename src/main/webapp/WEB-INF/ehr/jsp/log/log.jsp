@@ -21,7 +21,7 @@
                        data-attr-scan="type">
             </div>
             <div class="m-form-control f-ml10">
-                <input type="text" id="inp_caller" class="f-h28 f-w1240" placeholder="请输入用户ID" data-attr-scan="caller">
+                <input type="text" id="inp_caller" class="f-h28 f-w1240" placeholder="请输入操作者姓名" data-attr-scan="caller">
             </div>
 
 
