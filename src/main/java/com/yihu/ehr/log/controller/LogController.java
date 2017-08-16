@@ -94,7 +94,7 @@ public class LogController extends BaseUIController {
      */
     @RequestMapping("getLogByIdAndType")
     public Object getDoctor(Model model,String type, String logId, String mode) throws IOException {
-        String url = "/getLogByIdAndType/"+logId;
+        String url = "/getLogByIdAndType";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
