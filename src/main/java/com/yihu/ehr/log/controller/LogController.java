@@ -95,7 +95,7 @@ public class LogController extends BaseUIController {
      */
     @RequestMapping("getLogByIdAndType")
     public Object getDoctor(Model model,String type, String logId, String mode) throws IOException {
-        String url = "/getLog/"+logId;
+        String url = "/getLogByIdAndType/"+logId;
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -104,7 +104,7 @@ public class LogController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop ep = getEnvelop(resultStr);
-            model.addAttribute("allData", resultStr);
+            model.addAttribute("logData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "log/logInfoDialog");
             return "simpleView";
