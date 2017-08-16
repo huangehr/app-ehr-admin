@@ -28,18 +28,16 @@
 
         grid = $("#grid").ligerGrid($.LigerGridEx.config({
             url: '${contextRoot}/resource/reportCategory/getTreeData',
-            parms: {name: ""},
             columns: [
                 {display: 'ID', name: 'id', hide: true},
                 {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},
-                {
-                    display: '操作', name: 'operator', width: '35%', align: 'center',
+                {display: '操作', name: 'operator', width: '35%', align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/resource/reportCategory/detail"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategory:open", row.id, 'modify') + '"></a></sec:authorize>';
-                        html += '<sec:authorize url="/resource/reportCategory/delete"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:reportCategory:delete", row.id) + '"></a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/reportCategory/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategory:open", row.id, 'modify') + '"></a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/reportCategory/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:reportCategory:delete", row.id) + '"></a></sec:authorize>';
                         return html;
                     }
                 }

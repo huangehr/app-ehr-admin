@@ -9,9 +9,9 @@
         </div>
 
         <div class="m-form-control m-form-control-fr">
-            <sec:authorize url="/resource/reportCategory/">
+            <sec:authorize url="/resource/report/">
                 <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam"
-                     onclick="javascript:$.publish( 'resource:reportCategory:open', ['', 'new'] )">
+                     onclick="javascript:$.publish( 'resource:report:open', ['', 'new'] )">
                     <span>新增</span>
                 </div>
             </sec:authorize>

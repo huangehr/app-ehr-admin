@@ -1,6 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
-import com.yihu.ehr.agModel.resource.RsReportCategoryModel;
+//import com.yihu.ehr.agModel.resource.RsReportCategoryModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.health.controller.HealthBusinessController;
@@ -46,23 +46,23 @@ public class ReportCategoryController extends BaseUIController {
         return "pageView";
     }
 
-    @RequestMapping(value = "detail")
-    public String detail(Model model, Integer id) {
-        Object detailModel = new RsReportCategoryModel();
-        try {
-            if (id != null) {
-                String url = comUrl + ServiceApi.Resources.RsReportCategoryPrefix + id;
-                String result = doGet(url, username, password);
-                detailModel = objectMapper.readValue(result, Envelop.class).getObj();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogService.getLogger(StdSourceManagerController.class).error(e.getMessage());
-        }
-        model.addAttribute("detailModel", toJson(detailModel));
-        model.addAttribute("contentPage", "resource/reportCategory/detail");
-        return "simpleView";
-    }
+//    @RequestMapping(value = "detail")
+//    public String detail(Model model, Integer id) {
+//        Object detailModel = new RsReportCategoryModel();
+//        try {
+//            if (id != null) {
+//                String url = comUrl + ServiceApi.Resources.RsReportCategoryPrefix + id;
+//                String result = doGet(url, username, password);
+//                detailModel = objectMapper.readValue(result, Envelop.class).getObj();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            LogService.getLogger(StdSourceManagerController.class).error(e.getMessage());
+//        }
+//        model.addAttribute("detailModel", toJson(detailModel));
+//        model.addAttribute("contentPage", "resource/reportCategory/detail");
+//        return "simpleView";
+//    }
 
     /**
      * 根据条件，获取资源报表分类（树形结构）
@@ -100,53 +100,53 @@ public class ReportCategoryController extends BaseUIController {
         }
     }
 
-    /**
-     * 保存
-     */
-    @RequestMapping("/save")
-    @ResponseBody
-    public Object save(String data) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-
-        try {
-            RsReportCategoryModel model = objectMapper.readValue(data, RsReportCategoryModel.class);
-            if (StringUtils.isEmpty(model.getCode())) {
-                return failed("编码不能为空！");
-            }
-            if (StringUtils.isEmpty(model.getName())) {
-                return failed("名称不能为空！");
-            }
-
-            if (model.getId() == null) {
-                // 新增
-                params.put("rsReportCategory", data);
-                return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportCategorySave, params, username, password);
-            } else {
-                // 修改
-                String urlGet = comUrl + ServiceApi.Resources.RsReportCategoryPrefix + model.getId();
-                String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
-                Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
-                if (!envelopGet.isSuccessFlg()) {
-                    envelop.setErrorMsg("获取资源报表分类信息失败！");
-                    return envelop;
-                }
-
-                RsReportCategoryModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportCategoryModel.class);
-                updateModel.setCode(model.getCode());
-                updateModel.setName(model.getName());
-                updateModel.setPid(model.getPid());
-                updateModel.setRemark(model.getRemark());
-
-                params.put("rsReportCategory", objectMapper.writeValueAsString(updateModel));
-                return HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportCategorySave, params, username, password);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
-        }
-    }
+//    /**
+//     * 保存
+//     */
+//    @RequestMapping("/save")
+//    @ResponseBody
+//    public Object save(String data) {
+//        Envelop envelop = new Envelop();
+//        Map<String, Object> params = new HashMap<>();
+//
+//        try {
+//            RsReportCategoryModel model = objectMapper.readValue(data, RsReportCategoryModel.class);
+//            if (StringUtils.isEmpty(model.getCode())) {
+//                return failed("编码不能为空！");
+//            }
+//            if (StringUtils.isEmpty(model.getName())) {
+//                return failed("名称不能为空！");
+//            }
+//
+//            if (model.getId() == null) {
+//                // 新增
+//                params.put("rsReportCategory", data);
+//                return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportCategorySave, params, username, password);
+//            } else {
+//                // 修改
+//                String urlGet = comUrl + ServiceApi.Resources.RsReportCategoryPrefix + model.getId();
+//                String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
+//                Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+//                if (!envelopGet.isSuccessFlg()) {
+//                    envelop.setErrorMsg("获取资源报表分类信息失败！");
+//                    return envelop;
+//                }
+//
+//                RsReportCategoryModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportCategoryModel.class);
+//                updateModel.setCode(model.getCode());
+//                updateModel.setName(model.getName());
+//                updateModel.setPid(model.getPid());
+//                updateModel.setRemark(model.getRemark());
+//
+//                params.put("rsReportCategory", objectMapper.writeValueAsString(updateModel));
+//                return HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportCategorySave, params, username, password);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+//            return failed(ErrorCode.SystemError.toString());
+//        }
+//    }
 
     /**
      * 删除
