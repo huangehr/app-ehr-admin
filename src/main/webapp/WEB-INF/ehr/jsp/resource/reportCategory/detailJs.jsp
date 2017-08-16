@@ -86,7 +86,6 @@
         return new $.jValidation.Validation($form, {
             immediate: true,
             onElementValidateForAjax: function (el) {
-                debugger;
                 var id = detailModel.id || -1; // 新增时传-1。
                 var elId = $(el).attr("id");
                 switch(elId) {
