@@ -115,6 +115,47 @@ public class LogController extends BaseUIController {
         }
     }
 
+    /**
+     * 查找日志
+     * @param
+     * @param page
+     * @param rows
+     * @return
+     */
+    @RequestMapping("searchListLogs")
+    @ResponseBody
+    public Object searchListLogs(String patient,String type,String startTime ,String endTime ,String caller, int page, int rows) {
+        String url = "/searchListLogs";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        if (!StringUtils.isEmpty(patient)) {
+            params.put("patient", patient);
+        }
+        if (!StringUtils.isEmpty(type)) {
+            params.put("logType", type);
+        }
+        if (!StringUtils.isEmpty(startTime)) {
+            params.put("startDate", startTime);
+        }
+        if (!StringUtils.isEmpty(endTime)) {
+            params.put("endDate", endTime);
+        }
+        if (!StringUtils.isEmpty(caller)) {
+            params.put("caller", caller);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
 
 
 
