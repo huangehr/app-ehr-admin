@@ -47,7 +47,7 @@
         </div>
         <div class="m-form-control">
             <div class="l-button u-btn u-btn-primary u-btn-small f-mt5" id="remtemplatePathBtn">
-                <span>上传模版</span>
+                <span>模版导入</span>
             </div>
         </div>
     </div>
