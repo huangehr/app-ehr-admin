@@ -1,5 +1,6 @@
 package com.yihu.ehr.log.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,6 +81,37 @@ public class LogController extends BaseUIController {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
+        }
+    }
+
+
+    /**
+     * 根据id获取log
+     * @param model
+     * @param logId
+     * @param mode
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("getLogByIdAndType")
+    public Object getDoctor(Model model,String type, String logId, String mode) throws IOException {
+        String url = "/getLog/"+logId;
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("logId", logId);
+        params.put("logType", type);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop ep = getEnvelop(resultStr);
+            model.addAttribute("allData", resultStr);
+            model.addAttribute("mode", mode);
+            model.addAttribute("contentPage", "log/logInfoDialog");
+            return "simpleView";
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
         }
     }
 
