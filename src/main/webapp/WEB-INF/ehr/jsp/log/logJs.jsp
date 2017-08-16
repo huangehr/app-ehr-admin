@@ -87,11 +87,13 @@
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '记录时间', name: 'time', width: '10%'},
-                            {display: '用户ID', name: 'caller', width: '10%'},
-                            {display: '响应Code', name: 'responseCode', width: '10%'},
-                            {display: '响应时间', name: 'responseTime', width: '10%'},
-                            {display: '响应结果', name: 'response', width: '60%'}
+                        //  菜单名称  功能名称 用户名称  记录时间  响应code 响应结果 点击明细后可查看日志明细
+                            {display: '菜单名称', name: 'function', width: '10%'},
+                            {display: '功能名称', name: 'operation', width: '10%'},
+                            {display: '用户', name: 'patient', width: '9%'},
+                            {display: '记录时间', name: 'time', width: '8%'},
+                            {display: '响应Code', name: 'responseCode', width: '8%'},
+                            {display: '响应结果', name: 'response', width: '55%',align:'left'}
                         ],
                         enabledEdit: true,
                         validate: true,
@@ -132,11 +134,19 @@
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '记录时间', name: 'time', width: '20%'},
-                            {display: '用户ID', name: 'caller', width: '20%'},
-                            {display: '响应Code', name: 'responseCode', width: '10%'},
-                            {display: '响应时间', name: 'responseTime', width: '10%'},
-                            {display: '响应结果', name: 'response', width: '60%'}
+                            //  菜单名称  功能名称 用户名称  记录时间  响应code 响应结果 点击明细后可查看日志明细
+                            {display: '菜单名称', name: 'function', width: '10%'},
+                            {display: '功能名称', name: 'operation', width: '10%'},
+                            {display: '用户', name: 'patient', width: '9%'},
+                            {display: '记录时间', name: 'time', width: '8%'},
+                            {display: '响应Code', name: 'responseCode', width: '8%'},
+                            {display: '响应结果', name: 'response', width: '55%',align:'left'}
+
+//                            {display: '记录时间', name: 'time', width: '20%'},
+//                            {display: '用户ID', name: 'caller', width: '20%'},
+//                            {display: '响应Code', name: 'responseCode', width: '10%'},
+//                            {display: '响应时间', name: 'responseTime', width: '10%'},
+//                            {display: '响应结果', name: 'response', width: '60%'}
 //                            {display: '数据', name: 'params', width: '60%'}
                         ],
                         enabledEdit: true,
