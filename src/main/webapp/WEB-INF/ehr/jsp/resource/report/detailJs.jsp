@@ -5,7 +5,7 @@
     var detailModel = ${detailModel};
     var dataModel = $.DataModel.init();
     var validator;
-    var $form = $("#reportCategoryForm");
+    var $form = $("#reportForm");
 
     $(function () {
         init();
@@ -20,7 +20,7 @@
     function initForm() {
         $('#code').ligerTextBox({width: 240});
         $('#name').ligerTextBox({width: 240});
-        $("#pid").ligerComboBox({
+        $("#reportCategoryId").ligerComboBox({
             treeLeafOnly: false,
             tree: {
                 ajaxType: 'get',
@@ -33,15 +33,26 @@
                 single: true
             }
         });
+        $("#status").ligerComboBox({
+            ajaxType: 'get',
+            url: "${contextRoot}/dict/searchDictEntryList",
+            dataParmName: 'detailModelList',
+            urlParms: {dictId: 92}, // 报表状态字典ID
+            valueField: 'code',
+            textField: 'value'
+        });
         $('#remark').ligerTextBox({width: 240, height: 150});
+        $('#remtemplatePath').ligerTextBox({width: 240, disabled: true});
 
         $form.attrScan();
         $form.Fields.fillValues({
             id: detailModel.id,
             code: detailModel.code,
             name: detailModel.name,
-            pid: detailModel.pid,
-            remark: detailModel.remark
+            reportCategoryId: detailModel.reportCategoryId,
+            status: detailModel.status,
+            remark: detailModel.remark,
+            templatePath: detailModel.templatePath
         });
     }
 
@@ -51,7 +62,7 @@
             if (!validator.validate()) { return; }
 
             var loading = $.ligerDialog.waitting("正在保存数据...");
-            dataModel.fetchRemote("${contextRoot}/resource/reportCategory/save", {
+            dataModel.fetchRemote("${contextRoot}/resource/report/save", {
                 type: 'post',
                 data: {data: JSON.stringify($form.Fields.getValues())},
                 success: function (data) {
@@ -92,14 +103,14 @@
                     case 'code':
                         var code = $("#code").val();
                         if(!$.Util.isStrEquals(code, detailModel.code)) {
-                            var ulr = "${contextRoot}/resource/reportCategory/isUniqueCode";
+                            var ulr = "${contextRoot}/resource/report/isUniqueCode";
                             return validateByAjax(ulr, {id: id, code: code});
                         }
                         break;
                     case 'name':
                         var name = $("#name").val();
                         if(!$.Util.isStrEquals(name, detailModel.name)) {
-                            var ulr = "${contextRoot}/resource/reportCategory/isUniqueName";
+                            var ulr = "${contextRoot}/resource/report/isUniqueName";
                             return validateByAjax(ulr, {id: id, name: name});
                         }
                         break;

@@ -367,8 +367,19 @@
                     pid: 3,
                     level:2,
                     id: 38,
-                    text: '资源报表分类',
+                    text: '报表类别',
                     url: '${contextRoot}/resource/reportCategory/index'
+                },
+                </sec:authorize>
+
+                // 3-9 - 资源报表管理
+                <sec:authorize url="/resource/report/index">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 39,
+                    text: '报表管理',
+                    url: '${contextRoot}/resource/report/index'
                 },
                 </sec:authorize>
 
