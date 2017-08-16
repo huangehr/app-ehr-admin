@@ -11,8 +11,10 @@
     (function ($, win, u) {
         $(function () {
             var objStr = '${logData}';
+            var obg = [];
+            debugger
             try {
-                var obg = objStr && JSON.parse(objStr);
+                obg = objStr && JSON.parse(objStr);
             } catch (e) {
 
             }

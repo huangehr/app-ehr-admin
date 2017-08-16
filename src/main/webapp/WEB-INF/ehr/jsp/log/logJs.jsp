@@ -32,6 +32,7 @@
             }
 
             function reloadGrid (url, params,type) {
+                debugger
                 if(type == 1){
                     masterOperator.init();
                     if (isFirstPage){
@@ -102,7 +103,7 @@
                 addMessageInfoDialog:null,
                 init: function () {
                     grid = $("#div_log_info_dialog").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/logManager/searchLogs',
+                        url: '${contextRoot}/logManager/searchListLogs',
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
@@ -125,7 +126,7 @@
                             }}
                         ],
                         onDblClickRow: function (d) {
-                            openWin(d.id, d.logType);
+//                            openWin(d.id, d.logType);
                         },
                         enabledEdit: true,
                         validate: true,
@@ -138,7 +139,7 @@
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
                     var type = $("#inp_type_val").val();
-                    reloadGrid.call(this, '${contextRoot}/logManager/searchLogs', {
+                    reloadGrid.call(this, '${contextRoot}/logManager/searchListLogs', {
                         patient: $('#inp_caller').val(),
                         type:$("#inp_type_val").val(),
                         startTime: $('#inp_start_time').val(),
@@ -163,7 +164,7 @@
                 addMessageInfoDialog:null,
                 init: function () {
                     gridOperator = $("#div_log_info_dialog").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/logManager/searchLogs',
+                        url: '${contextRoot}/logManager/searchListLogs',
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
@@ -186,7 +187,7 @@
                             }}
                         ],
                         onDblClickRow: function (d) {
-                            openWin(d.id, d.logType);
+//                            openWin(d.id, d.logType);
                         },
                         enabledEdit: true,
                         validate: true,
@@ -199,7 +200,7 @@
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
                     var type = $("#inp_type_val").val();
-                    reloadGrid.call(this, '${contextRoot}/logManager/searchLogs',  {
+                    reloadGrid.call(this, '${contextRoot}/logManager/searchListLogs',  {
                         patient: $('#inp_caller').val(),
                         type:$("#inp_type_val").val(),
                         startTime: $('#inp_start_time').val(),
