@@ -22,10 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 资源综合查询数据服务控制器
@@ -48,7 +45,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * 综合查询档案数据列表树
      * @return
      */
-    @RequestMapping(value = "/getMetadataList", method = RequestMethod.POST)
+    @RequestMapping("/getMetadataList")
     @ResponseBody
     public Object getMetadataList() {
         Envelop envelop = new Envelop();
@@ -75,7 +72,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/searchMetadataData", method = RequestMethod.POST)
+    @RequestMapping("/searchMetadataData")
     @ResponseBody
     public Object searchMetadataData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
@@ -117,7 +114,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * 综合查询指标统计列表树
      * @return
      */
-    @RequestMapping(value = "/getQuotaList", method = RequestMethod.GET)
+    @RequestMapping("/getQuotaList")
     @ResponseBody
     public Object getQuotaList() {
         Envelop envelop = new Envelop();
@@ -138,51 +135,67 @@ public class ResourceIntegratedController extends BaseUIController {
      * 综合查询指标统计数据检索
      * @return
      */
-    @RequestMapping(value = "/searchQuotaData", method = RequestMethod.GET)
+    @RequestMapping("/searchQuotaData")
     @ResponseBody
-    public Object searchQuotaData(String tjQuotaIds, String searchParams, int page, int rows) {
+    public Object searchQuotaData(String tjQuotaIds, String tjQuotaCodes, String searchParams, int page, int rows) {
         Envelop result = new Envelop();
-        List<Object> resultList = new ArrayList<Object>();
-        String url = "/tj/tjGetQuotaResult";
-        List<Long> tjQuotaIdList;
-        boolean isFailed = false;
+        List<Envelop> envelopList = new ArrayList<Envelop>();
+        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
         try {
-            tjQuotaIdList = (List<Long>) objectMapper.readValue(tjQuotaIds, List.class);
-        }catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("参数有误");
-            return result;
-        }
-        try {
-            if (tjQuotaIdList != null && tjQuotaIdList.size() > 0) {
-                for (Long id : tjQuotaIdList) {
-                    Envelop envelop = new Envelop();
-                    Map<String, Object> params = new HashMap<String, Object>();
-                    params.put("id", id);
-                    params.put("pageNo", page);
-                    params.put("pageSize", rows);
-                    params.put("filters", searchParams);
-                    String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-                    envelop = toModel(resultStr, Envelop.class);
-                    resultList.add(envelop);
-                    if(!envelop.isSuccessFlg()) {
-                        isFailed = true;
+            String url1 = "/tj/tjGetQuotaResult";
+            String url2 = "/tj/getTjQuotaSynthesiseDimension";
+            boolean isFailed = false;
+            //检查维度交集查询参数是否正确
+            if (tjQuotaCodes == null) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("参数不能为空");
+                return result;
+            }
+            //获取数据交集
+            Map<String, Object> params1 = new HashMap<String, Object>();
+            params1.put("quotaCodes", tjQuotaCodes);
+            String resultStr2 = HttpClientUtil.doGet(comUrl + url2, params1, username, password);
+            //如果数据交集不为空，获取相关指标执行的结果
+            if(resultStr2 != null) {
+                //检查指标执行结果查询参数是否正确
+                List<Long> tjQuotaIdList = (List<Long>) objectMapper.readValue(tjQuotaIds, List.class);
+                /**
+                 * 请求数据
+                 */
+                if (tjQuotaIdList != null && tjQuotaIdList.size() > 0) {
+                    for (Long id : tjQuotaIdList) {
+                        Envelop envelop = new Envelop();
+                        Map<String, Object> params2 = new HashMap<String, Object>();
+                        params2.put("id", id);
+                        params2.put("pageNo", page);
+                        params2.put("pageSize", rows);
+                        params2.put("filters", searchParams);
+                        String resultStr1 = HttpClientUtil.doGet(comUrl + url1, params2, username, password);
+                        envelop = toModel(resultStr1, Envelop.class);
+                        envelopList.add(envelop);
+                        if (envelop == null || !envelop.isSuccessFlg()) {
+                            isFailed = true;
+                        }
                     }
                 }
+                if (isFailed) {
+                    result.setSuccessFlg(false);
+                    result.setErrorMsg("请求结果有误");
+                    return result;
+                }
+                /**
+                 * 处理结果集
+                 */
+            }else {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("无效指标合集");
+                return result;
             }
         }catch (Exception e) {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }
-        if(isFailed) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("请求结果有误");
-            return result;
-        }
-        /**
-         * 请在以下处理结果集
-         */
         return result;
     }
 
@@ -195,7 +208,7 @@ public class ResourceIntegratedController extends BaseUIController {
     public Object updateResource(String dataJson) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String url = "/resources/integrated/update_resource";
+        String url = "/resources/integrated/resource_update";
         params.put("dataJson", dataJson);
         try {
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
@@ -217,7 +230,7 @@ public class ResourceIntegratedController extends BaseUIController {
     public Object updateResourceQuery(String dataJson){
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String url = "/resources/integrated/update_resource_query";
+        String url = "/resources/integrated/resource_query_update";
         params.put("dataJson", dataJson);
         try {
             String resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
@@ -256,7 +269,7 @@ public class ResourceIntegratedController extends BaseUIController {
                 sheet.addCell(new Label(i + 6, 1, String.valueOf(temp.get("name"))));
                 metaDataList.add(String.valueOf(temp.get("code")));
             }
-            String url = "/resources/customize_data";
+            String url = "/resources/integrated/metadata_data";
             //当前用户机构
             UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
             params.put("resourcesCode", resourcesCode);

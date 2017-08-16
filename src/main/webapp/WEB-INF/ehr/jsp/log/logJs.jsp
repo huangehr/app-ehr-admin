@@ -61,7 +61,7 @@
                     window.form = this.$element;
                     this.$searchlog.ligerTextBox({width: 240 });
                     var typeData =  [{ id: 1, text: '网关日志' },{ id: 2, text: '业务日志'}];
-                    $("#inp_type").ligerComboBox({ data: typeData});
+                    $("#inp_type").ligerComboBox({ data: typeData,value:'2'});
                     this.$startTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
                     this.$endTime.ligerDateEditor({format:'yyyy-MM-dd hh:mm:ss',showTime: true,labelWidth: 50, labelAlign: 'center',absolute:false,cancelable:true});
                     this.bindEvents();
@@ -81,7 +81,7 @@
                         pageSize:20,
                         parms: {
                             caller: '',
-                            type: '',
+                            type:$("#inp_type_val").val(),
                             startTime: '',
                             endTime: ''
                         },
