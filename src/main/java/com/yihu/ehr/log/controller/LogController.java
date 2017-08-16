@@ -46,17 +46,6 @@ public class LogController extends BaseUIController {
         return "pageView";
     }
     /**
-     * 列表页
-     * @param model
-     * @return
-     */
-    @RequestMapping("logInfo")
-    public String logInfo(Model model) {
-        model.addAttribute("contentPage", "/log/logInfo");
-        return "simpleView";
-    }
-
-    /**
      * 查找日志
      * @param
      * @param page
@@ -116,7 +105,7 @@ public class LogController extends BaseUIController {
             Envelop ep = getEnvelop(resultStr);
             model.addAttribute("logData", resultStr);
             model.addAttribute("mode", mode);
-            model.addAttribute("contentPage", "log/logInfoDialog");
+            model.addAttribute("contentPage", "log/logInfo");
             return "simpleView";
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
