@@ -10,20 +10,55 @@
 <script>
     (function ($, win, u) {
         $(function () {
+            var objStr = '${logData}';
+            try {
+                var obg = objStr && JSON.parse(objStr);
+            } catch (e) {
+
+            }
+
             var Log = {
-                $inpCategory: $('#inp_category'),
+                $appKey: $('#appKey'),
+                $function: $('#function'),
+                $operation: $('#operation'),
+                $patient: $('#patient'),
+                $time: $('#time'),
+                $responseTime: $('#responseTime'),
+                $responseCode: $('#responseCode'),
+                $response: $('#response'),
                 $form: $('#div_rs_info_form'),
                 init: function () {
                     this.initForm();
                 },
                 initForm: function () {
-                    this.$inpCategory.ligerTextBox();
-                    debugger
-                    this.$form.attrScan();
-                    this.$form.Fields.fillValues({
-                        categoryId: 'asdasd'
+                    this.$appKey.ligerTextBox();
+                    this.$function.ligerTextBox();
+                    this.$operation.ligerTextBox();
+                    this.$patient.ligerTextBox();
+                    this.$time.ligerTextBox();
+                    this.$responseTime.ligerTextBox();
+                    this.$responseCode.ligerTextBox();
+                    this.$response.ligerTextBox({
+                        height: '100',
+                        digits: false
                     });
-                    this.$form.show();
+                    this.$form.attrScan();
+                    if (obg) {
+                        if (obg.successFlg) {
+                            var d = obg.detailModelList[0];
+                            this.$form.Fields.fillValues({
+                                appKey: d.appKey,
+                                function:d.function,
+                                operation:d.operation,
+                                patient:d.patient,
+                                time:d.time,
+                                responseTime:d.responseTime,
+                                responseCode:d.responseCode,
+                                response: d.response,
+                            });
+                            this.$form.show();
+                        }
+                    }
                 }
             }
             Log.init();

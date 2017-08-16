@@ -74,6 +74,29 @@
                 }
             };
 
+            function openWin(id, type) {
+                var title = "日志详情";
+                var wait = $.Notice.waitting("请稍后...");
+                logInfo = $.ligerDialog.open({
+                    height:550,
+                    width:500,
+                    title:title,
+                    url:'${contextRoot}/logManager/getLogByIdAndType',
+                    urlParms:{
+                        logId: id,
+                        type: type
+                    },
+                    load:true,
+                    show:false,
+                    isHidden:false,
+                    onLoaded:function(){
+                        wait.close(),
+                                logInfo.show()
+                    }
+                });
+                logInfo.hide();
+            }
+            
             master = {
                 messageInfoDialog: null,
                 addMessageInfoDialog:null,
@@ -83,14 +106,14 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            caller: '',
+                            patient: '',
                             type:$("#inp_type_val").val(),
                             startTime: '',
                             endTime: ''
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '系统名称', name: 'appKey', width: '20%'},
+                            {display: '系统名称', name: 'appKey', width: '15%'},
                             {display: '菜单名称', name: 'function', width: '20%'},
                             {display: '功能名称', name: 'operation', width: '15%'},
                             {display: '操作者', name: 'patient', width: '10%'},
@@ -101,6 +124,9 @@
                                 return html;
                             }}
                         ],
+                        onDblClickRow: function (d) {
+                            openWin(d.id, d.logType);
+                        },
                         enabledEdit: true,
                         validate: true,
                         unSetValidateAttr: false
@@ -112,7 +138,12 @@
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
                     var type = $("#inp_type_val").val();
-                    reloadGrid.call(this, '${contextRoot}/logManager/searchLogs', values,type);
+                    reloadGrid.call(this, '${contextRoot}/logManager/searchLogs', {
+                        patient: $('#inp_caller').val(),
+                        type:$("#inp_type_val").val(),
+                        startTime: $('#inp_start_time').val(),
+                        endTime: $('#inp_end_time').val()
+                    },type);
                 },
                 bindEvents: function () {
                     var self = this;
@@ -121,26 +152,7 @@
                         master.reloadGrid();
                     });
                     $.subscribe("log:info:show",function(event, id, type){
-                        var title = "日志详情";
-                        var wait = $.Notice.waitting("请稍后...");
-                        logInfo = $.ligerDialog.open({
-                            height:550,
-                            width:500,
-                            title:title,
-                            url:'${contextRoot}/logManager/getLogByIdAndType',
-                            urlParms:{
-                                logId: id,
-                                type: type
-                            },
-                            load:true,
-                            show:false,
-                            isHidden:false,
-                            onLoaded:function(){
-                                wait.close(),
-                                        logInfo.show()
-                            }
-                        });
-                        logInfo.hide();
+                        openWin(id, type);
                     });
                 }
             };
@@ -155,14 +167,14 @@
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            caller: '',
+                            patient: '',
                             type: '',
                             startTime: '',
                             endTime: ''
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '系统名称', name: 'appKey', width: '20%'},
+                            {display: '系统名称', name: 'appKey', width: '15%'},
                             {display: '菜单名称', name: 'function', width: '20%'},
                             {display: '功能名称', name: 'operation', width: '15%'},
                             {display: '操作者', name: 'patient', width: '10%'},
@@ -173,6 +185,9 @@
                                 return html;
                             }}
                         ],
+                        onDblClickRow: function (d) {
+                            openWin(d.id, d.logType);
+                        },
                         enabledEdit: true,
                         validate: true,
                         unSetValidateAttr: false
@@ -184,7 +199,12 @@
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
                     var type = $("#inp_type_val").val();
-                    reloadGrid.call(this, '${contextRoot}/logManager/searchLogs', values,type);
+                    reloadGrid.call(this, '${contextRoot}/logManager/searchLogs',  {
+                        patient: $('#inp_caller').val(),
+                        type:$("#inp_type_val").val(),
+                        startTime: $('#inp_start_time').val(),
+                        endTime: $('#inp_end_time').val()
+                    },type);
                 },
                 bindEvents: function () {
                     var self = this;
@@ -193,26 +213,8 @@
                         masterOperator.reloadGrid();
                     });
 
-                    $.subscribe("log:info:show",function(event, id){
-                        var title = "日志详情";
-                        var wait = $.Notice.waitting("请稍后...");
-                        logInfo = $.ligerDialog.open({
-                            height:550,
-                            width:500,
-                            title:title,
-                            url:'${contextRoot}/logManager/logInfo',
-                            urlParms:{
-                                id: id,
-                            },
-                            load:true,
-                            show:false,
-                            isHidden:false,
-                            onLoaded:function(){
-                                wait.close(),
-                                logInfo.show()
-                            }
-                        });
-                        logInfo.hide();
+                    $.subscribe("log:info:show",function(event, id, type){
+                        openWin(id, type);
                     });
                 }
             };
