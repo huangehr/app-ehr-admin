@@ -33,11 +33,7 @@
                 {display: '报表名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '报表编码', name: 'code', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '报表分类', name: 'reportCategory', width: '15%', isAllowHide: false, align: 'center'},
-                {display: '状态', name: 'status', width: '5%', isAllowHide: false, align: 'center',
-                    render: function (row) {
-                        return row.status == 1 ? '有效' : '无效';
-                    }
-                },
+                {display: '状态', name: 'statusName', width: '5%', isAllowHide: false, align: 'center'},
                 {display: '备注', name: 'remark', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '操作', name: 'operator', width: '35%', align: 'center',
                     render: function (row) {
