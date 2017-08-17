@@ -274,7 +274,7 @@
                         var wait = $.Notice.waitting("请稍后...");
                         master.zhibaioShowDialog = $.ligerDialog.open({
                             height:550,
-                            width:500,
+                            width:800,
                             title:title,
                             url:'${contextRoot}/resource/resourceManage/resourceShow',
                             urlParms:{
