@@ -21,14 +21,4 @@
         height: 28px;
         width: 240px;
     }
-    /*.l-box-select .mCustomScrollBox {
-        display: none;
-    }*/
-    .l-box-select .l-tree {
-        width: auto !important;
-    }
-    .l-box-select .l-tree span {
-        height: 22px;
-        line-height: 22px;
-    }
 </style>
