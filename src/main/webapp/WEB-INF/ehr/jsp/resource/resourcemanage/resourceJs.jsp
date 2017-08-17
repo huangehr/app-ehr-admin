@@ -170,9 +170,10 @@
 							{display: '操作', name: 'operator', width: '32%', render: function (row) {
 								var html = '';
 								html += '<sec:authorize url="/resource/defaultParam/initial"><a class="label_a" title="默认参数配置" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:param:list:open", row.id,row.code) + '">默认参数配置</a></sec:authorize>';
-
-                                html += '<sec:authorize url="/resourceConfiguration/zhibaioConfigue"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioConfigue",row.id) + '">指标配置</a></sec:authorize>';
-                                html += '<sec:authorize url="/resourceConfiguration/zhibaioShow"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioShow",row.id,row.name,row.categoryName) + '">指标预览</a></sec:authorize>';
+                                if (row.dataSource == 2 || row.dataSource == null) {
+                                    html += '<sec:authorize url="/resourceConfiguration/zhibaioConfigue"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioConfigue",row.id) + '">指标配置</a></sec:authorize>';
+                                    html += '<sec:authorize url="/resourceConfiguration/zhibaioShow"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioShow",row.id) + '">指标预览</a></sec:authorize>';
+                                }
 
 								html += '<sec:authorize url="/resourceConfiguration/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1") + '">配置</a></sec:authorize>';
 								if(row.grantType == '0'){
@@ -268,7 +269,7 @@
                         master.zhibaioConfigueDialog.hide();
                     });
                     //指标预览
-                    $.subscribe("rs:switch:zhibaioShow",function(event,resourceId,mode,categoryId){
+                    $.subscribe("rs:switch:zhibaioShow",function(event,resourceId){
                         var title = "指标预览";
                         var wait = $.Notice.waitting("请稍后...");
                         master.zhibaioShowDialog = $.ligerDialog.open({
@@ -277,8 +278,7 @@
                             title:title,
                             url:'${contextRoot}/resource/resourceManage/resourceShow',
                             urlParms:{
-                                id:resourceId,
-                                mode:mode
+                                id:resourceId
                             },
                             load:true,
                             show:false,

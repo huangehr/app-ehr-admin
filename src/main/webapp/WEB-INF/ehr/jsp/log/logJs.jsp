@@ -20,6 +20,9 @@
             var master = null;
             var masterOperator = null;
 
+
+            var logInfo = null;
+
             /* ************************** 变量定义结束 ******************************** */
             var isFirstPage = true;
             /* *************************** 函数定义 ******************************* */
@@ -29,6 +32,7 @@
             }
 
             function reloadGrid (url, params,type) {
+                debugger
                 if(type == 1){
                     masterOperator.init();
                     if (isFirstPage){
@@ -71,28 +75,59 @@
                 }
             };
 
+            function openWin(id, type) {
+                var title = "日志详情";
+                var wait = $.Notice.waitting("请稍后...");
+                logInfo = $.ligerDialog.open({
+                    height:550,
+                    width:500,
+                    title:title,
+                    url:'${contextRoot}/logManager/getLogByIdAndType',
+                    urlParms:{
+                        logId: id,
+                        type: type
+                    },
+                    load:true,
+                    show:false,
+                    isHidden:false,
+                    onLoaded:function(){
+                        wait.close(),
+                                logInfo.show()
+                    }
+                });
+                logInfo.hide();
+            }
+            
             master = {
                 messageInfoDialog: null,
                 addMessageInfoDialog:null,
                 init: function () {
                     grid = $("#div_log_info_dialog").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/logManager/searchLogs',
+                        url: '${contextRoot}/logManager/searchListLogs',
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            caller: '',
+                            patient: '',
                             type:$("#inp_type_val").val(),
                             startTime: '',
                             endTime: ''
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '记录时间', name: 'time', width: '10%'},
-                            {display: '用户ID', name: 'caller', width: '10%'},
-                            {display: '响应Code', name: 'responseCode', width: '10%'},
-                            {display: '响应时间', name: 'responseTime', width: '10%'},
-                            {display: '响应结果', name: 'response', width: '60%'}
+                            {display: '系统名称', name: 'appKey', width: '15%'},
+                            {display: '菜单名称', name: 'function', width: '20%'},
+                            {display: '功能名称', name: 'operation', width: '15%'},
+                            {display: '操作者', name: 'patient', width: '10%'},
+                            {display: '操作时间', name: 'time', width: '15%'},
+                            {display: '响应Code', name: 'responseCode', width: '15%'},
+                            {display: '操作', name: 'response', width: '10%',render: function (row) {
+                                var html = '<a class="label_a" title="查看详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "log:info:show", row.id, row.logType) + '">查看详情</a>';
+                                return html;
+                            }}
                         ],
+                        onDblClickRow: function (d) {
+//                            openWin(d.id, d.logType);
+                        },
                         enabledEdit: true,
                         validate: true,
                         unSetValidateAttr: false
@@ -104,13 +139,21 @@
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
                     var type = $("#inp_type_val").val();
-                    reloadGrid.call(this, '${contextRoot}/logManager/searchLogs', values,type);
+                    reloadGrid.call(this, '${contextRoot}/logManager/searchListLogs', {
+                        patient: $('#inp_caller').val(),
+                        type:$("#inp_type_val").val(),
+                        startTime: $('#inp_start_time').val(),
+                        endTime: $('#inp_end_time').val()
+                    },type);
                 },
                 bindEvents: function () {
                     var self = this;
                     retrieve.$searchBtn.click(function () {
                         grid.options.newPage = 1;
                         master.reloadGrid();
+                    });
+                    $.subscribe("log:info:show",function(event, id, type){
+                        openWin(id, type);
                     });
                 }
             };
@@ -121,24 +164,31 @@
                 addMessageInfoDialog:null,
                 init: function () {
                     gridOperator = $("#div_log_info_dialog").ligerGrid($.LigerGridEx.config({
-                        url: '${contextRoot}/logManager/searchLogs',
+                        url: '${contextRoot}/logManager/searchListLogs',
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         parms: {
-                            caller: '',
+                            patient: '',
                             type: '',
                             startTime: '',
                             endTime: ''
                         },
                         allowHideColumn:false,
                         columns: [
-                            {display: '记录时间', name: 'time', width: '20%'},
-                            {display: '用户ID', name: 'caller', width: '20%'},
-                            {display: '响应Code', name: 'responseCode', width: '10%'},
-                            {display: '响应时间', name: 'responseTime', width: '10%'},
-                            {display: '响应结果', name: 'response', width: '60%'}
-//                            {display: '数据', name: 'params', width: '60%'}
+                            {display: '系统名称', name: 'appKey', width: '15%'},
+                            {display: '菜单名称', name: 'function', width: '20%'},
+                            {display: '功能名称', name: 'operation', width: '15%'},
+                            {display: '操作者', name: 'patient', width: '10%'},
+                            {display: '操作时间', name: 'time', width: '15%'},
+                            {display: '响应Code', name: 'responseCode', width: '15%'},
+                            {display: '操作', name: 'response', width: '10%',render: function (row) {
+                                var html = '<a class="label_a" title="查看详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "log:info:show", row.id, row.logType) + '">查看详情</a>';
+                                return html;
+                            }}
                         ],
+                        onDblClickRow: function (d) {
+//                            openWin(d.id, d.logType);
+                        },
                         enabledEdit: true,
                         validate: true,
                         unSetValidateAttr: false
@@ -150,13 +200,22 @@
                     var values = retrieve.$element.Fields.getValues();
                     retrieve.$element.attrScan();
                     var type = $("#inp_type_val").val();
-                    reloadGrid.call(this, '${contextRoot}/logManager/searchLogs', values,type);
+                    reloadGrid.call(this, '${contextRoot}/logManager/searchListLogs',  {
+                        patient: $('#inp_caller').val(),
+                        type:$("#inp_type_val").val(),
+                        startTime: $('#inp_start_time').val(),
+                        endTime: $('#inp_end_time').val()
+                    },type);
                 },
                 bindEvents: function () {
                     var self = this;
                     retrieve.$searchBtn.click(function () {
                         gridOperator.options.newPage = 1;
                         masterOperator.reloadGrid();
+                    });
+
+                    $.subscribe("log:info:show",function(event, id, type){
+                        openWin(id, type);
                     });
                 }
             };
@@ -171,6 +230,9 @@
                 masterOperator.reloadGrid();
             };
 
+            win.closelogInfo = function () {
+                logInfo.close();
+            }
             /* ************************* Dialog页面回调接口结束 ************************** */
             /* *************************** 页面初始化 **************************** */
             pageInit();
