@@ -370,6 +370,7 @@
 			};
             win.closeZhibaioConfigueDialog = function (callback) {
                 master.zhibaioConfigueDialog.close();
+                $.Notice.success('保存成功！');
             };
 			//新增、修改（资源分类有修改情况）定位
 			win.locationTree = function(callbackParams){
