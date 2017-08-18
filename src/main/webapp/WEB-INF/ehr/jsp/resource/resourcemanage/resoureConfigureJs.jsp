@@ -112,9 +112,14 @@
 //                            下拉框值
                             var selectVal = $('#'+data.__id).val();
                             if(checked){
-                                data.checked ="1";
-                                data.quotaChart = selectVal;
-                                self.mainCheckedData([data],"1");
+                                if (selectVal) {
+                                    data.checked ="1";
+                                    data.quotaChart = selectVal;
+                                    self.mainCheckedData([data],"1");
+                                } else {
+                                    $.Notice.error("请选择图表");
+                                    this.unselect(rowid);
+                                }
                             }else{
                                 data.checked ="0";
                                 data.quotaChart = '';
@@ -153,18 +158,19 @@
                         var item = data[i];
                         var mainCode = 'div' + item.quotaId;
                         if(appDom.find(".div-item[data-code='"+mainCode+"']").length==0){
-                            var cName = '';
-                            switch (item.quotaChart) {
-                                case '1':
+                            var cName = '',
+                                qc = parseInt(item.quotaChart);
+                            switch (qc) {
+                                case 1:
                                     cName = '柱状图';
                                     break;
-                                case '2':
+                                case 2:
                                     cName = '折线图';
                                     break;
-                                case '3':
+                                case 3:
                                     cName = '曲线图';
                                     break;
-                                case '4':
+                                case 4:
                                     cName = '饼状图';
                                     break;
                             }
