@@ -414,6 +414,7 @@ public class ResourceController extends BaseUIController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        model.addAttribute("resultStr", resultStr);
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
         return "simpleView";
     }

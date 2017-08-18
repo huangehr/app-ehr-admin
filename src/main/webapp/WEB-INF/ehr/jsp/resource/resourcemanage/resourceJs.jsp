@@ -274,7 +274,7 @@
                         var wait = $.Notice.waitting("请稍后...");
                         master.zhibaioShowDialog = $.ligerDialog.open({
                             height:550,
-                            width:500,
+                            width:800,
                             title:title,
                             url:'${contextRoot}/resource/resourceManage/resourceShow',
                             urlParms:{
@@ -370,6 +370,7 @@
 			};
             win.closeZhibaioConfigueDialog = function (callback) {
                 master.zhibaioConfigueDialog.close();
+                $.Notice.success('保存成功！');
             };
 			//新增、修改（资源分类有修改情况）定位
 			win.locationTree = function(callbackParams){

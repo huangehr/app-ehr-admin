@@ -8,6 +8,6 @@
         <li class="tab-item">柱状图</li>
     </ul>
     <div class="tab-con">
-        <div id="chartsMain" style="width:448px;height: 403px"></div>
+        <div id="chartsMain" style="width:748px;height: 403px"></div>
     </div>
 </div>

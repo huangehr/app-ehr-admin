@@ -31,4 +31,7 @@
         border:1px solid #ccc;
         padding: 10px;
     }
+    .charts-main .mCSB_scrollTools.mCSB_scrollTools_horizontal{
+        height: 8px !important;
+    }
 </style>
