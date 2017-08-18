@@ -4,6 +4,7 @@ import com.yihu.ehr.agModel.resource.RsReportModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.std.controller.StdSourceManagerController;
+import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -15,11 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.yihu.ehr.util.HttpClientUtil.doGet;
+import static com.yihu.ehr.util.HttpClientUtil.doPut;
 
 /**
  * 资源报表管理 controller
@@ -115,10 +118,6 @@ public class ReportController extends BaseUIController {
                 String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + model.getId();
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
-                if (!envelopGet.isSuccessFlg()) {
-                    envelop.setErrorMsg("获取资源报表信息失败！");
-                    return envelop;
-                }
 
                 RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
                 updateModel.setCode(model.getCode());
@@ -190,6 +189,48 @@ public class ReportController extends BaseUIController {
             e.printStackTrace();
             LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    /**
+     * 列表：模版导入
+     */
+    @RequestMapping("upload")
+    @ResponseBody
+    public Object upload(@RequestParam MultipartFile file, @RequestParam Integer id) {
+        try {
+            Envelop result = new Envelop();
+
+            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(file.getInputStream(), file.getOriginalFilename());
+            String filePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
+
+            if(!StringUtils.isEmpty(filePath)) {
+                String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
+                String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
+                Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+                RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
+                updateModel.setTemplatePath(filePath);
+
+                Map<String, Object> params = new HashMap<>();
+                params.put("rsReportCategory", objectMapper.writeValueAsString(updateModel));
+                String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
+
+                Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
+                if(envelopUpdate.isSuccessFlg()) {
+                    result.setSuccessFlg(true);
+                    result.setObj(filePath);
+                } else {
+                    result.setSuccessFlg(false);
+                    result.setErrorMsg("文件保存失败！");
+                }
+            } else {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("请上传非空文件！");
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed("上传文件发生异常");
         }
     }
 
