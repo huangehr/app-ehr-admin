@@ -84,7 +84,7 @@
                                 for (var i = 0, len = chartTypeArr.length; i < len; i++) {
                                     var c = '';
                                     if (chartTypeArr[i] == row.quotaChart) {
-                                        c = 'checked';
+                                        c = 'selected';
                                     }
 //                                    debugger
                                     switch (chartTypeArr[i]) {
