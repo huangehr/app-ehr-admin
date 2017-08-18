@@ -27,7 +27,7 @@
     <div class="m-form-group">
         <label>说明：</label>
         <div class="m-form-control">
-            <textarea rows="3" class="f-w240 max-length-200"
+            <textarea rows="3" class="f-w240 max-length-255"
                       id="remark" data-attr-scan="remark"></textarea>
         </div>
     </div>
