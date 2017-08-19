@@ -59,6 +59,43 @@
     }
 
     function bindEvents() {
+        // 资源配置
+        $.subscribe('resource:report:setting', function (event, id) {
+            detailDialog = $.ligerDialog.open({
+                height: 700,
+                width: 800,
+                title: '资源配置',
+                url: '${contextRoot}/resource/report/setting',
+                urlParms: {id: id},
+                opener: true,
+                load: true
+            });
+        });
+
+        // 模版导入
+        $.subscribe('resource:report:upload', function (event, id) {
+            var formData = new FormData($( "#uploadForm" )[0]);
+            formData.append('id', id)
+            $.ajax({
+                url: '${contextRoot}/resource/report/upload',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if(data.successFlg){
+                        $('#templatePath').val(data.obj);
+                        $.Notice.success('上传成功！');
+                    } else {
+                        $.Notice.warn(data.errorMsg);
+                    }
+                },
+                error: function () {
+                    $.Notice.error('上传文件发生异常');
+                }
+            });
+        });
+
         // 新增/修改
         $.subscribe('resource:report:open', function (event, id, mode) {
             var title = '新增资源报表';
@@ -103,30 +140,6 @@
                     });
                 }
             })
-        });
-
-        // 模版导入
-        $.subscribe('resource:report:upload', function (event, id) {
-            var formData = new FormData($( "#uploadForm" )[0]);
-            formData.append('id', id)
-            $.ajax({
-                url: '${contextRoot}/resource/report/upload',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    if(data.successFlg){
-                        $('#templatePath').val(data.obj);
-                        $.Notice.success('上传成功！');
-                    } else {
-                        $.Notice.warn(data.errorMsg);
-                    }
-                },
-                error: function () {
-                    $.Notice.error('上传文件发生异常');
-                }
-            });
         });
     }
 

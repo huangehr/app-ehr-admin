@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.yihu.ehr.util.HttpClientUtil.doGet;
-import static com.yihu.ehr.util.HttpClientUtil.doPut;
 
 /**
  * 资源报表管理 controller
@@ -47,6 +46,9 @@ public class ReportController extends BaseUIController {
         return "pageView";
     }
 
+    /**
+     * 明细
+     */
     @RequestMapping(value = "detail")
     public String detail(Model model, Integer id) {
         Object detailModel = new RsReportModel();
@@ -62,6 +64,24 @@ public class ReportController extends BaseUIController {
         }
         model.addAttribute("detailModel", toJson(detailModel));
         model.addAttribute("contentPage", "resource/report/detail");
+        return "simpleView";
+    }
+
+    /**
+     * 资源配置
+     */
+    @RequestMapping(value = "setting")
+    public String setting(Model model, Integer id) {
+        Object detailModel = new RsReportModel();
+        try {
+//                String url = comUrl + ServiceApi.Resources.RsReportPrefix + id;
+//                String result = doGet(url, username, password);
+//                detailModel = objectMapper.readValue(result, Envelop.class).getObj();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(StdSourceManagerController.class).error(e.getMessage());
+        }
+        model.addAttribute("contentPage", "resource/report/setting");
         return "simpleView";
     }
 
