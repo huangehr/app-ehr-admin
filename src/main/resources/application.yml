@@ -33,6 +33,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
+  oauth2OutSize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
@@ -61,6 +62,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
+  oauth2OutSize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
@@ -89,6 +91,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://172.19.103.73:10260/
+  oauth2OutSize: http://172.19.103.73:10260/
 service-gateway:
   username: user
   password: eureka
@@ -118,6 +121,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
+  oauth2OutSize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
