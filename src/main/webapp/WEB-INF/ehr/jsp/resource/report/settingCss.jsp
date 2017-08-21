@@ -16,6 +16,12 @@
         display: inline-block;
         text-align: left;
     }
+    .wrapper .left-items {
+        float: left;
+    }
+    .wrapper .right-items {
+        float: right;
+    }
     .wrapper .arrow {
         position: relative;
         top: 42%;

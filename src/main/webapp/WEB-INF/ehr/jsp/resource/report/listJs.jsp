@@ -38,7 +38,7 @@
                 {display: '操作', name: 'operator', width: '35%', align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/resource/report/setting"><a class="l-button u-btn u-btn-primary u-btn-small f-ib f-mb5 f-ml10" title="资源配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">资源配置</a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/report/setting"><a class="l-button u-btn u-btn-primary u-btn-small f-ib f-mb5 f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/upload"><a class="l-button u-btn u-btn-primary u-btn-small f-ib f-mb5 f-ml10 btn-file-container" title="模版导入" href="javascript:void(0)">' +
                                     '<form id ="uploadForm" enctype="multipart/form-data">' +
                                         '<span>模版导入</span>' +
@@ -59,12 +59,12 @@
     }
 
     function bindEvents() {
-        // 资源配置
+        // 视图配置
         $.subscribe('resource:report:setting', function (event, id) {
             detailDialog = $.ligerDialog.open({
                 height: 700,
                 width: 800,
-                title: '资源配置',
+                title: '报表视图配置',
                 url: '${contextRoot}/resource/report/setting',
                 urlParms: {id: id},
                 opener: true,

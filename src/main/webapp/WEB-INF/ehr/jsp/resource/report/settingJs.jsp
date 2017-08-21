@@ -3,13 +3,46 @@
 
 <script>
     var dataModel = $.DataModel.init();
+    var supplyTree, selectedGrid;
 
     $(function () {
         init();
     });
 
     function init() {
+        renderWidget();
         bindEvents();
+    }
+
+    function renderWidget() {
+        supplyTree = $("#supplyTree").ligerGrid($.LigerGridEx.config({
+            <%--url: '${contextRoot}/resource/reportCategory/getTreeData',--%>
+            url: '${contextRoot}/develop/treedata.json',
+            columns: [
+                {display: 'ID', name: 'id', hide: true},
+                {display: '名称', name: 'name', width: '100%', isAllowHide: false, align: 'left'}
+            ],
+            height: '510',
+            allowHideColumn: false,
+            tree: {columnName: 'name'},
+            usePager: false,
+            checkbox: true
+        }));
+        supplyTree.collapseAll();
+        supplyTree.adjustToWidth();
+
+        selectedGrid = $("#selectedGrid").ligerGrid($.LigerGridEx.config({
+            <%--url: '${contextRoot}/resource/report/search',--%>
+            url: '${contextRoot}/develop/griddata.json',
+            columns: [
+                {display: 'ID', name: 'id', hide: true},
+                {display: '视图名称', name: 'name', width: '100%', isAllowHide: false, align: 'left'}
+            ],
+            height: '510',
+            allowHideColumn: false,
+            usePager: false
+        }));
+        selectedGrid.adjustToWidth();
     }
 
     function bindEvents() {

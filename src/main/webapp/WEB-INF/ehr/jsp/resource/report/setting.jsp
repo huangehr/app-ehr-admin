@@ -9,7 +9,7 @@
             <div class="header">
                 <input type="text" id="searchNm" placeholder="请输入代码或者名称">
             </div>
-            <div class="content" id="supplyItems">内容</div>
+            <div class="content" id="supplyTree"></div>
         </div>
 
         <div class="arrow"></div>
@@ -18,7 +18,7 @@
             <div class="header">
                 <span>已配置</span>
             </div>
-            <div class="content" id="selectedItems">内容</div>
+            <div class="content" id="selectedGrid"></div>
         </div>
     </div>
 
