@@ -6,6 +6,30 @@
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
+    //
+    function changeQC (that,id) {
+        var $that = $(that),
+            val = $that.val(),
+            $di = $("#div_main_relation").find(".div-item[data-code=" + ('div' + id) + "]");
+        $di.attr('data-qchart', val);
+        var qc = parseInt(val),
+            cName = '';
+        switch (qc) {
+            case 1:
+                cName = '柱状图';
+                break;
+            case 2:
+                cName = '折线图';
+                break;
+            case 3:
+                cName = '曲线图';
+                break;
+            case 4:
+                cName = '饼状图';
+                break;
+        }
+        $di.children().eq(2).html(cName);
+    }
     (function ($, win) {
         $(function () {
 
@@ -56,12 +80,13 @@
                             {display: '图表选择', name: 'name', width: '30%', isAllowHide: false, align: 'left',                                          render:function (row) {
                                 var domId = row.__id,
                                     chartTypeArr = (row.chartType).split(',');
-                                var html = ['<select id="' + domId + '" style="width: 100%">'];
+                                var html = ['<select id="' + domId + '" style="width: 100%" onchange="changeQC(this,' + row.quotaId + ')">'];
                                 for (var i = 0, len = chartTypeArr.length; i < len; i++) {
                                     var c = '';
                                     if (chartTypeArr[i] == row.quotaChart) {
-                                        c = 'checked';
+                                        c = 'selected';
                                     }
+//                                    debugger
                                     switch (chartTypeArr[i]) {
                                         case '1':
                                             html.push('<option value="1" ' + c + '>柱状图</option>');
@@ -70,10 +95,10 @@
                                             html.push('<option value="2" ' + c + '>折线图</option>');
                                             break;
                                         case '3':
-                                            html.push('<option value="1" ' + c + '>曲线图</option>');
+                                            html.push('<option value="3" ' + c + '>曲线图</option>');
                                             break;
                                         case '4':
-                                            html.push('<option value="1" ' + c + '>饼状图</option>');
+                                            html.push('<option value="4" ' + c + '>饼状图</option>');
                                             break;
                                     }
                                 }
@@ -89,7 +114,7 @@
                         checkbox: true,
                         rownumbers: false,
                         onSuccess:function(data){
-                            debugger
+//                            debugger
                             self.mainCheckedData(data.obj,"1");
                         },
                         //默认选中
@@ -112,9 +137,14 @@
 //                            下拉框值
                             var selectVal = $('#'+data.__id).val();
                             if(checked){
-                                data.checked ="1";
-                                data.quotaChart = selectVal;
-                                self.mainCheckedData([data],"1");
+                                if (selectVal) {
+                                    data.checked ="1";
+                                    data.quotaChart = selectVal;
+                                    self.mainCheckedData([data],"1");
+                                } else {
+                                    $.Notice.error("请选择图表");
+                                    this.unselect(rowid);
+                                }
                             }else{
                                 data.checked ="0";
                                 data.quotaChart = '';
@@ -124,8 +154,19 @@
                         //全选事件
                         onCheckAllRow:function(){
                             var selectedData = self.grid.getSelectedRows();
+//                            debugger
                             if(selectedData.length>0){
-                                self.mainCheckedData(selectedData,"1");
+                                var selArr = [];
+                                for (var k = 0; k < selectedData.length; k++) {
+                                    var qc = $('#' + selectedData[k].__id).val();
+                                    if (qc) {
+                                        selectedData[k].quotaChart = qc;
+                                        selArr.push(selectedData[k]);
+                                    } else {
+                                        self.grid.unselect(selectedData[k].__id);
+                                    }
+                                }
+                                self.mainCheckedData(selArr,"1");
                             }else{
 
                                 var currentData =  self.grid.getData();
@@ -153,18 +194,19 @@
                         var item = data[i];
                         var mainCode = 'div' + item.quotaId;
                         if(appDom.find(".div-item[data-code='"+mainCode+"']").length==0){
-                            var cName = '';
-                            switch (item.quotaChart) {
-                                case '1':
+                            var cName = '',
+                                qc = parseInt(item.quotaChart);
+                            switch (qc) {
+                                case 1:
                                     cName = '柱状图';
                                     break;
-                                case '2':
+                                case 2:
                                     cName = '折线图';
                                     break;
-                                case '3':
+                                case 3:
                                     cName = '曲线图';
                                     break;
-                                case '4':
+                                case 4:
                                     cName = '饼状图';
                                     break;
                             }
@@ -216,7 +258,7 @@
                             success: function (data) {
                                 wait.close();
                                 if(data.successFlg){
-                                    $.Notice.success('保存成功！');
+                                    win.closeZhibaioConfigueDialog();
                                 }else{
                                     $.Notice.error(data.errorMsg);
                                 }

@@ -142,3 +142,34 @@ logging:
     config: classpath:logback-spring.xml
 
 
+---
+spring:
+  profiles: prod_fz
+  datasource:
+    url: jdbc:mysql://192.168.135.39:3306/healtharchive?useUnicode=true&amp;characterEncoding=UTF-8
+    username: sr_healtharchive
+    password: data!@)1
+app:
+  clientId: zkGuSIm2Fg
+  qcReportClientId: 2YTOSRI0tw
+  resourceBrowseClientId: W8RDizgDIB
+  browseClientId: uzs5G0HgTp
+  oauth2authorize: http://192.168.135.35:10260/
+service-gateway:
+  username: user
+  password: eureka
+  url: http://192.168.135.31:10000/api/v1.0/admin
+  stdurl: http://192.168.135.31:10000/api/v1.0/admin/std
+  versionurl: http://192.168.135.31:10000/api/v1.0/admin/version
+  cdatypeurl: http://192.168.135.31:10000/api/v1.0/admin/cda_type
+  stdsourceurl: http://192.168.135.31:10000/api/v1.0/admin/standard_source
+  adaption: http://192.168.135.31:10000/api/v1.0/adapter
+  template: http://192.168.135.31:10000/api/v1.0/template
+  standard: http://192.168.135.31:10000/api/v1.0/std
+  BrowseClienturl: http://192.168.135.34:8010/ehr/browser
+
+fast-dfs:
+  tracker-server: 11.1.2.9:22122
+
+logging:
+    config: classpath:logback-spring.xml

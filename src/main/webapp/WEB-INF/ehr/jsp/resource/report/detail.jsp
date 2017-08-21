@@ -35,20 +35,23 @@
     <div class="m-form-group">
         <label>说明：</label>
         <div class="m-form-control">
-            <textarea rows="3" class="f-w240 max-length-200"
+            <textarea rows="3" class="f-w240 max-length-255"
                       id="remark" data-attr-scan="remark"></textarea>
         </div>
     </div>
     <div class="m-form-group">
         <label>报表模版：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-50 required" readonly="readonly"
-                   id="remtemplatePath" data-attr-scan="remtemplatePath">
+            <input type="text" class="f-w240 required max-length-100" readonly="readonly"
+                   id="templatePath" data-attr-scan="templatePath">
         </div>
         <div class="m-form-control">
-            <div class="l-button u-btn u-btn-primary u-btn-small f-mt5" id="remtemplatePathBtn">
-                <span>模版导入</span>
-            </div>
+            <form id ="uploadForm" enctype="multipart/form-data">
+                <div class="l-button u-btn u-btn-primary u-btn-small f-mt5 btn-file-container">
+                    <span>模版导入</span>
+                    <input type="file" name="file" id="templatePathBtn">
+                </div>
+            </form>
         </div>
     </div>
 

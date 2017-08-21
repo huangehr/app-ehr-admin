@@ -42,7 +42,7 @@
             textField: 'value'
         });
         $('#remark').ligerTextBox({width: 240, height: 150});
-        $('#remtemplatePath').ligerTextBox({width: 240, disabled: true});
+        $('#templatePath').ligerTextBox({width: 240, disabled: true});
 
         $form.attrScan();
         $form.Fields.fillValues({
@@ -89,7 +89,30 @@
         // 关闭
         $('#btnClose').click(function () {
             window.closeDetailDialog();
-        })
+        });
+
+        // 模版导入
+        $('#templatePathBtn').change(function () {
+            var formData = new FormData($( "#uploadForm" )[0]);
+            $.ajax({
+                url: '${contextRoot}/fileUpload/upload',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if(data.successFlg){
+                        $('#templatePath').val(data.obj);
+                        $.Notice.success('上传成功！');
+                    } else {
+                        $.Notice.warn(data.errorMsg);
+                    }
+                },
+                error: function () {
+                    $.Notice.error('上传文件发生异常');
+                }
+            });
+        });
     }
 
     // 表单验证对象
