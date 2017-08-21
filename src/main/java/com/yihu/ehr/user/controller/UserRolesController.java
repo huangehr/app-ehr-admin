@@ -3,6 +3,7 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.resource.RsAppResourceModel;
+import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsRolesResourceModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
@@ -710,5 +711,27 @@ public class UserRolesController extends BaseUIController {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
         return "";
+    }
+
+    //资源报表分类树数据-获取所有分类及对应的资源的不分页方法
+    @RequestMapping("/categoriesAndResources")
+    @ResponseBody
+    public Object getCategories(){
+        List<RsCategoryModel> list = new ArrayList<>();
+        try{
+            String filters = "";
+            String envelopStr = "";
+            String url = "/resources/categoriesAndResources";
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters",filters);
+            envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(), new ArrayList<>(), RsCategoryModel.class);
+            }
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+        }
+        return list;
     }
 }
