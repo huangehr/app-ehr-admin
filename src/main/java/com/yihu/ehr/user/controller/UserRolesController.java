@@ -713,6 +713,12 @@ public class UserRolesController extends BaseUIController {
         }
         return "";
     }
+    @RequestMapping("/rfConfig")
+    public String rfConfig(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "user/roles/rfConfig");
+        return "pageView";
+    }
 
     //资源报表分类树数据-获取所有分类及对应的资源的不分页方法
     @RequestMapping("/categoriesAndReport")
