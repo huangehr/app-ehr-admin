@@ -714,14 +714,14 @@ public class UserRolesController extends BaseUIController {
     }
 
     //资源报表分类树数据-获取所有分类及对应的资源的不分页方法
-    @RequestMapping("/categoriesAndResources")
+    @RequestMapping("/categoriesAndReport")
     @ResponseBody
-    public Object getCategories(){
+    public Object getCategoriesAndReport(){
         List<RsCategoryModel> list = new ArrayList<>();
         try{
             String filters = "";
             String envelopStr = "";
-            String url = "/resources/categoriesAndResources";
+            String url = "/roles/report/getCategoryAndReportNoPage";
             Map<String,Object> params = new HashMap<>();
             params.put("filters",filters);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
