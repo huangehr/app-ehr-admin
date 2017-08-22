@@ -76,7 +76,7 @@
                 });
                 this.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     $.ligerDialog.alert("保存成功", function () {
-                        win.parent.showAddSuccPop();
+                        win.parent.showAddOrgInfoDialogSuccPop();
                         win.parent.closeAddOrgInfoDialog(function () {
 
                         });

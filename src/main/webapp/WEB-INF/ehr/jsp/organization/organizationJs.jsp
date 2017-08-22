@@ -324,7 +324,7 @@
             win.closeDialog = function () {
                 master.orgInfoDialog.close();
             };
-            win.showAddSuccPop = function () {
+            win.showAddOrgInfoDialogSuccPop = function () {
                 $.Notice.success('保存成功');
             };
             win.closeAddOrgInfoDialog = function (callback) {
