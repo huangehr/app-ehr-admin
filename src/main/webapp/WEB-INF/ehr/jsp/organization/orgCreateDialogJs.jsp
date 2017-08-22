@@ -292,7 +292,7 @@
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
                             uploader.options.successCallBack=function(){
-                                win.parent.showAddSuccPop();
+                                win.parent.showAddOrgInfoDialogSuccPop();
                                 win.parent.closeAddOrgInfoDialog(function () {
                                     $.Notice.success('保存成功！');
                                 });
@@ -303,7 +303,7 @@
                                     uploader.options.server="${contextRoot}/file/upload/image";
                                     $(".uploadBtn").click();
                                 }else{
-                                    win.parent.showAddSuccPop();
+                                    win.parent.showAddOrgInfoDialogSuccPop();
                                     win.parent.closeAddOrgInfoDialog(function () {
                                        $.Notice.success('保存成功！');
                                     });
