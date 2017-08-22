@@ -22,11 +22,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -730,5 +734,37 @@ public class UserRolesController extends BaseUIController {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
         return list;
+    }
+
+    @RequestMapping(value = "/addRoleReportRelation", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object addRoleReportRelation(String roleId, String jsonModel, HttpServletRequest request) throws IOException {
+        String url = "/roles/role_report/batchAddRoleReportRelation";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        if (!StringUtils.isBlank(roleId)) {
+            url = "/roles/role_report/deleteByRoleId";
+            Map<String, Object> params = new HashMap<>();
+            params.put("roleId", Long.valueOf(roleId));
+            try {
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            } catch (Exception e) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.SystemError.toString());
+                return result;
+            }
+            return resultStr;
+        }
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("model", jsonModel);
+        RestTemplates templates = new RestTemplates();
+        try {
+            resultStr = templates.doPost(comUrl + url, params);
+        } catch (RestClientException e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+        return resultStr;
     }
 }
