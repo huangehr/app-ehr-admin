@@ -31,13 +31,11 @@
             }
 
             function onUploadSuccess(g, result){
-                debugger;
                 if(result)
                     openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
                 else
                     $.Notice.success("导入成功！");
             }
-            debugger
             $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess});
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
@@ -326,7 +324,9 @@
             win.closeDialog = function () {
                 master.orgInfoDialog.close();
             };
-
+            win.showAddSuccPop = function () {
+                $.Notice.success('保存成功');
+            };
             win.closeAddOrgInfoDialog = function (callback) {
                 if (callback) {
                     callback.call(win);
@@ -338,10 +338,15 @@
                     master.orgInfoDialog.close();
                 }
 
-
+            };
+            win.closeOrgCreateDialog = function (callback) {
+                if (callback) {
+                    callback.call(win);
+                    master.reloadGrid();
+                }
+                    master.orgCreateDialog.close();
 
             };
-
             /* *************************** 页面初始化 **************************** */
             pageInit();
         });

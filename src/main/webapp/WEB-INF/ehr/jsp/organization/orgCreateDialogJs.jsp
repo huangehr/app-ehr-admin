@@ -76,7 +76,8 @@
                 });
                 this.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     $.ligerDialog.alert("保存成功", function () {
-                       closeAddOrgInfoDialog(function () {
+                        win.parent.showAddSuccPop();
+                        win.parent.closeAddOrgInfoDialog(function () {
 
                         });
                     });
@@ -291,7 +292,8 @@
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
                             uploader.options.successCallBack=function(){
-                                closeAddOrgInfoDialog(function () {
+                                win.parent.showAddSuccPop();
+                                win.parent.closeAddOrgInfoDialog(function () {
                                     $.Notice.success('保存成功！');
                                 });
                             }
@@ -301,7 +303,8 @@
                                     uploader.options.server="${contextRoot}/file/upload/image";
                                     $(".uploadBtn").click();
                                 }else{
-                                    closeAddOrgInfoDialog(function () {
+                                    win.parent.showAddSuccPop();
+                                    win.parent.closeAddOrgInfoDialog(function () {
                                        $.Notice.success('保存成功！');
                                     });
                                 }
