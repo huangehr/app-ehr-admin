@@ -724,7 +724,7 @@ public class UserRolesController extends BaseUIController {
     @RequestMapping("/categoriesAndReport")
     @ResponseBody
     public Object getCategoriesAndReport(String roleId){
-        List<RsReportCategoryInfoModel> list = new ArrayList<>();
+        Envelop envelop = new Envelop();
         try{
             String filters = "";
             String envelopStr = "";
@@ -733,14 +733,13 @@ public class UserRolesController extends BaseUIController {
             params.put("filters",filters);
             params.put("roleId",roleId);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
-            if(envelopGet.isSuccessFlg()){
-                list = (List<RsReportCategoryInfoModel>)getEnvelopList(envelopGet.getDetailModelList(), new ArrayList<>(), RsReportCategoryInfoModel.class);
-            }
+            return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
         }
-        return list;
     }
 
     @RequestMapping(value = "/addRoleReportRelation", produces = "text/html;charset=UTF-8")
