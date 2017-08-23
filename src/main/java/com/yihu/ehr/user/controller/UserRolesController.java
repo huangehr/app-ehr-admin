@@ -2,7 +2,7 @@ package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
-import com.yihu.ehr.agModel.resource.RsReportCategoryModel;
+import com.yihu.ehr.agModel.resource.RsReportCategoryInfoModel;
 import com.yihu.ehr.agModel.resource.RsRolesResourceModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
@@ -724,7 +724,7 @@ public class UserRolesController extends BaseUIController {
     @RequestMapping("/categoriesAndReport")
     @ResponseBody
     public Object getCategoriesAndReport(String roleId){
-        List<RsReportCategoryModel> list = new ArrayList<>();
+        List<RsReportCategoryInfoModel> list = new ArrayList<>();
         try{
             String filters = "";
             String envelopStr = "";
@@ -735,7 +735,7 @@ public class UserRolesController extends BaseUIController {
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
             if(envelopGet.isSuccessFlg()){
-                list = (List<RsReportCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(), new ArrayList<>(), RsReportCategoryModel.class);
+                list = (List<RsReportCategoryInfoModel>)getEnvelopList(envelopGet.getDetailModelList(), new ArrayList<>(), RsReportCategoryInfoModel.class);
             }
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
