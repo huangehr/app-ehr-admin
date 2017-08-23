@@ -723,15 +723,19 @@ public class UserRolesController extends BaseUIController {
     //资源报表分类树数据-获取所有分类及对应的资源的不分页方法
     @RequestMapping("/categoriesAndReport")
     @ResponseBody
-    public Object getCategoriesAndReport(String roleId){
+    public Object getCategoriesAndReport(String roleId, String name){
         Envelop envelop = new Envelop();
         try{
             String filters = "";
             String envelopStr = "";
             String url = "/roles/report/getCategoryAndReportNoPage";
             Map<String,Object> params = new HashMap<>();
-            params.put("filters",filters);
-            params.put("roleId",roleId);
+            if (!StringUtils.isEmpty(name)) {
+                params.put("filters", "name?" + name);
+            } else {
+                params.put("filters", filters);
+            }
+            params.put("roleId", roleId);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
         }catch (Exception ex){

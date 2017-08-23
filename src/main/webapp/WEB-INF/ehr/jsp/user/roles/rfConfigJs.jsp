@@ -11,8 +11,11 @@
 
 <script type="text/javascript">
     (function ($, win, u) {
-        var intf = ['${contextRoot}/userRoles/categoriesAndReport'];
-        var id = '${id}';
+        var intf = [
+                '${contextRoot}/userRoles/categoriesAndReport',
+                '${contextRoot}/userRoles/addRoleReportRelation'
+        ];
+        var roleId = '${id}';
         $(function () {
             var rfConfig = {
                 $searchInp: $('#searchInp'),
@@ -23,13 +26,40 @@
                 rightTree: null,
                 leftTreeData: [],
                 rightTreeData: [],
+                selectData: [],
                 init: function () {
-                    this.$searchInp.ligerTextBox({width:233, isSearch: true, search: function () {
-
+                    var me = this;
+                    me.$searchInp.ligerTextBox({width:233, isSearch: true, search: function () {
+                        var val = me.$searchInp.val();
+                        me.searchData(val);
                     }});
-                    this.initLeftTree();
-                    this.initRightTree();
-                    this.getData();
+                    me.initLeftTree();
+                    me.initRightTree();
+                    me.getData();
+                    me.bindEvent();
+                },
+                searchData: function (name) {
+                    var me = this;
+                    $.ajax({
+                        url: intf[0],
+                        type: 'GET',
+                        data: {
+                            roleId: roleId,
+                            name: name
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.successFlg) {
+                                var leftData = data.detailModelList,
+                                    leftArr = [];
+                                if (leftData) {
+                                    leftArr = me.formatData(leftData);
+                                    me.leftTreeData = leftArr;
+                                    me.reloadLeftTree();
+                                }
+                            }
+                        }
+                    });
                 },
                 getData: function () {
                     var me = this;
@@ -37,26 +67,63 @@
                         url: intf[0],
                         type: 'GET',
                         data: {
-                            roleId: id
+                            roleId: roleId,
+                            name: ''
                         },
                         dataType: 'json',
                         success: function (data) {
                             if (data.successFlg) {
-                                var d = data.detailModelList;
-                                if (d) {
-                                    me.leftTreeData = d;
+                                var leftData = data.detailModelList,
+                                    rightData = data.obj,
+                                    leftArr = [],
+                                    rightArr = [];
+                                if (leftData) {
+                                    leftArr = me.formatData(leftData);
+                                    me.leftTreeData = leftArr;
                                     me.reloadLeftTree();
-                                } else {
-
+                                }
+                                if (rightData) {
+                                    rightArr = me.formatData(rightData);
+                                    me.selectData = rightArr;
+                                    me.rightTreeData = rightData;
+                                    me.reloadRightree();
                                 }
                             }
                         }
                     });
                 },
+                formatData: function (d) {
+                    var arr = [];
+                    //获取根节点
+                    for (var i = 0; i < d.length; i++) {
+                        //设置选中
+                        if (d[i].reportList) {
+                            for (var t = 0; t < d[i].reportList.length; t++) {
+                                d[i].reportList[t].ischecked = d[i].reportList[t].flag;
+                            }
+                        }
+                        d[i].children = d[i].reportList;
+                        if (!d[i].pid) {
+                            arr.push(d[i]);
+                        }
+                    }
+                    //获取子节点
+                    for (var j = 0; j < arr.length; j++) {
+                        if (!arr[j].children) {
+                            arr[j].children = [];
+                        }
+                        for (var k = 0; k < d.length; k++) {
+                            if (arr[j].id == d[k].pid) {
+                                arr[j].children.push(d[k]);
+                            }
+                        }
+                    }
+                    return arr;
+                },
                 reloadLeftTree: function () {
                     this.leftTree.setData(this.leftTreeData);
                 },
-                reloadLeftTree: function () {
+                reloadRightree: function () {
                     this.rightTree.setData(this.rightTreeData);
                 },
                 initLeftTree: function () {
@@ -64,10 +131,9 @@
                     me.leftTree = me.$leftTree.ligerSearchTree({
                         nodeWidth: 240,
                         data: me.leftTreeData,
-                        idFieldName: 'id',
-                        parentIDFieldName:'pid',
+                        idFieldName: 'code',
                         textFieldName: 'name',
-                        isExpand: false,
+                        isExpand: true,
                         checkbox: true,
                         onCheck: function (e) {
                             setTimeout(function(){
@@ -85,11 +151,52 @@
                         data: this.rightTreeData,
                         checkbox: false,
                         idFieldName: 'id',
-                        parentIDFieldName:'pid',
                         textFieldName: 'name',
                         isExpand: false,
                         checkbox: false,
-                        enabledCompleteCheckbox:false
+                        isExpand: true
+                    });
+                },
+                bindEvent: function () {
+                    var me = this;
+                    me.$saveBtn.on('click', function () {
+                        var wait = $.Notice.waitting("请稍后...");
+                        var selData = me.leftTree.getChecked(),
+                            dataArr = [],
+                            jsonModel = [],
+                            rd = '';
+                        for (var i = 0; i < selData.length; i++) {
+                            dataArr.push(selData[i].data);
+                        }
+                        for (var j = 0; j < dataArr.length; j++) {
+                            if (!dataArr[j].reportList) {
+                                jsonModel.push({
+                                    roleId: roleId,
+                                    rsReportId: dataArr[j].id
+                                });
+                            }
+                        }
+                        if (jsonModel.length == 0) {
+                            rd = roleId;
+                        }
+                        $.ajax({
+                            url: intf[1],
+                            data: {
+                                roleId: rd,
+                                jsonModel: JSON.stringify(jsonModel)
+                            },
+                            type: 'GET',
+                            success: function (data) {
+                                wait.close();
+                                var d = JSON.parse(data);
+                                if (d.successFlg) {
+                                    $.Notice.success('保存成功。');
+                                    win.closeBBConfigDialogDialog();
+                                } else {
+                                    $.Notice.error(d.errorMsg);
+                                }
+                            }
+                        });
                     });
                 }
             };
