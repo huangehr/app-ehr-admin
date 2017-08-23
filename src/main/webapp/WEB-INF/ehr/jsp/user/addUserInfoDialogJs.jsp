@@ -77,7 +77,7 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('新增成功');
-                        closeAddUserInfoDialog(function () {
+                    win.parent.closeAddUserInfoDialog(function () {
                         });
                 });
 
@@ -359,10 +359,9 @@
                         success: function (data) {
                             if (data.successFlg) {
                                 $.Notice.success('新增成功');
-//                                win.closeAddUserInfoDialog();
-//                               closeAddUserInfoDialog(function () {
-//                                   $.Notice.success('新增成功');
-//                                });
+                                win.parent.closeAddUserInfoDialog(function () {
+                                   $.Notice.success('新增成功');
+                                });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
                             }
@@ -449,23 +448,6 @@
 			}
         };
 
-        win.closeAddUserInfoDialog = function (callback) {
-            isFirstPage = false;
-            if(callback){
-                dialog.close();
-            }
-        };
-//        win.closeDialog = function (msg) {
-//            dialog.close();
-//           }
-//        function reloadGrid (params) {
-//            if (isFirstPage){
-//                this.grid.options.newPage = 1;
-//            }
-//            this.grid.setOptions({parms: params});
-//            this.grid.loadData(true);
-//            isFirstPage = true;
-//        }
 
         /* ************************* 模块初始化结束 ************************** */
 

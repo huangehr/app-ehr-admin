@@ -34,8 +34,8 @@
     <div class="m-form-group">
         <label>数据来源<spring:message code="spe.colon"/></label>
         <div class="u-checkbox-wrap m-form-control">
-            <input type="radio" value="1" name="dataSource" data-attr-scan/>HBase
-            <input type="radio" value="2" name="dataSource" data-attr-scan/>ElasticSearch
+            <input type="radio" value="1" name="dataSource" data-attr-scan/>档案数据
+            <input type="radio" value="2" name="dataSource" data-attr-scan/>指标统计
         </div>
     </div>
     <div class="m-form-group">

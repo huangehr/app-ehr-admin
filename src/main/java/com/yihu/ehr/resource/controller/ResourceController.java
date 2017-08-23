@@ -382,10 +382,23 @@ public class ResourceController extends BaseUIController {
 
     @RequestMapping(value = "/addResourceQuota", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object addResourceQuota(String quotaCode, String jsonModel, HttpServletRequest request) throws IOException {
+    public Object addResourceQuota(String resourceId, String jsonModel, HttpServletRequest request) throws IOException {
         String url = "/resourceQuota/batchAddResourceQuota";
         String resultStr = "";
         Envelop result = new Envelop();
+        if (!org.apache.commons.lang.StringUtils.isBlank(resourceId)) {
+            url = "/resourceQuota/delRQNameByResourceId";
+            Map<String, Object> params = new HashMap<>();
+            params.put("resourceId", resourceId);
+            try {
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            } catch (Exception e) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.SystemError.toString());
+                return result;
+            }
+            return resultStr;
+        }
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("model", jsonModel);
         RestTemplates templates = new RestTemplates();

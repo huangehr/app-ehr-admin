@@ -242,20 +242,6 @@
                 master.orgInfoDialog.close();
             };
 
-            win.closeAddOrgInfoDialog = function (callback) {
-                if (callback) {
-                    callback.call(win);
-                    master.reloadGrid();
-                }
-                if (!Util.isStrEmpty(retrieve.addOrgInfoDialog)){
-                    retrieve.addOrgInfoDialog.close();
-                }else {
-                    master.orgInfoDialog.close();
-                }
-
-
-
-            };
 
             /* *************************** 页面初始化 **************************** */
             pageInit();

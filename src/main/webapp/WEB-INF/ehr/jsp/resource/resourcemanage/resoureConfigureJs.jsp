@@ -188,39 +188,41 @@
                     $("#div_main_relation").find(".div-item[data-code=" + ('div' + data.quotaId) + "]").remove();
                 },
                 mainCheckedData:function(data,flag){
-                    var resultHtml = "";
-                    var appDom = $("#div_main_relation");
-                    for(var i=0;i<data.length;i++){
-                        var item = data[i];
-                        var mainCode = 'div' + item.quotaId;
-                        if(appDom.find(".div-item[data-code='"+mainCode+"']").length==0){
-                            var cName = '',
-                                qc = parseInt(item.quotaChart);
-                            switch (qc) {
-                                case 1:
-                                    cName = '柱状图';
-                                    break;
-                                case 2:
-                                    cName = '折线图';
-                                    break;
-                                case 3:
-                                    cName = '曲线图';
-                                    break;
-                                case 4:
-                                    cName = '饼状图';
-                                    break;
+                    if (data) {
+                        var resultHtml = "";
+                        var appDom = $("#div_main_relation");
+                        for(var i=0;i<data.length;i++){
+                            var item = data[i];
+                            var mainCode = 'div' + item.quotaId;
+                            if(appDom.find(".div-item[data-code='"+mainCode+"']").length==0){
+                                var cName = '',
+                                    qc = parseInt(item.quotaChart);
+                                switch (qc) {
+                                    case 1:
+                                        cName = '柱状图';
+                                        break;
+                                    case 2:
+                                        cName = '折线图';
+                                        break;
+                                    case 3:
+                                        cName = '曲线图';
+                                        break;
+                                    case 4:
+                                        cName = '饼状图';
+                                        break;
+                                }
+                                resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName + '" data-qchart="' + item.quotaChart + '" >'+
+                                            '<div class="div-main-content">'+ item.quotaTypeName +'</div>'+
+                                            '<div class="div-main-content">'+ item.quotaName +'</div>'+
+                                            '<div class="div-main-content">'+cName+'</div>'+
+                                            '<div class="div-delete-content">'+
+                                                '<a class="grid_delete" href="#" title="删除"></a>'+
+                                            '</div>'+
+                                        '</div>';
                             }
-                            resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName + '" data-qchart="' + item.quotaChart + '" >'+
-                                        '<div class="div-main-content">'+ item.quotaTypeName +'</div>'+
-                                        '<div class="div-main-content">'+ item.quotaName +'</div>'+
-                                        '<div class="div-main-content">'+cName+'</div>'+
-                                        '<div class="div-delete-content">'+
-                                            '<a class="grid_delete" href="#" title="删除"></a>'+
-                                        '</div>'+
-                                    '</div>';
                         }
+                        appDom.append(resultHtml);
                     }
-                    appDom.append(resultHtml);
                 },
                 reloadGrid: function () {
                     var searchNmEntry = this.$searchNm.val();
@@ -241,7 +243,7 @@
                     $("#div_save").click(function(){
                         var wait = $.Notice.waitting('正在加载中...');
                         var saveData = [];
-                        var quotaCode = null
+                        var thisResourceId = '';
                         var reqUrl = '${contextRoot}/resource/resourceManage/addResourceQuota';
                         var divItem = $("#div_main_relation").find(".div-item");
                         $.each(divItem,function(key,value){
@@ -252,12 +254,16 @@
                                 quotaChart:$(value).attr("data-qchart")
                             }
                             saveData.push(ob);
-                        })
+                        });
+                        if (saveData.length == 0) {
+                            thisResourceId = resourceId;
+                        }
                         var dataModel = $.DataModel.init();
-                        dataModel.updateRemote(reqUrl, {data: {quotaCode : resourceId, jsonModel: JSON.stringify(saveData)},
+                        dataModel.updateRemote(reqUrl, {data: {resourceId : thisResourceId, jsonModel: JSON.stringify(saveData)},
                             success: function (data) {
                                 wait.close();
                                 if(data.successFlg){
+                                    $.Notice.success('保存成功！');
                                     win.closeZhibaioConfigueDialog();
                                 }else{
                                     $.Notice.error(data.errorMsg);

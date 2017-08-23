@@ -119,7 +119,6 @@
 								var jsonStr = JSON.stringify(row);
 								var html = '';
 
-
 								<sec:authorize url="/appRole/updateFeatureConfig">
 									html = '<a class="label_a" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"limits") + '>权限配置</a>';
 								</sec:authorize>
@@ -128,6 +127,8 @@
 								</sec:authorize>
 
 								html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+
+                                html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "roles:resource:bbconfig", row.id) + '">资源报表配置</a></sec:authorize>';
 
 
 								<sec:authorize url="/userRoles/update">
@@ -213,6 +214,31 @@
 						})
 						rolesMaster.rolesInfoDialog.hide();
 					});
+
+
+                    $.subscribe("roles:resource:bbconfig",function(events,id){
+                        var title = '资源报表配置';
+                        var wait = $.Notice.waitting("正在加载...");
+                        rolesMaster.bbConfigDialog = $.ligerDialog.open({
+                            height: 540,
+                            width: 600,
+                            title: title,
+                            show:false,
+                            urlParms:{
+                                id:id
+                            },
+                            url: '${contextRoot}/userRoles/rfConfig',
+                            isHidden: false,
+                            load: true,
+                            onLoaded:function() {
+                                wait.close(),
+                                rolesMaster.bbConfigDialog.show()
+                            }
+                        })
+                        rolesMaster.bbConfigDialog.hide();
+                    });
+
+
 					//删除角色组（删除判断）
 					$.subscribe("roles:info:delete",function(event,id){
 						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
@@ -309,6 +335,10 @@
 				//角色组新增、修改会话框关闭
 				rolesMaster.rolesInfoDialog.close();
 			};
+            win.closeBBConfigDialogDialog = function () {
+                //关闭资源报表配置会话框
+                rolesMaster.bbConfigDialog.close();
+            };
 			win.closeRoleRelationDialog = function () {
 				//角色组人员配置、权限配置会话框关闭
 				rolesMaster.roleRelationDialog
