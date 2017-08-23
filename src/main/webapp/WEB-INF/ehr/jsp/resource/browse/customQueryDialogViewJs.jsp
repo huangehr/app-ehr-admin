@@ -10,6 +10,7 @@
         // 表单校验工具类
         var jValidation = $.jValidation;
         var mode = '${mode}';
+        var type = '${type}';
         var nameCopy = '';
         var codeCopy = '';
         <%--var categoryIdOld = '${categoryId}';--%>
@@ -45,12 +46,23 @@
                 this.$code.ligerTextBox({width:240});
                 this.$description.ligerTextBox({width:240, height: 120 });
                 this.$grantType.ligerRadio();
-                this.$dataSource.ligerRadio();
+                var lr1 = this.$dataSource.eq(0).ligerRadio();
+                var lr2 = this.$dataSource.eq(1).ligerRadio();
+                if (type && type == 0) {
+                    lr1.setValue(true);
+                    lr2.setValue(false);
+                }
+                if (type && type == 1) {
+                    lr1.setValue(false);
+                    lr2.setValue(true);
+                }
+                lr1.setDisabled();
+                lr2.setDisabled();
+
                 this.$form.attrScan();
                 this.$form.show();
             },
             initDDL: function () {
-                debugger
                 this.$grantType.eq(1).attr("checked", 'true')
                 this.$dataSource.eq(0).attr("checked", 'true')
                 this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});

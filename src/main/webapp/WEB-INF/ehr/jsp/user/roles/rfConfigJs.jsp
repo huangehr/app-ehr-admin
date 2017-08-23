@@ -21,6 +21,7 @@
                 $rightTree: $('#rightTree'),
                 leftTree: null,
                 rightTree: null,
+                leftTreeData: [],
                 rightTreeData: [],
                 init: function () {
                     this.$searchInp.ligerTextBox({width:233, isSearch: true, search: function () {
@@ -28,8 +29,9 @@
                     }});
                     this.initLeftTree();
                     this.initRightTree();
+                    this.getData();
                 },
-                initLeftTree: function () {
+                getData: function () {
                     var me = this;
                     $.ajax({
                         url: intf[0],
@@ -40,36 +42,42 @@
                         dataType: 'json',
                         success: function (data) {
                             if (data.successFlg) {
-                                for (var i = 0; i < data.length; i++) {
-                                    if (data[i].children) {
-                                        delete data[i].children;
-                                    }
+                                var d = data.detailModelList;
+                                if (d) {
+                                    me.leftTreeData = d;
+                                    me.reloadLeftTree();
+                                } else {
+
                                 }
-                                me.leftTree = me.$leftTree.ligerSearchTree({
-                                    nodeWidth: 240,
-                                    data: data,
-                                    checkbox: false,
-                                    idFieldName: 'id',
-                                    parentIDFieldName:'pid',
-                                    textFieldName: 'name',
-                                    isExpand: false,
-                                    checkbox: true,
-                                    enabledCompleteCheckbox:false,
-                                    onCheck: function (e) {
-                                        debugger
-                                        var selData = this.getChecked();
-                                        console.log('a');
-                                    },
-//                                onSuccess: function (data) {
-//
-//                                }
-                                });
                             }
                         }
                     });
                 },
-                reloadRightTree: function () {
+                reloadLeftTree: function () {
+                    this.leftTree.setData(this.leftTreeData);
+                },
+                reloadLeftTree: function () {
                     this.rightTree.setData(this.rightTreeData);
+                },
+                initLeftTree: function () {
+                    var me = this;
+                    me.leftTree = me.$leftTree.ligerSearchTree({
+                        nodeWidth: 240,
+                        data: me.leftTreeData,
+                        idFieldName: 'id',
+                        parentIDFieldName:'pid',
+                        textFieldName: 'name',
+                        isExpand: false,
+                        checkbox: true,
+                        onCheck: function (e) {
+                            setTimeout(function(){
+                                var html= me.$leftTree.html();
+                                me.$rightTree.html(html);
+                                $("#rightTree .l-box.l-checkbox").hide();
+                                $("#rightTree .l-checkbox-unchecked").closest("li").hide()
+                            },300);
+                        }
+                    });
                 },
                 initRightTree: function () {
                     this.rightTree = this.$rightTree.ligerSearchTree({
