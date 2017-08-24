@@ -120,35 +120,44 @@ public class ReportController extends BaseUIController {
             List<Object> treeModelList = objectMapper.readValue(rsCategoryTreeStr, Envelop.class).getDetailModelList();
             List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList = (List<RsCategoryTypeTreeModel>) this.getEnvelopList(treeModelList, new ArrayList<RsCategoryTypeTreeModel>(), RsCategoryTypeTreeModel.class);
 
-            Map<String, Object> params;
-            RsCategoryTypeTreeModel rsCategoryTypeTreeModel;
-            for (RsCategoryTypeTreeModel rsCategory : rsCategoryTypeTreeModelList) {
-                params = new HashMap<>();
-                params.put("filters", "categoryId=" + rsCategory.getId());
-                String rsResourcesStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.NoPageResources, params, username, password);
-                List<Object> rsResourcesList = objectMapper.readValue(rsResourcesStr, Envelop.class).getDetailModelList();
-                List<RsResourcesModel> rsResourcesModelList = (List<RsResourcesModel>) this.getEnvelopList(rsResourcesList, new ArrayList<RsResourcesModel>(), RsResourcesModel.class);
-
-                for (RsResourcesModel rsResources : rsResourcesModelList) {
-                    rsCategoryTypeTreeModel = new RsCategoryTypeTreeModel();
-                    rsCategoryTypeTreeModel.setId(rsResources.getId());
-                    rsCategoryTypeTreeModel.setName(rsResources.getName());
-                    rsCategoryTypeTreeModel.setPid(rsCategory.getId());
-                    params = new HashMap<>();
-                    params.put("reportId", reportId);
-                    params.put("resourceId", rsResources.getId());
-                    String ischeckedStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViewExist, params, username, password);
-                    boolean ischecked = (Boolean) objectMapper.readValue(ischeckedStr, Envelop.class).getObj();
-                    rsCategoryTypeTreeModel.setIschecked(ischecked);
-                    rsCategory.getChildren().add(rsCategoryTypeTreeModel);
-                }
-            }
+            this.setRsCategoryViews(rsCategoryTypeTreeModelList, reportId);
 
             return rsCategoryTypeTreeModelList;
         } catch (Exception e) {
             e.printStackTrace();
             LogService.getLogger(HealthBusinessController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    // 设置视图类别拥有的视图
+    private void setRsCategoryViews(List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList, Integer reportId) throws Exception {
+        Map<String, Object> params;
+        RsCategoryTypeTreeModel rsCategoryTypeTreeModel;
+        for (RsCategoryTypeTreeModel rsCategory : rsCategoryTypeTreeModelList) {
+            params = new HashMap<>();
+            params.put("filters", "categoryId=" + rsCategory.getId());
+            String rsResourcesStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.NoPageResources, params, username, password);
+            List<Object> rsResourcesList = objectMapper.readValue(rsResourcesStr, Envelop.class).getDetailModelList();
+            List<RsResourcesModel> rsResourcesModelList = (List<RsResourcesModel>) this.getEnvelopList(rsResourcesList, new ArrayList<RsResourcesModel>(), RsResourcesModel.class);
+
+            for (RsResourcesModel rsResources : rsResourcesModelList) {
+                rsCategoryTypeTreeModel = new RsCategoryTypeTreeModel();
+                rsCategoryTypeTreeModel.setId(rsResources.getId());
+                rsCategoryTypeTreeModel.setName(rsResources.getName());
+                rsCategoryTypeTreeModel.setPid(rsCategory.getId());
+                params = new HashMap<>();
+                params.put("reportId", reportId);
+                params.put("resourceId", rsResources.getId());
+                String ischeckedStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViewExist, params, username, password);
+                boolean ischecked = (Boolean) objectMapper.readValue(ischeckedStr, Envelop.class).getObj();
+                rsCategoryTypeTreeModel.setIschecked(ischecked);
+                rsCategory.getChildren().add(rsCategoryTypeTreeModel);
+            }
+
+            if(rsCategory.getChildren() != null && rsCategory.getChildren().size() != 0) {
+                setRsCategoryViews(rsCategory.getChildren(), reportId);
+            }
         }
     }
 
