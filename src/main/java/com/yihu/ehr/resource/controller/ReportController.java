@@ -1,8 +1,11 @@
 package com.yihu.ehr.resource.controller;
 
+import com.yihu.ehr.agModel.resource.RsCategoryTypeTreeModel;
 import com.yihu.ehr.agModel.resource.RsReportModel;
+import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.health.controller.HealthBusinessController;
 import com.yihu.ehr.std.controller.StdSourceManagerController;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -18,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.yihu.ehr.util.HttpClientUtil.doGet;
@@ -73,14 +78,15 @@ public class ReportController extends BaseUIController {
     @RequestMapping(value = "setting")
     public String setting(Model model, Integer id) {
         Object detailModel = new RsReportModel();
-        try {
+//        try {
 //                String url = comUrl + ServiceApi.Resources.RsReportPrefix + id;
 //                String result = doGet(url, username, password);
 //                detailModel = objectMapper.readValue(result, Envelop.class).getObj();
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogService.getLogger(StdSourceManagerController.class).error(e.getMessage());
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            LogService.getLogger(StdSourceManagerController.class).error(e.getMessage());
+//        }
+        model.addAttribute("id", id);
         model.addAttribute("contentPage", "resource/report/setting");
         return "simpleView";
     }
@@ -112,6 +118,61 @@ public class ReportController extends BaseUIController {
     }
 
     /**
+     * 根据条件，获取视图树形数据（视图类别树下展示视图）
+     */
+    @RequestMapping("/getViewsTreeData")
+    @ResponseBody
+    public Object getViewsTreeData(String codeName) {
+        try {
+            String rsCategoryTreeStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.CategoryTree, username, password);
+            List<Object> treeModelList = objectMapper.readValue(rsCategoryTreeStr, Envelop.class).getDetailModelList();
+            List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList = (List<RsCategoryTypeTreeModel>) this.getEnvelopList(treeModelList, new ArrayList<RsCategoryTypeTreeModel>(), RsCategoryTypeTreeModel.class);
+
+            Map<String, Object> params;
+            RsCategoryTypeTreeModel rsCategoryTypeTreeModel;
+            for (RsCategoryTypeTreeModel rsCategory : rsCategoryTypeTreeModelList) {
+                params = new HashMap<>();
+                params.put("filters", "categoryId=" + rsCategory.getId());
+                String rsResourcesStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.NoPageResources, params, username, password);
+                List<Object> rsResourcesList = objectMapper.readValue(rsResourcesStr, Envelop.class).getDetailModelList();
+                List<RsResourcesModel> rsResourcesModelList = (List<RsResourcesModel>) this.getEnvelopList(rsResourcesList, new ArrayList<RsResourcesModel>(), RsResourcesModel.class);
+
+                for (RsResourcesModel rsResources : rsResourcesModelList) {
+                    rsCategoryTypeTreeModel = new RsCategoryTypeTreeModel();
+                    rsCategoryTypeTreeModel.setId(rsResources.getId());
+                    rsCategoryTypeTreeModel.setName(rsResources.getName());
+                    rsCategoryTypeTreeModel.setPid(rsCategory.getId());
+                    rsCategoryTypeTreeModel.setRealCategory(false);
+                    rsCategory.getChildren().add(rsCategoryTypeTreeModel);
+                }
+            }
+
+            return rsCategoryTypeTreeModelList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(HealthBusinessController.class).error(e.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    /**
+     * 获取选择的报表视图
+     */
+    @RequestMapping("/getSelectedViews")
+    @ResponseBody
+    public Object getSelectedViews(Integer id) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        try {
+            return doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(HealthBusinessController.class).error(e.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    /**
      * 保存
      */
     @RequestMapping("/save")
@@ -131,7 +192,7 @@ public class ReportController extends BaseUIController {
 
             if (model.getId() == null) {
                 // 新增
-                params.put("rsReportCategory", data);
+                params.put("mrsReport", data);
                 return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
             } else {
                 // 修改
@@ -147,7 +208,7 @@ public class ReportController extends BaseUIController {
                 updateModel.setRemark(model.getRemark());
                 updateModel.setTemplatePath(model.getTemplatePath());
 
-                params.put("rsReportCategory", objectMapper.writeValueAsString(updateModel));
+                params.put("mrsReport", objectMapper.writeValueAsString(updateModel));
                 return HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
             }
         } catch (Exception e) {
@@ -224,7 +285,7 @@ public class ReportController extends BaseUIController {
             Map<String, Object> uploadFileParams = FileUploadUtil.getParams(file.getInputStream(), file.getOriginalFilename());
             String filePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
 
-            if(!StringUtils.isEmpty(filePath)) {
+            if (!StringUtils.isEmpty(filePath)) {
                 String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
@@ -236,7 +297,7 @@ public class ReportController extends BaseUIController {
                 String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
 
                 Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
-                if(envelopUpdate.isSuccessFlg()) {
+                if (envelopUpdate.isSuccessFlg()) {
                     result.setSuccessFlg(true);
                     result.setObj(filePath);
                 } else {
@@ -248,6 +309,22 @@ public class ReportController extends BaseUIController {
                 result.setErrorMsg("请上传非空文件！");
             }
             return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed("上传文件发生异常");
+        }
+    }
+
+    /**
+     * 资源配置
+     */
+    @RequestMapping("saveSetting")
+    @ResponseBody
+    public Object saveSetting(@RequestParam String modelListJson) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("modelListJson", modelListJson);
+            return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportViewSave, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
             return failed("上传文件发生异常");

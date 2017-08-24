@@ -4,6 +4,7 @@
 <script>
     var dataModel = $.DataModel.init();
     var supplyTree, selectedGrid;
+    var id = '${id}';
 
     $(function () {
         init();
@@ -15,32 +16,33 @@
     }
 
     function renderWidget() {
-        supplyTree = $("#supplyTree").ligerGrid($.LigerGridEx.config({
-            <%--url: '${contextRoot}/resource/reportCategory/getTreeData',--%>
-            url: '${contextRoot}/develop/treedata.json',
-            columns: [
-                {display: 'ID', name: 'id', hide: true},
-                {display: '名称', name: 'name', width: '100%', isAllowHide: false, align: 'left'}
-            ],
-            height: '510',
-            allowHideColumn: false,
-            tree: {columnName: 'name'},
-            usePager: false,
-            checkbox: true
-        }));
-        supplyTree.collapseAll();
-        supplyTree.adjustToWidth();
+        supplyTree = $("#supplyTree").ligerTree({
+            url: '${contextRoot}/resource/report/getViewsTreeData',
+            checkbox: true,
+            textFieldName: 'name',
+            idFieldName: 'id',
+            isExpand: false,
+            slide: false,
+            onCheck: treeNodeCheck
+        });
 
         selectedGrid = $("#selectedGrid").ligerGrid($.LigerGridEx.config({
-            <%--url: '${contextRoot}/resource/report/search',--%>
-            url: '${contextRoot}/develop/griddata.json',
+            url: '${contextRoot}/resource/report/getSelectedViews',
+            <%--url: '${contextRoot}/develop/griddata.json',--%>
             columns: [
-                {display: 'ID', name: 'id', hide: true},
-                {display: '视图名称', name: 'name', width: '100%', isAllowHide: false, align: 'left'}
+                {display: '主键', name: 'id', hide: true},
+                {display: '资源报表ID', name: 'reportId', hide: true},
+                {display: '视图ID', name: 'resourceId', hide: true},
+                {display: '视图名称', name: 'resourceName', width: '100%', isAllowHide: false, align: 'left'}
             ],
             height: '510',
             allowHideColumn: false,
-            usePager: false
+            usePager: false,
+            onSelectRow: function(rowdata, rowid, rowobj) {
+                debugger;
+                var rowDataTran = makeGridRowData(rowdata);
+                selectedGrid.deleteRow(rowdata);
+            }
         }));
         selectedGrid.adjustToWidth();
     }
@@ -77,6 +79,52 @@
         $('#btnClose').click(function () {
             window.closeDetailDialog();
         });
+    }
+
+    // 左侧视图树：选择事件
+    function treeNodeCheck(node, check) {
+        debugger;
+        console.log(node);
+        var rowData = makeGridRowData(node.data);
+        if(check) {
+            if(node.data.children) {
+                traverseChildren(node.data.children, 'add');
+            } else if(!node.data.realCategory) { // 判断是否是视图节点
+                selectedGrid.addRow(rowData);
+            }
+        } else {
+            if(node.data.children) {
+                traverseChildren(node.data.children, 'delete');
+            } else if(!node.data.realCategory) { // 判断是否是视图节点
+                selectedGrid.deleteRow(rowData);
+            }
+        }
+    }
+
+    // 遍历选择节点的所有子节点，并添加到右侧列表，或从右侧列表移除
+    function traverseChildren(children, flag) {
+        $.each(children, function (i, child) {
+            if(child.children) {
+                traverseChildren(child.children, flag);
+            } else if(!child.realCategory) { // 判断是否是视图节点
+                var rowData = makeGridRowData(child);
+                if(flag === 'add') {
+                    selectedGrid.addRow(rowData);
+                } else if(flag === 'delete') {
+                    selectedGrid.deleteRow(rowData);
+                }
+            }
+        });
+    }
+
+    // 生成右侧列表行数据
+    function makeGridRowData(data) {
+        return {
+            id: data.id,
+            reportId: id,
+            resourceId: data.id,
+            resourceName: data.name
+        };
     }
 
 </script>

@@ -39,6 +39,14 @@
     .wrapper .content {
         padding: 10px;
     }
+    #supplyTree {
+        width: auto !important;
+        height: 490px;
+        overflow-y: auto;
+    }
+    #supplyTree.l-tree span {
+        line-height: 22px;
+    }
     .pane-attribute-toolbar {
         display: block;
         position: absolute;

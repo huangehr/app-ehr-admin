@@ -2,12 +2,10 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <div>
-    <input type="hidden" id="id">
-
     <div class="wrapper">
         <div class="left-items">
             <div class="header">
-                <input type="text" id="searchNm" placeholder="请输入代码或者名称">
+                <input type="text" id="searchNm" placeholder="请输入视图名称">
             </div>
             <div class="content" id="supplyTree"></div>
         </div>
