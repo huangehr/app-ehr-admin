@@ -28,21 +28,15 @@
 
         selectedGrid = $("#selectedGrid").ligerGrid($.LigerGridEx.config({
             url: '${contextRoot}/resource/report/getSelectedViews',
-            <%--url: '${contextRoot}/develop/griddata.json',--%>
             columns: [
                 {display: '主键', name: 'id', hide: true},
                 {display: '资源报表ID', name: 'reportId', hide: true},
-                {display: '视图ID', name: 'resourceId', hide: true},
+                {display: '视图ID', name: 'resourceId', hide: true}, // getGridRowid() 会用到[视图ID]grid行顺序
                 {display: '视图名称', name: 'resourceName', width: '100%', isAllowHide: false, align: 'left'}
             ],
             height: '510',
             allowHideColumn: false,
-            usePager: false,
-            onSelectRow: function(rowdata, rowid, rowobj) {
-                debugger;
-                var rowDataTran = makeGridRowData(rowdata);
-                selectedGrid.deleteRow(rowdata);
-            }
+            usePager: false
         }));
         selectedGrid.adjustToWidth();
     }
@@ -81,10 +75,9 @@
         });
     }
 
+    // region 添加/移除资源视图
     // 左侧视图树：选择事件
     function treeNodeCheck(node, check) {
-        debugger;
-        console.log(node);
         var rowData = makeGridRowData(node.data);
         if(check) {
             if(node.data.children) {
@@ -96,7 +89,7 @@
             if(node.data.children) {
                 traverseChildren(node.data.children, 'delete');
             } else if(!node.data.realCategory) { // 判断是否是视图节点
-                selectedGrid.deleteRow(rowData);
+                selectedGrid.deleteRow(getGridRowid(rowData.resourceId));
             }
         }
     }
@@ -111,7 +104,7 @@
                 if(flag === 'add') {
                     selectedGrid.addRow(rowData);
                 } else if(flag === 'delete') {
-                    selectedGrid.deleteRow(rowData);
+                    selectedGrid.deleteRow(getGridRowid(rowData.resourceId));
                 }
             }
         });
@@ -120,11 +113,21 @@
     // 生成右侧列表行数据
     function makeGridRowData(data) {
         return {
-            id: data.id,
             reportId: id,
             resourceId: data.id,
             resourceName: data.name
         };
     }
+
+    // 根据视图ID遍历右侧grid行，获取对应行的rowid
+    function getGridRowid(resourceId) {
+        var tdDomId = $('#selectedGrid .l-grid-body-table tr td:nth-child(3) [title=' + resourceId + ']').closest('td').attr('id');
+        if(tdDomId) {
+            return tdDomId.split('|')[2] || '';
+        } else {
+            return '';
+        }
+    }
+    // endregion 添加/移除视图
 
 </script>
