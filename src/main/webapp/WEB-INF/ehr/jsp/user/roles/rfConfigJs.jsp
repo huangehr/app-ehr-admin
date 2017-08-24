@@ -7,6 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script type="text/javascript" src="${contextRoot}/develop/lib/plugin/underscore/underscore.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 
 <script type="text/javascript">
@@ -83,7 +84,10 @@
                                     me.reloadLeftTree();
                                 }
                                 if (rightData) {
-                                    rightArr = me.formatData(rightData);
+//                                    rightArr = me.formatData(rightData);
+                                    rightArr = _.sortBy(me.formatData(rightData), function(item) {
+                                        return item.id;
+                                    });
                                     me.selectData = rightArr;
                                     me.rightTreeData = rightArr;
                                     me.reloadRightree();
