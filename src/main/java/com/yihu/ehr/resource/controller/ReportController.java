@@ -52,7 +52,7 @@ public class ReportController extends BaseUIController {
     }
 
     /**
-     * 明细
+     * 展示明细
      */
     @RequestMapping(value = "detail")
     public String detail(Model model, Integer id) {
@@ -73,19 +73,11 @@ public class ReportController extends BaseUIController {
     }
 
     /**
-     * 资源配置
+     * 展示资源配置
      */
     @RequestMapping(value = "setting")
     public String setting(Model model, Integer id) {
         Object detailModel = new RsReportModel();
-//        try {
-//                String url = comUrl + ServiceApi.Resources.RsReportPrefix + id;
-//                String result = doGet(url, username, password);
-//                detailModel = objectMapper.readValue(result, Envelop.class).getObj();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            LogService.getLogger(StdSourceManagerController.class).error(e.getMessage());
-//        }
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "resource/report/setting");
         return "simpleView";
@@ -122,7 +114,7 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/getViewsTreeData")
     @ResponseBody
-    public Object getViewsTreeData(String codeName) {
+    public Object getViewsTreeData(String codeName, Integer reportId) {
         try {
             String rsCategoryTreeStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.CategoryTree, username, password);
             List<Object> treeModelList = objectMapper.readValue(rsCategoryTreeStr, Envelop.class).getDetailModelList();
@@ -142,7 +134,12 @@ public class ReportController extends BaseUIController {
                     rsCategoryTypeTreeModel.setId(rsResources.getId());
                     rsCategoryTypeTreeModel.setName(rsResources.getName());
                     rsCategoryTypeTreeModel.setPid(rsCategory.getId());
-                    rsCategoryTypeTreeModel.setRealCategory(false);
+                    params = new HashMap<>();
+                    params.put("reportId", reportId);
+                    params.put("resourceId", rsResources.getId());
+                    String ischeckedStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViewExist, params, username, password);
+                    boolean ischecked = (Boolean) objectMapper.readValue(ischeckedStr, Envelop.class).getObj();
+                    rsCategoryTypeTreeModel.setIschecked(ischecked);
                     rsCategory.getChildren().add(rsCategoryTypeTreeModel);
                 }
             }
@@ -160,9 +157,9 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/getSelectedViews")
     @ResponseBody
-    public Object getSelectedViews(Integer id) {
+    public Object getSelectedViews(Integer reportId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
+        params.put("reportId", reportId);
         try {
             return doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
         } catch (Exception e) {
@@ -316,18 +313,19 @@ public class ReportController extends BaseUIController {
     }
 
     /**
-     * 资源配置
+     * 保存资源配置
      */
     @RequestMapping("saveSetting")
     @ResponseBody
-    public Object saveSetting(@RequestParam String modelListJson) {
+    public Object saveSetting(@RequestParam Integer reportId, @RequestParam String data) {
         try {
             Map<String, Object> params = new HashMap<>();
-            params.put("modelListJson", modelListJson);
+            params.put("reportId", reportId);
+            params.put("modelListJson", data);
             return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportViewSave, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            return failed("上传文件发生异常");
+            return failed("保存发生异常");
         }
     }
 

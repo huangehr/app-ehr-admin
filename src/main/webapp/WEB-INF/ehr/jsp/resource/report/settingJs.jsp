@@ -18,6 +18,7 @@
     function renderWidget() {
         supplyTree = $("#supplyTree").ligerTree({
             url: '${contextRoot}/resource/report/getViewsTreeData',
+            urlParms: {reportId: id},
             checkbox: true,
             textFieldName: 'name',
             idFieldName: 'id',
@@ -28,6 +29,7 @@
 
         selectedGrid = $("#selectedGrid").ligerGrid($.LigerGridEx.config({
             url: '${contextRoot}/resource/report/getSelectedViews',
+            urlParms: {reportId: id},
             columns: [
                 {display: '主键', name: 'id', hide: true},
                 {display: '资源报表ID', name: 'reportId', hide: true},
@@ -45,17 +47,15 @@
         // 保存
         $('#btnSave').click(function () {
             var loading = $.ligerDialog.waitting("正在保存数据...");
-            dataModel.fetchRemote("${contextRoot}/resource/report/", {
+            dataModel.fetchRemote("${contextRoot}/resource/report/saveSetting", {
                 type: 'post',
-                data: {data: JSON.stringify('')},
+                data: {
+                    reportId : id,
+                    data: JSON.stringify(selectedGrid.getData())
+                },
                 success: function (data) {
                     if (data.successFlg) {
-                        if (detailModel.id) {
-                            window.closeDetailDialog('新增成功');
-                        } else {
-                            window.closeDetailDialog('修改成功');
-                        }
-                        window.reloadMasterGrid();
+                        $.Notice.success('保存成功');
                     } else {
                         $.Notice.error(data.errorMsg);
                     }
@@ -82,7 +82,7 @@
         if(check) {
             if(node.data.children) {
                 traverseChildren(node.data.children, 'add');
-            } else if(!node.data.realCategory) { // 判断是否是视图节点
+            } else if(!node.data.realCategory && !getGridRowid(rowData.resourceId)) { // 判断是否是视图节点
                 selectedGrid.addRow(rowData);
             }
         } else {
@@ -101,7 +101,7 @@
                 traverseChildren(child.children, flag);
             } else if(!child.realCategory) { // 判断是否是视图节点
                 var rowData = makeGridRowData(child);
-                if(flag === 'add') {
+                if(flag === 'add' && !getGridRowid(rowData.resourceId)) {
                     selectedGrid.addRow(rowData);
                 } else if(flag === 'delete') {
                     selectedGrid.deleteRow(getGridRowid(rowData.resourceId));
