@@ -85,7 +85,7 @@
                                 if (rightData) {
                                     rightArr = me.formatData(rightData);
                                     me.selectData = rightArr;
-                                    me.rightTreeData = rightData;
+                                    me.rightTreeData = rightArr;
                                     me.reloadRightree();
                                 }
                             }
