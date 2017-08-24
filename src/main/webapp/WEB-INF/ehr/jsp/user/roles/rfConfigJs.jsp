@@ -102,6 +102,7 @@
                                 d[i].reportList[t].ischecked = d[i].reportList[t].flag;
                             }
                         }
+                        d[i].ischecked = d[i].flag;
                         d[i].children = d[i].reportList;
                         if (!d[i].pid) {
                             arr.push(d[i]);
