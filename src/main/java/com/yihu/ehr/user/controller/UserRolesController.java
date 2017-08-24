@@ -2,15 +2,13 @@ package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
-import com.yihu.ehr.agModel.resource.RsAppResourceModel;
+import com.yihu.ehr.agModel.resource.RsReportCategoryInfoModel;
 import com.yihu.ehr.agModel.resource.RsRolesResourceModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
 import com.yihu.ehr.agModel.user.RolesModel;
-import com.yihu.ehr.apps.controller.AppController;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
-import com.yihu.ehr.model.resource.MRsAppResource;
 import com.yihu.ehr.model.resource.MRsRolesResource;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -24,11 +22,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -710,5 +712,69 @@ public class UserRolesController extends BaseUIController {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
         }
         return "";
+    }
+    @RequestMapping("/rfConfig")
+    public String rfConfig(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "user/roles/rfConfig");
+        return "pageView";
+    }
+
+    //资源报表分类树数据-获取所有分类及对应的资源的不分页方法
+    @RequestMapping("/categoriesAndReport")
+    @ResponseBody
+    public Object getCategoriesAndReport(String roleId, String name){
+        Envelop envelop = new Envelop();
+        try{
+            String filters = "";
+            String envelopStr = "";
+            String url = "/roles/report/getCategoryAndReportNoPage";
+            Map<String,Object> params = new HashMap<>();
+            if (!StringUtils.isEmpty(name)) {
+                params.put("filters", "name?" + name);
+            } else {
+                params.put("filters", filters);
+            }
+            params.put("roleId", roleId);
+            envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    @RequestMapping(value = "/addRoleReportRelation", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object addRoleReportRelation(String roleId, String jsonModel, HttpServletRequest request) throws IOException {
+        String url = "/roles/role_report/batchAddRoleReportRelation";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        if (!StringUtils.isBlank(roleId)) {
+            url = "/roles/role_report/deleteByRoleId";
+            Map<String, Object> params = new HashMap<>();
+            params.put("roleId", Long.valueOf(roleId));
+            try {
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            } catch (Exception e) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.SystemError.toString());
+                return result;
+            }
+            return resultStr;
+        }
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("model", jsonModel);
+        RestTemplates templates = new RestTemplates();
+        try {
+            resultStr = templates.doPost(comUrl + url, params);
+        } catch (RestClientException e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+        return resultStr;
     }
 }

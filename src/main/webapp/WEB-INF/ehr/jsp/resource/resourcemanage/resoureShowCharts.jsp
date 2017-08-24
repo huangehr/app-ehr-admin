@@ -3,9 +3,9 @@
 
 <div class="charts-main">
     <ul class="tab-list">
-        <li class="tab-item active">折线图</li>
-        <li class="tab-item">饼状图</li>
-        <li class="tab-item">柱状图</li>
+        <%--<li class="tab-item active">折线图</li>--%>
+        <%--<li class="tab-item">饼状图</li>--%>
+        <%--<li class="tab-item">柱状图</li>--%>
     </ul>
     <div class="tab-con">
         <div id="chartsMain" style="width:748px;height: 403px"></div>

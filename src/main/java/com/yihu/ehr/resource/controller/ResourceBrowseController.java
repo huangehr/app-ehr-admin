@@ -75,9 +75,10 @@ public class ResourceBrowseController extends BaseUIController {
     }
 
     @RequestMapping("/infoInitial")
-    public String customQueryDialogView(String queryCondition, String metadatas,Model model) {
+    public String customQueryDialogView(String queryCondition, String metadatas, String type, Model model) {
         model.addAttribute("queryCondition", queryCondition);
         model.addAttribute("metadatas", metadatas);
+        model.addAttribute("type", type);
         model.addAttribute("contentPage", "/resource/browse/customQueryDialogView");
         return "pageView";
     }

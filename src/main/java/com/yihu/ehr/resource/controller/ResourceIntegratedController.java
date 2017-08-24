@@ -138,65 +138,21 @@ public class ResourceIntegratedController extends BaseUIController {
     @RequestMapping("/searchQuotaData")
     @ResponseBody
     public Object searchQuotaData(String tjQuotaIds, String tjQuotaCodes, String searchParams, int page, int rows) {
-        Envelop result = new Envelop();
-        List<Envelop> envelopList = new ArrayList<Envelop>();
-        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+        Envelop envelop = new Envelop();
         try {
-            String url1 = "/tj/tjGetQuotaResult";
-            String url2 = "/tj/getTjQuotaSynthesiseDimension";
-            boolean isFailed = false;
-            //检查维度交集查询参数是否正确
-            if (tjQuotaCodes == null) {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("参数不能为空");
-                return result;
-            }
-            //获取数据交集
-            Map<String, Object> params1 = new HashMap<String, Object>();
-            params1.put("quotaCodes", tjQuotaCodes);
-            String resultStr2 = HttpClientUtil.doGet(comUrl + url2, params1, username, password);
-            //如果数据交集不为空，获取相关指标执行的结果
-            if(resultStr2 != null) {
-                //检查指标执行结果查询参数是否正确
-                List<Long> tjQuotaIdList = (List<Long>) objectMapper.readValue(tjQuotaIds, List.class);
-                /**
-                 * 请求数据
-                 */
-                if (tjQuotaIdList != null && tjQuotaIdList.size() > 0) {
-                    for (Long id : tjQuotaIdList) {
-                        Envelop envelop = new Envelop();
-                        Map<String, Object> params2 = new HashMap<String, Object>();
-                        params2.put("id", id);
-                        params2.put("pageNo", page);
-                        params2.put("pageSize", rows);
-                        params2.put("filters", searchParams);
-                        String resultStr1 = HttpClientUtil.doGet(comUrl + url1, params2, username, password);
-                        envelop = toModel(resultStr1, Envelop.class);
-                        envelopList.add(envelop);
-                        if (envelop == null || !envelop.isSuccessFlg()) {
-                            isFailed = true;
-                        }
-                    }
-                }
-                if (isFailed) {
-                    result.setSuccessFlg(false);
-                    result.setErrorMsg("请求结果有误");
-                    return result;
-                }
-                /**
-                 * 处理结果集
-                 */
-            }else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("无效指标合集");
-                return result;
-            }
+            String url = "/resources/integrated/quota_data";
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("quotaIds", tjQuotaIds);
+            params.put("quotaCodes", tjQuotaCodes);
+            params.put("queryCondition", searchParams);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
         }
-        return result;
+        return envelop;
     }
 
     /**

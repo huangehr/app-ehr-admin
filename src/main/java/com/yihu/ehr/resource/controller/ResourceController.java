@@ -22,10 +22,8 @@ import org.springframework.web.client.RestClientException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by yww on 2016/5/27.
@@ -382,10 +380,23 @@ public class ResourceController extends BaseUIController {
 
     @RequestMapping(value = "/addResourceQuota", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object addResourceQuota(String quotaCode, String jsonModel, HttpServletRequest request) throws IOException {
+    public Object addResourceQuota(String resourceId, String jsonModel, HttpServletRequest request) throws IOException {
         String url = "/resourceQuota/batchAddResourceQuota";
         String resultStr = "";
         Envelop result = new Envelop();
+        if (!org.apache.commons.lang.StringUtils.isBlank(resourceId)) {
+            url = "/resourceQuota/delRQNameByResourceId";
+            Map<String, Object> params = new HashMap<>();
+            params.put("resourceId", resourceId);
+            try {
+                resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            } catch (Exception e) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.SystemError.toString());
+                return result;
+            }
+            return resultStr;
+        }
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("model", jsonModel);
         RestTemplates templates = new RestTemplates();
@@ -408,6 +419,17 @@ public class ResourceController extends BaseUIController {
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("filter", "resourceId=" + id);
+        //默认查询昨天的数据母，目前先用 2017-07-26 测试
+        Date date=new Date();//取时间
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE,-1);
+        date=calendar.getTime(); //这个时间就是日期往后推一天的结果
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = formatter.format(date);//昨天
+
+        dateString =  "2017-07-26";
+        params.put("filters", "quotaDate =" + dateString);
         RestTemplates templates = new RestTemplates();
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -418,4 +440,7 @@ public class ResourceController extends BaseUIController {
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
         return "simpleView";
     }
+
+
+
 }

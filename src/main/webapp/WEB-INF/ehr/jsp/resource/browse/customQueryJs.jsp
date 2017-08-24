@@ -26,7 +26,8 @@
                 '${contextRoot}/resourceIntegrated/searchQuotaData'//表格
             ]
         ];
-        var rsInfoDialog = null;
+        var rsInfoDialog = null,
+            defArr = [];
 
         $(function () {
             var cunQue = {
@@ -153,6 +154,9 @@
                         onCheck:function (data,target) {
                             var ma = [], ca = [], sjyArr = [];
                             me.selectData = this.getChecked();
+                            me.$scBtn.removeClass('show');
+                            me.$selectCon.hide();
+                            me.queryCondition = me.getSelCon();
                             if (me.selectData.length > 0) {
                                 for (var i = 0, len = me.selectData.length; i < len; i++) {
                                     switch (me.selectData[i].data.level) {
@@ -168,7 +172,6 @@
                                 me.loadGrid();
                                 me.masterArr = JSON.stringify(ma);
                                 me.childArr = JSON.stringify(ca);
-//                                queryCondition = resourceBrowseMaster.getQuerySearchData();
                                 me.reloadResourcesGrid({
                                     metaData: me.childArr,
                                     resourcesCode: me.masterArr,
@@ -180,26 +183,31 @@
                                 me.GridCloumnNamesData = sjyArr;
                                 me.setSearchData();
                             } else {
-                                me.index = 0;
-                                me.$selMore.html('');
-                                me.GridCloumnNamesData = [];
-                                me.masterArr = '';
-                                me.childArr = '';
-                                me.queryCondition = '';
-                                me.selectData = [];
-                                me.loadGrid();
+                                me.resetDate();
                             }
                         },
                         onSuccess: function (data) {
                             var detailModelList = data.detailModelList,
                                     dmList = [];
                             if (detailModelList) {
-                                for(var i=0;i<detailModelList.length;i++){
-                                    if (detailModelList[i].level == 0) {
-                                        defArr = detailModelList[i].baseInfo;
-                                    } else {
-                                        var rsResourceslist = detailModelList[i].metaDataList;
-                                        detailModelList[i].children = rsResourceslist;
+                                if (me.type == 0) {
+                                    for(var i = 0; i < detailModelList.length; i++){
+                                        if (detailModelList[i].level == 0) {
+                                            defArr = detailModelList[i].baseInfo;
+                                        } else {
+                                            var rsResourceslist = detailModelList[i].metaDataList;
+                                            detailModelList[i].children = rsResourceslist;
+                                            dmList.push(detailModelList[i]);
+                                        }
+                                    }
+                                } else {
+                                    debugger
+                                    for(var i = 0; i < detailModelList.length; i++){
+                                        var childOne = detailModelList[i].child;
+                                        detailModelList[i].children = childOne;
+                                        for ( var j = 0; j < childOne.length; j++) {
+                                            detailModelList[i].children[j].children = childOne[j].detailList;
+                                        }
                                         dmList.push(detailModelList[i]);
                                     }
                                 }
@@ -210,6 +218,18 @@
                         },
 
                     });
+                },
+                resetDate: function () {
+                    this.$scBtn.removeClass('show');
+                    this.$selectCon.hide();
+                    this.index = 0;
+                    this.$selMore.html('');
+                    this.GridCloumnNamesData = [];
+                    this.masterArr = '';
+                    this.childArr = '';
+//                                me.queryCondition = '';
+                    this.selectData = [];
+                    this.loadGrid();
                 },
                 //筛选存在数据字典中的字段
                 setSearchData: function (d) {
@@ -298,6 +318,7 @@
                     var me = this;
                     //切换数据
                     me.$changBtns.on('click', function () {
+                        me.resetDate();
                         var $that = $(this),
                             index = $that.index();
                         if (me.type == index) {
@@ -329,12 +350,15 @@
                         if (isTrue) {
                             $that.removeClass('show');
                             $conList.css({
-                                height: '30px'
+                                height: '30px',
+                                overflow: 'hidden'
                             });
                         } else {
                             $that.addClass('show');
                             $conList.css({
-                                height: 'auto'
+                                height: 'auto',
+                                'max-height': '120px',
+                                overflow: 'auto'
                             });
                         }
                     }).on('click', '.con-item', function () {
@@ -408,6 +432,7 @@
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
                                         urlParms:{
                                             queryCondition: qc,
+                                            type: me.type,
                                             metadatas: JSON.stringify(md)
                                         },
                                         load:true,
@@ -529,6 +554,9 @@
                             $scBtn = $conList.next().find('.sc-btn'),
                             cW = $conList.width(),
                             ciW = 138;
+//                        $conList.mCustomScrollbar({
+//                            axis: "y"
+//                        });
                         if (cW < (ciW * ciLen)) {
                             $scBtn.show();
                         }
