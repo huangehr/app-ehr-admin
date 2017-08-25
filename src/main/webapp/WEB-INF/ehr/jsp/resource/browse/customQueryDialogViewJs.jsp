@@ -135,17 +135,27 @@
                 });
 
                 function update(values,categoryIdNew){
+                    var wait = $.Notice.waitting("请稍后...");
                     if (_.isString(queryCondition)) {
                         queryCondition = JSON.parse(queryCondition);
                     }
                     var dataModel = $.DataModel.init(),
-                        d = {
+                        parms = {};
+                    if (type == '0') {
+                        parms = {
                             queryCondition: queryCondition,metadatas: JSON.parse(metadatas),resource: values
-                        };
+                        }
+                    }
+                    if (type == '1') {
+                        parms = {
+                            queryCondition: queryCondition,quotas: JSON.parse(metadatas),resource: values
+                        }
+                    }
                     dataModel.updateRemote("${contextRoot}/resourceIntegrated/updateResource", {
-                        data:{dataJson: JSON.stringify(d)},
+                        data:{dataJson: JSON.stringify(parms)},
                         type: 'POST',
                         success: function(data) {
+                            wait.close();
                             if (data.successFlg) {
 //                                reloadMasterUpdateGrid(categoryIdNew);
                                 $.Notice.success('操作成功');

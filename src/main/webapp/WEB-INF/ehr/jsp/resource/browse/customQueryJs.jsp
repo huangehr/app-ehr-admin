@@ -6,6 +6,7 @@
     (function ($, win, u) {
         // 通用工具类库
         var Util = $.Util;
+        //接口
         var pubInf = {
             //地区
             getDistrictByUserId: '${contextRoot}/user/getDistrictByUserId',
@@ -51,19 +52,25 @@
                 $treeCon: $('.tree-con'),
                 $divLeftTree: $('#divLeftTree'),
                 $divResourceInfoGrid: $('#divResourceInfoGrid'),
+                $zbGrid: $('#zbGrid'),
 
                 dataModel: $.DataModel.init(),
                 selTmp: $('#selTmp').html(),
 
                 leftTree: null,
                 resourceInfoGrid: null,
+                zbGrid: null,
                 selectData: [],
                 type: 0,//0:档案数据；1：指标统计
                 index: 0,
                 masterArr: [],
                 childArr: [],
+                tjQuotaIds: [],
+                tjQuotaCodes: [],
                 queryCondition: '',
                 GridCloumnNamesData: [],
+                ZBCloumnNamesData: [],
+                params: {},
                 init: function () {
                     //设置综合查询页面的高度
                     var queryMainH = this.WH - 128 - 25;
@@ -72,6 +79,7 @@
                     this.loadSelData();
                     this.loadTree();
                     this.bindEvent();
+                    this.loadGrid();
                 },
                 //初始化表单控件
                 initForm: function () {
@@ -140,6 +148,7 @@
                         me.$pubSel.append(htm);
                     });
                 },
+                //加载树
                 loadTree: function () {
                     var me = this;
                     me.leftTree = me.$divLeftTree.ligerSearchTree({
@@ -152,36 +161,60 @@
                         checkbox: true,
                         async: false,
                         onCheck:function (data,target) {
-                            var ma = [], ca = [], sjyArr = [];
                             me.selectData = this.getChecked();
                             me.$scBtn.removeClass('show');
                             me.$selectCon.hide();
                             me.queryCondition = me.getSelCon();
                             if (me.selectData.length > 0) {
-                                for (var i = 0, len = me.selectData.length; i < len; i++) {
-                                    switch (me.selectData[i].data.level) {
-                                        case '1':
-                                            ma.push(me.selectData[i].data.code);
-                                            break;
-                                        case '2':
-                                            sjyArr.push(me.selectData[i].data);
-                                            ca.push(me.selectData[i].data.code);
-                                            break;
+                                if (me.type == 0) {
+                                    var ma = [], ca = [], sjyArr = [];
+                                    me.loadGrid();
+                                    for (var i = 0, len = me.selectData.length; i < len; i++) {
+                                        switch (me.selectData[i].data.level) {
+                                            case '1':
+                                                ma.push(me.selectData[i].data.code);
+                                                break;
+                                            case '2':
+                                                sjyArr.push(me.selectData[i].data);
+                                                ca.push(me.selectData[i].data.code);
+                                                break;
+                                        }
                                     }
+                                    me.masterArr = JSON.stringify(ma);
+                                    me.childArr = JSON.stringify(ca);
+                                    //初始化
+                                    me.index = 0;
+                                    me.$selMore.html('');
+                                    me.GridCloumnNamesData = sjyArr;
+                                    me.reloadResourcesGrid({
+                                        metaData: me.childArr,
+                                        resourcesCode: me.masterArr,
+                                        searchParams: me.queryCondition
+                                    });
+                                    me.setSearchData();
+                                } else {
+                                    me.tjQuotaIds = [];
+                                    me.tjQuotaCodes = [];
+                                    me.loadZBGrid();
+                                    for (var k = 0, len = me.selectData.length; k < len; k++) {
+                                        if (me.selectData[k].data.level == 2) {
+                                            me.tjQuotaIds.push(me.selectData[k].data.id);
+                                            me.tjQuotaCodes.push(me.selectData[k].data.code);
+                                        }
+                                    }
+                                    var par = {
+                                        tjQuotaIds: me.tjQuotaIds.join(','),
+                                        tjQuotaCodes: me.tjQuotaCodes.join(','),
+                                        //                                  searchParams: me.queryCondition,
+
+//                                        tjQuotaIds: '16,18',
+//                                        tjQuotaCodes: 'depart_treat_count,disease_add_count'
+//                                        searchParams: me.queryCondition
+                                    };
+                                    me.ZBCloumnNamesData = [];
+                                    me.loadZBCol(par);
+                                    me.reloadZBGrid(par);
                                 }
-                                me.loadGrid();
-                                me.masterArr = JSON.stringify(ma);
-                                me.childArr = JSON.stringify(ca);
-                                me.reloadResourcesGrid({
-                                    metaData: me.childArr,
-                                    resourcesCode: me.masterArr,
-                                    searchParams: me.queryCondition
-                                });
-                                //初始化
-                                me.index = 0;
-                                me.$selMore.html('');
-                                me.GridCloumnNamesData = sjyArr;
-                                me.setSearchData();
                             } else {
                                 me.resetDate();
                             }
@@ -201,7 +234,6 @@
                                         }
                                     }
                                 } else {
-                                    debugger
                                     for(var i = 0; i < detailModelList.length; i++){
                                         var childOne = detailModelList[i].child;
                                         detailModelList[i].children = childOne;
@@ -215,8 +247,7 @@
                             } else {
                                 $.Notice.error('暂无数据');
                             }
-                        },
-
+                        }
                     });
                 },
                 resetDate: function () {
@@ -227,16 +258,25 @@
                     this.GridCloumnNamesData = [];
                     this.masterArr = '';
                     this.childArr = '';
+                    this.tjQuotaIds = [];
+                    this.tjQuotaCodes = [];
+                    this.ZBCloumnNamesData = [];
 //                                me.queryCondition = '';
                     this.selectData = [];
-                    this.loadGrid();
+                    if (this.type == 0) {
+                        this.loadGrid();
+                    } else {
+                        this.loadZBGrid();
+                    }
                 },
                 //筛选存在数据字典中的字段
                 setSearchData: function (d) {
                     var me = this,
                         data = me.GridCloumnNamesData;
+                    if (me.type == 1) {
+                        return
+                    }
                     if (data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
-
                         me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
                             data: {dictId: data[me.index].dictCode},
                             type: 'GET',
@@ -255,6 +295,7 @@
                         me.setSearchData();
                     }
                 },
+                //添加查询条件
                 resetSelHtml: function (d) {
                     var me = this,
                         htm = '';
@@ -268,20 +309,23 @@
                     });
                     me.$selMore.append(htm);
                 },
+                //加载档案数据表格
                 loadGrid: function () {
                     var me = this;
                     var columnModel = new Array();
-                    if (me.selectData.length > 0) {
+                    //档案数据时添加基本信息
+                    if (me.selectData.length > 0 && me.type == 0) {
                         for (var j = 0, len = defArr.length; j < len; j++) {
                             columnModel.push({display: defArr[j].name, name: defArr[j].code, width: 100});
                         }
-                    }
-                    //获取列名
-                    for (var i = 0, len = me.selectData.length; i < len; i++) {
-                        if (me.selectData[i].data.level == '2') {
-                            columnModel.push({display: me.selectData[i].data.name, name: me.selectData[i].data.code, width: 100});
+                        //获取列名
+                        for (var i = 0, len = me.selectData.length; i < len; i++) {
+                            if (me.selectData[i].data.level == '2') {
+                                columnModel.push({display: me.selectData[i].data.name, name: me.selectData[i].data.code, width: 100});
+                            }
                         }
                     }
+                    //初始化表格
                     me.resourceInfoGrid = me.$divResourceInfoGrid.ligerGrid($.LigerGridEx.config({
                         url: conInf[me.type][1],
                         parms: {searchParams: '', resourcesCode: '', metaData: ''},
@@ -309,23 +353,115 @@
                         }
                     }));
                 },
+                //加载指标统计表格
+                loadZBGrid: function () {
+                    var me = this,
+                        columnModel = [];
+                    columnModel = me.ZBCloumnNamesData;
+                    //初始化表格
+                    me.zbGrid = me.$zbGrid.ligerGrid($.LigerGridEx.config({
+                        url: conInf[me.type][1],
+                        parms: {
+                            tjQuotaIds: '',
+                            tjQuotaCodes: ''
+//                                        searchParams: me.queryCondition
+                        },
+                        columns: columnModel,
+                        checkbox: true,
+                        onSelectRow:function () {
+                            if(Util.isStrEquals(me.zbGrid.getSelectedRows().length,0)){
+//                                self.$outSelExcelBtn.css('background','#B9C8D2');
+                            }else{
+//                                self.$outSelExcelBtn.css('background','#2D9BD2');
+                            }
+                        },
+                        onUnSelectRow:function () {
+                            if(Util.isStrEquals(me.zbGrid.getSelectedRows().length,0)){
+//                                self.$outSelExcelBtn.css('background','#B9C8D2');
+                            }else{
+//                                self.$outSelExcelBtn.css('background','#2D9BD2');
+                            }
+                        },
+                        onAfterShowData:function () {
+//                            self.$outAllExcelBtn.css('background','#B9C8D2');
+                            if (me.zbGrid.data.detailModelList.length > 0){
+//                                self.$outAllExcelBtn.css('background','#2D9BD2');
+                            }
+                        }
+                    }));
+                },
+                loadZBCol: function (params) {
+                    var me = this;
+                    $.ajax({
+                        data: params,
+                        async: false,
+                        url: conInf[me.type][1],
+                        success: function (data) {
+                            if (data.successFlg) {
+                                var rd = data.detailModelList,
+                                        cd = data.obj,
+                                        q = 0;
+                                if (rd) {
+                                    for (var o = 0; o < me.selectData.length; o++) {
+                                        if (me.selectData[o].data.level == 2) {
+                                            cd.push({
+                                                name: me.selectData[o].data.name,
+                                                key: 'value' + q
+                                            });
+                                            q++;
+                                        }
+                                    }
+                                    for (var n = 0; n < cd.length; n++) {
+                                        me.ZBCloumnNamesData.push({display: cd[n].name,name: cd[n].key,width: 100,render:function (row, key, val, clo) {
+                                            var key = (clo.name).substring(0,5),
+                                                    val = row[clo.name];
+                                            if (key == 'value') {
+                                                var vArr = (row.value).split(',');
+                                                for (var t = 0; t < vArr.length; t++) {
+                                                    if ((key + t) == clo.name) {
+                                                        val = vArr[t];
+                                                    }
+                                                }
+                                            }
+                                            return val;
+                                        }});
+                                    }
+                                }
+                            } else {
+                                $.Notice.error(data.errorMsg);
+                            }
+                        }
+                    });
+                },
                 reloadResourcesGrid: function (searchParams) {
 //                    reloadGrid.call(this, conInf[this.type][1], searchParams);
                     this.resourceInfoGrid.setOptions({parms: searchParams});
                     this.resourceInfoGrid.loadData(true);
                 },
+                reloadZBGrid: function (searchParams) {
+//                    reloadGrid.call(this, conInf[this.type][1], searchParams);
+                    this.zbGrid.setOptions({parms: searchParams});
+                    this.zbGrid.loadData(true);
+                },
                 bindEvent: function () {
                     var me = this;
                     //切换数据
                     me.$changBtns.on('click', function () {
-                        me.resetDate();
                         var $that = $(this),
                             index = $that.index();
                         if (me.type == index) {
                             return;
                         }
+                        if (index == 0) {
+                            me.$divResourceInfoGrid.show();
+                            me.$zbGrid.hide();
+                        } else {
+                            me.$divResourceInfoGrid.hide();
+                            me.$zbGrid.show();
+                        }
                         $that.addClass('active').siblings().removeClass('active');
                         me.type = index;
+                        me.resetDate();
                         me.loadTree();
                         console.log(index);
                     });
@@ -411,17 +547,40 @@
                             var md = [];
                             if(yes){
                                 if (sd.length > 0) {
-                                    for (var i = 0, len = sd.length; i < len; i++) {
-                                        var data = sd[i].data
-                                        if (data.level == 2) {
-                                            md.push({
-                                                resourcesId: '',
-                                                metadataId: data.code,
-                                                groupType: data.groupType,
-                                                groupData: data.groupData,
-                                                description: data.description
-                                            });
+                                    if (me.type == 0) {
+                                        for (var i = 0, len = sd.length; i < len; i++) {
+                                            var data = sd[i].data
+                                            if (data.level == 2) {
+                                                md.push({
+                                                    resourcesId: '',
+                                                    metadataId: data.code,
+                                                    groupType: data.groupType,
+                                                    groupData: data.groupData,
+                                                    description: data.description
+                                                });
+                                            }
                                         }
+                                    } else {
+                                        debugger
+                                        for (var i = 0, len = sd.length; i < len; i++) {
+                                            var data = sd[i].data,
+                                                name = '';
+                                            if (data.level == 1) {
+                                                name = data.name;
+                                                for (var l = 0, len = sd.length; l < len; l++) {
+                                                    var chilData = sd[l].data;
+                                                    if (chilData.level == 2 && data.id == chilData.quota_type) {
+                                                        md.push({
+                                                            resourceId: '',
+                                                            quotaTypeName: name,
+                                                            quotaChart: 1,
+                                                            quotaId: chilData.id
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        qc = JSON.stringify({});
                                     }
 
                                     var wait = $.Notice.waitting("请稍后...");
