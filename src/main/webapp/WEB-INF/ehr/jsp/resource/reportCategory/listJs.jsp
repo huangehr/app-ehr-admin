@@ -2,8 +2,6 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
-<script src="${contextRoot}/develop/source/gridTools.js"></script>
-<script src="${contextRoot}/develop/source/toolBar.js"></script>
 
 <script>
     var dataModel = $.DataModel.init();
