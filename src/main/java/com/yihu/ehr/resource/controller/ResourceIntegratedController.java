@@ -137,7 +137,7 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping("/searchQuotaData")
     @ResponseBody
-    public Object searchQuotaData(String tjQuotaIds, String tjQuotaCodes, String searchParams, int page, int rows) {
+    public Object searchQuotaData(String tjQuotaIds, String tjQuotaCodes, String searchParams) {
         Envelop envelop = new Envelop();
         try {
             String url = "/resources/integrated/quota_data";
@@ -161,6 +161,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @return
      */
     @RequestMapping(value = "/updateResource", method = RequestMethod.POST)
+    @ResponseBody
     public Object updateResource(String dataJson) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
