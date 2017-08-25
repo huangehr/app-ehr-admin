@@ -88,13 +88,14 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/search")
     @ResponseBody
-    public Object search(String codeName, int page, int rows) {
+    public Object search(String codeName, String reportCategoryId, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         StringBuffer filters = new StringBuffer();
 
         if (!StringUtils.isEmpty(codeName)) {
             filters.append("code?" + codeName + " g1;name?" + codeName + " g1;");
         }
+        filters.append("reportCategoryId=" + reportCategoryId + ";");
 
         params.put("filters", filters.toString());
         params.put("page", page);

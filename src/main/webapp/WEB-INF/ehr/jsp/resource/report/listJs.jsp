@@ -6,8 +6,8 @@
 
 <script>
     var dataModel = $.DataModel.init();
-    var detailDialog = null;
-    var grid, tree;
+    var detailDialog, grid, tree;
+    var reportCategoryId = '';
 
     $(function () {
         init();
@@ -17,20 +17,19 @@
         resize();
         initWidget();
         bindEvents();
-        $('#treeContainer').mCustomScrollbar({ axis: "yx"});
     }
 
     function initWidget() {
+        $('#treeContainer').mCustomScrollbar({ axis: "yx"});
         $('#searchCategoryNm').ligerTextBox({
             width: 200, isSearch: true, search: function () {
-//                reloadGrid();
+                reloadGrid();
             }
         });
 
         tree = $('#tree').ligerSearchTree({
-            url: '${contextRoot}/resource/resourceManage/categories',
+            url: '${contextRoot}/resource/reportCategory/getComboTreeData',
             width: 240,
-//            height: '100%',
             idFieldName: 'id',
             parentIDFieldName :'pid',
             textFieldName: 'name',
@@ -39,24 +38,9 @@
             childIcon:null,
             parentIcon:null,
             onSelect: function (e) {
-                categoryId = e.data.id;
-                master.reloadGrid();
-            },
-            onSuccess: function (data) {
-                if(data.length != 0){
-                    $("#div_resource_browse_tree li div span").css({
-                        "line-height": "22px",
-                        "height": "22px"
-                    });
-                }
-                if(!Util.isStrEmpty(searchParams.categorySearchNm)){
-                    $('#inp_search').val(searchParams.categorySearchNm);
-                    typeTree.s_search(searchParams.categorySearchNm);
-                }
-                if(!Util.isStrEmpty(searchParams.categoryId)){
-                    treeNodeInit(searchParams.categoryId)
-                }
-            },
+                reportCategoryId = e.data.id;
+                reloadGrid();
+            }
         });
 
         $('#searchNm').ligerTextBox({
@@ -188,7 +172,10 @@
 
     function reloadGrid(currentPage) {
         currentPage = currentPage || 1;
-        var params = {codeName: $('#searchNm').val()};
+        var params = {
+            reportCategoryId: reportCategoryId,
+            codeName: $('#searchNm').val()
+        };
         $.Util.reloadGrid.call(grid, '${contextRoot}/resource/report/search', params, currentPage);
     }
 

@@ -6,7 +6,7 @@
     <div id="treeWrapper" class="m-form-inline">
         <div class="m-form-group f-mt10">
             <div class="m-form-control f-fs12">
-                <input type="text" id="searchCategoryNm" placeholder="请输入视图类别名称">
+                <input type="text" id="searchCategoryNm" placeholder="请输入报表类别名称">
             </div>
         </div>
 
