@@ -5,9 +5,11 @@
     <div class="wrapper">
         <div class="left-items">
             <div class="header">
-                <input type="text" id="searchNm" placeholder="请输入视图名称">
+                <input type="text" id="settingSearchNm" placeholder="请输入视图名称">
             </div>
-            <div class="content" id="supplyTree"></div>
+            <div id="settingTreeContainer">
+                <div class="content" id="supplyTree"></div>
+            </div>
         </div>
 
         <div class="arrow"></div>

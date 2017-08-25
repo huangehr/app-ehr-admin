@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 
 <script>
     var dataModel = $.DataModel.init();
@@ -11,12 +12,20 @@
     });
 
     function init() {
-        renderWidget();
+        initWidget();
         bindEvents();
     }
 
-    function renderWidget() {
-        supplyTree = $("#supplyTree").ligerTree({
+    function initWidget() {
+        $('#settingTreeContainer').mCustomScrollbar({ axis: "y"});
+
+        $('#settingSearchNm').ligerTextBox({
+            width: 200, isSearch: true, search: function () {
+                supplyTree.s_search($('#settingSearchNm').val());
+            }
+        });
+
+        supplyTree = $("#supplyTree").ligerSearchTree({
             url: '${contextRoot}/resource/report/getViewsTreeData',
             urlParms: {reportId: id},
             checkbox: true,
