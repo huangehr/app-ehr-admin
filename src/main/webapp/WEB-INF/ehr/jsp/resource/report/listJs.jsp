@@ -2,24 +2,63 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
-<script src="${contextRoot}/develop/source/gridTools.js"></script>
-<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 
 <script>
     var dataModel = $.DataModel.init();
     var detailDialog = null;
-    var grid = null;
+    var grid, tree;
 
     $(function () {
         init();
     });
 
     function init() {
+        resize();
         initWidget();
         bindEvents();
+        $('#treeContainer').mCustomScrollbar({ axis: "yx"});
     }
 
     function initWidget() {
+        $('#searchCategoryNm').ligerTextBox({
+            width: 200, isSearch: true, search: function () {
+//                reloadGrid();
+            }
+        });
+
+        tree = $('#tree').ligerSearchTree({
+            url: '${contextRoot}/resource/resourceManage/categories',
+            width: 240,
+//            height: '100%',
+            idFieldName: 'id',
+            parentIDFieldName :'pid',
+            textFieldName: 'name',
+            checkbox: false,
+            isExpand: false,
+            childIcon:null,
+            parentIcon:null,
+            onSelect: function (e) {
+                categoryId = e.data.id;
+                master.reloadGrid();
+            },
+            onSuccess: function (data) {
+                if(data.length != 0){
+                    $("#div_resource_browse_tree li div span").css({
+                        "line-height": "22px",
+                        "height": "22px"
+                    });
+                }
+                if(!Util.isStrEmpty(searchParams.categorySearchNm)){
+                    $('#inp_search').val(searchParams.categorySearchNm);
+                    typeTree.s_search(searchParams.categorySearchNm);
+                }
+                if(!Util.isStrEmpty(searchParams.categoryId)){
+                    treeNodeInit(searchParams.categoryId)
+                }
+            },
+        });
+
         $('#searchNm').ligerTextBox({
             width: 200, isSearch: true, search: function () {
                 reloadGrid();
@@ -32,10 +71,10 @@
                 {display: 'ID', name: 'id', hide: true},
                 {display: '报表名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '报表编码', name: 'code', width: '15%', isAllowHide: false, align: 'left'},
-                {display: '报表分类', name: 'reportCategory', width: '15%', isAllowHide: false, align: 'center'},
+                {display: '报表分类', name: 'reportCategory', width: '10%', isAllowHide: false, align: 'center'},
                 {display: '状态', name: 'statusName', width: '5%', isAllowHide: false, align: 'center'},
                 {display: '备注', name: 'remark', width: '15%', isAllowHide: false, align: 'left'},
-                {display: '操作', name: 'operator', width: '35%', align: 'center',
+                {display: '操作', name: 'operator', width: '40%', align: 'center',
                     render: function (row) {
                         var html = '';
                         html += '<sec:authorize url="/resource/report/setting"><a class="l-button u-btn u-btn-primary u-btn-small f-ib f-mb5 f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';
@@ -59,6 +98,10 @@
     }
 
     function bindEvents() {
+        $(window).bind('resize', function() {
+            resize();
+        });
+
         // 视图配置
         $.subscribe('resource:report:setting', function (event, id) {
             detailDialog = $.ligerDialog.open({
@@ -147,6 +190,17 @@
         currentPage = currentPage || 1;
         var params = {codeName: $('#searchNm').val()};
         $.Util.reloadGrid.call(grid, '${contextRoot}/resource/report/search', params, currentPage);
+    }
+
+    // 自适应调整页面宽高
+    function resize() {
+        var contentW = $('.container').width();
+        //浏览器窗口高度-固定的（健康之路图标+位置）:128-20px包裹上下padding
+        var contentH = $(window).height()-128-20;
+        var leftW = $('#treeWrapper').width();
+        $('.container').height(contentH);
+        $('#treeContainer').height(contentH-50);
+        $('#gridWrapper').width(contentW-leftW-35);
     }
 
     /*-- 与 Dialog 页面间回调的函数 --*/
