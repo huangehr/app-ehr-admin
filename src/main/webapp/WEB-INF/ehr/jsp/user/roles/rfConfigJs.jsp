@@ -30,6 +30,7 @@
                 selectData: [],
                 init: function () {
                     var me = this;
+                    //搜索
                     me.$searchInp.ligerTextBox({width:233, isSearch: true, search: function () {
                         var val = me.$searchInp.val();
                         me.searchData(val);
@@ -131,6 +132,7 @@
                 reloadRightree: function () {
                     this.rightTree.setData(this.rightTreeData);
                 },
+                //初始化树
                 initLeftTree: function () {
                     var me = this;
                     me.leftTree = me.$leftTree.ligerSearchTree({
@@ -141,15 +143,35 @@
                         isExpand: true,
                         checkbox: true,
                         onCheck: function (e) {
+                            var data = e.data,
+                                selData = this.getChecked();
+                            if (data.children && data.children.length <= 0) {
+                                $.Notice.error('该分类暂无可选项！');
+                                this.cancelSelect(e.target);
+                                return;
+                            }
+                            for (var i = 0; i < selData.length; i++) {
+                                if (selData[i].data.children && selData[i].data.children.length <= 0) {
+                                    this.cancelSelect(selData[i].target);
+                                }
+                            }
                             setTimeout(function(){
                                 var html= me.$leftTree.html();
                                 me.$rightTree.html(html);
                                 $("#rightTree .l-box.l-checkbox").hide();
-                                $("#rightTree .l-checkbox-unchecked").closest("li").hide()
+                                $("#rightTree .l-checkbox-unchecked").closest("li").hide();
+                                var lChild = $("#rightTree .l-children");
+                                $.each(lChild, function (index, dom) {
+                                    var $that = $(dom);
+                                    if ($that.html() == '') {
+                                        $that.prev().hide();
+                                    }
+                                });
                             },300);
                         }
                     });
                 },
+                //初始化树
                 initRightTree: function () {
                     this.rightTree = this.$rightTree.ligerSearchTree({
                         nodeWidth: 240,
@@ -164,6 +186,7 @@
                 },
                 bindEvent: function () {
                     var me = this;
+                    //保存数据
                     me.$saveBtn.on('click', function () {
                         var wait = $.Notice.waitting("请稍后...");
                         var selData = me.leftTree.getChecked(),
@@ -173,6 +196,7 @@
                         for (var i = 0; i < selData.length; i++) {
                             dataArr.push(selData[i].data);
                         }
+                        //获取数据元
                         for (var j = 0; j < dataArr.length; j++) {
                             if (!dataArr[j].reportList) {
                                 jsonModel.push({
@@ -181,6 +205,7 @@
                                 });
                             }
                         }
+                        //无数据元
                         if (jsonModel.length == 0) {
                             rd = roleId;
                         }
