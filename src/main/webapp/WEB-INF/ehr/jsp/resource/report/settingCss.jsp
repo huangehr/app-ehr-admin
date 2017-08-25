@@ -51,6 +51,9 @@
     #supplyTree.l-tree span {
         line-height: 22px;
     }
+    #selectedGrid {
+        border: none;
+    }
     .pane-attribute-toolbar {
         display: block;
         position: absolute;

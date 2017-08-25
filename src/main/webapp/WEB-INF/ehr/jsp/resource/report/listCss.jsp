@@ -36,6 +36,10 @@
     #gridWrapper .m-form-group {
         height: 40px;
         padding: 0 10px;
+        border-bottom: 1px solid #D6D6D6;
+    }
+    #grid {
+        border: none;
     }
     .m-form-group .m-form-control.m-form-control-fr {
         float: right;
