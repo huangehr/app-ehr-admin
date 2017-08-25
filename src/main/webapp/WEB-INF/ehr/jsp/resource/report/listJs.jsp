@@ -21,8 +21,11 @@
 
     function initWidget() {
         $('#treeContainer').mCustomScrollbar({ axis: "yx"});
+
         $('#searchCategoryNm').ligerTextBox({
             width: 200, isSearch: true, search: function () {
+                tree.s_search($('#searchCategoryNm').val());
+                reportCategoryId = '';
                 reloadGrid();
             }
         });
@@ -51,6 +54,7 @@
 
         grid = $("#grid").ligerGrid($.LigerGridEx.config({
             url: '${contextRoot}/resource/report/search',
+            parms: { reportCategoryId: reportCategoryId },
             columns: [
                 {display: 'ID', name: 'id', hide: true},
                 {display: '报表名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},

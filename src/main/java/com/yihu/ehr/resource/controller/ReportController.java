@@ -95,7 +95,11 @@ public class ReportController extends BaseUIController {
         if (!StringUtils.isEmpty(codeName)) {
             filters.append("code?" + codeName + " g1;name?" + codeName + " g1;");
         }
-        filters.append("reportCategoryId=" + reportCategoryId + ";");
+        if (!StringUtils.isEmpty(reportCategoryId)) {
+            filters.append("reportCategoryId=" + reportCategoryId + ";");
+        } else {
+            return success(null);
+        }
 
         params.put("filters", filters.toString());
         params.put("page", page);
