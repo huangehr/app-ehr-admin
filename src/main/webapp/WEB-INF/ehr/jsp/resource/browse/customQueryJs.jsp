@@ -39,7 +39,6 @@
                 $genView: $('.gen-view'),//生成视图
                 $outExc: $('.out-exc'),//导出
                 $scBtn: $('.sc-btn'),//展开\收起筛选
-
                 $queryConc: $('.query-conc'),
                 $queryMain: $('.query-main'),
                 $selectCon: $('.select-con'),
@@ -48,28 +47,29 @@
                 $searchInp: $('#searchInp'),
                 $startDate: $('#startDate'),
                 $endDate: $('#endDate'),
-
                 $treeCon: $('.tree-con'),
                 $divLeftTree: $('#divLeftTree'),
                 $divResourceInfoGrid: $('#divResourceInfoGrid'),
                 $zbGrid: $('#zbGrid'),
-
                 dataModel: $.DataModel.init(),
                 selTmp: $('#selTmp').html(),
-
                 leftTree: null,
+                filters: '',
+                //档案数据参数
                 resourceInfoGrid: null,
-                zbGrid: null,
                 selectData: [],
                 type: 0,//0:档案数据；1：指标统计
                 index: 0,
                 masterArr: [],
                 childArr: [],
-                tjQuotaIds: [],
-                tjQuotaCodes: [],
                 queryCondition: '',
                 GridCloumnNamesData: [],
+                //指标统计参数
+                zbGrid: null,
+                tjQuotaIds: [],
+                tjQuotaCodes: [],
                 ZBCloumnNamesData: [],
+                selDataName: [],
                 params: {},
                 init: function () {
                     //设置综合查询页面的高度
@@ -88,7 +88,10 @@
                         width: 245,
                         isSearch: true,
                         search: function () {
-                            self.reloadGrid(1);
+                            debugger
+                            var serVal = $('#searchInp').val();
+                            me.filters = serVal;
+                            me.loadTree();
                         }
                     });
 
@@ -154,6 +157,9 @@
                     me.leftTree = me.$divLeftTree.ligerSearchTree({
                         nodeWidth: 180,
                         url: conInf[me.type][0],
+                        parms: {
+                            filters: me.filters
+                        },
                         idFieldName: 'code',
                         textFieldName: 'name',
                         isExpand: false,
@@ -254,6 +260,8 @@
                     this.$scBtn.removeClass('show');
                     this.$selectCon.hide();
                     this.index = 0;
+                    this.filters = '';
+                    $('#searchInp').val('');
                     this.$selMore.html('');
                     this.GridCloumnNamesData = [];
                     this.masterArr = '';
@@ -330,27 +338,7 @@
                         url: conInf[me.type][1],
                         parms: {searchParams: '', resourcesCode: '', metaData: ''},
                         columns: columnModel,
-                        checkbox: true,
-                        onSelectRow:function () {
-                            if(Util.isStrEquals(me.resourceInfoGrid.getSelectedRows().length,0)){
-//                                self.$outSelExcelBtn.css('background','#B9C8D2');
-                            }else{
-//                                self.$outSelExcelBtn.css('background','#2D9BD2');
-                            }
-                        },
-                        onUnSelectRow:function () {
-                            if(Util.isStrEquals(me.resourceInfoGrid.getSelectedRows().length,0)){
-//                                self.$outSelExcelBtn.css('background','#B9C8D2');
-                            }else{
-//                                self.$outSelExcelBtn.css('background','#2D9BD2');
-                            }
-                        },
-                        onAfterShowData:function () {
-//                            self.$outAllExcelBtn.css('background','#B9C8D2');
-                            if (me.resourceInfoGrid.data.detailModelList.length > 0){
-//                                self.$outAllExcelBtn.css('background','#2D9BD2');
-                            }
-                        }
+                        checkbox: true
                     }));
                 },
                 //加载指标统计表格
@@ -367,31 +355,13 @@
 //                                        searchParams: me.queryCondition
                         },
                         columns: columnModel,
-                        checkbox: true,
-                        onSelectRow:function () {
-                            if(Util.isStrEquals(me.zbGrid.getSelectedRows().length,0)){
-//                                self.$outSelExcelBtn.css('background','#B9C8D2');
-                            }else{
-//                                self.$outSelExcelBtn.css('background','#2D9BD2');
-                            }
-                        },
-                        onUnSelectRow:function () {
-                            if(Util.isStrEquals(me.zbGrid.getSelectedRows().length,0)){
-//                                self.$outSelExcelBtn.css('background','#B9C8D2');
-                            }else{
-//                                self.$outSelExcelBtn.css('background','#2D9BD2');
-                            }
-                        },
-                        onAfterShowData:function () {
-//                            self.$outAllExcelBtn.css('background','#B9C8D2');
-                            if (me.zbGrid.data.detailModelList.length > 0){
-//                                self.$outAllExcelBtn.css('background','#2D9BD2');
-                            }
-                        }
+                        checkbox: true
                     }));
                 },
+                //获取指标统计表头
                 loadZBCol: function (params) {
                     var me = this;
+                    me.selDataName = [];
                     $.ajax({
                         data: params,
                         async: false,
@@ -399,11 +369,12 @@
                         success: function (data) {
                             if (data.successFlg) {
                                 var rd = data.detailModelList,
-                                        cd = data.obj,
-                                        q = 0;
+                                    cd = data.obj,
+                                    q = 0;
                                 if (rd) {
                                     for (var o = 0; o < me.selectData.length; o++) {
                                         if (me.selectData[o].data.level == 2) {
+                                            me.selDataName.push(me.selectData[o].data.name);
                                             cd.push({
                                                 name: me.selectData[o].data.name,
                                                 key: 'value' + q
@@ -414,7 +385,7 @@
                                     for (var n = 0; n < cd.length; n++) {
                                         me.ZBCloumnNamesData.push({display: cd[n].name,name: cd[n].key,width: 100,render:function (row, key, val, clo) {
                                             var key = (clo.name).substring(0,5),
-                                                    val = row[clo.name];
+                                                val = row[clo.name];
                                             if (key == 'value') {
                                                 var vArr = (row.value).split(',');
                                                 for (var t = 0; t < vArr.length; t++) {
@@ -433,13 +404,13 @@
                         }
                     });
                 },
+                //加载档案数据
                 reloadResourcesGrid: function (searchParams) {
-//                    reloadGrid.call(this, conInf[this.type][1], searchParams);
                     this.resourceInfoGrid.setOptions({parms: searchParams});
                     this.resourceInfoGrid.loadData(true);
                 },
+                //加载指标统计
                 reloadZBGrid: function (searchParams) {
-//                    reloadGrid.call(this, conInf[this.type][1], searchParams);
                     this.zbGrid.setOptions({parms: searchParams});
                     this.zbGrid.loadData(true);
                 },
@@ -463,7 +434,6 @@
                         me.type = index;
                         me.resetDate();
                         me.loadTree();
-                        console.log(index);
                     });
                     //展开\收起筛选条件
                     me.$scBtn.on('click', function () {
@@ -498,6 +468,7 @@
                             });
                         }
                     }).on('click', '.con-item', function () {
+                        //选择条件
                         var $that = $(this),
                             $parent = $that.closest('.sel-item');
                         if ($parent.hasClass('time')) {
@@ -513,17 +484,17 @@
                                 codeArr.splice(index, 1);
                             }
                             $parent.attr('data-code-list', codeArr.join(','));
-                            console.log(codeArr.join(','));
                             $that.removeClass('active');
                         } else {
                             codeArr.push(code);
                             $parent.attr('data-code-list', codeArr.join(','));
-                            console.log(codeArr.join(','));
                             $that.addClass('active');
                         }
                     });
                     //查询
                     me.$queryCon.on('click', function () {
+                        me.$scBtn.removeClass('show');
+                        me.$selectCon.hide();
                         me.queryCondition = me.getSelCon();
                         me.reloadResourcesGrid({
                             metaData: me.childArr,
@@ -533,8 +504,22 @@
                     });
                     //导出excel
                     me.$outExc.on('click', function () {
-                        var rowData = me.resourceInfoGrid.data.detailModelList;
-                        me.outExcel(rowData, me.resourceInfoGrid.currentData.totalPage * me.resourceInfoGrid.currentData.pageSize);
+                        if (me.type == 0) {
+                            var rgd = me.resourceInfoGrid.getData();
+                            if (rgd && rgd.length > 0) {
+                                var rowData = me.resourceInfoGrid.data.detailModelList;
+                                me.outExcel(rowData, me.resourceInfoGrid.currentData.totalPage * me.resourceInfoGrid.currentData.pageSize);
+                            } else {
+                                $.Notice.error('请先选择数据！');
+                            }
+                        } else {
+                            var zbd = me.zbGrid.getData();
+                            if (zbd && zbd.length > 0) {
+                                me.outZBWxcel();
+                            } else {
+                                $.Notice.error('请先选择数据！');
+                            }
+                        }
                     });
                     me.$genView.on('click', function () {
                         var sd = me.selectData,
@@ -547,6 +532,7 @@
                             var md = [];
                             if(yes){
                                 if (sd.length > 0) {
+                                    //档案数据
                                     if (me.type == 0) {
                                         for (var i = 0, len = sd.length; i < len; i++) {
                                             var data = sd[i].data
@@ -561,7 +547,7 @@
                                             }
                                         }
                                     } else {
-                                        debugger
+                                        //指标统计
                                         for (var i = 0, len = sd.length; i < len; i++) {
                                             var data = sd[i].data,
                                                 name = '';
@@ -629,6 +615,7 @@
                                 }
                             }
                         } else {
+                            //时间条件
                             var sT = $selItems.eq(i).attr('data-start-date'),
                                     eT = $selItems.eq(i).attr('data-end-date'),
                                     aArr = [];
@@ -659,15 +646,18 @@
                             }
                         }
                     }
-                    console.log(JSON.stringify(jsonData));
                     return JSON.stringify(jsonData);
                 },
-                //导出excel
+                //导出指标统计excel
+                outZBWxcel: function () {
+                    window.open("${contextRoot}/resourceIntegrated/outQuotaExcel?tjQuotaIds=" + this.tjQuotaIds.join(',') + "&tjQuotaCodes=" + this.tjQuotaCodes.join(',') + "&searchParams=" + '{}' + '&tiQuotaNames=' + this.selDataName.join(','), "指标统计导出");
+                },
+                //导出档案数据excel
                 outExcel: function (rowData, size) {
-                    if (rowData.length <= 0) {
-                        $.Notice.error('请先选择数据');
-                        return;
-                    }
+//                    if (rowData.length <= 0) {
+//                        $.Notice.error('请先选择数据');
+//                        return;
+//                    }
                     var columnNames = this.resourceInfoGrid.columns;
                     var codes = [];
                     var names = [];
@@ -691,7 +681,6 @@
                         valueList.push(values);
                         values = [];
                     }
-
                     var metaData = [];
                     for (var i = 0, len = this.selectData.length; i < len; i++) {
                         var data = this.selectData[i].data
@@ -702,8 +691,7 @@
                             });
                         }
                     }
-                    debugger
-                    window.open("${contextRoot}/resourceIntegrated/outExcel?size=" + size + "&resourcesCode=" + this.masterArr + "&searchParams=" + this.queryCondition + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
+                    window.open("${contextRoot}/resourceIntegrated/outFileExcel?size=" + size + "&resourcesCode=" + this.masterArr + "&searchParams=" + this.queryCondition + "&metaData=" + JSON.stringify(metaData), "档案数据导出");
                 },
                 calLen: function () {
                     var $selItems = $('.select-con').find('.sel-item');
@@ -713,9 +701,6 @@
                             $scBtn = $conList.next().find('.sc-btn'),
                             cW = $conList.width(),
                             ciW = 138;
-//                        $conList.mCustomScrollbar({
-//                            axis: "y"
-//                        });
                         if (cW < (ciW * ciLen)) {
                             $scBtn.show();
                         }

@@ -138,6 +138,7 @@
                         },
                         onSelected: function (value)
                         {
+                            debugger
                             queryParam.resourceSub = this.selectedText;
                             self.$resourceName.ligerComboBox({
                                 url: '${contextRoot}/resource/resourceManage/resources',

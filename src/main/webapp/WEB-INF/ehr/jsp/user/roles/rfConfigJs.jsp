@@ -35,6 +35,12 @@
                         var val = me.$searchInp.val();
                         me.searchData(val);
                     }});
+                    me.$leftTree.mCustomScrollbar({
+                        axis: "y"
+                    });
+                    me.$rightTree.mCustomScrollbar({
+                        axis: "y"
+                    });
                     me.initLeftTree();
                     me.initRightTree();
                     me.getData();
@@ -101,6 +107,9 @@
                     var arr = [];
                     //获取根节点
                     for (var i = 0; i < d.length; i++) {
+                        if (!d[i].children) {
+                            d[i].children = [];
+                        }
                         //设置选中
                         if (d[i].reportList) {
                             for (var t = 0; t < d[i].reportList.length; t++) {
@@ -108,10 +117,11 @@
                             }
                         }
                         d[i].ischecked = d[i].flag;
-                        d[i].children = d[i].reportList;
+                        d[i].children.concat(d[i].reportList);
                         if (!d[i].pid) {
                             arr.push(d[i]);
                         }
+                        debugger
                     }
                     //获取子节点
                     for (var j = 0; j < arr.length; j++) {
