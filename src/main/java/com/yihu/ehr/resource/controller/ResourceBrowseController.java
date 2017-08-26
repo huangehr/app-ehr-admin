@@ -67,7 +67,6 @@ public class ResourceBrowseController extends BaseUIController {
         return "pageView";
     }
 
-
     @RequestMapping("/customNewQuery")
     public String customNewQuery(Model model) {
         model.addAttribute("contentPage", "/resource/browse/customNewQuery");
@@ -83,6 +82,16 @@ public class ResourceBrowseController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/initial")
+    public String resourceBrowseInitial(Model model) {
+        model.addAttribute("contentPage", "/resource/resourcebrowse/resourceBrowse");
+        return "pageView";
+    }
+
+    /**
+     * 获取资源类别列表 NoPageCategories
+     * @return
+     */
     @RequestMapping("/searchResourceList")
     @ResponseBody
     public Object searchResourceList() {
@@ -99,12 +108,11 @@ public class ResourceBrowseController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping("/initial")
-    public String resourceBrowseInitial(Model model) {
-        model.addAttribute("contentPage", "/resource/resourcebrowse/resourceBrowse");
-        return "pageView";
-    }
-
+    /**
+     *
+     * @param ids
+     * @return
+     */
     @RequestMapping("/searchResource")
     @ResponseBody
     public Object searchResource(String ids) {
@@ -174,13 +182,11 @@ public class ResourceBrowseController extends BaseUIController {
     @RequestMapping("/getRsDictEntryList")
     @ResponseBody
     public Object getRsDictEntryList(String dictId) {
-
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String dictEntryUrl = "/resources/noPageDictEntries";
         params.put("filters", "dictCode=" + dictId + " g0");
-
         try {
             if (!StringUtils.isEmpty(dictId)) {
 
@@ -191,21 +197,17 @@ public class ResourceBrowseController extends BaseUIController {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("字典查询失败");
         }
-
         return envelop;
     }
 
     @RequestMapping("/searchDictEntryList")
     @ResponseBody
     public Object getDictEntryList(String dictId, String conditions) {
-
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         List<RsBrowseModel> rsBrowseModelList = new ArrayList<>();
-
         String resultStr = "";
         String url = "";
-
         try {
             if (!StringUtils.isEmpty(dictId)) {
                 switch (dictId) {
@@ -237,14 +239,12 @@ public class ResourceBrowseController extends BaseUIController {
         } catch (Exception e) {
 
         }
-
         return resultStr;
     }
 
     //数据导出方法
-    @RequestMapping("outExcel")
+    @RequestMapping("/outExcel")
     public void outExcel(HttpServletResponse response, Integer size, String resourcesCode, String searchParams) {
-
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
@@ -253,14 +253,12 @@ public class ResourceBrowseController extends BaseUIController {
         try {
             resultStr = getColumns(resourcesCode);
             envelop = toModel(resultStr, Envelop.class);
-
             response.setContentType("octets/stream");
             response.setHeader("Content-Disposition", "attachment; filename="
                     + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
             OutputStream os = response.getOutputStream();
             WritableWorkbook book = Workbook.createWorkbook(os);
             WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-
             for (int i = 0; i < envelop.getDetailModelList().size(); i++) {
                 Map cmap = toModel(toJson(envelop.getDetailModelList().get(i)), Map.class);
                 //new laberl（'列','行','数据'）
@@ -269,13 +267,11 @@ public class ResourceBrowseController extends BaseUIController {
                 sheet.addCell(new Label(i + 1, 0, String.valueOf(cmap.get("code"))));
                 sheet.addCell(new Label(i + 1, 1, String.valueOf(cmap.get("value"))));
             }
-
             String url = "/resources/ResourceBrowses/getResourceData";
             params.put("resourcesCode", resourcesCode);
             params.put("queryCondition", searchParams);
             params.put("page", 1);
             params.put("size", size);
-
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
             List<Object> objectList = envelop.getDetailModelList();
@@ -292,7 +288,6 @@ public class ResourceBrowseController extends BaseUIController {
             }
             sheet.mergeCells(0, 2, 0, objectList.size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
-
             book.write();
             book.close();
             os.flush();
@@ -321,7 +316,6 @@ public class ResourceBrowseController extends BaseUIController {
     }
 
     public String changeConditions(String conditions) {
-
         String value = "";
         if (StringUtils.isEmpty(conditions)) {
             return value;
@@ -329,7 +323,6 @@ public class ResourceBrowseController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String condition = "";
         String conditionAll = "";
-
         String url = "/dictionaries/entries";
         params.put("filters", "dictId=30 g0;code=" + conditions + " g1");
         params.put("page", 1);
@@ -405,7 +398,7 @@ public class ResourceBrowseController extends BaseUIController {
             String url = "/resourceBrowseTree";
             Map<String,Object> params = new HashMap<>();
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-//            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            //Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(ResourceBrowseController.class).error(ex.getMessage());

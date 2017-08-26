@@ -26,11 +26,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
+ * 资源管理
  * Created by yww on 2016/5/27.
  */
 @Controller
 @RequestMapping("/resource/resourceManage")
 public class ResourceController extends BaseUIController {
+
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -45,6 +47,7 @@ public class ResourceController extends BaseUIController {
         model.addAttribute("contentPage","/resource/resourcemanage/resource");
         return "pageView";
     }
+
     @RequestMapping("/infoInitial")
     public String resourceInterfaceInfoInitial(Model model,String id,String mode,String categoryId){
         model.addAttribute("mode",mode);
@@ -74,7 +77,12 @@ public class ResourceController extends BaseUIController {
         return "simpleView";
     }
 
-    //    指标配置
+    /**
+     * 指标配置
+     * @param model
+     * @param id
+     * @return
+     */
     @RequestMapping("/resourceConfigue")
     public String resourceConfigue(Model model, String id){
         model.addAttribute("resourceId", id);
@@ -82,7 +90,13 @@ public class ResourceController extends BaseUIController {
         return "simpleView";
     }
 
-    //配置授权浏览页面跳转
+    /**
+     * 配置授权浏览页面跳转
+     * @param model
+     * @param pageName
+     * @param resourceId
+     * @return
+     */
     @RequestMapping("/switch")
     public String switchToPage(Model model,String pageName,String resourceId){
         if("config".equals(pageName)){
@@ -108,7 +122,14 @@ public class ResourceController extends BaseUIController {
         return "pageView";
     }
 
-    //分页查询
+    /**
+     * 分页查询（资源浏览页面根据资源分类获取资源列表）
+     * @param searchNm
+     * @param categoryId
+     * @param page
+     * @param rows
+     * @return
+     */
     @RequestMapping("/resources")
     @ResponseBody
     public Object searchResources(String searchNm,String categoryId,int page,int rows){
@@ -139,11 +160,16 @@ public class ResourceController extends BaseUIController {
             LogService.getLogger(ResourceController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
         }
+        return envelop;
     }
 
-    //更新
+    /**
+     * 添加或更新
+     * @param dataJson
+     * @param mode
+     * @return
+     */
     @RequestMapping("/update")
     @ResponseBody
     public Object updateResource(String dataJson,String mode){
@@ -193,7 +219,11 @@ public class ResourceController extends BaseUIController {
         return envelop;
     }
 
-    //删除
+    /**
+     * 删除
+     * @param id
+     * @return
+     */
     @RequestMapping("/delete")
     @ResponseBody
     public Object deleteResource(String id) {
@@ -224,7 +254,25 @@ public class ResourceController extends BaseUIController {
         }
 
     }
-    //资源名称唯一性验证
+
+    public Boolean isRsInUse(String resourceId) throws Exception{
+        String url = "/resources/grants/no_paging";
+        Map<String,Object> params = new HashMap<>();
+        params.put("filters","resourceId="+resourceId);
+        String resultStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+        Envelop result = objectMapper.readValue(resultStr, Envelop.class);
+        if (result.isSuccessFlg()&&result.getDetailModelList().size() >0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 资源编码的唯一性验证
+     * @param code
+     * @return
+     */
     @RequestMapping("/isExistCode")
     @ResponseBody
     public Object isExistCode(String code){
@@ -240,6 +288,11 @@ public class ResourceController extends BaseUIController {
         }
     }
 
+    /**
+     * 资源名称唯一性验证
+     * @param name
+     * @return
+     */
     @RequestMapping("/isExistName")
     @ResponseBody
     public Object isExistName(String name){
@@ -257,20 +310,10 @@ public class ResourceController extends BaseUIController {
         }
     }
 
-    public Boolean isRsInUse(String resourceId) throws Exception{
-        String url = "/resources/grants/no_paging";
-        Map<String,Object> params = new HashMap<>();
-        params.put("filters","resourceId="+resourceId);
-        String resultStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
-        Envelop result = objectMapper.readValue(resultStr, Envelop.class);
-        if (result.isSuccessFlg()&&result.getDetailModelList().size() >0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //资源分类树数据-获取所有分类的不分页方法
+    /**
+     * 资源分类树
+     * @return
+     */
     @RequestMapping("/categories")
     @ResponseBody
     public Object getCategories(){
@@ -291,9 +334,14 @@ public class ResourceController extends BaseUIController {
         }
         return list;
     }
-    //----------------------------------
 
-    //带检索分页的查找资源分类方法,用于下拉框
+    /**
+     * 带检索分页的查找资源分类方法,用于下拉框
+     * @param searchParm
+     * @param page
+     * @param rows
+     * @return
+     */
     @RequestMapping("/rsCategory")
     @ResponseBody
     public Object searchRsCategory(String searchParm,int page,int rows){
@@ -336,7 +384,11 @@ public class ResourceController extends BaseUIController {
         }
     }
 
-    //根据资源分类id，获取其以上直接父级id，含自身
+    /**
+     * 根据资源分类id，获取其以上直接父级id，含自身
+     * @param categoryId
+     * @return
+     */
     @RequestMapping("/categoryIds")
     @ResponseBody
     public Object getCategoryParentIdsById(String categoryId){
@@ -352,6 +404,14 @@ public class ResourceController extends BaseUIController {
         return envelopStr;
     }
 
+    /**
+     * 获取指标数据元
+     * @param resourceId
+     * @param name
+     * @param page
+     * @param rows
+     * @return
+     */
     @RequestMapping("/getResourceQuotaInfo")
     @ResponseBody
     public Object getResourceQuotaInfo(String resourceId, String name, int page, int rows){
@@ -378,6 +438,14 @@ public class ResourceController extends BaseUIController {
         }
     }
 
+    /**
+     * 添加指标数据元
+     * @param resourceId
+     * @param jsonModel
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/addResourceQuota", produces = "text/html;charset=UTF-8")
     @ResponseBody
     public Object addResourceQuota(String resourceId, String jsonModel, HttpServletRequest request) throws IOException {
@@ -411,12 +479,16 @@ public class ResourceController extends BaseUIController {
     }
 
 
-    //    指标预览
+    /**
+     * 指标预览
+     * @param id
+     * @param model
+     * @return
+     */
     @RequestMapping("/resourceShow")
     public String resourceShow(String id ,Model model){
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
-        Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("filter", "resourceId=" + id);
         //默认查询昨天的数据母，目前先用 2017-07-26 测试
@@ -440,7 +512,5 @@ public class ResourceController extends BaseUIController {
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
         return "simpleView";
     }
-
-
 
 }

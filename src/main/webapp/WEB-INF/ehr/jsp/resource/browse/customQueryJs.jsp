@@ -544,7 +544,7 @@
                         }
                     }
                     debugger
-                    window.open("${contextRoot}/resourceIntegrated/outExcel?size=" + size + "&resourcesCode=" + this.masterArr + "&searchParams=" + this.queryCondition + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
+                    window.open("${contextRoot}/resourceIntegrated/outFileExcel?size=" + size + "&resourcesCode=" + this.masterArr + "&searchParams=" + this.queryCondition + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
                 },
                 calLen: function () {
                     var $selItems = $('.select-con').find('.sel-item');

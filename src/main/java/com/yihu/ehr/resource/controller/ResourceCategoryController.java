@@ -24,10 +24,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 资源分类数据服务控制器
  * Created by AndyCai on 2015/12/14.
  */
-@RequestMapping("/rscategory")
 @Controller
+@RequestMapping("/rscategory")
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
 public class ResourceCategoryController extends BaseUIController {
     @Value("${service-gateway.username}")
@@ -223,3 +224,7 @@ public class ResourceCategoryController extends BaseUIController {
         return envelop;
     }
 }
+
+
+
+
