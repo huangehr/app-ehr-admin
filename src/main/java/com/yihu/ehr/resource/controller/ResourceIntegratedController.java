@@ -212,7 +212,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param searchParams
      * @param metaData
      */
-    @RequestMapping(value = "/outFileExcel", method = RequestMethod.GET)
+    @RequestMapping(value = "/outFileExcel")
     public void outExcel(HttpServletRequest request, HttpServletResponse response, Integer size, String resourcesCode, String searchParams, String metaData) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -276,7 +276,14 @@ public class ResourceIntegratedController extends BaseUIController {
         }
     }
 
-    //综合查询指标数据导出
+    /**
+     * 综合查询指标数据导出
+     * @param response
+     * @param tjQuotaIds
+     * @param tjQuotaCodes
+     * @param tiQuotaNames
+     * @param searchParams
+     */
     @RequestMapping("/outQuotaExcel")
     public void outQuotaExcel(HttpServletResponse response, String tjQuotaIds, String tjQuotaCodes, String tiQuotaNames, String searchParams){
         Envelop envelop = new Envelop();
