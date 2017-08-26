@@ -23,6 +23,7 @@
                 $saveBtn: $('#saveBtn'),
                 $leftTree: $('#leftTree'),
                 $rightTree: $('#rightTree'),
+                $rfTree: $('.rf-tree'),
                 leftTree: null,
                 rightTree: null,
                 leftTreeData: [],
@@ -35,12 +36,12 @@
                         var val = me.$searchInp.val();
                         me.searchData(val);
                     }});
-                    me.$leftTree.mCustomScrollbar({
+                    me.$rfTree.mCustomScrollbar({
                         axis: "y"
                     });
-                    me.$rightTree.mCustomScrollbar({
-                        axis: "y"
-                    });
+//                    me.$rfTree.mCustomScrollbar({
+//                        axis: "y"
+//                    });
                     me.initLeftTree();
                     me.initRightTree();
                     me.getData();
@@ -104,7 +105,8 @@
                     });
                 },
                 formatData: function (d) {
-                    var arr = [];
+                    var arr = [],
+                        leve1 = [];
                     //获取根节点
                     for (var i = 0; i < d.length; i++) {
                         if (!d[i].children) {
@@ -117,20 +119,35 @@
                             }
                         }
                         d[i].ischecked = d[i].flag;
-                        d[i].children.concat(d[i].reportList);
+                        if (d[i].children.length <= 0) {
+                            d[i].children = d[i].reportList;
+                        } else {
+                            d[i].children.concat(d[i].reportList);
+                        }
                         if (!d[i].pid) {
                             arr.push(d[i]);
+                        } else {
+                            leve1.push(d[i]);
                         }
-                        debugger
+                    }
+                    for (var w = 0; w < leve1.length; w++) {
+                        for (var h = 0; h < leve1.length; h++) {
+                            if (leve1[w].id == leve1[h].pid) {
+                                if (!leve1[w].children) {
+                                    leve1[w].children = [];
+                                }
+                                leve1[w].children.push(leve1[h]);
+                            }
+                        }
                     }
                     //获取子节点
                     for (var j = 0; j < arr.length; j++) {
                         if (!arr[j].children) {
                             arr[j].children = [];
                         }
-                        for (var k = 0; k < d.length; k++) {
-                            if (arr[j].id == d[k].pid) {
-                                arr[j].children.push(d[k]);
+                        for (var k = 0; k < leve1.length; k++) {
+                            if (arr[j].id == leve1[k].pid) {
+                                arr[j].children.push(leve1[k]);
                             }
                         }
                     }
