@@ -39,13 +39,20 @@
     .wrapper .content {
         padding: 10px;
     }
-    #supplyTree {
-        width: auto !important;
+    #settingTreeContainer {
         height: 490px;
-        overflow-y: auto;
+        background-color: inherit;
+        padding-bottom: 10px;
+    }
+    #settingTreeContainer .mCustomScrollBox,
+    #settingTreeContainer .mCSB_container {
+        min-height: 490px;
     }
     #supplyTree.l-tree span {
         line-height: 22px;
+    }
+    #selectedGrid {
+        border: none;
     }
     .pane-attribute-toolbar {
         display: block;

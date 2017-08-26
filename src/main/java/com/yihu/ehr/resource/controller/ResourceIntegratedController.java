@@ -2,9 +2,11 @@ package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Cell;
 import jxl.Workbook;
@@ -274,14 +276,7 @@ public class ResourceIntegratedController extends BaseUIController {
         }
     }
 
-    /**
-     * 综合查询指标数据导出
-     * @param response
-     * @param tjQuotaIds
-     * @param tjQuotaCodes
-     * @param tiQuotaNames
-     * @param searchParams
-     */
+    //综合查询指标数据导出
     @RequestMapping("/outQuotaExcel")
     public void outQuotaExcel(HttpServletResponse response, String tjQuotaIds, String tjQuotaCodes, String tiQuotaNames, String searchParams){
         Envelop envelop = new Envelop();

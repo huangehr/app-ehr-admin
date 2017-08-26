@@ -87,11 +87,9 @@ public class ReportCategoryController extends BaseUIController {
      */
     @RequestMapping("/getComboTreeData")
     @ResponseBody
-    public Object getComboTreeData(String name) {
+    public Object getComboTreeData() {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("name", name);
-            String envelopJsonStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportCategoryComboTree, params, username, password);
+            String envelopJsonStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportCategoryComboTree, username, password);
             List<Object> data = toModel(envelopJsonStr, Envelop.class).getDetailModelList();
             return toJson(data);
         } catch (Exception ex) {

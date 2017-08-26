@@ -58,6 +58,7 @@
         <%--表格--%>
         <div>
             <div id="divResourceInfoGrid"></div>
+            <div id="zbGrid" style="display: none"></div>
         </div>
     </div>
 </div>

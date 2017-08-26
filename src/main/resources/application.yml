@@ -37,7 +37,7 @@ app:
 service-gateway:
   username: user
   password: eureka
-  url: http://192.168.1.221:10000/api/v1.0/admin
+  url: http://localhost:10000/api/v1.0/admin
   stdurl: http://192.168.1.221:10000/api/v1.0/admin/std
   versionurl: http://192.168.1.221:10000/api/v1.0/admin/version
   cdatypeurl: http://192.168.1.221:10000/api/v1.0/admin/cda_type
