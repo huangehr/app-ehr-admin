@@ -10,6 +10,7 @@
         // 表单校验工具类
         var jValidation = $.jValidation;
         var mode = '${mode}';
+        var type = '${type}';
         var nameCopy = '';
         var codeCopy = '';
         <%--var categoryIdOld = '${categoryId}';--%>
@@ -45,12 +46,23 @@
                 this.$code.ligerTextBox({width:240});
                 this.$description.ligerTextBox({width:240, height: 120 });
                 this.$grantType.ligerRadio();
-                this.$dataSource.ligerRadio();
+                var lr1 = this.$dataSource.eq(0).ligerRadio();
+                var lr2 = this.$dataSource.eq(1).ligerRadio();
+                if (type && type == 0) {
+                    lr1.setValue(true);
+                    lr2.setValue(false);
+                }
+                if (type && type == 1) {
+                    lr1.setValue(false);
+                    lr2.setValue(true);
+                }
+                lr1.setDisabled();
+                lr2.setDisabled();
+
                 this.$form.attrScan();
                 this.$form.show();
             },
             initDDL: function () {
-                debugger
                 this.$grantType.eq(1).attr("checked", 'true')
                 this.$dataSource.eq(0).attr("checked", 'true')
                 this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});
@@ -123,17 +135,27 @@
                 });
 
                 function update(values,categoryIdNew){
+                    var wait = $.Notice.waitting("请稍后...");
                     if (_.isString(queryCondition)) {
                         queryCondition = JSON.parse(queryCondition);
                     }
                     var dataModel = $.DataModel.init(),
-                        d = {
+                        parms = {};
+                    if (type == '0') {
+                        parms = {
                             queryCondition: queryCondition,metadatas: JSON.parse(metadatas),resource: values
-                        };
+                        }
+                    }
+                    if (type == '1') {
+                        parms = {
+                            queryCondition: queryCondition,quotas: JSON.parse(metadatas),resource: values
+                        }
+                    }
                     dataModel.updateRemote("${contextRoot}/resourceIntegrated/updateResource", {
-                        data:{dataJson: JSON.stringify(d)},
+                        data:{dataJson: JSON.stringify(parms)},
                         type: 'POST',
                         success: function(data) {
+                            wait.close();
                             if (data.successFlg) {
 //                                reloadMasterUpdateGrid(categoryIdNew);
                                 $.Notice.success('操作成功');

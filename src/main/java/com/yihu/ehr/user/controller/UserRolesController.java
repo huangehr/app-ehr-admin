@@ -2,7 +2,7 @@ package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
-import com.yihu.ehr.agModel.resource.RsReportCategoryModel;
+import com.yihu.ehr.agModel.resource.RsReportCategoryInfoModel;
 import com.yihu.ehr.agModel.resource.RsRolesResourceModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
@@ -713,27 +713,37 @@ public class UserRolesController extends BaseUIController {
         }
         return "";
     }
+    @RequestMapping("/rfConfig")
+    public String rfConfig(String id, Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "user/roles/rfConfig");
+        return "pageView";
+    }
 
     //资源报表分类树数据-获取所有分类及对应的资源的不分页方法
     @RequestMapping("/categoriesAndReport")
     @ResponseBody
-    public Object getCategoriesAndReport(){
-        List<RsReportCategoryModel> list = new ArrayList<>();
+    public Object getCategoriesAndReport(String roleId, String name){
+        Envelop envelop = new Envelop();
         try{
             String filters = "";
             String envelopStr = "";
             String url = "/roles/report/getCategoryAndReportNoPage";
             Map<String,Object> params = new HashMap<>();
-            params.put("filters",filters);
-            envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            Envelop envelopGet = objectMapper.readValue(envelopStr,Envelop.class);
-            if(envelopGet.isSuccessFlg()){
-                list = (List<RsReportCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(), new ArrayList<>(), RsReportCategoryModel.class);
+            if (!StringUtils.isEmpty(name)) {
+                params.put("filters", "name?" + name);
+            } else {
+                params.put("filters", filters);
             }
+            params.put("roleId", roleId);
+            envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
         }
-        return list;
     }
 
     @RequestMapping(value = "/addRoleReportRelation", produces = "text/html;charset=UTF-8")

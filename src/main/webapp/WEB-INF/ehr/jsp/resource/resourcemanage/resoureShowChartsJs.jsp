@@ -40,8 +40,8 @@
             initCharts: function () {
                 var me = this,
                     myChart = echarts.init(me.chartsMain),
-//                    options = optsArr[me.index];
-                    options = me.optionsArr[me.index];
+                    options = optsArr[me.index];
+//                    options = me.optionsArr[me.index];
                 if(options) {
                     try {
                         myChart.setOption(options);

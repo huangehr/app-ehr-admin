@@ -6,6 +6,7 @@
     (function ($, win, u) {
         // 通用工具类库
         var Util = $.Util;
+        //接口
         var pubInf = {
             //地区
             getDistrictByUserId: '${contextRoot}/user/getDistrictByUserId',
@@ -26,7 +27,8 @@
                 '${contextRoot}/resourceIntegrated/searchQuotaData'//表格
             ]
         ];
-        var rsInfoDialog = null;
+        var rsInfoDialog = null,
+            defArr = [];
 
         $(function () {
             var cunQue = {
@@ -37,7 +39,6 @@
                 $genView: $('.gen-view'),//生成视图
                 $outExc: $('.out-exc'),//导出
                 $scBtn: $('.sc-btn'),//展开\收起筛选
-
                 $queryConc: $('.query-conc'),
                 $queryMain: $('.query-main'),
                 $selectCon: $('.select-con'),
@@ -46,15 +47,15 @@
                 $searchInp: $('#searchInp'),
                 $startDate: $('#startDate'),
                 $endDate: $('#endDate'),
-
                 $treeCon: $('.tree-con'),
                 $divLeftTree: $('#divLeftTree'),
                 $divResourceInfoGrid: $('#divResourceInfoGrid'),
-
+                $zbGrid: $('#zbGrid'),
                 dataModel: $.DataModel.init(),
                 selTmp: $('#selTmp').html(),
-
                 leftTree: null,
+                filters: '',
+                //档案数据参数
                 resourceInfoGrid: null,
                 selectData: [],
                 type: 0,//0:档案数据；1：指标统计
@@ -63,6 +64,13 @@
                 childArr: [],
                 queryCondition: '',
                 GridCloumnNamesData: [],
+                //指标统计参数
+                zbGrid: null,
+                tjQuotaIds: [],
+                tjQuotaCodes: [],
+                ZBCloumnNamesData: [],
+                selDataName: [],
+                params: {},
                 init: function () {
                     //设置综合查询页面的高度
                     var queryMainH = this.WH - 128 - 25;
@@ -71,6 +79,7 @@
                     this.loadSelData();
                     this.loadTree();
                     this.bindEvent();
+                    this.loadGrid();
                 },
                 //初始化表单控件
                 initForm: function () {
@@ -79,7 +88,10 @@
                         width: 245,
                         isSearch: true,
                         search: function () {
-                            self.reloadGrid(1);
+                            debugger
+                            var serVal = $('#searchInp').val();
+                            me.filters = serVal;
+                            me.loadTree();
                         }
                     });
 
@@ -139,11 +151,15 @@
                         me.$pubSel.append(htm);
                     });
                 },
+                //加载树
                 loadTree: function () {
                     var me = this;
                     me.leftTree = me.$divLeftTree.ligerSearchTree({
                         nodeWidth: 180,
                         url: conInf[me.type][0],
+                        parms: {
+                            filters: me.filters
+                        },
                         idFieldName: 'code',
                         textFieldName: 'name',
                         isExpand: false,
@@ -151,55 +167,85 @@
                         checkbox: true,
                         async: false,
                         onCheck:function (data,target) {
-                            var ma = [], ca = [], sjyArr = [];
                             me.selectData = this.getChecked();
+                            me.$scBtn.removeClass('show');
+                            me.$selectCon.hide();
+                            me.queryCondition = me.getSelCon();
                             if (me.selectData.length > 0) {
-                                for (var i = 0, len = me.selectData.length; i < len; i++) {
-                                    switch (me.selectData[i].data.level) {
-                                        case '1':
-                                            ma.push(me.selectData[i].data.code);
-                                            break;
-                                        case '2':
-                                            sjyArr.push(me.selectData[i].data);
-                                            ca.push(me.selectData[i].data.code);
-                                            break;
+                                if (me.type == 0) {
+                                    var ma = [], ca = [], sjyArr = [];
+                                    me.loadGrid();
+                                    for (var i = 0, len = me.selectData.length; i < len; i++) {
+                                        switch (me.selectData[i].data.level) {
+                                            case '1':
+                                                ma.push(me.selectData[i].data.code);
+                                                break;
+                                            case '2':
+                                                sjyArr.push(me.selectData[i].data);
+                                                ca.push(me.selectData[i].data.code);
+                                                break;
+                                        }
                                     }
+                                    me.masterArr = JSON.stringify(ma);
+                                    me.childArr = JSON.stringify(ca);
+                                    //初始化
+                                    me.index = 0;
+                                    me.$selMore.html('');
+                                    me.GridCloumnNamesData = sjyArr;
+                                    me.reloadResourcesGrid({
+                                        metaData: me.childArr,
+                                        resourcesCode: me.masterArr,
+                                        searchParams: me.queryCondition
+                                    });
+                                    me.setSearchData();
+                                } else {
+                                    me.tjQuotaIds = [];
+                                    me.tjQuotaCodes = [];
+                                    me.loadZBGrid();
+                                    for (var k = 0, len = me.selectData.length; k < len; k++) {
+                                        if (me.selectData[k].data.level == 2) {
+                                            me.tjQuotaIds.push(me.selectData[k].data.id);
+                                            me.tjQuotaCodes.push(me.selectData[k].data.code);
+                                        }
+                                    }
+                                    var par = {
+                                        tjQuotaIds: me.tjQuotaIds.join(','),
+                                        tjQuotaCodes: me.tjQuotaCodes.join(','),
+                                        //                                  searchParams: me.queryCondition,
+
+//                                        tjQuotaIds: '16,18',
+//                                        tjQuotaCodes: 'depart_treat_count,disease_add_count'
+//                                        searchParams: me.queryCondition
+                                    };
+                                    me.ZBCloumnNamesData = [];
+                                    me.loadZBCol(par);
+                                    me.reloadZBGrid(par);
                                 }
-                                me.loadGrid();
-                                me.masterArr = JSON.stringify(ma);
-                                me.childArr = JSON.stringify(ca);
-//                                queryCondition = resourceBrowseMaster.getQuerySearchData();
-                                me.reloadResourcesGrid({
-                                    metaData: me.childArr,
-                                    resourcesCode: me.masterArr,
-                                    searchParams: me.queryCondition
-                                });
-                                //初始化
-                                me.index = 0;
-                                me.$selMore.html('');
-                                me.GridCloumnNamesData = sjyArr;
-                                me.setSearchData();
                             } else {
-                                me.index = 0;
-                                me.$selMore.html('');
-                                me.GridCloumnNamesData = [];
-                                me.masterArr = '';
-                                me.childArr = '';
-                                me.queryCondition = '';
-                                me.selectData = [];
-                                me.loadGrid();
+                                me.resetDate();
                             }
                         },
                         onSuccess: function (data) {
                             var detailModelList = data.detailModelList,
                                     dmList = [];
                             if (detailModelList) {
-                                for(var i=0;i<detailModelList.length;i++){
-                                    if (detailModelList[i].level == 0) {
-                                        defArr = detailModelList[i].baseInfo;
-                                    } else {
-                                        var rsResourceslist = detailModelList[i].metaDataList;
-                                        detailModelList[i].children = rsResourceslist;
+                                if (me.type == 0) {
+                                    for(var i = 0; i < detailModelList.length; i++){
+                                        if (detailModelList[i].level == 0) {
+                                            defArr = detailModelList[i].baseInfo;
+                                        } else {
+                                            var rsResourceslist = detailModelList[i].metaDataList;
+                                            detailModelList[i].children = rsResourceslist;
+                                            dmList.push(detailModelList[i]);
+                                        }
+                                    }
+                                } else {
+                                    for(var i = 0; i < detailModelList.length; i++){
+                                        var childOne = detailModelList[i].child;
+                                        detailModelList[i].children = childOne;
+                                        for ( var j = 0; j < childOne.length; j++) {
+                                            detailModelList[i].children[j].children = childOne[j].detailList;
+                                        }
                                         dmList.push(detailModelList[i]);
                                     }
                                 }
@@ -207,16 +253,38 @@
                             } else {
                                 $.Notice.error('暂无数据');
                             }
-                        },
-
+                        }
                     });
+                },
+                resetDate: function () {
+                    this.$scBtn.removeClass('show');
+                    this.$selectCon.hide();
+                    this.index = 0;
+                    this.filters = '';
+                    $('#searchInp').val('');
+                    this.$selMore.html('');
+                    this.GridCloumnNamesData = [];
+                    this.masterArr = '';
+                    this.childArr = '';
+                    this.tjQuotaIds = [];
+                    this.tjQuotaCodes = [];
+                    this.ZBCloumnNamesData = [];
+//                                me.queryCondition = '';
+                    this.selectData = [];
+                    if (this.type == 0) {
+                        this.loadGrid();
+                    } else {
+                        this.loadZBGrid();
+                    }
                 },
                 //筛选存在数据字典中的字段
                 setSearchData: function (d) {
                     var me = this,
                         data = me.GridCloumnNamesData;
+                    if (me.type == 1) {
+                        return
+                    }
                     if (data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
-
                         me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
                             data: {dictId: data[me.index].dictCode},
                             type: 'GET',
@@ -235,6 +303,7 @@
                         me.setSearchData();
                     }
                 },
+                //添加查询条件
                 resetSelHtml: function (d) {
                     var me = this,
                         htm = '';
@@ -248,51 +317,102 @@
                     });
                     me.$selMore.append(htm);
                 },
+                //加载档案数据表格
                 loadGrid: function () {
                     var me = this;
                     var columnModel = new Array();
-                    if (me.selectData.length > 0) {
+                    //档案数据时添加基本信息
+                    if (me.selectData.length > 0 && me.type == 0) {
                         for (var j = 0, len = defArr.length; j < len; j++) {
                             columnModel.push({display: defArr[j].name, name: defArr[j].code, width: 100});
                         }
-                    }
-                    //获取列名
-                    for (var i = 0, len = me.selectData.length; i < len; i++) {
-                        if (me.selectData[i].data.level == '2') {
-                            columnModel.push({display: me.selectData[i].data.name, name: me.selectData[i].data.code, width: 100});
+                        //获取列名
+                        for (var i = 0, len = me.selectData.length; i < len; i++) {
+                            if (me.selectData[i].data.level == '2') {
+                                columnModel.push({display: me.selectData[i].data.name, name: me.selectData[i].data.code, width: 100});
+                            }
                         }
                     }
+                    //初始化表格
                     me.resourceInfoGrid = me.$divResourceInfoGrid.ligerGrid($.LigerGridEx.config({
                         url: conInf[me.type][1],
                         parms: {searchParams: '', resourcesCode: '', metaData: ''},
                         columns: columnModel,
-                        checkbox: true,
-                        onSelectRow:function () {
-                            if(Util.isStrEquals(me.resourceInfoGrid.getSelectedRows().length,0)){
-//                                self.$outSelExcelBtn.css('background','#B9C8D2');
-                            }else{
-//                                self.$outSelExcelBtn.css('background','#2D9BD2');
-                            }
-                        },
-                        onUnSelectRow:function () {
-                            if(Util.isStrEquals(me.resourceInfoGrid.getSelectedRows().length,0)){
-//                                self.$outSelExcelBtn.css('background','#B9C8D2');
-                            }else{
-//                                self.$outSelExcelBtn.css('background','#2D9BD2');
-                            }
-                        },
-                        onAfterShowData:function () {
-//                            self.$outAllExcelBtn.css('background','#B9C8D2');
-                            if (me.resourceInfoGrid.data.detailModelList.length > 0){
-//                                self.$outAllExcelBtn.css('background','#2D9BD2');
-                            }
-                        }
+                        checkbox: true
                     }));
                 },
+                //加载指标统计表格
+                loadZBGrid: function () {
+                    var me = this,
+                        columnModel = [];
+                    columnModel = me.ZBCloumnNamesData;
+                    //初始化表格
+                    me.zbGrid = me.$zbGrid.ligerGrid($.LigerGridEx.config({
+                        url: conInf[me.type][1],
+                        parms: {
+                            tjQuotaIds: '',
+                            tjQuotaCodes: ''
+//                                        searchParams: me.queryCondition
+                        },
+                        columns: columnModel,
+                        checkbox: true
+                    }));
+                },
+                //获取指标统计表头
+                loadZBCol: function (params) {
+                    var me = this;
+                    me.selDataName = [];
+                    $.ajax({
+                        data: params,
+                        async: false,
+                        url: conInf[me.type][1],
+                        success: function (data) {
+                            if (data.successFlg) {
+                                var rd = data.detailModelList,
+                                    cd = data.obj,
+                                    q = 0;
+                                if (rd) {
+                                    for (var o = 0; o < me.selectData.length; o++) {
+                                        if (me.selectData[o].data.level == 2) {
+                                            me.selDataName.push(me.selectData[o].data.name);
+                                            cd.push({
+                                                name: me.selectData[o].data.name,
+                                                key: 'value' + q
+                                            });
+                                            q++;
+                                        }
+                                    }
+                                    for (var n = 0; n < cd.length; n++) {
+                                        me.ZBCloumnNamesData.push({display: cd[n].name,name: cd[n].key,width: 100,render:function (row, key, val, clo) {
+                                            var key = (clo.name).substring(0,5),
+                                                val = row[clo.name];
+                                            if (key == 'value') {
+                                                var vArr = (row.value).split(',');
+                                                for (var t = 0; t < vArr.length; t++) {
+                                                    if ((key + t) == clo.name) {
+                                                        val = vArr[t];
+                                                    }
+                                                }
+                                            }
+                                            return val;
+                                        }});
+                                    }
+                                }
+                            } else {
+                                $.Notice.error(data.errorMsg);
+                            }
+                        }
+                    });
+                },
+                //加载档案数据
                 reloadResourcesGrid: function (searchParams) {
-//                    reloadGrid.call(this, conInf[this.type][1], searchParams);
                     this.resourceInfoGrid.setOptions({parms: searchParams});
                     this.resourceInfoGrid.loadData(true);
+                },
+                //加载指标统计
+                reloadZBGrid: function (searchParams) {
+                    this.zbGrid.setOptions({parms: searchParams});
+                    this.zbGrid.loadData(true);
                 },
                 bindEvent: function () {
                     var me = this;
@@ -303,10 +423,17 @@
                         if (me.type == index) {
                             return;
                         }
+                        if (index == 0) {
+                            me.$divResourceInfoGrid.show();
+                            me.$zbGrid.hide();
+                        } else {
+                            me.$divResourceInfoGrid.hide();
+                            me.$zbGrid.show();
+                        }
                         $that.addClass('active').siblings().removeClass('active');
                         me.type = index;
+                        me.resetDate();
                         me.loadTree();
-                        console.log(index);
                     });
                     //展开\收起筛选条件
                     me.$scBtn.on('click', function () {
@@ -329,15 +456,19 @@
                         if (isTrue) {
                             $that.removeClass('show');
                             $conList.css({
-                                height: '30px'
+                                height: '30px',
+                                overflow: 'hidden'
                             });
                         } else {
                             $that.addClass('show');
                             $conList.css({
-                                height: 'auto'
+                                height: 'auto',
+                                'max-height': '120px',
+                                overflow: 'auto'
                             });
                         }
                     }).on('click', '.con-item', function () {
+                        //选择条件
                         var $that = $(this),
                             $parent = $that.closest('.sel-item');
                         if ($parent.hasClass('time')) {
@@ -353,17 +484,17 @@
                                 codeArr.splice(index, 1);
                             }
                             $parent.attr('data-code-list', codeArr.join(','));
-                            console.log(codeArr.join(','));
                             $that.removeClass('active');
                         } else {
                             codeArr.push(code);
                             $parent.attr('data-code-list', codeArr.join(','));
-                            console.log(codeArr.join(','));
                             $that.addClass('active');
                         }
                     });
                     //查询
                     me.$queryCon.on('click', function () {
+                        me.$scBtn.removeClass('show');
+                        me.$selectCon.hide();
                         me.queryCondition = me.getSelCon();
                         me.reloadResourcesGrid({
                             metaData: me.childArr,
@@ -373,8 +504,22 @@
                     });
                     //导出excel
                     me.$outExc.on('click', function () {
-                        var rowData = me.resourceInfoGrid.data.detailModelList;
-                        me.outExcel(rowData, me.resourceInfoGrid.currentData.totalPage * me.resourceInfoGrid.currentData.pageSize);
+                        if (me.type == 0) {
+                            var rgd = me.resourceInfoGrid.getData();
+                            if (rgd && rgd.length > 0) {
+                                var rowData = me.resourceInfoGrid.data.detailModelList;
+                                me.outExcel(rowData, me.resourceInfoGrid.currentData.totalPage * me.resourceInfoGrid.currentData.pageSize);
+                            } else {
+                                $.Notice.error('请先选择数据！');
+                            }
+                        } else {
+                            var zbd = me.zbGrid.getData();
+                            if (zbd && zbd.length > 0) {
+                                me.outZBWxcel();
+                            } else {
+                                $.Notice.error('请先选择数据！');
+                            }
+                        }
                     });
                     me.$genView.on('click', function () {
                         var sd = me.selectData,
@@ -387,17 +532,41 @@
                             var md = [];
                             if(yes){
                                 if (sd.length > 0) {
-                                    for (var i = 0, len = sd.length; i < len; i++) {
-                                        var data = sd[i].data
-                                        if (data.level == 2) {
-                                            md.push({
-                                                resourcesId: '',
-                                                metadataId: data.code,
-                                                groupType: data.groupType,
-                                                groupData: data.groupData,
-                                                description: data.description
-                                            });
+                                    //档案数据
+                                    if (me.type == 0) {
+                                        for (var i = 0, len = sd.length; i < len; i++) {
+                                            var data = sd[i].data
+                                            if (data.level == 2) {
+                                                md.push({
+                                                    resourcesId: '',
+                                                    metadataId: data.code,
+                                                    groupType: data.groupType,
+                                                    groupData: data.groupData,
+                                                    description: data.description
+                                                });
+                                            }
                                         }
+                                    } else {
+                                        //指标统计
+                                        for (var i = 0, len = sd.length; i < len; i++) {
+                                            var data = sd[i].data,
+                                                name = '';
+                                            if (data.level == 1) {
+                                                name = data.name;
+                                                for (var l = 0, len = sd.length; l < len; l++) {
+                                                    var chilData = sd[l].data;
+                                                    if (chilData.level == 2 && data.id == chilData.quota_type) {
+                                                        md.push({
+                                                            resourceId: '',
+                                                            quotaTypeName: name,
+                                                            quotaChart: 1,
+                                                            quotaId: chilData.id
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        qc = JSON.stringify({});
                                     }
 
                                     var wait = $.Notice.waitting("请稍后...");
@@ -408,6 +577,7 @@
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
                                         urlParms:{
                                             queryCondition: qc,
+                                            type: me.type,
                                             metadatas: JSON.stringify(md)
                                         },
                                         load:true,
@@ -445,6 +615,7 @@
                                 }
                             }
                         } else {
+                            //时间条件
                             var sT = $selItems.eq(i).attr('data-start-date'),
                                     eT = $selItems.eq(i).attr('data-end-date'),
                                     aArr = [];
@@ -475,15 +646,18 @@
                             }
                         }
                     }
-                    console.log(JSON.stringify(jsonData));
                     return JSON.stringify(jsonData);
                 },
-                //导出excel
+                //导出指标统计excel
+                outZBWxcel: function () {
+                    window.open("${contextRoot}/resourceIntegrated/outQuotaExcel?tjQuotaIds=" + this.tjQuotaIds.join(',') + "&tjQuotaCodes=" + this.tjQuotaCodes.join(',') + "&searchParams=" + '{}' + '&tiQuotaNames=' + this.selDataName.join(','), "指标统计导出");
+                },
+                //导出档案数据excel
                 outExcel: function (rowData, size) {
-                    if (rowData.length <= 0) {
-                        $.Notice.error('请先选择数据');
-                        return;
-                    }
+//                    if (rowData.length <= 0) {
+//                        $.Notice.error('请先选择数据');
+//                        return;
+//                    }
                     var columnNames = this.resourceInfoGrid.columns;
                     var codes = [];
                     var names = [];
@@ -507,7 +681,6 @@
                         valueList.push(values);
                         values = [];
                     }
-
                     var metaData = [];
                     for (var i = 0, len = this.selectData.length; i < len; i++) {
                         var data = this.selectData[i].data
@@ -518,8 +691,7 @@
                             });
                         }
                     }
-                    debugger
-                    window.open("${contextRoot}/resourceIntegrated/outExcel?size=" + size + "&resourcesCode=" + this.masterArr + "&searchParams=" + this.queryCondition + "&metaData=" + JSON.stringify(metaData), "资源数据导出");
+                    window.open("${contextRoot}/resourceIntegrated/outFileExcel?size=" + size + "&resourcesCode=" + this.masterArr + "&searchParams=" + this.queryCondition + "&metaData=" + JSON.stringify(metaData), "档案数据导出");
                 },
                 calLen: function () {
                     var $selItems = $('.select-con').find('.sel-item');

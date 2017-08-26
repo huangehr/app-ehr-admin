@@ -14,7 +14,7 @@
                 <%--列表--%>
                 <div class="" style="float: left;width: 382px;position: relative;">
                     <div class="m-form-control f-fs12 div-main-search" style="display: block;padding: 10px 0 10px 10px;    border: 1px solid #D6D6D6;border-bottom: none">
-                        <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>">
+                        <input type="text" id="searchNmEntry" placeholder="请输入指标名称">
                     </div>
                     <div id="div_relation_grid">
 

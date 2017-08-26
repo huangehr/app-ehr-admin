@@ -43,14 +43,16 @@ public class ResourceIntegratedController extends BaseUIController {
 
     /**
      * 综合查询档案数据列表树
+     * @param filters
      * @return
      */
     @RequestMapping("/getMetadataList")
     @ResponseBody
-    public Object getMetadataList() {
+    public Envelop getMetadataList(String filters) {
         Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
         String url = "/resources/integrated/metadata_list";
+        Map<String, Object> params = new HashMap<>();
+        params.put("filters", filters);
         String resultStr = "";
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -64,9 +66,9 @@ public class ResourceIntegratedController extends BaseUIController {
 
     /**
      * 综合查询档案数据检索
-     * @param resourcesCode
-     * @param metaData
-     * @param searchParams
+     * @param resourcesCode ["code1","code2"]
+     * @param metaData ["EHR_000006","EHR_000004"]
+     * @param searchParams [{"andOr":"OR","condition":"=","field":"event_no","value":"1002281201"},{"andOr":"OR","condition":"=","field":"event_no","value":"1002281203"}]
      * @param page
      * @param rows
      * @param request
@@ -74,28 +76,24 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping("/searchMetadataData")
     @ResponseBody
-    public Object searchMetadataData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
+    public Envelop searchMetadataData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         if(resourcesCode == null || resourcesCode.equals("")) {
             return envelop;
         }
+        String url = "/resources/integrated/metadata_data";
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String url = "/resources/integrated/metadata_data";
         //当前用户机构
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         params.put("resourcesCode", resourcesCode);
         params.put("metaData", metaData);
-        /**
-         * 待确认
-         */
+        //（获取用户机构代码）待确认
         String orgCode = userDetailModel.getOrganization();
         if(orgCode != null) {
             params.put("orgCode", userDetailModel.getOrganization());
         }
-        /**
-         * 暂未进行控制
-         */
+        //暂未进行控制
         params.put("appId", "JKZL");
         params.put("queryCondition", searchParams);
         params.put("page", page);
@@ -112,14 +110,16 @@ public class ResourceIntegratedController extends BaseUIController {
 
     /**
      * 综合查询指标统计列表树
+     * @param filters
      * @return
      */
     @RequestMapping("/getQuotaList")
     @ResponseBody
-    public Object getQuotaList() {
+    public Envelop getQuotaList(String filters) {
         Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
         String url = "/resources/integrated/quota_list";
+        Map<String, Object> params = new HashMap<>();
+        params.put("filters", filters);
         String resultStr = "";
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -133,70 +133,28 @@ public class ResourceIntegratedController extends BaseUIController {
 
     /**
      * 综合查询指标统计数据检索
+     * @param tjQuotaIds
+     * @param tjQuotaCodes
+     * @param searchParams
      * @return
      */
     @RequestMapping("/searchQuotaData")
     @ResponseBody
-    public Object searchQuotaData(String tjQuotaIds, String tjQuotaCodes, String searchParams, int page, int rows) {
-        Envelop result = new Envelop();
-        List<Envelop> envelopList = new ArrayList<Envelop>();
-        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+    public Envelop searchQuotaData(String tjQuotaIds, String tjQuotaCodes, String searchParams) {
+        Envelop envelop = new Envelop();
         try {
-            String url1 = "/tj/tjGetQuotaResult";
-            String url2 = "/tj/getTjQuotaSynthesiseDimension";
-            boolean isFailed = false;
-            //检查维度交集查询参数是否正确
-            if (tjQuotaCodes == null) {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("参数不能为空");
-                return result;
-            }
-            //获取数据交集
-            Map<String, Object> params1 = new HashMap<String, Object>();
-            params1.put("quotaCodes", tjQuotaCodes);
-            String resultStr2 = HttpClientUtil.doGet(comUrl + url2, params1, username, password);
-            //如果数据交集不为空，获取相关指标执行的结果
-            if(resultStr2 != null) {
-                //检查指标执行结果查询参数是否正确
-                List<Long> tjQuotaIdList = (List<Long>) objectMapper.readValue(tjQuotaIds, List.class);
-                /**
-                 * 请求数据
-                 */
-                if (tjQuotaIdList != null && tjQuotaIdList.size() > 0) {
-                    for (Long id : tjQuotaIdList) {
-                        Envelop envelop = new Envelop();
-                        Map<String, Object> params2 = new HashMap<String, Object>();
-                        params2.put("id", id);
-                        params2.put("pageNo", page);
-                        params2.put("pageSize", rows);
-                        params2.put("filters", searchParams);
-                        String resultStr1 = HttpClientUtil.doGet(comUrl + url1, params2, username, password);
-                        envelop = toModel(resultStr1, Envelop.class);
-                        envelopList.add(envelop);
-                        if (envelop == null || !envelop.isSuccessFlg()) {
-                            isFailed = true;
-                        }
-                    }
-                }
-                if (isFailed) {
-                    result.setSuccessFlg(false);
-                    result.setErrorMsg("请求结果有误");
-                    return result;
-                }
-                /**
-                 * 处理结果集
-                 */
-            }else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("无效指标合集");
-                return result;
-            }
+            String url = "/resources/integrated/quota_data";
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("quotaIds", tjQuotaIds);
+            params.put("quotaCodes", tjQuotaCodes);
+            params.put("queryCondition", searchParams);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("综合查询指标数据检索失败");
         }
-        return result;
+        return envelop;
     }
 
     /**
@@ -205,7 +163,8 @@ public class ResourceIntegratedController extends BaseUIController {
      * @return
      */
     @RequestMapping(value = "/updateResource", method = RequestMethod.POST)
-    public Object updateResource(String dataJson) {
+    @ResponseBody
+    public Envelop updateResource(String dataJson) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/integrated/resource_update";
@@ -214,8 +173,8 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("综合查询视图保存失败");
         }
         return envelop;
     }
@@ -227,7 +186,7 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping(value = "/updateResourceQuery", method = RequestMethod.PUT)
     @ResponseBody
-    public Object updateResourceQuery(String dataJson){
+    public Envelop updateResourceQuery(String dataJson){
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/integrated/resource_query_update";
@@ -236,14 +195,24 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            //LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
+            //envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("综合查询搜索条件更新失败");
         }
         return envelop;
     }
 
-    //综合查询档案数据导出
-    @RequestMapping(value = "/outExcel", method = RequestMethod.GET)
+    /**
+     * 综合查询档案数据导出
+     * @param request
+     * @param response
+     * @param size
+     * @param resourcesCode
+     * @param searchParams
+     * @param metaData
+     */
+    @RequestMapping(value = "/outFileExcel")
     public void outExcel(HttpServletRequest request, HttpServletResponse response, Integer size, String resourcesCode, String searchParams, String metaData) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -303,10 +272,84 @@ public class ResourceIntegratedController extends BaseUIController {
             os.flush();
             os.close();
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询档案数据导出失败");
+            e.printStackTrace();
         }
-        envelop.setSuccessFlg(true);
+    }
+
+    /**
+     * 综合查询指标数据导出
+     * @param response
+     * @param tjQuotaIds
+     * @param tjQuotaCodes
+     * @param tiQuotaNames
+     * @param searchParams
+     */
+    @RequestMapping("/outQuotaExcel")
+    public void outQuotaExcel(HttpServletResponse response, String tjQuotaIds, String tjQuotaCodes, String tiQuotaNames, String searchParams){
+        Envelop envelop = new Envelop();
+        String fileName = "综合查询指标数据";
+        String resourceCategoryName = System.currentTimeMillis() + "";
+        try {
+            //请求数据
+            String url = "/resources/integrated/quota_data";
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("quotaIds", tjQuotaIds);
+            params.put("quotaCodes", tjQuotaCodes);
+            params.put("queryCondition", searchParams);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+            //处理Excel
+            response.setContentType("octets/stream");
+            response.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
+            OutputStream os = response.getOutputStream();
+            WritableWorkbook book = Workbook.createWorkbook(os);
+            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
+            sheet.addCell(new Label(0, 0, "代码"));
+            sheet.addCell(new Label(0, 1, "名称"));
+            String [] tjQuotaCodesArr = tjQuotaCodes.split(",");
+            String [] tiQuotaNamesArr = tiQuotaNames.split(",");
+            int pos = 0;
+            List<Map<String, String>> objList = (List<Map<String, String>>)envelop.getObj();
+            for(int i = 0; i< objList.size(); i ++) {
+                Map<String, String> objMap = objList.get(i);
+                sheet.addCell(new Label(i + 1, 0, String.valueOf(objMap.get("key"))));
+                sheet.addCell(new Label(i + 1, 1, String.valueOf(objMap.get("name"))));
+                pos = i + 1;
+            }
+            for(int j = 0; j < tjQuotaCodesArr.length; j ++) {
+                sheet.addCell(new Label(pos + 1 + j, 0, String.valueOf(tjQuotaCodesArr[j])));
+                sheet.addCell(new Label( pos + 1 + j, 1, String.valueOf(tiQuotaNamesArr[j])));
+            }
+            List<Map<String, String>> dataList = envelop.getDetailModelList();
+            //处理结果集合
+            List<Object> parseList = new ArrayList<Object>();
+            for(Map<String, String> tempMap : dataList) {
+                Map<String, String> parseMap = new HashMap<String, String>();
+                for(String key : tempMap.keySet()) {
+                    if(key.equals("value")) {
+                        String values = tempMap.get(key);
+                        String [] valuesArr = values.split(",");
+                        for(int j = 0; j < tjQuotaCodesArr.length; j ++) {
+                            parseMap.put(tjQuotaCodesArr[j], valuesArr[j]);
+                        }
+                    }else {
+                        parseMap.put(key, tempMap.get(key));
+                    }
+                }
+                parseList.add(parseMap);
+            }
+            Cell [] cells = sheet.getRow(0);
+            sheet = inputData(sheet, parseList, cells);
+            sheet.mergeCells(0, 2, 0, dataList.size() + 1);
+            sheet.addCell(new Label(0, 2, "值"));
+            book.write();
+            book.close();
+            os.flush();
+            os.close();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -350,14 +393,12 @@ public class ResourceIntegratedController extends BaseUIController {
             os.flush();
             os.close();
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询档案数据已选数据导出失败");
+            e.printStackTrace();
         }
-        envelop.setSuccessFlg(true);
     }
 
     /**
-     * 基础数据表头初始化
+     * 档案数据基础信息初始化
      * @param sheet
      * @return
      * @throws Exception
@@ -399,6 +440,5 @@ public class ResourceIntegratedController extends BaseUIController {
         }
         return sheet;
     }
-
 
 }
