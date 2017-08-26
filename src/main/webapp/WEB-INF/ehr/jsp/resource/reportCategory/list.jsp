@@ -2,7 +2,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-<div class="m-retrieve-area f-h50 f-pr m-form-inline">
+<div class="m-form-inline">
     <div class="m-form-group f-mt10">
         <div class="m-form-control f-fs12">
             <input type="text" id="searchNm" placeholder="请输入代码或者名称">
@@ -17,6 +17,6 @@
             </sec:authorize>
         </div>
     </div>
-</div>
 
-<div id="grid"></div>
+    <div id="grid"></div>
+</div>
