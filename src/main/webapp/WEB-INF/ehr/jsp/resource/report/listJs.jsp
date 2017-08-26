@@ -42,6 +42,10 @@
             onSelect: function (e) {
                 reportCategoryId = e.data.id;
                 reloadGrid();
+            },
+            onCancelselect: function (e) {
+                reportCategoryId = '';
+                reloadGrid();
             }
         });
 
