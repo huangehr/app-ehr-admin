@@ -178,11 +178,13 @@
                 });
 
                 function update(doctorModel) {
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
                         data: {doctorModelJsonData: doctorModelJsonData},
                         success: function (data) {
+                            waittingDialog.close();
                             if (data.successFlg) {
                                 win.closeDoctorInfoDialog();
                                 win.reloadMasterUpdateGrid();
