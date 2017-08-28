@@ -42,6 +42,10 @@
             onSelect: function (e) {
                 reportCategoryId = e.data.id;
                 reloadGrid();
+            },
+            onCancelselect: function (e) {
+                reportCategoryId = '';
+                reloadGrid();
             }
         });
 
@@ -64,14 +68,14 @@
                 {display: '操作', name: 'operator', width: '40%', align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/resource/report/setting"><a class="l-button u-btn u-btn-primary u-btn-small f-ib f-mb5 f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';
-                        html += '<sec:authorize url="/resource/report/upload"><a class="l-button u-btn u-btn-primary u-btn-small f-ib f-mb5 f-ml10 btn-file-container" title="模版导入" href="javascript:void(0)">' +
-                                    '<form id ="uploadForm" enctype="multipart/form-data">' +
-                                        '<span>模版导入</span>' +
-                                        '<input type="file" name="file" id="templatePathBtn" onchange="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:upload", row.id) + '">' +
-                                    '</form>' +
+                        html += '<sec:authorize url="/resource/report/setting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/report/upload"><a class="label_a f-ml10 btn-file-container" title="模版导入" href="javascript:void(0)">' +
+                                '   模版导入' +
+                                '   <form id ="uploadForm" enctype="multipart/form-data">' +
+                                '       <input type="file" name="file" id="templatePathBtn" onchange="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:upload", row.id) + '">' +
+                                '   </form>' +
                                 '</a></sec:authorize>';
-                        html += '<sec:authorize url="/resource/report/preview"><a class="l-button u-btn u-btn-primary u-btn-small f-ib f-mb5 f-ml10" title="预览" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:preview", row.id) + '">预览</a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/report/preview"><a class="label_a f-ml10" title="预览" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:preview", row.id) + '">预览</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:report:open", row.id, 'modify') + '"></a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:delete", row.id) + '"></a></sec:authorize>';
                         return html;
