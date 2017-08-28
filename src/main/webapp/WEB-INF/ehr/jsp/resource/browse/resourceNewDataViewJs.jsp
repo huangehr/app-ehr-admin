@@ -113,12 +113,12 @@
                             var categoryName = self.$searchNm.val();
                             leftTree.s_search(categoryName);
                             if (categoryName == '') {
-                                leftTree.collapseAll();
                                 var html= $("#div-left-tree").html();
                                 $("#div-left-tree").html(html);
                                 $("#div-left-tree .l-box.l-checkbox").hide();
                                 $("#div-left-tree .l-checkbox-unchecked").closest("li").hide();
                                 $("#div-left-tree .l-checkbox-checked").closest("li").show();
+                                leftTree.collapseAll();
                             } else {
                                 leftTree.expandAll();
                             }

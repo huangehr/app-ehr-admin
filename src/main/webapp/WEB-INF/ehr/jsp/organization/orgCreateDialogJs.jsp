@@ -285,12 +285,14 @@
                 })
 
                 function updateOrg(orgModel,addressModel,msg) {
+                    var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var orgModel = JSON.stringify(orgModel);
                     var addressModel = JSON.stringify(addressModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
+                            wait.close();
                             uploader.options.successCallBack=function(){
                                 win.parent.showAddOrgInfoDialogSuccPop();
                                 win.parent.closeAddOrgInfoDialog(function () {

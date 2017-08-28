@@ -280,6 +280,7 @@
                 });
 
                 function updateOrg(orgModel, addressModel, msg) {
+                    var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var orgCode = orgModel.orgCode;
                     var orgModel = JSON.stringify(orgModel);
                     var addressModel = JSON.stringify(addressModel);
@@ -287,6 +288,7 @@
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
                         data: {orgModel: orgModel, addressModel: addressModel, mode: msg},
                         success: function (data) {
+                            wait.close();
                             uploader.options.formData.objectId = orgCode;
                             uploader.options.server="${contextRoot}/file/upload/image";
                             uploader.options.successCallBack=function(){
@@ -295,6 +297,7 @@
                                 });
                             }
                             if (data.successFlg) {
+                                win.closeDialog();
                                 if(uploader.getFiles().length>0){
                                     $(".uploadBtn").click();
                                 }else{
