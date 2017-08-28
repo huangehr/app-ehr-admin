@@ -278,8 +278,8 @@ public class ResourceBrowseController extends BaseUIController {
             params.put("orgCode", orgCode);
             params.put("resourcesCode", resourcesCode);
             params.put("queryCondition", searchParams);
-            params.put("page", page);
-            params.put("size", size);
+            params.put("page", 1);
+            params.put("size", 500);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
             List<Object> objectList = envelop.getDetailModelList();
