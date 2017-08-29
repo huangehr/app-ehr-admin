@@ -69,6 +69,7 @@ debugger;
 
 				function update(values){
 					var dataModel = $.DataModel.init();
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 					dataModel.updateRemote("${contextRoot}/upAndDownMember/updateOrgDeptMember", {
 						data:{
 							dataJson:JSON.stringify(values),
@@ -76,6 +77,7 @@ debugger;
 							parentUserName:categoryName
 						},
 						success: function(data) {
+                            waittingDialog.close();
 							if (data.successFlg) {
 								reloadMasterUpdateGrid(categoryIdOld);
 								$.Notice.success('添加成功');
