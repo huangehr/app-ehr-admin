@@ -182,7 +182,8 @@
                         $("#div_main_relation").find(".div-item[data-code="+itemCode+"]").remove();
                     });
                     $('#div_close').on('click',function () {
-                        win.parent.closeChartConfigDialog();
+//                        win.closeChartConfigDialog();
+                        win.closeConfigDialog();
                     });
                 }
             };

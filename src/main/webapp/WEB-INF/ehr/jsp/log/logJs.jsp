@@ -28,20 +28,21 @@
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 retrieve.init();
+                masterOperator.init();
                 master.init();
             }
 
             function reloadGrid (url, params,type) {
                 debugger
                 if(type == 1){
-                    masterOperator.init();
+//                    masterOperator.init();
                     if (isFirstPage){
                         gridOperator.options.newPage = 1;
                     }
                     gridOperator.setOptions({parms: params});
                     gridOperator.loadData(true);
                 }else{
-                    master.init();
+//                    master.init();
                     if (isFirstPage){
                         grid.options.newPage = 1;
                     }
