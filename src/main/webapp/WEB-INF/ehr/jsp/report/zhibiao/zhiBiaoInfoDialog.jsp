@@ -124,11 +124,11 @@
             <div class="u-checkbox-wrap m-form-control ">
                 <input type="radio" value="1" name="dataLevel" data-attr-scan>全量
                 <input type="radio" value="2" name="dataLevel" data-attr-scan>增量
+                <input type="radio" value="3" name="dataLevel" data-attr-scan>百分比(率)
             </div>
         </div>
         <div class="m-form-group ">
             <label>状态：</label>
-
             <div class="u-checkbox-wrap m-form-control ">
                 <input type="radio" value="1" name="status" data-attr-scan>正常
                 <input type="radio" value="-1" name="status" data-attr-scan>删除
