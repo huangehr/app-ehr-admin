@@ -124,18 +124,11 @@ public class ResourceBrowseController extends BaseUIController {
 
     @RequestMapping("/searchResourceData")
     @ResponseBody
-    public Object searchResourceData(String resourcesCode, String resourcesId, String searchParams, String dataSource, int page, int rows, HttpServletRequest request) {
+    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String url = "";
-        if(dataSource.equals("1")) {
-            url = "/resources/ResourceBrowses/getResourceData";
-            params.put("resourcesCode", resourcesCode);
-        }else {
-            url = "/resources/ResourceBrowses/getQuotaResourceData";
-            params.put("resourcesId", resourcesId);
-        }
+        String url = "/resources/ResourceBrowses/getResourceData";
         //当前用户机构
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String orgCode = userDetailModel.getOrganization();
@@ -150,6 +143,36 @@ public class ResourceBrowseController extends BaseUIController {
             }else {
                 params.put("queryCondition", "");
             }
+        }else {
+            params.put("queryCondition", "");
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("数据检索失败");
+        }
+        return envelop;
+    }
+
+    @RequestMapping("/searchQuotaResourceData")
+    @ResponseBody
+    public Object searchQuotaResourceData(String resourcesId, String searchParams, int page, int rows, HttpServletRequest request) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String resultStr = "";
+        String url = "/resources/ResourceBrowses/getQuotaResourceData";
+        //当前用户机构
+        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        String orgCode = userDetailModel.getOrganization();
+        //params.put("orgCode", "41872607-9");
+        params.put("orgCode", orgCode);
+        params.put("resourcesId", resourcesId);
+        if(searchParams.contains("{") || searchParams.contains("}")) {
+            params.put("queryCondition", searchParams);
         }else {
             params.put("queryCondition", "");
         }
