@@ -403,7 +403,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @return
      * @throws Exception
      */
-    public WritableSheet initBaseInfo(WritableSheet sheet) throws Exception{
+    public static WritableSheet initBaseInfo(WritableSheet sheet) throws Exception{
         sheet.addCell(new Label(0, 0, "代码"));
         sheet.addCell(new Label(0, 1, "名称"));
         sheet.addCell(new Label(1, 0, "event_date"));

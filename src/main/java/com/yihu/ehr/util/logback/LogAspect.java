@@ -106,7 +106,7 @@ public class LogAspect {
         requestPath = request.getRequestURL().toString();
         //获取操作地址
         operationPath = request.getServletPath();
-        if (StringUtils.isNotBlank(operationPath)) {
+        /*if (StringUtils.isNotBlank(operationPath)) {
             //调用接口查询url对应的菜单
             Object obj = appFeatureFindUrl(operationPath);
 
@@ -131,7 +131,7 @@ public class LogAspect {
                 function = "";
                 operation = "";
             }
-        }
+        }*/
 
         // 执行完方法的返回值：调用proceed()方法，就会触发切入点方法执行
         outputParamMap = new HashMap<String, Object>();
@@ -160,7 +160,7 @@ public class LogAspect {
         if(null!=userModel){
             data.put("patient", userModel.getRealName());// 总支撑
         }
-        data.put("url", requestPath);// 调用的控制器路径
+        data.put("url", operationPath);// 调用的控制器路径
         data.put("responseTime", endTimeMillis - startTimeMillis);// 操作响应时间长
         data.put("responseCode", response.getStatus());// 调用返回结果代码 successflag = true & false
         data.put("response", gson.toJson(outputParamMap));// 请求返回的结果
