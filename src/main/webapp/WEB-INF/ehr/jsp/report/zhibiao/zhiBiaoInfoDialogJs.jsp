@@ -85,8 +85,7 @@
                 if (res.execType == 1) {
                     me.$jobType.eq(0).ligerRadio("setValue",'1');
                     me.$jobType.eq(1).ligerRadio("setValue",'');
-                }
-                if (res.execType == 2) {
+                }else if (res.execType == 2) {
                     me.$jobType.eq(0).ligerRadio("setValue",'');
                     me.$jobType.eq(1).ligerRadio("setValue",'2');
                     me.$form.find('input[name="jobType"]').eq(1).trigger("click");
@@ -99,22 +98,26 @@
                 if (res.dataLevel == '1') {
                     me.$dataLevel.eq(0).ligerRadio("setValue",'1');
                     me.$dataLevel.eq(1).ligerRadio("setValue",'');
-                }
-                if (res.dataLevel == '2') {
+                    me.$dataLevel.eq(2).ligerRadio("setValue",'');
+                }else if (res.dataLevel == '2') {
                     me.$dataLevel.eq(0).ligerRadio("setValue",'');
                     me.$dataLevel.eq(1).ligerRadio("setValue",'2');
+                    me.$dataLevel.eq(2).ligerRadio("setValue",'');
+                }else if (res.dataLevel == '3') {
+                    me.$dataLevel.eq(0).ligerRadio("setValue",'');
+                    me.$dataLevel.eq(1).ligerRadio("setValue",'');
+                    me.$dataLevel.eq(2).ligerRadio("setValue",'3');
                 }
+
                 if (res.status == '1') {
                     me.$status.eq(0).ligerRadio("setValue",'1');
                     me.$status.eq(1).ligerRadio("setValue",'');
                     me.$status.eq(2).ligerRadio("setValue",'');
-                }
-                if (res.status == '-1') {
+                }else if (res.status == '-1') {
                     me.$status.eq(0).ligerRadio("setValue",'');
                     me.$status.eq(1).ligerRadio("setValue",'-1');
                     me.$status.eq(2).ligerRadio("setValue",'');
-                }
-                if (res.status == '0') {
+                }else if (res.status == '0') {
                     me.$status.eq(0).ligerRadio("setValue",'');
                     me.$status.eq(1).ligerRadio("setValue",'');
                     me.$status.eq(2).ligerRadio("setValue",'0');
