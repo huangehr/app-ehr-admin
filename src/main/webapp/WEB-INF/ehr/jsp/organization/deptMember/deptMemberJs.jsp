@@ -365,7 +365,10 @@
 								deptDetail:{name:name,phone:deptPhone,displayStatus:displayStatus,gloryId:glory,orgId:$("#h_org_id").val(),introduction:introduction,place:place,pyCode:pyCode}});
 							 params = {id:id,mode:'new',orgDeptJsonDate:orgDeptJsonDate};
 						}
+
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
+                            waittingDialog.close();
 								if(data.successFlg){
 									$.Notice.success('添加成功',function () {
 										me.removePopWin(me);
@@ -485,7 +488,9 @@
 							params = {id:id,mode:'modify',orgDeptJsonDate:orgDeptJsonDate};
 						}
 
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
+                            waittingDialog.close();
 								if(data.successFlg){
 									$.Notice.success('修改成功',function () {
 										pageInit();
@@ -699,8 +704,9 @@
 								deptDetail:{name:name,phone:deptPhone,displayStatus:displayStatus,gloryId:glory,orgId:$("#h_org_id").val(),introduction:introduction,place:place,pyCode:pyCode}});
 							params = {id:orgId,mode:'addRoot',orgDeptJsonDate:orgDeptJsonDate};
 						}
-
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
+                            waittingDialog.close();
 									if(data.successFlg){
 										$.Notice.success('操作成功',function () {
                                             me.removePopWin(me);

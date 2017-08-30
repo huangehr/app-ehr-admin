@@ -26,11 +26,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
+ * 资源服务控制器
  * Created by yww on 2016/5/27.
  */
 @Controller
 @RequestMapping("/resource/resourceManage")
 public class ResourceController extends BaseUIController {
+
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -45,6 +47,7 @@ public class ResourceController extends BaseUIController {
         model.addAttribute("contentPage","/resource/resourcemanage/resource");
         return "pageView";
     }
+
     @RequestMapping("/infoInitial")
     public String resourceInterfaceInfoInitial(Model model,String id,String mode,String categoryId){
         model.addAttribute("mode",mode);
@@ -74,7 +77,12 @@ public class ResourceController extends BaseUIController {
         return "simpleView";
     }
 
-    //    指标配置
+    /**
+     * 指标配置
+     * @param model
+     * @param id
+     * @return
+     */
     @RequestMapping("/resourceConfigue")
     public String resourceConfigue(Model model, String id){
         model.addAttribute("resourceId", id);
@@ -82,7 +90,13 @@ public class ResourceController extends BaseUIController {
         return "simpleView";
     }
 
-    //配置授权浏览页面跳转
+    /**
+     * 配置授权浏览页面跳转
+     * @param model
+     * @param pageName
+     * @param resourceId
+     * @return
+     */
     @RequestMapping("/switch")
     public String switchToPage(Model model,String pageName,String resourceId){
         if("config".equals(pageName)){
@@ -108,7 +122,14 @@ public class ResourceController extends BaseUIController {
         return "pageView";
     }
 
-    //分页查询
+    /**
+     * 资源分页查询
+     * @param searchNm
+     * @param categoryId
+     * @param page
+     * @param rows
+     * @return
+     */
     @RequestMapping("/resources")
     @ResponseBody
     public Object searchResources(String searchNm,String categoryId,int page,int rows){
@@ -135,18 +156,22 @@ public class ResourceController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
-        } catch (Exception ex) {
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+        } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
     }
 
-    //更新
+    /**
+     * 创建或更新资源
+     * @param dataJson
+     * @param mode
+     * @return
+     */
     @RequestMapping("/update")
     @ResponseBody
-    public Object updateResource(String dataJson,String mode){
+    public Object updateResource(String dataJson, String mode){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         String url = "/resources";
@@ -163,7 +188,7 @@ public class ResourceController extends BaseUIController {
             if("new".equals(mode)){
                 Map<String,Object> args = new HashMap<>();
                 args.put("resource",objectMapper.writeValueAsString(model));
-                String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
+                String envelopStr = HttpClientUtil.doPost(comUrl + url,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
                 String urlGet = "/resources/"+model.getId();
@@ -183,7 +208,7 @@ public class ResourceController extends BaseUIController {
                 String updateModelJson = objectMapper.writeValueAsString(updateModel);
                 Map<String,Object> params = new HashMap<>();
                 params.put("resource",updateModelJson);
-                String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
+                String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
                 return envelopStr;
             }
         }catch (Exception ex){
@@ -193,7 +218,11 @@ public class ResourceController extends BaseUIController {
         return envelop;
     }
 
-    //删除
+    /**
+     * 删除资源
+     * @param id
+     * @return
+     */
     @RequestMapping("/delete")
     @ResponseBody
     public Object deleteResource(String id) {
@@ -224,7 +253,12 @@ public class ResourceController extends BaseUIController {
         }
 
     }
-    //资源名称唯一性验证
+
+    /**
+     * 资源编码唯一性验证
+     * @param code
+     * @return
+     */
     @RequestMapping("/isExistCode")
     @ResponseBody
     public Object isExistCode(String code){
@@ -240,6 +274,11 @@ public class ResourceController extends BaseUIController {
         }
     }
 
+    /**
+     * 资源名称唯一性验证
+     * @param name
+     * @return
+     */
     @RequestMapping("/isExistName")
     @ResponseBody
     public Object isExistName(String name){
@@ -257,20 +296,10 @@ public class ResourceController extends BaseUIController {
         }
     }
 
-    public Boolean isRsInUse(String resourceId) throws Exception{
-        String url = "/resources/grants/no_paging";
-        Map<String,Object> params = new HashMap<>();
-        params.put("filters","resourceId="+resourceId);
-        String resultStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
-        Envelop result = objectMapper.readValue(resultStr, Envelop.class);
-        if (result.isSuccessFlg()&&result.getDetailModelList().size() >0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    //资源分类树数据-获取所有分类的不分页方法
+    /**
+     * 资源分类树数据-获取所有分类的不分页方法
+     * @return
+     */
     @RequestMapping("/categories")
     @ResponseBody
     public Object getCategories(){
@@ -291,9 +320,14 @@ public class ResourceController extends BaseUIController {
         }
         return list;
     }
-    //----------------------------------
 
-    //带检索分页的查找资源分类方法,用于下拉框
+    /**
+     * 带检索分页的查找资源分类方法,用于下拉框
+     * @param searchParm
+     * @param page
+     * @param rows
+     * @return
+     */
     @RequestMapping("/rsCategory")
     @ResponseBody
     public Object searchRsCategory(String searchParm,int page,int rows){
@@ -336,7 +370,11 @@ public class ResourceController extends BaseUIController {
         }
     }
 
-    //根据资源分类id，获取其以上直接父级id，含自身
+    /**
+     * 根据资源分类id，获取其以上直接父级id，含自身
+     * @param categoryId
+     * @return
+     */
     @RequestMapping("/categoryIds")
     @ResponseBody
     public Object getCategoryParentIdsById(String categoryId){
@@ -410,11 +448,8 @@ public class ResourceController extends BaseUIController {
         return resultStr;
     }
 
-
-    //    指标预览
-
     /**
-     *
+     * 指标预览
      * @param id
      * @param model
      * @param dimension  维度
@@ -447,6 +482,17 @@ public class ResourceController extends BaseUIController {
         return "simpleView";
     }
 
-
+    public Boolean isRsInUse(String resourceId) throws Exception{
+        String url = "/resources/grants/no_paging";
+        Map<String,Object> params = new HashMap<>();
+        params.put("filters","resourceId="+resourceId);
+        String resultStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+        Envelop result = objectMapper.readValue(resultStr, Envelop.class);
+        if (result.isSuccessFlg()&&result.getDetailModelList().size() >0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }
