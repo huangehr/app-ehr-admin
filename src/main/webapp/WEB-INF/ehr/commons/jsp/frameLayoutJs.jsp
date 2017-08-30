@@ -510,7 +510,7 @@
                     url: '${contextRoot}/userCards/initial'
                 },
                 </sec:authorize>
-                // 4-6 - 模版管理
+                // 4-6 - 档案模版管理
                 <sec:authorize url="/template/initial">
                 {
                     pid: 4,
