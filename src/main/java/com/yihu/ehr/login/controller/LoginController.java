@@ -59,9 +59,10 @@ public class LoginController extends BaseUIController {
     private String comUrl;
     @Value("${service-gateway.BrowseClienturl}")
     private String browseClienturl;
-    //@Value("${app.oauth2authorize}")
-    @Value("${app.oauth2OutSize}")
+    @Value("${app.oauth2authorize}")
     private String authorize;
+    @Value("${app.oauth2OutSize}")
+    private String oauth2OutSize;
     @Value("${app.clientId}")
     private String clientId;
     @Value("${app.qcReportClientId}")
@@ -551,7 +552,7 @@ public class LoginController extends BaseUIController {
         String user = token.getUser();
         model.addAttribute("model",request.getSession());
         model.addAttribute("idCardNo",idCardNo);
-        response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
+        response.sendRedirect(oauth2OutSize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
     }
 
 }
