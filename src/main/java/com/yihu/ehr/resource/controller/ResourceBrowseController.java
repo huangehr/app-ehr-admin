@@ -30,9 +30,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * 资源浏览服务控制器
  * Created by wq on 2016/5/17.
  */
-
 @Controller
 @RequestMapping("/resourceBrowse")
 public class ResourceBrowseController extends BaseUIController {
@@ -301,7 +301,7 @@ public class ResourceBrowseController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String fileName = "资源数据";
+        String fileName = "档案资源数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
         try {
             resultStr = getColumns(resourcesCode);
@@ -355,7 +355,7 @@ public class ResourceBrowseController extends BaseUIController {
     @RequestMapping("/outQuotaExcel")
     public void outQuotaExcel(HttpServletResponse response, String resourcesId, String searchParams){
         Envelop envelop = new Envelop();
-        String fileName = "综合查询指标数据";
+        String fileName = "指标资源数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
         try {
             //请求数据
