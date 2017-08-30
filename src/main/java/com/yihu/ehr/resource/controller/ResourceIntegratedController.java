@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import java.util.*;
 
 /**
- * 资源综合查询数据服务控制器
+ * 资源综合查询服务控制器
  * Created by Sxy on 2017/08/01.
  */
 @Controller
@@ -58,17 +58,16 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询档案数据列表树获取失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
 
     /**
      * 综合查询档案数据检索
-     * @param resourcesCode ["code1","code2"]
-     * @param metaData ["EHR_000006","EHR_000004"]
-     * @param searchParams [{"andOr":"OR","condition":"=","field":"event_no","value":"1002281201"},{"andOr":"OR","condition":"=","field":"event_no","value":"1002281203"}]
+     * @param resourcesCode
+     * @param metaData
+     * @param searchParams
      * @param page
      * @param rows
      * @param request
@@ -102,8 +101,7 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询档案数据检索失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -125,8 +123,7 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询指标统计列表树获取失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -151,8 +148,7 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询指标数据检索失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -173,8 +169,7 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询视图保存失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -195,10 +190,7 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            //LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
-            //envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询搜索条件更新失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -333,7 +325,6 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping(value = "/outSelectExcel", method = RequestMethod.GET)
     public void outSelectExcel(HttpServletResponse response, String selectData, String metaData) {
-        Envelop envelop = new Envelop();
         String fileName = "综合查询档案数据已选数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
         try {
