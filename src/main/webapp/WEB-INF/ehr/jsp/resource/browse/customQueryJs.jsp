@@ -369,33 +369,10 @@
                         success: function (data) {
                             if (data.successFlg) {
                                 var rd = data.detailModelList,
-                                    cd = data.obj,
-                                    q = 0;
+                                    cd = data.obj;
                                 if (rd) {
-                                    for (var o = 0; o < me.selectData.length; o++) {
-                                        if (me.selectData[o].data.level == 2) {
-                                            me.selDataName.push(me.selectData[o].data.name);
-                                            cd.push({
-                                                name: me.selectData[o].data.name,
-                                                key: 'value' + q
-                                            });
-                                            q++;
-                                        }
-                                    }
                                     for (var n = 0; n < cd.length; n++) {
-                                        me.ZBCloumnNamesData.push({display: cd[n].name,name: cd[n].key,width: 100,render:function (row, key, val, clo) {
-                                            var key = (clo.name).substring(0,5),
-                                                val = row[clo.name];
-                                            if (key == 'value') {
-                                                var vArr = (row.value).split(',');
-                                                for (var t = 0; t < vArr.length; t++) {
-                                                    if ((key + t) == clo.name) {
-                                                        val = vArr[t];
-                                                    }
-                                                }
-                                            }
-                                            return val;
-                                        }});
+                                        me.ZBCloumnNamesData.push({display: cd[n].name,name: cd[n].key,width: 100});
                                     }
                                 }
                             } else {
@@ -650,7 +627,7 @@
                 },
                 //导出指标统计excel
                 outZBWxcel: function () {
-                    window.open("${contextRoot}/resourceIntegrated/outQuotaExcel?tjQuotaIds=" + this.tjQuotaIds.join(',') + "&tjQuotaCodes=" + this.tjQuotaCodes.join(',') + "&searchParams=" + '{}' + '&tiQuotaNames=' + this.selDataName.join(','), "指标统计导出");
+                    window.open("${contextRoot}/resourceIntegrated/outQuotaExcel?tjQuotaIds=" + this.tjQuotaIds.join(',') + "&tjQuotaCodes=" + this.tjQuotaCodes.join(',') + "&searchParams=" + '{}', "指标统计导出");
                 },
                 //导出档案数据excel
                 outExcel: function (rowData, size) {

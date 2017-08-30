@@ -111,10 +111,13 @@
 				});
 
 				function update(values,deptId){
+
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 					var dataModel = $.DataModel.init();
 					dataModel.updateRemote("${contextRoot}/deptMember/updateOrgDeptMember", {
 						data:{dataJson:JSON.stringify(values),deptId:deptId,mode:mode},
 						success: function(data) {
+                            waittingDialog.close();
 							if (data.successFlg) {
 								reloadMasterUpdateGrid(deptId);
 								$.Notice.success('操作成功');
