@@ -156,6 +156,7 @@
                                 success: function(data) {
                                     wait.close();
                                     if (data.successFlg) {
+                                        $.Notice.success('新增成功！');
                                         closeDialog(function () {
                                         });
                                     } else {
@@ -170,6 +171,7 @@
                                 success: function(data) {
                                     wait.close();
                                     if (data.successFlg) {
+                                        $.Notice.success('保存成功！');
                                        closeDialog(function () {
                                         });
                                     } else {
