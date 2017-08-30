@@ -127,14 +127,14 @@
                 <input type="radio" value="3" name="dataLevel" data-attr-scan>百分比(率)
             </div>
         </div>
-        <div class="m-form-group ">
-            <label>状态：</label>
-            <div class="u-checkbox-wrap m-form-control ">
-                <input type="radio" value="1" name="status" data-attr-scan>正常
-                <input type="radio" value="-1" name="status" data-attr-scan>删除
-                <input type="radio" value="0" name="status" data-attr-scan>不可用
-            </div>
-        </div>
+        <%--<div class="m-form-group ">--%>
+            <%--<label>状态：</label>--%>
+            <%--<div class="u-checkbox-wrap m-form-control ">--%>
+                <%--<input type="radio" value="1" name="status" data-attr-scan>正常--%>
+                <%--<input type="radio" value="-1" name="status" data-attr-scan>删除--%>
+                <%--<input type="radio" value="0" name="status" data-attr-scan>不可用--%>
+            <%--</div>--%>
+        <%--</div>--%>
         <div class="m-form-group f-mb30">
             <label>备注：</label>
             <div class="l-text-wrapper m-form-control">
