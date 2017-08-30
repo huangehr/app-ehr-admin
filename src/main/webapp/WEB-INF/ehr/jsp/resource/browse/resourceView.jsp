@@ -119,10 +119,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam save-toolbar"
-                                 id="div_out_sel_excel_btn">
-                                <span>导出选中结果</span>
-                            </div>
+                            <%--<div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam save-toolbar"--%>
+                                 <%--id="div_out_sel_excel_btn">--%>
+                                <%--<span>导出选中结果</span>--%>
+                            <%--</div>--%>
                             <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar"
                                  id="div_out_all_excel_btn">
                                 <span>导出查询结果</span>

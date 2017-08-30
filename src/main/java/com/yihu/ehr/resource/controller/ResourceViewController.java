@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/resourceView")
-public class resourceViewController extends BaseUIController {
+public class ResourceViewController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
