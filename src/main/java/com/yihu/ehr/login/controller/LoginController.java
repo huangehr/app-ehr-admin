@@ -59,7 +59,8 @@ public class LoginController extends BaseUIController {
     private String comUrl;
     @Value("${service-gateway.BrowseClienturl}")
     private String browseClienturl;
-    @Value("${app.oauth2authorize}")
+    //@Value("${app.oauth2authorize}")
+    @Value("${app.oauth2OutSize}")
     private String authorize;
     @Value("${app.clientId}")
     private String clientId;

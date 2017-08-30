@@ -33,7 +33,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://172.19.103.73:10260/
-  oauth2OutSize: http://172.19.103.73:10260/
+  oauth2OutSize: http://27.154.233.186:10260/  #上饶-认证外网
 service-gateway:
   username: user
   password: eureka
