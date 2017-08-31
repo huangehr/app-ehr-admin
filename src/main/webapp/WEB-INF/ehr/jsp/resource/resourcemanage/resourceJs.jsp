@@ -168,21 +168,22 @@
 							{display: '资源分类Id', name: 'categoryId',hide:true},
 							{display: '资源说明', name: 'description', width: '13%', align: 'left'},
 							{display: '操作', name: 'operator', width: '32%', render: function (row) {
-								var html = '';
+								var html = '<div style="text-align:right;">';
 								html += '<sec:authorize url="/resource/defaultParam/initial"><a class="label_a" title="默认参数配置" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:param:list:open", row.id,row.code) + '">默认参数配置</a></sec:authorize>';
                                 if (row.dataSource == 2 || row.dataSource == null) {
                                     html += '<sec:authorize url="/resourceConfiguration/zhibaioConfigue"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioConfigue",row.id) + '">指标配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/resourceConfiguration/zhibaioShow"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioShow",row.id) + '">指标预览</a></sec:authorize>';
                                 }
 
-								html += '<sec:authorize url="/resourceConfiguration/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1") + '">配置</a></sec:authorize>';
+								html += '<sec:authorize url="/resourceConfiguration/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1",row.dataSource) + '">配置</a></sec:authorize>';
 								if(row.grantType == '0'){
-									html += '<sec:authorize url="/resource/grant/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1") + '">授权</a></sec:authorize>';
+									html += '<sec:authorize url="/resource/grant/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1",row.dataSource) + '">授权</a></sec:authorize>';
 								}
-								html += '<sec:authorize url="/resourceView/initial"><a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.viewUrl,row.code) + '">浏览</a></sec:authorize>';
+								html += '<sec:authorize url="/resourceView/initial"><a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.viewUrl,row.code,row.dataSource) + '">浏览</a></sec:authorize>';
 								html += '<sec:authorize url="/resource/resourceManage/infoInitial"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a></sec:authorize>';
 								html += '<sec:authorize url="/resource/resourceManage/delete"><a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a></sec:authorize>';
 //								html += '<a class="grid_delete" title="默认参数" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:param:list:open", row.id,row.code) + '"></a>';
+                                html += '</div>';
 								return html;
 							}}
 						],
@@ -273,7 +274,7 @@
                         var title = "指标预览";
                         var wait = $.Notice.waitting("请稍后...");
                         master.zhibaioShowDialog = $.ligerDialog.open({
-                            height:550,
+                            height:650,
                             width:800,
                             title:title,
                             url:'${contextRoot}/resource/resourceManage/resourceShow',
@@ -327,13 +328,14 @@
 						});
 					});
 					//配置、浏览、授权页面跳转
-					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url,resourceCode){
+					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url,resourceCode,dataSource){
 						master.saveParamsToSession();
 						var data = {
 							'resourceId':resourceId,
 							'resourceName':resourceName,
 							'resourceSub':categoryName,
 							'resourceCode':resourceCode,
+                            'dataSource':dataSource
 						}
 						$("#contentPage").empty();
 						$("#contentPage").load(url,{dataModel:JSON.stringify(data)});
