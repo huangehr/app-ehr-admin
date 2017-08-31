@@ -562,7 +562,7 @@ public class LoginController extends BaseUIController {
         String user = token.getUser();
         model.addAttribute("model",request.getSession());
         model.addAttribute("idCardNo",idCardNo);
-        response.sendRedirect(oauth2OutSize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
+        response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
     }
 
 }
