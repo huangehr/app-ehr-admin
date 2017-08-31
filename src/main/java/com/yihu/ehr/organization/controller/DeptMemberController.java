@@ -168,6 +168,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
             params.clear();
             params.put("orgId",model.getOrgId());
             params.put("userId",model.getUserId());
+            params.put("deptId",deptId);
             String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
             Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
             if (!envelopGet2.isSuccessFlg()){
