@@ -279,7 +279,10 @@
                             title:title,
                             url:'${contextRoot}/resource/resourceManage/resourceShow',
                             urlParms:{
-                                id:resourceId
+                                id:resourceId,
+                                quotaId: '',
+                                dimension: '',
+                                quotaFilter: ''
                             },
                             load:true,
                             show:false,

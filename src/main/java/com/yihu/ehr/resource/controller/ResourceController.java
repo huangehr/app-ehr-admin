@@ -494,13 +494,14 @@ public class ResourceController extends BaseUIController {
      */
     @RequestMapping("/resourceUpDown")
     @ResponseBody
-    public String getResourceUpDown(String id, String dimension,String quotaFilter){
+    public String getResourceUpDown(String id, String dimension,String quotaFilter,String quotaId){
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("filter", "resourceId=" + id);
         params.put("dimension", dimension);
+        params.put("quotaId", quotaId);
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
             if( !StringUtils.isEmpty(quotaFilter) ){

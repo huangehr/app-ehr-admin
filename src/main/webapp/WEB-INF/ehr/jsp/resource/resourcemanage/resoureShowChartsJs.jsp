@@ -9,8 +9,10 @@
             optsArr = [],
             listMap = [],
             dimensionMapArr = [],
+            qutoId = [],
             dataLength = 0,
-            id = '${id}';
+            id = '${id}',
+            charts = [];
         try {
             obj = ${resultStr};
         } catch (e) {
@@ -30,11 +32,12 @@
                 chartsTitArr.push(obj[i].title);
                 listMap.push(obj[i].listMap);
                 dimensionMapArr.push(obj[i].dimensionMap);
+                qutoId.push(obj[i].quotaId);
             }
         }
-        console.log('optsArr:' + JSON.stringify(optsArr));
-        console.log('listMap:' + JSON.stringify(listMap));
-        console.log('dimensionMap:' + JSON.stringify(dimensionMapArr));
+//        console.log('optsArr:' + JSON.stringify(optsArr));
+//        console.log('listMap:' + JSON.stringify(listMap));
+//        console.log('dimensionMap:' + JSON.stringify(dimensionMapArr));
         var showSharts = {
             $tabList: $('.tab-list'),
             $chartsMain: $('.charts-main'),
@@ -61,6 +64,7 @@
                             myChart1.setOption(options);
                             myChart2.setOption(options);
                             (function (ec) {
+                                charts.push(ec);
                                 ec.on('click', function (param) {
                                     me.reloadECharts(param, ec, me)
                                 });
@@ -75,28 +79,30 @@
                 var $dom = $(dom._dom),
                     domId = $dom.closest('.tab-con ').attr('data-id'),
                     $condition = $dom.prev(),
+                    $goBack = $condition.find('.go-back'),
                     dataNum = parseInt($condition.attr('data-num')),//下转层级
                     quotaFilter = $condition.attr('data-quota-filter'),//过滤条件
                     dataList = ($condition.attr('data-list')).split(','),
                     key = dataList[dataNum],
                     dimension = '';//维度
+                $goBack.show();
                 quotaFilter += ((quotaFilter == '' ? '' : ';') + key + '=' + dimensionMapArr[domId][param.name]);
                 dataNum++;
                 dimension = dataList[dataNum];
-                debugger
                 if (dimension) {
-                    me.loadData(dimension, quotaFilter, $condition, dataNum, dom, domId);
+                    me.loadData(dimension, quotaFilter, $condition, dataNum, domId);
                 } else {
                     $.Notice.success('已是最底层！');
                 }
             },
-            loadData: function (dim, qf, $con, num, dom, domId) {
+            loadData: function (dim, qf, $con, num, domId) {
                 var me = this;
                 me.dataModel.fetchRemote( inf[0], {
                     data: {
                         id: id,
                         dimension: dim,
-                        quotaFilter: qf
+                        quotaFilter: qf,
+                        quotaId: qutoId[domId]
                     },
                     async: false,
                     success: function (data) {
@@ -105,7 +111,7 @@
                             dimensionMapArr[domId] = data[0].dimensionMap;
                             $con.attr('data-num', num);
                             $con.attr('data-quota-filter', qf);
-                            dom.setOption(opt);
+                            charts[domId].setOption(opt);
                         } else {
                             $.Notice.success('获取数据失败,请重试！');
                         }
@@ -170,6 +176,22 @@
                     }
                     $that.addClass('active').siblings().removeClass('active');
                     $conTCon.hide().eq(index).show();
+                }).on('click', '.go-back', function () {
+                    var $parent = $(this).parent(),
+                        domId = $(this).closest('.tab-con ').attr('data-id'),
+                        dataNum = parseInt($parent.attr('data-num')),//下转层级
+                        quotaFilter = $parent.attr('data-quota-filter'),//过滤条件
+                        dataList = ($parent.attr('data-list')).split(','),
+                        qf = quotaFilter.split(';'),
+                        dimension = '';
+                    dataNum--;
+                    qf.pop();
+                    if (qf.length <= 0) {
+                        $(this).hide();
+                    }
+                    dimension = dataList[dataNum];
+                    quotaFilter = qf;
+                    me.loadData(dimension, quotaFilter, $parent, dataNum, domId);
                 });
             },
             render: function(tmpl, data, cb){
