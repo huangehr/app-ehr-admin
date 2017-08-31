@@ -457,7 +457,7 @@ public class ResourceController extends BaseUIController {
      * @return
      */
     @RequestMapping("/resourceShow")
-    public String resourceShow(String id ,Model model,int quotaId,String dimension,String quotaFilter){
+    public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter){
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
