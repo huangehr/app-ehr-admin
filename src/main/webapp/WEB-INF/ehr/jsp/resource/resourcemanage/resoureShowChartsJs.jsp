@@ -87,7 +87,7 @@
                 if (dimension) {
                     me.loadData(dimension, quotaFilter, $condition, dataNum, dom, domId);
                 } else {
-                    $.Notice.success('删除成功。');
+                    $.Notice.success('已是最底层！');
                 }
             },
             loadData: function (dim, qf, $con, num, dom, domId) {
@@ -102,8 +102,7 @@
                     success: function (data) {
                         if (data && data[0]) {
                             var opt = JSON.parse(data[0].option);
-                            dimensionMapArr[domId] = [];
-                            dimensionMapArr[domId].push(data[0].dimensionMap);
+                            dimensionMapArr[domId] = data[0].dimensionMap;
                             $con.attr('data-num', num);
                             $con.attr('data-quota-filter', qf);
                             dom.setOption(opt);
