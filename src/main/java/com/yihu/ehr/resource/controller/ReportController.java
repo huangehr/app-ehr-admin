@@ -5,8 +5,6 @@ import com.yihu.ehr.agModel.resource.RsReportModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
-import com.yihu.ehr.quota.controller.QuotaCategoryController;
-import com.yihu.ehr.std.controller.StdSourceManagerController;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -65,7 +63,7 @@ public class ReportController extends BaseUIController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(StdSourceManagerController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
         }
         model.addAttribute("detailModel", toJson(detailModel));
         model.addAttribute("contentPage", "resource/report/detail");
@@ -150,7 +148,7 @@ public class ReportController extends BaseUIController {
             return rsCategoryTypeTreeModelList;
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(QuotaCategoryController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -198,7 +196,7 @@ public class ReportController extends BaseUIController {
             return doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(QuotaCategoryController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
