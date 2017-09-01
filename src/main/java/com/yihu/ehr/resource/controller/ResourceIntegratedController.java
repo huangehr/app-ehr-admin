@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import java.util.*;
 
 /**
- * 资源综合查询数据服务控制器
+ * 资源综合查询服务控制器
  * Created by Sxy on 2017/08/01.
  */
 @Controller
@@ -58,17 +58,16 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询档案数据列表树获取失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
 
     /**
      * 综合查询档案数据检索
-     * @param resourcesCode ["code1","code2"]
-     * @param metaData ["EHR_000006","EHR_000004"]
-     * @param searchParams [{"andOr":"OR","condition":"=","field":"event_no","value":"1002281201"},{"andOr":"OR","condition":"=","field":"event_no","value":"1002281203"}]
+     * @param resourcesCode
+     * @param metaData
+     * @param searchParams
      * @param page
      * @param rows
      * @param request
@@ -102,8 +101,7 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询档案数据检索失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -125,8 +123,7 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询指标统计列表树获取失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -151,8 +148,7 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询指标数据检索失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -173,8 +169,7 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询视图保存失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -195,10 +190,7 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            //LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
-            //envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("综合查询搜索条件更新失败");
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -281,11 +273,10 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param response
      * @param tjQuotaIds
      * @param tjQuotaCodes
-     * @param tiQuotaNames
      * @param searchParams
      */
     @RequestMapping("/outQuotaExcel")
-    public void outQuotaExcel(HttpServletResponse response, String tjQuotaIds, String tjQuotaCodes, String tiQuotaNames, String searchParams){
+    public void outQuotaExcel(HttpServletResponse response, String tjQuotaIds, String tjQuotaCodes, String searchParams){
         Envelop envelop = new Envelop();
         String fileName = "综合查询指标数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
@@ -307,41 +298,15 @@ public class ResourceIntegratedController extends BaseUIController {
             WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
             sheet.addCell(new Label(0, 0, "代码"));
             sheet.addCell(new Label(0, 1, "名称"));
-            String [] tjQuotaCodesArr = tjQuotaCodes.split(",");
-            String [] tiQuotaNamesArr = tiQuotaNames.split(",");
-            int pos = 0;
             List<Map<String, String>> objList = (List<Map<String, String>>)envelop.getObj();
             for(int i = 0; i< objList.size(); i ++) {
                 Map<String, String> objMap = objList.get(i);
                 sheet.addCell(new Label(i + 1, 0, String.valueOf(objMap.get("key"))));
                 sheet.addCell(new Label(i + 1, 1, String.valueOf(objMap.get("name"))));
-                pos = i + 1;
-            }
-            for(int j = 0; j < tjQuotaCodesArr.length; j ++) {
-                sheet.addCell(new Label(pos + 1 + j, 0, String.valueOf(tjQuotaCodesArr[j])));
-                sheet.addCell(new Label( pos + 1 + j, 1, String.valueOf(tiQuotaNamesArr[j])));
-            }
-            List<Map<String, String>> dataList = envelop.getDetailModelList();
-            //处理结果集合
-            List<Object> parseList = new ArrayList<Object>();
-            for(Map<String, String> tempMap : dataList) {
-                Map<String, String> parseMap = new HashMap<String, String>();
-                for(String key : tempMap.keySet()) {
-                    if(key.equals("value")) {
-                        String values = tempMap.get(key);
-                        String [] valuesArr = values.split(",");
-                        for(int j = 0; j < tjQuotaCodesArr.length; j ++) {
-                            parseMap.put(tjQuotaCodesArr[j], valuesArr[j]);
-                        }
-                    }else {
-                        parseMap.put(key, tempMap.get(key));
-                    }
-                }
-                parseList.add(parseMap);
             }
             Cell [] cells = sheet.getRow(0);
-            sheet = inputData(sheet, parseList, cells);
-            sheet.mergeCells(0, 2, 0, dataList.size() + 1);
+            sheet = inputData(sheet, envelop.getDetailModelList(), cells);
+            sheet.mergeCells(0, 2, 0, envelop.getDetailModelList().size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
             book.write();
             book.close();
@@ -360,7 +325,6 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping(value = "/outSelectExcel", method = RequestMethod.GET)
     public void outSelectExcel(HttpServletResponse response, String selectData, String metaData) {
-        Envelop envelop = new Envelop();
         String fileName = "综合查询档案数据已选数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
         try {

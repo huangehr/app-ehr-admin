@@ -5,7 +5,7 @@ import com.yihu.ehr.agModel.resource.RsReportModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
-import com.yihu.ehr.health.controller.HealthBusinessController;
+import com.yihu.ehr.quota.controller.QuotaCategoryController;
 import com.yihu.ehr.std.controller.StdSourceManagerController;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -150,7 +150,7 @@ public class ReportController extends BaseUIController {
             return rsCategoryTypeTreeModelList;
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(HealthBusinessController.class).error(e.getMessage());
+            LogService.getLogger(QuotaCategoryController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -198,7 +198,7 @@ public class ReportController extends BaseUIController {
             return doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(HealthBusinessController.class).error(e.getMessage());
+            LogService.getLogger(QuotaCategoryController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }

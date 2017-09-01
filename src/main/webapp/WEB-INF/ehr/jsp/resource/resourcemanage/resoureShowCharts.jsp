@@ -3,11 +3,34 @@
 
 <div class="charts-main">
     <ul class="tab-list">
-        <%--<li class="tab-item active">折线图</li>--%>
-        <%--<li class="tab-item">饼状图</li>--%>
-        <%--<li class="tab-item">柱状图</li>--%>
+        <%--Tabs--%>
     </ul>
-    <div class="tab-con">
-        <div id="chartsMain" style="width:748px;height: 403px"></div>
-    </div>
+    <%--content--%>
 </div>
+<%--template--%>
+<script type="text/html" id="tabTmp">
+    <div class="tab-con {{class}}" data-id="{{id}}">
+        <div class="con-tab" style="display: none">
+            <ul class="con-t-t">
+                <li class="con-t-i c-t-lef active">展示</li>
+                <li class="con-t-i c-t-right">查询</li>
+            </ul>
+        </div>
+        <div class="con-t-con">
+            <%--goback--%>
+            <div class="condition" data-quota-filter="" data-list="{{dimension}}" data-num="0">
+                <a href="javascript:;" class="go-back un-show">&lt; &nbsp;上卷</a>
+            </div>
+            <%--charts--%>
+            <div id="{{idOne}}" style="width:748px;height: 403px"></div>
+        </div>
+        <div class="con-t-con un-show">
+            <%--checkedbox--%>
+            <div class="condition">
+                {{checkboxs}}
+            </div>
+            <%--charts--%>
+            <div id="{{idTwo}}" style="width:748px;height: 403px"></div>
+        </div>
+    </div>
+</script>

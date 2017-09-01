@@ -3,265 +3,192 @@
 <script src="${contextRoot}/develop/lib/plugin/echarts/3.0/js/echarts.min.js"></script>
 <script>
     $(function () {
+        var inf = ['${contextRoot}/resource/resourceManage/resourceUpDown'];
         var obj = ${resultStr},
+            id = '${id}',
             chartsTitArr = [],
-            optsArr = [];
-        console.log(obj);
+            optsArr = [],
+            listMap = [],
+            dimensionMapArr = [],
+            qutoId = [],
+            dataLength = 0,
+            charts = [];
+
+        dataLength = 0;
         if (obj && obj.length > 0) {
             for (var i = 0, len = obj.length; i < len; i++) {
-                var opt = {};
-                try {
-                    opt = obj[i].option ? JSON.parse(obj[i].option) : {};
-                } catch (e) {
-                    console.log(e.message);
+                if (obj[i]) {
+                    var opt = {};
+                    if (obj[i].option) {
+                        opt = JSON.parse(obj[i].option);
+                    } else {
+//                        $.Notice.success('获取数据失败,请重试！');
+                        return;
+                    }
+                    optsArr.push(opt);
+                    chartsTitArr.push(obj[i].title);
+                    listMap.push(obj[i].listMap);
+                    dimensionMapArr.push(obj[i].dimensionMap);
+                    qutoId.push(obj[i].quotaId);
+                    dataLength++;
                 }
-                optsArr.push(opt);
-                chartsTitArr.push(obj[i].title);
             }
         }
         var showSharts = {
             $tabList: $('.tab-list'),
-            chartsMain: document.getElementById('chartsMain'),
+            $chartsMain: $('.charts-main'),
+            conTmp: $('#tabTmp').html(),
             optionsArr: [],
             index: 0,
+            myChartsArr: [],
+            dataModel: $.DataModel.init(),
             init: function () {
-                var html = '';
-                for (var j = 0, leng = chartsTitArr.length; j < leng; j++) {
-                    var cN = j == 0 ? 'active' : '';
-                    html += '<li class="tab-item '+ cN +'">' + chartsTitArr[j] + '</li>';
-                }
-                this.$tabList.append(html);
+                this.insertHtml();
+                this.bindEvnt();
                 this.$tabList.mCustomScrollbar({
                     axis: "x"
                 });
-                this.loadData();
-                this.bindEvnt();
+            },
+            loadData: function (dim, qf, $con, num, domId) {
+                var me = this;
+                me.dataModel.fetchRemote( inf[0], {
+                    data: {
+                        id: id,
+                        dimension: dim,
+                        quotaFilter: qf,
+                        quotaId: qutoId[domId]
+                    },
+                    success: function (data) {
+                        if (data && data[0]) {
+                            var opt = JSON.parse(data[0].option);
+                            dimensionMapArr[domId] = data[0].dimensionMap;
+                            $con.attr('data-num', num);
+                            $con.attr('data-quota-filter', qf);
+                            charts[domId].clear();
+                            charts[domId].setOption(opt, true);
+                        } else {
+                            $.Notice.success('获取数据失败,请重试！');
+                        }
+                    }
+                });
+            },
+            //加载html
+            insertHtml: function () {
+                var me = this,
+                    html = '',
+                    conHtml = '';
+                $.each(chartsTitArr, function (key, val) {
+                    var cN = key == 0 ? 'active' : '',
+                        cl = key != 0 ? 'un-show' : '',
+                        obj = {
+                            class: cl,
+                            id: key,
+                            idOne: 'chartsMain' + key + '1',
+                            idTwo: 'chartsMain' + key + '2',
+                            checkboxs: '',
+                            dimension: ''
+                        },
+                        checkboxHtml = '';
+                    var list = [];
+                    $.each(listMap[key], function (key, obj) {
+                        var dis = obj.isMain == 'true' ? 'disabled' : '';
+                        var che = obj.isCheck == 'true' ? 'checked' : '';
+                        checkboxHtml += '<input type="checkbox" data-key="' +
+                                            obj.code + '" ' +
+                                            che + '  '+
+                                            dis + '/>' +
+                                            obj.name;
+                        list.push(obj.code);
+                    });
+                    obj.dimension = list.join(',');
+                    obj.checkboxs = checkboxHtml;
+                    html += '<li class="tab-item '+ cN +'"><a href="javascript:;" title="'+ val +'">' + val + '</a></li>';
+                    conHtml += me.render(me.conTmp, obj);
+                });
+                me.$tabList.append(html);
+                me.$chartsMain.append(conHtml);
+                me.initCharts();
             },
             initCharts: function () {
-                var me = this,
-                    myChart = echarts.init(me.chartsMain),
-                    options = optsArr[me.index];
-//                    options = me.optionsArr[me.index];
-                if(options) {
-                    try {
-                        myChart.setOption(options);
-                    } catch (e) {
-                        console.log(e.message);
+                var me = this;
+                for (var m = 0; m < dataLength; m ++) {
+                    var myChart1 = echarts.init(document.getElementById("chartsMain" + m + "1")),
+                        myChart2 = echarts.init(document.getElementById("chartsMain" + m + "2")),
+                        options = optsArr[m];
+                    if(options) {
+                        try {
+                            myChart1.setOption(options);
+                            myChart2.setOption(options);
+                            (function (ec) {
+                                charts.push(ec);
+                                ec.on('click', function (param) {
+                                    me.reloadECharts(param, ec, me)
+                                });
+                            })(myChart1);
+                        } catch (e) {
+                            console.log(e.message);
+                        }
                     }
+                }
+            },
+            reloadECharts: function (param, dom, me) {
+                var $dom = $(dom._dom),
+                        domId = $dom.closest('.tab-con ').attr('data-id'),
+                        $condition = $dom.prev(),
+                        $goBack = $condition.find('.go-back'),
+                        dataNum = parseInt($condition.attr('data-num')),//下转层级
+                        quotaFilter = $condition.attr('data-quota-filter'),//过滤条件
+                        dataList = ($condition.attr('data-list')).split(','),//维度集
+                        key = dataList[dataNum],
+                        dimension = '';//下砖维度
+                $goBack.show();
+                quotaFilter += ((quotaFilter == '' ? '' : ';') + key + '=' + dimensionMapArr[domId][param.name]);
+                dataNum++;
+                dimension = dataList[dataNum];
+                if (dimension) {
+                    me.loadData(dimension, quotaFilter, $condition, dataNum, domId);
+                } else {
+                    $.Notice.success('已是最底层！');
                 }
             },
             bindEvnt: function () {
                 var me = this;
                 me.$tabList.on('click', '.tab-item', function () {
-                    var index = $(this).index();
+                    var index = $(this).index(),
+                        $tabCon = me.$chartsMain.find('.tab-con');
                     $(this).addClass('active').siblings().removeClass('active');
-                    me.index = index;
-                    me.initCharts();
+                    $tabCon.hide().eq(index).show();
+                });
+                me.$chartsMain.on('click', '.con-t-i', function () {
+                    var $that = $(this),
+                        $parent = $that.closest('.tab-con'),
+                        $conTCon = $parent.find('.con-t-con'),
+                        index = $that.index();
+                    $that.addClass('active').siblings().removeClass('active');
+                    $conTCon.hide().eq(index).show();
+                }).on('click', '.go-back', function () {
+                    var $parent = $(this).parent(),
+                        domId = $(this).closest('.tab-con ').attr('data-id'),
+                        dataNum = parseInt($parent.attr('data-num')),//下转层级
+                        quotaFilter = $parent.attr('data-quota-filter'),//过滤条件
+                        dataList = ($parent.attr('data-list')).split(','),
+                        qf = quotaFilter.split(';'),
+                        dimension = '';
+                    dataNum--;
+                    qf.pop();
+                    if (qf.length <= 0) {
+                        $(this).hide();
+                    }
+                    dimension = dataList[dataNum];
+                    quotaFilter = qf;
+                    me.loadData(dimension, quotaFilter, $parent, dataNum, domId);
                 });
             },
-            loadData: function () {
-                var me = this;
-                //折线\曲线图
-                var option0 = {
-                    title: {
-                        text: '折线图堆叠',//大标题
-                        x:'center',
-                        subtext: '纯属虚构'//小标题
-                    },
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    toolbox: {//工具栏
-                        show : true,//是否显示工具栏组件。
-                        feature : {//各工具配置项
-                            dataView : {show: true, readOnly: false},//数据视图
-                            magicType : {//动态（视图）类型切换
-                                show: true,
-                                type: ['pie', 'funnel']
-                            },
-                            restore : {show: true},//配置项还原。
-                            saveAsImage : {show: true}//保存成图片
-                        }
-                    },
-//                    legend: {//图例组件
-//                        orient: 'vertical',
-//                        left: 'right',
-//                        data:['邮件营销','联盟广告']
-//                    },
-                    grid: {
-//                        top: '1%',//图形顶部的距离 （默认不添加该属性）
-                        left: '3%',//图形左侧的距离
-                        right: '4%',//图形右侧的距离
-                        bottom: '3%',//图形底部的距离
-                        containLabel: true
-                    },
-                    xAxis: {
-                        type: 'category',
-                        boundaryGap: false,
-                        data: ['周一','周二','周三','周四','周五','周六','周日']
-                    },
-                    yAxis: {
-                        type: 'value',
-                        name: '（人）'//单位
-                    },
-                    series: [
-                        {
-                            name:'邮件营销',
-                            type:'line',
-                            smooth: true,//true:曲线，false:折线；默认false
-                            stack: '总量',
-                            data:[120, 132, 101, 134, 90, 230, 210]
-                        },
-                        {
-                            name:'联盟广告',
-                            type:'line',
-                            stack: '总量',
-                            data:[220, 182, 191, 234, 290, 330, 310]
-                        }
-                    ]
-                };
-                //饼状图
-                var option1 = {
-                    title : {
-                        text: '某站点用户访问来源',//大标题
-                        x:'center',//标题显示位置
-                        subtext: '纯属虚构'//小标题
-                    },
-                    tooltip : {//提示框组件
-                        trigger: 'item',
-                        formatter: "{a} <br/>{b} : {c} ({d}%)"//可以是字符串或函数
-                    },
-                    toolbox: {//工具栏
-                        show : true,//是否显示工具栏组件。
-                        feature : {//各工具配置项
-                            dataView : {show: true, readOnly: false},//数据视图
-                            magicType : {//动态（视图）类型切换
-                                show: true,
-                                type: ['pie', 'funnel']
-                            },
-                            restore : {show: true},//配置项还原。
-                            saveAsImage : {show: true}//保存成图片
-                        }
-                    },
-                    grid: {
-//                        top: '1%',//图形顶部的距离 （默认不添加该属性）
-                        left: '3%',//图形左侧的距离
-                        right: '4%',//图形右侧的距离
-                        bottom: '3%',//图形底部的距离
-                        containLabel: true
-                    },
-//                    legend: {//图例组件
-//                        orient: 'vertical',
-//                        left: 'left',
-//                        data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎']
-//                    },
-                    series : [
-                        {
-                            name: '访问来源',
-                            type: 'pie',
-                            radius : '55%',
-                            center: ['50%', '60%'],
-                            data:[
-                                {value:335, name:'直接访问'},
-                                {value:310, name:'邮件营销'},
-                                {value:234, name:'联盟广告'},
-                                {value:135, name:'视频广告'},
-                                {value:1548, name:'搜索引擎'}
-                            ],
-                            itemStyle: {
-                                emphasis: {
-                                    shadowBlur: 10,
-                                    shadowOffsetX: 0,
-                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-                                }
-                            }
-                        }
-                    ]
-                };
-                //柱状图
-                var option2 =  {
-                    title : {
-                        text: '某站点用户访问来源',//大标题
-                        x:'center',
-                        subtext: '纯属虚构'//小标题
-                    },
-//                    legend: {//图例组件
-//                        data: ['直接访问','邮件营销'],
-//                        orient: 'vertical',
-//                        left: 'left'
-//                    },
-                    tooltip: {
-                        trigger: 'axis',
-                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效 ：鼠标悬浮在柱状图的样式设置
-                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                        }
-                    },
-                    toolbox: {//工具栏
-                        show : true,//是否显示工具栏组件。
-                        feature : {//各工具配置项
-                            dataView : {show: true, readOnly: false},//数据视图
-                            magicType : {//动态（视图）类型切换
-                                show: true,
-                                type: ['pie', 'funnel']
-                            },
-                            restore : {show: true},//配置项还原。
-                            saveAsImage : {show: true}//保存成图片
-                        }
-                    },
-                    grid: {
-//                        top: '1%',//图形顶部的距离 （默认不添加该属性）
-                        left: '3%',//图形左侧的距离
-                        right: '4%',//图形右侧的距离
-                        bottom: '3%',//图形底部的距离
-                        containLabel: true
-                    },
-                    xAxis: [{
-                        type: 'category',
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],//X轴坐标
-                        splitLine: {
-                            show: false
-                        }
-                    }],
-                    yAxis: [{
-                        type: 'value',
-                        name: '（人）'//单位
-                    }],
-                    series: [{
-                        clickable: true,
-                        itemStyle : {
-                            normal: {
-                                label : {
-                                    show: true,
-                                    position: 'top'
-                                },
-//                                color: '#3398DB'//柱子的颜色
-                            }
-                        },
-                        barWidth: 20,
-                        name: '直接访问',
-                        type: 'bar',
-                        data: [10, 52, 200, 334, 390, 330, 220]
-                    },{
-                        clickable: true,
-                        itemStyle : {
-                            normal: {
-                                label : {
-                                    show: true,
-                                    position: 'top'
-                                },
-//                                color: '#3398DB'//柱子的颜色
-                            }
-                        },
-                        barWidth: 20,
-                        name: '邮件营销',
-                        type: 'bar',
-                        data: [20, 32, 100, 534, 790, 320, 120]
-                    }]
-                };
-                me.optionsArr.push(option0);
-                me.optionsArr.push(option1);
-                me.optionsArr.push(option2);
-                me.initCharts();
+            render: function(tmpl, data, cb){
+                return tmpl.replace(/\{\{(\w+)\}\}/g, function(m, $1){
+                    cb && cb.call(this, data, $1);
+                    return data[$1];
+                });
             }
         }
         showSharts.init();

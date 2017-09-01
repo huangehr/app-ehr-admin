@@ -30,9 +30,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * 资源浏览服务控制器
  * Created by wq on 2016/5/17.
  */
-
 @Controller
 @RequestMapping("/resourceBrowse")
 public class ResourceBrowseController extends BaseUIController {
@@ -122,20 +122,22 @@ public class ResourceBrowseController extends BaseUIController {
         return envelop.getDetailModelList();
     }
 
+    /**
+     * 档案资源浏览
+     * @param resourcesCode
+     * @param searchParams
+     * @param page
+     * @param rows
+     * @param request
+     * @return
+     */
     @RequestMapping("/searchResourceData")
     @ResponseBody
-    public Object searchResourceData(String resourcesCode, String resourcesId, String searchParams, String dataSource, int page, int rows, HttpServletRequest request) {
+    public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String url = "";
-        if(dataSource.equals("1")) {
-            url = "/resources/ResourceBrowses/getResourceData";
-            params.put("resourcesCode", resourcesCode);
-        }else {
-            url = "/resources/ResourceBrowses/getQuotaResourceData";
-            params.put("resourcesId", resourcesId);
-        }
+        String url = "/resources/ResourceBrowses/getResourceData";
         //当前用户机构
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String orgCode = userDetailModel.getOrganization();
@@ -152,6 +154,47 @@ public class ResourceBrowseController extends BaseUIController {
             }
         }else {
             params.put("queryCondition", "");
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("数据检索失败");
+        }
+        return envelop;
+    }
+
+    /**
+     * 指标资源浏览
+     * @param resourcesId
+     * @param searchParams
+     * @param page
+     * @param rows
+     * @param request
+     * @return
+     */
+    @RequestMapping("/searchQuotaResourceData")
+    @ResponseBody
+    public Object searchQuotaResourceData(String resourcesId, String searchParams, int page, int rows, HttpServletRequest request) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String resultStr = "";
+        String url = "/resources/ResourceBrowses/getQuotaResourceData";
+        //当前用户机构
+        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        String orgCode = userDetailModel.getOrganization();
+        //params.put("orgCode", "41872607-9");
+        params.put("orgCode", orgCode);
+        params.put("resourcesId", resourcesId);
+        if(searchParams != null) {
+            if (searchParams.contains("{") || searchParams.contains("}")) {
+                params.put("queryCondition", searchParams);
+            } else {
+                params.put("queryCondition", "");
+            }
         }
         params.put("page", page);
         params.put("size", rows);
@@ -244,13 +287,21 @@ public class ResourceBrowseController extends BaseUIController {
         return resultStr;
     }
 
-    //数据导出方法
+    /**
+     * 档案资源数据导出
+     * @param response
+     * @param request
+     * @param page
+     * @param size
+     * @param resourcesCode
+     * @param searchParams
+     */
     @RequestMapping("outExcel")
     public void outExcel(HttpServletResponse response, HttpServletRequest request, Integer page, Integer size, String resourcesCode, String searchParams) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String fileName = "资源数据";
+        String fileName = "档案资源数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
         try {
             resultStr = getColumns(resourcesCode);
@@ -284,16 +335,7 @@ public class ResourceBrowseController extends BaseUIController {
             envelop = toModel(resultStr, Envelop.class);
             List<Object> objectList = envelop.getDetailModelList();
             Cell[] cells = sheet.getRow(0);
-            for (int i = 0; i < objectList.size(); i++) {
-                Map<String, String> map = toModel(toJson(objectList.get(i)), Map.class);
-                for (String key : map.keySet()) {
-                    for (Cell cell : cells) {
-                        if (cell.getContents().equals(key)) {
-                            sheet.addCell(new Label(cell.getColumn(), i + 2, String.valueOf(map.get(key))));
-                        }
-                    }
-                }
-            }
+            sheet = inputData(sheet, envelop.getDetailModelList(), cells);
             sheet.mergeCells(0, 2, 0, objectList.size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
             book.write();
@@ -301,6 +343,52 @@ public class ResourceBrowseController extends BaseUIController {
             os.flush();
             os.close();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 指标资源数据导出
+     * @param response
+     * @param searchParams
+     */
+    @RequestMapping("/outQuotaExcel")
+    public void outQuotaExcel(HttpServletResponse response, String resourcesId, String searchParams){
+        Envelop envelop = new Envelop();
+        String fileName = "指标资源数据";
+        String resourceCategoryName = System.currentTimeMillis() + "";
+        try {
+            //请求数据
+            String url = "/resources/ResourceBrowses/getQuotaResourceData";
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("resourcesId", resourcesId);
+            params.put("queryCondition", searchParams);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+            //处理Excel
+            response.setContentType("octets/stream");
+            response.setHeader("Content-Disposition", "attachment; filename="
+                    + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
+            OutputStream os = response.getOutputStream();
+            WritableWorkbook book = Workbook.createWorkbook(os);
+            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
+            sheet.addCell(new Label(0, 0, "代码"));
+            sheet.addCell(new Label(0, 1, "名称"));
+            List<Map<String, String>> objList = (List<Map<String, String>>)envelop.getObj();
+            for(int i = 0; i< objList.size(); i ++) {
+                Map<String, String> objMap = objList.get(i);
+                sheet.addCell(new Label(i + 1, 0, String.valueOf(objMap.get("key"))));
+                sheet.addCell(new Label(i + 1, 1, String.valueOf(objMap.get("name"))));
+            }
+            Cell [] cells = sheet.getRow(0);
+            sheet = inputData(sheet, envelop.getDetailModelList(), cells);
+            sheet.mergeCells(0, 2, 0, envelop.getDetailModelList().size() + 1);
+            sheet.addCell(new Label(0, 2, "值"));
+            book.write();
+            book.close();
+            os.flush();
+            os.close();
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -425,6 +513,28 @@ public class ResourceBrowseController extends BaseUIController {
             e.printStackTrace();
         }
         return value;
+    }
+
+    /**
+     * 填充数据
+     * @param sheet
+     * @param dataList
+     * @param cells
+     * @return
+     * @throws Exception
+     */
+    public WritableSheet inputData(WritableSheet sheet, List<Object> dataList, Cell[] cells) throws Exception{
+        for (int i = 0; i < dataList.size(); i++) {
+            Map<String, String> map = toModel(toJson(dataList.get(i)), Map.class);
+            for (String key : map.keySet()) {
+                for (Cell cell : cells) {
+                    if (cell.getContents().equals(key)) {
+                        sheet.addCell(new Label(cell.getColumn(), i + 2, String.valueOf(map.get(key))));
+                    }
+                }
+            }
+        }
+        return sheet;
     }
 
 }

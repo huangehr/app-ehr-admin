@@ -1,6 +1,6 @@
 server:
   contextPath: /ehr
-  port: 8080
+  port: 8090
   sessionTimeout:  30000000
 
 multipart:
@@ -25,15 +25,15 @@ spring:
   profiles: dev
   datasource:
     url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
-    username: chenweishan
-    password: chenweishan
+    username: weifuwu
+    password: weifuwu
 app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://172.19.103.73:10260/
-  oauth2OutSize: http://172.19.103.73:10260/
+  oauth2OutSize: http://27.154.233.186:10260/  #上饶-认证外网
 service-gateway:
   username: user
   password: eureka
@@ -45,7 +45,7 @@ service-gateway:
   adaption: http://192.168.1.221:10000/api/v1.0/adapter
   template: http://192.168.1.221:10000/api/v1.0/template
   standard: http://192.168.1.221:10000/api/v1.0/std
-  BrowseClienturl: http://172.19.103.73:8010/ehr/browser
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
 fast-dfs:
   tracker-server: 172.19.103.13:22122
   public-server: http://172.19.103.52:80

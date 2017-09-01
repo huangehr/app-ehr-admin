@@ -84,7 +84,7 @@
                 getResourceBrowseTree: function () {
                     typeTree = this.$resourceBrowseTree.ligerSearchTree({
                         nodeWidth: 240,
-                        url: '${contextRoot}/health/getHealthBusinessListTree',
+                        url: '${contextRoot}/quota/getQuotaCategoryListTree',
                         checkbox: false,
                         idFieldName: 'id',
                         parentIDFieldName :'parentId',
@@ -138,8 +138,8 @@
                             columns: [
                                 {display: 'id', name: 'id', hide: true},
 //                                {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '指标类型', name: 'quotaTypeName', width: '11%', isAllowHide: false, align: 'left'},
+                                {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
+//                                {display: '指标类型', name: 'quotaTypeName', width: '11%', isAllowHide: false, align: 'left'},
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
@@ -392,6 +392,10 @@
             win.closeChartConfigDialog = function () {
                 dictMaster.chartConfigDialog.close();
                 $.Notice.success('保存成功！');
+            }
+
+            win.closeConfigDialog = function () {
+                dictMaster.chartConfigDialog.close();
             }
 
             win.closeZhiBiaoInfoDialog = function (callback) {

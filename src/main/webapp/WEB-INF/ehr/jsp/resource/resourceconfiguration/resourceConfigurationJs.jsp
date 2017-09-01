@@ -19,7 +19,7 @@
             var addRowDatas = new Array();
             var delRowDatas = new Array();
             var comUrl = '${contextRoot}/resourceConfiguration';
-            var resourceConfigurationUrl = [comUrl + '/searchResourceconfiguration', comUrl + '/searchSelResourceconfiguration?resourcesId=' + sourceData.resourceId];
+            var resourceConfigurationUrl = [comUrl + '/searchResourceConfiguration', comUrl + '/searchSelResourceConfiguration?resourcesId=' + sourceData.resourceId];
             var elmParams = ['resourceConfigurationInfoGrid', 'resourceConfigurationInfoGridTrue'];
             var dataModel = $.DataModel.init();
 
@@ -213,7 +213,7 @@
                             return;
                         }
                         var dialog = $.ligerDialog.waitting('正在保存,请稍候...');
-                        dataModel.updateRemote(comUrl + "/saveResourceconfiguration", {
+                        dataModel.updateRemote(comUrl + "/saveResourceConfiguration", {
                             data: {addRowDatas: JSON.stringify(addRowDatas), delRowDatas: delRowDatas.toString()},
                             async: true,
                             success: function (data) {

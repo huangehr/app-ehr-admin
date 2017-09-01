@@ -61,6 +61,8 @@ public class LoginController extends BaseUIController {
     private String browseClienturl;
     @Value("${app.oauth2authorize}")
     private String authorize;
+    @Value("${app.oauth2OutSize}")
+    private String oauth2OutSize;
     @Value("${app.clientId}")
     private String clientId;
     @Value("${app.qcReportClientId}")
@@ -445,7 +447,17 @@ public class LoginController extends BaseUIController {
         String resultStr = "";
 
         try {
-
+            if (StringUtils.isEmpty(password)) {
+                url = "/users";
+                params.put("filters", "loginCode=" + userName);
+                params.put("page", 1);
+                params.put("size", 15);
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+            } else {
+                url = "/users/verification/" + userName;
+                params.put("psw", password);
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+            }
             envelop = mapper.readValue(resultStr, Envelop.class);
             if (!envelop.isSuccessFlg()) {
                 envelop.setSuccessFlg(false);
