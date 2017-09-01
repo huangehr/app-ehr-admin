@@ -87,23 +87,19 @@ public class ReportController extends BaseUIController {
      * 预览报表
      */
     @RequestMapping(value = "preview")
-    public String preview(Model model, Integer id) {
-        try {
-            String reportGetStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportPrefix + id, username, password);
-            Envelop reportGet = objectMapper.readValue(reportGetStr, Envelop.class);
-            RsReportModel reportModel = getEnvelopModel(reportGet.getObj(), RsReportModel.class);
-
-            Map<String, Object> fileParam = new HashMap<>();
-            fileParam.put("fileId", reportModel.getTemplatePath());
-            String filePath = HttpClientUtil.doGet(comUrl + "/file/getRealPathById", fileParam, username, password);
-
-            model.addAttribute("templatePath", filePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-        }
-
+    public String preview(Model model, String code) {
+        model.addAttribute("reportCode", code);
         model.addAttribute("contentPage", "resource/report/preview");
+        return "simpleView";
+    }
+
+    /**
+     * 展示报表模版外壳
+     */
+    @RequestMapping(value = "viewTemplateShell")
+    public String viewTemplateShell(Model model, String reportCode) {
+        model.addAttribute("reportCode", reportCode);
+        model.addAttribute("contentPage", "resource/report/reportTemplateShell");
         return "simpleView";
     }
 
@@ -361,6 +357,27 @@ public class ReportController extends BaseUIController {
             params.put("reportId", reportId);
             params.put("modelListJson", data);
             return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportViewSave, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed("保存发生异常");
+        }
+    }
+
+    /**
+     * 获取报表模版内容及其各个图形数据
+     */
+    @RequestMapping("getTemplateData")
+    @ResponseBody
+    public Object getTemplateData(@RequestParam String reportCode) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        try {
+            params.put("reportCode", reportCode);
+            String tcEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportTemplateContent, params, username, password);
+            String templateContent = objectMapper.readValue(tcEnvelopStr, Envelop.class).getObj().toString();
+            envelop.setObj(templateContent);
+            envelop.setSuccessFlg(true);
+            return envelop;
         } catch (Exception e) {
             e.printStackTrace();
             return failed("保存发生异常");
