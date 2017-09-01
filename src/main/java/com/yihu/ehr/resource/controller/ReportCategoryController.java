@@ -3,7 +3,7 @@ package com.yihu.ehr.resource.controller;
 import com.yihu.ehr.agModel.resource.RsReportCategoryModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
-import com.yihu.ehr.health.controller.HealthBusinessController;
+import com.yihu.ehr.quota.controller.QuotaCategoryController;
 import com.yihu.ehr.std.controller.StdSourceManagerController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -77,7 +77,7 @@ public class ReportCategoryController extends BaseUIController {
         try {
             return doGet(comUrl + ServiceApi.Resources.RsReportCategoryTree, params, username, password);
         } catch (Exception ex) {
-            LogService.getLogger(HealthBusinessController.class).error(ex.getMessage());
+            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -93,7 +93,7 @@ public class ReportCategoryController extends BaseUIController {
             List<Object> data = toModel(envelopJsonStr, Envelop.class).getDetailModelList();
             return toJson(data);
         } catch (Exception ex) {
-            LogService.getLogger(HealthBusinessController.class).error(ex.getMessage());
+            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }

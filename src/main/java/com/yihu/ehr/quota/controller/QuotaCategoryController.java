@@ -1,10 +1,10 @@
-package com.yihu.ehr.health.controller;
+package com.yihu.ehr.quota.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.agModel.health.HealthBusinessModel;
+import com.yihu.ehr.agModel.tj.QuotaCategoryModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.model.health.MHealthBusiness;
+import com.yihu.ehr.model.tj.MQuotaCategory;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2017/6/23.
+ * Created by wxw on 2017/8/31.
  */
 @Controller
-@RequestMapping("/health")
+@RequestMapping("/quota")
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class HealthBusinessController extends BaseUIController {
+public class QuotaCategoryController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -52,10 +52,10 @@ public class HealthBusinessController extends BaseUIController {
         return  "/report/health/healthBusinessInfoDialog";
     }
 
-    @RequestMapping("/getHealthBusinessList")
+    @RequestMapping("/getQuotaCategoryList")
     @ResponseBody
-    public Object getHealthBusinessList(String name, String searchParm,Integer id, int page, int rows){
-        String url = "/healthBusiness/pageList";
+    public Object getQuotaCategoryList(String name, String searchParm,Integer id, int page, int rows){
+        String url = "/quotaCategory/pageList";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -79,17 +79,17 @@ public class HealthBusinessController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(HealthBusinessController.class).error(ex.getMessage());
+            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
     }
 
-    @RequestMapping("deleteHealthBusiness")
+    @RequestMapping("deleteQuotaCategory")
     @ResponseBody
-    public Object deleteHealthBusiness(Integer id) {
-        String url = "/healthBusiness/delete";
+    public Object deleteQuotaCategory(Integer id) {
+        String url = "/quotaCategory/delete";
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -114,45 +114,45 @@ public class HealthBusinessController extends BaseUIController {
 
     @RequestMapping("detailById")
     @ResponseBody
-    public MHealthBusiness getTjQuotaById(Model model, Integer id ) {
-        String url ="/healthBusiness/detailById";
+    public MQuotaCategory getTjQuotaById(Model model, Integer id ) {
+        String url ="/quotaCategory/detailById";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
-        MHealthBusiness detailModel = null;
+        MQuotaCategory detailModel = null;
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop ep = getEnvelop(resultStr);
-            detailModel = toModel(toJson(ep.getObj()),MHealthBusiness.class);
+            detailModel = toModel(toJson(ep.getObj()),MQuotaCategory.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return detailModel;
     }
 
-    @RequestMapping("/addOrUpdateHealthBusiness")
+    @RequestMapping("/addOrUpdateQuotaCategory")
     @ResponseBody
-    public Object addOrUpdateHealthBusiness(String mode, String jsonDate){
+    public Object addOrUpdateQuotaCategory(String mode, String jsonDate){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         try{
-            HealthBusinessModel healthBusinessModel = objectMapper.readValue(jsonDate, HealthBusinessModel.class);
+            QuotaCategoryModel quotaCategoryModel = objectMapper.readValue(jsonDate, QuotaCategoryModel.class);
 
             Map<String,Object> params = new HashMap<>();
 
             if("new".equals(mode)){
-                String urlGet = "/healthBusiness/checkName";
+                String urlGet = "/quotaCategory/checkName";
                 params.clear();
-                params.put("name",healthBusinessModel.getName());
+                params.put("name",quotaCategoryModel.getName());
                 String envelopGetStr = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
                 if (!envelopGet.isSuccessFlg()){
                     return envelopGetStr;
                 }
-                urlGet = "/healthBusiness/checkCode";
+                urlGet = "/quotaCategory/checkCode";
                 params.clear();
-                params.put("code",healthBusinessModel.getCode());
+                params.put("code",quotaCategoryModel.getCode());
                 String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
                 Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
                 if (!envelopGet2.isSuccessFlg()){
@@ -160,19 +160,19 @@ public class HealthBusinessController extends BaseUIController {
                 }
 
                 Map<String,Object> args = new HashMap<>();
-                args.put("jsonData",objectMapper.writeValueAsString(healthBusinessModel));
-                String addUrl = "/healthBusiness/add";
+                args.put("jsonData",objectMapper.writeValueAsString(quotaCategoryModel));
+                String addUrl = "/quotaCategory/add";
                 String envelopStr = HttpClientUtil.doPost(comUrl + addUrl, args, username, password);
                 return envelopStr;
             } else if("modify".equals(mode)){
                 Map<String,Object> args = new HashMap<>();
-                args.put("jsonData",objectMapper.writeValueAsString(healthBusinessModel));
-                String updateUrl = "/healthBusiness/update";
+                args.put("jsonData",objectMapper.writeValueAsString(quotaCategoryModel));
+                String updateUrl = "/quotaCategory/update";
                 String envelopStr = HttpClientUtil.doPost(comUrl + updateUrl, args, username, password);
                 return envelopStr;
             }
         }catch (Exception ex){
-            LogService.getLogger(HealthBusinessController.class).error(ex.getMessage());
+            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
@@ -181,7 +181,7 @@ public class HealthBusinessController extends BaseUIController {
     @RequestMapping("hasExistsName")
     @ResponseBody
     public boolean hasExistsName(String name) {
-        String url = "/healthBusiness/checkName";
+        String url = "/quotaCategory/checkName";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -201,7 +201,7 @@ public class HealthBusinessController extends BaseUIController {
     @RequestMapping("hasExistsCode")
     @ResponseBody
     public boolean hasExistsCode(String code) {
-        String url = "/healthBusiness/checkCode";
+        String url = "/quotaCategory/checkCode";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -218,10 +218,10 @@ public class HealthBusinessController extends BaseUIController {
         return  false;
     }
 
-    @RequestMapping("/getAllHealthBusinessList")
+    @RequestMapping("/getAllQuotaCategoryList")
     @ResponseBody
-    public Object getAllHealthBusinessList(){
-        String url = "/healthBusiness/getHealthBusinessChild";
+    public Object getAllQuotaCategoryList(){
+        String url = "/quotaCategory/getQuotaCategoryChild";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -229,18 +229,18 @@ public class HealthBusinessController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(HealthBusinessController.class).error(ex.getMessage());
+            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
     }
 
-    @RequestMapping("/getHealthBusinessListTree")
+    @RequestMapping("/getQuotaCategoryListTree")
     @ResponseBody
-    public Object getHealthBusinessListTree(){
-        String url = "/healthBusiness/list";
-        List<HealthBusinessModel> list = new ArrayList<>();
+    public Object getQuotaCategoryListTree(){
+        String url = "/quotaCategory/list";
+        List<QuotaCategoryModel> list = new ArrayList<>();
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -248,11 +248,11 @@ public class HealthBusinessController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
             Envelop envelopGet = objectMapper.readValue(resultStr,Envelop.class);
             if(envelopGet.isSuccessFlg()){
-                list = (List<HealthBusinessModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),HealthBusinessModel.class);
+                list = (List<QuotaCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),QuotaCategoryModel.class);
             }
             return list;
         } catch (Exception ex) {
-            LogService.getLogger(HealthBusinessController.class).error(ex.getMessage());
+            LogService.getLogger(QuotaCategoryController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return list;

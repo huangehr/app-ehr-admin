@@ -329,13 +329,13 @@
                 },
                 </sec:authorize>
                 // 3-2-1 - 指标分类
-                <sec:authorize url="/health/initial">
+                <sec:authorize url="/quota/initial">
                 {
                     pid: 32,
                     level:3,
                     id: 321,
                     text: '<spring:message code="title.health.manage"/>',
-                    url: '${contextRoot}/health/initial'
+                    url: '${contextRoot}/quota/initial'
                 },
                 </sec:authorize>
                 // 3-2-2 - 指标配置
