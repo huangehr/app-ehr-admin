@@ -28,6 +28,7 @@
         if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
             patientModel =${patientModel}.obj;
             idCardNo = patientModel.idCardNo;
+            $("#inp_idCardNo").closest(".m-form-group").addClass("m-form-readonly");
 //            //todo:暂不发布
 //            $("#btn_archive").hide();
 //            $("#btn_home_relation").hide();
