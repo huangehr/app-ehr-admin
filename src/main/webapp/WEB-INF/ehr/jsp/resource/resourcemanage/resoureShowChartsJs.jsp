@@ -3,41 +3,37 @@
 <script src="${contextRoot}/develop/lib/plugin/echarts/3.0/js/echarts.min.js"></script>
 <script>
     $(function () {
-        var inf = ['${contextRoot}/resource/resourceManage/resourceUpDown']
-        var obj = null,
+        var inf = ['${contextRoot}/resource/resourceManage/resourceUpDown'];
+        var obj = ${resultStr},
+            id = '${id}',
             chartsTitArr = [],
             optsArr = [],
             listMap = [],
             dimensionMapArr = [],
             qutoId = [],
             dataLength = 0,
-            id = '${id}',
             charts = [];
-        try {
-            obj = ${resultStr};
-        } catch (e) {
-            $.Notice.success('获取数据失败，请重新加载页面！');
-            return;
-        }
-        dataLength = obj.length;
+
+        dataLength = 0;
         if (obj && obj.length > 0) {
             for (var i = 0, len = obj.length; i < len; i++) {
-                var opt = {};
-                try {
-                    opt = obj[i].option ? JSON.parse(obj[i].option) : {};
-                } catch (e) {
-                    console.log(e.message);
+                if (obj[i]) {
+                    var opt = {};
+                    if (obj[i].option) {
+                        opt = JSON.parse(obj[i].option);
+                    } else {
+//                        $.Notice.success('获取数据失败,请重试！');
+                        return;
+                    }
+                    optsArr.push(opt);
+                    chartsTitArr.push(obj[i].title);
+                    listMap.push(obj[i].listMap);
+                    dimensionMapArr.push(obj[i].dimensionMap);
+                    qutoId.push(obj[i].quotaId);
+                    dataLength++;
                 }
-                optsArr.push(opt);
-                chartsTitArr.push(obj[i].title);
-                listMap.push(obj[i].listMap);
-                dimensionMapArr.push(obj[i].dimensionMap);
-                qutoId.push(obj[i].quotaId);
             }
         }
-//        console.log('optsArr:' + JSON.stringify(optsArr));
-//        console.log('listMap:' + JSON.stringify(listMap));
-//        console.log('dimensionMap:' + JSON.stringify(dimensionMapArr));
         var showSharts = {
             $tabList: $('.tab-list'),
             $chartsMain: $('.charts-main'),
@@ -48,52 +44,10 @@
             dataModel: $.DataModel.init(),
             init: function () {
                 this.insertHtml();
+                this.bindEvnt();
                 this.$tabList.mCustomScrollbar({
                     axis: "x"
                 });
-                this.bindEvnt();
-            },
-            initCharts: function () {
-                var me = this;
-                for (var m = 0; m < dataLength; m ++) {
-                    var myChart1 = echarts.init(document.getElementById("chartsMain" + m + "1")),
-                        myChart2 = echarts.init(document.getElementById("chartsMain" + m + "2")),
-                        options = optsArr[m];
-                    if(options) {
-                        try {
-                            myChart1.setOption(options);
-                            myChart2.setOption(options);
-                            (function (ec) {
-                                charts.push(ec);
-                                ec.on('click', function (param) {
-                                    me.reloadECharts(param, ec, me)
-                                });
-                            })(myChart1);
-                        } catch (e) {
-                            console.log(e.message);
-                        }
-                    }
-                }
-            },
-            reloadECharts: function (param, dom, me) {
-                var $dom = $(dom._dom),
-                    domId = $dom.closest('.tab-con ').attr('data-id'),
-                    $condition = $dom.prev(),
-                    $goBack = $condition.find('.go-back'),
-                    dataNum = parseInt($condition.attr('data-num')),//下转层级
-                    quotaFilter = $condition.attr('data-quota-filter'),//过滤条件
-                    dataList = ($condition.attr('data-list')).split(','),
-                    key = dataList[dataNum],
-                    dimension = '';//维度
-                $goBack.show();
-                quotaFilter += ((quotaFilter == '' ? '' : ';') + key + '=' + dimensionMapArr[domId][param.name]);
-                dataNum++;
-                dimension = dataList[dataNum];
-                if (dimension) {
-                    me.loadData(dimension, quotaFilter, $condition, dataNum, domId);
-                } else {
-                    $.Notice.success('已是最底层！');
-                }
             },
             loadData: function (dim, qf, $con, num, domId) {
                 var me = this;
@@ -104,14 +58,14 @@
                         quotaFilter: qf,
                         quotaId: qutoId[domId]
                     },
-                    async: false,
                     success: function (data) {
                         if (data && data[0]) {
                             var opt = JSON.parse(data[0].option);
                             dimensionMapArr[domId] = data[0].dimensionMap;
                             $con.attr('data-num', num);
                             $con.attr('data-quota-filter', qf);
-                            charts[domId].setOption(opt);
+                            charts[domId].clear();
+                            charts[domId].setOption(opt, true);
                         } else {
                             $.Notice.success('获取数据失败,请重试！');
                         }
@@ -155,11 +109,53 @@
                 me.$chartsMain.append(conHtml);
                 me.initCharts();
             },
+            initCharts: function () {
+                var me = this;
+                for (var m = 0; m < dataLength; m ++) {
+                    var myChart1 = echarts.init(document.getElementById("chartsMain" + m + "1")),
+                        myChart2 = echarts.init(document.getElementById("chartsMain" + m + "2")),
+                        options = optsArr[m];
+                    if(options) {
+                        try {
+                            myChart1.setOption(options);
+                            myChart2.setOption(options);
+                            (function (ec) {
+                                charts.push(ec);
+                                ec.on('click', function (param) {
+                                    me.reloadECharts(param, ec, me)
+                                });
+                            })(myChart1);
+                        } catch (e) {
+                            console.log(e.message);
+                        }
+                    }
+                }
+            },
+            reloadECharts: function (param, dom, me) {
+                var $dom = $(dom._dom),
+                        domId = $dom.closest('.tab-con ').attr('data-id'),
+                        $condition = $dom.prev(),
+                        $goBack = $condition.find('.go-back'),
+                        dataNum = parseInt($condition.attr('data-num')),//下转层级
+                        quotaFilter = $condition.attr('data-quota-filter'),//过滤条件
+                        dataList = ($condition.attr('data-list')).split(','),//维度集
+                        key = dataList[dataNum],
+                        dimension = '';//下砖维度
+                $goBack.show();
+                quotaFilter += ((quotaFilter == '' ? '' : ';') + key + '=' + dimensionMapArr[domId][param.name]);
+                dataNum++;
+                dimension = dataList[dataNum];
+                if (dimension) {
+                    me.loadData(dimension, quotaFilter, $condition, dataNum, domId);
+                } else {
+                    $.Notice.success('已是最底层！');
+                }
+            },
             bindEvnt: function () {
                 var me = this;
                 me.$tabList.on('click', '.tab-item', function () {
                     var index = $(this).index(),
-                            $tabCon = me.$chartsMain.find('.tab-con');
+                        $tabCon = me.$chartsMain.find('.tab-con');
                     $(this).addClass('active').siblings().removeClass('active');
                     $tabCon.hide().eq(index).show();
                 });
@@ -167,13 +163,7 @@
                     var $that = $(this),
                         $parent = $that.closest('.tab-con'),
                         $conTCon = $parent.find('.con-t-con'),
-                        $goBack = $parent.find('.go-back'),
                         index = $that.index();
-                    if (index == 0) {
-                        $goBack.show();
-                    } else {
-                        $goBack.hide();
-                    }
                     $that.addClass('active').siblings().removeClass('active');
                     $conTCon.hide().eq(index).show();
                 }).on('click', '.go-back', function () {

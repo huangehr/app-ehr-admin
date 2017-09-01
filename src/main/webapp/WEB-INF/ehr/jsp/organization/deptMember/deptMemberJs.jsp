@@ -407,8 +407,8 @@
 							'</div>',
 							'<div class="pop-form">',
 								'<label for="name">科室荣誉：</label>',
-								'<input type="checkbox" name="glory" value="1"/>国家重点科室',
-								'<input type="checkbox" name="glory" value="2"/>省级重点科室',
+								'<input type="checkbox" name="glory" value="1"/>国家重点科室&nbsp;&nbsp;',
+								'<input type="checkbox" name="glory" value="2"/>省级重点科室&nbsp;&nbsp;',
 								'<input type="checkbox" name="glory" value="3"/>医院特色专科',
 							'</div>',].join('');
 						me.$popWim.append(html);
