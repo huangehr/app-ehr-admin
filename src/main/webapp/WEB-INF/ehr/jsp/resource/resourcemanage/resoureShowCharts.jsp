@@ -10,7 +10,7 @@
 <%--template--%>
 <script type="text/html" id="tabTmp">
     <div class="tab-con {{class}}" data-id="{{id}}">
-        <div class="con-tab">
+        <div class="con-tab" style="display: none">
             <ul class="con-t-t">
                 <li class="con-t-i c-t-lef active">展示</li>
                 <li class="con-t-i c-t-right">查询</li>
