@@ -40,7 +40,7 @@
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
-                $searchNm: $('#inp_search'),
+                $searchParm: $('#inp_search'),
                 $settledWay: $('#inp_settledWay'),
                 $orgType: $('#inp_orgType'),
                 $searchBtn: $('#btn_search'),
@@ -54,7 +54,7 @@
                     this.initDDL(settledWayDictId, this.$settledWay);
                     this.initDDL(orgTypeDictId, this.$orgType);
 
-                    this.$searchNm.ligerTextBox({width: 240});
+                    this.$searchParm.ligerTextBox({width: 240});
 
                     this.$location.addressDropdown({
                         tabsData: [
@@ -115,7 +115,7 @@
                     this.grid = $("#div_org_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/organization/searchOrgs',
                         parms: {
-                            searchNm: '',
+                            searchParm: '',
                             searchType: '',
                             orgType: '',
                             province: '',
