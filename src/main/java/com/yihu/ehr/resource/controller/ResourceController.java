@@ -461,7 +461,7 @@ public class ResourceController extends BaseUIController {
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
-        params.put("filter", "resourceId=" + id);
+        params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
         try {
@@ -499,7 +499,7 @@ public class ResourceController extends BaseUIController {
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("filter", "resourceId=" + id);
+        params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
         try {
