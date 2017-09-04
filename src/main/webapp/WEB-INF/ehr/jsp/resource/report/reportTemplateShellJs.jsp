@@ -1,7 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-<script src="${contextRoot}/static-dev/base/jquery/jquery-1.11.3.js"></script>
+<script src="${contextRoot}/develop/lib/jquery/jquery-1.9.1.js"></script>
+<script src="${contextRoot}/develop/lib/plugin/echarts/2.2.7/js/echarts-all.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/core/base.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/plugins/ligerDialog.js"></script>
 <script src="${contextRoot}/develop/module/util.js"></script>
 <script src="${contextRoot}/develop/lib/plugin/notice/topNotice.js"></script>
 <script>
@@ -19,7 +22,14 @@
             data: {reportCode: reportCode},
             success: function(data) {
                 if(data.successFlg) {
-                    $('#reportTemplate').html(data.obj);
+                    $('#reportTemplate').html(data.obj.templateContent);
+                    for(var i = 0; i < data.obj.options.length; i++) {
+                        (function(j) {
+                            var item = data.obj.options[j];
+                            var chart = echarts.init(document.getElementById('' + item.id));
+                            chart.setOption(JSON.parse(item.option));
+                        })(i);
+                    }
                 } else {
                     $.Notice.warn('获取报表模版失败！');
                 }
