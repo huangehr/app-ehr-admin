@@ -60,22 +60,23 @@
             parms: { reportCategoryId: reportCategoryId },
             columns: [
                 {display: 'ID', name: 'id', hide: true},
+                {display: 'status', name: 'status', hide: true},
                 {display: '报表名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '报表编码', name: 'code', width: '15%', isAllowHide: false, align: 'left'},
-                {display: '报表分类', name: 'reportCategory', width: '10%', isAllowHide: false, align: 'center'},
                 {display: '状态', name: 'statusName', width: '5%', isAllowHide: false, align: 'center'},
+                {display: '报表模板', name: 'templatePath', width: '20%', isAllowHide: false, align: 'center'},
                 {display: '备注', name: 'remark', width: '15%', isAllowHide: false, align: 'left'},
-                {display: '操作', name: 'operator', width: '40%', align: 'center',
+                {display: '操作', name: 'operator', width: '30%', align: 'center',
                     render: function (row) {
                         var html = '';
                         html += '<sec:authorize url="/resource/report/setting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/upload"><a class="label_a f-ml10 btn-file-container" title="模版导入" href="javascript:void(0)">' +
                                 '   模版导入' +
-                                '   <form id ="uploadForm" enctype="multipart/form-data">' +
-                                '       <input type="file" name="file" id="templatePathBtn" onchange="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:upload", row.id) + '">' +
+                                '   <form id ="listUploadForm" enctype="multipart/form-data">' +
+                                '       <input type="file" name="file" onchange="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:upload", row.id) + '">' +
                                 '   </form>' +
                                 '</a></sec:authorize>';
-                        html += '<sec:authorize url="/resource/report/preview"><a class="label_a f-ml10" title="预览" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:preview", row.id) + '">预览</a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/report/preview"><a class="label_a f-ml10" title="预览" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}', '{2}'])", "resource:report:preview", row.code, row.templatePath) + '">预览</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:report:open", row.id, 'modify') + '"></a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:delete", row.id) + '"></a></sec:authorize>';
                         return html;
@@ -108,8 +109,8 @@
 
         // 模版导入
         $.subscribe('resource:report:upload', function (event, id) {
-            var formData = new FormData($( "#uploadForm" )[0]);
-            formData.append('id', id)
+            var formData = new FormData($( "#listUploadForm" )[0]);
+            formData.append('id', id);
             $.ajax({
                 url: '${contextRoot}/resource/report/upload',
                 type: 'post',
@@ -118,7 +119,7 @@
                 processData: false,
                 success: function (data) {
                     if(data.successFlg){
-                        $('#templatePath').val(data.obj);
+                        reloadGrid();
                         $.Notice.success('上传成功！');
                     } else {
                         $.Notice.warn(data.errorMsg);
@@ -127,6 +128,24 @@
                 error: function () {
                     $.Notice.error('上传文件发生异常');
                 }
+            });
+        });
+
+        // 预览
+        $.subscribe('resource:report:preview', function (event, code, templatePath) {
+            if(!templatePath) {
+                $.Notice.warn('请先导入报表模版！');
+                return;
+            }
+
+            detailDialog = $.ligerDialog.open({
+                height: 740,
+                width: 1100,
+                title: '报表预览',
+                url: '${contextRoot}/resource/report/preview',
+                urlParms: {code: code},
+                opener: true,
+                load: true
             });
         });
 

@@ -35,7 +35,7 @@ public class FileUploadController extends BaseUIController {
     private String comUrl;
 
     /**
-     * 上传文件
+     * 上传文件，返回文件存储路径
      */
     @RequestMapping("upload")
     @ResponseBody
@@ -44,11 +44,11 @@ public class FileUploadController extends BaseUIController {
             Envelop result = new Envelop();
 
             Map<String, Object> uploadFileParams = FileUploadUtil.getParams(file.getInputStream(), file.getOriginalFilename());
-            String filePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
+            String storagePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
 
-            if(!StringUtils.isEmpty(filePath)) {
+            if(!StringUtils.isEmpty(storagePath)) {
                 result.setSuccessFlg(true);
-                result.setObj(filePath);
+                result.setObj(storagePath);
             } else {
                 result.setSuccessFlg(false);
                 result.setErrorMsg("请上传非空文件！");
