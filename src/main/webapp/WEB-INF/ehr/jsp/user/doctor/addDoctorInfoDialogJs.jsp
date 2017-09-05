@@ -90,14 +90,6 @@
                         });
                 });
             },
-            orgSelected:function(id, fullName){
-                orgSelectedValue = id;
-                orgId = id;
-                console.log(orgId);
-            },
-            deptSelected:function(id, name){
-                deptSelectedValue = id;
-            },
             initForm: function () {
                 var me = this;
                 me.$incode.ligerTextBox({width: 240});
@@ -114,11 +106,12 @@
                 me.$lczc.ligerTextBox({width: 240});
                 me.$xlzc.ligerTextBox({width: 240});
                 me.$zxzc.ligerTextBox({width: 240});
-                me.$org.customCombo('${contextRoot}/organization/searchOrgs',{},this.orgSelected,null,null,{
+                me.$org.customCombo('${contextRoot}/organization/searchOrgs',{},null,null,null,{
                     valueField: 'id',
                     textField: 'fullName',
                     onSelected: function (id) {
                         var orgId = id;
+                        orgSelectedValue = id;
                         me.$dept.ligerComboBox({
                             url: '${contextRoot}/deptMember/getAllDeptByOrgId',
                             ajaxType: 'post',
@@ -245,7 +238,7 @@
                     var doctorModelJsonData = JSON.stringify(doctorModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
-                        data: {doctorModelJsonData: doctorModelJsonData,orgId: orgSelectedValue, deptId: $("#inp_dept").val().trim()},
+                        data: {doctorModelJsonData: doctorModelJsonData,orgId: orgSelectedValue, deptId: $("#inp_dept_val").val().trim()},
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
