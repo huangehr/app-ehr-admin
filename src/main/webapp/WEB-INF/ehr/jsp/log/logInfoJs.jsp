@@ -10,15 +10,7 @@
 <script>
     (function ($, win, u) {
         $(function () {
-            var objStr = '${logData}';
-            var obg = [];
-            debugger
-            try {
-                obg = objStr && JSON.parse(objStr);
-            } catch (e) {
-
-            }
-
+            var obg = ${logData};
             var Log = {
                 $appKey: $('#appKey'),
                 $function: $('#function'),
@@ -45,9 +37,11 @@
                         digits: false
                     });
                     this.$form.attrScan();
+                    debugger
                     if (obg) {
                         if (obg.successFlg) {
                             var d = obg.detailModelList[0];
+                            debugger
                             this.$form.Fields.fillValues({
                                 appKey: d.appKey,
                                 function:d.function,
