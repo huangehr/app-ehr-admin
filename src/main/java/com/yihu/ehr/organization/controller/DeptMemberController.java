@@ -570,4 +570,31 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }
         return orgDeptModel;
     }
+
+    @RequestMapping("getAllDeptByOrgId")
+    @ResponseBody
+    public Object getAllDeptByOrgId(String orgId) {
+
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(orgId)) {
+            params.put("orgId", orgId);
+        } else {
+            params.put("orgId", 0);
+        }
+        try {
+            String url ="/orgDept/list";
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        }catch (Exception ex){
+            LogService.getLogger(DeptMemberController.class).error(ex.getMessage());
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+
+            return result;
+        }
+    }
 }

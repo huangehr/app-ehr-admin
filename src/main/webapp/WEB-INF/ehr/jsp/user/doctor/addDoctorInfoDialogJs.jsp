@@ -20,8 +20,9 @@
 		var trees;
 
 		var roleTypeDictId = 13;
-
-
+        var orgId = "";
+        var orgSelectedValue = "";
+        var deptSelectedValue = "";
         /* ************************** 变量定义结束 **************************** */
 
         /* *************************** 函数定义 ******************************* */
@@ -62,6 +63,8 @@
 			$xlzc:$("#inp_xlzc"),
 			$zxzc:$("#inp_zxzc"),
             $roleType:$("#inp_roleType"),
+            $org:$("#inp_org"),
+            $dept:$("#inp_dept"),
 
             init: function () {
                 var self = this;
@@ -87,6 +90,14 @@
                         });
                 });
             },
+            orgSelected:function(id, fullName){
+                orgSelectedValue = id;
+                orgId = id;
+                console.log(orgId);
+            },
+            deptSelected:function(id, name){
+                deptSelectedValue = id;
+            },
             initForm: function () {
                 this.$incode.ligerTextBox({width: 240});
                 this.$name.ligerTextBox({width: 240});
@@ -102,6 +113,32 @@
                 this.$lczc.ligerTextBox({width: 240});
                 this.$xlzc.ligerTextBox({width: 240});
                 this.$zxzc.ligerTextBox({width: 240});
+                this.$org.customCombo('${contextRoot}/organization/searchOrgs',{},this.orgSelected,null,null,{valueField: 'id',
+                    textField: 'fullName'},{
+                    columns: [
+                        {display : '名称', name :'fullName',width : 210, align: 'left'}
+                    ]});
+                this.$org.parent().css({
+                    width:'240'
+                }).parent().css({
+                    display:'inline-block',
+                    width:'240px'
+                });
+                this.$dept.customCombo('${contextRoot}/deptMember/getAllDeptByOrgId',{orgId: 312},this.deptSelected,null,null,{valueField: 'id',
+                    textField: 'name'});
+                this.$dept.parent().css({
+                    width:'240'
+                }).parent().css({
+                    display:'inline-block',
+                    width:'240px'
+                });
+                <%--this.$org.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/organization/searchOrgs',--%>
+                    <%--valueField: 'id',--%>
+                    <%--textField: 'fullName',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {page: 1, rows:10000}--%>
+                <%--});--%>
                 this.$introduction.ligerTextBox({width:600,height:100 });
                 this.initDDL(roleTypeDictId, this.$roleType);
                 this.$sex.ligerRadio();
@@ -194,7 +231,7 @@
                     var doctorModelJsonData = JSON.stringify(doctorModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
-                        data: {doctorModelJsonData: doctorModelJsonData},
+                        data: {doctorModelJsonData: doctorModelJsonData,orgId: orgSelectedValue, deptId: $("#inp_dept").val().trim()},
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
