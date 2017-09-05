@@ -1,10 +1,13 @@
 package com.yihu.ehr.resource.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.resource.RsCategoryTypeTreeModel;
 import com.yihu.ehr.agModel.resource.RsReportModel;
+import com.yihu.ehr.agModel.resource.RsReportViewModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.model.resource.MChartInfoModel;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -58,7 +61,7 @@ public class ReportController extends BaseUIController {
         try {
             if (id != null) {
                 String url = comUrl + ServiceApi.Resources.RsReportPrefix + id;
-                String result = doGet(url, username, password);
+                String result = HttpClientUtil.doGet(url, username, password);
                 detailModel = objectMapper.readValue(result, Envelop.class).getObj();
             }
         } catch (Exception e) {
@@ -369,16 +372,47 @@ public class ReportController extends BaseUIController {
     public Object getTemplateData(@RequestParam String reportCode) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>();
+        List<Map<String, Object>> options = new ArrayList<>();
         try {
+            // 获取报表模版内容
             params.put("reportCode", reportCode);
             String tcEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportTemplateContent, params, username, password);
             String templateContent = objectMapper.readValue(tcEnvelopStr, Envelop.class).getObj().toString();
-            envelop.setObj(templateContent);
+            resultMap.put("templateContent", templateContent);
+
+            // 获取报表模版中图形option
+            params.clear();
+            params.put("code", reportCode);
+            String reportEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportFindByCode, params, username, password);
+            RsReportModel rsReportModel = getEnvelopModel(objectMapper.readValue(reportEnvelopStr, Envelop.class).getObj(), RsReportModel.class);
+            params.clear();
+            params.put("reportId", rsReportModel.getId());
+            String viewListEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
+            String viewListStr = objectMapper.writeValueAsString(objectMapper.readValue(viewListEnvelopStr, Envelop.class).getDetailModelList());
+            List<RsReportViewModel> rsReportViewList = objectMapper.readValue(viewListStr, new TypeReference<List<RsReportViewModel>>(){});
+            for (RsReportViewModel view : rsReportViewList) {
+                // 指标数据的视图的场合
+                // todo 还要考虑档案数据的视图的场合
+                params.clear();
+                params.put("resourceId", view.getResourceId());
+                String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+                List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>(){});
+                for (MChartInfoModel chartInfo : chartInfoList) {
+                    Map<String, Object> option = new HashMap<>();
+                    option.put("quotaCode", chartInfo.getQuotaCode());
+                    option.put("option", chartInfo.getOption());
+                    options.add(option);
+                }
+            }
+            resultMap.put("options", options);
+
+            envelop.setObj(resultMap);
             envelop.setSuccessFlg(true);
             return envelop;
         } catch (Exception e) {
             e.printStackTrace();
-            return failed("保存发生异常");
+            return failed("获取报表数据发生异常");
         }
     }
 
