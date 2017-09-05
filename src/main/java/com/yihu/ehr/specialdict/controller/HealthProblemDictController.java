@@ -57,7 +57,7 @@ public class HealthProblemDictController extends BaseUIController {
         String envelopStr = "";
         try{
             if (id != null) {
-                String url = "/dict/hp/" + id;
+                String url = "/getHpDict/hp/" + id;
                 envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
             }
             model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
