@@ -154,6 +154,7 @@
                 //加载树
                 loadTree: function () {
                     var me = this;
+                    var num = 0;
                     me.leftTree = me.$divLeftTree.ligerSearchTree({
                         nodeWidth: 180,
                         url: conInf[me.type][0],
@@ -226,6 +227,7 @@
                             }
                         },
                         onSuccess: function (data) {
+                            console.log('a');
                             var detailModelList = data.detailModelList,
                                     dmList = [];
                             if (detailModelList) {
@@ -251,7 +253,10 @@
                                 }
                                 me.leftTree.setData(dmList);
                             } else {
-                                $.Notice.error('暂无数据');
+                                if (num == 0) {
+                                    $.Notice.error('暂无数据');
+                                }
+                                num++;
                             }
                         }
                     });
@@ -394,7 +399,7 @@
                 bindEvent: function () {
                     var me = this;
                     //切换数据
-                    me.$changBtns.on('click', function () {
+                    me.$changBtns.on('click', function (e) {
                         var $that = $(this),
                             index = $that.index();
                         if (me.type == index) {
@@ -411,6 +416,8 @@
                         me.type = index;
                         me.resetDate();
                         me.loadTree();
+                        e.stopPropagation();
+                        e.preventDefault();
                     });
                     //展开\收起筛选条件
                     me.$scBtn.on('click', function () {

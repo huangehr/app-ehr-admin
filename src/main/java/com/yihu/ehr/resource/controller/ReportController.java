@@ -1,12 +1,13 @@
 package com.yihu.ehr.resource.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.resource.RsCategoryTypeTreeModel;
 import com.yihu.ehr.agModel.resource.RsReportModel;
+import com.yihu.ehr.agModel.resource.RsReportViewModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
-import com.yihu.ehr.health.controller.HealthBusinessController;
-import com.yihu.ehr.std.controller.StdSourceManagerController;
+import com.yihu.ehr.model.resource.MChartInfoModel;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -60,12 +61,12 @@ public class ReportController extends BaseUIController {
         try {
             if (id != null) {
                 String url = comUrl + ServiceApi.Resources.RsReportPrefix + id;
-                String result = doGet(url, username, password);
+                String result = HttpClientUtil.doGet(url, username, password);
                 detailModel = objectMapper.readValue(result, Envelop.class).getObj();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(StdSourceManagerController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
         }
         model.addAttribute("detailModel", toJson(detailModel));
         model.addAttribute("contentPage", "resource/report/detail");
@@ -80,6 +81,26 @@ public class ReportController extends BaseUIController {
         Object detailModel = new RsReportModel();
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "resource/report/setting");
+        return "simpleView";
+    }
+
+    /**
+     * 预览报表
+     */
+    @RequestMapping(value = "preview")
+    public String preview(Model model, String code) {
+        model.addAttribute("reportCode", code);
+        model.addAttribute("contentPage", "resource/report/preview");
+        return "simpleView";
+    }
+
+    /**
+     * 展示报表模版外壳
+     */
+    @RequestMapping(value = "viewTemplateShell")
+    public String viewTemplateShell(Model model, String reportCode) {
+        model.addAttribute("reportCode", reportCode);
+        model.addAttribute("contentPage", "resource/report/reportTemplateShell");
         return "simpleView";
     }
 
@@ -109,7 +130,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReports, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -130,7 +151,7 @@ public class ReportController extends BaseUIController {
             return rsCategoryTypeTreeModelList;
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(HealthBusinessController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -160,7 +181,7 @@ public class ReportController extends BaseUIController {
                 rsCategory.getChildren().add(rsCategoryTypeTreeModel);
             }
 
-            if(rsCategory.getChildren() != null && rsCategory.getChildren().size() != 0) {
+            if (rsCategory.getChildren() != null && rsCategory.getChildren().size() != 0) {
                 setRsCategoryViews(rsCategory.getChildren(), reportId);
             }
         }
@@ -178,7 +199,7 @@ public class ReportController extends BaseUIController {
             return doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(HealthBusinessController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -203,7 +224,7 @@ public class ReportController extends BaseUIController {
 
             if (model.getId() == null) {
                 // 新增
-                params.put("mrsReport", data);
+                params.put("rsReport", data);
                 return HttpClientUtil.doPost(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
             } else {
                 // 修改
@@ -219,12 +240,12 @@ public class ReportController extends BaseUIController {
                 updateModel.setRemark(model.getRemark());
                 updateModel.setTemplatePath(model.getTemplatePath());
 
-                params.put("mrsReport", objectMapper.writeValueAsString(updateModel));
+                params.put("rsReport", objectMapper.writeValueAsString(updateModel));
                 return HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -241,7 +262,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Resources.RsReportDelete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -260,7 +281,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportIsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -279,7 +300,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportIsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+            LogService.getLogger(ReportController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -294,23 +315,23 @@ public class ReportController extends BaseUIController {
             Envelop result = new Envelop();
 
             Map<String, Object> uploadFileParams = FileUploadUtil.getParams(file.getInputStream(), file.getOriginalFilename());
-            String filePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
+            String storagePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
 
-            if (!StringUtils.isEmpty(filePath)) {
+            if (!StringUtils.isEmpty(storagePath)) {
                 String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
                 RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
-                updateModel.setTemplatePath(filePath);
+                updateModel.setTemplatePath(storagePath);
 
                 Map<String, Object> params = new HashMap<>();
-                params.put("rsReportCategory", objectMapper.writeValueAsString(updateModel));
+                params.put("rsReport", objectMapper.writeValueAsString(updateModel));
                 String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
 
                 Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
                 if (envelopUpdate.isSuccessFlg()) {
                     result.setSuccessFlg(true);
-                    result.setObj(filePath);
+                    result.setObj(storagePath);
                 } else {
                     result.setSuccessFlg(false);
                     result.setErrorMsg("文件保存失败！");
@@ -340,6 +361,58 @@ public class ReportController extends BaseUIController {
         } catch (Exception e) {
             e.printStackTrace();
             return failed("保存发生异常");
+        }
+    }
+
+    /**
+     * 获取报表模版内容及其各个图形数据
+     */
+    @RequestMapping("getTemplateData")
+    @ResponseBody
+    public Object getTemplateData(@RequestParam String reportCode) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> resultMap = new HashMap<>();
+        List<Map<String, Object>> options = new ArrayList<>();
+        try {
+            // 获取报表模版内容
+            params.put("reportCode", reportCode);
+            String tcEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportTemplateContent, params, username, password);
+            String templateContent = objectMapper.readValue(tcEnvelopStr, Envelop.class).getObj().toString();
+            resultMap.put("templateContent", templateContent);
+
+            // 获取报表模版中图形option
+            params.clear();
+            params.put("code", reportCode);
+            String reportEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportFindByCode, params, username, password);
+            RsReportModel rsReportModel = getEnvelopModel(objectMapper.readValue(reportEnvelopStr, Envelop.class).getObj(), RsReportModel.class);
+            params.clear();
+            params.put("reportId", rsReportModel.getId());
+            String viewListEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
+            String viewListStr = objectMapper.writeValueAsString(objectMapper.readValue(viewListEnvelopStr, Envelop.class).getDetailModelList());
+            List<RsReportViewModel> rsReportViewList = objectMapper.readValue(viewListStr, new TypeReference<List<RsReportViewModel>>(){});
+            for (RsReportViewModel view : rsReportViewList) {
+                // 指标数据的视图的场合
+                // todo 还要考虑档案数据的视图的场合
+                params.clear();
+                params.put("resourceId", view.getResourceId());
+                String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+                List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>(){});
+                for (MChartInfoModel chartInfo : chartInfoList) {
+                    Map<String, Object> option = new HashMap<>();
+                    option.put("quotaCode", chartInfo.getQuotaCode());
+                    option.put("option", chartInfo.getOption());
+                    options.add(option);
+                }
+            }
+            resultMap.put("options", options);
+
+            envelop.setObj(resultMap);
+            envelop.setSuccessFlg(true);
+            return envelop;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed("获取报表数据发生异常");
         }
     }
 

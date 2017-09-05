@@ -84,7 +84,7 @@
                 getResourceBrowseTree: function () {
                     typeTree = this.$resourceBrowseTree.ligerSearchTree({
                         nodeWidth: 240,
-                        url: '${contextRoot}/health/getHealthBusinessListTree',
+                        url: '${contextRoot}/quota/getQuotaCategoryListTree',
                         checkbox: false,
                         idFieldName: 'id',
                         parentIDFieldName :'parentId',

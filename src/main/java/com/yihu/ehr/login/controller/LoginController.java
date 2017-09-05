@@ -447,7 +447,17 @@ public class LoginController extends BaseUIController {
         String resultStr = "";
 
         try {
-
+            if (StringUtils.isEmpty(password)) {
+                url = "/users";
+                params.put("filters", "loginCode=" + userName);
+                params.put("page", 1);
+                params.put("size", 15);
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+            } else {
+                url = "/users/verification/" + userName;
+                params.put("psw", password);
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+            }
             envelop = mapper.readValue(resultStr, Envelop.class);
             if (!envelop.isSuccessFlg()) {
                 envelop.setSuccessFlg(false);
@@ -552,7 +562,7 @@ public class LoginController extends BaseUIController {
         String user = token.getUser();
         model.addAttribute("model",request.getSession());
         model.addAttribute("idCardNo",idCardNo);
-        response.sendRedirect(oauth2OutSize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
+        response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
     }
 
 }

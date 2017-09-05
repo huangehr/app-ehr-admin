@@ -38,14 +38,14 @@ service-gateway:
   username: user
   password: eureka
   url: http://192.168.1.221:10000/api/v1.0/admin
-  stdurl: http://172.19.103.74:10000/api/v1.0/admin/std
+  stdurl: http://192.168.1.221:10000/api/v1.0/admin/std
   versionurl: http://192.168.1.221:10000/api/v1.0/admin/version
   cdatypeurl: http://192.168.1.221:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://192.168.1.221:10000/api/v1.0/admin/standard_source
   adaption: http://192.168.1.221:10000/api/v1.0/adapter
   template: http://192.168.1.221:10000/api/v1.0/template
   standard: http://192.168.1.221:10000/api/v1.0/std
-  BrowseClienturl: http://27.154.233.186:9480/ehr/browser
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
 fast-dfs:
   tracker-server: 172.19.103.13:22122
   public-server: http://172.19.103.52:80

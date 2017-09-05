@@ -449,7 +449,7 @@ public class ResourceController extends BaseUIController {
     }
 
     /**
-     * 指标预览
+     * 指标上卷下钻预览
      * @param id
      * @param model
      * @param dimension  维度
@@ -457,29 +457,66 @@ public class ResourceController extends BaseUIController {
      * @return
      */
     @RequestMapping("/resourceShow")
-    public String resourceShow(String id ,Model model,String dimension,String quotaFilter){
+    public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter){
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
-        Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("filter", "resourceId=" + id);
-        params.put("dimension", dimension!=null?dimension:"slaveKey2");
+        params.put("resourceId", id);
+        params.put("dimension", dimension);
+        params.put("quotaId", quotaId);
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
-            quotaFilter = quotaFilter==null?"org=41872607-9":quotaFilter;//测试用
-            String filter[] = quotaFilter.split(";");
-            for(int i=0;i<filter.length;i++){
-                String [] val = filter[i].split("=");
-                quotaFilterMap.put(val[0].toString(),val[1].toString());
-            }
-            params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
+           if( !StringUtils.isEmpty(quotaFilter) ){
+               String filter[] = quotaFilter.split(";");
+               for(int i=0;i<filter.length;i++){
+                   String [] val = filter[i].split("=");
+                   quotaFilterMap.put(val[0].toString(),val[1].toString());
+               }
+               params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
+           }
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        model.addAttribute("id", id);
         model.addAttribute("resultStr", resultStr);
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
         return "simpleView";
+    }
+
+
+    /**
+     * 指标预览
+     * @param id
+     * @param dimension  维度
+     * @param quotaFilter 过滤条件 多个;拼接 如：org=123;city=001
+     * @return
+     */
+    @RequestMapping("/resourceUpDown")
+    @ResponseBody
+    public String getResourceUpDown(String id, String dimension,String quotaFilter,String quotaId){
+        String url = "/resources/getRsQuotaPreview";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("resourceId", id);
+        params.put("dimension", dimension);
+        params.put("quotaId", quotaId);
+        try {
+            Map<String, Object> quotaFilterMap = new HashMap<>();
+            if( !StringUtils.isEmpty(quotaFilter) ){
+                String filter[] = quotaFilter.split(";");
+                for(int i=0;i<filter.length;i++){
+                    String [] val = filter[i].split("=");
+                    quotaFilterMap.put(val[0].toString(),val[1].toString());
+                }
+                params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
+            }
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultStr;
     }
 
     public Boolean isRsInUse(String resourceId) throws Exception{

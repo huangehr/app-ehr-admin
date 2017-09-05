@@ -168,6 +168,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
             params.clear();
             params.put("orgId",model.getOrgId());
             params.put("userId",model.getUserId());
+            params.put("deptId",deptId);
             String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
             Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
             if (!envelopGet2.isSuccessFlg()){
@@ -568,5 +569,32 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
             e.printStackTrace();
         }
         return orgDeptModel;
+    }
+
+    @RequestMapping("getAllDeptByOrgId")
+    @ResponseBody
+    public Object getAllDeptByOrgId(String orgId) {
+
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(orgId)) {
+            params.put("orgId", orgId);
+        } else {
+            params.put("orgId", 0);
+        }
+        try {
+            String url ="/orgDept/list";
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        }catch (Exception ex){
+            LogService.getLogger(DeptMemberController.class).error(ex.getMessage());
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+
+            return result;
+        }
     }
 }

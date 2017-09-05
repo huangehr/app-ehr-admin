@@ -180,7 +180,7 @@
                     width:'240px'
                 });
 
-                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/health/getAllHealthBusinessList',null,self.quotaTypeSelectedVal,null,null,{valueField: 'id',
+                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/quota/getAllQuotaCategoryList',null,self.quotaTypeSelectedVal,null,null,{valueField: 'id',
                     textField: 'name'});
                 self.$inpQuotaType.parent().css({
                     width:'240'

@@ -53,8 +53,8 @@
 
 
 
-    function CustomCombo(el, url, options){
-        var girdOptsCopy = $.extend({}, gridOpts);
+    function CustomCombo(el, url, options, grodOpt){
+        var girdOptsCopy = grodOpt ? $.extend({}, gridOpts, grodOpt) : $.extend({}, gridOpts);
         var opts = $.extend({}, comboOpts, options);
         girdOptsCopy.url = url;
         opts.grid = girdOptsCopy;
@@ -101,7 +101,7 @@
         $(this.getLigerComboBox().unselect).on(eventKey, callFunc);
     };
 
-    $.fn.customCombo = function (url, parms, selectedCall, child, readOnly, opts) {
+    $.fn.customCombo = function (url, parms, selectedCall, child, readOnly, opts, grodOpt) {
         el = this;
         if(!selectedCall)
             selectedCall = function(id, name){
@@ -132,7 +132,7 @@
             onSelected: selectedCall,
             readonly: readOnly || false
         }, opts);
-        var me = new CustomCombo(el, url, opts);
+        var me = new CustomCombo(el, url, opts, grodOpt);
         if(child)
             me.on("changeValue",function () {
                 child.ligerGetComboBoxManager().clear();
