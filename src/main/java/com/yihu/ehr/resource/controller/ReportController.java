@@ -395,12 +395,12 @@ public class ReportController extends BaseUIController {
                 // 指标数据的视图的场合
                 // todo 还要考虑档案数据的视图的场合
                 params.clear();
-                params.put("filter", "resourceId=" + view.getResourceId());
+                params.put("resourceId", view.getResourceId());
                 String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                 List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>(){});
                 for (MChartInfoModel chartInfo : chartInfoList) {
                     Map<String, Object> option = new HashMap<>();
-                    option.put("id", chartInfo.getQuotaId());
+                    option.put("quotaCode", chartInfo.getQuotaCode());
                     option.put("option", chartInfo.getOption());
                     options.add(option);
                 }

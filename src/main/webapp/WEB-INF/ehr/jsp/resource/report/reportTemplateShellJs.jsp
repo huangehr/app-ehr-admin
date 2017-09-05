@@ -26,7 +26,7 @@
                     for(var i = 0; i < data.obj.options.length; i++) {
                         (function(j) {
                             var item = data.obj.options[j];
-                            var chart = echarts.init(document.getElementById('' + item.id));
+                            var chart = echarts.init(document.getElementById('' + item.quotaCode));
                             chart.setOption(JSON.parse(item.option));
                         })(i);
                     }
