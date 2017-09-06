@@ -290,23 +290,30 @@
                     checkbox: true,
                     async: false,
                     onCheck:function (checkData,checked) {
-                            var data = checkData.data;
-                            var checkD = null;
-                            if(data.pid){//点中的是二级节点
-                                checkD = [data];
-                            }else{//点中根节点
-                                if(data.children){
-                                    checkD = data.children;
+                        var data = checkData.data;
+                        var checkD = null;
+                        var p = this.getParentTreeItem(checkData.target,1);
+                        if(data.pid){//点中的是二级节点
+                            var appName = $(this.getParentTreeItem(checkData.target)).find('.l-body').find('span').html();
+                            checkD = [data];
+                            checkD[0].appName  = appName;
+                        }else{//点中根节点
+                            if(data.children){
+                                var appName = data.name;
+                                checkD = data.children;
+                                for (var k = 0; k < checkD.length; k++) {
+                                    checkD[k].appName = appName;
                                 }
                             }
-                            if(checkD){
-                                if(checked){//选中
-                                    self.appendCheckData(checkD);
-                                }else{//取消选中
-                                    self.cancelCheckData(checkD);
-                                }
+                        }
+                        if(checkD){
+                            if(checked){//选中
+                                debugger
+                                self.appendCheckData(checkD);
+                            }else{//取消选中
+                                self.cancelCheckData(checkD);
                             }
-
+                        }
                     },
                     onSuccess: function (data) {
                         typeTree.setData(data.detailModelList);
@@ -332,10 +339,12 @@
                     var item = data[i];
                     var roleId = item.id || item.roleId;
                     var roleName = item.name || item.roleName;
+                    var appName = item.appName || item.appName;
                     if (appDom.find(".div-item[data-id='" + roleId + "']").length == 0) {
                         resultHtml += '<div class="h-40 div-item" data-id="'+roleId+'">'+
-                                         '<div class="div-main-content" title="'+roleName+'">'+roleName+'</div>'+
-                                        '<div class="div-delete-content"><a class="grid_delete" href="#" title="删除"></a></div>'+
+                                        '<div class="div-main-content" style="width:40%" title="'+appName+'">'+appName+'</div>'+
+                                        '<div class="div-main-content" style="width:40%" title="'+roleName+'">'+roleName+'</div>'+
+                                        '<div class="div-delete-content" style="width:20%"><a class="grid_delete" href="#" title="删除"></a></div>'+
                                     '</div>';
                     }
                 }
