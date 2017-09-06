@@ -412,7 +412,7 @@
                 //修改人口信息
                 patientInfo.$updateBtn.click(function () {
                     if($(".tab-list li.cur").html()=="角色授权"){//保存角色授权值
-                        var wait = $.Notice.waitting('正在加载中...');
+                        var wait = $.Notice.waitting('正在保存中,请稍候...');
                         var saveData = [];
                         var rightData = $("#div_checked_data .div-item");
                         for(var j=0;j<rightData.length;j++){

@@ -604,20 +604,23 @@ set.attr = {
 
         var _url = set.list._url + "/std/dataset/saveDataSet";
 
+        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
         $.ajax({
             url: _url,
             type: "POST",
             dataType: "json",
             data: dataJson[0],
             success: function (data) {
+                waittingDialog.close();
                 if (data != null) {
 
                     var _res = eval(data);
                     if (_res.successFlg) {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
+                            debugger
                             parent.set.list.isReload = true;
-                            parent.set.list.top.dialog_set_detail.close();
+                            parent.set.list.dialog_set_detail.close();
                         }, null);
                     }
                     else {
@@ -640,7 +643,7 @@ set.attr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.top.dialog_set_detail.close();
+            parent.set.list.dialog_set_detail.close();
         });
     }
 };
@@ -825,18 +828,21 @@ set.elementAttr = {
         }
         var _url = set.list._url + "/std/dataset/updataMetaSet";
 
+        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
         $.ajax({
             url: _url,
             type: "POST",
             dataType: "json",
             data: {info:JSON.stringify(dataJson[0]),version:version},
             success: function (data) {
+                waittingDialog.close();
                 if (data != null) {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         $.ligerDialog.alert("保存成功!", "提示", "success", function () {
+                            debugger
                             parent.set.list.isReload = true;
-                            parent.set.list.top.dialog_set_detail.close();
+                            parent.set.list.dialog_set_detail.close();
                         }, null);
                     }
                     else {

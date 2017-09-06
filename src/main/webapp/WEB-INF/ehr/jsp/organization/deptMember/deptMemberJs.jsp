@@ -75,6 +75,7 @@
 				$status:$('#inp_status'),
 				$search: $("#inp_search"),
 				$searchNm: $('#inp_searchNm'),
+                $btnSearch: $('#btn_search'),
 
 
 				init: function () {
@@ -94,16 +95,17 @@
 						value:"0"
 					});
 
-					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
-						var searchNm = $('#inp_searchNm').val();
-						status = $('#inp_status').val();
-						var parms = {
-							'searchNm':searchNm,
-							'status':status,
-							'categoryId':categoryId
-						};
-						reloadGrid(parms);
-					}});
+					this.$searchNm.ligerTextBox({width:150});
+                    this.$btnSearch.on('click', function () {
+                        var searchNm = $('#inp_searchNm').val();
+                        status = $('#inp_status').val();
+                        var parms = {
+                            'searchNm':searchNm,
+                            'status':status,
+                            'categoryId':categoryId
+                        };
+                        reloadGrid(parms);
+                    });
 
 					self.getResourceBrowseTree();
 				},

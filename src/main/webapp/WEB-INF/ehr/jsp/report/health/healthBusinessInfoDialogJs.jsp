@@ -174,11 +174,13 @@
                             values.id = id.toString();
                             mode = "modify";
                         }
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/quota/addOrUpdateQuotaCategory", {
                             data: {jsonDate:JSON.stringify(values), mode:mode},
                             async: false,
                             type: 'post',
                             success: function (data) {
+                                waittingDialog.close();
                                 if (data.successFlg) {
                                     closeZhiBiaoInfoDialog(function () {
                                         if(id != '-1'){//修改
