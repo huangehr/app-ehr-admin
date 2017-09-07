@@ -47,6 +47,7 @@
     .btn-file-container {
         display: inline-block;
         position: relative;
+        overflow-x: hidden;
     }
     .btn-file-container form {
         position: absolute;
