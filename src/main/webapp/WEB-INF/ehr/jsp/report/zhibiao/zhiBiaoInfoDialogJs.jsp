@@ -494,11 +494,13 @@
                         if (id != '-1') {
                             values.id = id.toString();
                         }
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/tjQuota/updateTjDataSource", {
                             data: {tjQuotaModelJsonData:JSON.stringify(values)},
                             async: false,
                             type: 'post',
                             success: function (data) {
+                                waittingDialog.close();
                                 if (data.successFlg) {
                                     closeZhiBiaoInfoDialog(function () {
                                         if(id != '-1'){//修改

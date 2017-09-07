@@ -12,10 +12,10 @@
     .sj-icon,.sj-sj-icon{width:0;height:0;  border-width:0 10px 10px;border-style:solid;position: absolute}
     .sj-icon{border-color:transparent transparent #ccc;bottom: 2px;right: -3px;z-index: 999}
     .sj-sj-icon{border-color:transparent transparent #fff;bottom: -11px;right: -10px}
-    .pop-s-con{width: 760px;padding: 10px;position: absolute;right: -221px;top: 8px;background: #fff;border: 1px solid #ccc;padding-bottom: 55px;z-index: 998;overflow: auto}
+    .pop-s-con{width: 850px;padding: 10px;position: absolute;right: -122px;top: 8px;background: #fff;border: 1px solid #ccc;padding-bottom: 55px;z-index: 998;overflow: auto}
     .pop-btns{position: absolute;bottom: 10px;right: 10px;z-index: 999}
     .inp-text{display: inline-block;vertical-align: middle;    font-size: 12px;}
-    .inp-label{width: 95px;vertical-align: middle;text-align: right;font-size: 12px;padding-right: 10px;margin-bottom: 0}
+    .inp-label{width: 150px;vertical-align: middle;text-align: right;font-size: 12px;padding-right: 10px;margin-bottom: 0}
     .clear-s{font-size: 0}
     .pop-main{display:none;width: 10px;height: 10px;left: 81px;right: 0;position: absolute}
 </style>
@@ -117,6 +117,9 @@
                                 </div>
                                 <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="div_search_btn">
                                     <span>搜索</span>
+                                </div>
+                                <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar" id="save_search_btn">
+                                    <span>更新条件</span>
                                 </div>
                             </div>
                         </div>

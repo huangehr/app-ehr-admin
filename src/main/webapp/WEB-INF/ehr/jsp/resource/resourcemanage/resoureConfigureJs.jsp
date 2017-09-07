@@ -235,7 +235,7 @@
                     }});
 
                     $("#div_save").click(function(){
-                        var wait = $.Notice.waitting('正在加载中...');
+                        var wait = $.Notice.waitting('正在保存中,请稍候...');
                         var saveData = [];
                         var thisResourceId = '';
                         var reqUrl = '${contextRoot}/resource/resourceManage/addResourceQuota';

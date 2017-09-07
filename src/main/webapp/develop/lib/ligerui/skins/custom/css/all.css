@@ -122,7 +122,7 @@ a.l-checkbox-checked{ background:url(../images/gouxuan.png)  }
     /* grid.css 样式覆盖 */
 .l-bar-group { height: 30px; }
 .l-bar-group input { height: 18px; line-height: 18px; }
-.l-bar-group input { height: 18px; line-height: 18px; }
+.l-bar-group input { width: 35px !important; }
 .l-panel-bbar-inner { margin-top: 0; }
 
 .m-form-group:after { display: table; content: " "; clear: both; }

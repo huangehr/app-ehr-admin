@@ -90,14 +90,18 @@
 						var parms = {
 							'searchNm':'',
 							'categoryId':'',
+                            'dataSource':0
 						};
 						reloadGrid(parms);
 					}});
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
+                        var resourceType = $('#droDList_val').val();
+                        debugger
 						var parms = {
 							'searchNm':searchNm,
 							'categoryId':categoryId,
+                            'dataSource': parseInt(resourceType)
 						};
 						reloadGrid(parms);
 					}});
@@ -156,7 +160,8 @@
 						url: '${contextRoot}/resource/resourceManage/resources',
 						parms: {
 							searchNm: $('#inp_searchNm').val(),
-							categoryId: categoryId
+							categoryId: categoryId,
+                            dataSource: 0
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},

@@ -130,13 +130,15 @@
                 function update(noticeModel) {
                     var modelJsonData = JSON.stringify(noticeModel);
                     var dataModel = $.DataModel.init();
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     dataModel.updateRemote("${contextRoot}/portalNotice/updatePortalNotice", {
                         data: {
                             portalNoticeModelJsonData: modelJsonData
                         },
                         success: function (data) {
+                            waittingDialog.close();
                             if (data.successFlg) {
-                                closeAddPortalNoticeInfoDialog(function () {
+                                parent.closeAddPortalNoticeInfoDialog(function () {
                                     $.Notice.success('新增成功');
                                 });
                             } else {

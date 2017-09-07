@@ -300,19 +300,21 @@ cateType.attr = {
         saveJson.name = dataJson.name.getValue();
         saveJson.description = dataJson.description.getValue();
         var _url = cateType.list._url + "/rscategory/saveCateType";
+        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
         $.ajax({
             url: _url,
             type: "POST",
             dataType: "json",
             data: {dataJson: JSON.stringify(saveJson)},
             success: function (data) {
+                waittingDialog.close();
                 if (data != null) {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         var cateTypePid = dataJson.pid.getValue();
                         sessionStorage.setItem("cateTypePid", cateTypePid);
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                            parent.cateType.list.top.dialog_cateType_detail.close();
+                            parent.cateType.list.dialog_cateType_detail.close();
                         }, null);
                     }
                     else {
@@ -330,7 +332,7 @@ cateType.attr = {
             cateType.attr.save();
         });
         $("#btn_close").click(function () {
-            parent.cateType.list.top.dialog_cateType_detail.close();
+            parent.cateType.list.dialog_cateType_detail.close();
         });
     }
 }

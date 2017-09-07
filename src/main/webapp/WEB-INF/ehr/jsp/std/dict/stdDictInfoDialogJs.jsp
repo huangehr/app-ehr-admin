@@ -158,10 +158,12 @@
                         self.$btnSave.removeAttr('disabled');
                         return;
                     }
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/cdadict/saveDict",{
                         data: data,
                         success: function(data) {
+                            waittingDialog.close();
                             if(data.successFlg){
                                 var app = data.obj;
                                 //$.Notice.success( '操作成功！');

@@ -18,7 +18,8 @@
                 searchQuotaResourceData: "${contextRoot}/resourceBrowse/searchQuotaResourceData",//获取指标统计
                 searchDictEntryList :"${contextRoot}/resourceView/searchDictEntryList",
                 getGridCloumnNames: "${contextRoot}/resourceView/getGridCloumnNames",//获取表头
-                getRsDictEntryList: "${contextRoot}/resourceBrowse/getRsDictEntryList"
+                getRsDictEntryList: "${contextRoot}/resourceBrowse/getRsDictEntryList",
+                updateResourceQuery: "${contextRoot}/resourceIntegrated/updateResourceQuery"//保存搜索条件
             };
             //档案数据基本数据
             var defauleColumnModel = [
@@ -39,6 +40,7 @@
                 $resourceName: $('#sp_resourceName'),
                 $SearchBtn: $("#div_search_btn"),
                 $resetBtn: $("#div_reset_btn"),
+                $saveSearchBtn: $('#save_search_btn'),
                 $resourceBrowse: $(".div-resource-browse"),
                 $newSearch: $("#div_search_data_role_form"),
                 $resourceInfoGrid: $("#div_resource_info_grid"),
@@ -75,6 +77,21 @@
                 getDataUrl: '',
                 //初始化
                 init: function () {
+                    Date.prototype.format = function (fmt) {
+                        var o = {
+                            "M+": this.getMonth() + 1, //月份
+                            "d+": this.getDate(), //日
+                            "H+": this.getHours(), //小时
+                            "m+": this.getMinutes(), //分
+                            "s+": this.getSeconds(), //秒
+                            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                            "S": this.getMilliseconds() //毫秒
+                        };
+                        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                        for (var k in o)
+                            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                        return fmt;
+                    };
                     var me = this;
                     me.$spResourceSub.html(me.resourceSub);
                     me.$spResourceName.html(me.resourceName);
@@ -418,6 +435,29 @@
                         me.getParams();
                         me.reloadResourcesGrid(me.params);
                         me.$popMain.css('display', 'none');
+                    });
+                    //更新搜索条件
+                    me.$saveSearchBtn.on('click', function () {
+                        var qc = {
+                            resourceId: me.resourcesId,
+                            queryCondition: JSON.parse(me.getQuerySearchData())
+                        };
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                        me.dataModel.fetchRemote(inf.updateResourceQuery, {
+                            data: {
+                                dataJson: JSON.stringify(qc)
+                            },
+                            type: 'POST',
+                            success: function (data) {
+                                waittingDialog.close();
+                                me.$popMain.css('display', 'none');
+                                if (data.successFlg) {
+                                    $.Notice.success('更新成功');
+                                } else {
+                                    $.Notice.error('更新失败');
+                                }
+                            }
+                        });
                     });
 
                     me.$ddSeach.on('click', function (e) {

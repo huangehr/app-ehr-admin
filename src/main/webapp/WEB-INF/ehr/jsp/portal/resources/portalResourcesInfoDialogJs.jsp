@@ -157,9 +157,11 @@
                 function update(resourcesModel) {
                     var resourcesModelJsonData = JSON.stringify(resourcesModel);
                     var dataModel = $.DataModel.init();
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     dataModel.updateRemote("${contextRoot}/portalResources/updatePortalResources", {
                         data: {portalResourcesModelJsonData: resourcesModelJsonData},
                         success: function (data) {
+                            waittingDialog.close();
                             if (data.successFlg) {
                                 win.closeResourcesInfoDialog();
                                 win.reloadMasterUpdateGrid();
