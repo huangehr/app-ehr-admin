@@ -373,6 +373,7 @@ public class ReportController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> resultMap = new HashMap<>();
+        List<Map<String, Object>> viewInfos = new ArrayList<>();
         List<Map<String, Object>> options = new ArrayList<>();
         try {
             // 获取报表模版内容
@@ -404,8 +405,16 @@ public class ReportController extends BaseUIController {
                     option.put("option", chartInfo.getOption());
                     options.add(option);
                 }
+                Map<String, Object> viewInfo = new HashMap<>();
+                viewInfo.put("options", options); // 视图包含的指标echart图形的option。
+                // todo 指标统计固化视图保存时，筛选条件保存还未实现，待确定。
+                Map<String, Object> filter = new HashMap<>();
+                filter.put("startTime", "2017-8-1");
+                filter.put("endTime", "2017-8-31");
+                viewInfo.put("filter", filter); // 视图数据过滤条件。
+                viewInfos.add(viewInfo);
             }
-            resultMap.put("options", options);
+            resultMap.put("viewInfos", viewInfos);
 
             envelop.setObj(resultMap);
             envelop.setSuccessFlg(true);
