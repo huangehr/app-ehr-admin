@@ -326,20 +326,21 @@ cdaType.attr = {
         dataJson[0]["parentId"] = parent_id;
 
         var _url = cdaType.list._url + "/cdatype/SaveCdaType";
-
+        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
         $.ajax({
             url: _url,
             type: "POST",
             dataType: "json",
             data: {dataJson:JSON.stringify(dataJson[0])},
             success: function (data) {
+                waittingDialog.close();
                 if (data != null) {
 
                     var _res = eval(data);
                     if (_res.successFlg) {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                            parent.cdaType.list.top.dialog_cdatype_detail.close();
+                            parent.cdaType.list.dialog_cdatype_detail.close();
                         }, null);
                     }
                     else {

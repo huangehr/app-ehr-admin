@@ -145,10 +145,12 @@
 				});
 
 				function update(values,categoryIdNew){
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 					var dataModel = $.DataModel.init();
 					dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
 						data:{dataJson:JSON.stringify(values),mode:mode},
 						success: function(data) {
+                            waittingDialog.close();
 							if (data.successFlg) {
 								reloadMasterUpdateGrid(categoryIdNew);
 								$.Notice.success('操作成功');

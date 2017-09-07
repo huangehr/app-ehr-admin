@@ -127,9 +127,11 @@
 						var infectiousFlags = icd10Model.infectiousFlag;
 						icd10Model.chronicFlag = chronicFlags[0];
 						icd10Model.infectiousFlag = infectiousFlags[0];
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						dataModel.createRemote("${contextRoot}/specialdict/icd10/update", {
 							data:  {icd10JsonData:JSON.stringify(icd10Model),mode:mode},
 							success: function (data) {
+                                waittingDialog.close();
 								if(data.successFlg){
 									reloadIcd10InfoGrid();
 									$.Notice.success('操作成功');

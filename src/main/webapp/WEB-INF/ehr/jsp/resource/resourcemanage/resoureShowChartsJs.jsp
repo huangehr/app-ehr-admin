@@ -33,6 +33,8 @@
                     dataLength++;
                 }
             }
+        } else {
+            $.Notice.success('获取数据失败,请重试！');
         }
         var showSharts = {
             $tabList: $('.tab-list'),

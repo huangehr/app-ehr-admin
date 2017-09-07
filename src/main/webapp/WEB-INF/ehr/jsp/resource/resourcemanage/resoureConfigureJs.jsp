@@ -95,10 +95,7 @@
                                             html.push('<option value="2" ' + c + '>折线图</option>');
                                             break;
                                         case '3':
-                                            html.push('<option value="3" ' + c + '>曲线图</option>');
-                                            break;
-                                        case '4':
-                                            html.push('<option value="4" ' + c + '>饼状图</option>');
+                                            html.push('<option value="3" ' + c + '>饼状图</option>');
                                             break;
                                     }
                                 }
@@ -205,9 +202,6 @@
                                         cName = '折线图';
                                         break;
                                     case 3:
-                                        cName = '曲线图';
-                                        break;
-                                    case 4:
                                         cName = '饼状图';
                                         break;
                                 }
@@ -241,7 +235,7 @@
                     }});
 
                     $("#div_save").click(function(){
-                        var wait = $.Notice.waitting('正在加载中...');
+                        var wait = $.Notice.waitting('正在保存中,请稍候...');
                         var saveData = [];
                         var thisResourceId = '';
                         var reqUrl = '${contextRoot}/resource/resourceManage/addResourceQuota';

@@ -136,10 +136,12 @@
                            values.id = parseInt(self.$weiDuId.val());
                         }
                         var dataModel = $.DataModel.init();
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/tjDimensionMain/updateTjDimensionMain", {
                             data: {tjDimensionMainModelJsonData:JSON.stringify(values)},
                             async: false,
                             success: function (data) {
+                                waittingDialog.close();
                                 if (data.successFlg) {
                                     closeAddWeiduInfoDialog(function () {
                                         if(self.$weiDuId.val()!="" && self.$weiDuId.val()!=undefined){//修改

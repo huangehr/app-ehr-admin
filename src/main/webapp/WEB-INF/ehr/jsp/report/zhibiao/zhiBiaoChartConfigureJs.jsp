@@ -143,7 +143,7 @@
 
                     $("#div_save").click(function(){
                         debugger
-                        var wait = $.Notice.waitting('正在加载中...');
+                        var wait = $.Notice.waitting('正在保存中,请稍候...');
                         var saveData = [];
                         var quotaCode = null
                         var reqUrl = '${contextRoot}/tjQuota/addTjQuotaChart';

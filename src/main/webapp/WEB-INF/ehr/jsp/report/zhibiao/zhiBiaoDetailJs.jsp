@@ -266,7 +266,7 @@
                     $("#div_save").click(function(){
                             var validate = $(".pop_tab li.cur").index()==0?validator.validate():validator1.validate();
                             if(validate){
-                                var wait = $.Notice.waitting('正在加载中...');
+                                var wait = $.Notice.waitting('正在保存中,请稍候...');
                                 var saveData = [];
                                 var quotaCode = null
                                 var reqUrl = '${contextRoot}/tjQuotaDimensionMain/addTjQuotaDimensionMain';

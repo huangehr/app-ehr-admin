@@ -132,7 +132,7 @@ public class ResourceController extends BaseUIController {
      */
     @RequestMapping("/resources")
     @ResponseBody
-    public Object searchResources(String searchNm,String categoryId,int page,int rows){
+    public Object searchResources(String searchNm, String categoryId, Integer dataSource, int page, int rows){
         String url = "/resources";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -141,8 +141,11 @@ public class ResourceController extends BaseUIController {
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("code?" + searchNm + " g1;name?" + searchNm + " g1;");
         }
+        if(dataSource != null && dataSource != 0) {
+            stringBuffer.append("dataSource=" + dataSource + ";");
+        }
         if(!StringUtils.isEmpty(categoryId)){
-            stringBuffer.append("categoryId="+categoryId);
+            stringBuffer.append("categoryId=" + categoryId);
         }else {
             return envelop;
         }
