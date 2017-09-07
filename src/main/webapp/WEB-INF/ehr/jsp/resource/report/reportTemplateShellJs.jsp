@@ -5,6 +5,7 @@
 <script src="${contextRoot}/develop/lib/plugin/echarts/2.2.7/js/echarts-all.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/core/base.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/plugins/ligerDialog.js"></script>
+<script src="${contextRoot}/develop/lib/mustache/mustache.min.js"></script>
 <script src="${contextRoot}/develop/module/util.js"></script>
 <script src="${contextRoot}/develop/lib/plugin/notice/topNotice.js"></script>
 <script>
@@ -23,12 +24,25 @@
             success: function(data) {
                 if(data.successFlg) {
                     $('#reportTemplate').html(data.obj.templateContent);
-                    for(var i = 0; i < data.obj.options.length; i++) {
-                        (function(j) {
-                            var item = data.obj.options[j];
-                            var chart = echarts.init(document.getElementById('' + item.quotaCode));
-                            chart.setOption(JSON.parse(item.option));
-                        })(i);
+                    var viewInfos = data.obj.viewInfos;
+                    for(var a = 0; a < viewInfos.length; a++) {
+                        var viewInfo = viewInfos[a];
+                        var options = viewInfo.options;
+                        var filter = viewInfo.filter;
+                        for(var i = 0; i < options.length; i++) {
+                            (function(j) {
+                                // 渲染图形
+                                var item = options[j];
+                                var chart = echarts.init(document.getElementById('' + item.quotaCode));
+                                chart.setOption(JSON.parse(item.option));
+
+                                // 渲染图形数据过滤条件
+                                var filterTpl = document.getElementById(item.quotaCode + '-filter').innerHTML.trim();
+                                Mustache.parse(filterTpl);
+                                var filterHtml = Mustache.render(filterTpl, filter);
+                                $('#' + item.quotaCode).before(filterHtml);
+                            })(i);
+                        }
                     }
                 } else {
                     $.Notice.warn('获取报表模版失败！');
