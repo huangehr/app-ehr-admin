@@ -556,8 +556,8 @@ public class LoginController extends BaseUIController {
         return "generalView";
     }
 
-    /*
-   单点登录
+    /**
+     *  单点登录
     */
     @RequestMapping(value = "/broswerSignin",method = RequestMethod.GET)
     public void signin(Model model,HttpServletRequest request,HttpServletResponse response, String idCardNo) throws Exception
@@ -573,10 +573,15 @@ public class LoginController extends BaseUIController {
         response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
     }
 
+    /**
+     * 验证某个用户是否有数据
+     * @param idCardNo
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
     @ResponseBody
     public int check(String idCardNo) throws Exception {
-        //验证用户信息
         Map<String, Object>  paramsMap = new HashMap<>();
         paramsMap.put("demographic_id", idCardNo);
         paramsMap.put("version", stdVersion);
