@@ -54,6 +54,7 @@
 				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
+					debugger
 					nameCopy = info.name;
 					codeCopy = info.code;
 					this.$form.Fields.fillValues({
@@ -63,7 +64,7 @@
 						categoryId:info.categoryId,
 						rsInterface:info.rsInterface,
 						grantType:info.grantType,
-						dataSource:info.dataSource,
+						dataSource:info.dataSource.toString(),
 						description:info.description
 					});
 					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
@@ -72,7 +73,6 @@
 				this.$form.show();
 			},
 			initDDL: function () {
-				debugger
 				this.$grantType.eq(1).attr("checked", 'true')
 				this.$dataSource.eq(0).attr("checked", 'true')
 				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});
