@@ -141,7 +141,7 @@ public class ResourceController extends BaseUIController {
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("code?" + searchNm + " g1;name?" + searchNm + " g1;");
         }
-        if(dataSource != 0) {
+        if(dataSource != null && dataSource != 0) {
             stringBuffer.append("dataSource=" + dataSource + ";");
         }
         if(!StringUtils.isEmpty(categoryId)){

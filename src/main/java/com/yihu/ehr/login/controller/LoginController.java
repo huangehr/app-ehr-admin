@@ -2,6 +2,7 @@ package com.yihu.ehr.login.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.deploy.net.HttpUtils;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
@@ -15,6 +16,8 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.ObjectMapperUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateTimeUtil;
+import com.yihu.ehr.util.httpClient.HttpHelper;
+import com.yihu.ehr.util.httpClient.HttpResponse;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
 import io.swagger.annotations.ApiParam;
@@ -59,6 +62,8 @@ public class LoginController extends BaseUIController {
     private String comUrl;
     @Value("${service-gateway.BrowseClienturl}")
     private String browseClienturl;
+    @Value("${service-gateway.profileurl}")
+    private String profileurl;
     @Value("${app.oauth2authorize}")
     private String authorize;
     @Value("${app.oauth2OutSize}")
@@ -71,6 +76,9 @@ public class LoginController extends BaseUIController {
     private String resourceBrowseClientId;
     @Value("${app.browseClientId}")
     public String browseClientId;
+    @Value("${std.version}")
+    public String stdVersion;
+
 
     @RequestMapping(value = "")
     public String login(Model model) {
@@ -548,11 +556,11 @@ public class LoginController extends BaseUIController {
         return "generalView";
     }
 
-    /*
-   单点登录
+    /**
+     *  单点登录
     */
     @RequestMapping(value = "/broswerSignin",method = RequestMethod.GET)
-    public void signin(Model model,HttpServletRequest request,HttpServletResponse response,String idCardNo) throws Exception
+    public void signin(Model model,HttpServletRequest request,HttpServletResponse response, String idCardNo) throws Exception
     {
         String clientId=browseClientId;
         String url=browseClienturl+"/common/login/signin?idCardNo="+idCardNo;
@@ -563,6 +571,27 @@ public class LoginController extends BaseUIController {
         model.addAttribute("model",request.getSession());
         model.addAttribute("idCardNo",idCardNo);
         response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
+    }
+
+    /**
+     * 验证某个用户是否有数据
+     * @param idCardNo
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public int check(String idCardNo) throws Exception {
+        Map<String, Object>  paramsMap = new HashMap<>();
+        paramsMap.put("demographic_id", idCardNo);
+        paramsMap.put("version", stdVersion);
+        String url2 = "/" + paramsMap.get("demographic_id") + "/profile/info";
+        try {
+            HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
+        }catch (Exception e) {
+            return 404;
+        }
+        return 200;
     }
 
 }

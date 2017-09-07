@@ -46,9 +46,12 @@ service-gateway:
   template: http://192.168.1.221:10000/api/v1.0/template
   standard: http://192.168.1.221:10000/api/v1.0/std
   BrowseClienturl: http://192.168.1.221:8010/ehr/browser
+  profileurl: http://http://172.17.110.227:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
   public-server: http://172.19.103.52:80
+std:
+  version: 59083976eebd
 
 ---
 spring:
@@ -76,8 +79,11 @@ service-gateway:
   template: http://localhost:10000/api/v1.0/template
   standard: http://localhost:10000/api/v1.0/std
   BrowseClienturl: http://192.168.1.221:8010/ehr/browser
+  profileurl: http://localhost:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.54:22122
+std:
+  version: 59083976eebd
 
 ---
 spring:
@@ -105,10 +111,12 @@ service-gateway:
   template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
   BrowseClienturl: http://172.19.103.73:8010/ehr/browser
-
+  profileurl: http://172.19.103.73:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
   public-server: http://172.19.103.52:80
+std:
+  version: 59083976eebd
 
 ---
 spring:
@@ -136,13 +144,13 @@ service-gateway:
   template: http://11.1.2.21:10000/api/v1.0/template
   standard: http://11.1.2.21:10000/api/v1.0/std
   BrowseClienturl: http://192.168.1.221:8010/ehr/browser
-
+  profileurl: http://11.1.2.21:9009/api/v1.0
 fast-dfs:
   tracker-server: 11.1.2.9:22122
-
+std:
+  version: 59083976eebd
 logging:
     config: classpath:logback-spring.xml
-
 
 ---
 spring:
@@ -170,10 +178,11 @@ service-gateway:
   template: http://192.168.135.31:10000/api/v1.0/template
   standard: http://192.168.135.31:10000/api/v1.0/std
   BrowseClienturl: http://192.168.135.34:8010/ehr/browser
-
+  profileurl: http://192.168.135.31:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.135.42:22122
   public-server: http://192.168.135.42:22122
-
+std:
+  version: 59083976eebd
 logging:
     config: classpath:logback-spring.xml

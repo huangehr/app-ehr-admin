@@ -72,8 +72,8 @@
                         html += '<sec:authorize url="/resource/report/setting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/upload"><a class="label_a f-ml10 btn-file-container" title="模版导入" href="javascript:void(0)">' +
                                 '   模版导入' +
-                                '   <form id ="listUploadForm" enctype="multipart/form-data">' +
-                                '       <input type="file" name="file" onchange="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:upload", row.id) + '">' +
+                                '   <form id ="uploadForm' + row.id + '" enctype="multipart/form-data">' +
+                                '       <input type="file" name="file" onchange="javascript:' + $.Util.format("$.publish('{0}',['{1}', '{2}'])", "resource:report:upload", row.id) + '">' +
                                 '   </form>' +
                                 '</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/preview"><a class="label_a f-ml10" title="预览" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}', '{2}'])", "resource:report:preview", row.code, row.templatePath) + '">预览</a></sec:authorize>';
@@ -109,7 +109,7 @@
 
         // 模版导入
         $.subscribe('resource:report:upload', function (event, id) {
-            var formData = new FormData($( "#listUploadForm" )[0]);
+            var formData = new FormData($( "#uploadForm" + id)[0]);
             formData.append('id', id);
             $.ajax({
                 url: '${contextRoot}/resource/report/upload',
