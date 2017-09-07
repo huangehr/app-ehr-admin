@@ -637,13 +637,14 @@
             dataJson[0]["versionCode"] = versionCode;
 
             var _url = set.list._url + "/std/dataset/saveDataSet";
-
+            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
             $.ajax({
                 url: _url,
                 type: "POST",
                 dataType: "json",
                 data: dataJson[0],
                 success: function (data) {
+                    waittingDialog.close();
                     if (data != null) {
 
                         var _res = eval(data);
@@ -859,12 +860,14 @@
             }
             var _url = set.list._url + "/std/dataset/updataMetaSet";
 
+            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
             $.ajax({
                 url: _url,
                 type: "POST",
                 dataType: "json",
                 data: {info:JSON.stringify(dataJson[0]),version:version},
                 success: function (data) {
+                    waittingDialog.close();
                     if (data != null) {
                         var _res = eval(data);
                         if (_res.successFlg) {

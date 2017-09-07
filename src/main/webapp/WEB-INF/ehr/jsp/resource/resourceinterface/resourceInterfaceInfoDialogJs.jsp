@@ -110,9 +110,11 @@
 						var dataModel = $.DataModel.init();
 						self.$form.attrScan();
 						var model = self.$form.Fields.getValues();
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						dataModel.createRemote("${contextRoot}/resource/resourceInterface/update", {
 							data:  {dataJson:JSON.stringify(model),mode:mode},
 							success: function (data) {
+                                waittingDialog.close();
 								if(data.successFlg){
 									reloadMasterUpdateGrid();
 									$.Notice.success('操作成功');

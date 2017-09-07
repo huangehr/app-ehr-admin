@@ -115,11 +115,13 @@
                 function update(portalSettingModel) {
                     var modelJsonData = JSON.stringify(portalSettingModel);
                     var dataModel = $.DataModel.init();
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     dataModel.updateRemote("${contextRoot}/portalSetting/updatePortalSetting", {
                         data: {portalSettingModelJsonData: modelJsonData},
                         success: function (data) {
+                            waittingDialog.close();
                             if (data.successFlg) {
-                               closeAddPortalSettingInfoDialog(function () {
+                               parent.closeAddPortalSettingInfoDialog(function () {
                                     $.Notice.success('新增成功');
                                 });
                             } else {

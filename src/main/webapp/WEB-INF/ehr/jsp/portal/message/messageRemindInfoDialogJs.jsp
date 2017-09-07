@@ -110,9 +110,11 @@
                 function update(messageRemindModel) {
                     var messageRemindModelJsonData = JSON.stringify(messageRemindModel);
                     var dataModel = $.DataModel.init();
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     dataModel.updateRemote("${contextRoot}/messageRemind/updateMessageRemind", {
                         data: {messageRemindModelJsonData: messageRemindModelJsonData},
                         success: function (data) {
+                            waittingDialog.close();
                             if (data.successFlg) {
                                 win.closeMessageInfoDialog();
                                 win.reloadMasterUpdateGrid();

@@ -567,17 +567,19 @@ cda.attr = {
         dataJson[0]["versionCode"] = versionCode;
         dataJson[0]["id"] = id;
 
+        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
         $.ajax({
             url: cda.list._url + "/cda/SaveCdaInfo",
             type: "post",
             dataType: "json",
             data: {cdaJson: JSON.stringify(dataJson[0]), version: versionCode},
             success: function (data) {
+                waittingDialog.close();
                 if (data != null) {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                            parent.cda.list.top.dialog_cda_detail.close();
+                            parent.cda.list.dialog_cda_detail.close();
                         }, null);
                     }
                     else {
@@ -609,15 +611,17 @@ cda.attr = {
         var cdaId = $("#hdId").val();
         var strVersionCode = $("#hdversion").val();
         var xmlInfo = kindEditor.editor.text();
+        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
         $.ajax({
             url: cda.list._url + "/cda/SaveRelationship",
             type: "post",
             dataType: "json",
             data: {strDatasetIds: u.relationIds, strCdaId: cdaId, strVersionCode: strVersionCode, xmlInfo: xmlInfo},
             success: function (data) {
+                waittingDialog.close();
                 if (data.successFlg) {
                     $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                        parent.cda.list.top.dialog_cda_detail.close();
+                        parent.cda.list.dialog_cda_detail.close();
                     }, null);
                 }
                 else {

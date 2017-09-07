@@ -93,9 +93,11 @@
 						var dataModel = $.DataModel.init();
 						self.$form.attrScan();
 						var hpgModel = self.$form.Fields.getValues();
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						dataModel.createRemote("${contextRoot}/specialdict/hp/update", {
 							data:  {dictJson:JSON.stringify(hpgModel),mode:mode},
 							success: function (data) {
+                                waittingDialog.close();
 								if(data.successFlg){
 									reloadHpInfoGrid();
 									$.Notice.success('操作成功');
