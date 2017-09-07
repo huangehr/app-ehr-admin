@@ -374,15 +374,30 @@
                     var itemId = $(this).closest(".div-item").attr("data-id");
                     var selectedData = typeTree.getCheckedData();
                     var rowdata = null;
+                    var nodeP = null;
                     for(var i=0;i<selectedData.length;i++){
                         if(selectedData[i].pid){
                             if(selectedData[i].id==itemId){
                                 rowdata = selectedData[i];
+                                nodeP = $('#' + rowdata.id).closest('.l-children').parent();
                                 break;
                             }
                         }
                     }
-                    if(rowdata) typeTree.cancelSelect(rowdata);//取消选中行
+                    if(rowdata) {
+                        typeTree.cancelSelect(rowdata);//取消选中行
+                        var checkChildLen = nodeP.find('.l-checkbox-checked').length - 1;
+                        if (checkChildLen <= 0) {//取消选中根节点
+                            var npId = nodeP.attr('id');
+                            for(var k = 0; k < selectedData.length; k++){
+                                if(selectedData[k].id == npId){
+                                    typeTree.cancelSelect(selectedData[k]);//取消选中行
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     $("#div_checked_data").find(".div-item[data-id="+itemId+"]").remove();
                     if(typeTree.getCheckedData().length==1){//根节点
                         typeTree.cancelSelect(typeTree.getCheckedData()[0]);//取消选中行
