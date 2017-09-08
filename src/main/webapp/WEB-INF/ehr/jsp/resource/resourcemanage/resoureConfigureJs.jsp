@@ -75,9 +75,10 @@
                             name:""
                         },
                         columns: [
-                            {display: '指标分类', name: 'quotaTypeName', width: '35%', isAllowHide: false, align: 'left'},
-                            {display: '指标名称', name: 'quotaName', width: '35%', isAllowHide: false, align: 'left'},
-                            {display: '图表选择', name: 'name', width: '30%', isAllowHide: false, align: 'left',                                          render:function (row) {
+                            {display: '指标分类', name: 'quotaTypeName', width: '25%', isAllowHide: false, align: 'left'},
+                            {display: '指标Code', name: 'quotaCode', width: '25%', isAllowHide: false, align: 'left'},
+                            {display: '指标名称', name: 'quotaName', width: '25%', isAllowHide: false, align: 'left'},
+                            {display: '图表选择', name: 'name', width: '25%', isAllowHide: false, align: 'left',                                          render:function (row) {
                                 var domId = row.__id,
                                     chartTypeArr = (row.chartType).split(',');
                                 var html = ['<select id="' + domId + '" style="width: 100%" onchange="changeQC(this,' + row.quotaId + ')">'];
@@ -205,8 +206,9 @@
                                         cName = '饼状图';
                                         break;
                                 }
-                                resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName + '" data-qchart="' + item.quotaChart + '" >'+
+                                resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName +'"  data-quotaCode="' + item.quotaCode + '" data-qchart="' + item.quotaChart + '" >'+
                                             '<div class="div-main-content">'+ item.quotaTypeName +'</div>'+
+                                            '<div class="div-main-content">'+ item.quotaCode +'</div>'+
                                             '<div class="div-main-content">'+ item.quotaName +'</div>'+
                                             '<div class="div-main-content">'+cName+'</div>'+
                                             '<div class="div-delete-content">'+
@@ -245,6 +247,7 @@
                                 quotaId:$(value).attr("data-id"),
                                 resourceId: resourceId,
                                 quotaTypeName:$(value).attr("data-name"),
+                                quotaCode:$(value).attr("data-quotaCode"),
                                 quotaChart:$(value).attr("data-qchart")
                             }
                             saveData.push(ob);
