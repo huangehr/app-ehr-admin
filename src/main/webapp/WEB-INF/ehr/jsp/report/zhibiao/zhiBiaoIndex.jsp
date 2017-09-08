@@ -40,7 +40,8 @@
           <div>指标：</div>
         </div>
         <div class="m-form-control f-fs12">
-          <input type="text" id="searchNm" placeholder="<spring:message code="lbl.input.placehold"/>">
+          <input type="hidden" id="quotaTypeNo" value="${quotaTypeNo}">
+          <input type="text" id="searchNm" value="${name}" placeholder="<spring:message code="lbl.input.placehold"/>">
         </div>
 
         <div class="m-form-control f-mr10 f-fr">

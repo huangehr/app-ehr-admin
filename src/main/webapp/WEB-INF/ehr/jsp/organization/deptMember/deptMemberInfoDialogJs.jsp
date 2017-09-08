@@ -43,7 +43,7 @@
 				this.$dutyName.ligerTextBox({width:240});
 				this.$remark.ligerTextBox({width:240, height: 120 });
 				<%--this.$userId.customCombo('${contextRoot}/deptMember/getUserList', p, undefined, undefined, false);--%>
-				this.$userId.customCombo('${contextRoot}/deptMember/getUserList');
+				this.$userId.customCombo('${contextRoot}/deptMember/getUserList',{});
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
 //				this.$parentUserId.customCombo(url, p, undefined, undefined, false);
 				this.$parentUserId.customCombo(url);

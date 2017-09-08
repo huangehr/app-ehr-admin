@@ -28,7 +28,9 @@ public class ZhiBiaoController extends BaseUIController {
      * @return
      */
     @RequestMapping("initial")
-    public String initial(Model model) {
+    public String initial(Model model, String quotaTypeNo, String name) {
+        model.addAttribute("quotaTypeNo", quotaTypeNo);
+        model.addAttribute("name", name);
         model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoIndex");
         return "pageView";
     }
