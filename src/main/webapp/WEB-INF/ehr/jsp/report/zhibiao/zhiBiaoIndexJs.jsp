@@ -13,7 +13,7 @@
             var dictMaster = null;
             var typeTree = null;
             var orgId = '${orgId}';
-            var quotaType = '';
+            var quotaType = '${quotaTypeNo}';
 
             var rsPageParams = JSON.parse(sessionStorage.getItem('rsPageParams'));
             sessionStorage.removeItem('rsPageParams');
@@ -91,13 +91,13 @@
                         textFieldName: 'name',
                         isExpand: false,
                         childIcon:null,
+//                        data: $("#quotaTypeNo").val(),
                         parentIcon:null,
                         onSelect: function (e) {
                             quotaType = e.data.id;
                             dictMaster.reloadGrid(1);
                         },
                         onSuccess: function (data) {
-
                             if(data.length != 0){
                                 $("#div_resource_browse_tree li div span").css({
                                     "line-height": "22px",
@@ -105,6 +105,10 @@
                                 });
 //                                quotaType = data[0].id;
 //                                dictMaster.reloadGrid(1);
+                            }
+                            if (quotaType) {
+                                $('#'+quotaType).parent().prev().find('.l-box').trigger('click');
+                                $('#'+quotaType).trigger('click');
                             }
                         }
                     });
@@ -132,7 +136,7 @@
                         this.grid = $("#div_stdDict_grid").ligerGrid($.LigerGridEx.config({
                             url:  '${contextRoot}/tjQuota/getTjQuota',
                             parms: {
-                                name: "",
+                                name: $("#searchNm").val(),
                                 quotaType : quotaType
                             },
                             columns: [
@@ -318,7 +322,9 @@
                     $.subscribe('zhibiao:result:selectResult', function (event, id) {
                         var url = '${contextRoot}/tjQuota/initialResult';
                         var urlParms = {
-                            tjQuotaId:id
+                            tjQuotaId:id,
+                            quotaType: quotaType,
+                            name: $("#searchNm").val()
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, urlParms);
@@ -327,7 +333,9 @@
                     $.subscribe('zhibiao:log:quotaLog', function (event, quotaCode) {
                         var url = '${contextRoot}/tjQuota/initialQuotaLog';
                         var urlParms = {
-                            quotaCode:quotaCode
+                            quotaCode:quotaCode,
+                            quotaType: quotaType,
+                            name: $("#searchNm").val()
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, urlParms);

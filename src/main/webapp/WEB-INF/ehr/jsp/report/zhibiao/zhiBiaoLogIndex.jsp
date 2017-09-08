@@ -7,7 +7,7 @@
 <div id="div_wrapper" >
     <div id="conditionArea" class="f-ml10" >
         <div class="body-head f-h40" align="left">
-            <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/zhibiao/initial');"  class="f-fwb">返回上一层 </a>
+            <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/zhibiao/initial?quotaTypeNo=${quotaType}&name=${name}');"  class="f-fwb">返回上一层 </a>
         </div>
     </div>
     <!-- ####### 查询条件部分 ####### -->

@@ -393,26 +393,35 @@ public class ReportController extends BaseUIController {
             String viewListStr = objectMapper.writeValueAsString(objectMapper.readValue(viewListEnvelopStr, Envelop.class).getDetailModelList());
             List<RsReportViewModel> rsReportViewList = objectMapper.readValue(viewListStr, new TypeReference<List<RsReportViewModel>>(){});
             for (RsReportViewModel view : rsReportViewList) {
-                // 指标数据的视图的场合
-                // todo 还要考虑档案数据的视图的场合
+                String resourceEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.Resources + "/" + view.getResourceId(), params, username, password);
+                RsResourcesModel rsResourcesModel = getEnvelopModel(objectMapper.readValue(resourceEnvelopStr, Envelop.class).getObj(), RsResourcesModel.class);
                 params.clear();
                 params.put("resourceId", view.getResourceId());
-                String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-                List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>(){});
-                for (MChartInfoModel chartInfo : chartInfoList) {
-                    Map<String, Object> option = new HashMap<>();
-                    option.put("quotaCode", chartInfo.getQuotaCode());
-                    option.put("option", chartInfo.getOption());
-                    options.add(option);
+                String queryEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.QueryByResourceId, params, username, password);
+                String queryStr = objectMapper.readValue(queryEnvelopStr, Envelop.class).getObj().toString();
+
+                if(rsResourcesModel.getDataSource() == 1) {
+                    // 档案数据的视图场合
+                    // todo
+                } else if (rsResourcesModel.getDataSource() == 2) {
+                    // 指标数据的视图场合
+                    params.clear();
+                    params.put("resourceId", view.getResourceId());
+                    String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+                    List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {
+                    });
+                    for (MChartInfoModel chartInfo : chartInfoList) {
+                        Map<String, Object> option = new HashMap<>();
+                        option.put("quotaCode", chartInfo.getQuotaCode());
+                        option.put("option", chartInfo.getOption());
+                        options.add(option);
+                    }
+                    Map<String, Object> viewInfo = new HashMap<>();
+                    viewInfo.put("options", options); // 视图包含的指标echart图形的option。
+                    Map filter = objectMapper.readValue(queryStr, Map.class);
+                    viewInfo.put("filter", filter); // 视图数据过滤条件。
+                    viewInfos.add(viewInfo);
                 }
-                Map<String, Object> viewInfo = new HashMap<>();
-                viewInfo.put("options", options); // 视图包含的指标echart图形的option。
-                // todo 指标统计固化视图保存时，筛选条件保存还未实现，待确定。
-                Map<String, Object> filter = new HashMap<>();
-                filter.put("startTime", "2017-8-1");
-                filter.put("endTime", "2017-8-31");
-                viewInfo.put("filter", filter); // 视图数据过滤条件。
-                viewInfos.add(viewInfo);
             }
             resultMap.put("viewInfos", viewInfos);
 
