@@ -327,9 +327,11 @@ public class TjQuotaController extends BaseUIController {
      * @return
      */
     @RequestMapping("initialResult")
-    public String initialResult(Model model,long tjQuotaId) {
+    public String initialResult(Model model,long tjQuotaId, String quotaType, String name) {
         model.addAttribute("contentPage", "/report/zhibiao/resultIndex");
         model.addAttribute("id", tjQuotaId);
+        model.addAttribute("quotaType", quotaType);
+        model.addAttribute("name", name);
         return "pageView";
     }
 
@@ -376,9 +378,11 @@ public class TjQuotaController extends BaseUIController {
      * @return
      */
     @RequestMapping("initialQuotaLog")
-    public String initialQuotaLog(Model model,String quotaCode) {
+    public String initialQuotaLog(Model model,String quotaCode, String quotaType, String name) {
         model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoLogIndex");
         model.addAttribute("quotaCode", quotaCode);
+        model.addAttribute("quotaType", quotaType);
+        model.addAttribute("name", name);
         return "pageView";
     }
 
