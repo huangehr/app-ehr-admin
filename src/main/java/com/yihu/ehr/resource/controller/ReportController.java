@@ -382,7 +382,7 @@ public class ReportController extends BaseUIController {
             String templateContent = objectMapper.readValue(tcEnvelopStr, Envelop.class).getObj().toString();
             resultMap.put("templateContent", templateContent);
 
-            // 获取报表模版中图形option
+            // 获取报表视图
             params.clear();
             params.put("code", reportCode);
             String reportEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportFindByCode, params, username, password);
@@ -392,6 +392,8 @@ public class ReportController extends BaseUIController {
             String viewListEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
             String viewListStr = objectMapper.writeValueAsString(objectMapper.readValue(viewListEnvelopStr, Envelop.class).getDetailModelList());
             List<RsReportViewModel> rsReportViewList = objectMapper.readValue(viewListStr, new TypeReference<List<RsReportViewModel>>(){});
+
+            // 获取图形配置
             for (RsReportViewModel view : rsReportViewList) {
                 String resourceEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.Resources + "/" + view.getResourceId(), params, username, password);
                 RsResourcesModel rsResourcesModel = getEnvelopModel(objectMapper.readValue(resourceEnvelopStr, Envelop.class).getObj(), RsResourcesModel.class);
@@ -400,11 +402,24 @@ public class ReportController extends BaseUIController {
                 String queryEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.QueryByResourceId, params, username, password);
                 String queryStr = objectMapper.readValue(queryEnvelopStr, Envelop.class).getObj().toString();
 
+                Map<String, Object> viewInfo = new HashMap<>();
                 if(rsResourcesModel.getDataSource() == 1) {
-                    // 档案数据的视图场合
-                    // todo
+                    // 档案视图场合
+                    viewInfo.put("type", "record");
+                    viewInfo.put("resourceCode", rsResourcesModel.getCode());
+                    // 获取展示的列名
+                    params.clear();
+                    params.put("resourcesCode", rsResourcesModel.getCode());
+                    String rowsEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.ResourceBrowseResourceMetadata, params, username, password);
+                    List rows = objectMapper.readValue(rowsEnvelopStr, Envelop.class).getDetailModelList();
+                    viewInfo.put("rows", rows);
+                    // Todo 需要转换
+//                    Map filter = objectMapper.readValue(queryStr, Map.class);
+//                    viewInfo.put("filter", filter); // 视图数据过滤条件。
+                    viewInfos.add(viewInfo);
                 } else if (rsResourcesModel.getDataSource() == 2) {
-                    // 指标数据的视图场合
+                    // 指标视图场合
+                    viewInfo.put("type", "quota");
                     params.clear();
                     params.put("resourceId", view.getResourceId());
                     String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
@@ -416,7 +431,6 @@ public class ReportController extends BaseUIController {
                         option.put("option", chartInfo.getOption());
                         options.add(option);
                     }
-                    Map<String, Object> viewInfo = new HashMap<>();
                     viewInfo.put("options", options); // 视图包含的指标echart图形的option。
                     Map filter = objectMapper.readValue(queryStr, Map.class);
                     viewInfo.put("filter", filter); // 视图数据过滤条件。
