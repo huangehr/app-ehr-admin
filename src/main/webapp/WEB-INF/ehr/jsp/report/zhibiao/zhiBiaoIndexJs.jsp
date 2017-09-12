@@ -14,6 +14,7 @@
             var typeTree = null;
             var orgId = '${orgId}';
             var quotaType = '${quotaTypeNo}';
+            var searchVal = '${name}';
 
             var rsPageParams = JSON.parse(sessionStorage.getItem('rsPageParams'));
             sessionStorage.removeItem('rsPageParams');
@@ -203,6 +204,7 @@
                 },
                 reloadGrid: function (curPage) {
                     var searchNm = $("#searchNm").val();
+                    searchVal = searchNm;
                     var values = {
                         name: searchNm,
                         quotaType : quotaType
@@ -324,7 +326,7 @@
                         var urlParms = {
                             tjQuotaId:id,
                             quotaType: quotaType,
-                            name: $("#searchNm").val()
+                            name: searchVal
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, urlParms);
@@ -335,7 +337,7 @@
                         var urlParms = {
                             quotaCode:quotaCode,
                             quotaType: quotaType,
-                            name: $("#searchNm").val()
+                            name: searchVal
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, urlParms);
