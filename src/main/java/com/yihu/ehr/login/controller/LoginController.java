@@ -576,7 +576,8 @@ public class LoginController extends BaseUIController {
      */
     @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
     @ResponseBody
-    public int check(String idCardNo) throws Exception {
+    public Envelop check(String idCardNo){
+        Envelop envelop = new Envelop();
         Map<String, Object>  paramsMap = new HashMap<>();
         paramsMap.put("demographic_id", idCardNo);
         paramsMap.put("version", stdVersion);
@@ -584,9 +585,10 @@ public class LoginController extends BaseUIController {
         try {
             HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
         }catch (Exception e) {
-            return 404;
+            return envelop;
         }
-        return 200;
+        envelop.setSuccessFlg(true);
+        return envelop;
     }
 
 }

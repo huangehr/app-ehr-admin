@@ -21,14 +21,14 @@
             case 2:
                 cName = '折线图';
                 break;
+//            case 3:
+//                cName = '曲线图';
+//                break;
             case 3:
-                cName = '曲线图';
-                break;
-            case 4:
                 cName = '饼状图';
                 break;
         }
-        $di.children().eq(2).html(cName);
+        $di.children().eq(3).html(cName);
     }
     (function ($, win) {
         $(function () {
@@ -207,11 +207,11 @@
                                         break;
                                 }
                                 resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName +'"  data-quotaCode="' + item.quotaCode + '" data-qchart="' + item.quotaChart + '" >'+
-                                            '<div class="div-main-content">'+ item.quotaTypeName +'</div>'+
-                                            '<div class="div-main-content">'+ item.quotaCode +'</div>'+
-                                            '<div class="div-main-content">'+ item.quotaName +'</div>'+
-                                            '<div class="div-main-content">'+cName+'</div>'+
-                                            '<div class="div-delete-content">'+
+                                            '<div class="div-main-content" style="width: 22%;" title="' + item.quotaTypeName + '">'+ item.quotaTypeName +'</div>'+
+                                            '<div class="div-main-content" style="width: 22%;" title="' + item.quotaCode + '">'+ item.quotaCode +'</div>'+
+                                            '<div class="div-main-content" style="width: 22%;" title="' + item.quotaName + '">'+ item.quotaName +'</div>'+
+                                            '<div class="div-main-content" style="width: 22%;" title="' + cName + '">'+cName+'</div>'+
+                                            '<div class="div-delete-content" style="width: 12%;">'+
                                                 '<a class="grid_delete" href="#" title="删除"></a>'+
                                             '</div>'+
                                         '</div>';

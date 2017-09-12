@@ -252,7 +252,24 @@
                         });
                     });
                     $.subscribe('patient:patientBroswerInfoDialog:open',function (event,idCardNo) {
-                        window.open('${contextRoot}/login/broswerSignin?idCardNo='+idCardNo,'_blank');
+                        $.ajax({
+                            url: '${contextRoot}/login/checkInfo',
+                            data: {
+                                idCardNo: idCardNo
+                            },
+                            dataType: 'json',
+                            type: 'GET',
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    window.open('${contextRoot}/login/broswerSignin?idCardNo='+idCardNo,'_blank');
+                                } else {
+                                    $.Notice.error('该居民无档案数据');
+                                }
+                            },
+                            error: function (e) {
+                                $.Notice.error('出错了');
+                            }
+                        });
                     })
                 }
             };
