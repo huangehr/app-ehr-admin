@@ -11,6 +11,7 @@ import com.yihu.ehr.model.resource.MChartInfoModel;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -403,6 +406,8 @@ public class ReportController extends BaseUIController {
                 String queryStr = objectMapper.readValue(queryEnvelopStr, Envelop.class).getObj().toString();
 
                 Map<String, Object> viewInfo = new HashMap<>();
+                Map<String, Object> conditions = translateViewCondition(rsResourcesModel.getDataSource(), queryStr);
+                viewInfo.put("conditions", conditions); // 视图数据过滤条件。
                 if(rsResourcesModel.getDataSource() == 1) {
                     // 档案视图场合
                     viewInfo.put("type", "record");
@@ -411,11 +416,8 @@ public class ReportController extends BaseUIController {
                     params.clear();
                     params.put("resourcesCode", rsResourcesModel.getCode());
                     String rowsEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.ResourceBrowseResourceMetadata, params, username, password);
-                    List rows = objectMapper.readValue(rowsEnvelopStr, Envelop.class).getDetailModelList();
-                    viewInfo.put("rows", rows);
-                    // Todo 需要转换
-//                    Map filter = objectMapper.readValue(queryStr, Map.class);
-//                    viewInfo.put("filter", filter); // 视图数据过滤条件。
+                    List columns = objectMapper.readValue(rowsEnvelopStr, Envelop.class).getDetailModelList();
+                    viewInfo.put("columns", columns);
                     viewInfos.add(viewInfo);
                 } else if (rsResourcesModel.getDataSource() == 2) {
                     // 指标视图场合
@@ -423,8 +425,7 @@ public class ReportController extends BaseUIController {
                     params.clear();
                     params.put("resourceId", view.getResourceId());
                     String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-                    List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {
-                    });
+                    List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {});
                     for (MChartInfoModel chartInfo : chartInfoList) {
                         Map<String, Object> option = new HashMap<>();
                         option.put("quotaCode", chartInfo.getQuotaCode());
@@ -432,8 +433,6 @@ public class ReportController extends BaseUIController {
                         options.add(option);
                     }
                     viewInfo.put("options", options); // 视图包含的指标echart图形的option。
-                    Map filter = objectMapper.readValue(queryStr, Map.class);
-                    viewInfo.put("filter", filter); // 视图数据过滤条件。
                     viewInfos.add(viewInfo);
                 }
             }
@@ -446,6 +445,51 @@ public class ReportController extends BaseUIController {
             e.printStackTrace();
             return failed("获取报表数据发生异常");
         }
+    }
+
+    /**
+     * 转换视图数据筛选条件
+     */
+    private Map<String, Object> translateViewCondition(Integer type, String queryStr) throws IOException, ParseException {
+        Map<String, Object> conditions = new HashMap<>();
+        if(type == 1) {
+            // 档案视图场合
+            List<Map<String, Object>> filterList = objectMapper.readValue(queryStr, new TypeReference<List<Map<String, Object>>>() {});
+            for (int i = 0; i < filterList.size(); i++) {
+                Map filter = filterList.get(i);
+                String field = filter.get("field").toString();
+                String condition = filter.get("condition").toString();
+                String value = filter.get("value").toString();
+                if("event_date".equals(field)) {
+                    // 期间
+                    String date = DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(value));
+                    if(condition.contains(">")) {
+                        conditions.put("startDate", date);
+                    } else if(condition.contains("<")) {
+                        conditions.put("endDate", date);
+                    }
+                }
+                if("EHR_000241".equals(field)) {
+                    // 地区
+                    conditions.put("area", value);
+                }
+            }
+        } else if(type == 2) {
+            // 指标视图场合
+            Map filter = objectMapper.readValue(queryStr, Map.class);
+            // Todo 待确定起止日期条件保存的属性名称
+            /*if(filter.get("event_date") != null) {
+                // 期间
+                String date = filter.get("event_date").toString();
+                conditions.put("startDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
+                conditions.put("endDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
+            }*/
+            if (filter.get("EHR_000241") != null) {
+                // 地区
+                conditions.put("area", filter.get("EHR_000241").toString());
+            }
+        }
+        return conditions;
     }
 
 }

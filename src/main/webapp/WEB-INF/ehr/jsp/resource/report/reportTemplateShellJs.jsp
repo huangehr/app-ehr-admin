@@ -30,10 +30,10 @@
                     var viewInfos = data.obj.viewInfos;
                     for(var a = 0; a < viewInfos.length; a++) {
                         var viewInfo = viewInfos[a];
+                        var conditions = viewInfo.conditions;
                         if(viewInfo.type === 'quota') {
                             // 指标视图场合，展示为图形
                             var options = viewInfo.options;
-                            var filter = viewInfo.filter;
                             for (var i = 0; i < options.length; i++) {
                                 (function (j) {
                                     // 渲染图形
@@ -41,7 +41,7 @@
                                     var chart = echarts.init(document.getElementById('' + item.quotaCode));
                                     chart.setOption(JSON.parse(item.option));
                                     // 渲染数据的条件范围
-                                    renderFilter(item.quotaCode, filter);
+                                    renderConditions(item.quotaCode, conditions);
                                 })(i);
                             }
                         } else if(viewInfo.type === 'record') {
@@ -67,9 +67,9 @@
                                 },
                                 {name: 'demographic_id', display: '病人身份证号码', width: 100}
                             ];
-                            for(var k = 0; k < viewInfo.rows.length; k++) {
-                                var row = viewInfo.rows[k];
-                                columns.push({name: row.code, display: row.value, width: 100});
+                            for(var k = 0; k < viewInfo.columns.length; k++) {
+                                var column = viewInfo.columns[k];
+                                columns.push({name: column.code, display: column.value, width: 100});
                             }
                             var $gridDom = $("#" + viewInfo.resourceCode);
                             var grid = $gridDom.ligerGrid($.LigerGridEx.config({
@@ -84,7 +84,7 @@
 //                                usePager: true
                             }));
                             // 渲染数据的条件范围
-                            renderFilter(viewInfo.resourceCode, filter);
+                            renderConditions(viewInfo.resourceCode, conditions);
                         }
                     }
                 } else {
@@ -98,13 +98,13 @@
     }
 
     // 渲染数据的条件范围
-    function renderFilter(code, filter) {
-        var filterTpl = document.getElementById(code + '-filter').innerHTML.trim();
+    function renderConditions(code, conditions) {
+        var conditionsTpl = document.getElementById('data-conditions-tpl').innerHTML.trim();
         // Todo 没有条件时，设置模版变量空的场合
-        if(filter) {
-            Mustache.parse(filterTpl);
-            var filterHtml = Mustache.render(filterTpl, filter);
-            $('#' + code).before(filterHtml);
+        if(conditions) {
+            Mustache.parse(conditionsTpl);
+            var conditionsHtml = Mustache.render(conditionsTpl, conditions);
+            $('#' + code).before(conditionsHtml);
         }
     }
 
