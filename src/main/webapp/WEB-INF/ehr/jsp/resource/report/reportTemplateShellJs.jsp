@@ -6,6 +6,7 @@
 <script src="${contextRoot}/develop/lib/ligerui/core/base.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/plugins/ligerDialog.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/plugins/ligerGrid.js"></script>
+<script src="${contextRoot}/develop/lib/plugin/scrollbar/jquery.mCustomScrollbar.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/custom/ligerGridEx.js"></script>
 <script src="${contextRoot}/develop/lib/mustache/mustache.min.js"></script>
 <script src="${contextRoot}/develop/module/util.js"></script>
@@ -24,7 +25,6 @@
             method: 'get',
             data: {reportCode: reportCode},
             success: function(data) {
-                debugger;
                 if(data.successFlg) {
                     $('#reportTemplate').html(data.obj.templateContent);
                     var viewInfos = data.obj.viewInfos;
@@ -76,12 +76,12 @@
                                 url: '${contextRoot}/resourceBrowse/searchResourceData',
                                 parms: {
                                     resourcesCode: viewInfo.resourceCode,
-                                    searchParams: '' // Todo 拼接查询条件
+                                    searchParams: viewInfo.searchParams
                                 },
                                 columns: columns,
-                                height: $gridDom.height()
-//                                allowHideColumn: false,
-//                                usePager: true
+                                height: $gridDom.height(),
+                                allowHideColumn: false,
+                                usePager: true
                             }));
                             // 渲染数据的条件范围
                             renderConditions(viewInfo.resourceCode, conditions);
@@ -100,12 +100,9 @@
     // 渲染数据的条件范围
     function renderConditions(code, conditions) {
         var conditionsTpl = document.getElementById('data-conditions-tpl').innerHTML.trim();
-        // Todo 没有条件时，设置模版变量空的场合
-        if(conditions) {
-            Mustache.parse(conditionsTpl);
-            var conditionsHtml = Mustache.render(conditionsTpl, conditions);
-            $('#' + code).before(conditionsHtml);
-        }
+        Mustache.parse(conditionsTpl);
+        var conditionsHtml = Mustache.render(conditionsTpl, conditions);
+        $('#' + code).before(conditionsHtml);
     }
 
     function formatDate(date) {

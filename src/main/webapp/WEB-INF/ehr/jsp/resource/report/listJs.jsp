@@ -139,7 +139,7 @@
             }
 
             detailDialog = $.ligerDialog.open({
-                height: 740,
+                height: 700,
                 width: 1100,
                 title: '报表预览',
                 url: '${contextRoot}/resource/report/preview',

@@ -412,6 +412,7 @@ public class ReportController extends BaseUIController {
                     // 档案视图场合
                     viewInfo.put("type", "record");
                     viewInfo.put("resourceCode", rsResourcesModel.getCode());
+                    viewInfo.put("searchParams", queryStr);
                     // 获取展示的列名
                     params.clear();
                     params.put("resourcesCode", rsResourcesModel.getCode());
@@ -477,17 +478,28 @@ public class ReportController extends BaseUIController {
         } else if(type == 2) {
             // 指标视图场合
             Map filter = objectMapper.readValue(queryStr, Map.class);
-            // Todo 待确定起止日期条件保存的属性名称
-            /*if(filter.get("event_date") != null) {
-                // 期间
-                String date = filter.get("event_date").toString();
+            if(filter.get("startTime") != null) {
+                // 起始日期
+                String date = filter.get("startTime").toString();
                 conditions.put("startDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
-                conditions.put("endDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
-            }*/
-            if (filter.get("EHR_000241") != null) {
-                // 地区
-                conditions.put("area", filter.get("EHR_000241").toString());
             }
+            if(filter.get("endTime") != null) {
+                // 终止日期
+                String date = filter.get("endTime").toString();
+                conditions.put("endDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
+            }
+            // 地区
+            String area = "";
+            if (filter.get("province") != null) {
+                area += filter.get("province").toString();
+            }
+            if (filter.get("city") != null) {
+                area += filter.get("city").toString();
+            }
+            if (filter.get("town") != null) {
+                area += filter.get("town").toString();
+            }
+            conditions.put("area", area);
         }
         return conditions;
     }
