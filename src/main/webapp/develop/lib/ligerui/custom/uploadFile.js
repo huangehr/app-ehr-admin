@@ -56,7 +56,9 @@
 
             if(uploadDialog){
                 var html;
-                if(percentage == -1)
+                if(percentage == -2)
+                    html = "模板不正确，请下载新的模板，并按照示例正确填写后上传！";
+                else if(percentage == -1)
                     html = "导入失败！";
                 else
                     html = "导入进度："+ percentage +" %";

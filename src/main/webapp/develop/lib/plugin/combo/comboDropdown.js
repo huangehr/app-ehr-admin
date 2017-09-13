@@ -40,7 +40,7 @@
                             '{@/each} ';
 
     var defaults = {
-      placehoder: '',
+      placehoder: '请选择',
       width: 240,
       tabData:[],
       groups: ['A-G', 'H-K', 'L-S', 'T-Z'],

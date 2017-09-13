@@ -70,6 +70,8 @@
 				$resourceInfoGrid: $("#div_resource_info_grid"),
 				$search: $("#inp_search"),
 				$searchNm: $('#inp_searchNm'),
+
+                $droDList: $('#droDList'),
 				init: function () {
 					var self = this;
 					var categoryName = '';
@@ -88,18 +90,35 @@
 						var parms = {
 							'searchNm':'',
 							'categoryId':'',
+                            'dataSource':0
 						};
 						reloadGrid(parms);
 					}});
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
+                        var resourceType = $('#droDList_val').val();
+                        debugger
 						var parms = {
 							'searchNm':searchNm,
 							'categoryId':categoryId,
+                            'dataSource': parseInt(resourceType)
 						};
 						reloadGrid(parms);
 					}});
 					self.getResourceBrowseTree();
+
+                    self.$droDList.ligerComboBox({
+                        data: [{
+                            id: '0',
+                            text: '全部'
+                        },{
+                            id: '1',
+                            text: '档案数据'
+                        },{
+                            id: '2',
+                            text: '指标统计'
+                        }]
+                    });
 				},
 				getResourceBrowseTree: function () {
 					typeTree = this.$resourceBrowseTree.ligerSearchTree({
@@ -141,7 +160,8 @@
 						url: '${contextRoot}/resource/resourceManage/resources',
 						parms: {
 							searchNm: $('#inp_searchNm').val(),
-							categoryId: categoryId
+							categoryId: categoryId,
+                            dataSource: 0
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
@@ -153,16 +173,23 @@
 							{display: '资源分类Id', name: 'categoryId',hide:true},
 							{display: '资源说明', name: 'description', width: '13%', align: 'left'},
 							{display: '操作', name: 'operator', width: '32%', render: function (row) {
-								var html = '';
+								var html = '<div style="text-align:right;">';
 								html += '<sec:authorize url="/resource/defaultParam/initial"><a class="label_a" title="默认参数配置" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:param:list:open", row.id,row.code) + '">默认参数配置</a></sec:authorize>';
-								html += '<sec:authorize url="/resourceConfiguration/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1") + '">配置</a></sec:authorize>';
-								if(row.grantType == '0'){
-									html += '<sec:authorize url="/resource/grant/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1") + '">授权</a></sec:authorize>';
+                                if (row.dataSource == 2 || row.dataSource == null) {
+                                    html += '<sec:authorize url="/resourceConfiguration/zhibaioConfigue"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioConfigue",row.id) + '">指标配置</a></sec:authorize>';
+                                    html += '<sec:authorize url="/resourceConfiguration/zhibaioShow"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioShow",row.id) + '">指标预览</a></sec:authorize>';
+                                }
+								if (row.dataSource != 2){
+									html += '<sec:authorize url="/resourceConfiguration/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1",row.dataSource) + '">配置</a></sec:authorize>';
 								}
-								html += '<sec:authorize url="/resourceView/initial"><a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.viewUrl,row.code) + '">浏览</a></sec:authorize>';
+								if(row.grantType == '0'){
+									html += '<sec:authorize url="/resource/grant/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1",row.dataSource) + '">授权</a></sec:authorize>';
+								}
+								html += '<sec:authorize url="/resourceView/initial"><a class="label_a" style="margin-left:5px;" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.viewUrl,row.code,row.dataSource) + '">浏览</a></sec:authorize>';
 								html += '<sec:authorize url="/resource/resourceManage/infoInitial"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a></sec:authorize>';
 								html += '<sec:authorize url="/resource/resourceManage/delete"><a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "rs:info:delete", row.id, 'delete') + '"></a></sec:authorize>';
 //								html += '<a class="grid_delete" title="默认参数" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:param:list:open", row.id,row.code) + '"></a>';
+                                html += '</div>';
 								return html;
 							}}
 						],
@@ -200,6 +227,7 @@
 					});
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
 						var title = "";
+						var wait = $.Notice.waitting("请稍后...");
 						if(mode == "modify"){title = "修改资源";}
 						if(mode == "view"){title = "查看资源";}
 						if(mode == "new"){title = "新增资源";}
@@ -213,9 +241,67 @@
 								mode:mode,
 								categoryId:categoryId,
 							},
-							load:true
+							load:true,
+							show:false,
+							isHidden:false,
+							onLoaded:function(){
+								wait.close(),
+								master.rsInfoDialog.show()
+							}
 						});
+						master.rsInfoDialog.hide();
 					});
+
+
+                    //指标配置
+                    $.subscribe("rs:switch:zhibaioConfigue",function(event, resourceId){
+                        var title = "指标配置";
+                        var wait = $.Notice.waitting("请稍后...");
+                        master.zhibaioConfigueDialog = $.ligerDialog.open({
+                            height:700,
+                            width:900,
+                            title:title,
+                            url:'${contextRoot}/resource/resourceManage/resourceConfigue',
+                            urlParms:{
+                                id:resourceId
+                            },
+                            load:true,
+                            show:false,
+                            isHidden:false,
+                            onLoaded:function(){
+                                wait.close(),
+                                master.zhibaioConfigueDialog.show()
+                            }
+                        });
+                        master.zhibaioConfigueDialog.hide();
+                    });
+                    //指标预览
+                    $.subscribe("rs:switch:zhibaioShow",function(event,resourceId){
+                        var title = "指标预览";
+                        var wait = $.Notice.waitting("请稍后...");
+                        master.zhibaioShowDialog = $.ligerDialog.open({
+                            height:650,
+                            width:800,
+                            title:title,
+                            url:'${contextRoot}/resource/resourceManage/resourceShow',
+                            urlParms:{
+                                id:resourceId,
+                                quotaId: '',
+                                dimension: '',
+                                quotaFilter: ''
+                            },
+                            load:true,
+                            show:false,
+                            isHidden:false,
+                            onLoaded:function(){
+                                wait.close(),
+                                master.zhibaioShowDialog.show()
+                            }
+                        });
+                        master.zhibaioShowDialog.hide();
+                    });
+
+
 					//删除
 					$.subscribe('rs:info:delete',function(event,id){
 						$.ligerDialog.confirm("确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
@@ -251,13 +337,14 @@
 						});
 					});
 					//配置、浏览、授权页面跳转
-					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url,resourceCode){
+					$.subscribe("rs:switch:open",function(event,resourceId,resourceName,categoryName,url,resourceCode,dataSource){
 						master.saveParamsToSession();
 						var data = {
 							'resourceId':resourceId,
 							'resourceName':resourceName,
 							'resourceSub':categoryName,
 							'resourceCode':resourceCode,
+                            'dataSource':dataSource
 						}
 						$("#contentPage").empty();
 						$("#contentPage").load(url,{dataModel:JSON.stringify(data)});
@@ -292,6 +379,9 @@
 				isFirstPage = false;
 				master.rsInfoDialog.close();
 			};
+            win.closeZhibaioConfigueDialog = function (callback) {
+                master.zhibaioConfigueDialog.close();
+            };
 			//新增、修改（资源分类有修改情况）定位
 			win.locationTree = function(callbackParams){
 				if(!callbackParams){

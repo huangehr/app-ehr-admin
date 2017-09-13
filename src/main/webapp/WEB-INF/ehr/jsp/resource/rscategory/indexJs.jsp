@@ -13,7 +13,7 @@
     columns: [],
     TypeSearch: null,
     init: function () {
-      this.top = $.Util.getTopWindowDOM();
+//      this.top = $.Util.getTopWindowDOM();
       //资源分类 列名
       this.columns = [
         {display: '名称', name: 'name',width: "43%", align: 'left', id: 'tree_id'},
@@ -142,7 +142,7 @@
     },
 
     showDialog: function (_tital, _url, _height, _width, callback) {
-      cateType.list.top.dialog_cateType_detail = $.ligerDialog.open({
+      cateType.list.dialog_cateType_detail = $.ligerDialog.open({
         title: _tital,
         url: _url,
         height: _height,
@@ -323,7 +323,7 @@
               var cateTypePid = dataJson.pid.getValue();
               sessionStorage.setItem("cateTypePid", cateTypePid);
               $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                parent.cateType.list.top.dialog_cateType_detail.close();
+                cateType.list.dialog_cateType_detail.close();
               }, null);
             }
             else {
@@ -341,7 +341,7 @@
         cateType.attr.save();
       });
       $("#btn_close").click(function () {
-        parent.cateType.list.top.dialog_cateType_detail.close();
+        cateType.list.dialog_cateType_detail.close();
       });
     }
   }

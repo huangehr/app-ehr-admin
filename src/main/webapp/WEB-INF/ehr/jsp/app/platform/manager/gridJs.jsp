@@ -24,7 +24,7 @@
             var initSub = function () {
                 $('#btn_back').click(function () {
                     $('#contentPage').empty();
-                    $('#contentPage').load('${contextRoot}/app/platform/initial', {dataModel: 1});
+                    $('#contentPage').load('${contextRoot}/app/initial', {dataModel: 1});
                 });
             }();
 
@@ -150,7 +150,7 @@
                         em.params = {frm: frm,  rowId: rowId}
                         params = {id: id, mode: mode, rowId: rowId}
                     }
-                    em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 600, params);
+                    em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 550, params);
                 },
                 del: function (event, id, frm, rowId, parentId, type, url) {
 

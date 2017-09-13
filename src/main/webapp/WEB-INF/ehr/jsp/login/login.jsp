@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<head>
+    <link rel="icon" href="develop/images/logo.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="develop/images/logo.png" type="image/x-icon" />
+</head>
 <!--######登录页面Title设置######-->
 <div class="f-dn" data-head-title="true">登录</div>
 
@@ -10,7 +13,7 @@
         <form id="form_login" class="box-form" action="${contextRoot}/login/validate" method="post">
             <div class="u-input-group">
                 <span class="u-input-addon u-icon-user"></span>
-                <input name="userName" id="inp_user_name" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" data-attr-scan type="text" value="${userName}" class="u-input required useTitle" placeholder="输入用户名/邮箱/手机号"  required-title=<spring:message code="lbl.must.input"/>>
+                <input name="userName" id="inp_user_name" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" data-attr-scan type="text" value="${userName}" class="u-input required useTitle" placeholder="输入用户名/手机号/身份证号"  required-title=<spring:message code="lbl.must.input"/>>
             </div>
             <div class="u-input-group">
                 <span class="u-input-addon u-icon-psw"></span>

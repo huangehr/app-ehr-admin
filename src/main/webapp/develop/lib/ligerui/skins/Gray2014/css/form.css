@@ -167,7 +167,7 @@ background:#F0F0F0;
 .l-box-select .l-table-nocheckbox .rowreadonly td:hover,.l-box-select .l-table-nocheckbox .rowreadonly td.l-over{ background-color:none; cursor:auto;}
 
 .l-box-select .l-table-nocheckbox td.l-selected{ background-color:#D2D2D2;}
-.l-box-select .l-box-select-table td{ padding:2px; text-align:left;} 
+.l-box-select .l-box-select-table td{ /*padding:2px;*/ line-height: 30px; text-align:left;padding-left: 10px}
 
 .l-box-select-lookup {
 	height:auto;

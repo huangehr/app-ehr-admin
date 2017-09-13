@@ -1,12 +1,11 @@
 package com.yihu.ehr.resource.controller;
 
 
-import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -77,7 +76,7 @@ public class SchemeAdaptDictController extends BaseUIController {
      * @param dataJson
      * @return
      */
-    @RequestMapping("save")
+    @RequestMapping("/save")
     @ResponseBody
     public Object updatesSchemeAdpatDict(Model model,String dataJson) {
         Envelop result = new Envelop();
@@ -94,5 +93,5 @@ public class SchemeAdaptDictController extends BaseUIController {
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }
-      }
     }
+}

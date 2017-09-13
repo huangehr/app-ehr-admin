@@ -113,11 +113,13 @@
 						var dataModel = $.DataModel.init();
 						self.$form.attrScan();
 						var indicatorModel = self.$form.Fields.getValues();
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						dataModel.createRemote("${contextRoot}/specialdict/indicator/update", {
 							data:  {dictJson:JSON.stringify(indicatorModel),mode:mode},
 							success: function (data) {
+                                waittingDialog.close();
 								if(data.successFlg){
-									parent.reloadIndicatorInfoGrid();
+									reloadIndicatorInfoGrid();
 									$.Notice.success('操作成功');
 									win.closeIndicatorInfoDialog();
 								}else{

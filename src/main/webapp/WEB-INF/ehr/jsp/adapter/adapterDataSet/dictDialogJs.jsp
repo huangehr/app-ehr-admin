@@ -8,11 +8,11 @@
         var infoForm = null;
         var jValidation = $.jValidation;
 //        var dialog = frameElement.dialog;
-        var adapterPlanId = parent.getAdapterPlanId();
-        var parentId = parent.getParentId();
+        var adapterPlanId = getAdapterPlanId();
+        var parentId = getParentId();
         var mode = '${mode}';
         var info = JSON.parse('${model}');
-        var cfgModel = parent.getDialogOpener();
+        var cfgModel = getDialogOpener();
         var cfg = [
             {new:'', modify:'/adapterDataSet/updateAdapterMetaData'},
             {new:'', modify:'/adapterDict/updateAdapterDictEntry'}
@@ -93,8 +93,8 @@
                                 success: function(data) {
                                     if(data.successFlg){
                                         var app = data.obj;
-                                        parent.reloadEntryMasterGrid();
-                                        parent.closeDialog('保存成功！');
+                                        reloadEntryMasterGrid();
+                                        closeDialog('保存成功！');
                                     }else{
                                         if(data.errorMsg)
                                             $.Notice.error( data.errorMsg);
@@ -111,7 +111,7 @@
                     );
                 });
                 $('#btn_cancel_dict').click(function () {
-                    parent.closeDialog();
+                    closeDialog();
                 });
             },
             validate : function (values) {

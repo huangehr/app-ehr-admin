@@ -30,7 +30,7 @@
         isSaveSelectStatus: false,
         versionStage:null,
         init: function () {
-            this.top = $.Util.getTopWindowDOM();
+//            this.top = $.Util.getTopWindowDOM();
             this.columns = [
                 {display: '数据集编码', name: 'code', align: 'left', width: '33%'},
                 {display: '数据集名称', name: 'name', align: 'left', width: '34%'},
@@ -262,8 +262,23 @@
 
         getElementList: function (versionCode, setid, curPage) {
             var u = set.list;
-
+            //平台标准-若为已发布，则不能多选删除。将复选框隐藏。
             var strkey = u.elementSearch.getValue();
+            var checkBox = u.versionStage?true:false;
+            u.elementGrid = $("#div_element_grid").ligerGrid($.LigerGridEx.config({
+                url: u._url + "/std/dataset/searchMetaData",
+                parms: {id: setid, version: versionCode, metaDataCode: strkey},
+                columns: u.elementColumns,
+                selectRowButtonOnly: false,
+                unSetValidateAttr: false,
+                allowHideColumn: false,
+                checkbox: checkBox,
+                usePager: true
+            }));
+            // 自适应宽度
+            u.elementGrid.adjustToWidth();
+            return false;
+
             if (u.elementGrid == null) {
                 u.elementGrid = $("#div_element_grid").ligerGrid($.LigerGridEx.config({
                     url: u._url + "/std/dataset/searchMetaData",
@@ -286,10 +301,10 @@
             }
         },
         showDialog: function (_tital, _url, _height, _width, callback) {
-            if (set.list.top == null) {
-                set.list.top = $.Util.getTopWindowDOM();
-            }
-            set.list.top.dialog_set_detail = $.ligerDialog.open({
+//            if (set.list.top == null) {
+//                set.list.top = $.Util.getTopWindowDOM();
+//            }
+            set.list.dialog_set_detail = $.ligerDialog.open({
                 title: _tital,
                 url: _url,
                 height: _height,
@@ -622,21 +637,22 @@
             dataJson[0]["versionCode"] = versionCode;
 
             var _url = set.list._url + "/std/dataset/saveDataSet";
-
+            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
             $.ajax({
                 url: _url,
                 type: "POST",
                 dataType: "json",
                 data: dataJson[0],
                 success: function (data) {
+                    waittingDialog.close();
                     if (data != null) {
 
                         var _res = eval(data);
                         if (_res.successFlg) {
                             //alert($.i18n.prop('message.save.success'));
                             $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                                parent.set.list.isReload = true;
-                                parent.set.list.top.dialog_set_detail.close();
+                                set.list.isReload = true;
+                                set.list.dialog_set_detail.close();
                             }, null);
                         }
                         else {
@@ -659,7 +675,7 @@
                 }
             });
             $("#btn_close").click(function () {
-                parent.set.list.top.dialog_set_detail.close();
+                set.list.dialog_set_detail.close();
             });
         }
     };
@@ -844,18 +860,20 @@
             }
             var _url = set.list._url + "/std/dataset/updataMetaSet";
 
+            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
             $.ajax({
                 url: _url,
                 type: "POST",
                 dataType: "json",
                 data: {info:JSON.stringify(dataJson[0]),version:version},
                 success: function (data) {
+                    waittingDialog.close();
                     if (data != null) {
                         var _res = eval(data);
                         if (_res.successFlg) {
                             $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                                parent.set.list.isReload = true;
-                                parent.set.list.top.dialog_set_detail.close();
+                                set.list.isReload = true;
+                                set.list.dialog_set_detail.close();
                             }, null);
                         }
                         else {
@@ -905,7 +923,7 @@
                 }
             });
             $("#btn_close").click(function () {
-                parent.set.list.top.dialog_set_detail.close();
+                set.list.dialog_set_detail.close();
             });
             //给数据元主键和是否空值的选择
             $("#primaryKey").click(function () {

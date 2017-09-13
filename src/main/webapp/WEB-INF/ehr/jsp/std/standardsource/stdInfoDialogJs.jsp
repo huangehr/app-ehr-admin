@@ -90,8 +90,8 @@
                             if(data.successFlg){
                                 var app = data.obj;
                                 //调用主页面接口，重新刷新Grid
-                                parent.reloadMasterGrid();
-                                parent.closeDialog('保存成功');
+                                reloadMasterGrid();
+                                closeDialog('保存成功');
                             }else{
                                 if(data.errorMsg=='codeNotUnique'){
                                     $.Notice.error('该代码在系统中已存在，请确认！');

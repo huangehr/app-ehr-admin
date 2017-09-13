@@ -26,8 +26,8 @@
     <div class="m-form-group">
         <label>CDA文档：</label>
 
-        <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="inp_dataset" class="required  useTitle"  required-title=<spring:message code="lbl.must.input"/> data-type="select"
+        <div class="l-text-wrapper m-form-control essential f-pr0">
+            <input type="text" id="inp_dataset" class="required f-ml10 useTitle"  required-title=<spring:message code="lbl.must.input"/> data-type="select"
                    data-attr-scan="cdaDocumentId"/>
         </div>
     </div>
@@ -35,7 +35,7 @@
     <div class="m-form-group" id="div-org">
         <label>医疗机构：</label>
 
-        <div id="inp_org_wrap" class="m-form-control essential">
+        <div id="inp_org_wrap" class="l-text-wrapper m-form-control essential">
             <!--输入框带查询-->
             <input type="text" id="inp_org"  class="f-ml10 required  useTitle f-w238 validate-org-length"  data-type="comboSelect"
                    required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="organizationCode" validate-org-length="请选择到医院一级！"/>
@@ -52,7 +52,7 @@
         </div>--%>
 
     <div class="m-form-control pane-attribute-toolbar">
-        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" id="div_add_btn">
+        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" id="div_add_btn">
             <span>保存</span>
         </div>
         <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_cancel_btn">

@@ -1,19 +1,22 @@
 package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.geography.controller.AddressController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
-import org.apache.commons.httpclient.*;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,20 +26,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.util.URIUtil;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Map;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,11 +36,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.*;
 
 /**
  * @author zlf
@@ -72,6 +62,9 @@ public class UserController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
 
+    @Autowired
+    private AddressController addressController;
+
     @RequestMapping("initial")
     public String userInitial(Model model) {
         model.addAttribute("contentPage", "user/user");
@@ -92,7 +85,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("searchUsers")
     @ResponseBody
-    public Object searchUsers(String searchNm, String searchType, int page, int rows) {
+    public Object searchUsers(String searchNm,String searchOrg, String searchType, int page, int rows) {
 
         String url = "/users";
         String resultStr = "";
@@ -101,7 +94,10 @@ public class UserController extends BaseUIController {
 
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName?" + searchNm + " g1;organization?" + searchNm + " g1;");
+            stringBuffer.append("realName"+ PageParms.LIKE + searchNm );
+        }
+        if (!StringUtils.isEmpty(searchOrg)) {
+            stringBuffer.append("organization=" + searchOrg);
         }
         if (!StringUtils.isEmpty(searchType)) {
             stringBuffer.append("userType=" + searchType);
@@ -224,31 +220,33 @@ public class UserController extends BaseUIController {
                 userModel.setUserType(userDetailModel.getUserType());
                 userModel.setOrganization(userDetailModel.getOrganization());
                 userModel.setMajor("");
+                if(null!=userDetailModel.getBirthday()&&!"".equals(userDetailModel.getBirthday())){
+                    userModel.setBirthday(userDetailModel.getBirthday());
+                }else{
+                    userModel.setBirthday(null);
+                }
+
+                userModel.setRealnameFlag(userDetailModel.getRealnameFlag());
                 userModel.setImgLocalPath("");
                 userModel.setRole(userDetailModel.getRole());
+                userModel.setProvinceId(userDetailModel.getProvinceId());
+                userModel.setProvinceName(userDetailModel.getProvinceName());
+                userModel.setCityId(userDetailModel.getCityId());
+                userModel.setCityName(userDetailModel.getCityName());
+                userModel.setAreaId(userDetailModel.getAreaId());
+                userModel.setAreaName(userDetailModel.getAreaName());
+                userModel.setStreet(userDetailModel.getStreet());
                 if(userDetailModel.getUserType().equals("Doctor")){
                     userModel.setMajor(userDetailModel.getMajor());
                 }
-
                 String imageId = fileUpload(userModel.getId(),restStream,imageName);
-//                String imageId = null;
-//                if (!StringUtils.isEmpty(restStream)) {
-//
-//                    FileResourceModel fileResourceModel = new FileResourceModel(userModel.getId(),"user","");
-//                    String fileResourceModelJsonData = objectMapper.writeValueAsString(fileResourceModel);
-//
-//                    MultiValueMap<String, String> params1 = new LinkedMultiValueMap<>();
-//                    params1.add("file_str",restStream);
-//                    params1.add("file_name",imageName);
-//                    params1.add("json_data",fileResourceModelJsonData);
-//
-//                    imageId = templates.doPost(comUrl + "/files",params1);
-//
-//                }
-
                 if (!StringUtils.isEmpty(imageId)){
                     userModel.setImgRemotePath(imageId);
                 }
+                userModel.setSecondPhone(userDetailModel.getSecondPhone());
+                userModel.setQq(userDetailModel.getQq());
+                userModel.setMicard(userDetailModel.getMicard());
+                userModel.setSsid(userDetailModel.getSsid());
 
                 userJsonDataModel = toJson(userModel);
                 params.add("user_json_data", userJsonDataModel);
@@ -351,26 +349,19 @@ public class UserController extends BaseUIController {
         params.put("userId", userId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-
             Envelop ep = getEnvelop(resultStr);
             UserDetailModel userDetailModel = toModel(toJson(ep.getObj()),UserDetailModel.class);
 
             String imageOutStream = "";
-            if (!StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
-
+            if (userDetailModel!=null && !StringUtils.isEmpty(userDetailModel.getImgRemotePath())) {
                 params.put("object_id",userDetailModel.getId());
                 imageOutStream = HttpClientUtil.doGet(comUrl + "/files",params,username, password);
                 envelop = toModel(imageOutStream,Envelop.class);
-
                 if (envelop.getDetailModelList().size()>0){
                     session.removeAttribute("userImageStream");
                     session.setAttribute("userImageStream",imageOutStream == null ? "" :envelop.getDetailModelList().get(envelop.getDetailModelList().size()-1));
                 }
             }
-
-
-
-
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/userInfoDialog");
@@ -598,5 +589,107 @@ public class UserController extends BaseUIController {
         }
     }
 
+    @RequestMapping("/getPatientInUserByIdCardNo")
+    @ResponseBody
+    public Object getUserByIdCardNo(String idCardNo) {
+        String getUserUrl = "/getPatientInUserByIdCardNo";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id_card_no",idCardNo);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + getUserUrl, params, username, password);
+            Envelop envelop = objectMapper.readValue(resultStr,Envelop.class);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
 
+    }
+
+    //查看是否有权限
+    @RequestMapping("/isRoleUser")
+    @ResponseBody
+    public boolean isRoleUser(String userId){
+        String url = "/roles/role_user/userRolesIds";
+        try {
+            Map<String,Object> params = new HashMap<>();
+            params.put("user_id",userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            if (envelop.isSuccessFlg() && null != envelop.getObj() && !"".equals(envelop.getObj())) {
+                return  true;
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(UserController.class).error(ex.getMessage());
+        }
+        return false;
+    }
+
+    @RequestMapping(value = "/getDistrictByUserId")
+    @ResponseBody
+    public Object getDistrictByUserId() {
+       /* HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
+        UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
+        String url = "/getDistrictByUserId";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId",user.getId());
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }*/
+        String url = "/geography_entries/pid/350200";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        try{
+            resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            if (envelop.isSuccessFlg()) {
+                result.setObj(envelop.getDetailModelList());
+                result.setSuccessFlg(true);
+                return result;
+            }else{
+                result.setSuccessFlg(false);
+                return result;
+            }
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+    @RequestMapping(value = "/getOrgByUserId")
+    @ResponseBody
+    public Object getOrgByUserId() {
+        /*HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpSession session = request.getSession();
+        UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
+        String url = "/getOrgByUserId";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId",user.getId());
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }*/
+        Envelop envelop = new Envelop();
+        envelop = (Envelop)addressController.getOrgs("福建省", "厦门市");
+        return envelop;
+    }
 }

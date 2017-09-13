@@ -244,7 +244,7 @@
                     self.$form.attrScan();
                     initType = self.$form.Fields.getValues().type;
                     self.adapterOrgDialog = $.ligerDialog.open({
-                        height: 550,
+                        height: 470,
                         width: 460,
                         title: title,
                         url: '${contextRoot}/adapterorg/template/adapterOrgInfo',

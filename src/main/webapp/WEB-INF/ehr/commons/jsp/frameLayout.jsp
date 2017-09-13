@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<div class="l-page-top m-logo">
+<div id="div_top" class="l-page-top m-logo">
     <div class="f-fr usr_msg">
         欢迎登录：${current_user.realName}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/user/initialChangePassword"
                                                                  class="f-color-0">修改密码</a><br>
@@ -25,7 +25,7 @@
     </div>
 </div>
 <div id="div_main_content" class="l-layout">
-    <div position="left" class="l-layout-content f-hh" hidetitle="true">
+    <div position="left" class="l-layout-content f-hh" hidetitle="false">
         <!--菜单导航栏-->
         <div class="m-nav-menu f-hh" id="menucyc-scroll">
             <div class="m-snav-title f-pr f-h40 f-ww f-fs14 s-c0 s-bc2 f-fwb">

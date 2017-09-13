@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.AccessToken;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ErrorCode;
@@ -11,10 +12,11 @@ import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.ObjectMapperUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
-import com.yihu.ehr.web.RestTemplates;
+import com.yihu.ehr.util.web.RestTemplates;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,16 +29,14 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.*;
+import javax.servlet.http.HttpSession;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -55,12 +55,114 @@ public class LoginController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Value("${service-gateway.BrowseClienturl}")
+    private String browseClienturl;
+    @Value("${service-gateway.profileurl}")
+    private String profileurl;
+    @Value("${app.oauth2authorize}")
+    private String authorize;
+    @Value("${app.oauth2OutSize}")
+    private String oauth2OutSize;
+    @Value("${app.clientId}")
+    private String clientId;
+    @Value("${app.qcReportClientId}")
+    private String qcReportClientId;
+    @Value("${app.resourceBrowseClientId}")
+    private String resourceBrowseClientId;
+    @Value("${app.browseClientId}")
+    public String browseClientId;
+    @Value("${std.version}")
+    public String stdVersion;
+
 
     @RequestMapping(value = "")
     public String login(Model model) {
         model.addAttribute("contentPage", "login/login");
         model.addAttribute("successFlg", true);
         return "generalView";
+    }
+
+    @RequestMapping(value = "signin")
+    public String signin(Model model) {
+        model.addAttribute("contentPage", "login/signin");
+        model.addAttribute("successFlg", true);
+        return "generalView";
+    }
+
+    /**
+     *   质控报告-oauth2验证集成
+     *   接口删除或变更时，请通告ESB项目组
+     */
+    @RequestMapping(value = "signinReport")
+    public String signinReport(Model model) {
+        model.addAttribute("contentPage", "login/signinReport");
+        model.addAttribute("successFlg", true);
+        return "generalView";
+    }
+
+    /*
+     自动登录
+      */
+    @RequestMapping(value = "autoLogin", method = RequestMethod.POST)
+    @ResponseBody
+    public Envelop autoLogin(Model model,
+                             HttpServletRequest request,
+                             @ApiParam(name = "token")
+                             @RequestParam String token,
+                             @ApiParam(name = "isQcReport")
+                             @RequestParam(name = "isQcReport",required = false) String isQcReport
+    ) throws Exception {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            if ("1".equals(isQcReport)){
+                params.put("clientId", qcReportClientId);
+            }else if ("2".equals(isQcReport)){
+                params.put("clientId", resourceBrowseClientId);
+            }else {
+                params.put("clientId", clientId);
+            }
+            params.put("accessToken", token);
+
+            String response = HttpClientUtil.doPost(authorize + "/oauth/validToken", params);
+            Map<String, Object> map = objectMapper.readValue(response, Map.class);
+
+            if ((Boolean) map.get("successFlg")) {
+                AccessToken accessToken = objectMapper.readValue(objectMapper.writeValueAsString(map.get("data")), AccessToken.class);
+                String loginName = accessToken.getUser();
+
+                //验证通过。赋值session中的用户信息
+                String userInfo = HttpClientUtil.doGet(comUrl + "/users/" + loginName, params);
+                Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
+                String ex = this.objectMapper.writeValueAsString(envelop.getObj());
+                UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+                request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                request.getSession().setAttribute("isLogin", true);
+                request.getSession().setAttribute("token", accessToken);
+                request.getSession().setAttribute("loginName", loginName);
+                request.getSession().setAttribute("userId", userDetailModel.getId());
+
+                //获取用户角色信息
+                List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
+                Collection<GrantedAuthority> gas = new ArrayList<>();
+                if (features != null) {
+                    for (AppFeatureModel feature : features) {
+                        if (!StringUtils.isEmpty(feature.getUrl()))
+                            gas.add(new SimpleGrantedAuthority(feature.getUrl()));
+                    }
+                }
+                //生成认证token
+                Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(loginName, "", gas);
+                //将信息存放到SecurityContext
+                SecurityContextHolder.getContext().setAuthentication(AuthenticationToken);
+
+                return success(accessToken);
+            } else {
+                String msg = String.valueOf(map.get("message"));
+                return failed(msg);
+            }
+        } catch (Exception e) {
+            return failed(e.getMessage());
+        }
     }
 
     @RequestMapping(value = "validate", method = RequestMethod.POST)
@@ -98,13 +200,15 @@ public class LoginController extends BaseUIController {
                     model.addAttribute("contentPage", "user/changePassword");
                     return "generalView";
                 } else {
+                    //创建session保存用户信息
+                    HttpSession session = request.getSession();
                     request.getSession().removeAttribute("defaultPassWord");
                     SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
                     Date date = new Date();
                     String now = sdf.format(date);
                     if (userDetailModel.getLastLoginTime() != null) {
                         Date dateLogin = DateTimeUtils.utcDateTimeParse(userDetailModel.getLastLoginTime());
-                        lastLoginTime = dateLogin == null?"": DateTimeUtil.simpleDateTimeFormat(dateLogin);
+                        lastLoginTime = dateLogin == null ? "" : DateTimeUtil.simpleDateTimeFormat(dateLogin);
                         //lastLoginTime = userDetailModel.getLastLoginTime();
                     } else {
                         lastLoginTime = now;
@@ -119,14 +223,14 @@ public class LoginController extends BaseUIController {
                     conditionMap.add("user_json_data", toJson(userDetailModel));
                     RestTemplates templates = new RestTemplates();
                     resultStr = templates.doPut(comUrl + url, conditionMap);
-
+                    session.setAttribute("loginCode", userDetailModel.getLoginCode());
 
                     //获取用户角色信息
                     List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
                     Collection<GrantedAuthority> gas = new ArrayList<>();
-                    if(features!=null){
-                        for(AppFeatureModel feature: features){
-                            if(!StringUtils.isEmpty(feature.getUrl()))
+                    if (features != null) {
+                        for (AppFeatureModel feature : features) {
+                            if (!StringUtils.isEmpty(feature.getUrl()))
                                 gas.add(new SimpleGrantedAuthority(feature.getUrl()));
                         }
                     }
@@ -162,7 +266,7 @@ public class LoginController extends BaseUIController {
         EnvelopExt<AppFeatureModel> envelopExt =
                 (EnvelopExt<AppFeatureModel>) ObjectMapperUtil.toModel(resultStr, new TypeReference<EnvelopExt<AppFeatureModel>>() {
                 });
-        if(envelopExt.isSuccessFlg())
+        if (envelopExt.isSuccessFlg())
             return envelopExt.getDetailModelList();
         throw new Exception(envelopExt.getErrorMsg());
     }
@@ -346,13 +450,13 @@ public class LoginController extends BaseUIController {
         String resultStr = "";
 
         try {
-            if(StringUtils.isEmpty(password)){
+            if (StringUtils.isEmpty(password)) {
                 url = "/users";
-                params.put("filters", "loginCode=" +userName);
+                params.put("filters", "loginCode=" + userName);
                 params.put("page", 1);
                 params.put("size", 15);
                 resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
-            }else {
+            } else {
                 url = "/users/verification/" + userName;
                 params.put("psw", password);
                 resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
@@ -373,11 +477,10 @@ public class LoginController extends BaseUIController {
     }
 
 
-
     @RequestMapping("activityUser")
     @ResponseBody
     public Object activityUser(String userId, boolean activated) {
-        String url = "/users/admin/"+userId;
+        String url = "/users/admin/" + userId;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -399,16 +502,6 @@ public class LoginController extends BaseUIController {
         }
 
     }
-
-
-
-
-
-
-
-
-
-
 
 
 //    @RequestMapping("searchUsers")
@@ -446,5 +539,56 @@ public class LoginController extends BaseUIController {
 //        }
 //
 //    }
+
+    /**
+     *  资源视图-oauth2验证集成
+     *
+     */
+    @RequestMapping(value = "signinResource")
+    public String signinResource(Model model) {
+        model.addAttribute("contentPage", "login/signinResource");
+        model.addAttribute("successFlg", true);
+        return "generalView";
+    }
+
+    /**
+     *  单点登录
+    */
+    @RequestMapping(value = "/broswerSignin",method = RequestMethod.GET)
+    public void signin(Model model,HttpServletRequest request,HttpServletResponse response, String idCardNo) throws Exception
+    {
+        String clientId=browseClientId;
+        String url=browseClienturl+"/common/login/signin?idCardNo="+idCardNo;
+        //response.sendRedirect("http://localhost:10260/oauth/authorize?response_type=token&client_id=111111&redirect_uri=http://localhost:8011/login/test&user=me");
+        //获取code
+        AccessToken token = (AccessToken)request.getSession().getAttribute("token");
+        String user = token.getUser();
+        model.addAttribute("model",request.getSession());
+        model.addAttribute("idCardNo",idCardNo);
+        response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
+    }
+
+    /**
+     * 验证某个用户是否有数据
+     * @param idCardNo
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public Envelop check(String idCardNo){
+        Envelop envelop = new Envelop();
+        Map<String, Object>  paramsMap = new HashMap<>();
+        paramsMap.put("demographic_id", idCardNo);
+        paramsMap.put("version", stdVersion);
+        String url2 = "/" + paramsMap.get("demographic_id") + "/profile/info";
+        try {
+            HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
+        }catch (Exception e) {
+            return envelop;
+        }
+        envelop.setSuccessFlg(true);
+        return envelop;
+    }
 
 }

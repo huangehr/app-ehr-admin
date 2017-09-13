@@ -2,10 +2,10 @@ package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.resource.ResourceDefaultParamModel;
-import com.yihu.ehr.api.ServiceApi;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
@@ -108,7 +108,7 @@ public class ResourceDefaultParamController extends BaseUIController {
     //删除
     @RequestMapping("/delete")
     @ResponseBody
-    public Object delete(Long id){
+    public Object delete(String id){
         try{
             if(id == null){
                 return failed("id不能为空！");

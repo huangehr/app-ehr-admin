@@ -1,5 +1,5 @@
 body {
-    font:12px/1.14 \5b8b\4f53,Sim sun,"宋体";
+    font-family: "微软雅黑";
     color: #323232;
 }
 
@@ -22,4 +22,8 @@ a:focus{color:#ffffff;text-decoration: none;}
 #span_nav_breadcrumb_content span.strong{ font-weight:bold;}
 /**/
 #div_left #div_typeTree{padding: 0 0 10px 0}
-
+/*弹出框样式覆盖*/
+.l-dialog td, .l-dialog tr, .l-dialog td div{font-size: 12px;}
+.l-dialog td .l-dialog-title{font-size: 16px;}
+.l-dialog-table .pop_tab li{font-size: 14px;}
+.f-pr0{padding-right: 0px !important;}

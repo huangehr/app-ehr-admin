@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
     (function ($, win) {
         $(function () {
@@ -25,10 +30,17 @@
                 this.grid.loadData(true);
             }
 
+            function onUploadSuccess(g, result){
+                if(result)
+                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+                else
+                    $.Notice.success("导入成功！");
+            }
+            $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess});
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
-                $searchNm: $('#inp_search'),
+                $searchParm: $('#inp_search'),
                 $settledWay: $('#inp_settledWay'),
                 $orgType: $('#inp_orgType'),
                 $searchBtn: $('#btn_search'),
@@ -36,12 +48,13 @@
                 $location: $('#inp_orgArea'),
 
                 addOrgInfoDialog: null,
+                orgDataGrantDialog:null,
 
                 init: function () {
                     this.initDDL(settledWayDictId, this.$settledWay);
                     this.initDDL(orgTypeDictId, this.$orgType);
 
-                    this.$searchNm.ligerTextBox({width: 240});
+                    this.$searchParm.ligerTextBox({width: 240});
 
                     this.$location.addressDropdown({
                         tabsData: [
@@ -54,9 +67,9 @@
                             },
                             {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
                             {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'}
-                        ]
+                        ],
+                        placeholder:"请选择地区"
                     });
-
                     this.bindEvents();
 
                     this.$element.show();
@@ -87,8 +100,8 @@
                     });
                     self.$newRecordBtn.click(function () {
                         self.addOrgInfoDialog = $.ligerDialog.open({
-                            height: 920,
-                            width: 600,
+                            height: 580,
+                            width: 1050,
                             title: '新增机构信息',
                             url: '${contextRoot}/organization/dialog/create'
                         })
@@ -102,7 +115,7 @@
                     this.grid = $("#div_org_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/organization/searchOrgs',
                         parms: {
-                            searchNm: '',
+                            searchParm: '',
                             searchType: '',
                             orgType: '',
                             province: '',
@@ -110,12 +123,12 @@
                             district: ''
                         },
                         columns: [
-                            {display: '机构类型', name: 'orgTypeName', width: '8%', align: "left"},
-                            {display: '机构代码', name: 'orgCode', width: '9%', align: "left"},
+                            {display: '机构类型', name: 'orgTypeName', width: '6%', align: "left"},
+                            {display: '机构代码', name: 'orgCode', width: '8%', align: "left"},
                             {display: '机构全名', name: 'fullName', width: '15%', align: "left"},
-                            {display: '联系人', name: 'admin', width: '8%', align: "left"},
+                            {display: '联系人', name: 'admin', width: '7%', align: "left"},
                             {display: '联系方式', name: 'tel', width: '8%', align: "left"},
-                            {display: '机构地址', name: 'locationStrName', width: '20%', align: "left"},
+                            {display: '机构地址', name: 'locationStrName', width: '18%', align: "left"},
                             {
                                 display: '是否生/失效',
                                 name: 'activityFlagName',
@@ -133,12 +146,14 @@
                                     return html;
                                 }
                             },
-                            {display: '入驻方式', name: 'settledWayName', width: '10%', isAllowHide: false},
+                            {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '14%', render: function (row) {
+                                display: '操作', name: 'operator', width: '30%', render: function (row) {
                                 var html = '';
-
-                                html += '<sec:authorize url="/template/initial"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
+                                html += '<sec:authorize url="/organization/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:resource:list", row.orgCode,row.id, row.fullName) + '">资源授权</a></sec:authorize>';
+                                html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a"  style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName,row.orgType) + '">部门管理</a></sec:authorize>';
+                                html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
+                                html += '<sec:authorize url="/orgTemplate/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/dialog/orgInfo"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode, 'modify') + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/delete"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:del", row.orgCode, 'del') + '"></a></sec:authorize>';
                                 return html;
@@ -152,17 +167,25 @@
                         unSetValidateAttr: false,
                         onDblClickRow: function (row) {
                             var mode = 'view';
-                            this.orgInfoDialog = $.ligerDialog.open({
-                                height: 750,
-                                width: 600,
+                            var wait = $.Notice.waitting("请稍后...");
+                            row.orgInfoDialog = $.ligerDialog.open({
+                                height: 600,
+                                width: 1050,
                                 title: '机构基本信息',
                                 url: '${contextRoot}/organization/dialog/orgInfo',
                                 load: true,
                                 urlParms: {
                                     orgCode: encodeURIComponent(row.orgCode),
                                     mode: mode
+                                },
+                                isHidden: false,
+                                show: false,
+                                onLoaded:function() {
+                                    wait.close(),
+                                    row.orgInfoDialog.show()
                                 }
                             });
+                            row.orgInfoDialog.hide();
                         }
                     }));
                     // 自适应宽度
@@ -208,18 +231,25 @@
                     var self = this;
                     $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
                         var title = '修改机构信息';
+                        var wait = $.Notice.waitting("请稍后...");
                         self.orgInfoDialog = $.ligerDialog.open({
                             isHidden: false,
-                            height: 950,
-                            width: 600,
+                            height: 600,
+                            width: 1050,
                             title: title,
                             url: '${contextRoot}/organization/dialog/orgInfo',
                             load: true,
                             urlParms: {
                                 orgCode: encodeURIComponent(orgCode),
                                 mode: mode
+                            },
+                            show: false,
+                            onLoaded:function() {
+                                wait.close(),
+                                self.orgInfoDialog.show()
                             }
                         });
+                        self.orgInfoDialog.hide();
                     });
                     $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg,msg) {
                         $.ligerDialog.confirm('是否对该机构进行'+msg+'操作', function (yes) {
@@ -236,18 +266,54 @@
                             }
                         });
 
-                    })
+                    });
                     $.subscribe('org:orgInfoDialog:modelConfig', function (event, orgCode, orgType, orgName) {
                         var url = '${contextRoot}/template/initial?treePid=1&treeId=12';
                         var orgData = {
                             orgCode: orgCode,
                             orgType: orgType,
-                            orgName: orgName,
+                            orgName: orgName
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, {'dataModel': JSON.stringify(orgData)});
+                    });
+                    $.subscribe('org:orgInfoDialog:deptMember', function (event, orgCode, orgId, orgName,orgType) {
+                        var url = '${contextRoot}/deptMember/initialDeptMember';
+                        var orgData = {
+                            mode:'',
+                            orgCode: orgCode,
+                            orgId: orgId,
+                            orgName: orgName,
+                            orgType:orgType
+                        }
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url, orgData);
+                    });
+                    //资源授权页面跳转
+                    $.subscribe('org:resource:list', function (event, orgCode, orgId,orgName) {
+//					rolesMaster.savePageParamsToSession();
+                        var data = {
+                            'orgCode':orgCode,
+                            'orgId':orgId,
+                            'orgName':orgName,
+                            'categoryIds':'',
+                            'sourceFilter':'',
+                        }
+                        var url = '${contextRoot}/organization/resource/initial?';
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url,{backParams:JSON.stringify(data)});
+                    });
 
-                    })
+                    $.subscribe('org:orgInfoDialog:upAndDownMember', function (event, orgCode, orgId, orgName) {
+                        var url = '${contextRoot}/upAndDownMember/initialUpAndDownMember';
+                        var orgData = {
+                            orgCode: orgCode,
+                            orgId: orgId,
+                            orgName: orgName
+                        }
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url, orgData);
+                    });
                 }
             };
 
@@ -258,7 +324,9 @@
             win.closeDialog = function () {
                 master.orgInfoDialog.close();
             };
-
+            win.showAddOrgInfoDialogSuccPop = function () {
+                $.Notice.success('保存成功');
+            };
             win.closeAddOrgInfoDialog = function (callback) {
                 if (callback) {
                     callback.call(win);
@@ -270,10 +338,15 @@
                     master.orgInfoDialog.close();
                 }
 
-
+            };
+            win.closeOrgCreateDialog = function (callback) {
+                if (callback) {
+                    callback.call(win);
+                    master.reloadGrid();
+                }
+                    master.orgCreateDialog.close();
 
             };
-
             /* *************************** 页面初始化 **************************** */
             pageInit();
         });

@@ -1,18 +1,39 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<style>
+    .btm-btns{position: absolute;bottom: 0;right: 0;}
+    .tab-con{position: absolute;left: 0;right: 0;top: 50px;bottom: 55px;}
+    /*div.tab-con-info{padding-bottom: 60px}*/
+    .l-dialog-body{position: relative;overflow: hidden}
+    .card-l-item{padding: 0 10px;margin-bottom: 10px}
+    .card-l-item div{height:30px;line-height:30px;position:relative;padding: 0 10px;border-width: 1px 1px 0 1px;border-style: solid;border-color: #ccc;background: #f1f1f1;}
+    .card-l-item div span {display: block}
+    .card-l-item div a {position: absolute;right: 0;top: 0}
+    .card-l-item ul{width: 100%;}
+    .card-l-item ul li{display: inline-block;width: 49%;height:30px;line-height:30px;padding: 0 10px;}
+    .first-ul{border-width: 1px 1px 0 1px;border-style: solid;border-color: #ccc}
+    .last-ul{border-width: 0 1px 1px 1px;border-style: solid;border-color: #ccc}
+    .grid_delete{height: 30px;}
+    .data-null{margin-top: 90px;position: relative}
+    .null-page{width: 260px;height: 163px;background: url("${contextRoot}/develop/images/shujukong_bg.png") no-repeat center;margin: 0 auto;}
+    .data-null span {width:100%;display:block;text-align: center;padding: 15px;font-size: 16px;color: #999;}
+    .f-dn{display: none;}
+</style>
+
 <div class="pop_tab">
-    <ul>
+    <ul class="tab-list">
         <li class="cur" id="btn_basic">基础属性</li>
+        <li id="card_info">就诊卡信息</li>
+        <li id="user_jur" style="display: none;">角色授权</li>
         <%--<li id="btn_card" >卡管理</li>--%>
         <%--<li id="btn_archive" >档案管理</li>--%>
-        <li id="btn_home_relation" >家庭关系</li>
-
+        <%--<li id="btn_home_relation" >家庭关系</li>--%>
     </ul>
 </div>
 <!--######人口管理页面 > 人口信息对话框模板页######-->
-<div id="div_patient_info_form" data-role-form class="m-form-inline f-mt20" style="overflow:auto">
-    <div>
+<div id="div_patient_info_form" data-role-form class="tab-con m-form-inline" style="overflow:auto">
+    <div class="tab-con-info">
         <div id="div_patient_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
             <!--用来存放item-->
             <div id="div_file_list" class="uploader-list"></div>
@@ -43,7 +64,7 @@
         <div class="m-form-group ">
             <label>民族：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control essential f-pr0">
                 <input type="text" id="inp_patientNation" data-type="select" class="required useTitle"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="nation"/>
             </div>
         </div>
@@ -107,7 +128,7 @@
             <label>联系方式：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_patientTel" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title="请输入正确的手机号码" data-attr-scan="telephoneNo"/>
+                <input type="text" id="inp_patientTel" class="required useTitle ajax validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title="请输入正确的手机号码" data-attr-scan="telephoneNo"/>
             </div>
         </div>
         <div class="m-form-group">
@@ -118,7 +139,7 @@
             </div>
         </div>
         <div class="m-form-group f-mt20" id="reset_password">
-            <hr class="u-border">
+            <!--<hr class="u-border">-->
             <div class="f-pr u-bd" style="display: none">
                 <div class="f-pa f-w40 f-wtl">
                     高级
@@ -129,21 +150,47 @@
             </div>
         </div>
     </div>
-
-    <div class="m-form-control pane-attribute-toolbar">
-        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" id="div_update_btn">
-            <span>保存</span>
-        </div>
-        <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_cancel_btn">
-            <span>关闭</span>
-        </div>
-    </div>
-    <input type="hidden" id="inp_patientCopyId">
 </div>
 
+<%--new add--%>
+<%--就诊卡信息--%>
+<div class="tab-con m-form-inline" style="display: none">
+    <div class="tab-con-info">
+        <ul id="doctorCardList">
+            <%--就诊卡列表--%>
+        </ul>
+    </div>
+</div>
+
+<%--new add--%>
+<%--角色授权--%>
+<div class="tab-con m-form-inline" style="display: none;width: 600px;height: 420px;margin-left: 10px;">
+    <div class="tab-con-info div-appRole-grid-scrollbar" style="width: 260px;height: 420px;border:1px solid #dcdcdc;display: inline-block;">
+        <%--树--%>
+        <div id="div_resource_browse_tree"></div>
+    </div>
+    <div style="width: 20px;display: inline-block;">
+        <div style="background: url(${staticRoot}/images/zhixiang_icon.png) no-repeat;width: 20px;height: 40px;padding-top: 220px;margin-left: 2px;"></div>
+    </div>
+    <div class="div-appRole-grid-scrollbar" id="div_checked_data" style="width: 260px;height: 420px;border:1px solid #dcdcdc;display: inline-block;background: #fff;">
+        <div class="h-40 div-header-content">
+            <div class="div-header" style="width: 40%">应用</div>
+            <div class="div-header" style="width: 40%">角色</div>
+            <div class="div-opera-header" style="width: 20%">操作</div>
+        </div>
+        <%--<div class="h-40 div-item">--%>
+            <%--<div class="div-main-content" title="信息共享交换平台">信息共享交换平台</div>--%>
+            <%--<div class="div-delete-content"><a class="grid_delete" href="#" title="删除"></a></div>--%>
+        <%--</div>--%>
+    </div>
+</div>
+
+
+
+
 <!--######卡管理 > 卡信息对话框模板页######-->
-<div id="div_card_info" data-role-form class="m-form-inline">
-    <div class="f-pr u-bd f-mt20">
+<div id="div_card_info" data-role-form class="tab-con m-form-inline">
+    <div class="tab-con-info f-pr u-bd f-mt20">
         <div class="f-pa f-w90 f-wtl">
             已关联卡
         </div>
@@ -229,8 +276,8 @@
 </div>
 
 <!--######档案管理 > 档案信息对话框模板页######-->
-<div id="div_archive_info" data-role-form class="m-form-inline" >
-    <div class="f-pr u-bd f-mt20">
+<div id="div_archive_info" data-role-form class="tab-con m-form-inline" >
+    <div class="tab-con-info f-pr u-bd f-mt20">
         <div class="f-pa f-w90 f-wtl">
             已关联档案
         </div>
@@ -258,6 +305,16 @@
     </div>
 </div>
 
+
+<div class="m-form-control pane-attribute-toolbar btm-btns">
+    <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" id="div_update_btn">
+        <span>保存</span>
+    </div>
+    <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_cancel_btn">
+        <span>关闭</span>
+    </div>
+</div>
+<input type="hidden" id="inp_patientCopyId">
 <div id="div_home_relation" data-role-form class="m-form-inline" >
 
 </div>

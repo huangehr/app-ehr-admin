@@ -6,7 +6,7 @@
   <input id="id" name="id" data-attr-scan="id"  hidden>
   <div class="m-form-group">
     <label>方案类别<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential u-readonly">
+    <div class="l-text-wrapper m-form-control essential u-readonly f-pr0">
       <input type="text" id="ipt_type" data-type="select" class="required useTitle" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
     </div>
   </div>
@@ -24,13 +24,13 @@
   </div>
   <div class="m-form-group u-readonly">
     <label>标准版本<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
+    <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_version" data-type="select" class="required useTitle" data-attr-scan="version" required-title=<spring:message code="lbl.must.input"/>>
     </div>
   </div>
   <div class="m-form-group u-readonly">
     <label>采集机构<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
+    <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_org" data-type="select" class="required useTitle" data-attr-scan="org" required-title=<spring:message code="lbl.must.input"/>>
     </div>
     <img id="add_org" src="${staticRoot}/images/add_btn_pre.png" class="add-image">
@@ -49,10 +49,10 @@
   </div>
   <div class="m-form-group f-pa update-footer">
     <div class="m-form-control">
-      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
         <span>保存</span>
       </div>
-      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
+      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr20" >
         <span>关闭</span>
       </div>
     </div>

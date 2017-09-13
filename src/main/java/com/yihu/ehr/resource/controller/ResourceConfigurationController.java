@@ -1,11 +1,9 @@
 package com.yihu.ehr.resource.controller;
 
-import com.yihu.ehr.api.ServiceApi;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.util.controller.BaseUIController;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -16,9 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 资源配置服务控制器
  * Created by wq on 2016/5/23.
  */
-
 @Controller
 @RequestMapping("/resourceConfiguration")
 public class ResourceConfigurationController extends BaseUIController {
@@ -37,13 +35,12 @@ public class ResourceConfigurationController extends BaseUIController {
         return "pageView";
     }
 
-    @RequestMapping("searchResourceconfiguration")
+    @RequestMapping("searchResourceConfiguration")
     @ResponseBody
-    public Object searchResourceconfiguration(String searchNm, int page, int rows) {
+    public Object searchResourceConfiguration(String searchNm, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
-        String metaDataUrl = ServiceApi.Resources.MetadataList;
+        String metaDataUrl = "/resources/metadata";
         String resultStr = "";
-
         params.put("filters", "");
         String filters ="valid=1";
         if (!StringUtils.isEmpty(searchNm)){
@@ -54,47 +51,39 @@ public class ResourceConfigurationController extends BaseUIController {
         params.put("size", rows);
         params.put("fields", "");
         params.put("sorts", "");
-
         try {
-
             resultStr = HttpClientUtil.doGet(comUrl + metaDataUrl, params, username, password);
-
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return resultStr;
 
     }
 
-    @RequestMapping("searchSelResourceconfiguration")
+    @RequestMapping("searchSelResourceConfiguration")
     @ResponseBody
-    public Object searchSelResourceconfiguration(String searchNm, String resourcesId, int page, int rows) {
+    public Object searchSelResourceConfiguration(String searchNm, String resourcesId, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
-        String ResourceMetadataUrl = ServiceApi.Resources.ResourceMetadataList;
+        String ResourceMetadataUrl = "/resources/rs_metadata";
         String selResourceMetadataListUrl = "/resources/" + resourcesId + "/metadata_list";
         String resultStr = "";
         try {
-
             if (searchNm.equals("selAll")) {
                 resultStr = HttpClientUtil.doGet(comUrl + selResourceMetadataListUrl, params, username, password);
-
             } else {
-
                 params.put("filters", "");
-                if (!StringUtils.isEmpty(searchNm))
+                if (!StringUtils.isEmpty(searchNm)) {
                     params.put("filters", "name?" + searchNm + " g1;id?" + searchNm + " g1");
-
+                }
                 params.put("resources_id", "");
-                if (!StringUtils.isEmpty(resourcesId))
+                if (!StringUtils.isEmpty(resourcesId)) {
                     params.put("resources_id", resourcesId);
-
+                }
                 params.put("page", page);
                 params.put("size", rows);
                 params.put("fields", "");
                 params.put("sorts", "");
-
                 resultStr = HttpClientUtil.doGet(comUrl + ResourceMetadataUrl, params, username, password);
-
             }
         } catch (Exception e) {
 
@@ -103,30 +92,26 @@ public class ResourceConfigurationController extends BaseUIController {
 
     }
 
-    @RequestMapping("/saveResourceconfiguration")
+    @RequestMapping("/saveResourceConfiguration")
     @ResponseBody
-    public String saveResourceconfiguration(String addRowDatas, String delRowDatas) {
-
+    public String saveResourceConfiguration(String addRowDatas, String delRowDatas) {
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String metaDataUrl = ServiceApi.Resources.ResourceMetadataBatch;
-
+        String metaDataUrl = "/resources/rs_metadata/batch";
         try {
             if (!StringUtils.isEmpty(delRowDatas)) {
-//                执行删除操作
+                //执行删除操作
                 params.put("ids", delRowDatas);
                 resultStr = HttpClientUtil.doDelete(comUrl + metaDataUrl, params, username, password);
             }
-
             if (!StringUtils.isEmpty(addRowDatas)) {
-//                执行新增操作
+                //执行新增操作
                 params.put("metadatas", addRowDatas);
                 resultStr = HttpClientUtil.doPost(comUrl + metaDataUrl, params, username, password);
             }
         } catch (Exception e) {
 
         }
-
         return resultStr;
     }
 }

@@ -119,7 +119,7 @@
             success: function (data) {
               waittingDialog.close();
               if (data.successFlg) {
-                parent.closeCustomizeDialog('修改成功！');
+                    closeCustomizeDialog('修改成功！');
               } else {
                 $.Notice.error("修改失败！");
               }

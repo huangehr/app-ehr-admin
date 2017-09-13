@@ -25,6 +25,7 @@
 			$code: $("#inp_code"),
 			$interface: $("#inp_interface"),
 			$grantType: $('input[name="grantType"]', this.$form),
+			$dataSource: $('input[name="dataSource"]', this.$form),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -39,6 +40,7 @@
 				this.$code.ligerTextBox({width:240});
 				this.$description.ligerTextBox({width:240, height: 120 });
 				this.$grantType.ligerRadio();
+				this.$dataSource.ligerRadio();
 				var mode = '${mode}';
 				if(mode == 'view'){
 					rsInfoForm.$form.addClass('m-form-readonly');
@@ -52,6 +54,7 @@
 				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
+					debugger
 					nameCopy = info.name;
 					codeCopy = info.code;
 					this.$form.Fields.fillValues({
@@ -61,6 +64,7 @@
 						categoryId:info.categoryId,
 						rsInterface:info.rsInterface,
 						grantType:info.grantType,
+						dataSource:info.dataSource.toString(),
 						description:info.description
 					});
 					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
@@ -70,7 +74,8 @@
 			},
 			initDDL: function () {
 				this.$grantType.eq(1).attr("checked", 'true')
-				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{})
+				this.$dataSource.eq(0).attr("checked", 'true')
+				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
 					dataParmName: 'detailModelList',
@@ -140,12 +145,14 @@
 				});
 
 				function update(values,categoryIdNew){
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 					var dataModel = $.DataModel.init();
 					dataModel.updateRemote("${contextRoot}/resource/resourceManage/update", {
 						data:{dataJson:JSON.stringify(values),mode:mode},
 						success: function(data) {
+                            waittingDialog.close();
 							if (data.successFlg) {
-								parent.reloadMasterUpdateGrid(categoryIdNew);
+								reloadMasterUpdateGrid(categoryIdNew);
 								$.Notice.success('操作成功');
 								win.closeRsInfoDialog();
 							} else {

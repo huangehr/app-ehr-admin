@@ -57,12 +57,21 @@
                 $searchType: $('#inp_select_searchType'),
                 //查询按钮
                 $searchBtn: $('#btn_search'),
+                //$inpOrg: $('#inp_org'),
                 init: function () {
+                    var self = this;
                     retrieve.initDDL(settledWayDictId,this.$searchType);
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
                     this.$searchBox.ligerTextBox({width:240});
+                    /*var combo = self.$inpOrg.customCombo('${contextRoot}/deptMember/getOrgList');
+                    self.$inpOrg.parent().css({
+                        width:'240'
+                    }).parent().css({
+                        display:'inline-block',
+                        width:'240px'
+                    });*/
                 },
                 //下拉框列表项初始化
                 initDDL: function (dictId, target) {
@@ -73,7 +82,8 @@
                             target.ligerComboBox({
                                 valueField: 'code',
                                 textField: 'value',
-                                data: [].concat(data.detailModelList)
+                                data: [].concat(data.detailModelList),
+                                width:150
                             });
                         }
                     });
@@ -93,10 +103,10 @@
                         columns: [
                             // 隐藏列：hide: true（隐藏），isAllowHide: false（列名右击菜单中不显示）
                             {name: 'id', hide: true, isAllowHide: false},
-                            {display: '用户类型', name: 'userTypeName', width: '10%',align:'left'},
-                            {display: '姓名', name: 'realName', width: '10%',align:'left'},
-                            {display: '账号',name: 'loginCode', width:'10%', isAllowHide: false,align:'left'},
-                            {display: '所属机构', name: 'organizationName', width: '15%',align:'left'},
+                            {display: '用户类型', name: 'userTypeName', width: '15%',align:'left'},
+                            {display: '姓名', name: 'realName', width: '15%',align:'left'},
+                            {display: '账号',name: 'loginCode', width:'15%', isAllowHide: false,align:'left'},
+//                            {display: '所属机构', name: 'organizationName', width: '15%',align:'left'},
                             {display: '联系方式', name: 'telephone',width: '10%',align:'left'},
                             {display: '用户邮箱', name: 'email', width: '13%', resizable: true,align:'left'},
 
@@ -133,19 +143,27 @@
                         unSetValidateAttr: false,
                         onDblClickRow : function (row){
                             var mode = 'view';
-                            $.ligerDialog.open({
-                                height: 750,
+                            var wait = $.Notice.waitting("请稍后...");
+                            var rowDialog = $.ligerDialog.open({
+                                height: 620,
                                 width: 600,
                                 isDrag:true,
                                 //isResize:true,
                                 title:'用户基本信息',
-                                url: '${contextRoot}/user/getUser',
+                                isHidden: false,
                                 load: true,
+                                show:false,
+                                url: '${contextRoot}/user/getUser',
                                 urlParms: {
                                     userId: row.id,
                                     mode:mode
-                                }
+                                },
+								onLoaded:function() {
+									wait.close(),
+	                                rowDialog.show()
+								}
                             });
+                            rowDialog.hide();
                         }
                     }));
                     // 自适应宽度
@@ -155,6 +173,7 @@
                 },
                 reloadGrid: function () {
                     var values = retrieve.$element.Fields.getValues();
+                    //values.searchOrg = retrieve.$element.Fields.searchOrg.val();
                     reloadGrid.call(this, '${contextRoot}/user/searchUsers', values);
                 },
                 bindEvents: function () {
@@ -165,21 +184,28 @@
                     });
                     //修改用户信息
                     $.subscribe('user:userInfoModifyDialog:open', function (event, userId, mode) {
+                        var wait = $.Notice.waitting("请稍后...");
                         self.userInfoDialog = $.ligerDialog.open({
                             //  关闭对话框时销毁对话框
-                            isHidden: false,
                             title:'修改基本信息',
-                            height: 700,
+                            height: 620,
                             width: 600,
-                            isDrag:true,
-                            isResize:true,
-                            url: '${contextRoot}/user/getUser',
                             load: true,
+                            isDrag: true,
+                            isResize: true,
+                            isHidden: false,
+                            show: false,
+                            url: '${contextRoot}/user/getUser',
                             urlParms: {
                                 userId: userId,
                                 mode:mode
-                            }
+                            },
+							onLoaded:function() {
+								wait.close(),
+                                self.userInfoDialog.show()
+							}
                         });
+                        self.userInfoDialog.hide();
                     });
                     //新增用户
                     retrieve.$newRecordBtn.click(function () {
@@ -234,18 +260,29 @@
                     });
 					//查看应用权限
 					$.subscribe('user:feature:open', function (event, userId) {
-						self.userInfoDialog = $.ligerDialog.open({
-							title:'查看权限',
-							height: 650,
-							width: 600,
-							isDrag:true,
-							isResize:true,
-							url: '${contextRoot}/user/appFeatureInitial',
-							load: true,
-							urlParms: {
-								userId: userId,
-							}
-						});
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote("${contextRoot}/user/isRoleUser",{
+                            data:{userId:userId},
+                            async:false,
+                            success: function(data) {
+                                if(data){
+                                    self.userInfoDialog = $.ligerDialog.open({
+                                        title:'查看权限',
+                                        height: 650,
+                                        width: 600,
+                                        isDrag:true,
+                                        isResize:true,
+                                        url: '${contextRoot}/user/appFeatureInitial',
+                                        load: true,
+                                        urlParms: {
+                                            userId: userId,
+                                        }
+                                    });
+                                }else{
+                                    $.Notice.error('该用户无任何应用的授权信息。');
+                                }
+                            }
+                        });
 					});
                 }
             };

@@ -6,6 +6,7 @@
     (function ($, win) {
         $(function () {
             /* ************************** 变量定义 ******************************** */
+            var versionNum = $('#inp_searchVersion_val').val();
             // 通用工具类库
             var Util = $.Util;
 
@@ -19,7 +20,7 @@
             var addArchiveTplInfo = null;
             var mode = '${mode}';
             var model = ${model};
-            var version = parent.getVersion();
+            var version = getVersion();
             var msg = mode == 'new' ? '新增' : mode=='copy'? '复制' : "修改";
             var firstInit = true;
             /* ************************** 变量定义结束 **************************** */
@@ -54,27 +55,33 @@
                 initForm: function () {
                     var self = this;
                     self.$title.ligerTextBox({width: 240});
-                    this.initCombo(self.$dataset, urls.cdaDocument, {});
-                    self.versionNo = self.$versionNo.ligerComboBox({
-                        url: '${contextRoot}/adapter/versions',
-                        valueField: 'version',
-                        textField: 'versionName',
-                        dataParmName: 'detailModelList',
-                        width: 240,
-                        onSelected: function (value) {
-                            var parms = {
-                                version: value,
-                                searchName: ""
-                            }
-                            self.cda.reload(parms);
-                            if(firstInit){
-                                if(model.cdaDocumentId){
-                                    self.cda.setValue(model.cdaDocumentId);
-                                    self.cda.setText(model.cdaDocumentName);
-                                }
-                                firstInit = false;
-                            }
-                        }
+                    <%--self.versionNo = self.$versionNo.ligerComboBox({--%>
+                        <%--url: '${contextRoot}/adapter/versions',--%>
+                        <%--valueField: 'version',--%>
+                        <%--textField: 'versionName',--%>
+                        <%--dataParmName: 'detailModelList',--%>
+                        <%--width: 240,--%>
+                        <%--onSelected: function (value) {--%>
+                            <%--var parms = {--%>
+                                <%--version: value,--%>
+                                <%--searchName: ""--%>
+                            <%--}--%>
+                            <%--self.cda.reload(parms);--%>
+                            <%--if(firstInit){--%>
+                                <%--if(model.cdaDocumentId){--%>
+                                    <%--self.cda.setValue(model.cdaDocumentId);--%>
+                                    <%--self.cda.setText(model.cdaDocumentName);--%>
+                                <%--}--%>
+                                <%--firstInit = false;--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--});--%>
+                    self.versionNo = self.$versionNo.ligerTextBox({width: 240,disabled:true});
+                    self.versionNo.setValue(versionNum);
+
+
+                    this.initCombo(self.$dataset, urls.cdaDocument, {
+                        version: versionNum
                     });
 
                     this.$org.addressDropdown({
@@ -96,13 +103,13 @@
                             }
                         ]
                     });
-
+debugger
                     $('#inp_versionNo_wrap').addClass('u-ui-readonly');
                     if(mode=='new' && !Util.isStrEmpty(model.organizationCode))
-                        $('#inp_org_wrap').addClass('u-ui-readonly');
-
+//                        $('#inp_org_wrap').addClass('u-ui-readonly');
+//                    this.$form.liger.get('div_addArchiveTpl_form');
+                    this.$form.ligerForm();//初始化表单
                     this.$form.attrScan();
-
                     this.$form.Fields.fillValues({
                         id: model.id,
                         title: mode=='copy'? '': model.title,
@@ -110,9 +117,9 @@
                         organizationCode: [model.province, model.city, model.organizationCode]
                     });
 
-                    var versionMgr = this.$versionNo.ligerGetComboBoxManager();
-                    versionMgr.selectValue(version.v);
-                    versionMgr.setText(version.n);
+//                    var versionMgr = this.$versionNo.ligerGetTextBoxManager();
+//                    versionMgr.selectValue(version.v);
+//                    versionMgr.setText(version.n);
 
                     $('#oldTitle').val(model.title);
                     $('#inp_versionNo').focus();
@@ -167,6 +174,7 @@
                         };
                     }
                     self.$addBtn.click(function () {
+                        debugger
                         if (validator.validate()) {
                             var TemplateModel = self.$form.Fields.getValues();
                             TemplateModel.organizationCode = TemplateModel.organizationCode.keys[2];
@@ -182,8 +190,8 @@
                                 success: function (data) {
                                     if (data.successFlg) {
                                         $.Notice.success( msg + '成功');
-                                        parent.reloadGrids();
-                                        parent.closeDialog();
+                                        reloadGrids();
+                                        closeDialog();
                                     } else if(data.errorMsg){
                                         $.Notice.error(data.errorMsg);
                                     }else {
@@ -198,7 +206,7 @@
                     });
 
                     self.$cancelBtn.click(function () {
-                        parent.closeDialog();
+                        closeDialog();
                     });
                 }
 

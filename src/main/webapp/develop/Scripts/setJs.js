@@ -125,7 +125,7 @@ set.list = {
     getVersionList: function () {
         var u = set.list;
         $.ajax({
-           // url: u._url + "/cdadict/getCdaVersionList",
+            // url: u._url + "/cdadict/getCdaVersionList",
             //调通测试暂时使用
             url: u._url + "/cdaVersion/getVersionList",
             type: "post",
@@ -526,7 +526,7 @@ set.attr = {
             type: "post",
             dataType: "json",
             async:false,
-           // data: {strVersionCode: cdaVersion},
+            // data: {strVersionCode: cdaVersion},
             //data: {version: cdaVersion},
             success: function (data) {
                 //var result = eval(data.result);
@@ -604,20 +604,23 @@ set.attr = {
 
         var _url = set.list._url + "/std/dataset/saveDataSet";
 
+        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
         $.ajax({
             url: _url,
             type: "POST",
             dataType: "json",
             data: dataJson[0],
             success: function (data) {
+                waittingDialog.close();
                 if (data != null) {
 
                     var _res = eval(data);
                     if (_res.successFlg) {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
+                            debugger
                             parent.set.list.isReload = true;
-                            parent.set.list.top.dialog_set_detail.close();
+                            parent.set.list.dialog_set_detail.close();
                         }, null);
                     }
                     else {
@@ -640,7 +643,7 @@ set.attr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.top.dialog_set_detail.close();
+            parent.set.list.dialog_set_detail.close();
         });
     }
 };
@@ -660,12 +663,12 @@ set.elementAttr = {
         {
             console.log(staged);
             $("#btn_save").hide();
-             set.elementAttr.element_form.addClass("m-form-readonly");
-             set.elementAttr.element_form.find("input").each(function(){
-                 if($(this).attr("data-type")!="select"){
-                     $(this).css("border","#D0D0D0 1px solid");
-                 }
-             });
+            set.elementAttr.element_form.addClass("m-form-readonly");
+            set.elementAttr.element_form.find("input").each(function(){
+                if($(this).attr("data-type")!="select"){
+                    $(this).css("border","#D0D0D0 1px solid");
+                }
+            });
         }
         //this.getDictList();
         this.getElementInfo();
@@ -825,18 +828,21 @@ set.elementAttr = {
         }
         var _url = set.list._url + "/std/dataset/updataMetaSet";
 
+        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
         $.ajax({
             url: _url,
             type: "POST",
             dataType: "json",
             data: {info:JSON.stringify(dataJson[0]),version:version},
             success: function (data) {
+                waittingDialog.close();
                 if (data != null) {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         $.ligerDialog.alert("保存成功!", "提示", "success", function () {
+                            debugger
                             parent.set.list.isReload = true;
-                            parent.set.list.top.dialog_set_detail.close();
+                            parent.set.list.dialog_set_detail.close();
                         }, null);
                     }
                     else {
@@ -881,7 +887,7 @@ set.elementAttr = {
             });
 
         $("#btn_save").click(function () {
-           if (validator.validate()) {
+            if (validator.validate()) {
                 set.elementAttr.save();
             }
         });

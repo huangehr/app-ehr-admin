@@ -128,12 +128,13 @@
 						var dataModel = $.DataModel.init();
 						self.$form.attrScan();
 						var drugModel = self.$form.Fields.getValues();
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						dataModel.createRemote("${contextRoot}/specialdict/drug/update", {
 							data:  {dictJson:JSON.stringify(drugModel),mode:mode},
 							success: function (data) {
-								debugger
+                                waittingDialog.close();
 								if(data.successFlg){
-									parent.reloadDrugInfoGrid();
+									reloadDrugInfoGrid();
 									$.Notice.success('操作成功');
 									win.closeDrugInfoDialog();
 								}else{

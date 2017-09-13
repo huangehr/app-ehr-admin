@@ -9,7 +9,7 @@
   </div>
 
   <!-- 基础信息-->
-  <div id="apiForm" class="m-form-inline"  >
+  <div id="apiForm" style="height: 270px;" class="m-form-inline"  >
     <input type="hidden" data-attr-scan="id">
     <input type="hidden" data-attr-scan="appId">
     <input type="hidden" data-attr-scan="parentId">
@@ -27,17 +27,26 @@
       </div>
     </div>
 
-    <div id="div_audit" class="m-form-group">
-      <label>审计程度<spring:message code="spe.colon"/></label>
+
+    <div id="div_method" class="m-form-group">
+      <label>方法<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
-        <input type="text" id="ipt_api_auditLevel" data-type="select" class="required" data-attr-scan="auditLevel">
+        <input type="text" id="ipt_api_method" data-type="select" class="required" data-attr-scan="method">
       </div>
     </div>
 
-    <div id="div_status" class="m-form-group">
-      <label>状态<spring:message code="spe.colon"/></label>
+    <div id="div_http" class="m-form-group">
+      <label>IP地址<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
-        <input type="text" id="ipt_api_activityType" data-type="select" class="required" data-attr-scan="activityType">
+        <input type="text" id="ipt_api_http" data-type="required" class="required" data-attr-scan="microServiceUri">
+      </div>
+    </div>
+
+
+    <div id="div_type" class="m-form-group">
+      <label>类型<spring:message code="spe.colon"/></label>
+      <div class="l-text-wrapper m-form-control essential">
+        <input type="text" id="ipt_api_type" data-type="select" class="required" data-attr-scan="type">
       </div>
     </div>
 
@@ -48,10 +57,26 @@
       </div>
     </div>
 
-    <div id="div_type" class="m-form-group">
-      <label>类型<spring:message code="spe.colon"/></label>
+    <div id="div_microServiceName" class="m-form-group">
+      <label>微服务名<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
-        <input type="text" id="ipt_api_type" data-type="select" class="required" data-attr-scan="type">
+        <input type="text" id="ipt_api_microServiceName" class="required"  data-attr-scan="microServiceName">
+      </div>
+    </div>
+
+    <div id="div_msMethodName" class="m-form-group">
+      <label>内部方法<spring:message code="spe.colon"/></label>
+      <div class="l-text-wrapper m-form-control essential">
+        <input type="text" id="ipt_api_msMethodName" data-type="select" class="required" data-attr-scan="msMethodName">
+      </div>
+    </div>
+
+
+
+    <div id="div_status" class="m-form-group">
+      <label>状态<spring:message code="spe.colon"/></label>
+      <div class="l-text-wrapper m-form-control essential">
+        <input type="text" id="ipt_api_activityType" data-type="select" class="required" data-attr-scan="activityType">
       </div>
     </div>
 
@@ -69,10 +94,10 @@
       </div>
     </div>
 
-    <div id="div_method" class="m-form-group">
-      <label>方法<spring:message code="spe.colon"/></label>
+    <div id="div_audit" class="m-form-group">
+      <label>审计程度<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
-        <input type="text" id="ipt_api_method" data-type="select" class="required" data-attr-scan="method">
+        <input type="text" id="ipt_api_auditLevel" data-type="select" class="required" data-attr-scan="auditLevel">
       </div>
     </div>
 

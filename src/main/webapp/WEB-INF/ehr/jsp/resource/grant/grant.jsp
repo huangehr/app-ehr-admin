@@ -41,10 +41,10 @@
 
     <div class="m-form-group f-pa update-footer">
         <div class="m-form-control">
-            <div id="btn_grant" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam">
+            <div id="btn_grant" class=" f-mr10">
                 <span>确认</span>
             </div>
-            <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam">
+            <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr20">
                 <span>取消</span>
             </div>
         </div>

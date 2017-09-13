@@ -7,6 +7,7 @@ import com.yihu.ehr.util.HttpClientUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
@@ -27,6 +28,11 @@ public class AddressController {
     @Value("${service-gateway.url}")
     private String comUrl;
 
+    /**
+     * 获取省份
+     * @param level
+     * @return
+     */
     @RequestMapping("getParent")
     @ResponseBody
     public Object getParent(Integer level) {
@@ -52,17 +58,13 @@ public class AddressController {
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }
-//        XAddressDict[] addrArray = addressManager.getLevelToAddr(level);
-//        Map<Integer, String> parentMap = new HashMap<>();
-//        for (XAddressDict addr : addrArray) {
-//            parentMap.put(addr.getId(), addr.getName());
-//        }
-//        Result result = new Result();
-//        result.setObj(parentMap);
-//
-//        return result.toJson();
     }
 
+    /**
+     * 获取城市
+     * @param pid
+     * @return
+     */
     @RequestMapping("getChildByParent")
     @ResponseBody
     public Object getChildByParent(Integer pid) {
@@ -88,21 +90,49 @@ public class AddressController {
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }
-//        XAddressDict[] addrArray = addressManager.getPidToAddr(pid);
-//        Map<Integer, String> childMap = new HashMap<>();
-//        for (XAddressDict addr : addrArray) {
-//            childMap.put(addr.getId(), addr.getName());
-//        }
-//        Result result = new Result();
-//        result.setObj(childMap);
-//
-//        return result.toJson();
     }
 
+    /**
+     * 获取行政区
+     * @param pid
+     * @return
+     */
+    @RequestMapping("getDistrictByParent")
+    @ResponseBody
+    public Object getDistrictByParent(Integer pid) {
+        String url = "/geography_entries/pid/";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("pid",pid);
+        try{
+            resultStr = HttpClientUtil.doGet(comUrl + url + pid, params, username, password);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            if (envelop.isSuccessFlg()) {
+                result.setObj(envelop.getDetailModelList());
+                result.setSuccessFlg(true);
+                return result;
+            }else{
+                result.setSuccessFlg(false);
+                return result;
+            }
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+    /**
+     * 获取机构
+     * @param province
+     * @param city
+     * @return
+     */
     @RequestMapping("getOrgs")
     @ResponseBody
     public Object getOrgs(String province, String city) {
-//        String url = "/address/search";
         String url = "/organizations/geography";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -128,18 +158,5 @@ public class AddressController {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
-//        Map<String, Object> conditionMap = new HashMap<>();
-//        conditionMap.put("province", province);
-//        conditionMap.put("city", city);
-//        List<XOrganization> orgList = orgManager.searchByAddress(conditionMap);
-//        Map<String, String> orgMap = new HashMap<>();
-//        for (XOrganization org : orgList) {
-//            orgMap.put(org.getOrgCode(), org.getFullName());
-//        }
-//
-//        Result result = new Result();
-//        result.setObj(orgMap);
-//
-//        return result.toJson();
     }
 }

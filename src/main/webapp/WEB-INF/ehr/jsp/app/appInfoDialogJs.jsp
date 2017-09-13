@@ -11,6 +11,7 @@
         var jValidation = $.jValidation;
 		var catalogDictId = 1;
 		var statusDictId = 2;
+        var sourceTypeDictId = 38;
         var app = {};
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -21,6 +22,7 @@
         appInfoForm = {
 			$form: $("#div_app_info_form"),
 			$name: $("#inp_app_name"),
+            $sourceType: $("#inp_source_type"),
             $code: $("#inp_app_code"),
 			$orgCode:$('#inp_org_code'),
 			$catalog: $("#inp_dialog_catalog"),
@@ -33,6 +35,9 @@
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
             $jryycyc:$("#jryycyc"),//cyctodo
+            $icon:$("#inp_app_icon"),
+            $inpFileIcon:$("#inp_file_icon"),
+            $releaseFlag: $('input[name="releaseFlag"]', this.$form),
             init: function () {
                 this.cycToDo()//复制完记得删掉阿亮
                 this.initForm();
@@ -42,13 +47,18 @@
                 this.$name.ligerTextBox({width:240});
 				this.initDDL(catalogDictId, this.$catalog);
 				this.initDDL(statusDictId, this.$status);
+                this.initDDL(sourceTypeDictId, this.$sourceType);
+
 				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{filters: "activityFlag=1;"})
                 this.$tags.ligerTextBox({width:240});
 				this.$code.ligerTextBox({width:240});
+
+				this.$icon.ligerTextBox({width:190});
+                this.$releaseFlag.ligerRadio();
 				this.$appId.ligerTextBox({width:240});
 				this.$secret.ligerTextBox({width:240});
-				this.$url.ligerTextBox({width:240, height: 50 });
-                this.$description.ligerTextBox({width:240, height: 120 });
+				this.$url.ligerTextBox({width:240});
+                this.$description.ligerTextBox({width:240, height: 50 });
                 var mode = '${mode}';
 				if(mode != 'view'){
 					$(".my-footer").show();
@@ -59,7 +69,7 @@
                     $(".m-form-control .l-text-trigger-cancel").remove();
 					$("#btn_save").hide();
 					$("#btn_cancel").hide();
-					//$("input,select", this.$form).prop('disabled', false);
+                 //$("input,select", this.$form).prop('disabled', false);
 				}
                 this.$form.attrScan();
                 if(mode !='new'){
@@ -67,6 +77,8 @@
                     this.$form.Fields.fillValues({
 						sourceType: app.sourceType,
                         name:app.name,
+                        icon:app.icon,
+                        releaseFlag:app.releaseFlag+'',
                         catalog: app.catalog,
                         status:app.status,
                         tags:app.tags,
@@ -100,6 +112,13 @@
             },
             bindEvents: function () {
                 var self = this;
+                $(".l-text-wrapper").on("click",function(){//解决样式不兼容问题
+                   if($(this).find("#jryycyc").length>0){
+                        $(".l-box-select-inner").css("height","240px");
+                    }else{
+                        $(".l-box-select-inner").css("height","auto");
+                    }
+                });
                 var validator =  new jValidation.Validation(this.$form, {immediate:true,onSubmit:false,
                     onElementValidateForAjax:function(elm){
                         var field = $(elm).attr('id');
@@ -121,6 +140,7 @@
                 });
                 this.$btnSave.click(function () {
                     if(validator.validate()){
+                        var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                         var role = '';
                         var roleDom = $(".listree li a");
                         $.each(roleDom, function (i, v) {
@@ -130,11 +150,14 @@
                         if('${mode}' == 'new'){
                             var values = self.$form.Fields.getValues();
                             values.role = role;
+//                            debugger;
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/createApp",{data: $.extend({}, values),
                                 success: function(data) {
+                                    wait.close();
                                     if (data.successFlg) {
-                                        win.parent.closeDialog(function () {
+                                        $.Notice.success('新增成功！');
+                                        closeDialog(function () {
                                         });
                                     } else {
                                         window.top.$.Notice.error(data.errorMsg);
@@ -146,8 +169,10 @@
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/updateApp",{data: $.extend({}, values),
                                 success: function(data) {
+                                    wait.close();
                                     if (data.successFlg) {
-                                        win.parent.closeDialog(function () {
+                                        $.Notice.success('保存成功！');
+                                       closeDialog(function () {
                                         });
                                     } else {
                                         window.top.$.Notice.error(data.errorMsg);
@@ -162,6 +187,41 @@
                 this.$btnCancel.click(function () {
 					win.closeDialog();
                 });
+
+                //change事件
+                this.$inpFileIcon.on( 'change', function () {
+                    var url = '${contextRoot}/app/appIconFileUpload';
+                    self.$icon.val(doUpload(url));
+                });
+
+                function doUpload(url) {
+                    var formData = new FormData($( "#uploadForm" )[0]);
+                    var fileUrl;
+                    $.ajax({
+                        url: url ,
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (returndata) {
+                            if(returndata != "fail"){
+//                                alert("上传成功");
+                                $.Notice.success('上传成功');
+                                fileUrl = returndata;
+                            }else{
+//                                alert("上传失败");
+                                $.Notice.success('上传失败');
+                            }
+                        },
+                        error: function (returndata) {
+//                            alert("上传失败");
+                            $.Notice.success('上传失败');
+                        }
+                    });
+                    return fileUrl;
+                };
             },
             cycToDo:function(){
                 var treeData;

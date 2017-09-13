@@ -33,10 +33,11 @@ public class RsDictionaryEntryMsg extends ExcelUtil implements Validation {
         int rs = 1;
         if(StringUtils.isEmpty(code) && StringUtils.isEmpty(name) && StringUtils.isEmpty(description))
             return -1;
-        if(!RegUtil.regCode(code)){
-            rs = 0;
-            addErrorMsg("code", RegUtil.codeMsg);
-        } else if(!repeatMap.get("code").add(code)) {
+//        if(!RegUtil.regCode(code)){
+//            rs = 0;
+//            addErrorMsg("code", RegUtil.codeMsg);
+//        } else
+        if(!repeatMap.get("code").add(code)) {
             rs = 0;
             addErrorMsg("code", "代码重复！");
         }

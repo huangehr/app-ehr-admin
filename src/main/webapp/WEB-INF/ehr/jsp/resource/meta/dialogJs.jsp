@@ -19,6 +19,7 @@
                 {type: 'text', id: 'ipt_meta_code', opts: {readonly: mode=='modify'}},
                 {type: 'text', id: 'ipt_meta_name'},
                 {type: 'select', id: 'ipt_column_type', dictId: 30},
+                {type: 'radio', id: 'dataSource'},
                 {type: 'radio', id: 'gender'},
                 {type: 'text', id: 'ipt_description', opts:{height:100}}
             ];
@@ -52,7 +53,7 @@
             });
 
             $('#btn_cancel').click(function () {
-                parent.closeDialog();
+                closeDialog();
             });
         };
 
@@ -60,6 +61,12 @@
             initForm();
             initBtn();
             fillForm(model, $('#infoForm'));
+            if (model.dataSource == 1 || !model.dataSource) {
+                $('input[name="dataSource"]').eq(0).liger().setValue('true');
+            }
+            if (model.dataSource == 2) {
+                $('input[name="dataSource"]').eq(1).liger().setValue('true');
+            }
 
             dictCombo.setValueText(model.dictId, model.dictName);
         }();

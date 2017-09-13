@@ -73,8 +73,8 @@
 								data:  {dataJson:JSON.stringify(acqModel),mode:mode},
 								success: function (data) {
 									if(data.successFlg){
-										parent.reloadAcqInfoGrid();
-										parent.closeAcqInfoDialog("save");
+										reloadAcqInfoGrid();
+										closeAcqInfoDialog("save");
 									}else{
 										$.Notice.error(data.errorMsg);
 									}
@@ -86,7 +86,7 @@
 					});
 
 					self.$cancelBtn.click(function(){
-						parent.closeAcqInfoDialog();
+						closeAcqInfoDialog();
 					});
 				}
 			};

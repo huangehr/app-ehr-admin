@@ -65,7 +65,7 @@
                 this.$btnSave.click(function () {
                     self.$btnSave.attr('disabled','disabled');
                     var values = self.$form.Fields.getValues();
-                    var strVersionCode = parent.getStrVersion();
+                    var strVersionCode = getStrVersion();
                     var data = {
                         cdaVersion:strVersionCode,
                         dictId:values.dictId,
@@ -77,15 +77,17 @@
                         self.$btnSave.removeAttr('disabled');
                         return;
                     }
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/cdadict/saveDictEntry",{
                         data: data,
                         success: function(data) {
+                            waittingDialog.close();
                             if(data.successFlg){
                                 var app = data.obj;
                                 //调用主页面接口，重新刷新Grid
-                                parent.reloadEntryMasterGrid();
-                                parent.closeDialog('right','保存成功！');
+                                reloadEntryMasterGrid();
+                                closeDialog('right','保存成功！');
                             }else{
                                 if(data.errorMsg){
                                      $.Notice.error(data.errorMsg);
@@ -105,7 +107,7 @@
                 });
 
                 this.$btnCancel.click(function () {
-                    parent.closeDialog('right');
+                    closeDialog('right');
                 });
             },
             validate: function (values) {

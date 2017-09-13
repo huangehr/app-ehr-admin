@@ -42,11 +42,8 @@
          */
         function pageInit() {
             mainLayout.init();
-            //navMenu.init();
-
             $.MenuInit(".l-layout-left",navMenu)
             notice.init();
-
         }
 
         /* ************************** 函数定义结束 **************************** */
@@ -60,7 +57,12 @@
             $breadcrumbBar: $('#div_nav_breadcrumb_bar'),
             $breadcrumbContent: $('#span_nav_breadcrumb_content'),
             init: function () {
-
+                //判断是否内嵌登录
+                var hash = window.location.hash;
+                if(hash.indexOf("#signin")>=0)
+                {
+                    $("#div_top").hide();
+                }
                 //判断用户是否初始密码
                 bo = Util.isStrEmpty(${defaultPassWord})?false:true;
 
@@ -69,7 +71,7 @@
 
                 this.$mainContent.ligerLayout({
                     // 左侧导航栏菜单宽度
-                    leftWidth: 190,
+                    leftWidth: 199,
                     // 不允许菜单向左收缩
                     allowLeftCollapse: false
                 });
@@ -80,469 +82,600 @@
         navMenu = {
             // 导航菜单数据源
             data: [
-                // 1 - 基础数据中心
+                // 1 - 信息注册与管理
                 <sec:authorize url="Ehr_Master_Centre">
-                    {id: 1,level:1, text: '<spring:message code="title.register.manage.center"/>'},
-                </sec:authorize>
-
-                <sec:authorize url="/organization/initial">
                 {
-                    id: 11,
+                    id: 1,
+                    level:1,
+                    text: '<spring:message code="title.master.info.center"/>'
+                },
+                </sec:authorize>
+                // 1-1 应用信息
+                <sec:authorize url="/app/initial">
+                {
                     pid: 1,
-                    level:2,
+                    level: 2,
+                    id: 11,
+                    text: '<spring:message code="title.app.manage"/>',
+                    url: '${contextRoot}/app/initial'
+                },
+                </sec:authorize>
+                //  1-2 卫生人员
+                <sec:authorize url="/doctor/initial">
+                {
+                    pid: 1,
+                    level: 2,
+                    id: 12,
+                    text: '<spring:message code="title.doctor.manage"/>',
+                    url: '${contextRoot}/doctor/initial'
+                },
+                </sec:authorize>
+                //  1-3 卫生机构
+                <sec:authorize url="/ehr/organization/Initial">
+                {
+                    pid: 1,
+                    level: 2,
+                    id: 13,
                     text: '<spring:message code="title.org.manage"/>',
                     url: '${contextRoot}/organization/initial'
                 },
                 </sec:authorize>
 
-                <sec:authorize url="Ehr_Patients">
-                {
-                    id: 12,
-                    pid: 1,
-                    level:2,
-                    text: '<spring:message code="title.patient.manage"/>'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/patient/initial">
-                {
-                    id: 121,
-                    pid: 12,
-                    level:3,
-                    text: '<spring:message code="title.patient.master.info"/>',
-                    url: '${contextRoot}/patient/initial'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/correlation/initial">
-                {
-                    id: 122,
-                    pid: 12,
-                    level:3,
-                    text: '<spring:message code="title.correlation.audit"/>',
-                    url: '${contextRoot}/correlation/initial'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/authentication/initial">
-                {
-                    id: 123,
-                    pid: 12,
-                    level:3,
-                    text: '<spring:message code="title.patient.apply"/>',
-                    url: '${contextRoot}/authentication/initial'
-                },
-                </sec:authorize>
-
-                //{id: 14, pid: 1, text: '<spring:message code="title.knowledge.base"/>'},
-
+                // 2 - 标准规范管理
                 <sec:authorize url="Ehr_Standard_Centre">
-                //2 - 标准规范中心
-                {id: 2,level:1, text: '<spring:message code="title.data.manage.center"/>'},
+                {
+                    id: 2,
+                    level: 1,
+                    text: '<spring:message code="title.standard.info.center"/>'
+                },
                 </sec:authorize>
-
+                // 2-1 平台标准
                 <sec:authorize url="Ehr_Platform_Std">
                 {
-                    id: 21,
                     pid: 2,
-                    level:2,
+                    level: 2,
+                    id: 21,
                     text: '<spring:message code="title.ehr.std"/>',
                 },
-                </sec:authorize>
 
+                </sec:authorize>
+                // 2-1-1 平台标准 - 标准来源
                 <sec:authorize url="/standardsource/initial">
                 {
-                    id: 211,
                     pid: 21,
-                    level:3,
+                    level: 3,
+                    id: 211,
                     text: '<spring:message code="title.std.source"/>',
                     url: '${contextRoot}/standardsource/initial'
                 },
                 </sec:authorize>
-
+                // 2-1-2 平台标准 - 标准版本管理
+                <sec:authorize url="/cdaVersion/initial">
+                {
+                    pid: 21,
+                    level: 3,
+                    id: 212,
+                    text: '<spring:message code="title.std.version.manage"/>',
+                    url: '${contextRoot}/cdaVersion/initial'
+                },
+                </sec:authorize>
+                // 2-1-3 平台标准 - 标准字典
                 <sec:authorize url="/cdadict/initial">
                 {
-                    id: 212,
                     pid: 21,
-                    level:3,
+                    level: 3,
+                    id: 213,
                     text: '<spring:message code="title.dict.manage"/>',
                     url: '${contextRoot}/cdadict/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/cdadict/initial">
-                {
-                    id: 212,
-                    pid: 21,
-                    level:3,
-                    text: '<spring:message code="title.dict.manage"/>',
-                    url: '${contextRoot}/cdadict/initial'
-                },
-                </sec:authorize>
-
+                // 2-1-4 平台标准 - 标准数据集
                 <sec:authorize url="/std/dataset/initial">
                 {
-                    id: 213,
                     pid: 21,
                     level:3,
+                    id: 214,
                     text: '<spring:message code="title.standard.dataSet"/>',
                     url: '${contextRoot}/std/dataset/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/cda/initial">
+                // 2-1-5 平台标准 - CDA类别
+                <sec:authorize url="/cdatype/index">
                 {
-                    id: 214,
                     pid: 21,
                     level:3,
+                    id: 215,
+                    text: '<spring:message code="title.CDA.type"/>',
+                    url: '${contextRoot}/cdatype/index'
+                },
+                </sec:authorize>
+                // 2-1-6 平台标准 - CDA文档
+                <sec:authorize url="/cda/initial">
+                {
+                    pid: 21,
+                    level:3,
+                    id: 216,
                     text: '<spring:message code="title.CDA.manage"/>',
                     url: '${contextRoot}/cda/initial'
                 },
                 </sec:authorize>
 
-                <sec:authorize url="/cdatype/index">
-                {
-                    id: 215,
-                    pid: 21,
-                    level:3,
-                    text: '<spring:message code="title.CDA.type"/>',
-                    url: '${contextRoot}/cdatype/index'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/cdaVersion/initial">
-                {
-                    id: 216,
-                    pid: 21,
-                    level:3,
-                    text: '<spring:message code="title.std.version.manage"/>',
-                    url: '${contextRoot}/cdaVersion/initial'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="Ehr_Specialdict">
-                {
-                    id: 217,
-                    pid: 21,
-                    level:3,
-                    text: '<spring:message code="title.std.special.dict"/>'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/specialdict/icd10/initial">
-                {
-                    id: 2171,
-                    pid:217,
-                    level:4,
-                    text: '<spring:message code="title.std.icd10.dict"/>',
-                    url: '${contextRoot}/specialdict/icd10/initial'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/specialdict/indicator/initial">
-                {
-                    id: 2172,
-                    pid: 217,
-                    level:4,
-                    text: '<spring:message code="title.std.indicator.dict"/>',
-                    url: '${contextRoot}/specialdict/indicator/initial'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/specialdict/indicator/initial">
-                {
-                    id: 2172,
-                    pid: 217,
-                    level:4,
-                    text: '<spring:message code="title.std.indicator.dict"/>',
-                    url: '${contextRoot}/specialdict/indicator/initial'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/specialdict/drug/initial">
-                {
-                    id: 2173,
-                    pid: 217,
-                    level:4,
-                    text: '<spring:message code="title.std.drug.dict"/>',
-                    url: '${contextRoot}/specialdict/drug/initial'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/specialdict/hp/initial">
-                {
-                    id: 2174,
-                    pid: 217,
-                    level:4,
-                    text: '<spring:message code="title.std.disease.dict"/>',
-                    url: '${contextRoot}/specialdict/hp/initial'
-                },
-                </sec:authorize>
-
+                // 2-2 - 第三方标准
                 <sec:authorize url="/adapterorg/initial">
                 {
-                    id: 22,
                     pid: 2,
                     level:2,
+                    id: 22,
                     text: '<spring:message code="title.org.std.collection.manage"/>',
                     url: '${contextRoot}/adapterorg/initial'
                 },
                 </sec:authorize>
-
+                // 2-3- 标准适配
                 <sec:authorize url="/adapter/initial">
                 {
-                    id: 23,
                     pid: 2,
                     level:2,
+                    id: 23,
                     text: '<spring:message code="title.adapter.manager"/>',
                     url: '${contextRoot}/adapter/initial'
                 },
                 </sec:authorize>
 
-                <sec:authorize url="/template/initial">
+                // 2-4 特殊字典
+                <sec:authorize url="Ehr_Specialdict">
                 {
-                    id: 24,
                     pid: 2,
                     level:2,
-                    text: '<spring:message code="title.template.manage"/>',
-                    url: '${contextRoot}/template/initial'
+                    id: 24,
+                    text: '<spring:message code="title.std.special.dict"/>'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="Ehr_Public_Centre">
-                //3 - 开放中心
-                {id: 3,level:1, text: '<spring:message code="title.open.hub.manage.center"/>'},
-                </sec:authorize>
-
-                <sec:authorize url="/app/initial">
+                // 2-4-1 特殊字典 - 诊断字典
+                <sec:authorize url="/specialdict/icd10/initial">
                 {
-                    id: 31,
-                    level:2,
-                    pid: 3,
-                    text: '<spring:message code="title.app.manage"/>',
-                    url: '${contextRoot}/app/initial'
+                    pid: 24,
+                    level:3,
+                    id: 241,
+                    text: '<spring:message code="title.std.icd10.dict"/>',
+                    url: '${contextRoot}/specialdict/icd10/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/app/platform/initial">
+                // 2-4-2 特殊字典 - 指标字典
+                <sec:authorize url="/specialdict/indicator/initial">
                 {
-                    id: 32,
-                    level:2,
-                    pid: 3,
-                    text:  '<spring:message code="title.ehr.app.manage"/>',
-                    url: '${contextRoot}/app/platform/initial'
+                    pid: 24,
+                    level:3,
+                    id: 242,
+                    text: '<spring:message code="title.std.indicator.dict"/>',
+                    url: '${contextRoot}/specialdict/indicator/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/app/api/initial">
+                // 2-4-3 特殊字典 - 药品字典
+                <sec:authorize url="/specialdict/drug/initial">
                 {
-                    id: 33,
-                    level:2,
-                    pid: 3,
-                    text: '<spring:message code="title.api.manage"/>',
-                    url:'${contextRoot}/app/api/initial'
+                    pid: 24,
+                    level:3,
+                    id: 243,
+                    text: '<spring:message code="title.std.drug.dict"/>',
+                    url: '${contextRoot}/specialdict/drug/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/appRole/initial">
+                // 2-4-4 特殊字典 - 疾病字典
+                <sec:authorize url="/specialdict/hp/initial">
                 {
-                    id: 34,
-                    level: 2,
-                    pid: 3,
-                    text: '<spring:message code="title.app.role"/>',
-                    url: '${contextRoot}/appRole/initial'
+                    pid: 24,
+                    level:3,
+                    id: 244,
+                    text: '<spring:message code="title.std.disease.dict"/>',
+                    url: '${contextRoot}/specialdict/hp/initial'
                 },
                 </sec:authorize>
 
-                <sec:authorize url="Ehr_Security_Centre">
-                //4 - 安全管理中心
-                {id: 4, level:1, text: '<spring:message code="title.security.manage.center"/>'},
-                </sec:authorize>
-
-                <sec:authorize url="/user/initial">
-                {
-                    id: 41,
-                    pid: 4,
-                    level:2,
-                    text: '<spring:message code="title.user.manage"/>',
-                    url: '${contextRoot}/user/initial'
-                },
-                </sec:authorize>
-
-                <sec:authorize url="/userRoles/initial">
-                {
-                    id: 42,
-                    pid: 4,
-                    level:2,
-                    text:  '<spring:message code="title.role.manage"/>',
-                    url: '${contextRoot}/userRoles/initial'
-                },
-                </sec:authorize>
-
+                // 3  数据资源管理
                 <sec:authorize url="Ehr_Resource_Centre">
-                //5 - 资源管理中心
-                {id: 5, level:1, text: '<spring:message code="title.resource.manage.center"/>'},
-                </sec:authorize>
-
-                <sec:authorize url="Ehr_Resource_Std">
                 {
-                    id: 51,
+                    id: 3,
+                    level:1,
+                    text: '<spring:message code="title.data.manage.center"/>'
+                },
+                </sec:authorize>
+                //3-1 资源标准管理
+                <sec:authorize url="Ehr_Resource_Standard">
+                {
+                    pid: 3,
                     level:2,
-                    pid: 5,
+                    id: 31,
                     text: '<spring:message code="title.resource.standard"/>'
                 },
                 </sec:authorize>
-
+                // 3-1-1 数据元
                 <sec:authorize url="/resource/meta/initial">
                 {
-                    id: 511,
+                    pid: 31,
                     level:3,
-                    pid: 51,
+                    id: 311,
                     text: '<spring:message code="title.resource.standard.metaData"/>',
                     url: '${contextRoot}/resource/meta/initial'
                 },
                 </sec:authorize>
-
+                // 3-1-2 - 字典
                 <sec:authorize url="/resource/dict/initial">
                 {
-                    id: 512,
+                    pid: 31,
                     level:3,
-                    pid: 51,
+                    id: 312,
                     text: '<spring:message code="title.resource.standard.dict"/>',
                     url: '${contextRoot}/resource/dict/initial'
                 },
                 </sec:authorize>
-
+                //  3-1-3- 适配方案
                 <sec:authorize url="/schemeAdapt/initial">
                 {
-                    id: 513,
+                    pid: 31,
                     level:3,
-                    pid: 51,
+                    id: 313,
                     text: '<spring:message code="title.resource.standard.adapter"/>',
                     url: '${contextRoot}/schemeAdapt/initial'
                 },
                 </sec:authorize>
 
+                //3-2 指标配置管理
+                <sec:authorize url="Ehr_Quota_Setting">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 32,
+                    text: '<spring:message code="title.resource.quota.manage"/>'
+                },
+                </sec:authorize>
+                // 3-2-1 - 指标分类
+                <sec:authorize url="/quota/initial">
+                {
+                    pid: 32,
+                    level:3,
+                    id: 321,
+                    text: '<spring:message code="title.health.manage"/>',
+                    url: '${contextRoot}/quota/initial'
+                },
+                </sec:authorize>
+                // 3-2-2 - 指标配置
+                <sec:authorize url="/zhibiaoconfig/initial">
+                {
+                    pid: 32,
+                    level:3,
+                    id: 322,
+                    text: '<spring:message code="title.index.config.management"/>',
+                    url: '${contextRoot}/zhibiaoconfig/initial'
+                },
+                </sec:authorize>
+                // 3-2-3 - 指标管理
+                <sec:authorize url="/zhibiao/initial">
+                {
+                    pid: 32,
+                    level:3,
+                    id: 323,
+                    text: '<spring:message code="title.index.management"/>',
+                    url: '${contextRoot}/zhibiao/initial'
+                },
+                </sec:authorize>
+
+                //3-3 视图配置管理
+                <sec:authorize url="Ehr_View_Manange">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 33,
+                    text: '<spring:message code="title.resource.view.setting"/>'
+                },
+                </sec:authorize>
+
+                // 3-3-1 - 视图分类
                 <sec:authorize url="/rscategory/index">
                 {
-                    id: 52,
-                    level:2,
-                    pid: 5,
+                    pid: 33,
+                    level:3,
+                    id: 331,
                     text: '<spring:message code="title.resource.catalog"/>',
                     url: '${contextRoot}/rscategory/index'
                 },
                 </sec:authorize>
-
+                // 3-3-2 - 视图管理
                 <sec:authorize url="/resource/resourceManage/initial">
                 {
-                    id: 53,
-                    level:2,
-                    pid: 5,
+                    pid: 33,
+                    level:3,
+                    id: 332,
                     text: '<spring:message code="title.resource.register"/>',
                     url: '${contextRoot}/resource/resourceManage/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/resource/resourceManage/initial">
-                {
-                    id: 54,
-                    level:2,
-                    pid: 5,
-                    text: '<spring:message code="title.resource.view"/>',
-                    url: '${contextRoot}/resource/resourceManage/initial'
-                },
-                </sec:authorize>
-
+                // 3-3-3 - 视图接口
                 <sec:authorize url="/resource/resourceInterface/initial">
                 {
-                    id: 55,
-                    level:2,
-                    pid: 5,
+                    pid: 33,
+                    level:3,
+                    id: 333,
                     text: '<spring:message code="title.resource.interface"/>',
                     url: '${contextRoot}/resource/resourceInterface/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="Ehr_Operating_Centre">
-                //6 - 运营中心
-                {id: 6, level:1, text: '<spring:message code="title.operating.center"/>'},
+                // 3-3-4 - 视图浏览
+                <sec:authorize url="/resourceBrowse/browse">
+                {
+                    pid: 33,
+                    level:3,
+                    id: 334,
+                    text: '<spring:message code="title.resource.browse"/>',
+                    url: '${contextRoot}/resourceBrowse/browse'
+                },
                 </sec:authorize>
 
-                <sec:authorize url="Ehr_Operating_Esb">
+                //3-4 资源报表管理
+                <sec:authorize url="Ehr_Report_Manange">
                 {
-                    id: 61,
+                    pid: 3,
                     level:2,
+                    id: 34,
+                    text: '<spring:message code="title.resource.report.manage"/>'
+                },
+                </sec:authorize>
+
+                // 3-4-1 - 报表分类
+                <sec:authorize url="/resource/reportCategory/index">
+                {
+                    pid: 34,
+                    level:3,
+                    id: 341,
+                    text: '报表分类',
+                    url: '${contextRoot}/resource/reportCategory/index'
+                },
+                </sec:authorize>
+                // 3-4-2 - 报表管理
+                <sec:authorize url="/resource/report/index">
+                {
+                    pid: 34,
+                    level:3,
+                    id: 342,
+                    text: '报表管理',
+                    url: '${contextRoot}/resource/report/index'
+                },
+                </sec:authorize>
+
+                // 3-5 综合查询
+                <sec:authorize url="/resourceBrowse/customQuery">
+                {
+                    pid: 3,
+                    level:2,
+                    id: 35,
+                    text: '<spring:message code="title.resource.resourceBrowse.customQuery"/>',
+                    url: '${contextRoot}/resourceBrowse/customQuery'
+                },
+                </sec:authorize>
+
+                // 4- 健康档案管理
+                <sec:authorize url="Ehr_Archive_Manager">
+                {
+                    id: 4,
+                    level:1,
+                    text: '<spring:message code="title.health.manage.center"/>'
+                },
+                </sec:authorize>
+                // 4-1 居民信息
+                <sec:authorize url="/patient/Initial">
+                {
+                    pid: 4,
+                    level:2,
+                    id: 41,
+                    text: '<spring:message code="title.patient.manage"/>',
+                    url: '${contextRoot}/patient/initial'
+                },
+                </sec:authorize>
+                // 4-2 居民档案管理
+                <%--<sec:authorize url="userCards/archiveRelation/initial">
+                {
+                    pid: 4,
+                    level:2,
+                    id: 42,
+                    text: '<spring:message code="title.patient.archiveRelation"/>',
+                    url: '${contextRoot}/userCards/archiveRelation/initial'
+                },
+                </sec:authorize>--%>
+                // 4-3 居民档案申领审核
+                <sec:authorize url="/archive/apply/initial">
+                {
+                    pid: 4,
+                    level:2,
+                    id: 43,
+                    text: '<spring:message code="title.correlation.audit"/>',
+                    url: '${contextRoot}/archive/apply/initial'
+                },
+                </sec:authorize>
+                // 4-4- 就诊卡管理
+                <%--<sec:authorize url="/medicalCards/initialPageView">
+                {
+                    pid: 4,
+                    level:2,
+                    id: 44,
+                    text: '<spring:message code="title.card.manage"/>',
+                    url: '${contextRoot}/medicalCards/initialPageView'
+                },
+                </sec:authorize>--%>
+                // 4-5 就诊卡申领审核
+                <sec:authorize url="/userCards/initial">
+                {
+                    pid: 4,
+                    level:2,
+                    id: 45,
+                    text: '<spring:message code="title.card.medicalCardsAudit"/>',
+                    url: '${contextRoot}/userCards/initial'
+                },
+                </sec:authorize>
+                // 4-6 - 档案模版管理
+                <sec:authorize url="/template/initial">
+                {
+                    pid: 4,
+                    level:2,
+                    id: 46,
+                    text: '<spring:message code="title.template.manage"/>',
+                    url: '${contextRoot}/template/initial'
+                },
+                </sec:authorize>
+
+                // 5 - 质量监控报告
+                <%--<sec:authorize url="Ehr_Data_Centre">
+                {
+                    id: 5,
+                    level:1,
+                    text: '<spring:message code="title.quality.control.management"/>'
+                },
+                </sec:authorize>--%>
+
+                // 5-5 - 趋势分析
+                <%--<sec:authorize url="/report/initial">
+                {
+                    pid: 5,
+                    level: 2,
+                    id: 55,
+                    text: '<spring:message code="title.trend.analysis"/>',
+                    url: '${contextRoot}/report/initial'
+                },
+                </sec:authorize>--%>
+
+                // 6- 信息安全管理
+                <sec:authorize url="Ehr_Security_Centre">
+                {
+                    id: 6,
+                    level:1,
+                    text: '<spring:message code="title.security.manage.center"/>'
+                },
+                </sec:authorize>
+                // 6-1 安全管理中心 - 用户管理
+                <sec:authorize url="/user/initial">
+                {
                     pid: 6,
-                    text: '<spring:message code="title.esb.manage"/>'
+                    level: 2,
+                    id: 61,
+                    text: '<spring:message code="title.user.manage"/>',
+                    url: '${contextRoot}/user/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/hosLogs/initial">
+                // 6-2 -身份认证
+                <%--<sec:authorize url="/authentication/initial">
                 {
-                    id: 611,
-                    level:3,
-                    pid: 61,
-                    text: '<spring:message code="title.esb.log.upload"/>',
-                    url: '${contextRoot}/hosLogs/initial'
+                    pid: 6,
+                    level: 2,
+                    id: 62,
+                    text: '<spring:message code="title.patient.apply"/>',
+                    url: '${contextRoot}/authentication/initial'
                 },
-                </sec:authorize>
-
-                <sec:authorize url="/esb/hosRelease/initial">
+                </sec:authorize>--%>
+                // 6-3 安全管理中心 - 角色管理
+                <sec:authorize url="/userRoles/initial">
                 {
-                    id: 612,
-                    level:3,
-                    pid: 61,
-                    text: '<spring:message code="title.esb.source.list"/>',
-                    url: '${contextRoot}/esb/hosRelease/initial'
+                    pid: 6,
+                    level: 2,
+                    id: 63,
+                    text:  '<spring:message code="title.role.manage"/>',
+                    url: '${contextRoot}/userRoles/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/esb/installLog/initial">
+                // 6-4 安全管理中心 - 应用角色管理
+                <sec:authorize url="/appRole/initial">
                 {
-                    id: 613,
-                    level:3,
-                    pid: 61,
-                    text: '<spring:message code="title.esb.source.org.update"/>',
-                    url: '${contextRoot}/esb/installLog/initial'
+                    pid: 6,
+                    level: 2,
+                    id: 64,
+                    text: '<spring:message code="title.app.role"/>',
+                    url: '${contextRoot}/appRole/initial'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/esb/sqlTask/initial">
+                // 6-5 安全管理中心 - 机构数据授权
+                <sec:authorize url="/organization/organizationGrant">
                 {
-                    id: 614,
-                    level:3,
-                    pid: 61,
-                    text: '<spring:message code="title.esb.his.search"/>',
-                    url: '${contextRoot}/esb/sqlTask/initial'
+                    pid: 6,
+                    level: 2,
+                    id: 65,
+                    text: '<spring:message code="title.org.data.auth"/>',
+                    url: '${contextRoot}/organization/organizationGrant'
                 },
                 </sec:authorize>
-
-                <sec:authorize url="/esb/acqTask/initial">
+                // 6-6 安全管理中心 - 日志审计
+                <sec:authorize url="/logManager/initial">
                 {
-                    id: 615,
-                    level:3,
-                    pid: 61,
-                    text: '<spring:message code="title.esb.task.recollect"/>',
-                    url: '${contextRoot}/esb/acqTask/initial'
+                    pid: 6,
+                    level: 2,
+                    id: 66,
+                    text:  '<spring:message code="title.log.manage"/>',
+                    url: '${contextRoot}/logManager/initial'
                 },
                 </sec:authorize>
 
-                //7 - 服务管理中心
-                //{id: 7, text: '<spring:message code="title.server.manage.center"/>'},
-
+                // 7 配置管理中心
                 <sec:authorize url="Ehr_Setting_Centre">
-                //8 - 配置管理中心
-                {id: 8,level:1,text: '<spring:message code="title.setting.manage.center"/>'},
+                {
+                    id: 7,
+                    level:1,
+                    text: '<spring:message code="title.setting.manage.center"/>'
+                },
                 </sec:authorize>
-
+                // 7-1 配置管理中心 - 系统字典
                 <sec:authorize url="/dict/initial">
                 {
-                    id: 81,
-                    pid: 8,
-                    level:2,
+                    pid: 7,
+                    level: 2,
+                    id: 71,
                     text: '<spring:message code="title.sysDict.manage"/>',
                     url: '${contextRoot}/dict/initial'
-                }
+                },
+                </sec:authorize>
+                // 7-2 开放中心 - 云门户管理
+                <sec:authorize url="Ehr_Setting_Portal">
+                {
+                    pid: 7,
+                    level: 2,
+                    id: 72,
+                    text:  '<spring:message code="title.portal.homepage.setting"/>'
+                },
+                </sec:authorize>
+                // 7-2-1 云门户管理 - 通知公告管理
+                <sec:authorize url="/portalNotice/initial">
+                {
+                    pid: 72,
+                    level: 3,
+                    id: 721,
+                    text: '<spring:message code="title.portal.notice"/>',
+                    url: '${contextRoot}/portalNotice/initial'
+                },
+                </sec:authorize>
+                //7-2-2 消息提醒
+                <sec:authorize url="/messageRemind/initialMessageRemind">
+                {
+                    pid: 72,
+                    level: 3,
+                    id: 722,
+                    text: '<spring:message code="title.portal.messageRemind"/>',
+                    url: '${contextRoot}/messageRemind/initialMessageRemind'
+                },
+                </sec:authorize>
+                // 7-2-3 资源上传管理
+                <sec:authorize url="/portalResources/initial">
+                {
+                    pid: 72,
+                    level: 3,
+                    id: 723,
+                    text: '<spring:message code="title.portal.resources"/>',
+                    url: '${contextRoot}/portalResources/initial'
+                },
+                </sec:authorize>
+                // 7-2-4 资源配置管理
+                <sec:authorize url="/portalSetting/initial">
+                {
+                    pid: 72,
+                    level: 3,
+                    id: 724,
+                    text: '<spring:message code="title.portal.portalSetting"/>',
+                    url: '${contextRoot}/portalSetting/initial'
+                },
                 </sec:authorize>
             ],
 
@@ -554,63 +687,6 @@
             $level1Nodes: [],
             // 树形导航菜单节点集
             $treeNodes: $('li[outlinelevel]', this.$tree),
-//            init: function () {
-//                var self = this;
-//                // 初始化树形菜单
-//
-//                //当浏览器刷新之后，展开刷新前点击的tree节点，
-//                if (treePid) {
-//                    //debugger;
-//                    this.data[treePid].isExpand = true;
-//                }
-//                this.treeMenu = this.$tree.ligerTree({
-//                    data: this.data,
-//                    idFieldName: 'id',
-//                    parentIDFieldName: 'pid',
-//                    checkbox: false,
-//                    treeLine: false,
-//                    autoCheckboxEven: false,
-//                    needCancel: false,
-//                    btnClickToToggleOnly: false,
-//                    slide: false,
-//                    nodeDraggable: false,
-//                    isExpand: false,
-//                    parentIcon: null,
-//                    adjustToWidth: true,
-//                    onClick: function (obj) {
-//                        var content = self.getBreadcrumbContent(obj.data);
-//                        mainLayout.$breadcrumbContent.html(content);
-//                        var dt = obj.data;
-//                        var url = dt.url;
-//                        var treedataindex = $(this.getParentTreeItem(obj.data.treedataindex)).attr("treedataindex") || "";
-//                        //debugger;
-//                        sessionStorage.setItem("treePid", treedataindex);//存储变量到SEssion
-//                        sessionStorage.setItem("treeId", dt.id);//存储变量到SEssion
-//                        if (url) {
-//                            $("#contentPage").empty();
-//                            $("#contentPage").load(url);
-////                            window.location.href = url;//+ '?' + 'treePid=' + treedataindex + '&treeId=' + dt.id
-//                        }
-//                    }
-//                });
-//                //当浏览器刷新之后，高亮显示刷新前点击的tree节点，并且显示当前位置（面包屑）Util.getUrlQueryString("treeId")
-//                $(".l-expandable-open", this.treeMenu).not($("#" + treeId).find(".l-expandable-open")).click();
-//                if (treeId) {
-//                    var treeData = this.treeMenu.getDataByID(treeId);
-//                    var content = self.getBreadcrumbContent(treeData);
-//                    mainLayout.$breadcrumbContent.html(content);
-//                    $('.l-body', "#" + treeId).addClass("l-selected");
-//                    $("#contentPage").empty();
-//                    if (treeData.url)
-//                        $("#contentPage").load(treeData.url);
-//                }
-//                // 初始化树形菜单后，缓存一级节点
-//                this.$level1Nodes = $('li[outlinelevel="1"]', this.$tree);
-//                // 树形导航菜单节点集
-//                this.$treeNodes = $('li[outlinelevel="2"]', this.$tree);
-//                // 更新一级菜单图标
-//                this.updateLevel1Icons();
-//            },
             // 更新一级菜单图标
             updateLevel1Icons: function () {
                 var self = this;

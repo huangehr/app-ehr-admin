@@ -72,17 +72,19 @@
                     });
                     self.$roleGroupBtn.click(function () {
                         if (Util.isStrEquals(this.id, 'div_cancel_roleGroup_btn'))
-                            return win.parent.closeAppRoleGroupInfoDialog();
+                            return closeAppRoleGroupInfoDialog();
                         if(!validator.validate())
                             return;
                         var appGroupModel = self.$appRoleGroupForm.Fields.getValues();
                         var saveType = Util.isStrEquals(appGroupModel.id, '') ? ('add', appGroupModel.appId = appRoleGroupModel.obj) : 'update';
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.updateRemote("${contextRoot}/appRole/saveAppRoleGroup", {
                             data: {appRoleGroupModel: JSON.stringify(appGroupModel), saveType: 'add'},
                             success: function (data) {
+                                waittingDialog.close();
                                 var dialogMsg = Util.isStrEquals(appGroupModel.id, '') ? "新增" : "修改";
                                 if (data.successFlg) {
-                                    win.parent.closeAppRoleGroupInfoDialog();
+                                    closeAppRoleGroupInfoDialog();
                                     $.Notice.success(dialogMsg + '成功');
                                 } else {
                                     $.Notice.error(dialogMsg + '失败');

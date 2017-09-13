@@ -94,6 +94,7 @@
 					});
 					$.subscribe("interface:infoDialog:open",function(events,id,mode){
 						var title = '';
+						var wait = $.Notice.waitting("请稍后...");
 						if(mode == 'modify'){
 							title = '修改资源接口';
 						}else if(mode == 'new'){
@@ -112,7 +113,13 @@
 							url: '${contextRoot}/resource/resourceInterface/infoInitial',
 							isHidden: false,
 							load: true,
+							show: false,
+							onLoaded:function(){
+								wait.close(),
+								master.infoDialog.show()
+							}
 						})
+						master.infoDialog.hide();
 					});
 
 					$.subscribe('interface:confirmDialog:del', function (event, id) {

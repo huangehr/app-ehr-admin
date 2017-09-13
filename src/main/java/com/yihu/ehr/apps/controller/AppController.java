@@ -1,17 +1,21 @@
 package com.yihu.ehr.apps.controller;
 
 import com.yihu.ehr.agModel.app.AppDetailModel;
+import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.resource.RsAppResourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.resource.MRsAppResource;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.url.URLQueryBuilder;
-import com.yihu.ehr.web.RestTemplates;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.GetInfoService;
+import com.yihu.ehr.util.url.URLQueryBuilder;
+import com.yihu.ehr.util.web.RestTemplates;
+import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,14 +23,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Created by yww on 2015/8/12.
@@ -44,6 +49,8 @@ public class AppController extends BaseUIController {
 
 //    @Autowired
 //    private RestTemplates template;
+    @Autowired
+    private GetInfoService getInfoService;
 
     @RequestMapping("template/appInfo")
     public String appInfoTemplate(Model model, String appId, String mode) {
@@ -84,6 +91,9 @@ public class AppController extends BaseUIController {
     }
 
     @RequestMapping("/searchApps")
+    /**
+     * 应用列表及特定查询
+     */
     @ResponseBody
     public Object getAppList(String sourceType, String searchNm,String org, String catalog, String status, int page, int rows) {
         URLQueryBuilder builder = new URLQueryBuilder();
@@ -105,6 +115,13 @@ public class AppController extends BaseUIController {
         if (!StringUtils.isEmpty(status)) {
             builder.addFilter("status", "=", status, null);
         }
+       /* String orgCode = getInfoService.getOrgCode();
+        if (!StringUtils.isEmpty(orgCode)) {
+            builder.addFilter("org", "=", orgCode, null);
+        } else {
+            builder.addFilter("org", "=", null, null);
+        }*/
+
         builder.setPageNumber(page)
                 .setPageSize(rows);
         String param = builder.toString();
@@ -196,6 +213,9 @@ public class AppController extends BaseUIController {
                 appUpdate.setDescription(appDetailModel.getDescription());
                 appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
+//                ========================
+                appUpdate.setIcon(appDetailModel.getIcon());
+                appUpdate.setReleaseFlag(appDetailModel.getReleaseFlag());
                 //更新
                 MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
                 conditionMap.add("app", toJson(appUpdate));
@@ -362,6 +382,85 @@ public class AppController extends BaseUIController {
         return envelop;
     }
 
+
+    /**
+     * 资源文件上传
+     * @param
+     * @return
+     */
+    @RequestMapping("appIconFileUpload")
+    @ResponseBody
+    public Object orgLogoFileUpload(
+            @RequestParam("iconFile") MultipartFile file) throws IOException {
+        Envelop result = new Envelop();
+        InputStream inputStream = file.getInputStream();
+        String fileName = file.getOriginalFilename(); //获取文件名
+        if (!file.isEmpty()) {
+            return  uploadFile(inputStream,fileName);
+        }
+        return "fail";
+    }
+
+    public String uploadFile(InputStream inputStream,String fileName){
+        try {
+            //读取文件流，将文件输入流转成 byte
+            int temp = 0;
+            int bufferSize = 1024;
+            byte tempBuffer[] = new byte[bufferSize];
+            byte[] fileBuffer = new byte[0];
+            while ((temp = inputStream.read(tempBuffer)) != -1) {
+                fileBuffer = ArrayUtils.addAll(fileBuffer, ArrayUtils.subarray(tempBuffer, 0, temp));
+            }
+            inputStream.close();
+            String restStream = Base64.getEncoder().encodeToString(fileBuffer);
+            String url = "";
+            url = fileUpload(restStream,fileName);
+            if (!StringUtils.isEmpty(url)){
+                System.out.println("上传成功");
+                return url;
+            }else{
+                System.out.println("上传失败");
+            }
+
+        } catch (Exception e) {
+            return "fail";
+        }
+        return "fail";
+    }
+
+    /**
+     * 图片上传
+     * @param inputStream
+     * @param fileName
+     * @return
+     */
+    public String fileUpload(String inputStream,String fileName){
+
+        RestTemplates templates = new RestTemplates();
+        Map<String, Object> params = new HashMap<>();
+
+        String url = null;
+        if (!StringUtils.isEmpty(inputStream)) {
+
+            //mime  参数 doctor 需要改变  --  需要从其他地方配置
+            FileResourceModel fileResourceModel = new FileResourceModel("","org","");
+            String fileResourceModelJsonData = toJson(fileResourceModel);
+
+            params.put("file_str", inputStream);
+            params.put("file_name", fileName);
+            params.put("json_data",fileResourceModelJsonData);
+            try {
+                url = HttpClientUtil.doPost(comUrl + "/filesReturnUrl", params,username,password);
+                return url;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return url;
+    }
+
+
+
     //修改、查看授权资源
     //-------------------------------------------------------应用---资源授权管理---结束----------------
 
@@ -379,8 +478,8 @@ public class AppController extends BaseUIController {
         if (StringUtils.isEmpty(appId)||StringUtils.isEmpty(resourceId)) {
             return "";
         }
-        builder.addFilter("appId", "=", appId, "g1");
-        builder.addFilter("resourceId", "=", resourceId, "g1");
+        builder.addFilter("appId", "=", appId, null);
+        builder.addFilter("resourceId", "=", resourceId, null);
         builder.setPageNumber(1)
                 .setPageSize(1);
         String param = builder.toString();
@@ -454,6 +553,22 @@ public class AppController extends BaseUIController {
         } catch (Exception e) {
             e.printStackTrace();
             return failedSystem();
+        }
+    }
+
+    //获取平台应用
+    @RequestMapping("/getAppTreeByType")
+    @ResponseBody
+    public Object getAppTreeByType(){
+        try {
+            String url = "/getAppTreeByType";
+            Map<String,Object> params = new HashMap<>();
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+//            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
         }
     }
 

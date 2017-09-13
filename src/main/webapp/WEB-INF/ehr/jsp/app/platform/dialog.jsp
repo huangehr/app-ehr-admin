@@ -55,7 +55,8 @@
 
   <div class="m-form-group">
     <label><spring:message code="lbl.callback.URL"/><spring:message code="spe.colon"/></label>
-    <div class="m-form-control essential">
+    <!--<div class="m-form-control essential">-->
+    	<div class="m-form-control">
       <textarea id="inp_url" class="required max-length-500 validate-special-char" placeholder="请输入回调URL" data-attr-scan="url" maxlength="500"></textarea>
     </div>
   </div>

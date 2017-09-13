@@ -37,6 +37,14 @@
         userInfo = {
             $idCardCopy: $('#idCardCopy'),
             $emailCopy: $('#emailCopy'),
+            $tel2: $('#inp_userTel2'),
+            $location: $('#location'),
+            $fertilityStatus: $('#inp_fertilityStatus'),
+            $qq: $('#inp_qq'),
+            $micard: $('#inp_micard'),
+            $ssid: $('#inp_ssid'),
+            $realnameFlag: $('input[name="realnameFlag"]', this.$form),
+            $birthday: $("#inp_birthday"),
 
             $form: $("#div_user_info_form"),
             $loginCode: $("#inp_loginCode"),
@@ -44,7 +52,7 @@
             $idCard: $('#inp_idCard'),
             $email: $('#inp_userEmail'),
             $tel: $('#inp_userTel'),
-            $org: $('#inp_org'),
+//            $org: $('#inp_org'),
             $major: $('#inp_major'),
 //            $source:$('#inp_source'),
             $userSex: $('input[name="gender"]', this.$form),
@@ -135,22 +143,28 @@
                 this.$idCard.ligerTextBox({width: 240});
                 this.$email.ligerTextBox({width: 240});
                 this.$tel.ligerTextBox({width: 240});
-                this.$org.addressDropdown({
-                    tabsData: [
-                        {name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
-                        {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
-                        {name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',
-                            beforeAjaxSend: function (ds, $options) {
-                                var province = $options.eq(0).attr('title'),
-                                        city = $options.eq(1).attr('title');
-                                ds.params = $.extend({}, ds.params, {
-                                    province: province,
-                                    city: city
-                                });
-                            }
-                        }
-                    ]
-                });
+                this.$qq.ligerTextBox({width: 240});
+                this.$micard.ligerTextBox({width: 240});
+                this.$ssid.ligerTextBox({width: 240});
+                this.$tel2.ligerTextBox({width: 240});
+                this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
+
+                <%--this.$org.addressDropdown({--%>
+                    <%--tabsData: [--%>
+                        <%--{name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},--%>
+                        <%--{name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},--%>
+                        <%--{name: '医院', code: 'orgCode', value: 'fullName', url: '${contextRoot}/address/getOrgs',--%>
+                            <%--beforeAjaxSend: function (ds, $options) {--%>
+                                <%--var province = $options.eq(0).attr('title'),--%>
+                                        <%--city = $options.eq(1).attr('title');--%>
+                                <%--ds.params = $.extend({}, ds.params, {--%>
+                                    <%--province: province,--%>
+                                    <%--city: city--%>
+                                <%--});--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--]--%>
+                <%--});--%>
                 this.$major.ligerTextBox({width: 240});
 //                this.$source.ligerTextBox({width: 240});
                 this.$userSex.ligerRadio();
@@ -167,6 +181,19 @@
                     }
                 });
 
+                this.$fertilityStatus.ligerComboBox({
+                    url: '${contextRoot}/dict/searchDictEntryList',
+                    valueField: 'code',
+                    textField: 'value',
+                    dataParmName: 'detailModelList',
+                    urlParms: {
+                        dictId: 54
+                    },
+                    onSuccess: function () {
+                        self.$form.Fields.fillValues({fertilityStatus: user.fertilityStatus});
+                    }
+                });
+
                 this.$userType.ligerComboBox({
                     url: '${contextRoot}/dict/searchDictEntryList',
                     valueField: 'code',
@@ -178,7 +205,7 @@
                     onSuccess: function () {
                         self.$form.Fields.fillValues({userType: user.userType});
                         self.$userType.parent().removeClass('l-text-focus')
-//                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
+                        self.$form.Fields.fillValues({martialStatus: user.martialStatus});
                     },
                     onSelected: function (value) {
                         if (value == 'Doctor')
@@ -187,6 +214,8 @@
                             $('#inp_major_div').hide();
                     }
                 });
+
+
 
 
                 <%--this.$source.ligerComboBox({--%>
@@ -203,36 +232,65 @@
 
                 <%--});--%>
                 this.$form.attrScan();
-                this.$form.Fields.fillValues({
-                    id: user.id,
-                    loginCode: user.loginCode,
-                    realName: user.realName,
-                    idCardNo: user.idCardNo,
-                    gender: user.gender,
-                    email: user.email,
-                    telephone: user.telephone,
-                    organization: [user.province, user.city, user.organization],
-                    major: user.major,
-                    publicKey: user.publicKey,
-                    validTime: user.validTime,
-                    startTime: user.startTime,
-                    sourceName:user.sourceName,
-                });
-				if(user.role){
-					var roleArr = user.role.split(",") ;
-					for(var k in roleArr){
-						$("#"+ roleArr[k], trees.tree).find(".l-checkbox").click()
-					}
-				}
-                self.$publicKeyMessage.val(user.publicKey);
-                self.$publicKeyValidTime.html(user.validTime);
-                self.$publicKeyStartTime.html(user.startTime);
-                self.$idCardCopy.val(user.idCardNo);
-                self.$emailCopy.val(user.email);
+                //debugger
+                if(user){
+                    this.$form.Fields.fillValues({
+                        id: user.id,
+                        loginCode: user.loginCode,
+                        realName: user.realName,
+                        idCardNo: user.idCardNo,
+                        gender: user.gender,
+                        email: user.email,
+                        telephone: user.telephone,
+//                        organization: [user.province, user.city, user.organization],
+                        major: user.major,
+                        publicKey: user.publicKey,
+                        validTime: user.validTime,
+                        startTime: user.startTime,
+                        sourceName:user.sourceName,
+                        fertilityStatus:user.fertilityStatus,
+                        secondPhone:user.secondPhone,
+                        birthday:user.birthday != null?user.birthday.substring(0,10):"",
+                        micard:user.micard,
+                        qq:user.qq,
+                        ssid:user.ssid,
+                        realnameFlag:user.realnameFlag,
 
-                var pic = user.imgRemotePath;
-                if (!Util.isStrEmpty(pic)) {
-                    self.$imageShow.html('<img src="${contextRoot}/user/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
+                    });
+                    if(user.role){
+                        var roleArr = user.role.split(",") ;
+                        for(var k in roleArr){
+                            $("#"+ roleArr[k], trees.tree).find(".l-checkbox").click()
+                        }
+                    }
+                    self.$publicKeyMessage.val(user.publicKey);
+                    self.$publicKeyValidTime.html(user.validTime);
+                    self.$publicKeyStartTime.html(user.startTime);
+                    self.$idCardCopy.val(user.idCardNo);
+                    self.$emailCopy.val(user.email);
+                    this.$location.ligerComboBox({width: 240});
+                    this.$location.addressDropdown({
+                        tabsData: [
+                            {
+                                name: '省份',
+                                code: 'id',
+                                value: 'name',
+                                url: '${contextRoot}/address/getParent',
+                                params: {level: '1'}
+                            },
+                            {name: '城市', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                            {name: '县区', code: 'id', value: 'name', url: '${contextRoot}/address/getChildByParent'},
+                            {name: '街道', maxlength: 200}
+                        ]
+                    });
+                    setTimeout(function(){
+                        self.$form.Fields.location.setValue([user.provinceName, user.cityName, user.areaName, user.street]);
+                    },500);
+
+                    var pic = user.imgRemotePath;
+                    if (!Util.isStrEmpty(pic)) {
+                        self.$imageShow.html('<img src="${contextRoot}/user/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w88 f-h110"></img>');
+                    }
                 }
                 if ('${mode}' == 'view') {
                     this.$form.addClass("m-form-readonly");
@@ -292,13 +350,46 @@
 
                 //修改用户的点击事件
                 this.$updateUserDtn.click(function () {
-
+                    debugger
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
+                        var location = self.$form.Fields.location.val()==""?"":JSON.parse(self.$location.val());
+                        if(location!=""){
+                            var keys = location.keys;
+                            var names = location.names;
+                            if(keys.length==1){//省
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                            }
+                            if(keys.length==2){//省、市
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                            }
+                            if(keys.length==3){//省、市、县
+                                userModel.provinceId =parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                                userModel.areaId = parseInt(keys[2]);
+                                userModel.areaName = names[2];
+                            }
+                            if(keys.length==4){//省、市、县、街道
+                                userModel.provinceId = parseInt(keys[0]);
+                                userModel.provinceName = names[0];
+                                userModel.cityId = parseInt(keys[1]);
+                                userModel.cityName = names[1];
+                                userModel.areaId = parseInt(keys[2]);
+                                userModel.areaName = names[2];
+                                userModel.street = keys[3];
+                            }
+                        }
+                        delete userModel.location;
 						userModel.role = userInfo.roleIds(userModel.role);
-                        var organizationKeys = userModel.organization['keys'];
-                        userModel.organization = organizationKeys[2];
+//                        var organizationKeys = userModel.organization['keys'];
+//                        userModel.organization = organizationKeys[2];
                         if (userImgHtml == 0) {
                             updateUser(userModel);
                         } else {
@@ -319,6 +410,7 @@
                 });
 
                 function updateUser(userModel) {
+                    debugger
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUser", {

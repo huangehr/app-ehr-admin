@@ -50,7 +50,7 @@
                         gridType[i] = ele[i].ligerGrid($.LigerGridEx.config({
                             url: '${contextRoot}/appRole/searchInsertApps',
                             parms: {searchNm: '', gridType: gridType[i], appRoleId: obj.id},
-                            width: $(".f-mw50").width(),
+                            width: "350px",
                             height: 450,
                             isScroll: true,
                             checkbox: checkboxBo,

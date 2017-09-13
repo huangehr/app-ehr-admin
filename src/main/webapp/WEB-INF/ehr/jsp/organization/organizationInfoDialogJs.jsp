@@ -12,6 +12,9 @@
 
         var settledWayDictId = 8;
         var orgTypeDictId = 7;
+        var hosTypeDictId =  62;
+        var ascriptionTypeDictId =  63;
+        var zxyDictId = 70;
 
         // 表单校验工具类
         var jValidation = $.jValidation;
@@ -40,6 +43,22 @@
             $tel: $('#tel'),
             $orgType: $('#org_type'),
             $tags: $("#tags"),
+
+            $traffic: $("#traffic"),
+            $ing: $("#ing"),
+            $lat: $("#lat"),
+            $hosType:$("#hosType"),
+            $ascriptionType:$("#ascriptionType"),
+            $phone:$("#phone"),
+            $introduction:$("#introduction"),
+            $levelId:$("#levelId"),
+            $legalPerson:$("#legalPerson"),
+            $logoUrl:$("#logoUrl"),
+            $parentHosId:$("#parentHosId"),
+            $zxy:$("#zxy"),
+            $logoImageShow: $('#logoImage'),
+            $logoUrlButton:$("#logoUrlButton"),
+
             $keyReadBtn: $("#keyReadBtn"),
             $footer: $("#div_footer"),
             $updateOrgBtn: $("#div_update_btn"),
@@ -58,6 +77,9 @@
             $selectPublicKeyValidTime: $("#div_publicKey_validTime"),
             $selectPublicKeyStartTime: $("#div_publicKey_startTime"),
             $filePicker: $("#div_file_picker"),
+            $publicKeyInfo: $("#publicKeyInfo"),
+            $publicKeyInfoDiv:$("#publicKeyInfoDiv"),
+            $parentPublicKey:$("#parentPublicKey"),
 
             $affirmBtn: $('#div_affirm_btn'),
 
@@ -70,13 +92,14 @@
                 addImg();
             },
             initForm: function () {
-                this.$orgCode.ligerTextBox({width: 240});
-                this.$fullName.ligerTextBox({width: 240});
-                this.$shortName.ligerTextBox({width: 240});
-                this.$location.ligerComboBox({width: 240});
-                this.$tags.ligerTextBox({width: 240, height: 56});
-                this.$admin.ligerTextBox({width: 240, height: 28});
-                this.$tel.ligerTextBox({width: 240, height: 28});
+                this.$orgCode.ligerTextBox({width: 140});
+                this.$fullName.ligerTextBox({width: 140});
+                this.$shortName.ligerTextBox({width: 140});
+                this.$location.ligerComboBox({width: 290});
+                this.$orgType.ligerComboBox({width: 140});
+//                this.$tags.ligerTextBox({width: 240, height: 56});
+                this.$admin.ligerTextBox({width: 140, height: 28});
+                this.$tel.ligerTextBox({width: 140, height: 28});
                 this.$tel.removeClass('l-text-field-number');
                 this.$location.addressDropdown({
                     tabsData: [
@@ -92,9 +115,30 @@
                         {name: '街道', maxlength: 200}
                     ]
                 });
-
+                this.$location.parent().find('.u-select-title').css({
+                    width: '100%'
+                })
+                this.$traffic.ligerTextBox({width: 140});
+                this.$ing.ligerTextBox({width: 140});
+                this.$lat.ligerTextBox({width: 140});
+                this.$hosType.ligerComboBox({width: 140});
+                this.$ascriptionType.ligerComboBox({width: 140});
+                this.$phone.ligerTextBox({width: 140});
+                this.$introduction.ligerTextBox({width: 396,height:104,padding:10});
+                this.$levelId.ligerTextBox({width: 140});
+                this.$legalPerson.ligerTextBox({width: 140});
+                this.$zxy.ligerComboBox({width: 140});
+                this.$settledWay.ligerComboBox({width: 140});
+                this.$publicKeyInfo.ligerTextBox({width: 140});
                 this.initDDL(orgTypeDictId, this.$orgType);
                 this.initDDL(settledWayDictId, this.$settledWay);
+                this.initDDL(hosTypeDictId,this.$hosType);
+                this.initDDL(ascriptionTypeDictId,this.$ascriptionType);
+                this.initDDL(zxyDictId,this.$zxy);
+
+                var url = '${contextRoot}/deptMember/getOrgList';
+                this.$parentHosId.customCombo(url);
+
                 this.$form.attrScan();
                 var tags = '';
                 for (var i = 0; i < org.tags.length; i++) {
@@ -111,6 +155,18 @@
                     admin: org.admin,
                     tel: org.tel,
                     tags: tags,
+
+                    traffic:org.traffic,
+                    ing:org.ing,
+                    lat:org.lat,
+                    hosTypeId:org.hosTypeId,
+                    ascriptionType:org.ascriptionType,
+                    phone:org.phone,
+                    introduction:org.introduction,
+                    levelId:org.levelId,
+                    legalPerson:org.legalPerson,
+                    zxy:org.zxy,
+
                     publicKey: org.publicKey,
                     validTime: org.validTime,
                     startTime: org.startTime
@@ -118,6 +174,13 @@
                 this.$publicKeyMessage.val(org.publicKey);
                 this.$publicKeyValidTime.html(org.validTime);
                 this.$publicKeyStartTime.html(org.startTime);
+                if (org.publicKey != null && org.publicKey != undefined) {
+                    this.$publicKeyInfo.val("已分配");
+                } else {
+                    this.$publicKeyInfo.val("未分配");
+                }
+                $("#parentHosId").ligerGetComboBoxManager().setValue(org.parentHosId);
+                $("#parentHosId").ligerGetComboBoxManager().setText(org.parentHosName);
 
                 this.$form.Fields.location.setValue([org.province, org.city, org.district, org.street]);
 
@@ -125,9 +188,10 @@
                     this.$form.addClass("m-form-readonly");
                     this.$publicKey.hide();
                     this.$footer.hide();
-                    this.$selectPublicKeyMessage.show();
-                    this.$selectPublicKeyValidTime.show();
-                    this.$selectPublicKeyStartTime.show();
+                    this.$publicKeyInfoDiv.show();
+//                    this.$selectPublicKeyMessage.show();
+//                    this.$selectPublicKeyValidTime.show();
+//                    this.$selectPublicKeyStartTime.show();
                     this.$filePicker.addClass("hidden");
                     $("#filePicker2").hide();
                     $('#div_organization_info_form textarea').attr("disabled","disabled");
@@ -136,11 +200,18 @@
                 }
                 if ('${mode}' == 'modify') {
                     //this.$publicManage.hide();
+                    this.$parentPublicKey.show();
                 }
                 var pic = org.imgRemotePath;
                 if (!Util.isStrEmpty(pic)) {
                     this.$orgImageShow.html('<img src="${contextRoot}/organization/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w70 f-h70"></img>');
                 }
+
+                var logoPic = org.logoUrl;
+                if (!Util.isStrEmpty(logoPic)) {
+                    this.$logoImageShow.html('<img style="width:130px;height:80px;" src="${contextRoot}/organization/showImageLogo?storagePath='+logoPic+'" ></img>');
+                }
+
             },
             initDDL: function (dictId, target) {
                 target.ligerComboBox({
@@ -165,6 +236,17 @@
                         self.$form.attrScan();
                         var orgAddress = self.$form.Fields.location.getValue();
                         var orgModel = self.$form.Fields.getValues();
+                        //用于存储机构最小划分区域的id -追加 start by zdm
+                        var administrative_division=null;
+                        if(!Util.isStrEmpty(orgAddress.keys[2])){
+                            administrative_division = orgAddress.keys[2];
+                        } else if(!Util.isStrEmpty( orgAddress.keys[1])){
+                            administrative_division = orgAddress.keys[1];
+                        }else if(!Util.isStrEmpty( orgAddress.keys[0])){
+                            administrative_division = orgAddress.id[0];
+                        }
+                        orgModel.administrativeDivision = administrative_division;
+                        //用于存储机构最小划分区域的id -追加 end by zdm
                         //标签字符串转化为数组
                         var tags = orgModel.tags;
                         tags = tags.split(/[;；]/)
@@ -198,6 +280,7 @@
                 });
 
                 function updateOrg(orgModel, addressModel, msg) {
+                    var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var orgCode = orgModel.orgCode;
                     var orgModel = JSON.stringify(orgModel);
                     var addressModel = JSON.stringify(addressModel);
@@ -205,28 +288,63 @@
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
                         data: {orgModel: orgModel, addressModel: addressModel, mode: msg},
                         success: function (data) {
+                            wait.close();
                             uploader.options.formData.objectId = orgCode;
                             uploader.options.server="${contextRoot}/file/upload/image";
                             uploader.options.successCallBack=function(){
-                                win.parent.closeAddOrgInfoDialog(function () {
-                                    win.parent.$.Notice.success('保存成功！');
+                               closeAddOrgInfoDialog(function () {
+                                    $.Notice.success('保存成功！');
                                 });
                             }
                             if (data.successFlg) {
+                                win.closeDialog();
                                 if(uploader.getFiles().length>0){
                                     $(".uploadBtn").click();
                                 }else{
-                                    win.parent.closeAddOrgInfoDialog(function () {
-                                        win.parent.$.Notice.success('保存成功！');
+                                    closeAddOrgInfoDialog(function () {
+                                        $.Notice.success('保存成功！');
                                     });
                                 }
                             } else {
-                                win.parent.closeAddOrgInfoDialog(function () {
+                                closeAddOrgInfoDialog(function () {
                                 });
                                 window.top.$.Notice.error(data.errorMsg);
                             }
                         }
                     })
+                }
+
+                this.$logoUrlButton.on('change',function () {
+                    var url = '${contextRoot}/organization/orgLogoFileUpload';
+                    doUpload(url);
+                });
+
+                function doUpload(url) {
+                    var formData = new FormData($( "#uploadForm" )[0]);
+                    $.ajax({
+                        url: url ,
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (returndata) {
+                            if(returndata != "fail"){
+                                $('#logoUrl').val(returndata);
+                                self.$logoUrl.val(returndata);
+//                                alert("上传成功");
+                                $.Notice.success('上传成功');
+                            }else{
+//                                alert("上传失败");
+                                $.Notice.success('上传失败');
+                            }
+                        },
+                        error: function (returndata) {
+//                            alert("上传失败");
+                           $.Notice.success('上传失败');
+                        }
+                    });
                 }
 
                 self.$cancelBtn.click(function () {
@@ -270,6 +388,20 @@
         };
 
         /* *************************** 页面初始化 **************************** */
+        //        内容折叠
+        var listTit = $('.list-tit');
+        listTit.on('click',function () {
+            var nextNode = $(this).next();
+            sty = nextNode.css('display');
+            console.log(sty);
+            if (sty === 'block') {
+                nextNode.slideUp();
+                $(this).children().html('+');
+            } else {
+                nextNode.slideDown();
+                $(this).children().html('-');
+            }
+        });
         pageInit();
         function addImg(){
             if(imgLop.detailModelList.length>0){
@@ -304,7 +436,7 @@
                         if(data.successFlg){
                             $("#WU_FILE_"+$(_this).attr("imgnum")).remove();
                         }else{
-                             $.Notice.error("删除失败！");
+                            $.Notice.error("删除失败！");
                         }
                     }
                 });
@@ -312,22 +444,22 @@
         }
 
         function doGetImg(index,storagePath){
-                $.ajax({
-                    type: 'get',
-                    url: '${contextRoot}/file/view/image?storagePath='+storagePath ,
-                    dataType: "json",
-                    async:true,
-                    success: function (data) {
-                        if(data.successFlg){
-                            $("#imageview"+index).attr("src",data.obj);
-                        }
+            $.ajax({
+                type: 'get',
+                url: '${contextRoot}/file/view/image?storagePath='+storagePath ,
+                dataType: "json",
+                async:true,
+                success: function (data) {
+                    if(data.successFlg){
+                        $("#imageview"+index).attr("src",data.obj);
                     }
-                });
-              if(index<imgLop.detailModelList.length){
+                }
+            });
+            if(index<imgLop.detailModelList.length){
                 setTimeout(function(){
                     doGetImg((index+1),imgLop.detailModelList[index])
-                 },200);
-              }
+                },200);
+            }
         }
 
 

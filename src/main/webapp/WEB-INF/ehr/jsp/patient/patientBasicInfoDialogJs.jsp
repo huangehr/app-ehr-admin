@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script type="text/javascript" src="${staticRoot}/Scripts/homeRelationship.js"></script>
 <script>
     (function ($, win) {
@@ -13,11 +14,14 @@
 
         var cardInfoGrid = null;
         var archiveInfoGrid = null;
+        var doctorCardInfo = null;
+        var typeTree = null;
 
         var cardFormInit = null;
         var archiveFormInit = null;
         var patientModel =${patientModel}.obj;
         var idCardNo =patientModel.idCardNo;
+        var userId = '${userId}';
         /* ************************** 变量定义结束 ******************************** */
 
         /* *************************** 函数定义 ******************************* */
@@ -107,8 +111,12 @@
             $patientTel: $("#inp_patientTel"),
             $patientEmail: $("#inp_patientEmail"),
             picPath:$('#div_file_list'),
-
+            $tabList: $('.tab-list'),
+            $tabCon: $('.tab-con'),
+            $divResourceBrowseTree: $('#div_resource_browse_tree'),
+            $appRoleGridScrollbar: $(".div-appRole-grid-scrollbar"),
             init: function () {
+                var self = this;
                 this.initForm();
                 this.bindEvents();
                 cardFormInit.init();
@@ -116,6 +124,50 @@
                 $("#div_card_info").hide();
                 $("#div_home_relation").hide();
                 $("#div_archive_info").hide();
+                doctorCardInfo.init();
+                self.$appRoleGridScrollbar.mCustomScrollbar({
+                });
+                if(userId!="null"){
+                    $(".tab-list #user_jur").show();
+                    self.getTreeData();
+                }
+            },
+            getTreeData: function () {
+                debugger
+                var self = this;
+                typeTree = this.$divResourceBrowseTree.ligerSearchTree({
+                    nodeWidth: 200,
+                    url: '${contextRoot}/patient/appRolesList',
+                    parms:{userId: userId},
+                    idFieldName: 'id',
+                    parentIDFieldName :'parentDeptId',
+                    textFieldName: 'name',
+                    isExpand: false,
+                    enabledCompleteCheckbox:false,
+                    checkbox: false,
+                    async: false,
+                    onSuccess: function (data) {
+                        debugger
+                        typeTree.setData(data.detailModelList);
+                        self.appendCheckData(data.obj || []);
+                    },
+                });
+            },
+            appendCheckData:function(data){
+                var resultHtml = "";
+                var appDom = $("#div_checked_data .div-header-content");
+                for(var i=0;i<data.length;i++) {
+                    var item = data[i];
+                    var roleId = item.roleId;
+                    var roleName = item.roleName;
+                    if (appDom.find(".div-item[data-id='" + roleId + "']").length == 0) {
+                        resultHtml += '<div class="h-40 div-item" data-id="'+roleId+'">'+
+                                '<div class="div-main-content" title="'+roleName+'">'+roleName+'</div>'+
+//                                '<div class="div-delete-content"><a class="grid_delete" href="#" title="删除"></a></div>'+
+                                '</div>';
+                    }
+                }
+                appDom.after(resultHtml);
             },
             initForm: function () {
                 this.$realName.ligerTextBox({width: 240});
@@ -177,6 +229,14 @@
                 }
             },
             bindEvents: function () {
+                debugger
+                var self = this;
+                //tab
+                self.$tabList.on( 'click', 'li', function (e) {
+                    var index = $(this).index();
+                    $(this).addClass('cur').siblings().removeClass('cur');
+                    self.$tabCon.hide().eq(index).show();
+                });
             }
         };
         cardFormInit = {
@@ -315,6 +375,55 @@
             }
 
         };
+        //
+        doctorCardInfo = {
+            $doctorCardList: $('#doctorCardList'),
+            init: function () {
+                this.getDoctorCardInfoData();
+            },
+            getDoctorCardInfoData: function () {
+                var me = this;
+                $.ajax({
+                    url: '${contextRoot}/patient/PatientCardByUserId',
+                    data: {
+                        ownerIdcard: idCardNo
+                    },
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (res) {
+                        debugger
+                        var html = '';
+                        if (res.detailModelList != null && res.detailModelList.length > 0) {
+                            var d = res.detailModelList;
+                            for (var i = 0, len = d.length; i < len; i++) {
+                                var validityDateBegin = d[i].validityDateBegin==null?"":d[i].validityDateBegin.substring( 0, 9);
+                                var validityDateEnd = d[i].validityDateEnd==null?"":d[i].validityDateEnd.substring( 0, 9);
+                                html += ['<li class="card-l-item">',
+                                    '<div><span>' + d[i].cardType + '</span></div>',
+                                    '<ul class="first-ul">',
+                                    '<li><span>卡号: </span><span>' + d[i].cardNo + '</span></li>',
+                                    '<li><span>是否有效: </span><span>' + (d[i].status == 0 ? '无效' : '有效') + '</span></li>',
+                                    '</ul>',
+                                    '<ul class="last-ul">',
+                                    '<li><span>发卡机构: </span><span>' + (d[i].releaseOrg || '') + '</span></li>',
+                                    '<li><span>有效时间: </span><span>' + validityDateBegin + '</span> ~ <span>' + validityDateEnd + '</span></li>',
+                                    '</ul>',
+                                    '</li>'].join('');
+                            }
+                        } else {
+                            html += ['<li class="data-null">',
+                                '<div class="null-page"></div>',
+                                '<span>暂无数据</span>',
+                                '</li>'].join('');
+                        }
+                        me.$doctorCardList.append(html);
+                        console.log(res);
+                    }
+                });
+            }
+        }
+
+
         //档案信息
         archiveFormInit = {
             $selectStart:$('#inp_select_start'),

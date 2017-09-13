@@ -16,7 +16,7 @@
 
   <div class="m-form-group">
     <label>业务领域<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
+    <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_domain" data-type="select" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="domain">
     </div>
   </div>
@@ -37,8 +37,16 @@
 
   <div class="m-form-group">
     <label>类型<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
+    <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_column_type" data-type="select" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="columnType">
+    </div>
+  </div>
+
+  <div class="m-form-group">
+    <label>数据来源<spring:message code="spe.colon"/></label>
+    <div class=" m-form-control">
+      <input type="radio" value="1" name="dataSource" data-attr-scan="dataSource" />档案数据
+      <input type="radio" value="2" name="dataSource" data-attr-scan="dataSource"/>指标统计
     </div>
   </div>
 
@@ -67,11 +75,11 @@
   <div class="m-form-group f-pa update-footer">
     <div class="m-form-control">
 
-      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
         <span>保存</span>
       </div>
 
-      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
+      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr20" >
         <span>关闭</span>
       </div>
 

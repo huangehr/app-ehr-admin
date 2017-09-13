@@ -1,18 +1,22 @@
 package com.yihu.ehr.organization.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.org.RsOrgResourceModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.model.org.MRsOrgResource;
 import com.yihu.ehr.patient.controller.PatientController;
-import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.controller.BaseUIController;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.web.RestTemplates;
-import com.yihu.ehr.util.encode.*;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.GetInfoService;
+import com.yihu.ehr.util.url.URLQueryBuilder;
+import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +24,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -34,7 +39,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Base64;
 import java.util.*;
 
 /**
@@ -51,10 +55,19 @@ public class OrganizationController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    
+    @Autowired
+    private GetInfoService getInfoService;
 
     @RequestMapping("initial")
     public String orgInitial(Model model) {
         model.addAttribute("contentPage", "organization/organization");
+        return "pageView";
+    }
+
+    @RequestMapping("organizationGrant")
+    public String organizationGrant(Model model) {
+        model.addAttribute("contentPage", "organization/organizationGrant");
         return "pageView";
     }
 
@@ -91,9 +104,18 @@ public class OrganizationController extends BaseUIController {
         return "generalView";
     }
 
+    @RequestMapping("dialog/orgDataGrant")
+    public String orgDataGrantDialog(Model model,String orgCode, String orgTypeName, String fullName) {
+        model.addAttribute("orgCode", orgCode);
+        model.addAttribute("orgTypeName", orgTypeName);
+        model.addAttribute("fullName", fullName);
+        model.addAttribute("contentPage", "organization/orgGrantInfoDialog");
+        return "simpleView";
+    }
+
     @RequestMapping(value = "searchOrgs", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object searchOrgs(String searchNm, String searchWay, String orgType, String province, String city, String district, int page, int rows) {
+    public Object searchOrgs(String searchParm, String searchWay, String orgType, String province, String city, String district, int page, int rows) {
         Envelop envelop = new Envelop();
         try {
             //获取地址的 ids
@@ -120,8 +142,8 @@ public class OrganizationController extends BaseUIController {
             String url = "/organizations";
             String filters = "";
             Map<String, Object> params = new HashMap<>();
-            if (!StringUtils.isEmpty(searchNm)) {
-                filters += "orgCode?" + searchNm + " g1;fullName?" + searchNm + " g1;";
+            if (!StringUtils.isEmpty(searchParm)) {
+                filters += "orgCode?" + searchParm + " g1;fullName?" + searchParm + " g1;";
             }
             if (!StringUtils.isEmpty(searchWay)) {
                 filters += "settledWay=" + searchWay + ";";
@@ -129,6 +151,22 @@ public class OrganizationController extends BaseUIController {
             if (!StringUtils.isEmpty(orgType)) {
                 filters += "orgType=" + orgType + ";";
             }
+
+           /* String orgCode = getInfoService.getOrgCode();*/
+           /* String districtList = getInfoService.getDistrictList();*/
+
+           /* if (!StringUtils.isEmpty(orgCode)) {
+                filters += "orgCode=" + orgCode + ";";
+            } else {
+                filters += "orgCode=" + null + ";";
+            }*/
+            /*filters += StringUtils.isEmpty(orgCode) ? "orgCode=" + null + " g2;" : "orgCode=" + orgCode + " g2;";*/
+            /*filters += StringUtils.isEmpty(districtList) ? "location=-1 g2;" : "location=" + districtList + " g2;";*/
+//            if (!StringUtils.isEmpty(districtList)) {
+//                filters += "location=" + districtList + ";";
+//            } else {
+//                filters += "location=-1;";
+//            }
            /* //添加地址过滤条件
             if (!"".equals(addrIds)) {
                 filters += "location=" + addrIds + ";";
@@ -300,9 +338,33 @@ public class OrganizationController extends BaseUIController {
                 orgForUpdate.setOrgType(org.getOrgType());
                 orgForUpdate.setTags(org.getTags());
                 orgForUpdate.setImgLocalPath("");
+                //用于存储机构最小划分区域的id -追加 start by zdm
+                orgForUpdate.setAdministrativeDivision(org.getAdministrativeDivision());
+                //用于存储机构最小划分区域的id -追加 end by zdm
+                orgForUpdate.setCode(org.getCode());
+                orgForUpdate.setTraffic(org.getTraffic());
+                orgForUpdate.setPhoto(org.getPhoto());
+                orgForUpdate.setHosTypeId(org.getHosTypeId());
+                orgForUpdate.setPhone(org.getPhone());
+                orgForUpdate.setHosPhoto(org.getHosPhoto());
+                orgForUpdate.setAscriptionType(org.getAscriptionType());
+                orgForUpdate.setIntroduction(org.getIntroduction());
+                orgForUpdate.setLegalPerson(org.getLegalPerson());
+                orgForUpdate.setLevelId(org.getLevelId());
+                if(!StringUtils.isEmpty(org.getLogoUrl())){
+                    orgForUpdate.setLogoUrl(org.getLogoUrl());
+                }
+                orgForUpdate.setSortNo(org.getSortNo());
+                orgForUpdate.setParentHosId(org.getParentHosId());
+                orgForUpdate.setIng(org.getIng());
+                orgForUpdate.setLat(org.getLat());
+                orgForUpdate.setZxy(org.getZxy());
+
+
+
                 String mOrgUpdateJson = objectMapper.writeValueAsString(orgForUpdate);
                 params.add("mOrganizationJsonDatas", mOrgUpdateJson);
-                envelopStr = templates.doPost(comUrl + "/organization", params);
+                envelopStr = templates.doPost(comUrl + "/organizations/update", params);
             }
             return envelopStr;
         } catch (Exception e) {
@@ -397,6 +459,34 @@ public class OrganizationController extends BaseUIController {
                 outputStream.close();
         }
     }
+
+    @RequestMapping("/showImageLogo")
+    @ResponseBody
+    public void showImageLogo(String storagePath,HttpServletResponse response) throws Exception {
+        if(org.apache.commons.lang3.StringUtils.isNotEmpty(storagePath)){
+            OutputStream outputStream = null;
+            try {
+                Map<String,Object> params = new HashMap<>();
+                storagePath = URLEncoder.encode(storagePath, "ISO8859-1");
+                String fileName = System.currentTimeMillis() + storagePath.substring(storagePath.indexOf(".")-1);
+                params.put("storagePath",storagePath);
+                String imageOutStream = HttpClientUtil.doGet(comUrl + "/image_view",params,username, password);
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment;fileName="+fileName);
+                outputStream = response.getOutputStream();
+                byte[] bytes = Base64.getDecoder().decode(imageOutStream);
+                outputStream.write(bytes);
+                outputStream.flush();
+            } catch (IOException e) {
+                LogService.getLogger(OrganizationController.class).error(e.getMessage());
+            } finally {
+                if (outputStream != null)
+                    outputStream.close();
+            }
+        }
+    }
+
+
     @RequestMapping("/upload2")
     @ResponseBody
     public String upload2(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException,
@@ -422,5 +512,253 @@ public class OrganizationController extends BaseUIController {
 
         return "";
     }
+
+
+    /**
+     * 资源文件上传
+     * @param
+     * @return
+     */
+    @RequestMapping("orgLogoFileUpload")
+    @ResponseBody
+    public Object orgLogoFileUpload(
+            @RequestParam("logoFileUrl") MultipartFile file) throws IOException{
+        Envelop result = new Envelop();
+        InputStream inputStream = file.getInputStream();
+        String fileName = file.getOriginalFilename(); //获取文件名
+        if (!file.isEmpty()) {
+            return  uploadFile(inputStream,fileName);
+        }
+        return "fail";
+    }
+
+    public String uploadFile(InputStream inputStream,String fileName){
+        try {
+            //读取文件流，将文件输入流转成 byte
+            int temp = 0;
+            int bufferSize = 1024;
+            byte tempBuffer[] = new byte[bufferSize];
+            byte[] fileBuffer = new byte[0];
+            while ((temp = inputStream.read(tempBuffer)) != -1) {
+                fileBuffer = ArrayUtils.addAll(fileBuffer, ArrayUtils.subarray(tempBuffer, 0, temp));
+            }
+            inputStream.close();
+            String restStream = Base64.getEncoder().encodeToString(fileBuffer);
+            String url = "";
+            url = fileUpload(restStream,fileName);
+            if (!StringUtils.isEmpty(url)){
+                System.out.println("上传成功");
+                return url;
+            }else{
+                System.out.println("上传失败");
+            }
+
+        } catch (Exception e) {
+            return "fail";
+        }
+        return "fail";
+    }
+
+    /**
+     * 图片上传
+     * @param inputStream
+     * @param fileName
+     * @return
+     */
+    public String fileUpload(String inputStream,String fileName){
+
+        RestTemplates templates = new RestTemplates();
+        Map<String, Object> params = new HashMap<>();
+
+        String url = null;
+        if (!StringUtils.isEmpty(inputStream)) {
+
+            //mime  参数 doctor 需要改变  --  需要从其他地方配置
+            FileResourceModel fileResourceModel = new FileResourceModel("","org","");
+            String fileResourceModelJsonData = toJson(fileResourceModel);
+
+            params.put("file_str", inputStream);
+            params.put("file_name", fileName);
+            params.put("json_data",fileResourceModelJsonData);
+            try {
+                url = HttpClientUtil.doPost(comUrl + "/filesReturnUrl", params,username,password);
+                return url;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return url;
+    }
+
+
+
+
+  //资源授权
+  //-------------------------------------------------------角色组---资源授权管理---开始----------------
+  @RequestMapping("/resource/initial")
+  public String resourceInitial(Model model, String backParams){
+      model.addAttribute("backParams",backParams);
+      model.addAttribute("contentPage", "organization/resource");
+      return "pageView";
+  }
+
+    //获取角色组已授权资源ids集合
+    @RequestMapping("/orgResourceIds")
+    @ResponseBody
+    public  Object getOrgResourceIds(String orgCode){
+        Envelop envelop = new Envelop();
+        List<String> list = new ArrayList<>();
+        envelop.setSuccessFlg(false);
+        envelop.setDetailModelList(list);
+        URLQueryBuilder builder = new URLQueryBuilder();
+        if (org.springframework.util.StringUtils.isEmpty(orgCode)) {
+            return envelop;
+        }
+        builder.addFilter("organizationId", "=", orgCode, null);
+        builder.setPageNumber(1)
+                .setPageSize(999);
+        String param = builder.toString();
+        String url = "/resources/OrgGrants";
+        String resultStr = "";
+        try {
+            RestTemplates template = new RestTemplates();
+            resultStr = template.doGet(comUrl+url+"?"+param);
+            Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
+            if(resultGet.isSuccessFlg()&&resultGet.getDetailModelList().size()!=0){
+                List<RsOrgResourceModel> rsOrgModels = (List<RsOrgResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsOrgResourceModel>(),RsOrgResourceModel.class);
+                for(RsOrgResourceModel m : rsOrgModels){
+                    list.add(m.getResourceId());
+                }
+                envelop.setSuccessFlg(true);
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+        }
+        envelop.setSuccessFlg(true);
+        envelop.setDetailModelList(list);
+        return envelop;
+    }
+
+    @RequestMapping("/org")
+    @ResponseBody
+    public Object getOrgById(String orgCode){
+        Envelop envelop = new Envelop();
+        try{
+            String url = "/orgCode/"+orgCode;
+            RestTemplates template = new RestTemplates();
+            String envelopStr = template.doGet(comUrl+url);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+        }
+        envelop.setSuccessFlg(false);
+        return envelop;
+    }
+
+    //资源授权orgCode+resourceIds
+    @RequestMapping("/resource/OrgGrants")
+    @ResponseBody
+    public Object resourceGrant(String orgCode,String resourceIds){
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/resources/Org/"+orgCode+"/grant";
+            Map<String,Object> params = new HashMap<>();
+            params.put("orgCode", orgCode);
+            params.put("resourceIds", resourceIds);
+            String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception ex) {
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+        }
+        envelop.setSuccessFlg(false);
+        return envelop;
+    }
+
+    //批量、单个取消资源授权
+    @RequestMapping("/resource/cancel")
+    @ResponseBody
+    public Object resourceGrantCancel(String orgCode,String resourceIds){
+        Envelop envelop = new Envelop();
+        envelop.setSuccessFlg(false);
+        if(org.springframework.util.StringUtils.isEmpty(orgCode)){
+            envelop.setErrorMsg("机构code不能为空！");
+            return envelop;
+        }
+        if(org.springframework.util.StringUtils.isEmpty(resourceIds)){
+            envelop.setErrorMsg("资源id不能为空！");
+            return envelop;
+        }
+        try {
+            //先获取授权关系表的ids
+            String url = "/resources/OrgGrants/no_paging";
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","organizationId="+orgCode+";resourceId="+resourceIds);
+            String envelopStrGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
+            String ids = "";
+            if(envelopGet.isSuccessFlg()&&envelopGet.getDetailModelList().size()!=0){
+                List<MRsOrgResource> list = (List<MRsOrgResource>)getEnvelopList(envelopGet.getDetailModelList(),
+                        new ArrayList<MRsOrgResource>(),MRsOrgResource.class);
+                for(MRsOrgResource m:list){
+                    ids += m.getId()+",";
+                }
+                ids = ids.substring(0,ids.length()-1);
+            }
+            //取消资源授权
+            if(!org.springframework.util.StringUtils.isEmpty(ids)){
+                String urlCancel = "/resources/OrgGrants";
+                Map<String,Object> args = new HashMap<>();
+                args.put("ids",ids);
+                String result = HttpClientUtil.doDelete(comUrl+urlCancel,args,username,password);
+                return result;
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
+    //修改、查看授权资源
+    //-------------------------------------------------------角色组---资源授权管理---结束----------------
+
+    //-------------------------------------------------------角色组----资源----数据元--管理开始--------------
+    @RequestMapping("/resourceManage/initial")
+    public String resourceManageInitial(Model model,String orgCode,String resourceId, String dataModel){
+        model.addAttribute("dataModel",dataModel);
+        model.addAttribute("orgRsId",getOrgResId(orgCode,resourceId));
+        model.addAttribute("contentPage", "organization/resourceManage");
+        return "pageView";
+    }
+    //获取角色组-资源关联关系id
+    public String getOrgResId(String orgCode,String resourceId) {
+        URLQueryBuilder builder = new URLQueryBuilder();
+        if (org.springframework.util.StringUtils.isEmpty(orgCode)|| org.springframework.util.StringUtils.isEmpty(resourceId)) {
+            return "";
+        }
+        builder.addFilter("organizationId", "=",orgCode, null);
+        builder.addFilter("resourceId", "=", resourceId, null);
+        builder.setPageNumber(1)
+                .setPageSize(1);
+        String param = builder.toString();
+        String url = "/resources/OrgGrants";
+        String resultStr = "";
+        try {
+            RestTemplates template = new RestTemplates();
+            resultStr = template.doGet(comUrl+url+"?"+param);
+            Envelop resultGet = objectMapper.readValue(resultStr,Envelop.class);
+            if(resultGet.isSuccessFlg()){
+                List<RsOrgResourceModel> rsOrgModels = (List<RsOrgResourceModel>)getEnvelopList(resultGet.getDetailModelList(),new ArrayList<RsOrgResourceModel>(),RsOrgResourceModel.class);
+                RsOrgResourceModel resourceModel = rsOrgModels.get(0);
+                return resourceModel.getId();
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+        }
+        return "";
+    }
+
+
+
 
 }

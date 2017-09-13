@@ -6,13 +6,13 @@
   <input id="id" name="id" data-attr-scan="id"  hidden>
   <div class="m-form-group">
     <label>方案类别<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential u-readonly">
+    <div class="l-text-wrapper m-form-control essential u-readonly f-pr0">
       <input type="text" id="ipt_type" data-type="select" class="required useTitle" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
     </div>
   </div>
   <div class="m-form-group" id="adapter_version_name_div" style="display: none">
     <label>标准名称<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
+    <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="adapter_version_name" data-type="select" class="useTitle" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="adapterVersionName">
     </div>
   </div>
@@ -43,10 +43,10 @@
   </div>
   <div class="m-form-group f-pa update-footer">
     <div class="m-form-control">
-      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
         <span>保存</span>
       </div>
-      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
+      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr20" >
         <span>关闭</span>
       </div>
     </div>

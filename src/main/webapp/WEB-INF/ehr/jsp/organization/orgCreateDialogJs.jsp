@@ -10,8 +10,11 @@
         var organizationInfo = null;
         var orgModel = null;
 
-        var settledWayDictId = 8;
         var orgTypeDictId =  7;
+        var settledWayDictId = 8;
+        var hosTypeDictId =  62;
+        var ascriptionTypeDictId =  63;
+        var zxyDictId = 70;
         // 表单校验工具类
         var jValidation = $.jValidation;
 
@@ -41,6 +44,20 @@
             $uploader:$("#div_aptitude_img_upload"),
             $orgImageShow:$("#div_file_list"),
 
+            $traffic: $("#traffic"),
+            $ing: $("#ing"),
+            $lat: $("#lat"),
+            $hosType:$("#hosType"),
+            $ascriptionType:$("#ascriptionType"),
+            $phone:$("#phone"),
+            $introduction:$("#introduction"),
+            $levelId:$("#levelId"),
+            $legalPerson:$("#legalPerson"),
+            $logoUrlButton:$("#logoUrlButton"),
+            $logoUrl:$("#logoUrl"),
+            $parentHosId:$("#parentHosId"),
+            $zxy:$("#zxy"),
+
             init: function () {
 
                 this.initForm();
@@ -59,6 +76,7 @@
                 });
                 this.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     $.ligerDialog.alert("保存成功", function () {
+                        win.parent.showAddOrgInfoDialogSuccPop();
                         win.parent.closeAddOrgInfoDialog(function () {
 
                         });
@@ -67,12 +85,34 @@
             },
             initForm: function () {
                 var self=this;
-                this.$orgCode.ligerTextBox({width: 240});
-                this.$fullName.ligerTextBox({width: 240});
-                this.$shortName.ligerTextBox({width: 240});
-                this.$location.ligerComboBox({width: 240});
+                this.$orgCode.ligerTextBox({width: 140});
+                this.$fullName.ligerTextBox({width: 140});
+                this.$shortName.ligerTextBox({width: 140});
+                this.$location.ligerComboBox({width: 290});
+
+                this.$traffic.ligerTextBox({width: 140});
+                this.$ing.ligerTextBox({width: 140});
+                this.$lat.ligerTextBox({width: 140});
+                this.$hosType.ligerComboBox({width: 140});
+                this.$phone.ligerTextBox({width: 140});
+                this.$introduction.ligerTextBox({width: 396,height:104,padding:10});
+                this.$levelId.ligerTextBox({width: 140});
+                this.$legalPerson.ligerTextBox({width: 140});
+//                this.$parentHosId.ligerTextBox({width: 140});
+                this.$zxy.ligerComboBox({width: 140});
+                this.$orgType.ligerComboBox({width:140});
+                this.$ascriptionType.ligerComboBox({width:140});
+                this.$settledWay.ligerComboBox({width:140});
+
+
                 this.initDDL(orgTypeDictId,this.$orgType);
                 this.initDDL(settledWayDictId,this.$settledWay);
+                this.initDDL(hosTypeDictId,this.$hosType);
+                this.initDDL(ascriptionTypeDictId,this.$ascriptionType);
+                this.initDDL(zxyDictId,this.$zxy);
+
+                var url = '${contextRoot}/deptMember/getOrgList';
+                this.$parentHosId.customCombo(url);
 
                 this.$form.attrScan();
                 /*todo 20160704 cyc*/
@@ -88,9 +128,12 @@
                     {name: '街道', maxlength: 200}
                 ]});
 
-                this.$admin.ligerTextBox({width: 240, height:28});
-                this.$tags.ligerTextBox({width: 240, height:28});
-                this.$tel.ligerTextBox({width: 240, height:28});
+                this.$location.parent().find('.u-select-title').css({
+                    width: '100%'
+                })
+                this.$admin.ligerTextBox({width: 140, height:28});
+                this.$tags.ligerTextBox({width: 140, height:28});
+                this.$tel.ligerTextBox({width: 140, height:28});
                 this.$tel.removeClass('l-text-field-number');
             },
             initDDL: function (dictId, target) {
@@ -138,7 +181,6 @@
                     }
                 }});
                 this.$updateOrgBtn.click(function () {
-
                     var orgImgHtml = self.$orgImageShow.children().length;
                     if(validator.validate()){
                     	var dataModel = $.DataModel.init();
@@ -154,13 +196,24 @@
 						orgModel.tags = tags;
 						//原location是对象，传到controller转化成model会报错--机构、地址分开传递（json串）
 						orgModel.location = "";
-						var addressModel = {
-							province:  orgAddress.names[0],
-							city: orgAddress.names[1],
-							district: orgAddress.names[2],
-							town: "",
-							street: orgAddress.names[3]
-						};
+                        //用于存储机构最小划分区域的id -追加 start by zdm
+                        var administrative_division=null;
+                        if(!Util.isStrEmpty(orgAddress.keys[2])){
+                            administrative_division = orgAddress.keys[2];
+                        } else if(!Util.isStrEmpty( orgAddress.keys[1])){
+                            administrative_division = orgAddress.keys[1];
+                        }else if(!Util.isStrEmpty( orgAddress.keys[0])){
+                            administrative_division = orgAddress.id[0];
+                        }
+                        orgModel.administrativeDivision = administrative_division;
+                        //用于存储机构最小划分区域的id -追加 end by zdm
+                        var addressModel = {
+                            province: orgAddress.names[0],
+                            city: orgAddress.names[1],
+                            district: orgAddress.names[2],
+                            town: "",
+                            street: orgAddress.names[3]
+                        };
 
                         if (Util.isStrEmpty(orgImgHtml)) {
                             updateOrg(orgModel,addressModel,'new');
@@ -191,20 +244,59 @@
                         return;
                     }
                 });
+
+                this.$logoUrlButton.on('change',function () {
+                    var url = '${contextRoot}/organization/orgLogoFileUpload';
+                    doUpload(url);
+                });
+
+                function doUpload(url) {
+                    var formData = new FormData($( "#uploadForm" )[0]);
+                    $.ajax({
+                        url: url ,
+                        type: 'POST',
+                        data: formData,
+                        async: false,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (returndata) {
+                            if(returndata != "fail"){
+                                $('#logoUrl').val(returndata);
+                                self.$logoUrl.val(returndata);
+                                $.Notice.success('上传成功');
+//                                alert("上传成功");
+                            }else{
+//                                alert("上传失败");
+                                $.Notice.success('上传失败');
+                            }
+                        },
+                        error: function (returndata) {
+//                            alert("上传失败");
+                            $.Notice.success('上传失败');
+                        }
+                    });
+                }
+
+
+
                 self.$cancelBtn.click(function(){
                     dialog.close();
                 })
 
                 function updateOrg(orgModel,addressModel,msg) {
+                    var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var orgModel = JSON.stringify(orgModel);
                     var addressModel = JSON.stringify(addressModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
+                            wait.close();
                             uploader.options.successCallBack=function(){
+                                win.parent.showAddOrgInfoDialogSuccPop();
                                 win.parent.closeAddOrgInfoDialog(function () {
-                                    win.parent.$.Notice.success('保存成功！');
+                                    $.Notice.success('保存成功！');
                                 });
                             }
                             uploader.options.formData.objectId = data.obj.orgCode;
@@ -213,8 +305,9 @@
                                     uploader.options.server="${contextRoot}/file/upload/image";
                                     $(".uploadBtn").click();
                                 }else{
+                                    win.parent.showAddOrgInfoDialogSuccPop();
                                     win.parent.closeAddOrgInfoDialog(function () {
-                                        win.parent.$.Notice.success('保存成功！');
+                                       $.Notice.success('保存成功！');
                                     });
                                 }
                             } else {
@@ -228,6 +321,20 @@
         };
 
         /* *************************** 页面初始化 **************************** */
+//        内容折叠
+        var listTit = $('.list-tit');
+        listTit.on('click',function () {
+            var nextNode = $(this).next();
+                sty = nextNode.css('display');
+            console.log(sty);
+            if (sty === 'block') {
+                nextNode.slideUp();
+                $(this).children().html('+');
+            } else {
+                nextNode.slideDown();
+                $(this).children().html('-');
+            }
+        });
         pageInit();
     })(jQuery, window);
 </script>

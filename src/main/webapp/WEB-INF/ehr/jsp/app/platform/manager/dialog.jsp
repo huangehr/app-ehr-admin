@@ -24,7 +24,7 @@
 
   <div class="m-form-group">
     <label>类型<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential">
+    <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_af_type" data-type="select" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
     </div>
   </div>
@@ -67,11 +67,11 @@
   <div class="m-form-group f-pa update-footer">
     <div class="m-form-control">
 
-      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" >
+      <div id="btn_save" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" >
         <span>保存</span>
       </div>
 
-      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam" >
+      <div id="btn_cancel" class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam f-mr10" >
         <span>关闭</span>
       </div>
 

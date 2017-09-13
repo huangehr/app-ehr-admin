@@ -15,83 +15,23 @@
             var dataModel = $.DataModel.init();
 
             function pageInit() {
-                master.funInit();
+                master.apiInit();
                 master.clicks();
             }
 
             function reloadGrid(url, ps) {
-                functionFeatrueType[1].options(url, {parms: ps});
-                functionFeatrueType[1].loadData(true);
+                apiFeatrueType[1].options(url, {parms: ps});
+                apiFeatrueType[1].loadData(true);
             }
 
             master = {
-                $funFeatrueSearch: $("#inp_fun_featrue_search"),
-                $functionFeatrueTree: $("#div_function_featrue_grid"),
-                $configFeatrueTree: $("#div_configFun_featrue_grid"),
                 $apiFeatrueTree: $("#div_api_featrue_grid"),
                 $configApiFeatrueTree: $("#div_configApi_featrue_grid"),
                 $appRoleGridScrollbar: $(".div-appRole-grid-scrollbar"),
                 $roleGroupbtn: $(".div-roleGroup-btn"),
                 $apiFeatrueBtn: $("#div_api_featrue_btn"),
-                $funFeatrueBtn: $("#div_fun_featrue_btn"),
                 $featrueSaveBtn: $("#div_featrue_save_btn"),
 
-                funInit: function () {
-                    var self = this;
-                    self.$appRoleGridScrollbar.mCustomScrollbar({});
-                    self.$funFeatrueSearch.ligerTextBox({
-                        width: 200, isSearch: true, search: function () {
-                            var categoryName = self.$funFeatrueSearch.val();
-                            var treeType = Util.isStrEquals(funAndApiTree, 'fun') ? functionFeatrueType[0] : apiTreeType[0];
-                            treeType.s_search(categoryName);
-                            if (categoryName == '') {
-                                treeType.collapseAll();
-                            } else {
-                                treeType.expandAll();
-                            }
-                        }
-                    });
-                    var funEle = [self.$functionFeatrueTree, self.$configFeatrueTree];
-                    var functionType = ["featrue", "configFeatrue"];
-                    for (var i = 0; i < functionFeatrueType.length; i++) {
-                        var checkboxBo = Util.isStrEquals(i, 0) ? true : false;
-                        var appRoleId = obj.id;
-                        functionFeatrueType[i] = funEle[i].ligerSearchTree({
-                            url: '${contextRoot}/appRole/searchFeatrueTree',
-                            parms: {searchNm: '', treeType: functionType[0], appRoleId: appRoleId, appId: obj.appId},
-                            idFieldName: 'id',
-                            parentIDFieldName: 'parentId',
-                            textFieldName: 'name',
-                            enabledCompleteCheckbox: false,
-                            isExpand: true,
-                            checkbox: checkboxBo,
-                            async: false,
-                            onCheck: function (data, checked) {
-                                setTimeout(function () {
-                                    var html = $("#div_function_featrue_grid").html();
-                                    $("#div_configFun_featrue_grid").html(html);
-                                    $("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
-                                    $("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide()
-                                }, 300)
-                            },
-                            onSuccess: function (data) {
-                                $("#div_configFun_featrue_grid").hide();
-                                if (Util.isStrEquals(this.id, 'div_function_featrue_grid')) {
-                                    setTimeout(function () {
-                                        var html = $("#div_function_featrue_grid").html();
-                                        $("#div_configFun_featrue_grid").html(html).show();
-                                        $("#div_configFun_featrue_grid .l-box.l-checkbox").hide();
-                                        $("#div_configFun_featrue_grid .l-checkbox-unchecked").closest("li").hide()
-                                    }, 300)
-                                }
-                                $("#div_function_featrue_grid li div span ,#div_configFun_featrue_grid li div span").css({
-                                    "line-height": "22px",
-                                    "height": "22px"
-                                });
-                            }
-                        });
-                    }
-                },
                 apiInit: function () {
                     var self = this;
                     self.$appRoleGridScrollbar.mCustomScrollbar({});
@@ -138,12 +78,13 @@
                     }
                 },
                 reloadRoleGrid: function (appRoleId) {
-                    var searchParams = {searchNm: '', treeType: 'featrue', appRoleId: appRoleId, appId: obj.appId};
-                    reloadGrid.call(this, '${contextRoot}/appRole/searchFeatrueTree', searchParams);
+                var searchParams = {searchNm: '', treeType: 'configapiTree', appRoleId: appRoleId, appId: obj.appId};
+                    /*reloadGrid.call(this, '${contextRoot}/appRole/searchFeatrueTree', searchParams);*/
+                    reloadGrid.call(this, '${contextRoot}/appRole/searchApiTree', searchParams);
                 },
                 clicks: function () {
                     var self = this;
-                    self.$funFeatrueBtn.click(function () {
+                    /*self.$funFeatrueBtn.click(function () {
                         funAndApiTree = 'fun';
                         $(".lab-title-msg").html("功能权限：");
                         $(this).removeClass('u-btn-cancel').addClass('u-btn-primary');
@@ -152,32 +93,37 @@
                         self.$configFeatrueTree.show();
                         self.$apiFeatrueTree.hide();
                         self.$configApiFeatrueTree.hide();
-                    });
+                    });*/
                     self.$apiFeatrueBtn.click(function () {
                         funAndApiTree = 'api';
-                        $(".lab-title-msg").html("api权限：");
+                        $(".lab-title-msg").html("API权限：");
                         $(this).removeClass('u-btn-cancel').addClass('u-btn-primary');
-                        self.$funFeatrueBtn.removeClass('u-btn-primary').addClass('u-btn-cancel');
+                        /*self.$funFeatrueBtn.removeClass('u-btn-primary').addClass('u-btn-cancel');*/
                         if (Util.isStrEquals(apiTreeType[0], 'apiFeatrueTree')) {
 //                            master.apiInit();
                         }
                         master.apiInit();
 //                        apiTreeType[1].reload();
-                        self.$functionFeatrueTree.hide();
-                        self.$configFeatrueTree.hide();
+                        /*self.$functionFeatrueTree.hide();*/
+                        /*self.$configFeatrueTree.hide();*/
                         self.$apiFeatrueTree.show();
                         self.$configApiFeatrueTree.show();
                     });
 
                     self.$featrueSaveBtn.click(function () {
-                        var url = "${contextRoot}/appRole/updateFeatureConfig";
+                        /*var url = "${contextRoot}/appRole/updateFeatureConfig";
                         var gridType = functionFeatrueType[1];
-                        var datas = functionFeatrueType[0].getChecked();
-                        if (Util.isStrEquals(funAndApiTree, 'api')) {
+                        var datas = functionFeatrueType[0].getChecked();*/
+
+                        var url = "${contextRoot}/appRole/updateApiConfig";
+                        var gridType = apiTreeType[1];
+                        var datas = apiTreeType[0].getChecked();
+
+                        /*if (Util.isStrEquals(funAndApiTree, 'api')) {
                             url = "${contextRoot}/appRole/updateApiConfig";
                             gridType = apiTreeType[1];
                             datas = apiTreeType[0].getChecked();
-                        }
+                        }*/
                         var featureIds = '';
                         $.each(datas, function (key, value) {
                             featureIds += Util.isStrEquals(datas.length-1,key)?value.data.id:value.data.id + ",";

@@ -269,13 +269,13 @@
                             if(data.successFlg){
                                 var app = data.obj;
                                 if(frm != '1'){
-                                    parent.reloadMasterGrid();
-                                    parent.closeDialog('保存成功！');
+                                    closeDialog('保存成功！');
+                                    closeDialog('保存成功！');
                                 }
                                 else{
-                                    parent.adapterModel(values);
+                                    adapterModel(values);
                                     $.ligerDialog.alert("保存成功", "提示", "success", function(){
-                                        parent.closeDialog();
+                                        closeDialog();
                                     }, null);
                                 }
                             }else{
@@ -295,7 +295,7 @@
                 });
 
                 this.$btnCancel.click(function () {
-                    parent.closeDialog();
+                    closeDialog();
 //                    dialog.close();
                 });
             }

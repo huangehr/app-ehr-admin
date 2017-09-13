@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="TRUE">
+
+	<property name="log_dir" value="logs/" />
+	<!--<property name="log_dir" value="/home/dev-admin/ehr-deploy/logs" />-->
+	<property name="LOG_HOME" value="${log_dir:-logs}" />
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+		<file>${LOG_HOME}/ehr_logs/ehr.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/ehr_logs/ehr.%d{yyyy-MM-dd}.log</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</encoder>
+	</appender>
+	<appender name="business_m" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/business_logs/business_m.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/business_logs/bk/business_m.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%msg%n</pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</encoder>
+	</appender>
+	<!--<appender name="business_d" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/business_logs/business_d.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/business_logs/business_d.%d{yyyy-MM-dd}.log</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%msg%n</pattern>
+			<charset class="java.nio.charset.Charset">UTF-8</charset>
+		</encoder>
+	</appender>-->
+
+	<!-- project default level -->
+	<logger name="com.yihu.ehr" level="INFO" />
+
+	<!--log4jdbc -->
+	<logger name="jdbc.sqltiming" level="INFO"/>
+
+	<logger name="com.yihu.ehr.util.logback.BusinessLogs" level="INFO" additivity="false">
+		<appender-ref ref="business_m" />
+		<!--<appender-ref ref="business_d" />-->
+	</logger>
+
+	<root level="WARN">
+		<appender-ref ref="console" />
+		<appender-ref ref="rollingFile" />
+	</root>
+</configuration>

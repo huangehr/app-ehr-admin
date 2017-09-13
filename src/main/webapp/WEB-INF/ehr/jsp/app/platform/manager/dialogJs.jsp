@@ -10,7 +10,7 @@
         }
         var model = ${model};
         var mode = '${mode}';
-        var extParms = parent.getEditParms();//其他信息
+        var extParms = getEditParms();//其他信息
 
         var initForm = function () {
             var vo = [
@@ -68,7 +68,7 @@
             });
 
             $('#btn_cancel').click(function () {
-                parent.closeDialog();
+                closeDialog();
             });
         };
 

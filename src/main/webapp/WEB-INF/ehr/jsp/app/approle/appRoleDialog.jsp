@@ -22,11 +22,11 @@
     <div class="m-form-group">
         <label>描述</label>
         <div class="l-text-wrapper m-form-control">
-            <textarea type="text" id="inp_appRole_explain" placeholder="请输入描述" data-attr-scan="description"></textarea>
+            <textarea type="text"  class="max-length-250" id="inp_appRole_explain" placeholder="请输入描述" data-attr-scan="description"></textarea>
         </div>
     </div>
     <div class="m-form-control div-appRole-btn">
-        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar div-roleGroup-btn" id="div_add_roleGroup_btn">
+        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam save-toolbar div-roleGroup-btn f-mr10" id="div_add_roleGroup_btn">
             <span><spring:message code="btn.save"/></span>
         </div>
         <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn" id="div_cancel_roleGroup_btn">

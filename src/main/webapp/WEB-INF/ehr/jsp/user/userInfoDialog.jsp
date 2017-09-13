@@ -29,6 +29,13 @@
         </div>
     </div>
     <div class="m-form-group">
+        <label><spring:message code="lbl.user.birthday"/><spring:message code="spe.colon"/></label>
+        <div class="m-form-control">
+            <input type="text" id="inp_birthday" class="validate-date l-text-field validate-date"  placeholder="输入日期 格式(2016-04-15)"
+                   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="birthday"/>
+        </div>
+    </div>
+    <div class="m-form-group m-form-readonly">
         <label><spring:message code="lbl.identity.card"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" id="inp_idCard" class="required useTitle ajax validate-id-number"  required-title=<spring:message code="lbl.must.input"/> validate-id-number-title=<spring:message code="lbl.input.true.idCard"/> data-attr-scan="idCardNo"/>
@@ -47,6 +54,12 @@
             <input type="text" id="inp_select_marriage" data-type="select" data-attr-scan="martialStatus">
         </div>
     </div>
+    <%--<div class="m-form-group">--%>
+        <%--<label><spring:message code="lbl.user.status.fertility"/><spring:message code="spe.colon"/></label>--%>
+        <%--<div class="m-form-control">--%>
+            <%--<input type="text" id="inp_fertilityStatus" data-type="select" data-attr-scan="fertilityStatus">--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <div class="m-form-group">
         <label><spring:message code="lbl.user.mail"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
@@ -57,6 +70,18 @@
         <label><spring:message code="lbl.user.tel"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" id="inp_userTel" class="required useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="telephone"/>
+        </div>
+    </div>
+    <div class="m-form-group">
+        <label>现居住地:</label>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" id="location"  class="max-length-500" data-type="comboSelect" data-attr-scan="location"/>
+        </div>
+    </div>
+    <div class="m-form-group">
+        <label><spring:message code="lbl.user.tel2"/><spring:message code="spe.colon"/></label>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" id="inp_userTel2" class="useTitle validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/> validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="secondPhone"/>
         </div>
     </div>
     <div class="m-form-group">
@@ -71,13 +96,13 @@
             <%--<input type="text" id="inp_source" class="max-length-150 validate-special-char" data-attr-scan="sourceName"/>--%>
         <%--</div>--%>
     <%--</div>--%>
-    <div class="m-form-group">
-        <label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control f-w240 ">
-            <input type="text" id="inp_org"  required-title=<spring:message code="lbl.must.input"/> data-type="comboSelect"
-                   data-attr-scan="organization" class="validate-org-length f-w240"/>
-        </div>
-    </div>
+    <%--<div class="m-form-group">--%>
+        <%--<label><spring:message code="lbl.org.belong"/><spring:message code="spe.colon"/></label>--%>
+        <%--<div class="l-text-wrapper m-form-control f-w250 ">--%>
+            <%--<input type="text" id="inp_org"  required-title=<spring:message code="lbl.must.input"/> data-type="comboSelect"--%>
+                   <%--data-attr-scan="organization" class="validate-org-length f-w240"/>--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <div class="m-form-group" style="display: none" id="inp_major_div">
         <label><spring:message code="lbl.specialized.belong"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control ">
@@ -86,10 +111,39 @@
     </div>
 	<div class="m-form-group" >
 		<label >角色组:</label>
-		<div id="roleDiv" class="l-text-wrapper m-form-control essential">
+		<div id="roleDiv" class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" style="color: #fff" id="jryycyc" class="required useTitle f-h28 f-w240 " required-title=<spring:message code="lbl.must.input"/> data-type="select" data-attr-scan="role">
 		</div>
 	</div>
+
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.flag.realname"/><spring:message code="spe.colon"/></label>
+                <div class="u-checkbox-wrap m-form-control">
+                    <input type="radio" value="0" name="realnameFlag" data-attr-scan><spring:message code="lbl.realname.certified.no"/>
+                    <input type="radio" value="1" name="realnameFlag" data-attr-scan><spring:message code="lbl.realname.certified.ok"/>
+                </div>
+            </div>
+
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.micard"/><spring:message code="spe.colon"/></label>
+                <div class="l-text-wrapper m-form-control ">
+                    <input type="text" id="inp_micard" class=" useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="micard"/>
+                </div>
+            </div>
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.ssid"/><spring:message code="spe.colon"/></label>
+                <div class="l-text-wrapper m-form-control ">
+                    <input type="text" id="inp_ssid" class=" useTitle max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="ssid"/>
+                </div>
+            </div>
+
+            <div class="m-form-group">
+                <label><spring:message code="lbl.user.qq"/><spring:message code="spe.colon"/></label>
+                <div class="l-text-wrapper m-form-control ">
+                    <input type="text" id="inp_qq" class=" useTitle max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="qq"/>
+                </div>
+            </div>
+
 
     <div>
         <hr class="u-border">
@@ -126,6 +180,7 @@
             </div>
         </div>
     </div>
+
     <div id="div_public_manage" class="u-public-manage">
         <div class="l-button u-btn u-btn-small u-btn-cancel f-ib f-vam u-btn-color f-mb10" id="div_allot_publicKey">
             <span>分配公钥</span>
@@ -139,7 +194,7 @@
     </div>
 
     <div id="div_toolbar" class="m-form-control pane-attribute-toolbar">
-        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam" id="div_update_btn">
+        <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" id="div_update_btn">
             <span><spring:message code="btn.save"/></span>
         </div>
         <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_cancel_btn">
