@@ -174,10 +174,10 @@ public class ResourceController extends BaseUIController {
      */
     @RequestMapping("/resources/tree")
     @ResponseBody
-    public Object getResourceTree(String filters, Integer dataSource){
+    public Envelop getResourceTree(String filters, Integer dataSource){
+        Envelop envelop = new Envelop();
         String url = "/resources/tree";
         String resultStr = "";
-        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(filters)) {
@@ -188,12 +188,13 @@ public class ResourceController extends BaseUIController {
         }
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
+            envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
+        return envelop;
     }
 
     /**
