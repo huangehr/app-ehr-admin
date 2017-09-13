@@ -62,6 +62,7 @@
                 this.bindEvents();
                 if (id != '-1') {
                     this.getZBInfo(this.setZBInfo , this);
+                    $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
             dataSourceSelected:function(code, name){
@@ -84,8 +85,7 @@
                 if (res.execType == 1) {
                     me.$jobType.eq(0).ligerRadio("setValue",'1');
                     me.$jobType.eq(1).ligerRadio("setValue",'');
-                }
-                if (res.execType == 2) {
+                }else if (res.execType == 2) {
                     me.$jobType.eq(0).ligerRadio("setValue",'');
                     me.$jobType.eq(1).ligerRadio("setValue",'2');
                     me.$form.find('input[name="jobType"]').eq(1).trigger("click");
@@ -98,22 +98,26 @@
                 if (res.dataLevel == '1') {
                     me.$dataLevel.eq(0).ligerRadio("setValue",'1');
                     me.$dataLevel.eq(1).ligerRadio("setValue",'');
-                }
-                if (res.dataLevel == '2') {
+                    me.$dataLevel.eq(2).ligerRadio("setValue",'');
+                }else if (res.dataLevel == '2') {
                     me.$dataLevel.eq(0).ligerRadio("setValue",'');
                     me.$dataLevel.eq(1).ligerRadio("setValue",'2');
+                    me.$dataLevel.eq(2).ligerRadio("setValue",'');
+                }else if (res.dataLevel == '3') {
+                    me.$dataLevel.eq(0).ligerRadio("setValue",'');
+                    me.$dataLevel.eq(1).ligerRadio("setValue",'');
+                    me.$dataLevel.eq(2).ligerRadio("setValue",'3');
                 }
+
                 if (res.status == '1') {
                     me.$status.eq(0).ligerRadio("setValue",'1');
                     me.$status.eq(1).ligerRadio("setValue",'');
                     me.$status.eq(2).ligerRadio("setValue",'');
-                }
-                if (res.status == '-1') {
+                }else if (res.status == '-1') {
                     me.$status.eq(0).ligerRadio("setValue",'');
                     me.$status.eq(1).ligerRadio("setValue",'-1');
                     me.$status.eq(2).ligerRadio("setValue",'');
-                }
-                if (res.status == '0') {
+                }else if (res.status == '0') {
                     me.$status.eq(0).ligerRadio("setValue",'');
                     me.$status.eq(1).ligerRadio("setValue",'');
                     me.$status.eq(2).ligerRadio("setValue",'0');
@@ -176,7 +180,7 @@
                     width:'240px'
                 });
 
-                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/health/getAllHealthBusinessList',null,self.quotaTypeSelectedVal,null,null,{valueField: 'id',
+                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/quota/getAllQuotaCategoryList',null,self.quotaTypeSelectedVal,null,null,{valueField: 'id',
                     textField: 'name'});
                 self.$inpQuotaType.parent().css({
                     width:'240'
@@ -195,6 +199,7 @@
                 self.$zhixingDate.ligerDateEditor({width:240,showTime: true,onChangeDate:function(val){
                     self.$zhixingDate.val(val+":00");
                 }});
+                self.$zhixingDate.attr('readonly',true);
                 $("#txtM").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtH").ligerSpinner({width: 208,type: 'int',minValue:1});
                 $("#txtD").ligerSpinner({width: 208,type: 'int',minValue:1});
@@ -482,17 +487,20 @@
                         var values = self.$form.Fields.getValues();
                         values.cron = txtCronExpression;
                         values.execType = $('input[name=jobType]:checked').val();
-                        values.execTime = $('#execTime').val();
+//                        values.execTime = $('#execTime').val();
+                        values.execTime = $('#inp_zhixing_date').val();
                         values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
                         values.tjQuotaDataSaveModel = {saveCode:dataStorageSelectedVal,configJson:self.$inpDataStorageJson.val()};
                         if (id != '-1') {
                             values.id = id.toString();
                         }
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/tjQuota/updateTjDataSource", {
                             data: {tjQuotaModelJsonData:JSON.stringify(values)},
                             async: false,
                             type: 'post',
                             success: function (data) {
+                                waittingDialog.close();
                                 if (data.successFlg) {
                                     closeZhiBiaoInfoDialog(function () {
                                         if(id != '-1'){//修改
@@ -502,7 +510,7 @@
                                         }
                                     });
                                 } else {
-                                    window.top.$.Notice.error(data.errorMsg);
+                                    $.Notice.error(data.errorMsg);
                                 }
                             }
                         });

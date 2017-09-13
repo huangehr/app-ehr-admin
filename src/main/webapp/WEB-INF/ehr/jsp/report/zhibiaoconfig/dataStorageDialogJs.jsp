@@ -35,6 +35,7 @@
                 this.bindEvents();
                 if(this.$weiDuId.val()!="" && this.$weiDuId.val()!=undefined){//修改
                     this.getTjDimensionMainByID();
+                    $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
             initForm: function () {
@@ -111,10 +112,12 @@
                             return result;
                         }
                         var dataModel = $.DataModel.init();
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/tjDataSave/hasExistsName", {
                             data: {name:name},
                             async: false,
                             success: function (data) {
+                                waittingDialog.close();
                                 if (!data) {
                                     result.setResult(true);
                                 } else {

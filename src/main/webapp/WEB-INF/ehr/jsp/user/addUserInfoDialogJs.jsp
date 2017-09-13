@@ -77,7 +77,7 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('新增成功');
-                        closeAddUserInfoDialog(function () {
+                    win.parent.closeAddUserInfoDialog(function () {
                         });
                 });
 
@@ -189,36 +189,42 @@
             },
 
             bindEvents: function () {
+                debugger
                 var self = this;
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
+                        var checkObj = { result:true, errorMsg: ''};
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_loginCode')) {
                             var loginCode = $("#inp_loginCode").val();
-                            return checkDataSourceName('login_code', loginCode, "该账号已存在");
+                            checkObj = checkDataSourceName('login_code', loginCode, "该账号已存在");
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
-                            var checkIdCard=checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
-                            if(checkIdCard){
-                           inputSourceByIdCard(idCard);
+                            checkObj = checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                            if (checkObj.result) {
+                                inputSourceByIdCard(idCard);
                             }
-                            return checkIdCard;
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
                             var email = $("#inp_userEmail").val();
-                            return checkDataSourceName('email', email, "该邮箱已存在");
+                            checkObj = checkDataSourceName('email', email, "该邮箱已存在");
                         }
 //                        新增用户手机号验证
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
                             var telephone = $("#inp_userTel").val();
-                            return checkDataSourceName('telephone', telephone, "该手机号码已存在");
+                            checkObj = checkDataSourceName('telephone', telephone, "该手机号码已存在");
                         }
-
+                        if (!checkObj.result) {
+                            return checkObj;
+                        } else {
+                            return checkObj.result;
+                        }
                     }
                 });
                 //唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证
                 function checkDataSourceName(type, inputValue, errorMsg) {
+                    debugger
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
                     dataModel.fetchRemote("${contextRoot}/user/existence", {
@@ -230,6 +236,7 @@
                                 result.setErrorMsg(errorMsg);
                             } else {
                                 result.setResult(true);
+                                result.setErrorMsg('');
                             }
                         }
                     });
@@ -244,20 +251,34 @@
                         async: false,
                         success: function(data) {
                             var model = data.obj;
-                            if(model.name) {
-                             self.$userName.val(model.name);
-                            }
-                            if(model.gender){
-                            self.$sex.val(model.gender);
-                            }
-                            if(model.martialStatus) {
-                                self.$inp_select_marriage.val(model.martialStatus);
-                            }
-                            if(model.email){
-                            self.$userEmail.val(model.email);
-                            }
-                            if(model.telephoneNo){
-                            self.$userTel.val(model.telephoneNo);
+                            if (model != null) {
+                                if(model.name) {
+                                    self.$userName.val(model.name);
+                                }
+                                if(model.gender){
+                                    self.$sex.val(model.gender);
+                                }
+                                if(model.martialStatus) {
+//                                    self.$inp_select_marriage.val(model.martialStatus);
+                                    self.$inp_select_marriage.ligerComboBox({
+                                        url: '${contextRoot}/dict/searchDictEntryList',
+                                        valueField: 'code',
+                                        textField: 'value',
+                                        dataParmName: 'detailModelList',
+                                        urlParms: {
+                                            dictId: 4
+                                        },
+                                        onSuccess: function () {
+                                            self.$form.Fields.fillValues({martialStatus: model.martialStatus});
+                                        }
+                                    });
+                                }
+                                if(model.email){
+                                    self.$userEmail.val(model.email);
+                                }
+                                if(model.telephoneNo){
+                                    self.$userTel.val(model.telephoneNo);
+                                }
                             }
                         },
                         error: function () {
@@ -338,10 +359,9 @@
                         success: function (data) {
                             if (data.successFlg) {
                                 $.Notice.success('新增成功');
-//                                win.closeAddUserInfoDialog();
-//                               closeAddUserInfoDialog(function () {
-//                                   $.Notice.success('新增成功');
-//                                });
+                                win.parent.closeAddUserInfoDialog(function () {
+                                   $.Notice.success('新增成功');
+                                });
                             } else {
                                 window.top.$.Notice.error(data.errorMsg);
                             }
@@ -428,23 +448,6 @@
 			}
         };
 
-        win.closeAddUserInfoDialog = function (callback) {
-            isFirstPage = false;
-            if(callback){
-                dialog.close();
-            }
-        };
-//        win.closeDialog = function (msg) {
-//            dialog.close();
-//           }
-//        function reloadGrid (params) {
-//            if (isFirstPage){
-//                this.grid.options.newPage = 1;
-//            }
-//            this.grid.setOptions({parms: params});
-//            this.grid.loadData(true);
-//            isFirstPage = true;
-//        }
 
         /* ************************* 模块初始化结束 ************************** */
 

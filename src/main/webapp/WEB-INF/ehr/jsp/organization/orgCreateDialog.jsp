@@ -147,17 +147,19 @@
                             </div>
                         </div>
                     </li>
-                </ul>
-                <ul class="list-item">
                     <li>
                         <div class="m-form-group">
                             <label><spring:message code="lbl.local"/><spring:message code="spe.colon"/></label>
                             <div class="l-text-wrapper m-form-control essential">
-                                <input type="text" id="location" class="required useTitle validate-special-char validate-org-length"
+                                <input type="text" id="location" class="required useTitle validate-special-char validate-org-length f-w240"
                                        data-type="comboSelect" required-title=<spring:message code="lbl.must.input"/> validate-org-length-title="地址至少选择到市一级" data-attr-scan="location" maxlength="200"/>
                             </div>
                         </div>
                     </li>
+
+                </ul>
+                <ul class="list-item">
+
                     <li>
                         <div class="m-form-group">
                             <label>交通路线</label>

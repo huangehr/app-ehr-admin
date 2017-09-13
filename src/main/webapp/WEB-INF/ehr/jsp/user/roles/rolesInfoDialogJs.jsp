@@ -97,10 +97,12 @@
 					update(values)
 				});
 				function update(values){
-					var dataModel = $.DataModel.init();
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                    var dataModel = $.DataModel.init();
 					dataModel.updateRemote("${contextRoot}/userRoles/update", {
 						data:{dataJson:JSON.stringify(values),mode:mode},
 						success: function(data) {
+                            waittingDialog.close();
 							if (data.successFlg) {
 								reloadRolesGrid();
 								$.Notice.success('操作成功');

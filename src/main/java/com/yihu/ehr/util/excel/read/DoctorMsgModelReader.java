@@ -19,6 +19,9 @@ public class DoctorMsgModelReader extends AExcelReader {
             getRepeat().put("phone", new HashSet<>());
             getRepeat().put("email", new HashSet<>());
             getRepeat().put("idCardNo", new HashSet<>());
+            getRepeat().put("orgCode", new HashSet<>());
+            getRepeat().put("orgFullName", new HashSet<>());
+            getRepeat().put("orgDeptName", new HashSet<>());
 
             for (Sheet sheet : sheets) {
                 if ((rows = sheet.getRows()) == 0) continue;
@@ -32,19 +35,41 @@ public class DoctorMsgModelReader extends AExcelReader {
                     }else{
                         p.setSex("2");
                     }
+                    if(null!=getCellCont(sheet, i, 4)) {
+                        String orgCode = getCellCont(sheet, i, 4).trim();
+                        p.setOrgCode(orgCode);
+                    }else{
+                        p.setOrgCode(getCellCont(sheet, i, 4));
+                    }
 
-                    p.setSkill(getCellCont(sheet, i, 4));
+                    if(null!=getCellCont(sheet, i, 5)) {
+                        String orgFullName = getCellCont(sheet, i, 5).trim();
+                        p.setOrgFullName(orgFullName);
+                    }else{
+                        p.setOrgFullName(getCellCont(sheet, i, 5));
+                    }
 
-                    p.setEmail(getCellCont(sheet, i, 5));
-                    p.setPhone(getCellCont(sheet, i, 6));
-                    p.setOfficeTel(getCellCont(sheet, i, 7));
+                    if(null!=getCellCont(sheet, i, 6)){
+                        //去除中文逗号
+                        String orgDept=getCellCont(sheet, i, 6).replace("，",",").trim();
+                        p.setOrgDeptName(orgDept);
+                    }else{
+                        p.setOrgDeptName(getCellCont(sheet, i, 6));
+                    }
+
+                    p.setSkill(getCellCont(sheet, i, 7));
+
+                    p.setEmail(getCellCont(sheet, i, 8));
+                    p.setPhone(getCellCont(sheet, i, 9));
+                    p.setOfficeTel(getCellCont(sheet, i, 10));
+                    p.setJxzc(getCellCont(sheet, i, 11));
+                    p.setLczc(getCellCont(sheet, i, 12));
+                    p.setXlzc(getCellCont(sheet, i, 13));
+                    p.setXzzc(getCellCont(sheet, i, 14));
+                    p.setIntroduction(getCellCont(sheet, i, 15));
+                    p.setWorkPortal(getCellCont(sheet, i, 16));
                     p.setExcelSeq(j);
-                    p.setJxzc(getCellCont(sheet, i, 8));
-                    p.setLczc(getCellCont(sheet, i, 9));
-                    p.setXlzc(getCellCont(sheet, i, 10));
-                    p.setXzzc(getCellCont(sheet, i, 11));
-                    p.setIntroduction(getCellCont(sheet, i, 12));
-                    p.setWorkPortal(getCellCont(sheet, i, 13));
+
                     int rs = p.validate(repeat);
                     if (rs == 0)
                         errorLs.add(p);

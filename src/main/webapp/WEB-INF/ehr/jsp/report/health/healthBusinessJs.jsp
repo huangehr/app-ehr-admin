@@ -36,7 +36,7 @@
                     }
                     else {
                         this.grid = $("#div_stdDict_grid").ligerGrid($.LigerGridEx.config({
-                            url:  '${contextRoot}/health/getHealthBusinessList',
+                            url:  '${contextRoot}/quota/getQuotaCategoryList',
                             parms: {
                                 name: ""
                             },
@@ -82,7 +82,7 @@
                     var values = {
                         name: searchNm
                     };
-                    Util.reloadGrid.call(this.grid, '${contextRoot}/health/getHealthBusinessList', values, curPage);
+                    Util.reloadGrid.call(this.grid, '${contextRoot}/quota/getQuotaCategoryList', values, curPage);
                 },
                 bindEvents: function () {
                     $.subscribe('health:healthBusinessInfo:open', function (event, id, mode) {
@@ -97,7 +97,7 @@
                             height: 400,
                             width: 480,
                             title: title,
-                            url: '${contextRoot}/health/getPage',
+                            url: '${contextRoot}/quota/getPage',
                             urlParms: {
                                 id: id
                             },
@@ -112,7 +112,7 @@
                         $.Notice.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
-                                dataModel.updateRemote('${contextRoot}/health/deleteHealthBusiness', {
+                                dataModel.updateRemote('${contextRoot}/quota/deleteQuotaCategory', {
                                     data: {id: parseInt(id)},
                                     success: function (data) {
                                         debugger

@@ -6,11 +6,14 @@ import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.ExtendService;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
+import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.organization.controller.DeptMemberController;
+import com.yihu.ehr.organization.controller.OrganizationController;
 import com.yihu.ehr.user.controller.model.DoctorMsgModel;
 import com.yihu.ehr.user.controller.service.DoctorService;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -73,27 +76,33 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             List saveLs = new ArrayList<>();
             //获取医生表里面的手机号码
             Set<String> phones = findExistPhoneInDoctor(toJson(excelReader.getRepeat().get("phone")));
+            //获取医生表里面的身份证号码
+            Set<String> idCardNos = findExistIdCardNoInDoctor(toJson(excelReader.getRepeat().get("idCardNo")));
             //获取账户表里面的手机号码
             Set<String> userPhones = findExistPhoneInUser(toJson(excelReader.getRepeat().get("phone")));
             //获取医生表里面的邮箱
             Set<String> emails = findExistEmailInDoctor(toJson(excelReader.getRepeat().get("email")));
             //获取账户表里面的邮箱
             Set<String> userEmails = findExistEmailInUser(toJson(excelReader.getRepeat().get("email")));
+            //获取医生表里面的身份证号码
+            Set<String> userIdCardNos = findExistIdCardNoInUser(toJson(excelReader.getRepeat().get("idCardNo")));
+            //判断机构是否存在
 
+            //判断机构部门是否存在
 
             writerResponse(response, 35+"", "l_upd_progress");
             DoctorMsgModel model;
             for(int i=0; i<correctLs.size(); i++){
                 model = correctLs.get(i);
                 //, Set<String> emails, Set<String> userEmails
-                if(validate(model, phones,userPhones,emails,userEmails)==0)
+                if(validate(model, phones,userPhones,emails,userEmails,idCardNos,userIdCardNos)==0)
                     errorLs.add(model);
                 else
                     saveLs.add(model);
             }
             for(int i=0; i<errorLs.size(); i++){
                 model = errorLs.get(i);
-                validate(model, phones, userPhones,emails,userEmails);
+                validate(model, phones, userPhones,emails,userEmails,idCardNos,userIdCardNos);
             }
             writerResponse(response, 55+"", "l_upd_progress");
             Map rs = new HashMap<>();
@@ -186,6 +195,28 @@ public class DoctorImportController extends ExtendController<DoctorService> {
 
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
     }
+    //根据身份证号码在doctor表获取数据
+    private Set<String> findExistIdCardNoInDoctor(String idCardNos) throws Exception {
+        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
+        conditionMap.add("idCardNos", idCardNos);
+
+        RestTemplates template = new RestTemplates();
+        String rs = template.doPost(service.comUrl + "/doctor/idCardNo/existence", conditionMap);
+
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
+    //根据身份证号码在user表获取数据
+    private Set<String> findExistIdCardNoInUser(String idCardNos) throws Exception {
+        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
+        conditionMap.add("idCardNos", idCardNos);
+
+        RestTemplates template = new RestTemplates();
+        String rs = template.doPost(service.comUrl + "/user/idCardNo/existence", conditionMap);
+
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
+
+
     //根据电话号码在user表获取数据
     private Set<String> findExistPhoneInUser(String phones) throws Exception {
         MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
@@ -197,13 +228,19 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     }
 
 
-    private int validate(DoctorMsgModel model, Set<String> phones, Set<String> userPhones, Set<String> emails, Set<String> userEmails){
+    private int validate(DoctorMsgModel model, Set<String> phones, Set<String> userPhones, Set<String> emails, Set<String> userEmails,Set<String> idCardNos,Set<String> userIdCardNos){
         int rs = 1;
-       boolean existFlag=searchUsers(model.getIdCardNo(),model.getPhone());
+        boolean existFlag=searchUsers(model.getIdCardNo(),model.getPhone());
+        String orgId=searchOrgByCodes(model.getOrgCode(),model.getOrgFullName());
         //医生表
         if(phones.contains(model.getPhone())){
               model.addErrorMsg("phone", "该电话号码在医生表已存在，请核对！");
               rs = 0;
+        }
+        //医生表
+        if(idCardNos.contains(model.getIdCardNo())){
+            model.addErrorMsg("idCardNo", "该身份证号码在医生表已存在，请核对！");
+            rs = 0;
         }
         //账户表
         if(userPhones.contains(model.getPhone())){
@@ -211,6 +248,14 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             if(!existFlag) {
             model.addErrorMsg("phone", "该电话号码对应的账户已存在，请核对！");
             rs = 0;
+            }
+        }
+        //账户表
+        if(userIdCardNos.contains(model.getIdCardNo())){
+            //账户表中存在此电话号码，但不是此人的账户，则判断为该电话号码重复。
+            if(!existFlag) {
+                model.addErrorMsg("idCardNo", "该身份证号码对应的账户已存在，请核对！");
+                rs = 0;
             }
         }
         //医生表
@@ -223,6 +268,30 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             if(!existFlag) {
                 model.addErrorMsg("email", "该邮箱对应的账户已存在，请核对！");
                 rs = 0;
+            }
+        }
+        //机构不存在，报错
+        if(StringUtils.isEmpty(orgId)){
+            model.addErrorMsg("orgCode", "该机构代码或机构名称不正确，请核对！");
+            model.addErrorMsg("orgFullName", "该机构代码或机构名称不正确，请核对！");
+            rs = 0;
+        }else{
+            //部门是否存在
+            try {
+                Map<String, Object> params = new HashMap<>();
+                String urlGet = "/orgDept/checkDeptName";
+                params.clear();
+                params.put("orgId",orgId);
+                params.put("name", model.getOrgDeptName());
+                String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
+                Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2, Envelop.class);
+                if(envelopGet2.isSuccessFlg()){
+                    model.addErrorMsg("orgDeptName", "该机构部门不存在，请核对！");
+                    rs = 0;
+                }
+            }catch (Exception ex){
+                LogService.getLogger(DoctorImportController.class).error(ex.getMessage());
+//                envelop.setErrorMsg(ErrorCode.SystemError.toString());
             }
         }
 
@@ -284,6 +353,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             repeat.put("phone", new HashSet<String>());
             repeat.put("code", new HashSet<String>());
             repeat.put("email", new HashSet<String>());
+            repeat.put("idCardNo", new HashSet<String>());
             for(DoctorMsgModel model : doctorMsgModels){
                 model.validate(repeat);
             }
@@ -291,10 +361,14 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             Set<String> phones = findExistPhoneInDoctor(toJson(repeat.get("phone")));
             //获取账户表里面的手机号码
             Set<String> userPhones = findExistPhoneInUser(toJson(repeat.get("phone")));
+            //获取医生表里面的身份证号码
+            Set<String> idCardNos = findExistIdCardNoInDoctor(toJson(repeat.get("idCardNo")));
             //获取医生表里面的邮箱
             Set<String> emails = findExistEmailInDoctor(toJson(repeat.get("email")));
             //获取账户表里面的邮箱
             Set<String> userEmails = findExistEmailInUser(toJson(repeat.get("email")));
+            //获取医生表里面的身份证号码
+            Set<String> userIdCardNos = findExistIdCardNoInUser(toJson(repeat.get("idCardNo")));
 //            Set<String> existIds = findExistId(toJson(repeat.get("id")));
 //            String domains = getSysDictEntries(31);
 //            String columnTypes = getSysDictEntries(30);
@@ -304,7 +378,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             List saveLs = new ArrayList<>();
             for(int i=0; i<doctorMsgModels.size(); i++){
                 model = doctorMsgModels.get(i);
-                if(validate(model, phones, userPhones,emails,userEmails)==0|| model.errorMsg.size()>0) {
+                if(validate(model, phones, userPhones,emails,userEmails,idCardNos,userIdCardNos)==0|| model.errorMsg.size()>0) {
                     all.set(all.indexOf(model), model);
                 }else{
                     saveLs.add(model);
@@ -352,6 +426,74 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             return systemError();
         }
     }
+
+    @RequestMapping("/deptIsExistence")
+    @ResponseBody
+    public Object deptIsExistence(String filters){
+        try {
+            String[] org=filters.split(";");
+            Map map = new HashMap<>();
+            String orgId=searchOrgByCodes(org[0],org[1]);
+            //机构不存在，报错
+            Envelop envelop = new Envelop();
+            if(StringUtils.isEmpty(orgId)){
+                envelop.setSuccessFlg(false);
+                envelop.setObj(false);
+            }else{
+                //部门是否存在
+                    Map<String, Object> params = new HashMap<>();
+                    String urlGet = "/orgDept/checkDeptName";
+                    params.clear();
+                    params.put("orgId",orgId);
+                    params.put("name", org[2]);
+                    String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
+                    Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2, Envelop.class);
+                    if(envelopGet2.isSuccessFlg()){
+                        envelop.setSuccessFlg(true);
+                    }
+            }
+            return envelop;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return systemError();
+        }
+    }
+
+    /**
+     * 获取机构代码下拉框-带检索(根据输入机构代码/名称近似查询）
+     * @param filters  控件传递参数的参数名
+     */
+    @RequestMapping("/orgCodeIsExistence")
+    @ResponseBody
+    public Object searchOrgCodes(String filters){
+        Envelop envelop = new Envelop();
+        try{
+            String url = "/organizations";
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters",filters);
+            params.put("sorts","");
+            params.put("page",1);
+            params.put("size",15);
+            String envelopStrFGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrFGet,Envelop.class);
+            List<OrgModel> orgModels = new ArrayList<>();
+            List<Map> list = new ArrayList<>();
+            if(envelopGet.isSuccessFlg()&&envelopGet.getDetailModelList().size()>0){
+                envelop.setSuccessFlg(true);
+            }else{
+                envelop.setSuccessFlg(true);
+                envelop.setObj(true);
+                envelop.setErrorMsg("该机构代码或机构名称不正确！");
+            }
+            return envelop;
+        }catch (Exception ex){
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            return envelop;
+        }
+    }
+
+
 
     //根据邮箱在doctor表获取数据
     private Set<String> findExistEmailInDoctor(String emails) throws Exception {
@@ -409,6 +551,49 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             return false;
         }
 
+    }
+
+    /**
+     * 获取机构
+     * @param orgCode  控件传递参数的参数名
+     */
+    @RequestMapping("/orgCodes")
+    @ResponseBody
+    public String searchOrgByCodes(String orgCode, String fullName){
+        Envelop envelop = new Envelop();
+        String filters ="";
+        StringBuffer stringBuffer = new StringBuffer();
+        try{
+            if (!org.apache.commons.lang.StringUtils.isEmpty(orgCode)){
+                stringBuffer.append("orgCode=" + orgCode+ ";");
+            }
+            if (!org.apache.commons.lang.StringUtils.isEmpty(fullName)){
+                stringBuffer.append("fullName=" + fullName+ ";");
+            }
+            filters=stringBuffer.toString();
+            String url = "/organizations";
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters",filters);
+            params.put("sorts","");
+            params.put("page",1);
+            params.put("size",999);
+            String envelopStrFGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrFGet,Envelop.class);
+            List<OrgModel> orgModels = new ArrayList<>();
+            List<Map> list = new ArrayList<>();
+            String orgId="";
+            if(envelopGet.isSuccessFlg()){
+                orgModels = (List<OrgModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<OrgModel>(),OrgModel.class);
+                for (OrgModel m:orgModels){
+                    orgId=String.valueOf(m.getId());
+                }
+            }
+            return orgId;
+        }catch (Exception ex){
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            return "";
+        }
     }
 
 }

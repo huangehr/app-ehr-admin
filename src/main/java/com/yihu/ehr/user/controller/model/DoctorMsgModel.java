@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * @created 2017/6/22
  */
 @Row(start = 1)
-@Title(names= "{'医生账号', '姓名','身份证号', '性别', '医生专长', '医生门户首页', '邮箱', '联系电话', '办公电话（固）', '教学职称', '临床职称', '学历', '行政职称', '简介'}")
+@Title(names= "{'医生账号', '姓名','身份证号', '性别', '机构代码', '机构全称', '部门名称', '医生专长', '医生门户首页', '邮箱', '联系电话', '办公电话（固）', '教学职称', '临床职称', '学历', '行政职称', '简介'}")
 public class DoctorMsgModel extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
@@ -32,27 +32,36 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
     @Location(x=3)
     private String sex;
     @Location(x=4)
-    private String skill;
+    @ValidRepeat
+    private String orgCode;
     @Location(x=5)
     @ValidRepeat
-    private String email;
+    private String orgFullName;
     @Location(x=6)
     @ValidRepeat
-    private String phone;
+    private String orgDeptName;
     @Location(x=7)
+    private String skill;
+    @Location(x=8)
+    @ValidRepeat
+    private String email;
+    @Location(x=9)
+    @ValidRepeat
+    private String phone;
+    @Location(x=10)
     @ValidRepeat
     private String officeTel;
-    @Location(x=8)
-    private String jxzc;
-    @Location(x=9)
-    private String lczc;
-    @Location(x=10)
-    private String xlzc;
     @Location(x=11)
-    private String xzzc;
+    private String jxzc;
     @Location(x=12)
-    private String introduction;
+    private String lczc;
     @Location(x=13)
+    private String xlzc;
+    @Location(x=14)
+    private String xzzc;
+    @Location(x=15)
+    private String introduction;
+    @Location(x=16)
     private String workPortal;
 
 
@@ -245,5 +254,29 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
 
     public void setIdCardNo(String idCardNo) {
         this.idCardNo = idCardNo;
+    }
+
+    public String getOrgCode() {
+        return orgCode;
+    }
+
+    public void setOrgCode(String orgCode) {
+        this.orgCode = orgCode;
+    }
+
+    public String getOrgFullName() {
+        return orgFullName;
+    }
+
+    public void setOrgFullName(String orgFullName) {
+        this.orgFullName = orgFullName;
+    }
+
+    public String getOrgDeptName() {
+        return orgDeptName;
+    }
+
+    public void setOrgDeptName(String orgDeptName) {
+        this.orgDeptName = orgDeptName;
     }
 }

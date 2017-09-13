@@ -35,6 +35,7 @@
                 this.bindEvents();
                 if(this.$weiDuId.val()!="" && this.$weiDuId.val()!=undefined){//修改
                     this.getTjDimensionMainByID();
+                    $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
             initForm: function () {
@@ -134,10 +135,12 @@
                             values.id = parseInt(self.$weiDuId.val());
                         }
                         var dataModel = $.DataModel.init();
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/tjDimensionSlave/updateTjDimensionSlave", {
                             data: {tjDimensionSlaveModelJsonData:JSON.stringify(values)},
                             async: false,
                             success: function (data) {
+                                waittingDialog.close();
                                 if (data.successFlg) {
                                     closeAddWeiduInfoDialog(function () {
                                         if(self.$weiDuId.val()!="" && self.$weiDuId.val()!=undefined){//修改

@@ -28,6 +28,7 @@
         if (!(Util.isStrEquals(patientDialogType, 'addPatient'))) {
             patientModel =${patientModel}.obj;
             idCardNo = patientModel.idCardNo;
+            $("#inp_idCardNo").closest(".m-form-group").addClass("m-form-readonly");
 //            //todo:暂不发布
 //            $("#btn_archive").hide();
 //            $("#btn_home_relation").hide();
@@ -289,23 +290,30 @@
                     checkbox: true,
                     async: false,
                     onCheck:function (checkData,checked) {
-                            var data = checkData.data;
-                            var checkD = null;
-                            if(data.pid){//点中的是二级节点
-                                checkD = [data];
-                            }else{//点中根节点
-                                if(data.children){
-                                    checkD = data.children;
+                        var data = checkData.data;
+                        var checkD = null;
+                        var p = this.getParentTreeItem(checkData.target,1);
+                        if(data.pid){//点中的是二级节点
+                            var appName = $(this.getParentTreeItem(checkData.target)).find('.l-body').find('span').html();
+                            checkD = [data];
+                            checkD[0].appName  = appName;
+                        }else{//点中根节点
+                            if(data.children){
+                                var appName = data.name;
+                                checkD = data.children;
+                                for (var k = 0; k < checkD.length; k++) {
+                                    checkD[k].appName = appName;
                                 }
                             }
-                            if(checkD){
-                                if(checked){//选中
-                                    self.appendCheckData(checkD);
-                                }else{//取消选中
-                                    self.cancelCheckData(checkD);
-                                }
+                        }
+                        if(checkD){
+                            if(checked){//选中
+                                debugger
+                                self.appendCheckData(checkD);
+                            }else{//取消选中
+                                self.cancelCheckData(checkD);
                             }
-
+                        }
                     },
                     onSuccess: function (data) {
                         typeTree.setData(data.detailModelList);
@@ -331,14 +339,34 @@
                     var item = data[i];
                     var roleId = item.id || item.roleId;
                     var roleName = item.name || item.roleName;
+                    var appName = item.appName || item.appName;
                     if (appDom.find(".div-item[data-id='" + roleId + "']").length == 0) {
                         resultHtml += '<div class="h-40 div-item" data-id="'+roleId+'">'+
-                                         '<div class="div-main-content" title="'+roleName+'">'+roleName+'</div>'+
-                                        '<div class="div-delete-content"><a class="grid_delete" href="#" title="删除"></a></div>'+
+                                        '<div class="div-main-content" style="width:40%" title="'+appName+'">'+appName+'</div>'+
+                                        '<div class="div-main-content" style="width:40%" title="'+roleName+'">'+roleName+'</div>'+
+                                        '<div class="div-delete-content" style="width:20%"><a class="grid_delete" href="#" title="删除"></a></div>'+
                                     '</div>';
                     }
                 }
                 appDom.after(resultHtml);
+            },
+            checkData: function (url, val, msg) {
+                var dataModel = $.DataModel.init();
+                var result = new jValidation.ajax.Result();
+                dataModel.fetchRemote(url, {
+                    data: {searchNm: val},
+                    async: false,
+                    success: function (data) {
+                        debugger
+                        if (!data.successFlg) {
+                            result.setResult(true);
+                        } else {
+                            result.setResult(false);
+                            result.setErrorMsg(msg);
+                        }
+                    }
+                });
+                return result;
             },
             bindEvents: function () {
                 var self = this;
@@ -346,15 +374,30 @@
                     var itemId = $(this).closest(".div-item").attr("data-id");
                     var selectedData = typeTree.getCheckedData();
                     var rowdata = null;
+                    var nodeP = null;
                     for(var i=0;i<selectedData.length;i++){
                         if(selectedData[i].pid){
                             if(selectedData[i].id==itemId){
                                 rowdata = selectedData[i];
+                                nodeP = $('#' + rowdata.id).closest('.l-children').parent();
                                 break;
                             }
                         }
                     }
-                    if(rowdata) typeTree.cancelSelect(rowdata);//取消选中行
+                    if(rowdata) {
+                        typeTree.cancelSelect(rowdata);//取消选中行
+                        var checkChildLen = nodeP.find('.l-checkbox-checked').length - 1;
+                        if (checkChildLen <= 0) {//取消选中根节点
+                            var npId = nodeP.attr('id');
+                            for(var k = 0; k < selectedData.length; k++){
+                                if(selectedData[k].id == npId){
+                                    typeTree.cancelSelect(selectedData[k]);//取消选中行
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     $("#div_checked_data").find(".div-item[data-id="+itemId+"]").remove();
                     if(typeTree.getCheckedData().length==1){//根节点
                         typeTree.cancelSelect(typeTree.getCheckedData()[0]);//取消选中行
@@ -364,36 +407,36 @@
                 $(".u-dropdown-icon").click(function(){
                     $('#inp_realName').click();
                 });
-                var idCardNo = self.$form.Fields.idCardNo.getValue();
-                var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    if(Util.isStrEquals($(elm).attr('id'),'inp_idCardNo')){
-                        var copyCardNo = self.$patientCopyId.val();
-                        var result = new jValidation.ajax.Result();
-                        var idCardNo = self.$idCardNo.val();
-                        var dataModel = $.DataModel.init();
-                        if(Util.isStrEquals(idCardNo,copyCardNo)){
-                            return true;
-                        }
-                        dataModel.fetchRemote("${contextRoot}/patient/checkIdCardNo", {
-                            data: {searchNm:idCardNo},
-                            async: false,
-                            success: function (data) {
-                                if (!data.successFlg) {
-                                    result.setResult(true);
-                                } else {
-                                    result.setResult(false);
-                                    result.setErrorMsg("该身份证已被使用");
+//                var idCardNo = self.$form.Fields.idCardNo.getValue();
+                var validator =  new jValidation.Validation(
+                        this.$form, {
+                            immediate: true,
+                            onSubmit: false,
+                            onElementValidateForAjax:function(elm){
+                                var dataModel = $.DataModel.init();
+                                var result = new jValidation.ajax.Result();
+                                if(Util.isStrEquals($(elm).attr('id'),'inp_idCardNo')){
+                                    var copyCardNo = self.$patientCopyId.val();
+                                    var idCardNo = self.$idCardNo.val();
+                                    var url = '${contextRoot}/patient/checkIdCardNo';
+                                    if(Util.isStrEquals(idCardNo,copyCardNo)){
+                                        return true;
+                                    }
+                                    result = self.checkData(url, idCardNo, "该身份证已被使用");
                                 }
-                            }
-                        });
-                        return result;
-                    }
-                }});
 
+                                if(Util.isStrEquals($(elm).attr('id'),'inp_patientTel')){
+                                    var telephoneNo = self.$patientTel.val();
+                                    var url = '${contextRoot}/patient/checkTelphoneNumber';
+                                    result = self.checkData(url, telephoneNo, "该电话号码已被使用");
+                                }
+                                return result;
+
+                }});
                 //修改人口信息
                 patientInfo.$updateBtn.click(function () {
                     if($(".tab-list li.cur").html()=="角色授权"){//保存角色授权值
-                        var wait = $.Notice.waitting('正在加载中...');
+                        var wait = $.Notice.waitting('正在保存中,请稍候...');
                         var saveData = [];
                         var rightData = $("#div_checked_data .div-item");
                         for(var j=0;j<rightData.length;j++){

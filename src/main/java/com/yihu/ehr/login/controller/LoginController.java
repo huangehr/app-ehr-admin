@@ -55,14 +55,25 @@ public class LoginController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Value("${service-gateway.BrowseClienturl}")
+    private String browseClienturl;
+    @Value("${service-gateway.profileurl}")
+    private String profileurl;
     @Value("${app.oauth2authorize}")
     private String authorize;
+    @Value("${app.oauth2OutSize}")
+    private String oauth2OutSize;
     @Value("${app.clientId}")
     private String clientId;
     @Value("${app.qcReportClientId}")
     private String qcReportClientId;
     @Value("${app.resourceBrowseClientId}")
     private String resourceBrowseClientId;
+    @Value("${app.browseClientId}")
+    public String browseClientId;
+    @Value("${std.version}")
+    public String stdVersion;
+
 
     @RequestMapping(value = "")
     public String login(Model model) {
@@ -125,6 +136,10 @@ public class LoginController extends BaseUIController {
                 String ex = this.objectMapper.writeValueAsString(envelop.getObj());
                 UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
                 request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                request.getSession().setAttribute("isLogin", true);
+                request.getSession().setAttribute("token", accessToken);
+                request.getSession().setAttribute("loginName", loginName);
+                request.getSession().setAttribute("userId", userDetailModel.getId());
 
                 //获取用户角色信息
                 List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
@@ -534,6 +549,46 @@ public class LoginController extends BaseUIController {
         model.addAttribute("contentPage", "login/signinResource");
         model.addAttribute("successFlg", true);
         return "generalView";
+    }
+
+    /**
+     *  单点登录
+    */
+    @RequestMapping(value = "/broswerSignin",method = RequestMethod.GET)
+    public void signin(Model model,HttpServletRequest request,HttpServletResponse response, String idCardNo) throws Exception
+    {
+        String clientId=browseClientId;
+        String url=browseClienturl+"/common/login/signin?idCardNo="+idCardNo;
+        //response.sendRedirect("http://localhost:10260/oauth/authorize?response_type=token&client_id=111111&redirect_uri=http://localhost:8011/login/test&user=me");
+        //获取code
+        AccessToken token = (AccessToken)request.getSession().getAttribute("token");
+        String user = token.getUser();
+        model.addAttribute("model",request.getSession());
+        model.addAttribute("idCardNo",idCardNo);
+        response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id="+clientId+"&redirect_uri="+url+"&scope=read&user="+user);
+    }
+
+    /**
+     * 验证某个用户是否有数据
+     * @param idCardNo
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public Envelop check(String idCardNo){
+        Envelop envelop = new Envelop();
+        Map<String, Object>  paramsMap = new HashMap<>();
+        paramsMap.put("demographic_id", idCardNo);
+        paramsMap.put("version", stdVersion);
+        String url2 = "/" + paramsMap.get("demographic_id") + "/profile/info";
+        try {
+            HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
+        }catch (Exception e) {
+            return envelop;
+        }
+        envelop.setSuccessFlg(true);
+        return envelop;
     }
 
 }

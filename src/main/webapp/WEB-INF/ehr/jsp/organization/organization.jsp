@@ -4,6 +4,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <link rel="stylesheet" href="${contextRoot}/develop/common/flod.css">
+<style>
+    #upd>div{left: 0}
+</style>
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">机构管理</div>
 
@@ -18,7 +21,7 @@
         <div class="m-form-group f-mt10">
             <div class="m-form-control">
                 <!--输入框-->
-                <input type="text" id="inp_search" placeholder="请输入代码或名称" class="f-ml10" data-attr-scan="searchNm"/>
+                <input type="text" id="inp_search" placeholder="请输入代码或名称" class="f-ml10" data-attr-scan="searchParm"/>
             </div>
 
             <div class="m-form-control f-ml10">
@@ -36,7 +39,7 @@
             </div>
             <div class="m-form-control f-ml10">
                 <!--按钮:查询 & 新增-->
-                <sec:authorize url="/organization/searchOrgs">
+                <sec:authorize url="/ehr/organization/searchOrgs">
                     <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span><spring:message code="btn.search"/></span>
                     </div>
@@ -48,6 +51,20 @@
                         <span><spring:message code="btn.create"/></span>
                     </div>
                 </sec:authorize>
+                <sec:authorize url="/ehr/organization/template">
+                    <div id="div_down_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                            <a href="<%=request.getContextPath()%>/template/部门机构导入模板.xls"
+                               style="color: #fff">
+                                下载模版
+                            </a>
+                    </div>
+                </sec:authorize>
+                <sec:authorize url="/orgDeptImport/importOrgDept">
+                    <div id="div_upload_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                            <div id="upd" class="f-fr" style="overflow: hidden; width: 84px" ></div>
+                    </div>
+                </sec:authorize>
+
             </div>
         </div>
     </div>

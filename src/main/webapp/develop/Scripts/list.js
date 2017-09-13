@@ -152,7 +152,7 @@
         addItem: function (data) {
             debugger;
             var jq_ul = $("#pane-list-selected");
-           // var itemclass = data[base.p.uniqueField].replace("(", "_").replace(")", "_");
+            // var itemclass = data[base.p.uniqueField].replace("(", "_").replace(")", "_");
             var itemclass = data[base.p.uniqueField].toString().replace("(", "_").replace(")", "_");
             if ($(".item.item-" + itemclass).length > 0) { return; }
             if (!base.p.multiple) { jq_ul.empty(); }

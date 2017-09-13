@@ -13,7 +13,8 @@
             var dictMaster = null;
             var typeTree = null;
             var orgId = '${orgId}';
-            var quotaType = '';
+            var quotaType = '${quotaTypeNo}';
+            var searchVal = '${name}';
 
             var rsPageParams = JSON.parse(sessionStorage.getItem('rsPageParams'));
             sessionStorage.removeItem('rsPageParams');
@@ -84,20 +85,20 @@
                 getResourceBrowseTree: function () {
                     typeTree = this.$resourceBrowseTree.ligerSearchTree({
                         nodeWidth: 240,
-                        url: '${contextRoot}/health/getHealthBusinessListTree',
+                        url: '${contextRoot}/quota/getQuotaCategoryListTree',
                         checkbox: false,
                         idFieldName: 'id',
                         parentIDFieldName :'parentId',
                         textFieldName: 'name',
                         isExpand: false,
                         childIcon:null,
+//                        data: $("#quotaTypeNo").val(),
                         parentIcon:null,
                         onSelect: function (e) {
                             quotaType = e.data.id;
                             dictMaster.reloadGrid(1);
                         },
                         onSuccess: function (data) {
-
                             if(data.length != 0){
                                 $("#div_resource_browse_tree li div span").css({
                                     "line-height": "22px",
@@ -105,6 +106,10 @@
                                 });
 //                                quotaType = data[0].id;
 //                                dictMaster.reloadGrid(1);
+                            }
+                            if (quotaType) {
+                                $('#'+quotaType).parent().prev().find('.l-box').trigger('click');
+                                $('#'+quotaType).trigger('click');
                             }
                         }
                     });
@@ -114,6 +119,7 @@
             dictMaster = {
                 dictInfoDialog: null,
                 detailDialog:null,
+                chartConfigDialog: null,
                 grid: null,
                 $searchNm: $('#searchNm'),
                 init: function () {
@@ -131,14 +137,14 @@
                         this.grid = $("#div_stdDict_grid").ligerGrid($.LigerGridEx.config({
                             url:  '${contextRoot}/tjQuota/getTjQuota',
                             parms: {
-                                name: "",
+                                name: $("#searchNm").val(),
                                 quotaType : quotaType
                             },
                             columns: [
                                 {display: 'id', name: 'id', hide: true},
 //                                {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '指标类型', name: 'quotaTypeName', width: '11%', isAllowHide: false, align: 'left'},
+                                {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
+//                                {display: '指标类型', name: 'quotaTypeName', width: '11%', isAllowHide: false, align: 'left'},
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
@@ -159,13 +165,17 @@
 //                                {display: '备注', name: 'remark', width: '8%', isAllowHide: false, align: 'left'},
                                 {
                                     display: '操作', name: 'operator', width: '40%', align: 'center',render: function (row) {
+
                                     var html = '';
-                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/deleteTjDataSave"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:execu", row.id) + '">任务执行</a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:result:selectResult", row.id) + '">结果查询</a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/updateTjDataSource"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateDimensionTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateChartTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:tubiao:config", row.code, row.name) + '">图表配置</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/updateTjQuota"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
+                                   if(row.status != -1){
+                                       html += '<sec:authorize url="/tjQuota/deleteTjQuota"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
+                                       html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">任务执行</a></sec:authorize>';
+                                   }
+                                    html += '<sec:authorize url="/tjQuota/queryTjQuotaResult"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:result:selectResult", row.id) + '">结果查询</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/queryTjQuotaLog"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
                                     return html;
                                 }
                                 }
@@ -194,6 +204,7 @@
                 },
                 reloadGrid: function (curPage) {
                     var searchNm = $("#searchNm").val();
+                    searchVal = searchNm;
                     var values = {
                         name: searchNm,
                         quotaType : quotaType
@@ -256,25 +267,53 @@
                             opener: true,
                             load: true,
                             urlParms: {
-                                quotaCode:code
+                                quotaCode:code.trim()
                             },
                             onLoaded:function() {
 
                             }
                         });
                     });
+                    
+                    $.subscribe('zhibiao:tubiao:config', function (event, code, name) {
+                        dictMaster.chartConfigDialog = $.ligerDialog.open({
+                            title:'图表配置',
+                            height: 700,
+                            width: 700,
+                            url: '${contextRoot}/zhibiao/zhiBiaoChartConfigure',
+                            isHidden: false,
+                            opener: true,
+                            load: true,
+                            urlParms: {
+                                quotaCode:code.trim(),
+                                quotaName: name.trim()
+                            },
+                            onLoaded:function() {
 
-                    $.subscribe('zhibiao:execu', function (event, id) {
+                            }
+                        });
+                    })
+
+                    $.subscribe('zhibiao:execu', function (event, id, quotaCode) {
                         $.Notice.confirm('确认要执行所选指标？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
-                                dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
-                                    data: {tjQuotaId: parseInt(id)},
+                                dataModel.updateRemote('${contextRoot}/tjQuota/hasConfigDimension', {
+                                    data: {quotaCode: quotaCode},
                                     success: function (data) {
-                                        if(data.successFlg){
-                                            $.Notice.success('执行成功！');
+                                        if(data){
+                                            dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
+                                                data: {tjQuotaId: parseInt(id)},
+                                                success: function (data) {
+                                                    if(data.successFlg){
+                                                        $.Notice.success('执行成功！');
+                                                    }else{
+                                                        $.Notice.error(data.errorMsg);
+                                                    }
+                                                }
+                                            });
                                         }else{
-                                            $.Notice.error(data.errorMsg);
+                                            $.Notice.error("请先在维度配置中配置主维度");
                                         }
                                     }
                                 });
@@ -285,7 +324,9 @@
                     $.subscribe('zhibiao:result:selectResult', function (event, id) {
                         var url = '${contextRoot}/tjQuota/initialResult';
                         var urlParms = {
-                            tjQuotaId:id
+                            tjQuotaId:id,
+                            quotaType: quotaType,
+                            name: searchVal
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, urlParms);
@@ -294,7 +335,9 @@
                     $.subscribe('zhibiao:log:quotaLog', function (event, quotaCode) {
                         var url = '${contextRoot}/tjQuota/initialQuotaLog';
                         var urlParms = {
-                            quotaCode:quotaCode
+                            quotaCode:quotaCode,
+                            quotaType: quotaType,
+                            name: searchVal
                         }
                         $("#contentPage").empty();
                         $("#contentPage").load(url, urlParms);
@@ -355,6 +398,16 @@
                 if (msg)
                     $.Notice.success(msg);
             };
+
+            win.closeChartConfigDialog = function () {
+                dictMaster.chartConfigDialog.close();
+                $.Notice.success('保存成功！');
+            }
+
+            win.closeConfigDialog = function () {
+                dictMaster.chartConfigDialog.close();
+            }
+
             win.closeZhiBiaoInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);

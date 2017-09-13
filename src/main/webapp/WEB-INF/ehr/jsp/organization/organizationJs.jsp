@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
     (function ($, win) {
         $(function () {
@@ -25,10 +30,17 @@
                 this.grid.loadData(true);
             }
 
+            function onUploadSuccess(g, result){
+                if(result)
+                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+                else
+                    $.Notice.success("导入成功！");
+            }
+            $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess});
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
-                $searchNm: $('#inp_search'),
+                $searchParm: $('#inp_search'),
                 $settledWay: $('#inp_settledWay'),
                 $orgType: $('#inp_orgType'),
                 $searchBtn: $('#btn_search'),
@@ -42,7 +54,7 @@
                     this.initDDL(settledWayDictId, this.$settledWay);
                     this.initDDL(orgTypeDictId, this.$orgType);
 
-                    this.$searchNm.ligerTextBox({width: 240});
+                    this.$searchParm.ligerTextBox({width: 240});
 
                     this.$location.addressDropdown({
                         tabsData: [
@@ -103,7 +115,7 @@
                     this.grid = $("#div_org_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/organization/searchOrgs',
                         parms: {
-                            searchNm: '',
+                            searchParm: '',
                             searchType: '',
                             orgType: '',
                             province: '',
@@ -141,7 +153,7 @@
                                 html += '<sec:authorize url="/organization/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:resource:list", row.orgCode,row.id, row.fullName) + '">资源授权</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a"  style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName,row.orgType) + '">部门管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
-                                html += '<sec:authorize url="/template/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
+                                html += '<sec:authorize url="/orgTemplate/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/dialog/orgInfo"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:modify", row.orgCode, 'modify') + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/delete"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "org:orgInfoDialog:del", row.orgCode, 'del') + '"></a></sec:authorize>';
                                 return html;
@@ -312,7 +324,9 @@
             win.closeDialog = function () {
                 master.orgInfoDialog.close();
             };
-
+            win.showAddOrgInfoDialogSuccPop = function () {
+                $.Notice.success('保存成功');
+            };
             win.closeAddOrgInfoDialog = function (callback) {
                 if (callback) {
                     callback.call(win);
@@ -324,10 +338,15 @@
                     master.orgInfoDialog.close();
                 }
 
-
+            };
+            win.closeOrgCreateDialog = function (callback) {
+                if (callback) {
+                    callback.call(win);
+                    master.reloadGrid();
+                }
+                    master.orgCreateDialog.close();
 
             };
-
             /* *************************** 页面初始化 **************************** */
             pageInit();
         });

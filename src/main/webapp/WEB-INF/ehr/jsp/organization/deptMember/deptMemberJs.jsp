@@ -75,6 +75,7 @@
 				$status:$('#inp_status'),
 				$search: $("#inp_search"),
 				$searchNm: $('#inp_searchNm'),
+                $btnSearch: $('#btn_search'),
 
 
 				init: function () {
@@ -94,16 +95,17 @@
 						value:"0"
 					});
 
-					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
-						var searchNm = $('#inp_searchNm').val();
-						status = $('#inp_status').val();
-						var parms = {
-							'searchNm':searchNm,
-							'status':status,
-							'categoryId':categoryId
-						};
-						reloadGrid(parms);
-					}});
+					this.$searchNm.ligerTextBox({width:150});
+                    this.$btnSearch.on('click', function () {
+                        var searchNm = $('#inp_searchNm').val();
+                        status = $('#inp_status').val();
+                        var parms = {
+                            'searchNm':searchNm,
+                            'status':status,
+                            'categoryId':categoryId
+                        };
+                        reloadGrid(parms);
+                    });
 
 					self.getResourceBrowseTree();
 				},
@@ -179,7 +181,7 @@
 									return html;
 								}
 							},
-							{display: '操作', name: 'operator', width: '32%', render: function (row) {
+							{display: '操作', name: 'operator', width: '24%', render: function (row) {
 								var html = '';
 								html += '<sec:authorize url="/deptMember/infoInitial"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a></sec:authorize>';
 								html += '<sec:authorize url="/deptMember/deleteOrgDeptMember"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "deptMember:deptMemberDialog:del", row.id) + '"></a></sec:authorize>';
@@ -365,7 +367,10 @@
 								deptDetail:{name:name,phone:deptPhone,displayStatus:displayStatus,gloryId:glory,orgId:$("#h_org_id").val(),introduction:introduction,place:place,pyCode:pyCode}});
 							 params = {id:id,mode:'new',orgDeptJsonDate:orgDeptJsonDate};
 						}
+
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
+                            waittingDialog.close();
 								if(data.successFlg){
 									$.Notice.success('添加成功',function () {
 										me.removePopWin(me);
@@ -404,8 +409,8 @@
 							'</div>',
 							'<div class="pop-form">',
 								'<label for="name">科室荣誉：</label>',
-								'<input type="checkbox" name="glory" value="1"/>国家重点科室',
-								'<input type="checkbox" name="glory" value="2"/>省级重点科室',
+								'<input type="checkbox" name="glory" value="1"/>国家重点科室&nbsp;&nbsp;&nbsp;&nbsp;',
+								'<input type="checkbox" name="glory" value="2"/>省级重点科室&nbsp;&nbsp;&nbsp;&nbsp;',
 								'<input type="checkbox" name="glory" value="3"/>医院特色专科',
 							'</div>',].join('');
 						me.$popWim.append(html);
@@ -485,7 +490,9 @@
 							params = {id:id,mode:'modify',orgDeptJsonDate:orgDeptJsonDate};
 						}
 
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
+                            waittingDialog.close();
 								if(data.successFlg){
 									$.Notice.success('修改成功',function () {
 										pageInit();
@@ -532,8 +539,8 @@
 									'</div>',
 									'<div class="pop-form">',
 									'<label for="name">科室荣誉：</label>',
-									'<input type="checkbox" name="glory" value="1"/>国家重点科室',
-									'<input type="checkbox" name="glory" value="2"/>省级重点科室',
+									'<input type="checkbox" name="glory" value="1"/>国家重点科室&nbsp;&nbsp;&nbsp;&nbsp;',
+									'<input type="checkbox" name="glory" value="2"/>省级重点科室&nbsp;&nbsp;&nbsp;&nbsp;',
 									'<input type="checkbox" name="glory" value="3"/>医院特色专科',
 									'</div>',].join('');
 								me.$popWim.append(html);
@@ -699,8 +706,9 @@
 								deptDetail:{name:name,phone:deptPhone,displayStatus:displayStatus,gloryId:glory,orgId:$("#h_org_id").val(),introduction:introduction,place:place,pyCode:pyCode}});
 							params = {id:orgId,mode:'addRoot',orgDeptJsonDate:orgDeptJsonDate};
 						}
-
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
+                            waittingDialog.close();
 									if(data.successFlg){
 										$.Notice.success('操作成功',function () {
                                             me.removePopWin(me);
@@ -740,8 +748,8 @@
 							'</div>',
 							'<div class="pop-form">',
 							'<label for="name">科室荣誉：</label>',
-							'<input type="checkbox" name="glory" value="1"/>国家重点科室',
-							'<input type="checkbox" name="glory" value="2"/>省级重点科室',
+							'<input type="checkbox" name="glory" value="1"/>国家重点科室&nbsp;&nbsp;&nbsp;&nbsp;',
+							'<input type="checkbox" name="glory" value="2"/>省级重点科室&nbsp;&nbsp;&nbsp;&nbsp;',
 							'<input type="checkbox" name="glory" value="3"/>医院特色专科',
 							'</div>',].join('');
 						me.$popWim.append(html);

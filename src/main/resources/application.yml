@@ -1,6 +1,6 @@
 server:
   contextPath: /ehr
-  port: 8080
+  port: 8090
   sessionTimeout:  30000000
 
 multipart:
@@ -24,14 +24,16 @@ fast-dfs:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://192.168.1.220:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
-    username: ha
-    password: ha
+    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    username: weifuwu
+    password: weifuwu
 app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
-  oauth2authorize: http://192.168.1.221:10260/
+  browseClientId: uzs5G0HgTp
+  oauth2authorize: http://172.19.103.73:10260/
+  oauth2OutSize: http://27.154.233.186:10260/  #上饶-认证外网
 service-gateway:
   username: user
   password: eureka
@@ -43,8 +45,13 @@ service-gateway:
   adaption: http://192.168.1.221:10000/api/v1.0/adapter
   template: http://192.168.1.221:10000/api/v1.0/template
   standard: http://192.168.1.221:10000/api/v1.0/std
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
+  profileurl: http://http://172.17.110.227:9009/api/v1.0
 fast-dfs:
-  tracker-server: 172.19.103.54:22122
+  tracker-server: 172.19.103.13:22122
+  public-server: http://172.19.103.52:80
+std:
+  version: 59083976eebd
 
 ---
 spring:
@@ -57,7 +64,9 @@ app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
+  browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
+  oauth2OutSize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
@@ -69,21 +78,27 @@ service-gateway:
   adaption: http://localhost:10000/api/v1.0/adapter
   template: http://localhost:10000/api/v1.0/template
   standard: http://localhost:10000/api/v1.0/std
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
+  profileurl: http://localhost:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.54:22122
+std:
+  version: 59083976eebd
 
 ---
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://172.19.103.38:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
-    username: cloud
-    password: cloud
+    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    username: chenweishan
+    password: chenweishan
 app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
-  oauth2authorize: http://192.168.1.221:10260/
+  browseClientId: uzs5G0HgTp
+  oauth2authorize: http://172.19.103.73:10260/
+  oauth2OutSize: http://172.19.103.73:10260/
 service-gateway:
   username: user
   password: eureka
@@ -95,9 +110,13 @@ service-gateway:
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
   template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
-
+  BrowseClienturl: http://172.19.103.73:8010/ehr/browser
+  profileurl: http://172.19.103.73:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
+  public-server: http://172.19.103.52:80
+std:
+  version: 59083976eebd
 
 ---
 spring:
@@ -110,7 +129,9 @@ app:
   clientId: zkGuSIm2Fg
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
+  browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
+  oauth2OutSize: http://192.168.1.221:10260/
 service-gateway:
   username: user
   password: eureka
@@ -122,11 +143,46 @@ service-gateway:
   adaption: http://11.1.2.21:10000/api/v1.0/adapter
   template: http://11.1.2.21:10000/api/v1.0/template
   standard: http://11.1.2.21:10000/api/v1.0/std
-
+  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
+  profileurl: http://11.1.2.21:9009/api/v1.0
 fast-dfs:
   tracker-server: 11.1.2.9:22122
-
+std:
+  version: 59083976eebd
 logging:
     config: classpath:logback-spring.xml
 
-
+---
+spring:
+  profiles: prod_fz
+  datasource:
+    url: jdbc:mysql://192.168.135.39:3306/healtharchive?useUnicode=true&amp;characterEncoding=UTF-8
+    username: sr_healtharchive
+    password: data!@)1
+app:
+  clientId: zkGuSIm2Fg
+  qcReportClientId: 2YTOSRI0tw
+  resourceBrowseClientId: W8RDizgDIB
+  browseClientId: uzs5G0HgTp
+  oauth2authorize: http://192.168.135.35:10260/
+  oauth2OutSize: http://192.168.135.35:10260/
+service-gateway:
+  username: user
+  password: eureka
+  url: http://192.168.135.31:10000/api/v1.0/admin
+  stdurl: http://192.168.135.31:10000/api/v1.0/admin/std
+  versionurl: http://192.168.135.31:10000/api/v1.0/admin/version
+  cdatypeurl: http://192.168.135.31:10000/api/v1.0/admin/cda_type
+  stdsourceurl: http://192.168.135.31:10000/api/v1.0/admin/standard_source
+  adaption: http://192.168.135.31:10000/api/v1.0/adapter
+  template: http://192.168.135.31:10000/api/v1.0/template
+  standard: http://192.168.135.31:10000/api/v1.0/std
+  BrowseClienturl: http://192.168.135.34:8010/ehr/browser
+  profileurl: http://192.168.135.31:9009/api/v1.0
+fast-dfs:
+  tracker-server: 192.168.135.42:22122
+  public-server: http://192.168.135.42:22122
+std:
+  version: 59083976eebd
+logging:
+    config: classpath:logback-spring.xml

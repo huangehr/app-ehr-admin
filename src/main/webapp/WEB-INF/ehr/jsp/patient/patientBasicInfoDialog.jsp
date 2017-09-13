@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <style>
     .btm-btns{position: absolute;bottom: 0;right: 0;}
-    .tab-con{position: absolute;left: 0;right: 0;top: 50px;bottom: 0;}
+    .tab-con{position: absolute;left: 0;right: 0;top: 50px;bottom: 55px;}
     /*div.tab-con-info{padding-bottom: 60px}*/
     .l-dialog-body{position: relative;overflow: hidden}
     .card-l-item{padding: 0 10px;margin-bottom: 10px}

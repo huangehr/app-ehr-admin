@@ -123,7 +123,8 @@
                             {display: '注册时间', name: 'registerTime', width: '15%', minColumnWidth: 20,align: 'left'},
                             {
                                 display: '操作', name: 'operator', width: '20%', render: function (row) {
-                                var html = '<a href="javascript:void(0)" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoDialog:open", row.idCardNo) + '">档案查询</a>';
+                                var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientBroswerInfoDialog:open", row.idCardNo) + '">档案查询</a>';
+
                                 html += '<sec:authorize url="/patient/updatePatient"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:patientInfoModifyDialog:open", row.idCardNo,row.userId) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/patient/deletePatient"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientInfoModifyDialog:delete", row.idCardNo) + '"></a></sec:authorize>';
                                 return html;
@@ -189,7 +190,7 @@
                         var wait =  $.Notice.waitting("正在加载...");
                         patientDialog = $.ligerDialog.open({
                             isHidden:false,
-                            title:'新增人口信息',
+                            title:'新增居民信息',
                             width:600,
                             height:600,
                             load: true,
@@ -211,7 +212,7 @@
                       var wait =  $.Notice.waitting("正在加载...");
                       patientDialog = $.ligerDialog.open({
                             isHidden:false,
-                            title:'修改人口信息',
+                            title:'修改居民信息',
                             width:600,
                             height:600,
                             load: true,
@@ -250,8 +251,25 @@
                             }
                         });
                     });
-                    $.subscribe('patient:patientInfoDialog:open',function (event,id) {
-                        self.showUserInfo(id);
+                    $.subscribe('patient:patientBroswerInfoDialog:open',function (event,idCardNo) {
+                        $.ajax({
+                            url: '${contextRoot}/login/checkInfo',
+                            data: {
+                                idCardNo: idCardNo
+                            },
+                            dataType: 'json',
+                            type: 'GET',
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    window.open('${contextRoot}/login/broswerSignin?idCardNo='+idCardNo,'_blank');
+                                } else {
+                                    $.Notice.error('该居民无档案数据');
+                                }
+                            },
+                            error: function (e) {
+                                $.Notice.error('出错了');
+                            }
+                        });
                     })
                 }
             };

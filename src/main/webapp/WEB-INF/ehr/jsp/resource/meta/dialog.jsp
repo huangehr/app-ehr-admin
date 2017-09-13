@@ -43,6 +43,14 @@
   </div>
 
   <div class="m-form-group">
+    <label>数据来源<spring:message code="spe.colon"/></label>
+    <div class=" m-form-control">
+      <input type="radio" value="1" name="dataSource" data-attr-scan="dataSource" />档案数据
+      <input type="radio" value="2" name="dataSource" data-attr-scan="dataSource"/>指标统计
+    </div>
+  </div>
+
+  <div class="m-form-group">
     <label>关联字典<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control">
       <input type="text" id="ipt_dict_id" data-type="select" class="" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dictId">

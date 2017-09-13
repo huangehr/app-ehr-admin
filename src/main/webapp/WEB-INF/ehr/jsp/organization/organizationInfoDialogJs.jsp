@@ -77,6 +77,9 @@
             $selectPublicKeyValidTime: $("#div_publicKey_validTime"),
             $selectPublicKeyStartTime: $("#div_publicKey_startTime"),
             $filePicker: $("#div_file_picker"),
+            $publicKeyInfo: $("#publicKeyInfo"),
+            $publicKeyInfoDiv:$("#publicKeyInfoDiv"),
+            $parentPublicKey:$("#parentPublicKey"),
 
             $affirmBtn: $('#div_affirm_btn'),
 
@@ -92,7 +95,7 @@
                 this.$orgCode.ligerTextBox({width: 140});
                 this.$fullName.ligerTextBox({width: 140});
                 this.$shortName.ligerTextBox({width: 140});
-                this.$location.ligerComboBox({width: 140});
+                this.$location.ligerComboBox({width: 290});
                 this.$orgType.ligerComboBox({width: 140});
 //                this.$tags.ligerTextBox({width: 240, height: 56});
                 this.$admin.ligerTextBox({width: 140, height: 28});
@@ -112,7 +115,9 @@
                         {name: '街道', maxlength: 200}
                     ]
                 });
-
+                this.$location.parent().find('.u-select-title').css({
+                    width: '100%'
+                })
                 this.$traffic.ligerTextBox({width: 140});
                 this.$ing.ligerTextBox({width: 140});
                 this.$lat.ligerTextBox({width: 140});
@@ -124,7 +129,7 @@
                 this.$legalPerson.ligerTextBox({width: 140});
                 this.$zxy.ligerComboBox({width: 140});
                 this.$settledWay.ligerComboBox({width: 140});
-
+                this.$publicKeyInfo.ligerTextBox({width: 140});
                 this.initDDL(orgTypeDictId, this.$orgType);
                 this.initDDL(settledWayDictId, this.$settledWay);
                 this.initDDL(hosTypeDictId,this.$hosType);
@@ -169,6 +174,11 @@
                 this.$publicKeyMessage.val(org.publicKey);
                 this.$publicKeyValidTime.html(org.validTime);
                 this.$publicKeyStartTime.html(org.startTime);
+                if (org.publicKey != null && org.publicKey != undefined) {
+                    this.$publicKeyInfo.val("已分配");
+                } else {
+                    this.$publicKeyInfo.val("未分配");
+                }
                 $("#parentHosId").ligerGetComboBoxManager().setValue(org.parentHosId);
                 $("#parentHosId").ligerGetComboBoxManager().setText(org.parentHosName);
 
@@ -178,9 +188,10 @@
                     this.$form.addClass("m-form-readonly");
                     this.$publicKey.hide();
                     this.$footer.hide();
-                    this.$selectPublicKeyMessage.show();
-                    this.$selectPublicKeyValidTime.show();
-                    this.$selectPublicKeyStartTime.show();
+                    this.$publicKeyInfoDiv.show();
+//                    this.$selectPublicKeyMessage.show();
+//                    this.$selectPublicKeyValidTime.show();
+//                    this.$selectPublicKeyStartTime.show();
                     this.$filePicker.addClass("hidden");
                     $("#filePicker2").hide();
                     $('#div_organization_info_form textarea').attr("disabled","disabled");
@@ -189,6 +200,7 @@
                 }
                 if ('${mode}' == 'modify') {
                     //this.$publicManage.hide();
+                    this.$parentPublicKey.show();
                 }
                 var pic = org.imgRemotePath;
                 if (!Util.isStrEmpty(pic)) {
@@ -268,6 +280,7 @@
                 });
 
                 function updateOrg(orgModel, addressModel, msg) {
+                    var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var orgCode = orgModel.orgCode;
                     var orgModel = JSON.stringify(orgModel);
                     var addressModel = JSON.stringify(addressModel);
@@ -275,6 +288,7 @@
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
                         data: {orgModel: orgModel, addressModel: addressModel, mode: msg},
                         success: function (data) {
+                            wait.close();
                             uploader.options.formData.objectId = orgCode;
                             uploader.options.server="${contextRoot}/file/upload/image";
                             uploader.options.successCallBack=function(){
@@ -283,6 +297,7 @@
                                 });
                             }
                             if (data.successFlg) {
+                                win.closeDialog();
                                 if(uploader.getFiles().length>0){
                                     $(".uploadBtn").click();
                                 }else{

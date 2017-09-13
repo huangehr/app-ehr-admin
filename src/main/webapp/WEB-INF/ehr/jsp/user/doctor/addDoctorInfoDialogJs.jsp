@@ -19,7 +19,10 @@
         var source;
 		var trees;
 
-
+		var roleTypeDictId = 13;
+        var orgId = "";
+        var orgSelectedValue = "";
+        var deptSelectedValue = "";
         /* ************************** 变量定义结束 **************************** */
 
         /* *************************** 函数定义 ******************************* */
@@ -59,6 +62,9 @@
 			$lczc:$("#inp_lczc"),
 			$xlzc:$("#inp_xlzc"),
 			$zxzc:$("#inp_zxzc"),
+            $roleType:$("#inp_roleType"),
+            $org:$("#inp_org"),
+            $dept:$("#inp_dept"),
 
             init: function () {
                 var self = this;
@@ -85,37 +91,101 @@
                 });
             },
             initForm: function () {
-                this.$incode.ligerTextBox({width: 240});
-                this.$name.ligerTextBox({width: 240});
-                this.$idCardNo.ligerTextBox({width: 240});
-                this.$email.ligerTextBox({width: 240});
-                this.$skill.ligerTextBox({width: 240});
-                this.$portal.ligerTextBox({width: 240});
-                this.$phone.ligerTextBox({width: 240});
-                this.$secondPhone.ligerTextBox({width: 240});
-                this.$familyTel.ligerTextBox({width: 240});
-                this.$officeTel.ligerTextBox({width: 240});
-                this.$jxzc.ligerTextBox({width: 240});
-                this.$lczc.ligerTextBox({width: 240});
-                this.$xlzc.ligerTextBox({width: 240});
-                this.$zxzc.ligerTextBox({width: 240});
-                this.$introduction.ligerTextBox({width:600,height:100 });
-                this.$sex.ligerRadio();
-                this.$form.attrScan();
+                var me = this;
+                me.$incode.ligerTextBox({width: 240});
+                me.$name.ligerTextBox({width: 240});
+                me.$idCardNo.ligerTextBox({width: 240});
+                me.$email.ligerTextBox({width: 240});
+                me.$skill.ligerTextBox({width: 240});
+                me.$portal.ligerTextBox({width: 240});
+                me.$phone.ligerTextBox({width: 240});
+                me.$secondPhone.ligerTextBox({width: 240});
+                me.$familyTel.ligerTextBox({width: 240});
+                me.$officeTel.ligerTextBox({width: 240});
+                me.$jxzc.ligerTextBox({width: 240});
+                me.$lczc.ligerTextBox({width: 240});
+                me.$xlzc.ligerTextBox({width: 240});
+                me.$zxzc.ligerTextBox({width: 240});
+                me.$org.customCombo('${contextRoot}/organization/searchOrgs',{},null,null,null,{
+                    valueField: 'id',
+                    textField: 'fullName',
+                    onSelected: function (id) {
+                        var orgId = id;
+                        orgSelectedValue = id;
+                        me.$dept.ligerComboBox({
+                            url: '${contextRoot}/deptMember/getAllDeptByOrgId',
+                            ajaxType: 'post',
+                            valueField: 'id',
+                            textField: 'name',
+                            urlParms: {
+                                orgId: orgId
+                            },
+                            dataParmName: 'detailModelList'});
+                    }
+                },{
+                columns: [
+                    {display : '名称', name :'fullName',width : 210, align: 'left'}
+                ]});
+                me.$dept.ligerComboBox().setValue("");
+                me.$org.parent().css({
+                    width:'240'
+                }).parent().css({
+                    display:'inline-block',
+                    width:'240px'
+                });
+                me.$dept.parent().css({
+                    width:'240'
+                }).parent().css({
+                    display:'inline-block',
+                    width:'240px'
+                });
+                <%--this.$org.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/organization/searchOrgs',--%>
+                    <%--valueField: 'id',--%>
+                    <%--textField: 'fullName',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {page: 1, rows:10000}--%>
+                <%--});--%>
+                me.$introduction.ligerTextBox({width:600,height:100 });
+                me.initDDL(roleTypeDictId, this.$roleType);
+                me.$sex.ligerRadio();
+                me.$form.attrScan();
             },
-
+            initDDL: function (dictId, target) {
+                target.ligerComboBox({
+                    url: "${contextRoot}/dict/searchDictEntryList",
+                    dataParmName: 'detailModelList',
+                    urlParms: {dictId: dictId},
+                    valueField: 'code',
+                    textField: 'value'
+                });
+            },
             bindEvents: function () {
                 var self = this;
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
+                        var checkObj = { result:true, errorMsg: ''};
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_code')) {
                             var code = $("#inp_code").val();
-                            return checkDataSourceName('code', code, "该账号已存在");
+                            checkObj= checkDataSourceName('code', code, "该账号已存在");
                         }
-                        if (Util.isStrEquals($(elm).attr("idCardNo"), 'inp_idCard')) {
-                            var CardNo = $("#inp_idCard").val();
-                            return checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_idCardNo')) {
+                            var CardNo = $("#inp_idCardNo").val();
+                            checkObj= checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
+                        }
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_phone')) {
+                            var phone = $("#inp_phone").val();
+                            checkObj= checkDataSourceName('phone', phone, "该电话号码已存在");
+                        }
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_email')) {
+                            var email = $("#inp_email").val();
+                            checkObj= checkDataSourceName('email', email, "该邮箱已存在");
+                        }
+                        if (!checkObj.result) {
+                            return checkObj;
+                        } else {
+                            return checkObj.result;
                         }
                     }
                 });
@@ -164,28 +234,29 @@
                 });
 
                 function update(doctorModel) {
+                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
-                        data: {doctorModelJsonData: doctorModelJsonData},
+                        data: {doctorModelJsonData: doctorModelJsonData,orgId: orgSelectedValue, deptId: $("#inp_dept_val").val().trim()},
                         success: function (data) {
+                            waittingDialog.close();
                             if (data.successFlg) {
-                                closeAddDoctorInfoDialog(function () {
-                                    $.Notice.success('医生新增成功');
-                                });
+                                win.parent.reloadMasterUpdateGrid();
+                                win.parent.showAddSuccPop();
+                                win.parent.closeAddDoctorInfoDialog();
                             } else {
-                                window.top.$.Notice.error(data.errorMsg);
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })
                 }
 
                 self.$cancelBtn.click(function () {
-                    dialog.close();
+                    win.parent.closeAddDoctorInfoDialog();
                 });
             }
         };
-
         /* ************************* 模块初始化结束 ************************** */
 
         /* *************************** 页面初始化 **************************** */

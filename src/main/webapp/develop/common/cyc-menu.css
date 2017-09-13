@@ -4,7 +4,7 @@
 .menucyc{ float: left;width: 199px;display: inline; background:#f0f9fd; height:100%;position: relative; padding: 0 0 0 0;font-family: "微软雅黑", "宋体", Arial, sans-serif;}
 .menucyc *{  box-sizing:content-box}
 .menucyc li.first-tit{ z-index: 1;top: 2px;left: 1px; right: 0;position: absolute;height: 45px;line-height: 45px; color: #fff;font-size: 14px;  background:#0082be  url(../images/jl.jpg) repeat-x; width: 199px;}
-.menucyc li i{ width: 38px; height: 45px;float:left;background: url(../images/icon_kf.png) no-repeat center center;}
+.menucyc li i{ width: 38px; height: 30px;float:left;background: url(../images/icon_kf.png) no-repeat center center;}
 .menucyc li i.a1{background-image:url(../images/01xinxizhuce_icon.png)}
 .menucyc li a.on i.a1{background-image:url(../images/01xinxizhuce_icon_pre.png)}
 .menucyc li i.a2{background-image:url(../images/02biaozhuzhuce_icon.png)}
@@ -25,12 +25,12 @@
 
 .menucyc li>ul>li>ul >li > a >i.me{margin:0 0 0 50px;background: url(../images/dot.png) no-repeat center center;}
 .menucyc li.first-tit i{ background-image:url(../images/icon_Menu.png)}
-.menucyc a{ width:100%;display:block;height:45px; color:#323232; font-size:12px}
+.menucyc a{ width:100%;display:block;height:30px; color:#323232; font-size:12px}
 .menucyc a.menu-tit1{ color:#666666; font-size:15px;}
 .menucyc a.menu-tit2{ background:#f0f9fd; color:#323232;}
 .menucyc a.on{ background:#4DB2EE; color:#fff;}
-.menucyc li ul{ display:none; width:100%}
-.menucyc li{ position:relative; width:100%; display:block;line-height:45px; background:#f6f9fa; }
+.menucyc li ul{ display:block; width:100%}
+.menucyc li{ position:relative; width:100%; display:block;line-height:30px; background:#f6f9fa; }
 .menucyc li .menu-tit1{border-bottom:#e8e8e8 1px solid}
 /*.menucyc >li>ul>li>ul>li:hover >ul{ display:block;}*/
 .menucyc >li >ul> li>a.on,

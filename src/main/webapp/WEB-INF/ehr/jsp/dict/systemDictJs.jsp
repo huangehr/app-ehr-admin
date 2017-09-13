@@ -329,9 +329,11 @@
                                 data = {dictId: systemDictId, name: systemName};
                             }
                             var dataModel = $.DataModel.init();
+                            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                             dataModel.createRemote(systemDictUpdateUrl, {
                                 data: data,
                                 success: function (data) {
+                                    waittingDialog.close();
                                     if (data.successFlg) {
                                         $.Notice.success('更新成功');
                                         self.searchSystemDict();
@@ -371,9 +373,11 @@
                                 catalog = catalog.replace('，',',');
                             }
                             var dataModel = $.DataModel.init();
+                            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                             dataModel.updateRemote('${contextRoot}/dict/createDictEntry', {
                                 data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
                                 success: function (data) {
+                                    waittingDialog.close();
                                     if (data.successFlg) {
                                         $.Notice.success('保存成功');
                                         master.searchSystemDictEntity(master.$systemDictId.val());

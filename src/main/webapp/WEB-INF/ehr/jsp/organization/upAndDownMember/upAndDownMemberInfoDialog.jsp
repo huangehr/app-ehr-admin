@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <style>
 	.l-text {
-		width: 220px;
+		width: 240px;
 	}
 
 </style>
@@ -14,6 +14,7 @@
 			<input type="text" id="inp_userId"  data-type="select"  class="required useTitle ajax f-h28 f-w240"
 				   placeholder="请选择用户" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="userId">
 		</div>
+		<input type="hidden" value="" id="userName" data-attr-scan="userName" />
 	</div>
 
 	<div class="m-form-group f-pa" style="bottom: 0;right: 10px;">

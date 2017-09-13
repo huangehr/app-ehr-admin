@@ -46,6 +46,7 @@
                 this.bindEvents();
                 if (id != '-1') {
                     this.getZBInfo(this.setZBInfo , this);
+                    $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
             parentSelected:function(pid, name){
@@ -66,7 +67,7 @@
             },
             getZBInfo: function ( cb, me) {
                 $.ajax({
-                    url: '${contextRoot}/health/detailById',
+                    url: '${contextRoot}/quota/detailById',
                     data: {
                         id: id
                     },
@@ -88,7 +89,7 @@
                 self.$inpName.ligerTextBox({width: 240});
 //                self.$inpParentId.ligerTextBox({width: 240});
                 this.$introduction.ligerTextBox({width:240,height:100 });
-                var combo1 = self.$inpParentId.customCombo('${contextRoot}/health/getHealthBusinessList?id='+id,{},self.parentSelected,null,null,{valueField: 'id',
+                var combo1 = self.$inpParentId.customCombo('${contextRoot}/quota/getQuotaCategoryList?id='+id,{},self.parentSelected,null,null,{valueField: 'id',
                     textField: 'name'});
                 self.$inpParentId.parent().css({
                     width:'240'
@@ -122,7 +123,7 @@
                             return result;
                         }
                         var dataModel = $.DataModel.init();
-                        dataModel.fetchRemote("${contextRoot}/health/hasExistsCode", {
+                        dataModel.fetchRemote("${contextRoot}/quota/hasExistsCode", {
                             data: {code:code},
                             async: false,
                             success: function (data) {
@@ -144,7 +145,7 @@
                             return result;
                         }
                         var dataModel = $.DataModel.init();
-                        dataModel.fetchRemote("${contextRoot}/health/hasExistsName", {
+                        dataModel.fetchRemote("${contextRoot}/quota/hasExistsName", {
                             data: {name:name},
                             async: false,
                             success: function (data) {
@@ -173,11 +174,13 @@
                             values.id = id.toString();
                             mode = "modify";
                         }
-                        dataModel.fetchRemote("${contextRoot}/health/addOrUpdateHealthBusiness", {
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                        dataModel.fetchRemote("${contextRoot}/quota/addOrUpdateQuotaCategory", {
                             data: {jsonDate:JSON.stringify(values), mode:mode},
                             async: false,
                             type: 'post',
                             success: function (data) {
+                                waittingDialog.close();
                                 if (data.successFlg) {
                                     closeZhiBiaoInfoDialog(function () {
                                         if(id != '-1'){//修改

@@ -76,7 +76,8 @@
                 });
                 this.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     $.ligerDialog.alert("保存成功", function () {
-                       closeAddOrgInfoDialog(function () {
+                        win.parent.showAddOrgInfoDialogSuccPop();
+                        win.parent.closeAddOrgInfoDialog(function () {
 
                         });
                     });
@@ -87,7 +88,7 @@
                 this.$orgCode.ligerTextBox({width: 140});
                 this.$fullName.ligerTextBox({width: 140});
                 this.$shortName.ligerTextBox({width: 140});
-                this.$location.ligerComboBox({width: 140});
+                this.$location.ligerComboBox({width: 290});
 
                 this.$traffic.ligerTextBox({width: 140});
                 this.$ing.ligerTextBox({width: 140});
@@ -127,6 +128,9 @@
                     {name: '街道', maxlength: 200}
                 ]});
 
+                this.$location.parent().find('.u-select-title').css({
+                    width: '100%'
+                })
                 this.$admin.ligerTextBox({width: 140, height:28});
                 this.$tags.ligerTextBox({width: 140, height:28});
                 this.$tel.ligerTextBox({width: 140, height:28});
@@ -203,13 +207,13 @@
                         }
                         orgModel.administrativeDivision = administrative_division;
                         //用于存储机构最小划分区域的id -追加 end by zdm
-						var addressModel = {
-							cprovine:  orgAddress.names[0],
-							city: orgAddress.names[1],
-							district: orgAddress.names[2],
-							town: "",
-							street: orgAddress.names[3]
-						};
+                        var addressModel = {
+                            province: orgAddress.names[0],
+                            city: orgAddress.names[1],
+                            district: orgAddress.names[2],
+                            town: "",
+                            street: orgAddress.names[3]
+                        };
 
                         if (Util.isStrEmpty(orgImgHtml)) {
                             updateOrg(orgModel,addressModel,'new');
@@ -281,14 +285,17 @@
                 })
 
                 function updateOrg(orgModel,addressModel,msg) {
+                    var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var orgModel = JSON.stringify(orgModel);
                     var addressModel = JSON.stringify(addressModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/organization/updateOrg", {
                         data: {orgModel: orgModel,addressModel:addressModel,mode:msg},
                         success: function (data) {
+                            wait.close();
                             uploader.options.successCallBack=function(){
-                                closeAddOrgInfoDialog(function () {
+                                win.parent.showAddOrgInfoDialogSuccPop();
+                                win.parent.closeAddOrgInfoDialog(function () {
                                     $.Notice.success('保存成功！');
                                 });
                             }
@@ -298,7 +305,8 @@
                                     uploader.options.server="${contextRoot}/file/upload/image";
                                     $(".uploadBtn").click();
                                 }else{
-                                    closeAddOrgInfoDialog(function () {
+                                    win.parent.showAddOrgInfoDialogSuccPop();
+                                    win.parent.closeAddOrgInfoDialog(function () {
                                        $.Notice.success('保存成功！');
                                     });
                                 }

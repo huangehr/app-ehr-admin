@@ -140,6 +140,7 @@
                 });
                 this.$btnSave.click(function () {
                     if(validator.validate()){
+                        var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                         var role = '';
                         var roleDom = $(".listree li a");
                         $.each(roleDom, function (i, v) {
@@ -153,7 +154,9 @@
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/createApp",{data: $.extend({}, values),
                                 success: function(data) {
+                                    wait.close();
                                     if (data.successFlg) {
+                                        $.Notice.success('新增成功！');
                                         closeDialog(function () {
                                         });
                                     } else {
@@ -166,7 +169,9 @@
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/updateApp",{data: $.extend({}, values),
                                 success: function(data) {
+                                    wait.close();
                                     if (data.successFlg) {
+                                        $.Notice.success('保存成功！');
                                        closeDialog(function () {
                                         });
                                     } else {

@@ -35,7 +35,7 @@
                    required-title=<spring:message code="lbl.must.input"/> data-attr-scan="birthday"/>
         </div>
     </div>
-    <div class="m-form-group">
+    <div class="m-form-group m-form-readonly">
         <label><spring:message code="lbl.identity.card"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" id="inp_idCard" class="required useTitle ajax validate-id-number"  required-title=<spring:message code="lbl.must.input"/> validate-id-number-title=<spring:message code="lbl.input.true.idCard"/> data-attr-scan="idCardNo"/>

@@ -8,8 +8,10 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.GetInfoService;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +45,8 @@ public class DoctorController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
 
+    @Autowired
+    private GetInfoService getInfoService;
     /**
      * 医生列表页
      * @param model
@@ -83,8 +87,14 @@ public class DoctorController extends BaseUIController {
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("name?" + searchNm );
+            stringBuffer.append("name?" + searchNm + ";");
         }
+       /* String userId = getInfoService.getUserId();
+        if (!StringUtils.isEmpty(userId)) {
+            stringBuffer.append("userId=" + userId + ";");
+        } else {
+            stringBuffer.append("userId=" + "-1" + ";");
+        }*/
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
@@ -138,7 +148,7 @@ public class DoctorController extends BaseUIController {
      */
     @RequestMapping(value = "updateDoctor", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updateDoctor(String doctorModelJsonData, HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public Object updateDoctor(String doctorModelJsonData, String orgId, String deptId, HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         String url = "/doctor/";
         String resultStr = "";
@@ -190,6 +200,7 @@ public class DoctorController extends BaseUIController {
                     updateDoctor.setXlzc(doctorDetailModel.getXlzc());
                     updateDoctor.setXzzc(doctorDetailModel.getXzzc());
                     updateDoctor.setIdCardNo(doctorDetailModel.getIdCardNo());
+                    updateDoctor.setRoleType(doctorDetailModel.getRoleType());
                     imageId = fileUpload(String.valueOf(doctorId),restStream,imageName);
                     if (!StringUtils.isEmpty(imageId))
                         updateDoctor.setPhoto(imageId);
@@ -204,6 +215,8 @@ public class DoctorController extends BaseUIController {
                 }
             } else {
                 params.add("doctor_json_data", toJson(doctorDetailModel));
+                params.add("orgId", orgId);
+                params.add("deptId", deptId);
                 resultStr = templates.doPost(comUrl + url, params);
                 result = toModel(resultStr,Envelop.class);
                 DoctorDetailModel addDoctorModel = toModel(toJson(result.getObj()),DoctorDetailModel.class);

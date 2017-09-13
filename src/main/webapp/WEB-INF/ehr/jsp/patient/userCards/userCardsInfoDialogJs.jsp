@@ -124,6 +124,7 @@
                     if(validator.validate()){
                         self.$btnSave.unbind('click');
                         var values = self.$form.Fields.getValues();
+                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         var dataModel = $.DataModel.init();
                         dataModel.updateRemote("${contextRoot}/userCards/updateUserCards", {
                             data:{
@@ -131,6 +132,7 @@
                             },
 
                             success: function(data) {
+                                waittingDialog.close();
                                 if (data.successFlg) {
                                     $.Notice.success('操作成功');
                                     win.reloadMasterGrid();

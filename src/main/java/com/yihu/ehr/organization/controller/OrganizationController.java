@@ -12,9 +12,11 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.GetInfoService;
 import com.yihu.ehr.util.url.URLQueryBuilder;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,6 +55,9 @@ public class OrganizationController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    
+    @Autowired
+    private GetInfoService getInfoService;
 
     @RequestMapping("initial")
     public String orgInitial(Model model) {
@@ -110,7 +115,7 @@ public class OrganizationController extends BaseUIController {
 
     @RequestMapping(value = "searchOrgs", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object searchOrgs(String searchNm, String searchWay, String orgType, String province, String city, String district, int page, int rows) {
+    public Object searchOrgs(String searchParm, String searchWay, String orgType, String province, String city, String district, int page, int rows) {
         Envelop envelop = new Envelop();
         try {
             //获取地址的 ids
@@ -137,8 +142,8 @@ public class OrganizationController extends BaseUIController {
             String url = "/organizations";
             String filters = "";
             Map<String, Object> params = new HashMap<>();
-            if (!StringUtils.isEmpty(searchNm)) {
-                filters += "orgCode?" + searchNm + " g1;fullName?" + searchNm + " g1;";
+            if (!StringUtils.isEmpty(searchParm)) {
+                filters += "orgCode?" + searchParm + " g1;fullName?" + searchParm + " g1;";
             }
             if (!StringUtils.isEmpty(searchWay)) {
                 filters += "settledWay=" + searchWay + ";";
@@ -146,6 +151,22 @@ public class OrganizationController extends BaseUIController {
             if (!StringUtils.isEmpty(orgType)) {
                 filters += "orgType=" + orgType + ";";
             }
+
+           /* String orgCode = getInfoService.getOrgCode();*/
+           /* String districtList = getInfoService.getDistrictList();*/
+
+           /* if (!StringUtils.isEmpty(orgCode)) {
+                filters += "orgCode=" + orgCode + ";";
+            } else {
+                filters += "orgCode=" + null + ";";
+            }*/
+            /*filters += StringUtils.isEmpty(orgCode) ? "orgCode=" + null + " g2;" : "orgCode=" + orgCode + " g2;";*/
+            /*filters += StringUtils.isEmpty(districtList) ? "location=-1 g2;" : "location=" + districtList + " g2;";*/
+//            if (!StringUtils.isEmpty(districtList)) {
+//                filters += "location=" + districtList + ";";
+//            } else {
+//                filters += "location=-1;";
+//            }
            /* //添加地址过滤条件
             if (!"".equals(addrIds)) {
                 filters += "location=" + addrIds + ";";

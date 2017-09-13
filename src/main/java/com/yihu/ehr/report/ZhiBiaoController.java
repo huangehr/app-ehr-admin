@@ -28,7 +28,9 @@ public class ZhiBiaoController extends BaseUIController {
      * @return
      */
     @RequestMapping("initial")
-    public String initial(Model model) {
+    public String initial(Model model, String quotaTypeNo, String name) {
+        model.addAttribute("quotaTypeNo", quotaTypeNo);
+        model.addAttribute("name", name);
         model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoIndex");
         return "pageView";
     }
@@ -42,6 +44,20 @@ public class ZhiBiaoController extends BaseUIController {
     public String zhiBiaoDetail(Model model,String quotaCode) {
         model.addAttribute("quotaCode", quotaCode);
         model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoDetail");
+        return "simpleView";
+    }
+
+
+    /**
+     * 指标图表配置
+     * @param model
+     * @return
+     */
+    @RequestMapping("zhiBiaoChartConfigure")
+    public String zhiBiaoChartConfigure(Model model,String quotaCode, String quotaName) {
+        model.addAttribute("quotaCode", quotaCode);
+        model.addAttribute("quotaName", quotaName);
+        model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoChartConfigure");
         return "simpleView";
     }
 
