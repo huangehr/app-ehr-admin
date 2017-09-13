@@ -179,8 +179,9 @@
                                     html += '<sec:authorize url="/resourceConfiguration/zhibaioConfigue"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioConfigue",row.id) + '">指标配置</a></sec:authorize>';
                                     html += '<sec:authorize url="/resourceConfiguration/zhibaioShow"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:switch:zhibaioShow",row.id) + '">指标预览</a></sec:authorize>';
                                 }
-
-								html += '<sec:authorize url="/resourceConfiguration/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1",row.dataSource) + '">配置</a></sec:authorize>';
+								if (row.dataSource != 2){
+									html += '<sec:authorize url="/resourceConfiguration/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.configUrl,"1",row.dataSource) + '">配置</a></sec:authorize>';
+								}
 								if(row.grantType == '0'){
 									html += '<sec:authorize url="/resource/grant/initial"><a class="label_a" style="margin-left:5px;"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}'])", "rs:switch:open",row.id,row.name,row.categoryName,switchUrl.grantUrl,"1",row.dataSource) + '">授权</a></sec:authorize>';
 								}

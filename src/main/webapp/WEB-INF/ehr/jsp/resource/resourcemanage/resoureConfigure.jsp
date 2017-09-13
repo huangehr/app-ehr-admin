@@ -32,11 +32,11 @@
                     </div>
                     <div id="div_main_relation">
                         <div class="h-40 div-header-content">
-                            <div class="div-header">指标分类</div>
-                            <div class="div-header">指标Code</div>
-                            <div class="div-header">指标名称</div>
-                            <div class="div-header">图表选择</div>
-                            <div class="div-opera-header">操作</div>
+                            <div class="div-header" style="width: 22%">指标分类</div>
+                            <div class="div-header" style="width: 22%">指标Code</div>
+                            <div class="div-header" style="width: 22%">指标名称</div>
+                            <div class="div-header" style="width: 22%">图表选择</div>
+                            <div class="div-opera-header" style="width: 12%">操作</div>
                         </div>
                     </div>
                 </div>
