@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * 资源服务控制器
+ * 视图管理控制器
  * Created by yww on 2016/5/27.
  */
 @Controller
@@ -40,7 +40,7 @@ public class ResourceController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @RequestMapping("/initial")
     public String resourceInitial(Model model){
@@ -58,7 +58,7 @@ public class ResourceController extends BaseUIController {
         String categoryName = "";
         try{
             if(!StringUtils.isEmpty(categoryId)) {
-                String url = "/resources/categories/"+categoryId;
+                String url = "/resources/category/" + categoryId;
                 String envelopStrGet = HttpClientUtil.doGet(comUrl + url, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
                 if(envelopGet.isSuccessFlg()){
@@ -67,7 +67,7 @@ public class ResourceController extends BaseUIController {
             }
             model.addAttribute("categoryName",categoryName);
             if (!StringUtils.isEmpty(id)) {
-                String url = "/resources/"+id;
+                String url = "/resources/" + id;
                 envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
             }
             model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
@@ -156,6 +156,36 @@ public class ResourceController extends BaseUIController {
         }
         params.put("page", page);
         params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    /**
+     * 资源列表树
+     * @param filters
+     * @param dataSource
+     * @return
+     */
+    @RequestMapping("/resources/tree")
+    @ResponseBody
+    public Object getResourceTree(String filters, Integer dataSource){
+        String url = "/resources/tree";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        if(dataSource != null && dataSource != 0) {
+            params.put("dataSource", dataSource);
+        }
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
@@ -300,7 +330,7 @@ public class ResourceController extends BaseUIController {
     }
 
     /**
-     * 资源分类树数据-获取所有分类的不分页方法
+     * 资源分类树-页面初始化时
      * @return
      */
     @RequestMapping("/categories")
@@ -310,7 +340,7 @@ public class ResourceController extends BaseUIController {
         try{
             String filters = "";
             String envelopStr = "";
-            String url = "/resources/categories";
+            String url = "/resources/categories/all";
             Map<String,Object> params = new HashMap<>();
             params.put("filters",filters);
             envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
@@ -325,7 +355,7 @@ public class ResourceController extends BaseUIController {
     }
 
     /**
-     * 带检索分页的查找资源分类方法,用于下拉框
+     * 带检索分页的查找资源分类方法,新增资源时
      * @param searchParm
      * @param page
      * @param rows
@@ -334,7 +364,7 @@ public class ResourceController extends BaseUIController {
     @RequestMapping("/rsCategory")
     @ResponseBody
     public Object searchRsCategory(String searchParm,int page,int rows){
-        String url = "/resources/categories/no_paging";
+        String url = "/resources/categories/search";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         StringBuffer stringBuffer = new StringBuffer();
@@ -371,26 +401,6 @@ public class ResourceController extends BaseUIController {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
-    }
-
-    /**
-     * 根据资源分类id，获取其以上直接父级id，含自身
-     * @param categoryId
-     * @return
-     */
-    @RequestMapping("/categoryIds")
-    @ResponseBody
-    public Object getCategoryParentIdsById(String categoryId){
-        String envelopStr = "";
-        try{
-            String url = "/resources/categories/parent_ids";
-            Map<String,Object> params = new HashMap<>();
-            params.put("id",categoryId);
-            envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-        }catch (Exception ex){
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
-        }
-        return envelopStr;
     }
 
     @RequestMapping("/getResourceQuotaInfo")
@@ -486,7 +496,6 @@ public class ResourceController extends BaseUIController {
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
         return "simpleView";
     }
-
 
     /**
      * 指标预览
