@@ -14,6 +14,8 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.ObjectMapperUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateTimeUtil;
+import com.yihu.ehr.util.httpClient.HttpHelper;
+import com.yihu.ehr.util.httpClient.HttpResponse;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
 import io.swagger.annotations.ApiParam;
@@ -167,33 +169,27 @@ public class LoginController extends BaseUIController {
 
     @RequestMapping(value = "validate", method = RequestMethod.POST)
     public String loginValid(Model model, String userName, String password, HttpServletRequest request, HttpServletResponse response) {
-
         String url = "/users/verification/" + userName;
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
-
         params.put("psw", password);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
             Envelop envelop = getEnvelop(resultStr);
             UserDetailModel userDetailModel = getEnvelopModel(envelop.getObj(), UserDetailModel.class);
-
-//            判断用户是否登入成功
+            //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
                 String lastLoginTime = null;
-
-//                model.addAttribute("successFlg", false);
-//                判断用户是否失效
+                //model.addAttribute("successFlg", false);
+                //判断用户是否失效
                 if (!userDetailModel.getActivated()) {
                     model.addAttribute("userName", userName);
                     model.addAttribute("successFlg", false);
                     model.addAttribute("failMsg", "该用户已失效，请联系系统管理员重新生效。");
                     model.addAttribute("contentPage", "login/login");
-
                     return "generalView";
                 }
-
-//                判断用户密码是否初始密码
+                //判断用户密码是否初始密码
                 model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 if (password.equals("123456")) {
                     request.getSession().setAttribute("defaultPassWord", true);
@@ -213,18 +209,19 @@ public class LoginController extends BaseUIController {
                     } else {
                         lastLoginTime = now;
                     }
-
-//                    model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                    //model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                     request.getSession().setAttribute("last_login_time", lastLoginTime);
                     //update lastLoginTime
                     userDetailModel.setLastLoginTime(DateTimeUtils.utcDateTimeFormat(date));
                     url = "/user";
                     MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
                     conditionMap.add("user_json_data", toJson(userDetailModel));
-                    RestTemplates templates = new RestTemplates();
-                    resultStr = templates.doPut(comUrl + url, conditionMap);
-                    session.setAttribute("loginCode", userDetailModel.getLoginCode());
 
+                    //没用的代码
+                    //RestTemplates templates = new RestTemplates();
+                    //resultStr = templates.doPut(comUrl + url, conditionMap);
+
+                    session.setAttribute("loginCode", userDetailModel.getLoginCode());
                     //获取用户角色信息
                     List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
                     Collection<GrantedAuthority> gas = new ArrayList<>();
@@ -236,10 +233,10 @@ public class LoginController extends BaseUIController {
                     }
                     //生成认证token
                     Authentication token = new UsernamePasswordAuthenticationToken(userName, password, gas);
+                    AccessToken accessToken = getAccessToken(userName, password, clientId);
+                    session.setAttribute("token", accessToken);
                     //将信息存放到SecurityContext
                     SecurityContextHolder.getContext().setAuthentication(token);
-
-
                     return "redirect:/index";
                 }
 
@@ -257,6 +254,32 @@ public class LoginController extends BaseUIController {
             model.addAttribute("contentPage", "login/login");
             return "generalView";
         }
+    }
+
+
+    /**
+     * 通过用户名密码获取token
+     */
+    public AccessToken getAccessToken(String userName, String password, String clientId) {
+        String result = "";
+        AccessToken accessToken = new AccessToken();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userName", userName);
+            params.put("password", password);
+            params.put("clientId", clientId);
+            result = HttpClientUtil.doPost(authorize + "oauth/accessToken", params);
+            Map<String, Object> resultMap = objectMapper.readValue(result, Map.class);
+            if((boolean)resultMap.get("successFlg")) {
+                String data = objectMapper.writeValueAsString(resultMap.get("data"));
+                accessToken = objectMapper.readValue(data, AccessToken.class);
+            }else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return accessToken;
     }
 
     private List<AppFeatureModel> getUserFeatures(String userId) throws Exception {
@@ -561,6 +584,7 @@ public class LoginController extends BaseUIController {
         String url=browseClienturl+"/common/login/signin?idCardNo="+idCardNo;
         //response.sendRedirect("http://localhost:10260/oauth/authorize?response_type=token&client_id=111111&redirect_uri=http://localhost:8011/login/test&user=me");
         //获取code
+        HttpSession session = request.getSession();
         AccessToken token = (AccessToken)request.getSession().getAttribute("token");
         String user = token.getUser();
         model.addAttribute("model",request.getSession());
@@ -583,7 +607,10 @@ public class LoginController extends BaseUIController {
         paramsMap.put("version", stdVersion);
         String url2 = "/" + paramsMap.get("demographic_id") + "/profile/info";
         try {
-            HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
+            String result = HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
+            if (StringUtils.isEmpty(result)) {
+                return envelop;
+            }
         }catch (Exception e) {
             return envelop;
         }
