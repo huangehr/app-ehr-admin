@@ -423,6 +423,7 @@ public class ReportController extends BaseUIController {
                 } else if (rsResourcesModel.getDataSource() == 2) {
                     // 指标视图场合
                     viewInfo.put("type", "quota");
+                    viewInfo.put("resourceId", view.getResourceId());
                     params.clear();
                     params.put("resourceId", view.getResourceId());
                     String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
@@ -431,6 +432,7 @@ public class ReportController extends BaseUIController {
                         Map<String, Object> option = new HashMap<>();
                         option.put("quotaCode", chartInfo.getQuotaCode());
                         option.put("dimensionList", chartInfo.getListMap());
+                        option.put("quotaId", chartInfo.getQuotaId());
                         option.put("option", chartInfo.getOption());
                         options.add(option);
                     }
