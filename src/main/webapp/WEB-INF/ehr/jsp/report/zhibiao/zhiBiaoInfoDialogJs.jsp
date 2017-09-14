@@ -66,9 +66,6 @@
                     $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
-            quotaTypeSelectedVal:function(id, name){
-                quotaTypeSelectedVal = id;
-            },
             setZBInfo: function ( res, me) {
                 initCode = res.code;
                 initName = res.name;
@@ -189,13 +186,15 @@
                     }
                 });
 
-                var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/quota/getAllQuotaCategoryList',null,self.quotaTypeSelectedVal,null,null,{valueField: 'id',
-                    textField: 'name'});
-                self.$inpQuotaType.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
+                self.$inpQuotaType.ligerComboBox({
+                    url: "${contextRoot}/quota/getAllQuotaCategoryList",
+                    dataParmName: 'detailModelList',
+                    ajaxType: 'post',
+                    valueField: 'id',
+                    textField: 'name',
+                    onSelected: function (id) {
+                        quotaTypeSelectedVal = id;
+                    }
                 });
 
                 this.$inpDataSourceJson.ligerTextBox({width:240,height:100 });
