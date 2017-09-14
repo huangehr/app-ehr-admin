@@ -431,8 +431,9 @@ public class ReportController extends BaseUIController {
                     for (MChartInfoModel chartInfo : chartInfoList) {
                         Map<String, Object> option = new HashMap<>();
                         option.put("quotaCode", chartInfo.getQuotaCode());
-                        option.put("dimensionList", chartInfo.getListMap());
                         option.put("quotaId", chartInfo.getQuotaId());
+                        option.put("dimensionList", chartInfo.getListMap());
+                        option.put("dimensionOptions", chartInfo.getDimensionMap());
                         option.put("option", chartInfo.getOption());
                         options.add(option);
                     }
