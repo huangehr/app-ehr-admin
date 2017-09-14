@@ -27,6 +27,10 @@
       <div class="m-form-control f-ml10">
         <input type="text" id="ipt_search_is_valid"  placeholder="是否失效" data-type="select" data-attr-scan="valid">
       </div>
+
+        <div class="m-form-control f-ml10">
+            <input type="text" id="ipt_search_data_source"  placeholder="数据来源" data-type="select" data-attr-scan="dataSource">
+        </div>
       <sec:authorize url="/ehr/template">
 		  <a href="<%=request.getContextPath()%>/template/资源数据元导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
 		  style="">
