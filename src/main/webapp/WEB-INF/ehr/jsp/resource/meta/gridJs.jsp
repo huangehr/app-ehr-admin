@@ -104,7 +104,7 @@
                     {type: 'select', id: 'ipt_search_null_able', opts:{width: 140}, dictId: 18},
                     {type: 'select', id: 'ipt_search_is_valid', opts:{width: 140, cancelable: false,
                         data:[{value: '有效', code: '1'}, {value: '无效', code: '0'}]}},
-                    {type: 'select', id: 'ipt_search_data_source', opts:{width: 140, cancelable: false,
+                    {type: 'select', id: 'ipt_search_data_source', opts:{width: 140, cancelable: true,
                         data:[{value: '档案数据', code: '1'}, {value: '统计数据', code: '2'}]}},
                     {type: 'searchBtn', id: 'search_btn', searchFun: searchFun}
                 ];
