@@ -24,7 +24,7 @@
           <span>搜索</span>
         </div>
       </div>
-      <div class="m-form-control m-form-control-fr">
+      <div class="m-form-control m-form-control-fr" style="float: right">
         <!--按钮:新增-->
 		  <sec:authorize url="/schemeAdapt/gotoModify">
 			  <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
