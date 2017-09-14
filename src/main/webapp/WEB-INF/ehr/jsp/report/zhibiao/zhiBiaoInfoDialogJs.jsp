@@ -17,6 +17,7 @@
         var dataSourceSelectedVal = "";
         var dataStorageSelectedVal = "";
         var quotaTypeSelectedVal = "";
+        var objClassCode = "";
         var id = ${id};
         var validator = null;
         var txtCronExpression = "";
@@ -65,18 +66,10 @@
                     $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
-            dataSourceSelected:function(code, name){
-                dataSourceSelectedVal = code;
-            },
-            dataStorageSelected:function(code, name){
-                dataStorageSelectedVal = code;
-            },
             quotaTypeSelectedVal:function(id, name){
                 quotaTypeSelectedVal = id;
             },
             setZBInfo: function ( res, me) {
-                me.dataSourceSelected(res.tjQuotaDataSourceModel);
-                me.dataStorageSelected(res.tjQuotaDataSaveModel);
                 initCode = res.code;
                 initName = res.name;
                 me.$inpCode.val(res.code);
@@ -92,7 +85,6 @@
                     me.initInterval();
                 }
                 me.$inpCycle.val(res.cron);
-                me.$inpObjectClass.val(res.jobClazz);
                 me.$inpDataSourceJson.val(res.tjQuotaDataSourceModel.configJson);
                 me.$inpDataStorageJson.val(res.tjQuotaDataSaveModel.configJson);
                 if (res.dataLevel == '1') {
@@ -124,6 +116,8 @@
                 }
                 me.$execTime.val(res.execTime);
                 me.$zhixingDate.val(res.execTime);
+                me.$inpObjectClass.ligerGetComboBoxManager().setValue(res.jobClazz);
+                me.$inpObjectClass.ligerGetComboBoxManager().setText(res.jobClazzName);
                 me.$inpQuotaType.ligerGetComboBoxManager().setValue(res.quotaType);
                 me.$inpQuotaType.ligerGetComboBoxManager().setText(res.quotaTypeName);
                 me.$inpDataSource.ligerGetComboBoxManager().setValue(res.tjQuotaDataSourceModel.sourceCode);
@@ -162,22 +156,37 @@
                 self.$inpCode.ligerTextBox({width: 240});
                 self.$inpName.ligerTextBox({width: 240});
                 self.$inpCycle.ligerTextBox({width: 240});
-                self.$inpObjectClass.ligerTextBox({width: 240});
-                var combo1 = self.$inpDataSource.customCombo('${contextRoot}/tjDataSource/getTjDataSource',{},self.dataSourceSelected,null,null,{valueField: 'code',
-                    textField: 'name'});
-                self.$inpDataSource.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
+
+                this.initDDL(93,this.$inpObjectClass);
+
+                self.$inpDataSource.ligerComboBox({
+                    url: "${contextRoot}/tjDataSource/getTjDataSource",
+                    dataParmName: 'detailModelList',
+                    ajaxType: 'post',
+                    urlParms: {
+                        page: 1,
+                        rows: 999
+                    },
+                    valueField: 'code',
+                    textField: 'name',
+                    onSelected: function (id) {
+                        dataSourceSelectedVal = id;
+                    }
                 });
-                var combo2 = self.$inpDataStorage.customCombo('${contextRoot}/tjDataSave/getTjDataSave',{},self.dataStorageSelected,null,null,{valueField: 'code',
-                    textField: 'name'});
-                self.$inpDataStorage.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
+
+                self.$inpDataStorage.ligerComboBox({
+                    url: "${contextRoot}/tjDataSave/getTjDataSave",
+                    dataParmName: 'detailModelList',
+                    ajaxType: 'post',
+                    urlParms: {
+                        page: 1,
+                        rows: 999
+                    },
+                    valueField: 'code',
+                    textField: 'name',
+                    onSelected: function (id) {
+                        dataStorageSelectedVal = id;
+                    }
                 });
 
                 var combo3 = self.$inpQuotaType.customCombo('${contextRoot}/quota/getAllQuotaCategoryList',null,self.quotaTypeSelectedVal,null,null,{valueField: 'id',
@@ -208,6 +217,24 @@
                 self.$monthDay.ligerRadio();
                 self.$form.attrScan();
             },
+
+            initDDL: function (dictId, target) {
+                var self = this;
+                target.customCombo('${contextRoot}/dict/searchDictEntryList',{dictId: dictId},function (cbData) {
+                    objClassCode = cbData;
+                },null,null,{
+                    valueField: 'value',
+                    textField: 'code',
+                    condition: null
+                },{
+                    columns: [
+                        { header: 'code', name: 'code', width: '40%' },
+                        { header: 'value', name: 'value', width: '60%'}
+                    ],
+                    usePager: false
+                });
+            },
+
             //根据周期类型显示周期面板
             showInterval:function(tab){
                 $('input[name="interval_type"]').eq(0).ligerRadio("setValue",'');
@@ -455,9 +482,9 @@
                 self.$form.on('click','input[name="jobType"]',function(){
                     var value = $(this).val();
                     if(value=="1"){
-                        $("#divTimeInterval").hide();
+                        $(".divTimeInterval").hide();
                     }else{
-                        $("#divTimeInterval").show();
+                        $(".divTimeInterval").show();
                     }
                 });
 
@@ -489,6 +516,7 @@
                         values.execType = $('input[name=jobType]:checked').val();
 //                        values.execTime = $('#execTime').val();
                         values.execTime = $('#inp_zhixing_date').val();
+                        values.jobClazz = objClassCode;
                         values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
                         values.tjQuotaDataSaveModel = {saveCode:dataStorageSelectedVal,configJson:self.$inpDataStorageJson.val()};
                         if (id != '-1') {
