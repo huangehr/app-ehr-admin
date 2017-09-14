@@ -46,7 +46,7 @@ service-gateway:
   template: http://192.168.1.221:10000/api/v1.0/template
   standard: http://192.168.1.221:10000/api/v1.0/std
   BrowseClienturl: http://192.168.1.221:8010/ehr/browser
-  profileurl: http://http://172.17.110.227:9009/api/v1.0
+  profileurl: http://172.17.110.227:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
   public-server: http://172.19.103.52:80
