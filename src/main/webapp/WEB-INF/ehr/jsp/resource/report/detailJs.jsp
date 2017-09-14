@@ -18,7 +18,7 @@
     }
 
     function initForm() {
-        $('#code').ligerTextBox({width: 240});
+        var codeTb = $('#code').ligerTextBox({width: 240});
         $('#name').ligerTextBox({width: 240});
         $("#reportCategoryId").ligerComboBox({
             treeLeafOnly: false,
@@ -43,6 +43,10 @@
         });
         $('#remark').ligerTextBox({width: 240, height: 150});
         $('#templatePath').ligerTextBox({width: 240, disabled: true});
+
+        if(detailModel.id) {
+            codeTb.setDisabled(true);
+        }
 
         $form.attrScan();
         $form.Fields.fillValues({
