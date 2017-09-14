@@ -46,7 +46,7 @@
 				this.$userId.customCombo('${contextRoot}/deptMember/getUserList',{});
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
 //				this.$parentUserId.customCombo(url, p, undefined, undefined, false);
-				this.$parentUserId.customCombo(url);
+				this.$parentUserId.customCombo(url,{});
 				<%--this.$deptId.customCombo('${contextRoot}/deptMember/getDeptList');--%>
 
 				var mode = '${mode}';

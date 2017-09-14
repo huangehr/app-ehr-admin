@@ -31,14 +31,14 @@
                 <input type="radio" value="2" name="jobType">周期执行
             </div>
         </div>
-        <div class="m-form-group">
+        <div class="m-form-group  f-dn divTimeInterval">
             <label>执行时间：</label>
             <div class="m-form-control essential" style="position: relative; padding-right: 10px;">
                 <input type="text" id="inp_zhixing_date" class="required"  placeholder="请选择时间"
                        required-title=<spring:message code="lbl.must.input"/>/>
             </div>
         </div>
-        <div class="m-form-group f-dn" id="divTimeInterval">
+        <div class="m-form-group f-dn divTimeInterval" id="divTimeInterval">
             <label>执行周期：</label>
             <div class="m-form-control">
                 <div>
@@ -101,7 +101,7 @@
             <label>源配置：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_dataSource_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> />
+                <textarea id="inp_dataSource_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> ></textarea>
             </div>
         </div>
         <div class="m-form-group f-mt5">
@@ -115,7 +115,7 @@
             <label>存储配置：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_dataStorage_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> />
+                <textarea type="text" id="inp_dataStorage_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> ></textarea>
             </div>
         </div>
         <div class="m-form-group ">
@@ -124,7 +124,6 @@
             <div class="u-checkbox-wrap m-form-control ">
                 <input type="radio" value="1" name="dataLevel" data-attr-scan>全量
                 <input type="radio" value="2" name="dataLevel" data-attr-scan>增量
-                <input type="radio" value="3" name="dataLevel" data-attr-scan>百分比(率)
             </div>
         </div>
         <%--<div class="m-form-group ">--%>
