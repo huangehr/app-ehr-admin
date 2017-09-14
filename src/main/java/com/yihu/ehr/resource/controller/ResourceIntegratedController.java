@@ -179,7 +179,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param dataJson
      * @return
      */
-    @RequestMapping(value = "/updateResourceQuery", method = RequestMethod.PUT)
+    @RequestMapping(value = "/updateResourceQuery", method = RequestMethod.POST)
     @ResponseBody
     public Envelop updateResourceQuery(String dataJson){
         Envelop envelop = new Envelop();
