@@ -76,7 +76,7 @@ public class SchemeAdaptDictController extends BaseUIController {
      * @param dataJson
      * @return
      */
-    @RequestMapping("save")
+    @RequestMapping("/save")
     @ResponseBody
     public Object updatesSchemeAdpatDict(Model model,String dataJson) {
         Envelop result = new Envelop();
@@ -93,5 +93,5 @@ public class SchemeAdaptDictController extends BaseUIController {
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }
-      }
     }
+}

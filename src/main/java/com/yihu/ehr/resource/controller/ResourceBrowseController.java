@@ -88,7 +88,7 @@ public class ResourceBrowseController extends BaseUIController {
     public Object searchResourceList() {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        String url = "/resources/categories";
+        String url = "/resources/categories/all";
         String resultStr = "";
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);

@@ -99,7 +99,7 @@ public class ResourceIntegratedController extends BaseUIController {
         params.put("size", rows);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = toModel(resultStr, Envelop.class);;
+            envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
