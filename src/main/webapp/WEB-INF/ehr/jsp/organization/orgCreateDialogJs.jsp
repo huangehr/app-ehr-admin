@@ -57,6 +57,7 @@
             $logoUrl:$("#logoUrl"),
             $parentHosId:$("#parentHosId"),
             $zxy:$("#zxy"),
+            $berth:$("#berth"),
 
             init: function () {
 
@@ -100,6 +101,7 @@
                 this.$legalPerson.ligerTextBox({width: 140});
 //                this.$parentHosId.ligerTextBox({width: 140});
                 this.$zxy.ligerComboBox({width: 140});
+                this.$berth.ligerTextBox({width: 140});
                 this.$orgType.ligerComboBox({width:140});
                 this.$ascriptionType.ligerComboBox({width:140});
                 this.$settledWay.ligerComboBox({width:140});
@@ -147,6 +149,20 @@
                     onSuccess: function () {
                         self.$form.Fields.fillValues({orgType: "Hospital"});
                         self.$form.Fields.fillValues({settledWay: "Direct"});
+                    },
+                    onSelected: function (v) {
+                        var dom = $(this.element);
+                        if (dom.attr('id') == 'org_type') {
+                            if (v != 'Hospital') {
+                                $('#berthDiv').hide();
+                                $('#berth').removeClass('required');
+                                $('#berth').parent().removeClass('essential');
+                            } else {
+                                $('#berthDiv').show();
+                                $('#berth').addClass('required');
+                                $('#berth').parent().addClass('essential');
+                            }
+                        }
                     }
                 });
             },

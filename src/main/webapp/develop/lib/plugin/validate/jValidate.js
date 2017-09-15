@@ -1126,8 +1126,8 @@
             return true;
         }],
         ['validate-code-char', /^[0-9A-Za-z_.]+$/],
-        ['validate-meta-id', /^EHR_\d{6}$/]
-
+        ['validate-meta-id', /^EHR_\d{6}$/],
+        ['validate-positive-integer', /^[1-9]\d*$|^0$/]
     ]);
 
 })(jQuery.jValidation.Validation, jQuery);
