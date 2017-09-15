@@ -73,13 +73,15 @@
                 upDomsArr.push(item.quotaCode);
                 dimensionList.push(item.dimensionList);
                 dimensionMapArr.push(item.dimensionOptions);
+                $('#' + item.quotaCode + '_a').attr('data-id', j);
                 var chart = echarts.init(document.getElementById('' + item.quotaCode));
                 chart.setOption(JSON.parse(item.option));
                 (function (c, n, id) {
                     chartsArr.push(c);
                     quotaIdArr.push(id);
                     c.on('click',function (e) {
-                        getUpDownData(e, n, 'down');
+                        getUpDownData(e, n);
+                        e.event.stopPropagation();
                     });
                 })(chart, j, item.quotaId);
                 // 渲染数据的条件范围
@@ -140,8 +142,8 @@
     }
 
     // 获取上卷下砖数据
-    function getUpDownData (e, n, t) {
-        if (t === 'up') {
+    function getUpDownData (e, n) {
+        if (!e) {
             indexArr[n]--;
             if (indexArr[n] == 0) {
                 $('#' + upDomsArr[n] + '_a').hide();
@@ -154,12 +156,13 @@
         }
         var code = dimensionList[n][indexArr[n]].code,
             value = '';
-        if (t === 'down') {
+        if (e) {
             value = dimensionMapArr[n][e.name];
             $('#' + upDomsArr[n] + '_a').show();
             indexArr[n]++;
             if (indexArr[n] >= dimensionList[n].length) {
                 indexArr[n]--;
+                $.Notice.success('已是最底层！');
                 return;
             }
             quotaFilter[n] = quotaFilter[n] || [];
@@ -180,11 +183,13 @@
                     var dimensionMap = res[0].dimensionMap,
                         options = JSON.parse(res[0].option);
                     dimensionMapArr[n] = dimensionMap;
+                    chartsArr[n].un('click');
                     chartsArr[n].clear();
                     chartsArr[n].hideLoading();
                     chartsArr[n].setOption(options);
                     chartsArr[n].on('click', function (e) {
-                        getUpDownData (e, n, t);
+                        getUpDownData (e, n);
+                        e.event.stopPropagation();
                     });
                 }
             }
@@ -195,7 +200,7 @@
         $.each(upDomsArr, function (k, v) {
             $('#' + v + '_a').on('click', function () {
                 var n = $(this).attr('data-id');
-                getUpDownData('', n, 'up');
+                getUpDownData('', n);
             });
         });
     }
