@@ -22,6 +22,7 @@
         chartsArr = [],
         quotaIdArr = [],
         resourceId = '';
+
     $(function () {
         renderTemplate(reportCode);
     });
@@ -38,73 +39,12 @@
                     var viewInfos = data.obj.viewInfos;
                     for(var a = 0; a < viewInfos.length; a++) {
                         var viewInfo = viewInfos[a];
-                        var conditions = viewInfo.conditions;
                         if(viewInfo.type === 'quota') {
                             // 指标视图场合，展示为图形
-                            var options = viewInfo.options;
-                            resourceId = viewInfo.resourceId;
-                            for (var i = 0; i < options.length; i++) {
-                                indexArr.push(0);
-                                (function (j) {
-                                    // 渲染图形
-                                    var item = options[j];
-                                    upDomsArr.push(item.quotaCode);
-                                    dimensionList.push(item.dimensionList);
-                                    dimensionMapArr.push(item.dimensionOptions);
-                                    var chart = echarts.init(document.getElementById('' + item.quotaCode));
-                                    chart.setOption(JSON.parse(item.option));
-                                    (function (c, n, id) {
-                                        chartsArr.push(c);
-                                        quotaIdArr.push(id);
-                                        c.on('click',function (e) {
-                                            getUpDownData(e, n, 'down');
-                                        });
-                                    })(chart, j, item.quotaId);
-                                    // 渲染数据的条件范围
-                                    renderConditions(item.quotaCode, conditions);
-                                })(i);
-                            }
+                            renderQuota(viewInfo);
                         } else if(viewInfo.type === 'record') {
                             // 档案视图场合，展示为列表
-                            var columns = [
-                                {name: 'patient_name', display: '病人姓名', width: 100},
-                                {name: 'event_type', display: '就诊类型', width: 100,
-                                    render: function (row, key, val, rowData) {
-                                        if (val == '0') {
-                                            return '门诊';
-                                        }
-                                        if (val == '1') {
-                                            return '住院';
-                                        }
-                                    }
-                                },
-                                {name: 'org_name', display: '机构名称', width: 100},
-                                {name: 'org_code', display: '机构编号', width: 100},
-                                {name: 'event_date', display: '时间', width: 100,
-                                    render: function (row, key, val, rowData) {
-                                        return formatDate(val);
-                                    }
-                                },
-                                {name: 'demographic_id', display: '病人身份证号码', width: 100}
-                            ];
-                            for(var k = 0; k < viewInfo.columns.length; k++) {
-                                var column = viewInfo.columns[k];
-                                columns.push({name: column.code, display: column.value, width: 100});
-                            }
-                            var $gridDom = $("#" + viewInfo.resourceCode);
-                            var grid = $gridDom.ligerGrid($.LigerGridEx.config({
-                                url: '${contextRoot}/resourceBrowse/searchResourceData',
-                                parms: {
-                                    resourcesCode: viewInfo.resourceCode,
-                                    searchParams: viewInfo.searchParams
-                                },
-                                columns: columns,
-                                height: $gridDom.height(),
-                                allowHideColumn: false,
-                                usePager: true
-                            }));
-                            // 渲染数据的条件范围
-                            renderConditions(viewInfo.resourceCode, conditions);
+                            renderRecord(viewInfo);
                         }
                     }
                     wait.close();
@@ -120,9 +60,90 @@
             }
         });
     }
-    //获取上卷下砖数据
-    function getUpDownData (e, n, t) {
-        if (t === 'up') {
+
+    // 渲染指标视图图形
+    function renderQuota(viewInfo) {
+        var options = viewInfo.options;
+        resourceId = viewInfo.resourceId;
+        for (var i = 0; i < options.length; i++) {
+            indexArr.push(0);
+            (function (j) {
+                // 渲染图形
+                var item = options[j];
+                upDomsArr.push(item.quotaCode);
+                dimensionList.push(item.dimensionList);
+                dimensionMapArr.push(item.dimensionOptions);
+                $('#' + item.quotaCode + '_a').attr('data-id', j);
+                var chart = echarts.init(document.getElementById('' + item.quotaCode));
+                chart.setOption(JSON.parse(item.option));
+                (function (c, n, id) {
+                    chartsArr.push(c);
+                    quotaIdArr.push(id);
+                    c.on('click',function (e) {
+                        getUpDownData(e, n);
+                        e.event.stopPropagation();
+                    });
+                })(chart, j, item.quotaId);
+                // 渲染数据的条件范围
+                renderConditions(item.quotaCode, viewInfo.conditions);
+            })(i);
+        }
+    }
+
+    // 渲染档案视图列表
+    function renderRecord(viewInfo) {
+        var columns = [
+            {name: 'patient_name', display: '病人姓名', width: 100},
+            {name: 'event_type', display: '就诊类型', width: 100,
+                render: function (row, key, val, rowData) {
+                    if (val == '0') {
+                        return '门诊';
+                    }
+                    if (val == '1') {
+                        return '住院';
+                    }
+                }
+            },
+            {name: 'org_name', display: '机构名称', width: 100},
+            {name: 'org_code', display: '机构编号', width: 100},
+            {name: 'event_date', display: '时间', width: 100,
+                render: function (row, key, val, rowData) {
+                    return formatDate(val);
+                }
+            },
+            {name: 'demographic_id', display: '病人身份证号码', width: 100}
+        ];
+        for(var k = 0; k < viewInfo.columns.length; k++) {
+            var column = viewInfo.columns[k];
+            columns.push({name: column.code, display: column.value, width: 100});
+        }
+        var $gridDom = $("#" + viewInfo.resourceCode);
+        var grid = $gridDom.ligerGrid($.LigerGridEx.config({
+            url: '${contextRoot}/resourceBrowse/searchResourceData',
+            parms: {
+                resourcesCode: viewInfo.resourceCode,
+                searchParams: viewInfo.searchParams
+            },
+            columns: columns,
+            height: $gridDom.height(),
+            allowHideColumn: false,
+            usePager: true
+        }));
+        // 渲染数据的条件范围
+        renderConditions(viewInfo.resourceCode, viewInfo.conditions);
+    }
+
+    // 渲染数据的条件范围
+    function renderConditions(code, conditions) {
+        var conditionsTpl = document.getElementById('data-conditions-tpl').innerHTML.trim();
+        Mustache.parse(conditionsTpl);
+        var conditionsHtml = Mustache.render(conditionsTpl, conditions);
+        $('#' + code).before(conditionsHtml);
+    }
+
+    // 获取上卷下砖数据
+    function getUpDownData (e, n) {
+        if (!e) {
             indexArr[n]--;
             if (indexArr[n] == 0) {
                 $('#' + upDomsArr[n] + '_a').hide();
@@ -135,12 +156,13 @@
         }
         var code = dimensionList[n][indexArr[n]].code,
             value = '';
-        if (t === 'down') {
+        if (e) {
             value = dimensionMapArr[n][e.name];
             $('#' + upDomsArr[n] + '_a').show();
             indexArr[n]++;
             if (indexArr[n] >= dimensionList[n].length) {
                 indexArr[n]--;
+                $.Notice.success('已是最底层！');
                 return;
             }
             quotaFilter[n] = quotaFilter[n] || [];
@@ -161,11 +183,13 @@
                     var dimensionMap = res[0].dimensionMap,
                         options = JSON.parse(res[0].option);
                     dimensionMapArr[n] = dimensionMap;
+                    chartsArr[n].un('click');
                     chartsArr[n].clear();
                     chartsArr[n].hideLoading();
                     chartsArr[n].setOption(options);
                     chartsArr[n].on('click', function (e) {
-                        getUpDownData (e, n, t);
+                        getUpDownData (e, n);
+                        e.event.stopPropagation();
                     });
                 }
             }
@@ -176,18 +200,9 @@
         $.each(upDomsArr, function (k, v) {
             $('#' + v + '_a').on('click', function () {
                 var n = $(this).attr('data-id');
-                getUpDownData('', n, 'up');
+                getUpDownData('', n);
             });
         });
-    }
-    
-
-    // 渲染数据的条件范围
-    function renderConditions(code, conditions) {
-        var conditionsTpl = document.getElementById('data-conditions-tpl').innerHTML.trim();
-        Mustache.parse(conditionsTpl);
-        var conditionsHtml = Mustache.render(conditionsTpl, conditions);
-        $('#' + code).before(conditionsHtml);
     }
 
     function formatDate(date) {
