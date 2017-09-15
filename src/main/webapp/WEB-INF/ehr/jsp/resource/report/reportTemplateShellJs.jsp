@@ -24,7 +24,6 @@
         resourceId = '';
 
     $(function () {
-        debugger;
         renderTemplate(reportCode);
     });
 
