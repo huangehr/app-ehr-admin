@@ -110,6 +110,16 @@
         </ul>
         <ul class="list-item">
             <li>
+                <div class="m-form-group" id="berthDiv">
+                    <label>核定床位<spring:message code="spe.colon"/></label>
+                    <div class="l-text-wrapper m-form-control essential">
+                        <input type="text" id="berth" name="berth" placeholder="请输入核定床位" class="required useTitle  validate-positive-integer" required-title=
+                        <spring:message code="lbl.must.input"/> validate-positive-integer-title="请输入正确的核定床位"
+                               data-attr-scan="berth"/>
+                    </div>
+                </div>
+            </li>
+            <li>
                 <div class="m-form-group">
                     <label>联系人<spring:message code="spe.colon"/></label>
                     <div class="l-text-wrapper m-form-control">

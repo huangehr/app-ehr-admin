@@ -81,6 +81,7 @@
             $publicKeyInfoDiv:$("#publicKeyInfoDiv"),
             $parentPublicKey:$("#parentPublicKey"),
 
+            $berth:$("#berth"),
             $affirmBtn: $('#div_affirm_btn'),
 
             $orgImageShow: $('#div_file_list'),
@@ -130,6 +131,8 @@
                 this.$zxy.ligerComboBox({width: 140});
                 this.$settledWay.ligerComboBox({width: 140});
                 this.$publicKeyInfo.ligerTextBox({width: 140});
+
+                this.$berth.ligerTextBox({width: 140});
                 this.initDDL(orgTypeDictId, this.$orgType);
                 this.initDDL(settledWayDictId, this.$settledWay);
                 this.initDDL(hosTypeDictId,this.$hosType);
@@ -166,6 +169,7 @@
                     levelId:org.levelId,
                     legalPerson:org.legalPerson,
                     zxy:org.zxy,
+                    berth: org.berth,
 
                     publicKey: org.publicKey,
                     validTime: org.validTime,
@@ -219,7 +223,21 @@
                     dataParmName: 'detailModelList',
                     urlParms: {dictId: dictId},
                     valueField: 'code',
-                    textField: 'value'
+                    textField: 'value',
+                    onSelected: function (v) {
+                        var dom = $(this.element);
+                        if (dom.attr('id') == 'org_type') {
+                            if (v != 'Hospital') {
+                                $('#berthDiv').hide();
+                                $('#berth').removeClass('required');
+                                $('#berth').parent().removeClass('essential');
+                            } else {
+                                $('#berthDiv').show();
+                                $('#berth').addClass('required');
+                                $('#berth').parent().addClass('essential');
+                            }
+                        }
+                    }
                 });
             },
             bindEvents: function () {

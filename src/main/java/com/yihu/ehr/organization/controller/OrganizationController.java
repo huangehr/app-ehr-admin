@@ -359,6 +359,9 @@ public class OrganizationController extends BaseUIController {
                 orgForUpdate.setIng(org.getIng());
                 orgForUpdate.setLat(org.getLat());
                 orgForUpdate.setZxy(org.getZxy());
+                if ("Hospital".equalsIgnoreCase(org.getOrgType())) {
+                    orgForUpdate.setBerth(org.getBerth());
+                }
 
 
 
