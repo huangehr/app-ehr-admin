@@ -47,7 +47,7 @@
                 $searchInp: $('#searchInp'),
                 $startDate: $('#startDate'),
                 $endDate: $('#endDate'),
-                $treeCon: $('.tree-con'),
+                $treeCon: $('.tree-con-zhcx'),
                 $divLeftTree: $('#divLeftTree'),
                 $divResourceInfoGrid: $('#divResourceInfoGrid'),
                 $zbGrid: $('#zbGrid'),
@@ -95,12 +95,12 @@
                         }
                     });
 
-                    me.$treeCon.mCustomScrollbar({
-                        axis: "y"
-                    });
-                    me.$queryConc.mCustomScrollbar({
-                        axis: "y"
-                    });
+//                    me.$treeCon.mCustomScrollbar({
+//                        axis: "y"
+//                    });
+//                    me.$queryConc.mCustomScrollbar({
+//                        axis: "y"
+//                    });
                     me.$startDate.ligerDateEditor({
                         width: 180,
                         onChangeDate: function () {

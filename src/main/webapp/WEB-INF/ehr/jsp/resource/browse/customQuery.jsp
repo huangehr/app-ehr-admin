@@ -41,7 +41,7 @@
         <div class="m-form-control ser-con">
             <input type="text" id="searchInp" placeholder="请输入名称">
         </div>
-        <div class="tree-con">
+        <div class="tree-con-zhcx">
             <div id="divLeftTree" style="padding: 10px;"></div>
         </div>
     </div>
