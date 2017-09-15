@@ -394,7 +394,8 @@ public class ReportController extends BaseUIController {
             params.put("reportId", rsReportModel.getId());
             String viewListEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
             String viewListStr = objectMapper.writeValueAsString(objectMapper.readValue(viewListEnvelopStr, Envelop.class).getDetailModelList());
-            List<RsReportViewModel> rsReportViewList = objectMapper.readValue(viewListStr, new TypeReference<List<RsReportViewModel>>(){});
+            List<RsReportViewModel> rsReportViewList = objectMapper.readValue(viewListStr, new TypeReference<List<RsReportViewModel>>() {
+            });
 
             // 获取图形配置
             for (RsReportViewModel view : rsReportViewList) {
@@ -408,7 +409,7 @@ public class ReportController extends BaseUIController {
                 Map<String, Object> viewInfo = new HashMap<>();
                 Map<String, Object> conditions = translateViewCondition(rsResourcesModel.getDataSource(), queryStr);
                 viewInfo.put("conditions", conditions); // 视图数据过滤条件。
-                if(rsResourcesModel.getDataSource() == 1) {
+                if (rsResourcesModel.getDataSource() == 1) {
                     // 档案视图场合
                     viewInfo.put("type", "record");
                     viewInfo.put("resourceCode", rsResourcesModel.getCode());
@@ -427,7 +428,8 @@ public class ReportController extends BaseUIController {
                     params.clear();
                     params.put("resourceId", view.getResourceId());
                     String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-                    List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {});
+                    List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {
+                    });
                     for (MChartInfoModel chartInfo : chartInfoList) {
                         Map<String, Object> option = new HashMap<>();
                         option.put("quotaCode", chartInfo.getQuotaCode());
@@ -457,37 +459,38 @@ public class ReportController extends BaseUIController {
      */
     private Map<String, Object> translateViewCondition(Integer type, String queryStr) throws IOException, ParseException {
         Map<String, Object> conditions = new HashMap<>();
-        if(type == 1) {
+        if (type == 1) {
             // 档案视图场合
-            List<Map<String, Object>> filterList = objectMapper.readValue(queryStr, new TypeReference<List<Map<String, Object>>>() {});
+            List<Map<String, Object>> filterList = objectMapper.readValue(queryStr, new TypeReference<List<Map<String, Object>>>() {
+            });
             for (int i = 0; i < filterList.size(); i++) {
                 Map filter = filterList.get(i);
                 String field = filter.get("field").toString();
                 String condition = filter.get("condition").toString();
                 String value = filter.get("value").toString();
-                if("event_date".equals(field)) {
+                if ("event_date".equals(field)) {
                     // 期间
                     String date = DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(value));
-                    if(condition.contains(">")) {
+                    if (condition.contains(">")) {
                         conditions.put("startDate", date);
-                    } else if(condition.contains("<")) {
+                    } else if (condition.contains("<")) {
                         conditions.put("endDate", date);
                     }
                 }
-                if("EHR_000241".equals(field)) {
+                if ("EHR_000241".equals(field)) {
                     // 地区
                     conditions.put("area", value);
                 }
             }
-        } else if(type == 2) {
+        } else if (type == 2) {
             // 指标视图场合
             Map filter = objectMapper.readValue(queryStr, Map.class);
-            if(filter.get("startTime") != null) {
+            if (filter.get("startTime") != null) {
                 // 起始日期
                 String date = filter.get("startTime").toString();
                 conditions.put("startDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
             }
-            if(filter.get("endTime") != null) {
+            if (filter.get("endTime") != null) {
                 // 终止日期
                 String date = filter.get("endTime").toString();
                 conditions.put("endDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
