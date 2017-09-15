@@ -892,7 +892,7 @@ set.elementAttr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.top.dialog_set_detail.close();
+            parent.set.list.dialog_set_detail.close();
         });
         //给数据元主键和是否空值的选择
         $("#primaryKey").click(function () {
