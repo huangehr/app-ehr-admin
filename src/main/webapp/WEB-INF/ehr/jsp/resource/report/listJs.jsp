@@ -111,6 +111,7 @@
         $.subscribe('resource:report:upload', function (event, id) {
             var formData = new FormData($( "#uploadForm" + id)[0]);
             formData.append('id', id);
+            var wait = $.Notice.waitting("正在保存中，请稍后...");
             $.ajax({
                 url: '${contextRoot}/resource/report/upload',
                 type: 'post',
@@ -118,6 +119,7 @@
                 contentType: false,
                 processData: false,
                 success: function (data) {
+                    wait.close();
                     if(data.successFlg){
                         reloadGrid();
                         $.Notice.success('上传成功！');
@@ -126,6 +128,7 @@
                     }
                 },
                 error: function () {
+                    wait.close();
                     $.Notice.error('上传文件发生异常');
                 }
             });

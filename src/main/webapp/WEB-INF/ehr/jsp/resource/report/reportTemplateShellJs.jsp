@@ -12,8 +12,16 @@
 <script src="${contextRoot}/develop/module/util.js"></script>
 <script src="${contextRoot}/develop/lib/plugin/notice/topNotice.js"></script>
 <script>
+    var wait = $.Notice.waitting("加载中...");
     var reportCode = ${reportCode};
-
+    var quotaFilter = [],//条件集
+        dimensionMapArr = [],//维度数据集
+        dimensionList = [],//维度集
+        indexArr = [],//下砖层级集
+        upDomsArr = [],
+        chartsArr = [],
+        quotaIdArr = [],
+        resourceId = '';
     $(function () {
         renderTemplate(reportCode);
     });
@@ -34,12 +42,24 @@
                         if(viewInfo.type === 'quota') {
                             // 指标视图场合，展示为图形
                             var options = viewInfo.options;
+                            resourceId = viewInfo.resourceId;
                             for (var i = 0; i < options.length; i++) {
+                                indexArr.push(0);
                                 (function (j) {
                                     // 渲染图形
                                     var item = options[j];
+                                    upDomsArr.push(item.quotaCode);
+                                    dimensionList.push(item.dimensionList);
+                                    dimensionMapArr.push(item.dimensionOptions);
                                     var chart = echarts.init(document.getElementById('' + item.quotaCode));
                                     chart.setOption(JSON.parse(item.option));
+                                    (function (c, n, id) {
+                                        chartsArr.push(c);
+                                        quotaIdArr.push(id);
+                                        c.on('click',function (e) {
+                                            getUpDownData(e, n, 'down');
+                                        });
+                                    })(chart, j, item.quotaId);
                                     // 渲染数据的条件范围
                                     renderConditions(item.quotaCode, conditions);
                                 })(i);
@@ -87,15 +107,80 @@
                             renderConditions(viewInfo.resourceCode, conditions);
                         }
                     }
+                    wait.close();
+                    bindEvent();
                 } else {
+                    wait.close();
                     $.Notice.warn('获取报表模版失败！');
                 }
             },
             error: function () {
+                wait.close();
                 $.Notice.error('获取报表模版发生异常！');
             }
         });
     }
+    //获取上卷下砖数据
+    function getUpDownData (e, n, t) {
+        if (t === 'up') {
+            indexArr[n]--;
+            if (indexArr[n] == 0) {
+                $('#' + upDomsArr[n] + '_a').hide();
+            }
+            if (indexArr[n] < 0) {
+                indexArr[n] = 0;
+                return;
+            }
+            quotaFilter[n].pop();
+        }
+        var code = dimensionList[n][indexArr[n]].code,
+            value = '';
+        if (t === 'down') {
+            value = dimensionMapArr[n][e.name];
+            $('#' + upDomsArr[n] + '_a').show();
+            indexArr[n]++;
+            if (indexArr[n] >= dimensionList[n].length) {
+                indexArr[n]--;
+                return;
+            }
+            quotaFilter[n] = quotaFilter[n] || [];
+            quotaFilter[n].push(code + '=' + value);
+        }
+        $.ajax({
+            url: '${contextRoot}/resource/resourceManage/resourceUpDown',
+            data: {
+                id: resourceId,
+                dimension: code,
+                quotaFilter: quotaFilter[n].join(','),
+                quotaId: quotaIdArr[n]
+            },
+            type: 'GET',
+            dataType: 'json',
+            success: function (res) {
+                if (res && res.length > 0) {
+                    var dimensionMap = res[0].dimensionMap,
+                        options = JSON.parse(res[0].option);
+                    dimensionMapArr[n] = dimensionMap;
+                    chartsArr[n].clear();
+                    chartsArr[n].hideLoading();
+                    chartsArr[n].setOption(options);
+                    chartsArr[n].on('click', function (e) {
+                        getUpDownData (e, n, t);
+                    });
+                }
+            }
+        });
+    }
+    
+    function  bindEvent () {
+        $.each(upDomsArr, function (k, v) {
+            $('#' + v + '_a').on('click', function () {
+                var n = $(this).attr('data-id');
+                getUpDownData('', n, 'up');
+            });
+        });
+    }
+    
 
     // 渲染数据的条件范围
     function renderConditions(code, conditions) {
