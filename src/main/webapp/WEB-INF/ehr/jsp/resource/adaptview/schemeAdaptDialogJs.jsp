@@ -166,6 +166,7 @@
 
                 //修改用户的点击事件
                 this.$saveBtn.click(function () {
+                    debugger
                     self.$form.attrScan();
                     adapterSchemeModel = self.$form.Fields.getValues();
                     if(!validator.validate()){

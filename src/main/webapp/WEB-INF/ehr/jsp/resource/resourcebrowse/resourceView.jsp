@@ -20,17 +20,17 @@
     .pop-main{display:none;width: 10px;height: 10px;left: 81px;right: 0;position: absolute}
 </style>
 <!--######资源浏览页面Title设置######-->
-<div class="f-dn" data-head-title="true">资源浏览</div>
+<div class="f-dn" data-head-title="true">视图浏览</div>
 <div id="div_wrapper" class="f-mt10">
     <!-- ####### 查询条件部分 ####### -->
     <div class="f-h785">
         <div class="div-resource-view-title">
             <a id="btn_back" class="f-fl">返回上一层</a>
             <div class="f-fl f-ml100">
-                <span>资源名称：</span><span id="sp_resourceName"></span>
+                <span>视图名称：</span><span id="sp_resourceName"></span>
             </div>
             <div class="f-fl f-ml100">
-                <span>资源主题：</span><span id="sp_resourceSub"></span>
+                <span>视图主题：</span><span id="sp_resourceSub"></span>
             </div>
         </div>
         <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">

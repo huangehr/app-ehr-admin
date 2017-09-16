@@ -20,7 +20,7 @@
 				});
                 $('#resource_name').val(dataModel.resourceName);
                 $('#resource_sub').val(dataModel.resourceSub);
-                $('#resource_title').html(dataModel.resourceName + "_资源授权");
+                $('#resource_title').html(dataModel.resourceName + "_视图授权");
             }();
             var master = {
                 tree: undefined,

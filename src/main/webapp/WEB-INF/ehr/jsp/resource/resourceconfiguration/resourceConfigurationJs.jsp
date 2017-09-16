@@ -15,7 +15,7 @@
             var sourceData = ${dataModel};
             $("#sp_resourceName").html(sourceData.resourceName);
             $("#sp_resourceSub").html(sourceData.resourceSub);
-            $(".sp-resource-configuration-name").html('<h3>' + sourceData.resourceName + '_资源配置</3>');
+            $(".sp-resource-configuration-name").html('<h3>' + sourceData.resourceName + '_视图配置</3>');
             var addRowDatas = new Array();
             var delRowDatas = new Array();
             var comUrl = '${contextRoot}/resourceConfiguration';
@@ -74,7 +74,7 @@
                     var columnDatas = [
                         {name: 'id', hide: true, isAllowHide: false},
                         {
-                            display: '资源标准编码', name: 'stdCode', width: '25%', align: 'left', render: function (row) {
+                            display: '视图标准编码', name: 'stdCode', width: '25%', align: 'left', render: function (row) {
                             return Util.isStrEquals(this.id, 'div_resource_configuration_info_grid') ? row.id : row.stdCode;
                         }
                         },

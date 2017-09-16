@@ -242,11 +242,19 @@
 
     }
     #divLeftTree{
-        height: 100%;
+        /*height: 100%;*/
     }
     .l-tree .l-body span{
         height: 22px;
         line-height: 22px;
+    }
+    .tree-con-zhcx{
+        height: 610px;
+        overflow: auto;
+    }
+    .l-panel td{
+        height: 40px;
+        line-height: 40px;
     }
 </style>
 

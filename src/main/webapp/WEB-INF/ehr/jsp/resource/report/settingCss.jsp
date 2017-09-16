@@ -37,7 +37,8 @@
         border-bottom: 1px solid #D6D6D6;
     }
     .wrapper .content {
-        padding: 10px;
+        /*padding: 10px;*/
+        height: 490px;
     }
     #settingTreeContainer {
         height: 490px;

@@ -744,7 +744,7 @@ cda.attr = {
                     break;
                 case'btn_close':
 
-                    parent.cda.list.top.dialog_cda_detail.close();
+                    parent.cda.list.dialog_cda_detail.close();
                     break;
                 case'btn-submit':
                     cda.attr.saveRelationship();

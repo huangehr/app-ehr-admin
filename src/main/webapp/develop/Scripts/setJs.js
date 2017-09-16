@@ -743,8 +743,12 @@ set.elementAttr = {
 
         $("#datatype").ligerComboBox({
             height: 28,
-            width: 220
-        })
+            width: 227,
+            onBeforeOpen: function () {
+                // debugger
+                // this.selectBox.css('top','126px');
+            }
+        });
 
     },
     getElementInfo: function () {
@@ -892,7 +896,7 @@ set.elementAttr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.top.dialog_set_detail.close();
+            parent.set.list.dialog_set_detail.close();
         });
         //给数据元主键和是否空值的选择
         $("#primaryKey").click(function () {
