@@ -5,27 +5,27 @@
 <div id="div_rs_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
 	<input type="hidden" id="id" data-attr-scan="id"/>
 	<div class="m-form-group">
-		<label>资源分类<spring:message code="spe.colon"/></label>
+		<label>视图分类<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential f-pr0">
 			<input type="text" id="inp_category" readonly="readonly" data-type="select" class="required useTitle f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="categoryId" />
 		</div>
 	</div>
 
 	<div class="m-form-group">
-		<label>资源名称<spring:message code="spe.colon"/></label>
+		<label>视图名称<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_name" class="required useTitle ajax f-h28 f-w240" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label>资源编码<spring:message code="spe.colon"/></label>
+		<label>视图编码<spring:message code="spe.colon"/></label>
 		<!--<div class="m-form-control essential ">-->
 		<div class="m-form-control l-text-wrapper essential">
 			<input id="inp_code" class="required useTitle ajax validate-special-char f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label>资源接口<spring:message code="spe.colon"/></label>
+		<label>视图接口<spring:message code="spe.colon"/></label>
 		<!--<div class="m-form-control essential ">-->
 		<div class="m-form-control l-text-wrapper essential" style="padding-right: 0">
 			<input id="inp_interface" class="required useTitle f-h28 f-w240 validate-special-char" data-type="select" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="rsInterface"/>
@@ -46,7 +46,7 @@
 		</div>
 	</div>
 	<div class="m-form-group">
-		<label>资源说明<spring:message code="spe.colon"/></label>
+		<label>视图说明<spring:message code="spe.colon"/></label>
 		<div class="m-form-control">
 			<textarea id="inp_description" class="f-h28 f-w240 max-length-500 validate-special-char" data-attr-scan="description" maxlength="500"></textarea>
 		</div>

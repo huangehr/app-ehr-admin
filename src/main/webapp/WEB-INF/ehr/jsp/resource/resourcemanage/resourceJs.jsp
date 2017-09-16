@@ -166,12 +166,12 @@
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
 							{display: '访问方式', name: 'grantType',hide:true},
-							{display: '资源名称', name: 'name', width: '15%', align: 'left'},
-							{display: '资源编码', name: 'code', width: '15%', align: 'left'},
-							{display: '资源接口', name: 'rsInterfaceName', width: '15%', align: 'left'},
-							{display: '资源分类', name: 'categoryName', width: '10%', align: 'left'},
-							{display: '资源分类Id', name: 'categoryId',hide:true},
-							{display: '资源说明', name: 'description', width: '13%', align: 'left'},
+							{display: '视图名称', name: 'name', width: '15%', align: 'left'},
+							{display: '视图编码', name: 'code', width: '15%', align: 'left'},
+							{display: '视图接口', name: 'rsInterfaceName', width: '15%', align: 'left'},
+							{display: '视图分类', name: 'categoryName', width: '10%', align: 'left'},
+							{display: '视图分类Id', name: 'categoryId',hide:true},
+							{display: '视图说明', name: 'description', width: '13%', align: 'left'},
 							{display: '操作', name: 'operator', width: '32%', render: function (row) {
 								var html = '<div style="text-align:right;">';
 								html += '<sec:authorize url="/resource/defaultParam/initial"><a class="label_a" title="默认参数配置" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "rs:param:list:open", row.id,row.code) + '">默认参数配置</a></sec:authorize>';
@@ -228,9 +228,9 @@
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
 						var title = "";
 						var wait = $.Notice.waitting("请稍后...");
-						if(mode == "modify"){title = "修改资源";}
-						if(mode == "view"){title = "查看资源";}
-						if(mode == "new"){title = "新增资源";}
+						if(mode == "modify"){title = "修改视图";}
+						if(mode == "view"){title = "查看视图";}
+						if(mode == "new"){title = "新增视图";}
 						master.rsInfoDialog = $.ligerDialog.open({
 							height:550,
 							width:500,
