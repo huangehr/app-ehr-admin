@@ -96,29 +96,26 @@
           rowHeight: 40,
           editorTopDiff: 41,
           allowAdjustColWidth: true,
-
           usePager: false,
           scrollToPage: false,
           columns: u.columns,
-
           data: gridData,
           height: "100%",
           rownumbers: false,
           checkbox: false,
           root: 'Rows',
-          tree: {columnId: 'tree_id',height:'100%'},
+          tree: {columnId: 'tree_id',height:'100%',isExpand: true},
           onError: function (a, b) {
           },
           onGroupExtend: function () {
             alert(1);
           }
         });
-
       }
       else {
         u.grid.reload(gridData);
       }
-      u.grid.collapseAll();
+//      u.grid.collapseAll();
 
       window.grid = u.grid;
 

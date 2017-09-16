@@ -99,11 +99,11 @@
             });
 
             $("#div_left .l-text").css({
-                "margin-left": 50, "margin-top": -20
+                "margin-left": 50, "margin-top": -25
             });
 
             $("#div_right .l-text").css({
-                "margin-left": 100, "margin-top": -20
+                "margin-left": 100, "margin-top": -25
             });
             this.setCss();
             this.event();
@@ -392,7 +392,7 @@
                     set.list.getElementList(versionCode, setid);
                 }
             };
-            set.list.showDialog(_tital, _url, 560, 730, callback);
+            set.list.showDialog(_tital, _url, 520, 730, callback);
         },
         updateElement: function (id) {
             var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
@@ -405,7 +405,7 @@
                     set.list.getElementList(versionCode, setid);
                 }
             };
-            set.list.showDialog(_tital, _url, 560, 730, callback);
+            set.list.showDialog(_tital, _url, 520, 730, callback);
         },
         deleteElement: function (ids) {
 

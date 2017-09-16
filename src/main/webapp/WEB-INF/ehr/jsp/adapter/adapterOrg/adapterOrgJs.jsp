@@ -262,6 +262,7 @@
                 master.reloadGrid();
             };
             win.closeDialog = function (msg) {
+                master.reloadGrid();
                 master.adapterInfoDialog.close();
                 if (msg)
                     $.Notice.success(msg);
