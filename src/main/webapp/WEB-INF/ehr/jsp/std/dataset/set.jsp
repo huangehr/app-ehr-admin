@@ -74,14 +74,14 @@
 
                         <sec:authorize url="/std/dataset/deleteMetaData">
                         <a id="btn_Delete_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr20"
-                           style="  margin-right: 20px;margin-top: -26px;">
+                           style="  margin-right: 20px;margin-top: -30px;">
                             批量删除
                         </a>
                         </sec:authorize>
 
                         <sec:authorize url="/std/dataset/elementupdate">
                         <a id="btn_add_element" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
-                           style="  margin-right: 20px;margin-top: -26px;">
+                           style="  margin-right: 126px;margin-top: -30px;">
                             新增
                         </a>
                         </sec:authorize>

@@ -743,8 +743,12 @@ set.elementAttr = {
 
         $("#datatype").ligerComboBox({
             height: 28,
-            width: 220
-        })
+            width: 227,
+            onBeforeOpen: function () {
+                // debugger
+                // this.selectBox.css('top','126px');
+            }
+        });
 
     },
     getElementInfo: function () {
