@@ -13,6 +13,7 @@ import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -100,6 +101,31 @@ public class ResourceIntegratedController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
+            List<Map<String, Object>> envelopList = envelop.getDetailModelList();
+            List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+            for(Map<String, Object> envelopMap : envelopList) {
+                Map<String, Object> resultMap = new HashMap<String, Object>();
+                for(String key : envelopMap.keySet()) {
+                    String value = envelopMap.get(key).toString();
+                    if (key.equals("event_type")) {
+                        String eventType = envelopMap.get(key).toString();
+                        if (eventType.equals("0")) {
+                            resultMap.put(key, "门诊");
+                        } else if (eventType.equals("1")) {
+                            resultMap.put(key, "住院");
+                        } else if (eventType.equals("2")) {
+                            resultMap.put(key, "线上");
+                        }
+                    } else if (value.contains("T") && value.contains("Z")) {
+                        String newDateStr = value.replace("T", " ").replace("Z", "");
+                        resultMap.put(key, newDateStr);
+                    } else {
+                        resultMap.put(key, value);
+                    }
+                }
+                resultList.add(resultMap);
+            }
+            envelop.setDetailModelList(resultList);
         } catch (Exception e) {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
@@ -145,6 +171,27 @@ public class ResourceIntegratedController extends BaseUIController {
             params.put("quotaIds", tjQuotaIds);
             params.put("quotaCodes", tjQuotaCodes);
             params.put("queryCondition", searchParams);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        }catch (Exception e) {
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
+    /**
+     * 综合查询指标统计数据检索条件
+     * @param tjQuotaCodes
+     * @return
+     */
+    @RequestMapping("/searchQuotaParam")
+    @ResponseBody
+    public Envelop searchQuotaDataParam(String tjQuotaCodes) {
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/resources/integrated/quota_param";
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("quotaCodes", tjQuotaCodes);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {

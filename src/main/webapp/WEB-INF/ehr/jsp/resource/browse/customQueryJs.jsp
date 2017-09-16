@@ -138,7 +138,7 @@
                         var htm = '';
                         _.each(res, function (o, k) {
                             o.label = k == 0 ? '地区' : '医疗机构';
-                            o.pCode = k == 0 ? 'EHR_000241' : 'EHR_000021';
+                            o.pCode = k == 0 ? 'org_area' : 'org_name';
                             htm += me.render(me.selTmp, o, function (d, $1) {
                                 var obj = d.obj || [],
                                     str = '';
@@ -618,7 +618,7 @@
                             for (var n = 0, nLen = aArr.length; n < nLen; n++) {
                                 var values = {andOr: '', condition: '', field: '', value: ''};
                                 values.andOr = 'AND';
-                                values.field = pCode;
+                                values.field = 'event_date';
                                 values.value = aArr[n].data;
                                 if (aArr[n].type == '0') {
                                     values.condition = '>';

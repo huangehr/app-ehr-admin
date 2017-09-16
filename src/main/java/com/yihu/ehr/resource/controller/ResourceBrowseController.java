@@ -209,6 +209,27 @@ public class ResourceBrowseController extends BaseUIController {
     }
 
     /**
+     * 指标资源检索条件获取
+     * @param resourcesId
+     * @return
+     */
+    @RequestMapping("/searchQuotaResourceParam")
+    @ResponseBody
+    public Envelop searchQuotaDataParam(String resourcesId) {
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/resources/ResourceBrowses/getQuotaResourceParam";
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("resourcesId", resourcesId);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        }catch (Exception e) {
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+    }
+
+    /**
      * 动态获取GRID的列名
      *
      * @param dictId
