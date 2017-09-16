@@ -7,7 +7,7 @@
     <div class="m-retrieve-area f-dn f-pr  m-form-inline" data-role-form>
         <%--<input type="text" id="inp_search" placeholder="输入姓名或身份证号"/>--%>
         <div class="m-form-group">
-            <div class="m-form-control">
+            <div class="m-form-control f-mb10">
                 <!--输入框-->
                 <input type="text" id="inp_search" placeholder="请输入姓名或身份证号" class="f-ml10" data-attr-scan="searchNm"/>
             </div>
@@ -61,7 +61,7 @@
                 </sec:authorize>
             </div>
 
-            <div class="m-form-control m-form-control-fr f-mb10">
+            <div class="m-form-control m-form-control-fr f-mb10" style="float: right">
                 <sec:authorize url="/patient/updatePatient">
                     <div id="div_new_patient" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span><spring:message code="btn.create"/></span>

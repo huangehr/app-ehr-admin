@@ -17,27 +17,27 @@
         <p>说明：双击列表单行，可查看机构详情。</p>
     </div>-->
     <!-- ####### 查询条件部分 ####### -->
-    <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
+    <div class="m-retrieve-area f-dn f-pr m-form-inline" data-role-form>
         <div class="m-form-group f-mt10">
-            <div class="m-form-control">
+            <div class="m-form-control f-mb10">
                 <!--输入框-->
                 <input type="text" id="inp_search" placeholder="请输入代码或名称" class="f-ml10" data-attr-scan="searchParm"/>
             </div>
 
-            <div class="m-form-control f-ml10">
+            <div class="m-form-control f-ml10 f-mb10">
                 <!--下拉框-->
                 <input type="text" id="inp_settledWay" placeholder="请选择入驻方式" data-type="select"
                        data-attr-scan="searchWay">
             </div>
-            <div class="m-form-control f-ml10">
+            <div class="m-form-control f-ml10 f-mb10">
                 <!--下拉框-->
                 <input type="text" id="inp_orgType" placeholder="请选择机构类型" data-type="select" data-attr-scan="orgType">
             </div>
-            <div class="m-form-control f-ml10">
+            <div class="m-form-control f-ml10 f-mb10">
                 <!--下拉框-->
                 <input type="text" id="inp_orgArea" placeholder="请选择地区" data-type="comboSelect" data-attr-scan="location">
             </div>
-            <div class="m-form-control f-ml10">
+            <div class="m-form-control f-ml10 f-mb10">
                 <!--按钮:查询 & 新增-->
                 <sec:authorize url="/ehr/organization/searchOrgs">
                     <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
@@ -45,7 +45,7 @@
                     </div>
                 </sec:authorize>
             </div>
-            <div class="m-form-control f-ml10 m-form-control-fr">
+            <div class="m-form-control f-ml10 f-mb10 m-form-control-fr">
                 <sec:authorize url="/organization/dialog/create">
                     <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span><spring:message code="btn.create"/></span>

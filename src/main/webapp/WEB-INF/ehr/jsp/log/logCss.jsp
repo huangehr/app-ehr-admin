@@ -4,4 +4,7 @@
 <style>
   #div_new_portalSetting { position: absolute; top: 10px; right: 10px; }
   .m-retrieve-area { padding: 10px; border: 1px solid #D6D6D6; border-bottom: none; }
+  .m-form-inline .m-form-group .l-text-wrapper{
+      padding-right: 0;
+  }
 </style>
