@@ -740,13 +740,53 @@ set.elementAttr = {
             return options;
         }
 
+        var dtData = {
+            Rows:[
+                {'id': 'VARCHAR', 'name': 'VARCHAR'},
+                {'id': 'INT', 'name': 'INT'},
+                {'id': 'FLOAT', 'name': 'FLOAT'},
+                {'id': 'DOUBLE', 'name': 'DOUBLE'},
+                {'id': 'CHAR', 'name': 'CHAR'},
+                {'id': 'TEXT', 'name': 'TEXT'},
+                {'id': 'DATE', 'name': 'DATE'},
+            ]
+        };
+        // var dtData = [
+        //     {'id': 'VARCHAR', 'name': 'VARCHAR'},
+        //     {'id': 'INT', 'name': 'INT'},
+        //     {'id': 'FLOAT', 'name': 'FLOAT'},
+        //     {'id': 'DOUBLE', 'name': 'DOUBLE'},
+        //     {'id': 'CHAR', 'name': 'CHAR'},
+        //     {'id': 'TEXT', 'name': 'TEXT'},
+        //     {'id': 'DATE', 'name': 'DATE'},
+        // ];
+
 
         $("#datatype").ligerComboBox({
             height: 28,
             width: 227,
-            onBeforeOpen: function () {
-                // debugger
-                // this.selectBox.css('top','126px');
+            // data: dtData,
+            textField: 'name',
+            valueField: 'id',
+            alwayShowInTop: true,
+            selectBoxHeight : 150,
+            grid: {
+                columns: [
+                    {display : '名称', name :'name',width : 210}
+                ],
+                allowAdjustColWidth : true,
+                // editorTopDiff : 41,
+                headerRowHeight : 0,
+                heightDiff : 0,
+                pageSize: 15,
+                pagesizeParmName : 'rows',
+                record : "totalCount",
+                rowHeight : 30,
+                rownumbers :false,
+                switchPageSizeApplyComboBox: false,
+                width :"98%",
+                data: dtData,
+                usePager: false
             }
         });
 
