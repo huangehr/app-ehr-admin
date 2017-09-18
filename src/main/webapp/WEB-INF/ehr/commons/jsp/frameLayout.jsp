@@ -14,6 +14,11 @@
     <tiles:insertAttribute name="header" />
     <tiles:insertAttribute name="layoutCss" ignore="true"/>
     <tiles:insertAttribute name="pageCss" ignore="true"/>
+        <style>
+            .mCustomScrollBox{
+                max-height: 100%!important;
+            }
+        </style>
 </head>
 <body>
 

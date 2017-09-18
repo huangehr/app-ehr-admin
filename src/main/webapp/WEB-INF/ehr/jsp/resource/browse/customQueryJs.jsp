@@ -53,6 +53,7 @@
                 $zbGrid: $('#zbGrid'),
                 dataModel: $.DataModel.init(),
                 selTmp: $('#selTmp').html(),
+                selDateTmp: $('#selDateTmp').html(),
                 leftTree: null,
                 filters: '',
                 //档案数据参数
@@ -80,6 +81,10 @@
                     this.loadTree();
                     this.bindEvent();
                     this.loadGrid();
+
+                    this.$treeCon.mCustomScrollbar({
+                        axis: "xy"
+                    });
                 },
                 //初始化表单控件
                 initForm: function () {
@@ -88,32 +93,31 @@
                         width: 245,
                         isSearch: true,
                         search: function () {
-                            debugger
                             var serVal = $('#searchInp').val();
                             me.filters = serVal;
                             me.loadTree();
                         }
                     });
-
+//
 //                    me.$treeCon.mCustomScrollbar({
 //                        axis: "y"
 //                    });
-//                    me.$queryConc.mCustomScrollbar({
-//                        axis: "y"
-//                    });
+                    me.$queryConc.mCustomScrollbar({
+                        axis: "y"
+                    });
                     me.$startDate.ligerDateEditor({
                         width: 180,
-                        onChangeDate: function () {
-                            var $parent = me.$startDate.closest('.sel-item');
-                            $parent.attr('data-start-date', me.$startDate.val());
-                        }
+//                        onChangeDate: function () {
+//                            var $parent = me.$startDate.closest('.sel-item');
+//                            $parent.attr('data-start-date', me.$startDate.val());
+//                        }
                     });
                     me.$endDate.ligerDateEditor({
                         width: 180,
-                        onChangeDate: function () {
-                            var $parent = me.$endDate.closest('.sel-item');
-                            $parent.attr('data-end-date', me.$endDate.val());
-                        }
+//                        onChangeDate: function () {
+//                            var $parent = me.$endDate.closest('.sel-item');
+//                            $parent.attr('data-end-date', me.$endDate.val());
+//                        }
                     });
                 },
                 //地区
@@ -290,18 +294,23 @@
                         return
                     }
                     if (data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
-                        me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
-                            data: {dictId: data[me.index].dictCode},
-                            type: 'GET',
-                            async: false,
-                            success: function (d) {
-                                if (d.successFlg) {
-                                    d.label = data[me.index].name;
-                                    d.pCode = data[me.index].code;
-                                    me.resetSelHtml(d);
+                        if (data[me.index].dictCode == 'DATECONDITION') {
+                            debugger
+                            me.resetSelHtml(data[me.index], 'date');
+                        } else {
+                            me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
+                                data: {dictId: data[me.index].dictCode},
+                                type: 'GET',
+                                async: false,
+                                success: function (da) {
+                                    if (da.successFlg) {
+                                        da.label = data[me.index].name;
+                                        da.pCode = data[me.index].code;
+                                        me.resetSelHtml(da, 'list');
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                     me.index++;
                     if (me.index < me.GridCloumnNamesData.length) {
@@ -309,18 +318,55 @@
                     }
                 },
                 //添加查询条件
-                resetSelHtml: function (d) {
+                resetSelHtml: function (d, t) {
                     var me = this,
                         htm = '';
-                    htm = me.render(me.selTmp, d, function (d, $1) {
-                        var obj = d.detailModelList || [],
-                            str = '';
-                        for (var i = 0, len = obj.length; i < len; i++) {
-                            str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
-                        }
-                        d.content = str;
+                    if (t == 'list') {
+                        htm = me.render(me.selTmp, d, function (dd, $1) {
+                            var obj = d.detailModelList || [],
+                                    str = '';
+                            for (var i = 0, len = obj.length; i < len; i++) {
+                                str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
+                            }
+                            dd.content = str;
+                        });
+                        me.$selMore.append(htm);
+                    } else {
+                        htm = me.render(me.selDateTmp, d, function (dd, $1) {
+                            var str = ['<li class="con-item ci-inp">',
+                                            '<input type="text" id="startDate' + d.code + '">',
+                                        '</li>',
+                                        '<li class="con-item ci-inp">',
+                                            '<input type="text" id="endDate' + d.code + '">',
+                                        '</li>'].join('');
+                            if ($1 == 'label') {
+                                dd.label = d.name;
+                            }
+                            if ($1 == 'content') {
+                                dd.content = str;
+                            }
+                        });
+                        me.$selMore.append(htm);
+                        me.loadLirderDate(d.code);
+                    }
+                },
+                loadLirderDate: function (code) {
+                    var sT = $('#startDate' + code),
+                        eT = $('#endDate' + code);
+                    sT.ligerDateEditor({
+                        width: 180,
+//                        onChangeDate: function () {
+//                            var $parent = sT.closest('.sel-item');
+//                            $parent.attr('data-start-date', sT.val());
+//                        }
                     });
-                    me.$selMore.append(htm);
+                    eT.ligerDateEditor({
+                        width: 180,
+//                        onChangeDate: function () {
+//                            var $parent = eT.closest('.sel-item');
+//                            $parent.attr('data-end-date', eT.val());
+//                        }
+                    });
                 },
                 //加载档案数据表格
                 loadGrid: function () {
@@ -584,9 +630,10 @@
                     var $selItems = me.$selectCon.find('.sel-item'),
                             jsonData = [];
                     for (var i = 0, len = $selItems.length; i < len; i++) {
+//                        debugger
                         var pCode = $selItems.eq(i).attr('data-parent-code'),
-                                codeList = $selItems.eq(i).attr('data-code-list');
-                        if (codeList) {
+                            codeList = $selItems.eq(i).attr('data-code-list');
+                        if (!$selItems.eq(i).hasClass('time')) {
                             var codeArr = codeList.length > 0 ? codeList.split(',') : [];
                             if (codeArr.length > 0) {
                                 for (var j = 0, leng = codeArr.length; j < leng; j++) {
@@ -600,9 +647,13 @@
                             }
                         } else {
                             //时间条件
-                            var sT = $selItems.eq(i).attr('data-start-date'),
-                                    eT = $selItems.eq(i).attr('data-end-date'),
-                                    aArr = [];
+                            var sT = $selItems.eq(i).find('[id^=startDate]').val(),
+                                eT = $selItems.eq(i).find('[id^=endDate]').val(),
+                                aArr = [];
+
+//                            var sT = $selItems.eq(i).attr('data-start-date'),
+//                                    eT = $selItems.eq(i).attr('data-end-date'),
+//                                    aArr = [];
                             if (sT && sT != '') {
                                 aArr.push({
                                     type: '0',
@@ -618,7 +669,7 @@
                             for (var n = 0, nLen = aArr.length; n < nLen; n++) {
                                 var values = {andOr: '', condition: '', field: '', value: ''};
                                 values.andOr = 'AND';
-                                values.field = 'event_date';
+                                values.field = pCode;
                                 values.value = aArr[n].data;
                                 if (aArr[n].type == '0') {
                                     values.condition = '>';
@@ -630,6 +681,7 @@
                             }
                         }
                     }
+                    console.log(JSON.stringify(jsonData));
                     return JSON.stringify(jsonData);
                 },
                 //导出指标统计excel
