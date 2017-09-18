@@ -11,13 +11,10 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.ObjectMapperUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateTimeUtil;
-import com.yihu.ehr.util.httpClient.HttpHelper;
-import com.yihu.ehr.util.httpClient.HttpResponse;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.util.web.RestTemplates;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -248,6 +245,8 @@ public class LoginController extends BaseUIController {
                 return "generalView";
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(LoginController.class).error(e.getMessage());
             model.addAttribute("userName", userName);
             model.addAttribute("successFlg", false);
             model.addAttribute("failMsg", e.getMessage());
@@ -286,12 +285,12 @@ public class LoginController extends BaseUIController {
         Map params = new HashMap<>();
         params.put("user_id", userId);
         String resultStr = HttpClientUtil.doGet(comUrl + "/roles/user/features", params, username, this.password);
-        EnvelopExt<AppFeatureModel> envelopExt =
-                (EnvelopExt<AppFeatureModel>) ObjectMapperUtil.toModel(resultStr, new TypeReference<EnvelopExt<AppFeatureModel>>() {
-                });
-        if (envelopExt.isSuccessFlg())
+        EnvelopExt<AppFeatureModel> envelopExt = (EnvelopExt<AppFeatureModel>) objectMapper.readValue(resultStr, new TypeReference<EnvelopExt<AppFeatureModel>>() {});
+        if (envelopExt.isSuccessFlg()) {
             return envelopExt.getDetailModelList();
-        throw new Exception(envelopExt.getErrorMsg());
+        } else {
+            throw new Exception(envelopExt.getErrorMsg());
+        }
     }
     //todo:暂时没用到
 //    @RequestMapping(value = "activeValidateCode")

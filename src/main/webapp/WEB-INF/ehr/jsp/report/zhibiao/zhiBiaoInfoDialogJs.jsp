@@ -166,6 +166,7 @@
                     },
                     valueField: 'code',
                     textField: 'name',
+                    absolute:false,
                     onSelected: function (id) {
                         dataSourceSelectedVal = id;
                     }
@@ -181,6 +182,7 @@
                     },
                     valueField: 'code',
                     textField: 'name',
+                    absolute:false,
                     onSelected: function (id) {
                         dataStorageSelectedVal = id;
                     }
@@ -192,6 +194,7 @@
                     ajaxType: 'post',
                     valueField: 'id',
                     textField: 'name',
+                    absolute:false,
                     onSelected: function (id) {
                         quotaTypeSelectedVal = id;
                     }
@@ -224,7 +227,8 @@
                 },null,null,{
                     valueField: 'value',
                     textField: 'code',
-                    condition: null
+                    condition: null,
+                    absolute:false,
                 },{
                     columns: [
                         { header: 'code', name: 'code', width: '40%' },

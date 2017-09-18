@@ -33,7 +33,7 @@
         </ui>
     </div>
     <div class="screen-con">
-        <div class="sc-btn">展开筛选<i class="icon-xiala"></i></div>
+        <div class="sc-btn">展开筛选<i class="iconn-xiala"></i></div>
     </div>
 
     <%--树--%>
@@ -55,8 +55,8 @@
                 <%--固定条件--%>
             </div>
 
-            <div class="sel-item time">
-                <span class="sel-lab">期间: </span>
+            <div class="sel-item time" data-parent-code="event_date">
+                <span class="sel-lab">时间: </span>
                 <ul class="con-list">
                     <li class="con-item ci-inp">
                         <input type="text" id="startDate">
@@ -87,10 +87,20 @@
             {{content}}
         </ul>
         <div class="show-more">
-            <div class="sc-btn sw-w">更多<i class="icon-xiala"></i></div>
+            <div class="sc-btn sw-w">更多<i class="iconn-xiala"></i></div>
         </div>
     </div>
 </script>
+
+<script type="text/html" id="selDateTmp">
+    <div class="sel-item time" data-parent-code="{{code}}">
+        <span class="sel-lab">{{label}}: </span>
+        <ul class="con-list">
+            {{content}}
+        </ul>
+    </div>
+</script>
+
 <script src="${staticRoot}/lib/jquery/jquery-1.9.1.js"></script>
 <script src="${staticRoot}/module/cookie.js"></script>
 <script src="${staticRoot}/module/util.js"></script>

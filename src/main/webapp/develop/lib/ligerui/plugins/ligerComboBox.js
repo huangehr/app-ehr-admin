@@ -1671,6 +1671,7 @@
         updateSelectBoxPosition: function ()
         {
             var g = this, p = this.options;
+            var textHeight = g.wrapper.height();
             if (p && p.absolute)
             {
                 var contentHeight = $(document).height();

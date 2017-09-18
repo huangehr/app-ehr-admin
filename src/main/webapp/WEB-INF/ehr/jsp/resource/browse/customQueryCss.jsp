@@ -108,7 +108,7 @@
         -ms-user-select: none;
         user-select: none;
     }
-    .icon-xiala{
+    .iconn-xiala{
         width: 13px;
         height: 5px;
         display: inline-block;
@@ -122,7 +122,7 @@
         transform: translateY(-50%);
         background: url(${staticRoot}/images/icon_xiala.png) no-repeat center center;
     }
-    .sc-btn.show .icon-xiala{
+    .sc-btn.show .iconn-xiala{
         top: 44%;
         -webkit-transform: rotate(180deg);
         -moz-transform: rotate(180deg);
@@ -157,6 +157,12 @@
         padding-top: 20px;
         border: 1px solid #e1e1e1;
         margin-bottom: 20px;
+        position: absolute;
+        z-index: 1;
+        background: #fff;
+        padding-bottom: 15px;
+        max-height: 450px;
+        overflow: auto;
     }
     .sel-item{
         width: 100%;
@@ -255,6 +261,9 @@
     .l-panel td{
         height: 40px;
         line-height: 40px;
+    }
+    .l-tree{
+        /*overflow: auto!important;*/
     }
 </style>
 
