@@ -201,7 +201,7 @@
                 </sec:authorize>
 
                 // 2-2 - 第三方标准
-                <sec:authorize url="/adapterorg/initial">
+                <%--<sec:authorize url="/adapterorg/initial">
                 {
                     pid: 2,
                     level:2,
@@ -209,9 +209,9 @@
                     text: '<spring:message code="title.org.std.collection.manage"/>',
                     url: '${contextRoot}/adapterorg/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
                 // 2-3- 标准适配
-                <sec:authorize url="/adapter/initial">
+                <%--<sec:authorize url="/adapter/initial">
                 {
                     pid: 2,
                     level:2,
@@ -219,7 +219,7 @@
                     text: '<spring:message code="title.adapter.manager"/>',
                     url: '${contextRoot}/adapter/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 // 2-4 特殊字典
                 <sec:authorize url="Ehr_Specialdict">
@@ -400,7 +400,7 @@
                 },
                 </sec:authorize>
                 // 3-3-4 - 视图浏览
-                <sec:authorize url="/resourceBrowse/browse">
+                <%--<sec:authorize url="/resourceBrowse/browse">
                 {
                     pid: 33,
                     level:3,
@@ -408,7 +408,7 @@
                     text: '<spring:message code="title.resource.browse"/>',
                     url: '${contextRoot}/resourceBrowse/browse'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 //3-4 资源报表管理
                 <sec:authorize url="Ehr_Report_Manange">
@@ -481,7 +481,7 @@
                 },
                 </sec:authorize>--%>
                 // 4-3 居民档案申领审核
-                <sec:authorize url="/archive/apply/initial">
+                <%--<sec:authorize url="/archive/apply/initial">
                 {
                     pid: 4,
                     level:2,
@@ -489,7 +489,7 @@
                     text: '<spring:message code="title.correlation.audit"/>',
                     url: '${contextRoot}/archive/apply/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
                 // 4-4- 就诊卡管理
                 <%--<sec:authorize url="/medicalCards/initialPageView">
                 {
@@ -522,16 +522,16 @@
                 </sec:authorize>
 
                 // 5 - 质量监控报告
-                <%--<sec:authorize url="Ehr_Data_Centre">
+                <sec:authorize url="Ehr_Data_Centre">
                 {
                     id: 5,
                     level:1,
                     text: '<spring:message code="title.quality.control.management"/>'
                 },
-                </sec:authorize>--%>
+                </sec:authorize>
 
                 // 5-5 - 趋势分析
-                <%--<sec:authorize url="/report/initial">
+                <sec:authorize url="/report/initial">
                 {
                     pid: 5,
                     level: 2,
@@ -539,7 +539,7 @@
                     text: '<spring:message code="title.trend.analysis"/>',
                     url: '${contextRoot}/report/initial'
                 },
-                </sec:authorize>--%>
+                </sec:authorize>
 
                 // 6- 信息安全管理
                 <sec:authorize url="Ehr_Security_Centre">
@@ -580,7 +580,7 @@
                 },
                 </sec:authorize>
                 // 6-4 安全管理中心 - 应用角色管理
-                <sec:authorize url="/appRole/initial">
+                <%--<sec:authorize url="/appRole/initial">
                 {
                     pid: 6,
                     level: 2,
@@ -588,7 +588,7 @@
                     text: '<spring:message code="title.app.role"/>',
                     url: '${contextRoot}/appRole/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
                 // 6-5 安全管理中心 - 机构数据授权
                 <sec:authorize url="/organization/organizationGrant">
                 {
@@ -648,7 +648,7 @@
                 },
                 </sec:authorize>
                 //7-2-2 消息提醒
-                <sec:authorize url="/messageRemind/initialMessageRemind">
+                <%--<sec:authorize url="/messageRemind/initialMessageRemind">
                 {
                     pid: 72,
                     level: 3,
@@ -656,7 +656,7 @@
                     text: '<spring:message code="title.portal.messageRemind"/>',
                     url: '${contextRoot}/messageRemind/initialMessageRemind'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
                 // 7-2-3 资源上传管理
                 <sec:authorize url="/portalResources/initial">
                 {
@@ -668,7 +668,7 @@
                 },
                 </sec:authorize>
                 // 7-2-4 资源配置管理
-                <sec:authorize url="/portalSetting/initial">
+                <%--<sec:authorize url="/portalSetting/initial">
                 {
                     pid: 72,
                     level: 3,
@@ -676,7 +676,7 @@
                     text: '<spring:message code="title.portal.portalSetting"/>',
                     url: '${contextRoot}/portalSetting/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
             ],
 
             // 一级菜单图标
