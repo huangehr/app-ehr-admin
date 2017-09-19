@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <link rel="stylesheet" href="${staticRoot}/common/reset.css">
@@ -27,9 +28,9 @@
             <div class="chang-btn cb-left">指标统计</div>
         </div>
         <ui class="single-btns">
-            <li class="single-btn query-con">查询</li>
-            <li class="single-btn gen-view">生成视图</li>
-            <li class="single-btn out-exc">导出</li>
+            <sec:authorize url="Ehr_InteQuery_Query"><li class="single-btn query-con">查询</li> </sec:authorize>
+            <sec:authorize url="Ehr_InteQuery_CreateView"><li class="single-btn gen-view">生成视图</li></sec:authorize>
+            <sec:authorize url="Ehr_InteQuery_export"><li class="single-btn out-exc">导出</li></sec:authorize>
         </ui>
     </div>
     <div class="screen-con">
