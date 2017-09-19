@@ -622,7 +622,7 @@
                                     rsInfoDialog = $.ligerDialog.open({
                                         height:550,
                                         width:500,
-                                        title:'新增资源',
+                                        title:'新增视图',
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
                                         urlParms:{
                                             queryCondition: qc,

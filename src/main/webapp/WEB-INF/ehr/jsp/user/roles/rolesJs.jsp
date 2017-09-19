@@ -126,7 +126,7 @@
 									html += '<a class="label_a" style="margin-left:15px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"users") + '>人员配置</a>';
 								</sec:authorize>
 
-								html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+								html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:resource:list", row.id,row.name,row.catalogName) + '">视图授权</a></sec:authorize>';
 
                                 html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "roles:resource:bbconfig", row.id) + '">资源报表配置</a></sec:authorize>';
 

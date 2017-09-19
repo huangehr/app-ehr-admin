@@ -96,11 +96,11 @@
 						var title = '';
 						var wait = $.Notice.waitting("请稍后...");
 						if(mode == 'modify'){
-							title = '修改资源接口';
+							title = '修改视图接口';
 						}else if(mode == 'new'){
-							title = '新增资源接口'
+							title = '新增视图接口'
 						}else{
-							title = '查看资源接口';
+							title = '查看视图接口';
 						};
 						master.infoDialog = $.ligerDialog.open({
 							height: 660,

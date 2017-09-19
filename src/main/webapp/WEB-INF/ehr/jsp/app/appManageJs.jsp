@@ -125,7 +125,7 @@
 							{ display: '操作', name: 'operator', width: '25%', render: function (row) {
 								var html = '';
 								if(Util.isStrEquals( row.status,'WaitingForApprove') || Util.isStrEquals( row.status,'Approved')){
-									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">视图授权</a></sec:authorize>';
 								}
                                 html += '<sec:authorize url="/app/feature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:platform:manager", row.id,row.name) + '">功能管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/app/feature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:api:manager", row.id,row.name) + '">API管理</a></sec:authorize>';
