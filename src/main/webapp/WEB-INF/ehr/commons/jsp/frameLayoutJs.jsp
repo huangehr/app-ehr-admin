@@ -522,16 +522,16 @@
                 </sec:authorize>
 
                 // 5 - 质量监控报告
-                <sec:authorize url="Ehr_Data_Centre">
+                <%--<sec:authorize url="Ehr_Data_Centre">
                 {
                     id: 5,
                     level:1,
                     text: '<spring:message code="title.quality.control.management"/>'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 // 5-5 - 趋势分析
-                <sec:authorize url="/report/initial">
+                <%--<sec:authorize url="/report/initial">
                 {
                     pid: 5,
                     level: 2,
@@ -539,7 +539,7 @@
                     text: '<spring:message code="title.trend.analysis"/>',
                     url: '${contextRoot}/report/initial'
                 },
-                </sec:authorize>
+                </sec:authorize>--%>
 
                 // 6- 信息安全管理
                 <sec:authorize url="Ehr_Security_Centre">
