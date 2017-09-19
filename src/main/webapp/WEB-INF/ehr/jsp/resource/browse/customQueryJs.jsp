@@ -13,7 +13,9 @@
             //医疗机构
             getOrgByUserId: '${contextRoot}/user/getOrgByUserId',
             //检测字段
-            getRsDictEntryList: '${contextRoot}/resourceBrowse/getRsDictEntryList'
+            getRsDictEntryList: '${contextRoot}/resourceBrowse/getRsDictEntryList',
+            //获取指标维度
+            searchQuotaParam: '${contextRoot}/resourceIntegrated/searchQuotaParam'
         };
         var conInf = [
             //档案数据
@@ -98,26 +100,14 @@
                             me.loadTree();
                         }
                     });
-//
-//                    me.$treeCon.mCustomScrollbar({
-//                        axis: "y"
-//                    });
                     me.$queryConc.mCustomScrollbar({
                         axis: "y"
                     });
                     me.$startDate.ligerDateEditor({
-                        width: 180,
-//                        onChangeDate: function () {
-//                            var $parent = me.$startDate.closest('.sel-item');
-//                            $parent.attr('data-start-date', me.$startDate.val());
-//                        }
+                        width: 180
                     });
                     me.$endDate.ligerDateEditor({
-                        width: 180,
-//                        onChangeDate: function () {
-//                            var $parent = me.$endDate.closest('.sel-item');
-//                            $parent.attr('data-end-date', me.$endDate.val());
-//                        }
+                        width: 180
                     });
                 },
                 //地区
@@ -175,11 +165,11 @@
                             me.selectData = this.getChecked();
                             me.$scBtn.removeClass('show');
                             me.$selectCon.hide();
-                            me.queryCondition = me.getSelCon();
                             if (me.selectData.length > 0) {
+//                                me.queryCondition = me.getSelCon();
                                 if (me.type == 0) {
                                     var ma = [], ca = [], sjyArr = [];
-                                    me.loadGrid();
+//                                    me.loadGrid();
                                     for (var i = 0, len = me.selectData.length; i < len; i++) {
                                         switch (me.selectData[i].data.level) {
                                             case '1':
@@ -197,34 +187,23 @@
                                     me.index = 0;
                                     me.$selMore.html('');
                                     me.GridCloumnNamesData = sjyArr;
-                                    me.reloadResourcesGrid({
-                                        metaData: me.childArr,
-                                        resourcesCode: me.masterArr,
-                                        searchParams: me.queryCondition
-                                    });
+//                                    me.reloadResourcesGrid({
+//                                        metaData: me.childArr,
+//                                        resourcesCode: me.masterArr,
+//                                        searchParams: me.queryCondition
+//                                    });
                                     me.setSearchData();
                                 } else {
                                     me.tjQuotaIds = [];
                                     me.tjQuotaCodes = [];
-                                    me.loadZBGrid();
                                     for (var k = 0, len = me.selectData.length; k < len; k++) {
                                         if (me.selectData[k].data.level == 2) {
                                             me.tjQuotaIds.push(me.selectData[k].data.id);
                                             me.tjQuotaCodes.push(me.selectData[k].data.code);
                                         }
                                     }
-                                    var par = {
-                                        tjQuotaIds: me.tjQuotaIds.join(','),
-                                        tjQuotaCodes: me.tjQuotaCodes.join(','),
-                                        //                                  searchParams: me.queryCondition,
-
-//                                        tjQuotaIds: '16,18',
-//                                        tjQuotaCodes: 'depart_treat_count,disease_add_count'
-//                                        searchParams: me.queryCondition
-                                    };
                                     me.ZBCloumnNamesData = [];
-                                    me.loadZBCol(par);
-                                    me.reloadZBGrid(par);
+                                    me.setZBSearchData();
                                 }
                             } else {
                                 me.resetDate();
@@ -286,7 +265,7 @@
                         this.loadZBGrid();
                     }
                 },
-                //筛选存在数据字典中的字段
+                //档案数据-筛选存在数据字典中的字段
                 setSearchData: function (d) {
                     var me = this,
                         data = me.GridCloumnNamesData;
@@ -295,7 +274,6 @@
                     }
                     if (data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
                         if (data[me.index].dictCode == 'DATECONDITION') {
-                            debugger
                             me.resetSelHtml(data[me.index], 'date');
                         } else {
                             me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
@@ -350,22 +328,48 @@
                         me.loadLirderDate(d.code);
                     }
                 },
+                setZBSearchData: function () {
+                    var me = this;
+                    me.dataModel.fetchRemote(pubInf.searchQuotaParam, {
+                        data: {
+                            tjQuotaCodes: (me.tjQuotaCodes).join(',')
+                        },
+                        success: function (data) {
+                            if (data.successFlg) {
+                                var d = data.obj,
+                                    htm = '';
+                                if (d) {
+                                    $.each(d, function (k, obj) {
+                                        htm += me.render(me.selTmp, obj, function (dd, $1) {
+                                            var str = '';
+                                            if ($1 == 'label') {
+                                                dd.label = dd.name;
+                                            }
+                                            if ($1 == 'pCode') {
+                                                dd.pCode = dd.key;
+                                            }
+                                            if ($1 == 'content') {
+                                                for (var i = 0, len = dd.value.length; i < len; i++) {
+                                                    str += '<li class="con-item" data-code="' + dd.value[i]+ '">' + dd.value[i] + '</li>';
+                                                }
+                                                dd.content = str;
+                                            }
+                                        });
+                                    });
+                                }
+                                me.$pubSel.html(htm);
+                            }
+                        }
+                    });
+                },
                 loadLirderDate: function (code) {
                     var sT = $('#startDate' + code),
                         eT = $('#endDate' + code);
                     sT.ligerDateEditor({
-                        width: 180,
-//                        onChangeDate: function () {
-//                            var $parent = sT.closest('.sel-item');
-//                            $parent.attr('data-start-date', sT.val());
-//                        }
+                        width: 180
                     });
                     eT.ligerDateEditor({
-                        width: 180,
-//                        onChangeDate: function () {
-//                            var $parent = eT.closest('.sel-item');
-//                            $parent.attr('data-end-date', eT.val());
-//                        }
+                        width: 180
                     });
                 },
                 //加载档案数据表格
@@ -402,7 +406,7 @@
                         url: conInf[me.type][1],
                         parms: {
                             tjQuotaIds: '',
-                            tjQuotaCodes: ''
+                            tjQuotaCodes: '',
 //                                        searchParams: me.queryCondition
                         },
                         columns: columnModel,
@@ -434,6 +438,7 @@
                 },
                 //加载档案数据
                 reloadResourcesGrid: function (searchParams) {
+                    this.loadGrid();
                     this.resourceInfoGrid.setOptions({parms: searchParams});
                     this.resourceInfoGrid.loadData(true);
                 },
@@ -452,9 +457,11 @@
                             return;
                         }
                         if (index == 0) {
+                            me.loadSelData();
                             me.$divResourceInfoGrid.show();
                             me.$zbGrid.hide();
                         } else {
+                            me.$pubSel.html('');
                             me.$divResourceInfoGrid.hide();
                             me.$zbGrid.show();
                         }
@@ -525,12 +532,24 @@
                     me.$queryCon.on('click', function () {
                         me.$scBtn.removeClass('show');
                         me.$selectCon.hide();
-                        me.queryCondition = me.getSelCon();
-                        me.reloadResourcesGrid({
-                            metaData: me.childArr,
-                            resourcesCode: me.masterArr,
-                            searchParams: me.queryCondition
-                        });
+                        if (me.type == 0) {
+                            me.queryCondition = me.getSelCon();
+                            me.reloadResourcesGrid({
+                                metaData: me.childArr,
+                                resourcesCode: me.masterArr,
+                                searchParams: me.queryCondition
+                            });
+                        } else {
+                            me.queryCondition = me.getZBSelCon();
+                            var p = {
+                                tjQuotaIds: me.tjQuotaIds.join(','),
+                                tjQuotaCodes: me.tjQuotaCodes.join(','),
+                                searchParams: me.queryCondition
+                            };
+                            me.loadZBCol(p);
+                            me.loadZBGrid();
+                            me.reloadZBGrid(p);
+                        }
                     });
                     //导出excel
                     me.$outExc.on('click', function () {
@@ -678,6 +697,31 @@
                                     values.condition = '<';
                                 }
                                 jsonData.push(values);
+                            }
+                        }
+                    }
+                    return JSON.stringify(jsonData);
+                },
+                getZBSelCon: function () {
+                    var me = this;
+                    var $selItems = me.$selectCon.find('.sel-item'),
+                        jsonData = {};
+                    for (var i = 0, len = $selItems.length; i < len; i++) {
+                        var pCode = $selItems.eq(i).attr('data-parent-code'),
+                            codeList = $selItems.eq(i).attr('data-code-list');
+                        if (!$selItems.eq(i).hasClass('time')) {
+                            if (codeList) {
+                                jsonData[pCode] = codeList;
+                            }
+                        } else {
+                            //时间条件
+                            var sT = $selItems.eq(i).find('[id^=startDate]').val(),
+                                eT = $selItems.eq(i).find('[id^=endDate]').val();
+                            if (sT) {
+                                jsonData['startDate'] = sT;
+                            }
+                            if (eT) {
+                                jsonData['endDate'] = eT;
                             }
                         }
                     }

@@ -21,6 +21,7 @@
         position: absolute;
         left: 50%;
         top: 50%;
+        background: #fff;
         -webkit-transform: translate(-50%,-50%);
         -moz-transform: translate(-50%,-50%);
         -ms-transform: translate(-50%,-50%);
@@ -154,6 +155,8 @@
         overflow: auto;
     }
     .select-con{
+        width: 100%;
+        max-height: 450px;
         padding-top: 20px;
         border: 1px solid #e1e1e1;
         margin-bottom: 20px;
@@ -161,7 +164,6 @@
         z-index: 1;
         background: #fff;
         padding-bottom: 15px;
-        max-height: 450px;
         overflow: auto;
     }
     .sel-item{
@@ -199,8 +201,11 @@
         /*position: absolute;*/
         /*left: 0;*/
         /*top: 0;*/
-
+        width: 141px;
+        text-align: right;
         display: table-cell;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .con-list{
         /*padding: 0 85px 0 100px;*/
