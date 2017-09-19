@@ -58,7 +58,7 @@
         <%--</div>--%>
         <%--</div>--%>
         <div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb f-dn">位置：<span id="span_nav_breadcrumb_content"></span></div>
-        <div data-content-page class="f-p10 f-pr" id="contentPage">
+        <div data-content-page class="f-p10 f-pr" id="contentPage" style="height: 100%">
             <%--<tiles:insertAttribute name="contentPage" ignore="true"/>--%>
         </div>
     </div>

@@ -76,8 +76,8 @@
                 params: {},
                 init: function () {
                     //设置综合查询页面的高度
-                    var queryMainH = this.WH - 128 - 25;
-                    this.$queryMain.height(queryMainH);
+//                    var queryMainH = this.WH - 128 - 25;
+//                    this.$queryMain.height(queryMainH);
                     this.initForm();
                     this.loadSelData();
                     this.loadTree();
