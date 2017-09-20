@@ -50,10 +50,9 @@ public class AppFeatureController extends ExtendController<AppFeatureService> {
         try {
             List<AppFeatureModel> ls = search(new PageParms( "+parentId", 999, 1).addEqual("appId", appId).addNotEqual("type", "3"));
             Map<Integer, AppFeatureTree> map = new HashMap<>();
-            map.put(0, new AppFeatureTree(0, appName, -1, "0", ""));
+            map.put(0, new AppFeatureTree(0, appName, -1, "0", "", -1));
             for(AppFeatureModel model : ls){
-                map.put(model.getId(), new AppFeatureTree(
-                        model.getId(), model.getName(), model.getParentId(), model.getType(), model.getIconUrl()) );
+                map.put(model.getId(), new AppFeatureTree(model.getId(), model.getName(), model.getParentId(), model.getType(), model.getIconUrl(), model.getLevel()) );
             }
             AppFeatureTree p;
             for(AppFeatureTree model : map.values()){
