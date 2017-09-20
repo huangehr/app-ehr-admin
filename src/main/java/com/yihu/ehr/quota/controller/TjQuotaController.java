@@ -344,7 +344,8 @@ public class TjQuotaController extends BaseUIController {
     @RequestMapping("selectQuotaResult")
     @ResponseBody
     public Object selectQuotaResult(Long tjQuotaId, int page, int rows,
-                                    String startTime,String endTime,String orgName,String province,String city,String district) {
+                                    String startTime,String endTime,String orgName,
+                                    String province,String city,String district,HttpServletRequest request) {
         Envelop result = new Envelop();
         String resultStr = "";
         String url = "/tj/tjGetQuotaResult";
@@ -357,6 +358,8 @@ public class TjQuotaController extends BaseUIController {
             filters.put("city", city);
             filters.put("district", district);
             Map<String, Object> params = new HashMap<>();
+            UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+            params.put("userId", userDetailModel.getId());
             params.put("id", tjQuotaId);
             params.put("pageNo", page);
             params.put("pageSize", rows);

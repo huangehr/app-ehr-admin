@@ -115,10 +115,61 @@
                         },
                        allowHideColumn:false,
                         columns: [
-                            {display: '姓名', name: 'name', width: '10%',align: 'left'},
-                            {display: '身份证号', name: 'idCardNo', width: '15%', align: 'left'},
+                            {display: '姓名', name: 'name', width: '10%',align: 'left', render:function (row) {
+                                var name = row.name;
+                                var newName = "";
+                                var html = "";
+                                if (null != name && name != "") {
+                                    var length = name.length;
+                                    if (length<=2) {
+                                        newName = name.substring(0,1) + "*";
+                                    } else {
+                                        newName = name.substring(0,1) + "*" + name.substring(length-1);
+                                    }
+                                }
+                                html = '<sec:authorize url="/patient/updatePatient">' + name + '</sec:authorize>';
+                                if (html == "") {
+                                    html = newName;
+                                }
+                                return html;
+                            }},
+                            {display: '身份证号', name: 'idCardNo', width: '15%', align: 'left', render: function(row) {
+                                var idCardNo = row.idCardNo;
+                                var html = "";
+                                if (null != idCardNo && idCardNo != "") {
+                                    var length = idCardNo.length;
+                                    var pre = idCardNo.substring(0, 6);
+                                    var suf = idCardNo.substring(length-4, length);
+                                    var middle = "";
+                                    for (var i=0; i < length-10; i++) {
+                                        middle += "*";
+                                    }
+                                    html = '<sec:authorize url="/patient/updatePatient">' + idCardNo + '</sec:authorize>';
+                                    if (html == "") {
+                                        html = pre + middle + suf;
+                                    }
+                                }
+                                return html;
+                            }},
                             {display: '性别', name: 'gender', width: '5%'},
-                            {display: '联系方式', name: 'telephoneNo', width: '10%', resizable: true,align: 'left'},
+                            {display: '联系方式', name: 'telephoneNo', width: '10%', resizable: true,align: 'left', render: function(row) {
+                                var telephoneNo = row.telephoneNo;
+                                var html = "";
+                                if (null != telephoneNo && telephoneNo != "") {
+                                    var length = telephoneNo.length;
+                                    var pre = telephoneNo.substring(0, 3);
+                                    var suf = telephoneNo.substring(length-4, length);
+                                    var middle = "";
+                                    for (var i=0; i < length-7; i++) {
+                                        middle += "*";
+                                    }
+                                    html = '<sec:authorize url="/patient/updatePatient">' + telephoneNo + '</sec:authorize>';
+                                    if (html == "") {
+                                        html = pre + middle + suf;
+                                    }
+                                }
+                                return html;
+                            }},
                             {display: '家庭地址', name: 'homeAddress', width: '25%', minColumnWidth: 20,align: 'left'},
                             {display: '注册时间', name: 'registerTime', width: '15%', minColumnWidth: 20,align: 'left'},
                             {
@@ -132,7 +183,7 @@
                             }
                         ],
                         onDblClickRow: function (row) {
-                            self.showUserInfo(row.idCardNo,row.userId);
+//                            self.showUserInfo(row.idCardNo,row.userId);
                         }
                     }));
                     grid.adjustToWidth();

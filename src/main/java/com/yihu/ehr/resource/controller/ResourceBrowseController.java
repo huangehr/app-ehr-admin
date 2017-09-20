@@ -183,11 +183,11 @@ public class ResourceBrowseController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String url = "/resources/ResourceBrowses/getQuotaResourceData";
-        //当前用户机构
+        //当前用户机构 -- 预留
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String orgCode = userDetailModel.getOrganization();
-        //params.put("orgCode", "41872607-9");
-        params.put("orgCode", orgCode);
+//        String orgCode = userDetailModel.getOrganization();
+//        params.put("orgCode", orgCode);
+        params.put("userId", userDetailModel.getId());
         params.put("resourcesId", resourcesId);
         if(searchParams != null) {
             if (searchParams.contains("{") || searchParams.contains("}")) {
