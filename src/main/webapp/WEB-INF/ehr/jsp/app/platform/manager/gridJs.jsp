@@ -219,7 +219,12 @@
                 },
                 //查询列表方法
                 find: function (upId) {
-                    var params = {filters: "appId="+ p[0] +";parentId=" + (upId || upId==0  ? upId : -1), page: 1, rows: 999}
+                    var params = {
+                        filters: "appId="+ p[0] +";parentId=" + (upId || upId==0  ? upId : -1),
+                        sorts: '+sort',
+                        page: 1,
+                        rows: 999
+                    };
                     reloadGrid(this.grid, 1, params);
                 },
                 //公开方法

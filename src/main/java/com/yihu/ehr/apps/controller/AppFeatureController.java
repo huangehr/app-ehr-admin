@@ -6,7 +6,6 @@ import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.apps.model.AppFeatureTree;
 import com.yihu.ehr.apps.service.AppFeatureService;
-import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,18 +37,14 @@ public class AppFeatureController extends ExtendController<AppFeatureService> {
         );
     }
 
-    private List<AppFeatureModel> search(PageParms pageParms) throws Exception {
-        EnvelopExt<AppFeatureModel> envelopExt = getEnvelopExt(service.search(pageParms));
-        return envelopExt.getDetailModelList();
-    }
-
     @RequestMapping("/tree")
     @ResponseBody
     public Object tree(String appId, String appName) {
-
         try {
-            List<AppFeatureModel> ls = search(new PageParms( "+parentId", 999, 1).addEqual("appId", appId).addNotEqual("type", "3"));
-            Map<Integer, AppFeatureTree> map = new HashMap<>();
+            PageParms pageParms = new PageParms("+sort", 999, 1).addEqual("appId", appId).addNotEqual("type", "3");
+            List<AppFeatureModel> ls = getEnvelopExt(service.search(pageParms)).getDetailModelList();
+
+            Map<Integer, AppFeatureTree> map = new LinkedHashMap<>();
             map.put(0, new AppFeatureTree(0, appName, -1, "0", "", -1));
             for(AppFeatureModel model : ls){
                 map.put(model.getId(), new AppFeatureTree(model.getId(), model.getName(), model.getParentId(), model.getType(), model.getIconUrl(), model.getLevel()) );
