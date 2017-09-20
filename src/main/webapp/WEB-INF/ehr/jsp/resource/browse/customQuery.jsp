@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <link rel="stylesheet" href="${staticRoot}/common/reset.css">
@@ -27,13 +28,13 @@
             <div class="chang-btn cb-left">指标统计</div>
         </div>
         <ui class="single-btns">
-            <li class="single-btn query-con">查询</li>
-            <li class="single-btn gen-view">生成视图</li>
-            <li class="single-btn out-exc">导出</li>
+            <sec:authorize url="Ehr_InteQuery_Query"><li class="single-btn query-con">查询</li> </sec:authorize>
+            <sec:authorize url="Ehr_InteQuery_CreateView"><li class="single-btn gen-view">生成视图</li></sec:authorize>
+            <sec:authorize url="Ehr_InteQuery_export"><li class="single-btn out-exc">导出</li></sec:authorize>
         </ui>
     </div>
     <div class="screen-con">
-        <div class="sc-btn">展开筛选<i class="icon-xiala"></i></div>
+        <div class="sc-btn">展开筛选<i class="iconn-xiala"></i></div>
     </div>
 
     <%--树--%>
@@ -55,8 +56,8 @@
                 <%--固定条件--%>
             </div>
 
-            <div class="sel-item time">
-                <span class="sel-lab">期间: </span>
+            <div class="sel-item time" data-parent-code="event_date">
+                <span class="sel-lab">时间: </span>
                 <ul class="con-list">
                     <li class="con-item ci-inp">
                         <input type="text" id="startDate">
@@ -87,10 +88,20 @@
             {{content}}
         </ul>
         <div class="show-more">
-            <div class="sc-btn sw-w">更多<i class="icon-xiala"></i></div>
+            <div class="sc-btn sw-w">更多<i class="iconn-xiala"></i></div>
         </div>
     </div>
 </script>
+
+<script type="text/html" id="selDateTmp">
+    <div class="sel-item time" data-parent-code="{{code}}">
+        <span class="sel-lab">{{label}}: </span>
+        <ul class="con-list">
+            {{content}}
+        </ul>
+    </div>
+</script>
+
 <script src="${staticRoot}/lib/jquery/jquery-1.9.1.js"></script>
 <script src="${staticRoot}/module/cookie.js"></script>
 <script src="${staticRoot}/module/util.js"></script>

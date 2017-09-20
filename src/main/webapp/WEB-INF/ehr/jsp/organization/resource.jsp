@@ -21,7 +21,7 @@
 		<div id="div_content" class="f-ww" style="height:780px ">
 			<div id="div_left" class="f-w240 f-bd f-of-hd" style=" width:240px;float: left;height: 100%">
 				<div class="f-mt10 f-mb10 f-ml10 f-w240">
-					<input type="text" id="inp_search" placeholder="请输入资源分类名称" class="f-ml10 f-h28"/>
+					<input type="text" id="inp_search" placeholder="请输入视图分类名称" class="f-ml10 f-h28"/>
 				</div>
 				<!--资源浏览树-->
 				<div id="div_tree">
@@ -33,7 +33,7 @@
 				<div class="right-retrieve">
 					<div class="f-db f-pt10 f-pb10 f-ml10">
 						<!--输入框-->
-						<input type="text" id="inp_searchNm" placeholder="请输入资源代码或名称" class="f-ml10 f-h28 f-w240" data-attr-scan="searchNm"/>
+						<input type="text" id="inp_searchNm" placeholder="请输入视图代码或名称" class="f-ml10 f-h28 f-w240" data-attr-scan="searchNm"/>
 					</div>
 					<div class="f-db f-fr f-pt10 f-mr10">
 						<div id="btn_grant_cancel" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >

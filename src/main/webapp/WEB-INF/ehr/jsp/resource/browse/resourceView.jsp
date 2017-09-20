@@ -25,10 +25,10 @@
     <div class="f-h785">
         <div class="div-resource-view-title">
             <div class="f-fl f-ml250">
-                <input type="text" id="sp_resourceSub"  placeholder="请选择资源分类" data-type="select" data-attr-scan="resourceSub">
+                <input type="text" id="sp_resourceSub"  placeholder="请选择视图分类" data-type="select" data-attr-scan="resourceSub">
             </div>
             <div class="f-fl f-ml30">
-                <input type="text" id="sp_resourceName"  placeholder="请选择资源名称" data-type="select" data-attr-scan="resourceName">
+                <input type="text" id="sp_resourceName"  placeholder="请选择视图名称" data-type="select" data-attr-scan="resourceName">
             </div>
         </div>
         <div id="div_resource_browse_msg" data-role-form class="div-resource-browse">

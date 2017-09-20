@@ -3,6 +3,7 @@
 
 <style>
     .query-main{
+        height: 100%;
         position: relative;
     }
     .query-btns{
@@ -21,6 +22,7 @@
         position: absolute;
         left: 50%;
         top: 50%;
+        background: #fff;
         -webkit-transform: translate(-50%,-50%);
         -moz-transform: translate(-50%,-50%);
         -ms-transform: translate(-50%,-50%);
@@ -108,7 +110,7 @@
         -ms-user-select: none;
         user-select: none;
     }
-    .icon-xiala{
+    .iconn-xiala{
         width: 13px;
         height: 5px;
         display: inline-block;
@@ -122,7 +124,7 @@
         transform: translateY(-50%);
         background: url(${staticRoot}/images/icon_xiala.png) no-repeat center center;
     }
-    .sc-btn.show .icon-xiala{
+    .sc-btn.show .iconn-xiala{
         top: 44%;
         -webkit-transform: rotate(180deg);
         -moz-transform: rotate(180deg);
@@ -154,9 +156,16 @@
         overflow: auto;
     }
     .select-con{
+        width: 100%;
+        max-height: 450px;
         padding-top: 20px;
         border: 1px solid #e1e1e1;
         margin-bottom: 20px;
+        position: absolute;
+        z-index: 1;
+        background: #fff;
+        padding-bottom: 15px;
+        overflow: auto;
     }
     .sel-item{
         width: 100%;
@@ -193,8 +202,11 @@
         /*position: absolute;*/
         /*left: 0;*/
         /*top: 0;*/
-
+        width: 141px;
+        text-align: right;
         display: table-cell;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .con-list{
         /*padding: 0 85px 0 100px;*/
@@ -255,6 +267,9 @@
     .l-panel td{
         height: 40px;
         line-height: 40px;
+    }
+    .l-tree{
+        /*overflow: auto!important;*/
     }
 </style>
 
