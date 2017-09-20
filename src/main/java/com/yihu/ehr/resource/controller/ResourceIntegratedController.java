@@ -163,7 +163,7 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping("/searchQuotaData")
     @ResponseBody
-    public Envelop searchQuotaData(String tjQuotaIds, String tjQuotaCodes, String searchParams) {
+    public Envelop searchQuotaData(String tjQuotaIds, String tjQuotaCodes, String searchParams,HttpServletRequest request) {
         Envelop envelop = new Envelop();
         try {
             String url = "/resources/integrated/quota_data";
@@ -171,6 +171,8 @@ public class ResourceIntegratedController extends BaseUIController {
             params.put("quotaIds", tjQuotaIds);
             params.put("quotaCodes", tjQuotaCodes);
             params.put("queryCondition", searchParams);
+            UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+            params.put("userId", userDetailModel.getId());
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {

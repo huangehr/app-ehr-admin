@@ -3,7 +3,9 @@ package com.yihu.ehr.resource.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -507,7 +509,7 @@ public class ResourceController extends BaseUIController {
      */
     @RequestMapping("/resourceUpDown")
     @ResponseBody
-    public String getResourceUpDown(String id, String dimension,String quotaFilter,String quotaId){
+    public String getResourceUpDown(String id, String dimension,String quotaFilter,String quotaId,HttpServletRequest request){
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -515,6 +517,8 @@ public class ResourceController extends BaseUIController {
         params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        params.put("userId", userDetailModel.getId());
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
             if( !StringUtils.isEmpty(quotaFilter) ){
