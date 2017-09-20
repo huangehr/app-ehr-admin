@@ -7,6 +7,7 @@
   <input id="id" name="id" data-attr-scan="id"  hidden >
   <input id="appId" name="appId" data-attr-scan="appId"  hidden >
   <input id="parentId" name="parentId" data-attr-scan="parentId"  hidden >
+  <input id="level" name="level" data-attr-scan="level"  hidden >
 
   <div class="m-form-group">
     <label>名称<spring:message code="spe.colon"/></label>
@@ -26,6 +27,13 @@
     <label>类型<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential f-pr0">
       <input type="text" id="ipt_af_type" data-type="select" class="required" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
+    </div>
+  </div>
+
+  <div class="m-form-group">
+    <label>排序<spring:message code="spe.colon"/></label>
+    <div class="l-text-wrapper m-form-control f-pr0">
+      <input type="text" id="ipt_af_sort" class="validate-positive-integer" required-title="请输入正整数" data-attr-scan="sort">
     </div>
   </div>
 

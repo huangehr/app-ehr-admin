@@ -72,7 +72,7 @@
                                 display: '操作', name: 'operator', align: 'left', width: '70', render: function (row) {
                                     var html =
                                             '<a class="image-create" href="#" title="新增" ' +
-                                            'onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}', '{5}'])", "app:plf:man:modify", row.id, 'new', row.type, 0, row.__id) + '"></a>';
+                                            'onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}', '{5}', '{6}'])", "app:plf:man:modify", row.id, 'new', row.type, 0, row.__id, row.level) + '"></a>';
 
                                     if(row.id>0){
                                         html +=  '<a class="grid_delete" href="#" style="width: 30px; margin-left:4px" title="删除" ' +
@@ -114,8 +114,20 @@
                         {display: 'ID', name: 'id', hide: true},
                         {display: '名称', name: 'name', width: '20%', align: 'left'},
                         {display: '编码', name: 'code', width: '20%', align: 'left'},
-                        {display: 'URL', name: 'url', width: '40%', align: 'left'},
-                        {display: '操作', name: 'operator', width: '20%', render: m.opratorRender}];
+                        {display: '顺序', name: 'sort', width: '5%', align: 'center'},
+                        {display: '类型', name: 'type', width: '10%', align: 'center',
+                            render: function(row) {
+                                if(row.type === '1'){
+                                    return '模块';
+                                } else if(row.type === '2') {
+                                    return '菜单';
+                                } else if(row.type === '3') {
+                                    return '功能';
+                                }
+                            }
+                        },
+                        {display: 'URL', name: 'url', width: '30%', align: 'left'},
+                        {display: '操作', name: 'operator', width: '15%', render: m.opratorRender}];
 
                     m.grid = initGrid($('#rightGrid'), urls.list, {}, columns, {
                         delayLoad: true,
@@ -141,16 +153,16 @@
                     return initGridOperator(vo);
                 },
                 //修改、新增点击事件
-                gotoModify: function (event, id, mode, type, frm, rowId) {
+                gotoModify: function (event, id, mode, type, frm, rowId, level) {
                     var params;
                     if(mode == 'new'){
-                        em.params = {upType: type, upId: id, frm: frm, appId: p[0], rowId: rowId}
+                        em.params = {upType: type, upId: id, frm: frm, appId: p[0], rowId: rowId, upLevel: level}
                         params = {mode: mode}
                     }else{
                         em.params = {frm: frm,  rowId: rowId}
                         params = {id: id, mode: mode, rowId: rowId}
                     }
-                    em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 550, params);
+                    em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 600, params);
                 },
                 del: function (event, id, frm, rowId, parentId, type, url) {
 

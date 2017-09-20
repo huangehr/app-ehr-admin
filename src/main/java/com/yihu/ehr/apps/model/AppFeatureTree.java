@@ -15,15 +15,17 @@ public class AppFeatureTree {
     int parentId;
     String type;
     String iconUrl;
+    int level;
     String memo;
     List children = new ArrayList<>();
 
-    public AppFeatureTree(int id, String name, int parentId, String type, String iconUrl) {
+    public AppFeatureTree(int id, String name, int parentId, String type, String iconUrl, int level) {
         this.id = id;
         this.name = name;
         this.parentId = parentId;
         this.type = type;
         this.iconUrl = iconUrl;
+        this.level = level;
     }
 
     public AppFeatureTree(int id, String name, String memo, int parentId, String type, String appId) {
@@ -85,6 +87,14 @@ public class AppFeatureTree {
 
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public String getMemo() {
