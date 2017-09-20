@@ -14,8 +14,8 @@
 
         var initForm = function () {
             var vo = [
-                {type: 'text', id: 'ipt_af_name', opts: {readonly: mode=='modify', disabled: mode=='modify'}},
-                {type: 'text', id: 'ipt_af_code'},
+                {type: 'text', id: 'ipt_af_name'},
+                {type: 'text', id: 'ipt_af_code', opts: {readonly: mode=='modify', disabled: mode=='modify'}},
                 {type: 'select', id: 'ipt_af_type', dictId: 39, opts: {disabled: mode=='modify',
                     onSuccess: function (data) {
                         if(mode=='new'){
@@ -31,6 +31,7 @@
                         }
                     }
                 }},
+                {type: 'text', id: 'ipt_af_sort'},
                 {type: 'select', id: 'ipt_af_open', dictId: 40, opts: {initVal: mode=='new'? '1': undefined}},
                 {type: 'select', id: 'ipt_af_audit', dictId: 41, opts: {initVal: mode=='new'? '1': undefined}},
                 {type: 'text', id: 'ipt_af_icon_url'},
@@ -60,6 +61,7 @@
 
                 $form.attrScan();
                 var newModel = $form.Fields.getValues();
+                newModel.sort = !newModel.sort ? 1 : newModel.sort;
                 var id = newModel.id || '';
                 var extParms = {oldUrl: model.url};
                 var parms = {model: JSON.stringify(newModel), modelName: 'model', id: id , extParms:  JSON.stringify(extParms)}
@@ -74,8 +76,10 @@
 
         var init = function () {
             if(mode=='new'){
+                var level = extParms.upId == '0' ?  1 : parseInt(extParms.upLevel) + 1;
                 model.parentId = extParms.upId;
                 model.appId = extParms.appId;
+                model.level = level;
             }
             initForm();
             initBtn();
