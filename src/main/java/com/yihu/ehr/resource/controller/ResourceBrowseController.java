@@ -142,6 +142,14 @@ public class ResourceBrowseController extends BaseUIController {
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String orgCode = userDetailModel.getOrganization();
         //params.put("orgCode", "41872607-9");
+//       List<String> userOrgCodeList= (List)request.getSession().getAttribute("userOrgCode");
+//        if(null!=userOrgCodeList&&userOrgCodeList.size()>0){
+//            for(String org:userOrgCodeList){
+//                if(null!=orgCode){
+//                    orgCode=","+org;
+//                }
+//            }
+//        }
         params.put("orgCode", orgCode);
         params.put("resourcesCode", resourcesCode);
         Pattern pattern = Pattern.compile("\\[.+?\\]");
