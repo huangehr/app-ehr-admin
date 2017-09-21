@@ -134,6 +134,21 @@ public class LoginController extends BaseUIController {
                 Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
                 String ex = this.objectMapper.writeValueAsString(envelop.getObj());
                 UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+
+//                //根据登录人id获取，登录人所在的机构（可能会有多个机构）
+//                String uid="";
+//                if(null!=userDetailModel){
+//                    uid=userDetailModel.getId();
+//                    String url = "/org/getUserOrglistByUserId/";
+//                    String resultStr = "";
+//                    Map<String, Object> userParams = new HashMap<>();
+//                    userParams.put("userId", uid);
+//                    resultStr = HttpClientUtil.doGet(comUrl + url, userParams, username,password);
+//                    envelop = getEnvelop(resultStr);
+//                    List userOrgCode=new ArrayList<>();
+//                    userOrgCode=envelop.getDetailModelList();
+//                    request.getSession().setAttribute("userOrgCode", userOrgCode);
+//                }
                 request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 request.getSession().setAttribute("isLogin", true);
                 request.getSession().setAttribute("token", accessToken);
@@ -174,6 +189,20 @@ public class LoginController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
             Envelop envelop = getEnvelop(resultStr);
             UserDetailModel userDetailModel = getEnvelopModel(envelop.getObj(), UserDetailModel.class);
+
+//            //根据登录人id获取，登录人所在的机构（可能会有多个机构）
+//            String uid="";
+//            if(null!=userDetailModel){
+//                uid=userDetailModel.getId();
+//                String  urlUserOrg = "/org/getUserOrglistByUserId/";
+//                Map<String, Object> userParams = new HashMap<>();
+//                userParams.put("userId", uid);
+//                String  resultStrUserOrg = HttpClientUtil.doGet(comUrl + urlUserOrg, userParams, username,password);
+//                envelop = getEnvelop(resultStrUserOrg);
+//                List userOrgCode=new ArrayList<>();
+//                userOrgCode=envelop.getDetailModelList();
+//                request.getSession().setAttribute("userOrgCode", userOrgCode);
+//            }
             //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
                 String lastLoginTime = null;
