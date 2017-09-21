@@ -1,6 +1,8 @@
 package com.yihu.ehr.quota.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
+import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
@@ -327,11 +329,40 @@ public class TjQuotaController extends BaseUIController {
      * @return
      */
     @RequestMapping("initialResult")
-    public String initialResult(Model model,long tjQuotaId, String quotaType, String name) {
+    public String initialResult(Model model,long tjQuotaId,String quotaCode, String quotaType, String name) throws Exception {
         model.addAttribute("contentPage", "/report/zhibiao/resultIndex");
         model.addAttribute("id", tjQuotaId);
         model.addAttribute("quotaType", quotaType);
         model.addAttribute("name", name);
+        String urlSlave ="/tj/getDimensionSlaveByQuotaCode";
+        Map<String, Object> params = new HashMap<>();
+        params.put("quotaCode", quotaCode);
+        Envelop result = null;
+        try {
+            String resultStr = HttpClientUtil.doGet(comUrl + urlSlave, params, username, password);
+            result = objectMapper.readValue(resultStr, Envelop.class);
+            if (result.isSuccessFlg() && result.getDetailModelList().size() >0) {
+                List<HashMap> slaveModelList = result.getDetailModelList();
+                if (slaveModelList != null && slaveModelList.size() > 0) {
+                    int num = 1;
+                    for (HashMap map : slaveModelList) {
+                        TjQuotaDimensionSlaveModel quotaDimensionSlaveModel = objectMapper.convertValue(map,TjQuotaDimensionSlaveModel.class);
+                        RestTemplates templates = new RestTemplates();
+                        params.clear();
+                        params.put("code", quotaDimensionSlaveModel.getSlaveCode());
+                        resultStr = HttpClientUtil.doGet(comUrl + "/tj/getTjDimensionSlaveByCode", params, username, password);
+                        result = objectMapper.readValue(resultStr, Envelop.class);
+                        if (result.isSuccessFlg()) {
+                            TjDimensionSlaveModel tjDimensionSlaveModel = objectMapper.convertValue(result.getObj(), TjDimensionSlaveModel.class);
+                            model.addAttribute("slaveKey"+num+"Name", tjDimensionSlaveModel.getName());
+                            num++;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return "pageView";
     }
 

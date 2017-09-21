@@ -11,6 +11,9 @@
             // 页面表格条件部模块
             var patientRetrieve = null;
             var id = ${id};
+            var slaveKey1Name ='${slaveKey1Name}';
+            var slaveKey2Name ='${slaveKey2Name}';
+            var slaveKey3Name ='${slaveKey3Name}';
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
@@ -70,15 +73,15 @@
                             columns: [
                                 {display: '指标编码', name: 'quotaCode', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '统计时间', name: 'quotaDate', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '结果', name: 'result', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '省份', name: 'provinceName', width: '5%', isAllowHide: false, align: 'left'},
                                 {display: '城市', name: 'cityName', width: '5%', isAllowHide: false, align: 'left'},
                                 {display: '区县', name: 'townName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '机构名称', name: 'orgName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '团队名称', name: 'teamName', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '从维度1名称', name: 'slaveKey1Name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '从维度2名称', name: 'slaveKey2Name', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '从维度3名称', name: 'slaveKey3Name', width: '10%', isAllowHide: false, align: 'left'}
+                                {display: slaveKey1Name, name: 'slaveKey1Name', width: '10%', hide: (!!!slaveKey1Name), align: 'left'},
+                                {display: slaveKey2Name, name: 'slaveKey2Name', width: '10%', hide: (!!!slaveKey2Name), align: 'left'},
+                                {display: slaveKey3Name, name: 'slaveKey3Name', width: '10%', hide: (!!!slaveKey3Name), align: 'left'},
+                                {display: '结果', name: 'result', width: '10%', isAllowHide: false, align: 'left'}
                             ],
                             validate: true,
                             unSetValidateAttr: false,
