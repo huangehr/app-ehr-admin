@@ -172,7 +172,7 @@
                             for (var i = 0, len = d.length; i < len; i++) {
                                 regions.push({
                                     text: d[i].name,
-                                    id: d[i].name
+                                    id: d[i].id
                                 });
                             }
                             me.$inpRegion.ligerComboBox({

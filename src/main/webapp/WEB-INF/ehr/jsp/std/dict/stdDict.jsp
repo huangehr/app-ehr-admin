@@ -10,7 +10,7 @@
 
   </div>
 
-  <div style="height: 34px">
+  <div style="height: 38px">
     <sec:authorize url="/template/平台标准字典导入模版.xls">
     <a href="<%=request.getContextPath()%>/template/平台标准字典导入模版.xls" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
        style="">
@@ -55,18 +55,18 @@
 
   <!--   字典详情   -->
     <div id="div_right" style="float: left;width: 700px;margin-left: 10px">
-      <div id="entryRetrieve" class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0">
-        <div class="m-form-group f-mt10">
-          <div class="m-form-control f-mt5 f-fs14 f-fwb f-ml10">
+      <div id="entryRetrieve" class="m-retrieve-area f-dn f-pr m-form-inline" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0">
+        <div class="m-form-group f-mt10" style="padding-bottom: 0">
+          <div class="m-form-control f-mt5 f-fs14 f-fwb f-ml10 f-mb10">
             <div>字典项：</div>
           </div>
-          <div class="m-form-control f-fs12">
+          <div class="m-form-control f-fs12 f-mb10">
             <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>">
           </div>
 
           <sec:authorize url="/cdadict/deleteDictEntryList">
-          <div>
-            <a id="btn_Delete_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr20"
+          <div class=" f-mb10">
+            <a id="btn_Delete_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr20 f-mb10"
                href="javascript:$.publish('entry:dictInfoGrid:delete',[''])" href="#">
               <spring:message code="btn.multi.delete"/>
             </a>
@@ -74,8 +74,8 @@
           </sec:authorize>
 
           <sec:authorize url="/cdadict/saveDictEntry">
-          <div>
-            <a id="btn_create_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+          <div class=" f-mb10">
+            <a id="btn_create_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10 f-mb10"
                href="javascript:$.publish('entry:dictInfo:open',['','','new'])">
               <spring:message code="btn.create"/>
             </a>

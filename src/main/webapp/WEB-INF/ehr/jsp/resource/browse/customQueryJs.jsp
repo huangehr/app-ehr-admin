@@ -137,7 +137,7 @@
                                 var obj = d.obj || [],
                                     str = '';
                                 for (var i = 0, len = obj.length; i < len; i++) {
-                                    str += '<li class="con-item" data-code="' + (k == 0 ? obj[i].name : obj[i].fullName) + '">' + (k == 0 ? obj[i].name : obj[i].fullName) + '</li>';
+                                    str += '<li class="con-item" data-code="' + (k == 0 ? obj[i].id : obj[i].fullName) + '">' + (k == 0 ? obj[i].name : obj[i].fullName) + '</li>';
                                 }
                                 o.content = str;
                             });
