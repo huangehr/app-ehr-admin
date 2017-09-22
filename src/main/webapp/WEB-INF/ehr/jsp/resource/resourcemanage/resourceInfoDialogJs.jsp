@@ -25,7 +25,8 @@
 			$code: $("#inp_code"),
 			$interface: $("#inp_interface"),
 			$grantType: $('input[name="grantType"]', this.$form),
-			$dataSource: $('input[name="dataSource"]', this.$form),
+//			$dataSource: $('input[name="dataSource"]', this.$form),
+            $dataSource: $('#dataSource'),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -40,7 +41,9 @@
 				this.$code.ligerTextBox({width:240});
 				this.$description.ligerTextBox({width:240, height: 120 });
 				this.$grantType.ligerRadio();
-				this.$dataSource.ligerRadio();
+                this.$dataSource.ligerTextBox({width:240});
+//				this.$dataSource.ligerRadio();
+//                this.$dataSource.ligerGetRadioManager().setDisabled();
 				var mode = '${mode}';
 				if(mode == 'view'){
 					rsInfoForm.$form.addClass('m-form-readonly');
@@ -49,8 +52,12 @@
 				}
 				this.$form.attrScan();
 				if(mode == 'new'){
-					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
-					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
+                    $("#inp_category").attr('data-id', '${categoryId}');
+                    $("#inp_category").ligerGetTextBoxManager().setValue('${name}');
+                    this.$dataSource.attr('data-source', '${dataSource}');
+                    this.$dataSource.ligerGetTextBoxManager().setValue('${dataSource}' == '1' ? '档案数据' : '指标统计');
+					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
+					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
 				}
 				if(mode !='new'){
 					var info = ${envelop}.obj;
@@ -61,21 +68,24 @@
 						id:info.id,
 						code:info.code,
 						name:info.name,
-						categoryId:info.categoryId,
+						categoryId:'${name}',
 						rsInterface:info.rsInterface,
 						grantType:info.grantType,
-						dataSource:info.dataSource.toString(),
+						dataSource:info.dataSource.toString() == '1' ? '档案数据' : '指标统计',
 						description:info.description
 					});
-					$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');
-					$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');
+                    $("#inp_category").attr('data-id', info.categoryId);
+                    this.$dataSource.attr('data-source', info.dataSource);
+					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
+					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
 				}
 				this.$form.show();
 			},
 			initDDL: function () {
 				this.$grantType.eq(1).attr("checked", 'true')
 				this.$dataSource.eq(0).attr("checked", 'true')
-				this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});
+                this.$category.ligerTextBox({width:240})
+				<%--this.$category.customCombo('${contextRoot}/resource/resourceManage/rsCategory',{});--%>
 				this.$interface.ligerComboBox({
 					url: "${contextRoot}/resource/resourceInterface/searchRsInterfaces",
 					dataParmName: 'detailModelList',
@@ -132,6 +142,8 @@
 						return
 					}
 					var values = self.$form.Fields.getValues();
+                    values.dataSource = self.$dataSource.attr('data-source');
+                    values.categoryId = self.$category.attr('data-id');
 					var categoryId = values.categoryId;
 					if(Util.isStrEquals(categoryIdOld,categoryId)){
 						update(values)
@@ -152,9 +164,8 @@
 						success: function(data) {
                             waittingDialog.close();
 							if (data.successFlg) {
-								reloadMasterUpdateGrid(categoryIdNew);
 								$.Notice.success('操作成功');
-								win.closeRsInfoDialog();
+								win._closeRsInfoDialog(data.obj);
 							} else {
 								$.Notice.error('操作失败！');
 							}
@@ -163,7 +174,7 @@
 				}
 
 				this.$btnCancel.click(function () {
-					win.closeRsInfoDialog();
+					win._closeRsInfoDialog();
 				});
 			}
 		};

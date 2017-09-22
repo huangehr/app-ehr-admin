@@ -57,7 +57,7 @@
                                 endTime: ''
                             },
                             columns: [
-                                {display: '区域代码', name: 'saasId', width: '20%', isAllowHide: false, align: 'left'},
+//                                {display: '区域代码', name: 'saasId', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '指标编码', name: 'quotaCode', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '开始执行时间', name: 'startTime', width: '15%', isAllowHide: false, align: 'left'},
                                 {display: '结束时间', name: 'endTime', width: '15%', isAllowHide: false, align: 'left'},

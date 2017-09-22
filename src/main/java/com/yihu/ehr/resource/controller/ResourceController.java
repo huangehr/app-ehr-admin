@@ -46,15 +46,22 @@ public class ResourceController extends BaseUIController {
 
     @RequestMapping("/initial")
     public String resourceInitial(Model model){
+        model.addAttribute("contentPage","/resource/resourcemanage/newResource");
+        return "pageView";
+    }
+    @RequestMapping("/newInitial")
+    public String newResourceInitial(Model model){
         model.addAttribute("contentPage","/resource/resourcemanage/resource");
         return "pageView";
     }
 
     @RequestMapping("/infoInitial")
-    public String resourceInterfaceInfoInitial(Model model,String id,String mode,String categoryId){
-        model.addAttribute("mode",mode);
-        model.addAttribute("categoryId",categoryId);
-        model.addAttribute("contentPage","/resource/resourcemanage/resourceInfoDialog");
+    public String resourceInterfaceInfoInitial(Model model,String id,String mode,String categoryId, String name, String dataSource){
+        model.addAttribute("mode", mode);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("name", name);
+        model.addAttribute("dataSource", dataSource);
+        model.addAttribute("contentPage", "/resource/resourcemanage/resourceInfoDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
         String categoryName = "";

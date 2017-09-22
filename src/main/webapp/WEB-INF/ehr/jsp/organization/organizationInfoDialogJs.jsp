@@ -355,12 +355,12 @@
                                 $.Notice.success('上传成功');
                             }else{
 //                                alert("上传失败");
-                                $.Notice.success('上传失败');
+                                $.Notice.error('上传失败');
                             }
                         },
                         error: function (returndata) {
 //                            alert("上传失败");
-                           $.Notice.success('上传失败');
+                           $.Notice.error('上传失败');
                         }
                     });
                 }

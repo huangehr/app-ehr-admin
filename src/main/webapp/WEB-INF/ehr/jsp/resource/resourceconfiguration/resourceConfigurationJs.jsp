@@ -89,7 +89,7 @@
                             url: resourceConfigurationUrl[i],
                             columns: columnDatas,
                             checkbox: true,
-                            height: h - 315,
+                            height: 440,
                             async: false,
                             isChecked: function (row) {
                                 var bo = false;
@@ -221,6 +221,7 @@
                                 addRowDatas = new Array();
                                 delRowDatas = new Array();
                                 if (data.successFlg) {
+                                    win._closeDataElementDialog();
                                     $.Notice.success('保存成功');
                                     master.reloadResourceConfigurationGrid(resourceConfigurationUrl[0], retrieve.$mateDataSearchTrue.liger().getValue(), "");
                                     master.reloadResourceConfigurationGrid(resourceConfigurationUrl[1], retrieve.$mateDataSearch.liger().getValue(), "mateData");

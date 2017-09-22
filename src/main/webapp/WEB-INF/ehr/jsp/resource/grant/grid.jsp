@@ -12,14 +12,14 @@
 
         <div id="conditionArea" class="f-mb10 f-mr10" align="right">
             <div class="body-head f-h30" align="left">
-                <a id="btn_back" class="f-fwb">返回上一层 </a>
+                <%--<a id="btn_back" class="f-fwb">返回上一层 </a>--%>
                 <input id="adapter_plan_id" value='${adapterPlanId}' hidden="none" />
                 <span class="f-ml20">视图名称：</span><input class="f-fwb f-mt10" readonly id="resource_name"/>
                 <span class="f-ml20">视图主题：</span><input class="f-mt10" readonly id="resource_sub"/>
             </div>
         </div>
 
-        <div id="grid_content" style="width: 100%">
+        <div id="grid_content" style="width: 100%;position: relative;overflow: hidden;padding-left: 7px;">
             <!--   属性菜单 -->
             <div id="div_left" style=" width:260px;float: left;">
                 <div id="retrieve" class="m-retrieve-area f-pr m-form-inline condition retrieve-border" style="height: 90px" data-role-form>
@@ -42,7 +42,7 @@
             </div>
 
             <!--   列表   -->
-            <div id="div_right" style="float: left;width: 700px;margin-left: 10px">
+            <div id="div_right_g" style="float: left;width: 700px;margin-left: 10px">
 
                 <div id="entryRetrieve" class="m-retrieve-area f-pr m-form-inline condition retrieve-border" data-role-form>
                     <div id="resource_title" style="font-size: 20px; height: 40px; text-align: center; padding-top: 14px; font-weight: bold"></div>

@@ -34,7 +34,7 @@
 			},
 			initForm: function () {
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
-				this.$userId.customCombo(url);
+				this.$userId.customCombo(url,{});
 				var mode = '${mode}';
 				this.$form.attrScan();
 				this.$form.show();
