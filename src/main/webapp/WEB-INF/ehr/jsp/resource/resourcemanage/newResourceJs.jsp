@@ -354,46 +354,54 @@
                         if (me.resourceInfoGrid) {
                             me.reloadDAGridData(resourcesCode);
                         } else {
-                            me.dataModel.fetchRemote( infa.getGridCloumnNames, {
-                                data: {
-                                    dictId: resourcesCode
+                            columnModel = me.daColumn(resourcesCode);
+                            me.resourceInfoGrid = me.$divResourceInfoGrid.ligerGrid($.LigerGridEx.config({
+                                url: infa.searchResourceData,
+                                parms: {
+                                    searchParams: me.queryCondition,
+                                    resourcesCode: resourcesCode
                                 },
-                                async: false,
-                                success: function (data) {
-                                    //添加档案数据基本信息表头
-                                    if (data.length > 0) {
-                                        for (var j = 0, len = defauleColumnModel.length; j < len; j++) {
-                                            columnModel.push({
-                                                display: defauleColumnModel[j].name,
-                                                name: defauleColumnModel[j].key,
-                                                width: 100
-                                            });
-                                        }
-                                    }
-                                    for (var i = 0; i < data.length; i++) {
-                                        columnModel.push({display: data[i].value, name: data[i].code, width: 100});
-                                    }
-                                    me.resourceInfoGrid = me.$divResourceInfoGrid.ligerGrid($.LigerGridEx.config({
-                                        url: infa.searchResourceData,
-                                        parms: {
-                                            searchParams: me.queryCondition,
-                                            resourcesCode: resourcesCode
-                                        },
-                                        columns: columnModel,
-                                        height: '100%',
-                                        checkbox: true
-                                    }));
-                                }
-                            });
+                                columns: columnModel,
+                                height: '100%',
+                                checkbox: true
+                            }));
                         }
                     }
                 },
+                daColumn: function (resourcesCode) {
+                    var me = this,
+                        columnModel = [];
+                    me.dataModel.fetchRemote( infa.getGridCloumnNames, {
+                        data: {
+                            dictId: resourcesCode
+                        },
+                        async: false,
+                        success: function (data) {
+                            //添加档案数据基本信息表头
+                            if (data.length > 0) {
+                                for (var j = 0, len = defauleColumnModel.length; j < len; j++) {
+                                    columnModel.push({
+                                        display: defauleColumnModel[j].name,
+                                        name: defauleColumnModel[j].key,
+                                        width: 100
+                                    });
+                                }
+                            }
+                            for (var i = 0; i < data.length; i++) {
+                                columnModel.push({display: data[i].value, name: data[i].code, width: 100});
+                            }
+                        }
+                    });
+                    return columnModel;
+                },
                 reloadDAGridData: function (resourcesCode) {
-                    this.resourceInfoGrid.setOptions({parms: {
-                        searchParams: this.queryCondition,
-                        resourcesCode: resourcesCode
-                    }});
-                    this.resourceInfoGrid.loadData(true);
+                    if (resourcesCode) {
+                        this.resourceInfoGrid.setOptions({parms: {
+                            searchParams: this.queryCondition,
+                            resourcesCode: resourcesCode
+                        }, columns: this.daColumn(resourcesCode)});
+                        this.resourceInfoGrid.loadData(true);
+                    }
                 },
                 //加载指标统计表格
                 loadZBGridData: function (resourcesId) {
