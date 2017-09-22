@@ -261,7 +261,7 @@
         line-height: 22px;
     }
     .tree-con-zhcx{
-        height: 610px;
+        height: 88%;
         overflow: auto;
     }
     .l-panel td{
