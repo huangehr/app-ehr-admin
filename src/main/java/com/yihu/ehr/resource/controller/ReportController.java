@@ -318,9 +318,7 @@ public class ReportController extends BaseUIController {
             Envelop result = new Envelop();
 
             Map<String, Object> uploadFileParams = FileUploadUtil.getParams(file.getInputStream(), file.getOriginalFilename());
-            LogService.getLogger(ReportController.class).info("zjj-upload-开始...");
             String storagePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
-            LogService.getLogger(ReportController.class).info("zjj-upload-结束");
 
             if (!StringUtils.isEmpty(storagePath)) {
                 String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;

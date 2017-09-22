@@ -6,7 +6,7 @@
   <input id="id" name="id" data-attr-scan="id"  hidden>
   <div class="m-form-group">
     <label>方案类别<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential u-readonly f-pr0">
+    <div class="l-text-wrapper m-form-control u-readonly f-pr0">
       <input type="text" id="ipt_type" data-type="select" class="required useTitle" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
     </div>
   </div>

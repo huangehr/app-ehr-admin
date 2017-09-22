@@ -13,7 +13,7 @@
 	</div>
 	<!--######区域数据授权######-->
 	<div class="f-mw100 div-area-grant">
-		<div class="f-mw50 f-ds1 f-fl f-ml10 div-appRole-grid-scrollbar f-mt10" style="height: 450px">
+		<div class="f-mw50 f-ds1 f-fl f-ml10  f-mt10" style="height: 450px">
 			<div class="f-mw100 f-fl f-mt5 f-mb5">
 				<label class="f-lh30 f-ml10 f-fl lab-title-msg">功能权限：</label>
 				<div class="f-fl">
@@ -21,18 +21,22 @@
 				</div>
 			</div>
 			<hr class="f-mt5 f-mb10 f-mw100">
-			<div id="div_function_featrue_grid"></div>
+			<div class="div-appRole-grid-scrollbar" style="width: 100%;height: 390px;">
+				<div id="div_function_featrue_grid"></div>
+			</div>
 		</div>
-		<div class="f-mw50 f-ds1 f-fr f-mr10 div-appRole-grid-scrollbar f-mt10" style="height: 450px">
+		<div class="f-mw50 f-ds1 f-fr f-mr10 f-mt10" style="height: 450px">
 			<label class="f-mt10 f-ml10 f-mh26">已配置权限</label>
 			<hr class="f-mt5 f-mb10">
-			<div id="div_configFun_featrue_grid"></div>
+			<div class="div-appRole-grid-scrollbar" style="width: 100%;height: 390px;">
+				<div id="div_configFun_featrue_grid"></div>
+			</div>
 		</div>
 	</div>
 
 	<!--######机构数据授权######-->
 	<div class="f-mw100 div-org-grant f-dn">
-		<div class="f-mw50 f-ds1 f-fl f-ml10 div-appRole-grid-scrollbar f-mt10" style="height: 450px">
+		<div class="f-mw50 f-ds1 f-fl f-ml10 f-mt10" style="height: 450px">
 			<div class="f-mw100 f-fl f-mt5 f-mb5">
 				<label class="f-lh30 f-ml10 f-fl lab-title-msg">功能权限：</label>
 				<div class="f-fl">
@@ -40,12 +44,17 @@
 				</div>
 			</div>
 			<hr class="f-mt5 f-mb10 f-mw100">
-			<div id="div_function_featrue_org_grid"></div>
+			<div class="div-appRole-grid-scrollbar" style="width: 100%;height: 390px;">
+				<div id="div_function_featrue_org_grid"></div>
+			</div>
 		</div>
-		<div class="f-mw50 f-ds1 f-fr f-mr10 div-appRole-grid-scrollbar f-mt10" style="height: 450px">
+		<div class="f-mw50 f-ds1 f-fr f-mr10 f-mt10" style="height: 450px">
 			<label class="f-mt10 f-ml10 f-mh26">已配置权限</label>
 			<hr class="f-mt5 f-mb10">
-			<div id="div_configFun_featrue_org_grid"></div>
+
+			<div class="div-appRole-grid-scrollbar">
+				<div id="div_configFun_featrue_org_grid" style="width: 100%;height: 390px;"></div>
+			</div>
 		</div>
 	</div>
 

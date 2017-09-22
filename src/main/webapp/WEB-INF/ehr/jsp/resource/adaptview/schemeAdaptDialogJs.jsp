@@ -50,6 +50,8 @@
                 self.$form.removeClass("m-form-readonly");
                 this.$code.ligerTextBox({width:240,validate:{required:true }});
                 this.$name.ligerTextBox({width:240,validate:{required:true }});
+
+                self.$type.ligerTextBox({disabled: true});
                 this.$adapterVersionName.ligerComboBox({
                     condition: { inputWidth: 120 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
                     grid: getGridOptions(),
@@ -92,33 +94,33 @@
                         };
                         return options;
                 };
-                types = self.$type.ligerComboBox(
-                        {
-                            cancelable: false,
-                            url: '${contextRoot}/dict/searchDictEntryList',
-                            valueField: 'code',
-                            textField: 'value',
-                            dataParmName: 'detailModelList',
-                            validate:{required:true },
-                            urlParms: {
-                                page: 1,
-                                rows: 1000,
-                                dictId: adapterType
-                            },
-                            onSelected: function (value) {
-                                if (Util.isStrEmpty(value)) {
-                                    self.$adapter_version_name_div.css("display","none");
-                                    self.$adapter_version_div.css("display","none");
-                                    return;
-                                }else if(value=="1"){
-                                    self.$adapter_version_name_div.css("display","none");
-                                    self.$adapter_version_div.css("display","");
-                                }else if(value=="2"){
-                                    self.$adapter_version_name_div.css("display","");
-                                    self.$adapter_version_div.css("display","none");
-                                }
-                            }
-                        });
+                <%--types = self.$type.ligerComboBox(--%>
+                        <%--{--%>
+                            <%--cancelable: false,--%>
+                            <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                            <%--valueField: 'code',--%>
+                            <%--textField: 'value',--%>
+                            <%--dataParmName: 'detailModelList',--%>
+                            <%--validate:{required:true },--%>
+                            <%--urlParms: {--%>
+                                <%--page: 1,--%>
+                                <%--rows: 1000,--%>
+                                <%--dictId: adapterType--%>
+                            <%--},--%>
+                            <%--onSelected: function (value) {--%>
+                                <%--if (Util.isStrEmpty(value)) {--%>
+                                    <%--self.$adapter_version_name_div.css("display","none");--%>
+                                    <%--self.$adapter_version_div.css("display","none");--%>
+                                    <%--return;--%>
+                                <%--}else if(value=="1"){--%>
+                                    <%--self.$adapter_version_name_div.css("display","none");--%>
+                                    <%--self.$adapter_version_div.css("display","");--%>
+                                <%--}else if(value=="2"){--%>
+                                    <%--self.$adapter_version_name_div.css("display","");--%>
+                                    <%--self.$adapter_version_div.css("display","none");--%>
+                                <%--}--%>
+                            <%--}--%>
+                        <%--});--%>
                        versions = self.$adapterVersion.ligerComboBox(
                         {
                             cancelable: false,
@@ -139,9 +141,7 @@
                 var info = ${info};
                 if(info.successFlg){
                     self.$adapterVersion.ligerTextBox({disabled: true});
-                    self.$type.ligerTextBox({disabled: true});
                     self.$adapterVersionName.ligerTextBox({disabled: true});
-
                     self.$form.Fields.fillValues({
                         type: info.obj.type,
                         adapterVersionName: info.obj.adapterVersion,
@@ -151,9 +151,13 @@
                         description : info.obj.description,
                         id: info.obj.id
                     });
+
                     self.$adapterVersionName.ligerGetComboBoxManager().setValue(info.obj.adapterVersion);
                     self.$adapterVersionName.ligerGetComboBoxManager().setText(info.obj.adapterVersionName);
+
                 }
+                types = self.$type.ligerGetTextBoxManager().setValue('平台标准');
+                self.$type.attr('data-val', '1');
             },
             bindEvents: function () {
                 var self = this;
@@ -172,6 +176,7 @@
                     if(!validator.validate()){
                         return;
                     }
+                    adapterSchemeModel.type = self.$type.attr('data-val');
                     if(adapterSchemeModel.type==2){
                         adapterSchemeModel.adapterVersion=adapterSchemeModel.adapterVersionName;
                     }
