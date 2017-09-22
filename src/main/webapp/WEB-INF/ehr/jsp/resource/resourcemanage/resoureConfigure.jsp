@@ -9,7 +9,7 @@
             <%--指标名称：--%>
         </div>
         <!--   指标详情   border: 1px solid #D6D6D6-->
-        <div id="div_right" style="float: left;/*width: 100%;height: 100%;*/padding-left: 10px;width: 870px;">
+        <div id="div_right_rc" style="float: left;/*width: 100%;height: 100%;*/padding-left: 10px;width: 870px;">
             <div style="width: 98%;height:90%;padding-top: 20px;position: relative">
                 <%--列表--%>
                 <div class="" style="float: left;width: 382px;position: relative;">

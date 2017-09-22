@@ -6,7 +6,7 @@
 	<input type="hidden" id="id" data-attr-scan="id"/>
 	<div class="m-form-group">
 		<label>视图分类<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential f-pr0">
+		<div class="l-text-wrapper m-form-control f-pr0">
 			<input type="text" id="inp_category" readonly="readonly" data-type="select" class="required useTitle f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="categoryId" />
 		</div>
 	</div>
@@ -34,8 +34,9 @@
 	<div class="m-form-group">
 		<label>数据来源<spring:message code="spe.colon"/></label>
 		<div class="u-checkbox-wrap m-form-control">
-			<input type="radio" value="1" name="dataSource" data-attr-scan/>档案数据
-			<input type="radio" value="2" name="dataSource" data-attr-scan/>指标统计
+			<input type="text" id="dataSource" readonly="readonly" data-attr-scan="dataSource">
+			<%--<input type="radio" value="1" name="dataSource" data-attr-scan/>档案数据--%>
+			<%--<input type="radio" value="2" name="dataSource" data-attr-scan/>指标统计--%>
 		</div>
 	</div>
 	<div class="m-form-group">
