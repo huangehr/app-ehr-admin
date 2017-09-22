@@ -16,7 +16,7 @@
     <!-- ####### 查询条件部分 ####### -->
     <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
         <div class="m-form-group f-mt10">
-            <div class="m-form-control">
+            <div class="m-form-control f-mb10">
                 <!--输入框-->
                 <input type="text" id="inp_search" placeholder="请输入代码或名称" class="f-ml10" data-attr-scan="searchNm"/>
             </div>
