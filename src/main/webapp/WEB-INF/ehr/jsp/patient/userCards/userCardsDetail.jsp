@@ -4,9 +4,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <style>
-	/*.col{*/
-		/*color: blue;*/
-	/*}*/
+	.col{
+		overflow: hidden;
+	}
 
 </style>
 

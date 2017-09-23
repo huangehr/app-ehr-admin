@@ -62,14 +62,14 @@
                                 <div class="f-fl f-mr10 f-ml10 f-mt6 clear-s">
                                     <label class="inp-label" for="inpRegion">地区: </label>
                                     <div class="inp-text">
-                                        <input type="text" id="inpRegion" data-code="EHR_000241" data-type="select" class="f-pr0 f-ml10 inp-reset div-table-colums "/>
+                                        <input type="text" id="inpRegion" data-code="org_area" data-type="select" class="f-pr0 f-ml10 inp-reset div-table-colums "/>
                                     </div>
                                 </div>
                                 <%--医疗机构--%>
                                 <div class="f-fl f-mr10 f-ml10 f-mt6 clear-s">
                                     <label class="inp-label" for="inpMechanism">医疗机构: </label>
                                     <div class="inp-text">
-                                        <input type="text" id="inpMechanism" data-code="EHR_000021" data-type="select" class="f-pr0 f-ml10 inp-reset div-table-colums "/>
+                                        <input type="text" id="inpMechanism" data-code="org_code" data-type="select" class="f-pr0 f-ml10 inp-reset div-table-colums "/>
                                     </div>
                                 </div>
                             </div>

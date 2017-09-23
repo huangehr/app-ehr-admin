@@ -80,7 +80,7 @@ $(function () {
                     $.Notice.error(resp.errorMsg);
                 else
                    $.Notice.success('新增成功');
-                   closeAddPortalResourcesInfoDialog(function () {
+                   win.top.closeAddPortalResourcesInfoDialog(function () {
                 });
             });
         },
@@ -165,11 +165,11 @@ $(function () {
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
-                                closeAddPortalResourcesInfoDialog(function () {
+                                win.top.closeAddPortalResourcesInfoDialog(function () {
                                     $.Notice.success('新增成功');
                                 });
                             } else {
-                                window.top.$.Notice.error(data.errorMsg);
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })

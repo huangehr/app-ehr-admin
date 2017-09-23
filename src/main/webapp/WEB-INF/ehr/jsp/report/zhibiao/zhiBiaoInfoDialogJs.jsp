@@ -229,6 +229,7 @@
                     textField: 'code',
                     condition: null,
                     absolute:false,
+                    selectBoxHeight: 'auto'
                 },{
                     columns: [
                         { header: 'code', name: 'code', width: '40%' },

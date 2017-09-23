@@ -62,28 +62,35 @@
             </div>
         </div>
         <div id="div_right" style="float: left;">
-            <div class="m-retrieve-area f-h50 f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0;">
+            <div class="m-retrieve-area f-dn f-pr" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0;overflow: hidden;">
                 <ul>
-                    <li class=" f-mt15">
-                        <span class="f-mt10 f-fs14 f-ml10">
-                           <strong style="font-weight: bolder;">数据元:</strong>
-                        </span>
-
-                        <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>"
-                               class="f-ml10">
+                    <li class="">
+                        <div class="s-con">
+                            <span class="f-mt5 f-fs14 f-ml10" style="display: inline-block">
+                               <strong style="font-weight: bolder;">数据元:</strong>
+                            </span>
+                        </div>
+                        <div class="s-con">
+                            <input type="text" id="searchNmEntry" placeholder="<spring:message code="lbl.input.placehold"/>"
+                                   class="f-ml10">
+                        </div>
 
                         <sec:authorize url="/std/dataset/deleteMetaData">
-                        <a id="btn_Delete_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr20"
-                           style="  margin-right: 20px;margin-top: -30px;">
-                            批量删除
-                        </a>
+                            <div class="s-con f-fr">
+                                <a id="btn_Delete_relation" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr20"
+                                   style="  margin-right: 20px;margin-top: -30px;">
+                                    批量删除
+                                </a>
+                            </div>
                         </sec:authorize>
 
                         <sec:authorize url="/std/dataset/elementupdate">
-                        <a id="btn_add_element" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
-                           style="  margin-right: 126px;margin-top: -30px;">
-                            新增
-                        </a>
+                            <div class="s-con f-fr">
+                                <a id="btn_add_element" class="btn u-btn-primary u-btn-small s-c0 J_add-btn f-fr f-mr10"
+                                   style="  margin-right: 126px;margin-top: -30px;">
+                                    新增
+                                </a>
+                            </div>
                         </sec:authorize>
                     </li>
                 </ul>

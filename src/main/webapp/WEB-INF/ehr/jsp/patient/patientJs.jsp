@@ -183,7 +183,7 @@
                             }
                         ],
                         onDblClickRow: function (row) {
-//                            self.showUserInfo(row.idCardNo,row.userId);
+                            self.showUserInfo(row.idCardNo,row.userId);
                         }
                     }));
                     grid.adjustToWidth();

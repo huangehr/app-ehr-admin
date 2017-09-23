@@ -137,7 +137,7 @@
                                 var obj = d.obj || [],
                                     str = '';
                                 for (var i = 0, len = obj.length; i < len; i++) {
-                                    str += '<li class="con-item" data-code="' + (k == 0 ? obj[i].name : obj[i].fullName) + '">' + (k == 0 ? obj[i].name : obj[i].fullName) + '</li>';
+                                    str += '<li class="con-item" data-code="' + (k == 0 ? obj[i].id : obj[i].fullName) + '">' + (k == 0 ? obj[i].name : obj[i].fullName) + '</li>';
                                 }
                                 o.content = str;
                             });
@@ -170,6 +170,9 @@
                                 if (me.type == 0) {
                                     var ma = [], ca = [], sjyArr = [];
 //                                    me.loadGrid();
+                                    if (me.selectData[0].data.level == 2 && me.selectData.length == 1) {
+                                        me.selectData.push({data:this.getDataByNode(this.getParentTreeItem(me.selectData[0].target))});
+                                    }
                                     for (var i = 0, len = me.selectData.length; i < len; i++) {
                                         switch (me.selectData[i].data.level) {
                                             case '1':
@@ -533,6 +536,7 @@
                         me.$scBtn.removeClass('show');
                         me.$selectCon.hide();
                         if (me.type == 0) {
+                            debugger
                             me.queryCondition = me.getSelCon();
                             me.reloadResourcesGrid({
                                 metaData: me.childArr,

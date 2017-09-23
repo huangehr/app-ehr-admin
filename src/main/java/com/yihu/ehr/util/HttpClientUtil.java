@@ -91,11 +91,6 @@ public class HttpClientUtil {
             getMethod = new GetMethod(url + "?" + URLEncodedUtils.format(jsonParams, HTTP.UTF_8));
             getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
             int statusCode = httpClient.executeMethod(getMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                String jsonObject = JSONObject.toJSONString(params);
-                logger.debug("用户："+username+"\r\n发起get请求出错:\r\n请求连接" + url + "\r\n请求参数:"+jsonObject+",状态：" + statusCode + "\r\nresponseBody"+new String(getMethod.getResponseBody(), "UTF-8")+"，\r\n请求标示："+getKey+"\r\n");
-                throw new Exception("请求出错: " + getMethod.getStatusLine());
-            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(getMethod.getResponseBodyAsStream(), "UTF-8"));
             StringBuffer stringBuffer = new StringBuffer();
             String str = "";
@@ -103,6 +98,11 @@ public class HttpClientUtil {
                 stringBuffer.append(str);
             }
             response = stringBuffer.toString();
+            if (statusCode != HttpStatus.SC_OK) {
+                String jsonObject = JSONObject.toJSONString(params);
+                logger.debug("用户：" + username + "\r\n发起get请求出错:\r\n请求连接" + url + "\r\n请求参数:" + jsonObject + ",状态：" + statusCode + "\r\nresponseBody" + response + "，\r\n请求标示：" + getKey +"\r\n");
+                throw new Exception("请求出错: " + getMethod.getStatusLine());
+            }
         } catch (HttpException e) {
             logger.debug("用户："+username+";发起get请求出错，请求连接：" + url + "，HttpException异常信息：" + e.getLocalizedMessage()+"，请求标示："+getKey);
             e.printStackTrace();
@@ -156,11 +156,6 @@ public class HttpClientUtil {
             postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
             postMethod.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
             int statusCode = httpClient.executeMethod(postMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                String jsonObject = JSONObject.toJSONString(params);
-                logger.debug("用户："+username+"\r\n发起post请求出错:\r\n请求连接" + url + "\r\n请求参数:"+jsonObject+",状态：" + statusCode + "\r\nresponseBody"+new String(postMethod.getResponseBody(), "UTF-8")+"，\r\n请求标示："+postKey+"\r\n");
-                throw new Exception("请求出错: " + postMethod.getStatusLine());
-            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(postMethod.getResponseBodyAsStream(), "UTF-8"));
             StringBuffer stringBuffer = new StringBuffer();
             String str = "";
@@ -168,6 +163,11 @@ public class HttpClientUtil {
                 stringBuffer.append(str);
             }
             response = stringBuffer.toString();
+            if (statusCode != HttpStatus.SC_OK) {
+                String jsonObject = JSONObject.toJSONString(params);
+                logger.debug("用户：" + username + "\r\n发起post请求出错:\r\n请求连接" + url + "\r\n请求参数:" + jsonObject + ",状态：" + statusCode + "\r\nresponseBody"+ response + "，\r\n请求标示：" + postKey + "\r\n");
+                throw new Exception("请求出错: " + postMethod.getStatusLine());
+            }
         } catch (HttpException e) {
             logger.debug("用户：" + username + ";发起post请求出错，请求连接：" + url + "，HttpException异常信息：" + e.getLocalizedMessage() + "，请求标示：" + postKey);
             e.printStackTrace();
@@ -211,11 +211,6 @@ public class HttpClientUtil {
             putMethod = new PutMethod(url + "?" + URLEncodedUtils.format(jsonParams, HTTP.UTF_8));
             putMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
             int statusCode = httpClient.executeMethod(putMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                String jsonObject = JSONObject.toJSONString(params);
-                logger.debug("用户："+username+"\r\n发起put请求出错:\r\n请求连接" + url + "\r\n请求参数:"+jsonObject+",状态：" + statusCode + "\r\nresponseBody"+new String(putMethod.getResponseBody(), "UTF-8")+"，\r\n请求标示："+putKey+"\r\n");
-                throw new Exception("请求出错: " + putMethod.getStatusLine());
-            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(putMethod.getResponseBodyAsStream(), "UTF-8"));
             StringBuffer stringBuffer = new StringBuffer();
             String str = "";
@@ -223,6 +218,11 @@ public class HttpClientUtil {
                 stringBuffer.append(str);
             }
             response = stringBuffer.toString();
+            if (statusCode != HttpStatus.SC_OK) {
+                String jsonObject = JSONObject.toJSONString(params);
+                logger.debug("用户：" + username + "\r\n发起put请求出错:\r\n请求连接" + url + "\r\n请求参数:" + jsonObject + ",状态：" + statusCode + "\r\nresponseBody"+ response + "，\r\n请求标示：" + putKey + "\r\n");
+                throw new Exception("请求出错: " + putMethod.getStatusLine());
+            }
         } catch (HttpException e) {
             logger.debug("用户：" + username + ";发起put请求出错，请求连接：" + url + "，HttpException异常信息：" + e.getLocalizedMessage() + "，请求标示：" + putKey);
             e.printStackTrace();
@@ -266,11 +266,6 @@ public class HttpClientUtil {
             deleteMethod = new DeleteMethod(url + "?" + URLEncodedUtils.format(jsonParams, HTTP.UTF_8));
             deleteMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
             int statusCode = httpClient.executeMethod(deleteMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                String jsonObject = JSONObject.toJSONString(params);
-                logger.debug("用户："+username+"\r\n发起delete请求出错:\r\n请求连接" + url + "\r\n请求参数:"+jsonObject+",状态：" + statusCode + "\r\nresponseBody"+new String(deleteMethod.getResponseBody(), "UTF-8")+"，\r\n请求标示："+deleteKey+"\r\n");
-                throw new Exception("请求出错: " + deleteMethod.getStatusLine());
-            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(deleteMethod.getResponseBodyAsStream(), "UTF-8"));
             StringBuffer stringBuffer = new StringBuffer();
             String str = "";
@@ -278,6 +273,11 @@ public class HttpClientUtil {
                 stringBuffer.append(str);
             }
             response = stringBuffer.toString();
+            if (statusCode != HttpStatus.SC_OK) {
+                String jsonObject = JSONObject.toJSONString(params);
+                logger.debug("用户：" + username + "\r\n发起delete请求出错:\r\n请求连接" + url + "\r\n请求参数:" + jsonObject + ",状态：" + statusCode + "\r\nresponseBody" + response +"，\r\n请求标示：" + deleteKey + "\r\n");
+                throw new Exception("请求出错: " + deleteMethod.getStatusLine());
+            }
         } catch (HttpException e) {
             logger.debug("用户：" + username + ";发起delete请求出错，请求连接：" + url + "，HttpException异常信息：" + e.getLocalizedMessage() + "，请求标示：" + deleteKey);
             e.printStackTrace();

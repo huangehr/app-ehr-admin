@@ -220,11 +220,15 @@
 				bindEvents: function () {
 					var self = this;
 					//新增修改
-					$('#btn_add').click(function(){
+                    $('#btn_add').unbind('click');
+					$('#btn_add').click(function(e){
+                        event.stopPropagation();
+                        debugger
 						$.publish("rs:info:open",['','new',categoryId,categoryOrgId]);
 					});
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId){
 						var title = "";
+                        event.stopPropagation();
 						if(mode == "modify"){title = "修改成员";}
 						if(mode == "new"){
 							title = "新增成员";
@@ -307,6 +311,7 @@
 			win.closeRsInfoDialog = function (callback) {
 				isFirstPage = false;
 				master.rsInfoDialog.close();
+                master.rsInfoDialog = null;
 			};
 			//新增、修改（成员分类有修改情况）定位
 			win.locationTree = function(callbackParams){
