@@ -59,7 +59,7 @@ public class OrganizationController extends BaseUIController {
     @Autowired
     private GetInfoService getInfoService;
 
-    @RequestMapping("initial")
+    @RequestMapping("/initial")
     public String orgInitial(Model model) {
         model.addAttribute("contentPage", "organization/organization");
         return "pageView";
