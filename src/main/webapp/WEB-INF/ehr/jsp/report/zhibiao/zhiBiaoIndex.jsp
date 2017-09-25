@@ -35,16 +35,16 @@
     </div>
     <!--指标详情-->
     <div id="div_right" class="div-resource-browse ">
-      <div class="right-retrieve">
+      <div class="right-retrieve" style="overflow: hidden;padding-bottom: 0">
         <div class="m-form-control f-mt5 f-fs14 f-fwb f-ml10">
           <div>指标：</div>
         </div>
-        <div class="m-form-control f-fs12">
+        <div class="m-form-control f-fs12 f-mb10">
           <input type="hidden" id="quotaTypeNo" value="${quotaTypeNo}">
           <input type="text" id="searchNm" value="${name}" placeholder="<spring:message code="lbl.input.placehold"/>">
         </div>
 
-        <div class="m-form-control f-mr10 f-fr">
+        <div class="m-form-control f-mr10 f-fr f-mb10">
           <sec:authorize url="/tjQuota/updateTjDataSource">
             <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam"  onclick="javascript:$.publish('zhibiao:zhiBiaoInfo:open',['','new'])">
               <span><spring:message code="btn.create"/></span>
