@@ -127,7 +127,7 @@
                                         newName = name.substring(0,1) + "*" + name.substring(length-1);
                                     }
                                 }
-                                html = '<sec:authorize url="/patient/updatePatient">' + name + '</sec:authorize>';
+                                html = '<sec:authorize url="/patient/viewPatient">' + name + '</sec:authorize>';
                                 if (html == "") {
                                     html = newName;
                                 }
@@ -144,7 +144,7 @@
                                     for (var i=0; i < length-10; i++) {
                                         middle += "*";
                                     }
-                                    html = '<sec:authorize url="/patient/updatePatient">' + idCardNo + '</sec:authorize>';
+                                    html = '<sec:authorize url="/patient/viewPatient">' + idCardNo + '</sec:authorize>';
                                     if (html == "") {
                                         html = pre + middle + suf;
                                     }
@@ -157,13 +157,13 @@
                                 var html = "";
                                 if (null != telephoneNo && telephoneNo != "") {
                                     var length = telephoneNo.length;
-                                    var pre = telephoneNo.substring(0, 3);
-                                    var suf = telephoneNo.substring(length-4, length);
+                                    var pre = telephoneNo.substring(0, 2);
+                                    var suf = telephoneNo.substring(length-2, length);
                                     var middle = "";
-                                    for (var i=0; i < length-7; i++) {
+                                    for (var i=0; i < length-4; i++) {
                                         middle += "*";
                                     }
-                                    html = '<sec:authorize url="/patient/updatePatient">' + telephoneNo + '</sec:authorize>';
+                                    html = '<sec:authorize url="/patient/viewPatient">' + telephoneNo + '</sec:authorize>';
                                     if (html == "") {
                                         html = pre + middle + suf;
                                     }

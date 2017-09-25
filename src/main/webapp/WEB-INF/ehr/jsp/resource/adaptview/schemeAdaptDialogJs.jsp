@@ -51,7 +51,7 @@
                 this.$code.ligerTextBox({width:240,validate:{required:true }});
                 this.$name.ligerTextBox({width:240,validate:{required:true }});
 
-                self.$type.ligerTextBox({disabled: true});
+                self.$type.ligerTextBox({disabled: true, readonly: true});
                 this.$adapterVersionName.ligerComboBox({
                     condition: { inputWidth: 120 ,width:0,labelWidth:0,hideSpace:true,fields: [{ name: "name", label:''}] },//搜索框的字段, name 必须是服务器返回的字段
                     grid: getGridOptions(),

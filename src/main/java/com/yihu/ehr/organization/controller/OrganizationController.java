@@ -115,7 +115,7 @@ public class OrganizationController extends BaseUIController {
 
     @RequestMapping(value = "searchOrgs", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object searchOrgs(String searchNm, String searchWay, String orgType, String province, String city, String district, int page, int rows) {
+    public Object searchOrgs(String searchParm, String searchWay, String orgType, String province, String city, String district, int page, int rows) {
         Envelop envelop = new Envelop();
         try {
             //获取地址的 ids
@@ -142,8 +142,8 @@ public class OrganizationController extends BaseUIController {
             String url = "/organizations";
             String filters = "";
             Map<String, Object> params = new HashMap<>();
-            if (!StringUtils.isEmpty(searchNm)) {
-                filters += "orgCode?" + searchNm + " g1;fullName?" + searchNm + " g1;";
+            if (!StringUtils.isEmpty(searchParm)) {
+                filters += "orgCode?" + searchParm + " g1;fullName?" + searchParm + " g1;";
             }
             if (!StringUtils.isEmpty(searchWay)) {
                 filters += "settledWay=" + searchWay + ";";

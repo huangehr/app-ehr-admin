@@ -98,7 +98,7 @@
                     this.grid = $("#div_org_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/organization/searchOrgs',
                         parms: {
-                            searchNm: '',
+                            searchParm: '',
                             searchType: '',
                             orgType: '',
                             province: '',
