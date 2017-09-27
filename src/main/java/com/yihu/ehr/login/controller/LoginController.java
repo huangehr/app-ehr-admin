@@ -606,10 +606,9 @@ public class LoginController extends BaseUIController {
      *  单点登录
     */
     @RequestMapping(value = "/broswerSignin",method = RequestMethod.GET)
-    public void signin(Model model,HttpServletRequest request,HttpServletResponse response, String idCardNo) throws Exception
-    {
-        String clientId=browseClientId;
-        String url=browseClienturl+"/common/login/signin?idCardNo="+idCardNo;
+    public void signin(Model model,HttpServletRequest request,HttpServletResponse response, String idCardNo) throws Exception {
+        String clientId = browseClientId;
+        String url= browseClienturl + "/common/login/signin?idCardNo=" + idCardNo;
         //response.sendRedirect("http://localhost:10260/oauth/authorize?response_type=token&client_id=111111&redirect_uri=http://localhost:8011/login/test&user=me");
         //获取code
         HttpSession session = request.getSession();
