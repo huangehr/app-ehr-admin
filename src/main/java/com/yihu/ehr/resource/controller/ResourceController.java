@@ -480,13 +480,15 @@ public class ResourceController extends BaseUIController {
      * @return
      */
     @RequestMapping("/resourceShow")
-    public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter){
+    public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter,HttpServletRequest request){
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        params.put("userId", userDetailModel.getId());
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
            if( !StringUtils.isEmpty(quotaFilter) ){
