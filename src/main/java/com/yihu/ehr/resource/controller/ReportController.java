@@ -5,8 +5,10 @@ import com.yihu.ehr.agModel.resource.RsCategoryTypeTreeModel;
 import com.yihu.ehr.agModel.resource.RsReportModel;
 import com.yihu.ehr.agModel.resource.RsReportViewModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.resource.MChartInfoModel;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -372,7 +375,7 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("getTemplateData")
     @ResponseBody
-    public Object getTemplateData(@RequestParam String reportCode) {
+    public Object getTemplateData(@RequestParam String reportCode,HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> resultMap = new HashMap<>();
@@ -427,6 +430,8 @@ public class ReportController extends BaseUIController {
                     viewInfo.put("resourceId", view.getResourceId());
                     params.clear();
                     params.put("resourceId", view.getResourceId());
+                    UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+                    params.put("userId", userDetailModel.getId());
                     String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                     List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {
                     });
