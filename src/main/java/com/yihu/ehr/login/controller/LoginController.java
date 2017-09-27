@@ -63,10 +63,10 @@ public class LoginController extends BaseUIController {
     private String oauth2OutSize;
     @Value("${app.baseClientId}")
     private String baseClientId;
-//    @Value("${app.qcReportClientId}")
-//    private String qcReportClientId;
-//    @Value("${app.resourceBrowseClientId}")
-//    private String resourceBrowseClientId;
+    @Value("${app.qcReportClientId}")
+    private String qcReportClientId;
+    @Value("${app.resourceBrowseClientId}")
+    private String resourceBrowseClientId;
     @Value("${app.browseClientId}")
     public String browseClientId;
     @Value("${std.version}")
@@ -112,15 +112,13 @@ public class LoginController extends BaseUIController {
         try {
             String clientId = request.getParameter("clientId").toString();
             Map<String, Object> params = new HashMap<>();
-            // 改为总支撑门户那边登录认证的时候通过在回调uri上加clienId参数传过来, 故废弃该做法。 by 张进军 2017/9/26
-            /*if ("1".equals(isQcReport)){
+            if ("1".equals(isQcReport)){ // 质控报告-oauth2验证集成
                 params.put("clientId", qcReportClientId);
-            }else if ("2".equals(isQcReport)){
+            }else if ("2".equals(isQcReport)){ // 资源视图-oauth2验证集成
                 params.put("clientId", resourceBrowseClientId);
             }else {
                 params.put("clientId", clientId);
-            }*/
-            params.put("clientId", clientId);
+            }
             params.put("accessToken", token);
 
             String response = HttpClientUtil.doPost(authorize + "/oauth/validToken", params);
