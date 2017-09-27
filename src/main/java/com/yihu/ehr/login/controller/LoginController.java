@@ -133,21 +133,9 @@ public class LoginController extends BaseUIController {
                 Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
                 String ex = this.objectMapper.writeValueAsString(envelop.getObj());
                 UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+                //获取用户saas机构及区域
+                getUserSaasOrgAndArea(userDetailModel,request);
 
-//                //根据登录人id获取，登录人所在的机构（可能会有多个机构）
-//                String uid="";
-//                if(null!=userDetailModel){
-//                    uid=userDetailModel.getId();
-//                    String url = "/org/getUserOrglistByUserId/";
-//                    String resultStr = "";
-//                    Map<String, Object> userParams = new HashMap<>();
-//                    userParams.put("userId", uid);
-//                    resultStr = HttpClientUtil.doGet(comUrl + url, userParams, username,password);
-//                    envelop = getEnvelop(resultStr);
-//                    List userOrgCode=new ArrayList<>();
-//                    userOrgCode=envelop.getDetailModelList();
-//                    request.getSession().setAttribute("userOrgCode", userOrgCode);
-//                }
                 request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 request.getSession().setAttribute("isLogin", true);
                 request.getSession().setAttribute("token", accessToken);
@@ -189,20 +177,8 @@ public class LoginController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
             Envelop envelop = getEnvelop(resultStr);
             UserDetailModel userDetailModel = getEnvelopModel(envelop.getObj(), UserDetailModel.class);
-
-//            //根据登录人id获取，登录人所在的机构（可能会有多个机构）
-//            String uid="";
-//            if(null!=userDetailModel){
-//                uid=userDetailModel.getId();
-//                String  urlUserOrg = "/org/getUserOrglistByUserId/";
-//                Map<String, Object> userParams = new HashMap<>();
-//                userParams.put("userId", uid);
-//                String  resultStrUserOrg = HttpClientUtil.doGet(comUrl + urlUserOrg, userParams, username,password);
-//                envelop = getEnvelop(resultStrUserOrg);
-//                List userOrgCode=new ArrayList<>();
-//                userOrgCode=envelop.getDetailModelList();
-//                request.getSession().setAttribute("userOrgCode", userOrgCode);
-//            }
+            //根据登录人id获取，登录人所在的机构（可能会有多个机构）
+            getUserSaasOrgAndArea(userDetailModel,request);
             //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
                 String lastLoginTime = null;
@@ -643,6 +619,38 @@ public class LoginController extends BaseUIController {
         }
         envelop.setSuccessFlg(true);
         return envelop;
+    }
+
+    /**
+     *  单点登录
+     */
+    @RequestMapping(value = "/getUserSaasOrgAndArea",method = RequestMethod.GET)
+    public void getUserSaasOrgAndArea(UserDetailModel userDetailModel,HttpServletRequest request) throws Exception {
+        //根据登录人id获取，登录人所在的机构（可能会有多个机构）
+        String uid="";
+        Envelop envelop = new Envelop();
+        if(null!=userDetailModel){
+            uid=userDetailModel.getId();
+            String  urlUserOrg = "/org/getUserOrglistByUserId/";
+            Map<String, Object> userParams = new HashMap<>();
+            userParams.put("userId", uid);
+            String  resultStrUserOrg = HttpClientUtil.doGet(comUrl + urlUserOrg, userParams, username,password);
+            envelop = getEnvelop(resultStrUserOrg);
+            if(null!=envelop&&envelop.getDetailModelList().size()>0){
+                List<String> uOrgCode=envelop.getDetailModelList();
+                String userOrgCode=String.join(",",uOrgCode);
+
+                //使用userOrgCode获取saas化的机构或者区域。
+                String  urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
+                Map<String, Object> uParams = new HashMap<>();
+                uParams.put("userOrgCode", userOrgCode);
+                String  resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username,password);
+                envelop = getEnvelop(resultStrUserSaasOrg);
+
+                request.getSession().setAttribute("userAreaSaas", envelop.getObj());
+                request.getSession().setAttribute("userOrgSaas",  envelop.getDetailModelList());
+            }
+        }
     }
 
 }
