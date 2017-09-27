@@ -25,12 +25,22 @@ public class IndexController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Value("${app.baseClientId}")
+    private String baseClientId;
 
     @RequestMapping(value = "")
     public String init(Model model, HttpServletRequest request) throws Exception {
+        Object clientId = request.getSession().getAttribute("clientId");
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+
         Map<String, Object> params = new HashMap<>();
-        params.put("appId", "zkGuSIm2Fg"); // 基础信息管理 应用
+        if (clientId != null) {
+            // 从总支撑门户过来，会附带 appId 参数
+            params.put("appId", clientId.toString());
+        } else {
+            // 从总支撑后台管理系统登录界面进来，则显示【基础信息管理】应用菜单
+            params.put("appId", baseClientId);
+        }
         params.put("userId", userDetailModel.getId());
         String envelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.AppFeature.FindAppMenus, params, username, password);
         Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);

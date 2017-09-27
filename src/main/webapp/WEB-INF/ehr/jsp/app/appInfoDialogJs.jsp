@@ -12,6 +12,7 @@
 		var catalogDictId = 1;
 		var statusDictId = 2;
         var sourceTypeDictId = 38;
+        var manageTypeDictId = 94;
         var app = {};
 		/* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -31,6 +32,7 @@
 			$appId: $("#inp_app_id"),
 			$secret: $("#inp_app_secret"),
 			$url: $("#inp_url"),
+			$manageType: $("#inp_dialog_manageType"),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -48,6 +50,7 @@
 				this.initDDL(catalogDictId, this.$catalog);
 				this.initDDL(statusDictId, this.$status);
                 this.initDDL(sourceTypeDictId, this.$sourceType);
+                this.initDDL(manageTypeDictId, this.$manageType);
 
 				this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{filters: "activityFlag=1;"})
                 this.$tags.ligerTextBox({width:240});
@@ -86,7 +89,8 @@
                         secret:app.secret,
                         url:app.url,
                         description:app.description,
-                        code: app.code
+                        code: app.code,
+                        manageType: app.manageType
                     });
 					$("#inp_org_code").ligerGetComboBoxManager().setValue(app.org);
 					$("#inp_org_code").ligerGetComboBoxManager().setText(app.orgName);
@@ -150,7 +154,6 @@
                         if('${mode}' == 'new'){
                             var values = self.$form.Fields.getValues();
                             values.role = role;
-//                            debugger;
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote("${contextRoot}/app/createApp",{data: $.extend({}, values),
                                 success: function(data) {

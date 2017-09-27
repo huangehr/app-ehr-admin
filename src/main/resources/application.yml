@@ -28,9 +28,12 @@ spring:
     username: weifuwu
     password: weifuwu
 app:
-  clientId: zkGuSIm2Fg
-  qcReportClientId: 2YTOSRI0tw
-  resourceBrowseClientId: W8RDizgDIB
+  baseClientId: zkGuSIm2Fg
+#  废弃 qcReportClientId、resourceBrowseClientId。
+#  因为改造为，从总支撑门户过来，会附带 appId 参数。
+#  By 张进军 2017/6/26
+#  qcReportClientId: 2YTOSRI0tw
+#  resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://172.19.103.73:10260/
   oauth2OutSize: http://27.154.233.186:10260/  #上饶-认证外网
@@ -61,9 +64,12 @@ spring:
     username: ha
     password: ha
 app:
-  clientId: zkGuSIm2Fg
-  qcReportClientId: 2YTOSRI0tw
-  resourceBrowseClientId: W8RDizgDIB
+  baseClientId: zkGuSIm2Fg
+#  废弃 qcReportClientId、resourceBrowseClientId。
+#  因为改造为，从总支撑门户过来，会附带 appId 参数。
+#  By 张进军 2017/6/26
+#  qcReportClientId: 2YTOSRI0tw
+#  resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
   oauth2OutSize: http://192.168.1.221:10260/
@@ -93,9 +99,12 @@ spring:
     username: chenweishan
     password: chenweishan
 app:
-  clientId: zkGuSIm2Fg
-  qcReportClientId: 2YTOSRI0tw
-  resourceBrowseClientId: W8RDizgDIB
+  baseClientId: zkGuSIm2Fg
+#  废弃 qcReportClientId、resourceBrowseClientId。
+#  因为改造为，从总支撑门户过来，会附带 appId 参数。
+#  By 张进军 2017/6/26
+#  qcReportClientId: 2YTOSRI0tw
+#  resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://172.19.103.73:10260/
   oauth2OutSize: http://172.19.103.73:10260/
@@ -126,9 +135,12 @@ spring:
     username: ha
     password: ha
 app:
-  clientId: zkGuSIm2Fg
-  qcReportClientId: 2YTOSRI0tw
-  resourceBrowseClientId: W8RDizgDIB
+  baseClientId: zkGuSIm2Fg
+#  废弃 qcReportClientId、resourceBrowseClientId。
+#  因为改造为，从总支撑门户过来，会附带 appId 参数。
+#  By 张进军 2017/6/26
+#  qcReportClientId: 2YTOSRI0tw
+#  resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.1.221:10260/
   oauth2OutSize: http://192.168.1.221:10260/
@@ -160,9 +172,12 @@ spring:
     username: sr_healtharchive
     password: data!@)1
 app:
-  clientId: zkGuSIm2Fg
-  qcReportClientId: 2YTOSRI0tw
-  resourceBrowseClientId: W8RDizgDIB
+  baseClientId: zkGuSIm2Fg
+#  废弃 qcReportClientId、resourceBrowseClientId。
+#  因为改造为，从总支撑门户过来，会附带 appId 参数。
+#  By 张进军 2017/6/26
+#  qcReportClientId: 2YTOSRI0tw
+#  resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.135.35:10260/
   oauth2OutSize: http://192.168.135.35:10260/
@@ -195,9 +210,12 @@ spring:
     username: healthcloud
     password: GP8Qz4qU
 app:
-  clientId: zkGuSIm2Fg
-  qcReportClientId: 2YTOSRI0tw
-  resourceBrowseClientId: W8RDizgDIB
+  baseClientId: zkGuSIm2Fg
+#  废弃 qcReportClientId、resourceBrowseClientId。
+#  因为改造为，从总支撑门户过来，会附带 appId 参数。
+#  By 张进军 2017/6/26
+#  qcReportClientId: 2YTOSRI0tw
+#  resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://10.176.97.10:10260/
   oauth2OutSize: http://10.176.97.10:10260/  #上饶-认证外网
