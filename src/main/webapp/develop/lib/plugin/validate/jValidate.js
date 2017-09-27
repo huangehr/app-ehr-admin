@@ -324,7 +324,8 @@
         ['validate-money', '请输入正确的数值,最高保留2位小数'],
         ['validate-contact-way', '请输入有效的电话号码或手机号码'],
         ['validate-org-length', '请选择到医院一级！'],
-        ['validate-org-code', '请输入正确的组织代码格式，如:46650460-X'],
+        // ['validate-org-code', '请输入正确的组织代码格式，如:46650460-X'],
+        ['validate-org-code', ''],
         ['validate-special-char', '不允许输入 \' 符号'],
         ['validate-code-char', '只允许输入数字、英文、小数点与下划线'],
         ['validate-meta-id', '请输入以 EHR_ 开头，后面跟着6位数字的字符串，如：EHR_000001']

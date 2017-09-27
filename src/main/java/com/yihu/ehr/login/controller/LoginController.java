@@ -15,7 +15,6 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -62,12 +61,12 @@ public class LoginController extends BaseUIController {
     private String authorize;
     @Value("${app.oauth2OutSize}")
     private String oauth2OutSize;
-    @Value("${app.clientId}")
-    private String clientId;
-    @Value("${app.qcReportClientId}")
-    private String qcReportClientId;
-    @Value("${app.resourceBrowseClientId}")
-    private String resourceBrowseClientId;
+    @Value("${app.baseClientId}")
+    private String baseClientId;
+//    @Value("${app.qcReportClientId}")
+//    private String qcReportClientId;
+//    @Value("${app.resourceBrowseClientId}")
+//    private String resourceBrowseClientId;
     @Value("${app.browseClientId}")
     public String browseClientId;
     @Value("${std.version}")
@@ -82,9 +81,10 @@ public class LoginController extends BaseUIController {
     }
 
     @RequestMapping(value = "signin")
-    public String signin(Model model) {
+    public String signin(Model model, HttpServletRequest request) {
         model.addAttribute("contentPage", "login/signin");
         model.addAttribute("successFlg", true);
+        model.addAttribute("clientId", request.getParameter("clientId"));
         return "generalView";
     }
 
@@ -106,20 +106,21 @@ public class LoginController extends BaseUIController {
     @ResponseBody
     public Envelop autoLogin(Model model,
                              HttpServletRequest request,
-                             @ApiParam(name = "token")
                              @RequestParam String token,
-                             @ApiParam(name = "isQcReport")
                              @RequestParam(name = "isQcReport",required = false) String isQcReport
     ) throws Exception {
         try {
+            String clientId = request.getParameter("clientId").toString();
             Map<String, Object> params = new HashMap<>();
-            if ("1".equals(isQcReport)){
+            // 改为总支撑门户那边登录认证的时候通过在回调uri上加clienId参数传过来, 故废弃该做法。 by 张进军 2017/9/26
+            /*if ("1".equals(isQcReport)){
                 params.put("clientId", qcReportClientId);
             }else if ("2".equals(isQcReport)){
                 params.put("clientId", resourceBrowseClientId);
             }else {
                 params.put("clientId", clientId);
-            }
+            }*/
+            params.put("clientId", clientId);
             params.put("accessToken", token);
 
             String response = HttpClientUtil.doPost(authorize + "/oauth/validToken", params);
@@ -142,6 +143,7 @@ public class LoginController extends BaseUIController {
                 request.getSession().setAttribute("token", accessToken);
                 request.getSession().setAttribute("loginName", loginName);
                 request.getSession().setAttribute("userId", userDetailModel.getId());
+                request.getSession().setAttribute("clientId", clientId);
 
                 //获取用户角色信息
                 List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
@@ -235,7 +237,7 @@ public class LoginController extends BaseUIController {
                     }
                     //生成认证token
                     Authentication token = new UsernamePasswordAuthenticationToken(userName, password, gas);
-                    AccessToken accessToken = getAccessToken(userName, password, clientId);
+                    AccessToken accessToken = getAccessToken(userName, password, baseClientId);
                     session.setAttribute("token", accessToken);
                     //将信息存放到SecurityContext
                     SecurityContextHolder.getContext().setAuthentication(token);

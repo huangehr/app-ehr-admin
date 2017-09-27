@@ -195,7 +195,7 @@
 						if(mode == 'new'){title = '新增应用信息';};
 						if(mode == 'view'){title = '查看应用信息';}
                         master.appInfoDialog = $.ligerDialog.open({
-                            height:490,
+                            height:530,
                             width: 850,
                             title : title,
                             url: '${contextRoot}/app/template/appInfo',
