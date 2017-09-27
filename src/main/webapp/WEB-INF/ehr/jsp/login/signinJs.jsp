@@ -2,6 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <script>
+    var clientId = '${clientId}';
     var signin = {
         init:function () {
             //判断是否自动登录
@@ -17,7 +18,8 @@
                     type: 'POST',
                     dataType: 'json',
                     data:{
-                        "token":token
+                        "token":token,
+                        "clientId": clientId
                     },
                     success: function (data) {
                         if(data.successFlg){

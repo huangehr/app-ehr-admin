@@ -33,8 +33,8 @@ public class RoleCache {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
-    @Value("${app.clientId}")
-    private String clientId;
+    @Value("${app.baseClientId}")
+    private String baseClientId;
 
     private final static CopyOnWriteArrayList<String> resourceList = new CopyOnWriteArrayList<>();
 //    private final static Set<String> resourceList = Collections.synchronizedSet(new HashSet<String>());
@@ -45,7 +45,7 @@ public class RoleCache {
     private List<AppFeatureModel> getAppFeatures() throws Exception {
         Map parms = new HashMap<>();
         String url = "/filterFeatureNoPage";
-        parms.put("filters", "appId="+clientId);
+        parms.put("filters", "appId="+baseClientId);
         String rs = HttpClientUtil.doGet(comUrl + url, parms,username,password);
 //        ObjectMapperUtil objectMapperUtil = new ObjectMapperUtil();
         EnvelopExt<AppFeatureModel> envelopExt = (EnvelopExt<AppFeatureModel>)

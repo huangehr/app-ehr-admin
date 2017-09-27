@@ -661,7 +661,7 @@
                             if (codeArr.length > 0) {
                                 for (var j = 0, leng = codeArr.length; j < leng; j++) {
                                     var values = {andOr: '', condition: '', field: '', value: ''};
-                                    values.andOr = 'Or';
+                                    values.andOr = 'OR';
                                     values.condition = '=';
                                     values.field = pCode;
                                     values.value = codeArr[j];

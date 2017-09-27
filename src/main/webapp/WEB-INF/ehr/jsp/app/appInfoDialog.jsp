@@ -108,6 +108,12 @@
 		<div id="roleDiv" class="l-text-wrapper m-form-control f-pr0">
 			<input type="text" id="jryycyc" class="f-h28" data-type="select" data-attr-scan="role">
 		</div>
+		<label>管理类型</label>
+		<div class="l-text-wrapper m-form-control f-pr0 essential">
+			<input type="text" id="inp_dialog_manageType" data-type="select" class="required" data-attr-scan="manageType">
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label class=""><spring:message code="lbl.description"/><spring:message code="spe.colon"/></label>
 		<div class="m-form-control ">
 			<textarea id="inp_description" class="f-w240 max-length-500 validate-special-char" data-attr-scan="description" maxlength="500"></textarea>
