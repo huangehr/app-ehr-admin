@@ -145,6 +145,7 @@ public class LoginController extends BaseUIController {
                 //获取用户saas机构及区域
                 getUserSaasOrgAndArea(userDetailModel, request);
 
+                request.getSession().setAttribute("tempCurrentUser", userDetailModel); // SessionOutTimeFilter.java 中使用
                 request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 request.getSession().setAttribute("isLogin", true);
                 request.getSession().setAttribute("token", accessToken);
