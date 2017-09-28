@@ -93,7 +93,6 @@ spring:
     username: chenweishan
     password: chenweishan
 app:
-  baseClientId: zkGuSIm2Fg
   baseClientId: zkGuSIm2Fg  # 【基础信息管理】应用
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
