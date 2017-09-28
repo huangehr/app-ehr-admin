@@ -57,11 +57,11 @@
                 <span id="categoryName" style="font-size: 16px;font-weight:900;display: none"></span>
                 <input type="hidden" id="categoryId" />
                 <input type="hidden" id="categoryOrgId" />
-                <div class="m-form-control">
+                <%--<div class="m-form-control">
                     <!--下拉框-->
                     <input type="text" id="inp_status" class="f-h28 f-w160" placeholder="请选择状态" data-type="select"
                            data-attr-scan="status">
-                </div>
+                </div>--%>
                 <div class="m-form-control">
                     <!--输入框-->
                     <input type="text" id="inp_searchNm" placeholder="请输入成员名称" class="f-ml10 f-h28 f-w240"

@@ -161,13 +161,13 @@
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
-							{display: '姓名', name: 'userName', width: '15%', align: 'left'},
-							{display: '职务', name: 'dutyName', width: '15%', align: 'left'},
-							{display: '部门', name: 'deptName', width: '15%', align: 'left'},
-							{display: '描述', name: 'remark', width: '23%', align: 'left'},
+							{display: '姓名', name: 'userName', width: '16%', align: 'left'},
+							{display: '职务', name: 'dutyName', width: '16%', align: 'left'},
+							{display: '部门', name: 'deptName', width: '16%', align: 'left'},
+							{display: '描述', name: 'remark', width: '24%', align: 'left'},
 							{display: '是否生/失效',
 								name: 'activityFlagName',
-								width: '8%',
+								width: '8%', hide: true,
 								isAllowHide: false,
 								render: function (row) {
 									var html = '';
@@ -181,7 +181,7 @@
 									return html;
 								}
 							},
-							{display: '操作', name: 'operator', width: '24%', render: function (row) {
+							{display: '操作', name: 'operator', width: '28%', render: function (row) {
 								var html = '';
 								html += '<sec:authorize url="/deptMember/infoInitial"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a></sec:authorize>';
 								html += '<sec:authorize url="/deptMember/deleteOrgDeptMember"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "deptMember:deptMemberDialog:del", row.id) + '"></a></sec:authorize>';
