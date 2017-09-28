@@ -97,7 +97,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }else{
             stringBuffer.append("deptId=-0;" );
         }
-        if (!StringUtils.isEmpty(status)) {
+        /*if (!StringUtils.isEmpty(status)) {
             if(status.equals("有效")){
                 stringBuffer.append("status=0;");
             }
@@ -106,7 +106,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
             }
         }else {
             stringBuffer.append("status=0;" );
-        }
+        }*/
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
