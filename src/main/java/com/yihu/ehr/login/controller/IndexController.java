@@ -45,7 +45,7 @@ public class IndexController extends BaseUIController {
         String envelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.AppFeature.FindAppMenus, params, username, password);
         Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
         String menuData = toJson(envelop.getDetailModelList());
-
+        model.addAttribute("host", request.getSession().getAttribute("host"));
         model.addAttribute("menuData", menuData);
         model.addAttribute("contentPage", "login/empty");
         model.addAttribute("successFlg", true);

@@ -4,7 +4,24 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <script type="text/javascript">
-
+    try {
+        var ha = window.location.hash;
+        var host = '${host}';
+        if(ha.indexOf("#signin")>=0) {
+            var num = 0,
+                str = '';
+            if (host.indexOf('http://') >= 0) {
+                num = ('http://').length;
+            }
+            if (host.indexOf('https://') >= 0) {
+                num = ('https://').length;
+            }
+            str= host.substring(num, host.indexOf('/', num));
+            document.domain = str;
+        }
+    } catch (e) {
+        console.log(e.message);
+    }
     $(function () {
 
         /* ************************** 变量定义 ******************************** */

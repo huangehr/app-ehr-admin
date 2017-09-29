@@ -76,7 +76,8 @@ $(function(){
             var Obj=obj;
             var ObjCyc=$(this).find("a");
             ObjCyc.bind("click",function(){
-                if(ObjCyc.attr("href")=="javascript:void(0);"){
+                // if(ObjCyc.attr("href")=="javascript:void(0);"){
+                if($(this).attr("href")=="javascript:void(0);"){
                     $(this).not(".three").addClass("on").next("ul").slideToggle();
                     //$(this).closest("li").siblings("li").find("ul").slideUp();
                     $(this).closest("li").siblings("li").find(".on").removeClass("on");
@@ -131,8 +132,10 @@ $(function(){
                 if($(this).hasClass("one")||$(this).hasClass("two")){
                     $(".rignav").closest("ul").slideUp()
                 }
-            })
-
+            });
+            if (!MenuId) {
+                $(this).find("a.two").eq(0).trigger('click');
+            }
         }
     })
     $(window).load(function(){

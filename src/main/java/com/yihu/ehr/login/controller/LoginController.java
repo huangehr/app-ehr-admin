@@ -86,6 +86,8 @@ public class LoginController extends BaseUIController {
         model.addAttribute("contentPage", "login/signin");
         model.addAttribute("successFlg", true);
         model.addAttribute("clientId", request.getParameter("clientId"));
+        String host = request.getHeader("referer");
+        request.getSession().setAttribute("host", host);
         return "generalView";
     }
 
