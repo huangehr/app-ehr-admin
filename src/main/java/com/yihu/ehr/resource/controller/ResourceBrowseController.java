@@ -15,6 +15,7 @@ import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +44,9 @@ public class ResourceBrowseController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+    @Autowired
+    private ResourceIntegratedController resourceIntegratedController;
 
     @RequestMapping("/browse")
     public String resourceBrowse(Model model) {
@@ -167,7 +171,21 @@ public class ResourceBrowseController extends BaseUIController {
         params.put("size", rows);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
+
+            envelop = toModel(resultStr, Envelop.class);
+            List<Map<String, Object>> envelopList = envelop.getDetailModelList();
+            List<Map<String, Object>> resultList = new ArrayList<>();
+            for(Map<String, Object> envelopMap : envelopList) {
+                Map<String, Object> resultMap = new HashMap<String, Object>();
+                for(String key : envelopMap.keySet()) {
+                    String value = envelopMap.get(key).toString();
+                    resultMap.put(key, value);
+                }
+                resultList.add(resultMap);
+            }
+            List<Map<String, Object>> listMap = resourceIntegratedController.changeIdCardNo(resultList, request);
+            envelop.setDetailModelList(listMap);
+//            return resultStr;
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("数据检索失败");

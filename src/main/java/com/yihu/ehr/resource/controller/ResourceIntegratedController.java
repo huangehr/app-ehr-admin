@@ -7,6 +7,7 @@ import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.operator.NumberUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Cell;
 import jxl.Workbook;
@@ -17,6 +18,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -125,7 +127,9 @@ public class ResourceIntegratedController extends BaseUIController {
                 }
                 resultList.add(resultMap);
             }
-            envelop.setDetailModelList(resultList);
+
+            List<Map<String, Object>> listMap = changeIdCardNo(resultList, request);
+            envelop.setDetailModelList(listMap);
         } catch (Exception e) {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
@@ -454,4 +458,56 @@ public class ResourceIntegratedController extends BaseUIController {
         return sheet;
     }
 
+    public List<Map<String, Object>> changeIdCardNo(List<Map<String, Object>> resultList, HttpServletRequest request) {
+        List<Map<String, Object>> listMap = new ArrayList<Map<String, Object>>();
+        boolean flag = false;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+            params.put("userId", StringUtils.isEmpty(userDetailModel) ? "" : userDetailModel.getId());
+            String result = HttpClientUtil.doGet(comUrl + "/roles/role_feature/hasPermission", params, username, password);
+            if ("true".equals(result)) {
+                flag = true;
+            }
+            if (!flag) {
+                //没有权限，对身份证号进行部分*展示
+                for (Map<String, Object> map : resultList) {
+                    if (!StringUtils.isEmpty(map.get("demographic_id"))) {
+                        map.put("demographic_id", NumberUtil.changeIdCardNo(map.get("demographic_id").toString()));
+                    }
+                    //身份证件号码
+                    if (!StringUtils.isEmpty(map.get("EHR_000017"))) {
+                        map.put("EHR_000017", NumberUtil.changeIdCardNo(map.get("EHR_000017").toString()));
+                    }
+                    //户主证件号码
+                    if (!StringUtils.isEmpty(map.get("EHR_000027"))) {
+                        map.put("EHR_000027", NumberUtil.changeIdCardNo(map.get("EHR_000027").toString()));
+                    }
+                    //医疗保险号
+                    if (!StringUtils.isEmpty(map.get("EHR_000232"))) {
+                        map.put("EHR_000232", NumberUtil.changeIdCardNo(map.get("EHR_000232").toString()));
+                    }
+                    //身份证件号码（体检）
+                    if (!StringUtils.isEmpty(map.get("EHR_000776"))) {
+                        map.put("EHR_000776", NumberUtil.changeIdCardNo(map.get("EHR_000776").toString()));
+                    }
+                    //母亲身份证件号码
+                    if (!StringUtils.isEmpty(map.get("EHR_001264"))) {
+                        map.put("EHR_001264", NumberUtil.changeIdCardNo(map.get("EHR_001264").toString()));
+                    }
+                    //父亲身份证件号码
+                    if (!StringUtils.isEmpty(map.get("EHR_001266"))) {
+                        map.put("EHR_001266", NumberUtil.changeIdCardNo(map.get("EHR_001266").toString()));
+                    }
+                    listMap.add(map);
+                }
+            } else {
+                listMap.addAll(resultList);
+            }
+            return listMap;
+        } catch (Exception e) {
+            listMap.addAll(resultList);
+            return listMap;
+        }
+    }
 }
