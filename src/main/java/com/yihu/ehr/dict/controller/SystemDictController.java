@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -238,7 +239,7 @@ public class SystemDictController extends BaseUIController {
 
     @RequestMapping("deleteDictEntry")
     @ResponseBody
-    public Object deleteDictEntry(long dictId, String code) {
+    public Object deleteDictEntry(long dictId, String code) throws Exception{
 
         Envelop result = new Envelop();
         String resultStr = "";
@@ -246,7 +247,7 @@ public class SystemDictController extends BaseUIController {
         params.put("id",dictId);
         params.put("code",code);
 
-        String url = "/dictionaries/"+ dictId + "/entries/"+ code;
+        String url = "/dictionaries/"+ dictId + "/entries/"+ URLEncoder.encode(code, "UTF-8");
 
         try {
             resultStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
@@ -288,7 +289,7 @@ public class SystemDictController extends BaseUIController {
         params.put("dictionary",toJson(dictEntryModel));
 
         try {
-            String dictEntryUrl = "/dictionaries/" + dictId + "/entries/" + code;
+            String dictEntryUrl = "/dictionaries/" + dictId + "/entries/" + URLEncoder.encode(code,"UTF-8");
             Map<String, Object> dictEntryParams = new HashMap<>();
             dictEntryParams.put("dict_id",dictId);
             dictEntryParams.put("code",code);
