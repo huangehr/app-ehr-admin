@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -487,8 +488,8 @@ public class ResourceController extends BaseUIController {
         params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        params.put("userId", userDetailModel.getId());
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        params.put("userOrgList", userOrgList);
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
            if( !StringUtils.isEmpty(quotaFilter) ){
@@ -526,8 +527,8 @@ public class ResourceController extends BaseUIController {
         params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        params.put("userId", userDetailModel.getId());
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        params.put("userOrgList", userOrgList);
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
             if( !StringUtils.isEmpty(quotaFilter) ){

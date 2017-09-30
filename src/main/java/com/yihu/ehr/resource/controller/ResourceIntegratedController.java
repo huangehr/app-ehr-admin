@@ -2,6 +2,7 @@ package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -175,8 +176,8 @@ public class ResourceIntegratedController extends BaseUIController {
             params.put("quotaIds", tjQuotaIds);
             params.put("quotaCodes", tjQuotaCodes);
             params.put("queryCondition", searchParams);
-            UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-            params.put("userId", userDetailModel.getId());
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
@@ -329,7 +330,8 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param searchParams
      */
     @RequestMapping("/outQuotaExcel")
-    public void outQuotaExcel(HttpServletResponse response, String tjQuotaIds, String tjQuotaCodes, String searchParams){
+    public void outQuotaExcel(HttpServletResponse response, String tjQuotaIds, String tjQuotaCodes, String searchParams,
+    HttpServletRequest request){
         Envelop envelop = new Envelop();
         String fileName = "综合查询指标数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
@@ -340,6 +342,8 @@ public class ResourceIntegratedController extends BaseUIController {
             params.put("quotaIds", tjQuotaIds);
             params.put("quotaCodes", tjQuotaCodes);
             params.put("queryCondition", searchParams);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
             //处理Excel

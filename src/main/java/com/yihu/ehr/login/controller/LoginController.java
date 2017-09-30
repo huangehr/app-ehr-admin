@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.AccessToken;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.model.geography.MGeographyDict;
+import com.yihu.ehr.model.org.MOrganization;
 import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -298,6 +301,7 @@ public class LoginController extends BaseUIController {
         //根据登录人id获取，登录人所在的机构（可能会有多个机构）
         String uid = "";
         Envelop envelop = new Envelop();
+        List<String> userOrgList = new ArrayList<>();
         if (null != userDetailModel) {
             uid = userDetailModel.getId();
             String urlUserOrg = "/org/getUserOrglistByUserId/";
@@ -318,7 +322,56 @@ public class LoginController extends BaseUIController {
 
                 request.getSession().setAttribute("userAreaSaas", envelop.getObj());
                 request.getSession().setAttribute("userOrgSaas", envelop.getDetailModelList());
+
+                //2017年9月29日 zj
+                userOrgList = envelop.getDetailModelList();
+                List<String> districtList = (List<String>) envelop.getObj();
+                String geographyUrl = "/geography_entries/";
+                if(districtList != null && districtList.size() > 0){
+                    for(String code : districtList){
+                        uParams.clear();
+                        String   mGeographyDictStr = HttpClientUtil.doGet(comUrl + geographyUrl + code, uParams, username, password);
+                        envelop = getEnvelop(mGeographyDictStr);
+                        MGeographyDict mGeographyDict = null;
+                        mGeographyDict = getEnvelopModel(envelop.getObj(), MGeographyDict.class);
+                        if(mGeographyDict != null){
+                            String province = "";
+                            String city = "";
+                            String district = "";
+                            if(mGeographyDict.getLevel() == 1){
+                                province =  mGeographyDict.getName();
+                            }else if(mGeographyDict.getLevel() == 2){
+                                city =  mGeographyDict.getName();
+                            }else if(mGeographyDict.getLevel() == 3){
+                                district =  mGeographyDict.getName();
+                            }
+                            String  orgGeographyStr = "/organizations/geography";
+                            uParams.clear();
+                            uParams.put("province",province);
+                            uParams.put("city",city);
+                            uParams.put("district",district);
+                            String   mOrgsStr = HttpClientUtil.doGet(comUrl + orgGeographyStr , uParams, username, password);
+                            envelop = getEnvelop(mOrgsStr);
+                            if(envelop !=null && envelop.getDetailModelList() != null ){
+                                List<MOrganization> organizations = (List<MOrganization>)getEnvelopList(envelop.getDetailModelList(),new ArrayList<MOrganization>(),MOrganization.class);
+                                if(organizations !=null ){
+                                    java.util.Iterator it = organizations.iterator();
+                                    while(it.hasNext()){
+                                        MOrganization mOrganization = (MOrganization)it.next();
+                                        userOrgList.add(mOrganization.getCode());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }else{
+                userOrgList.add("-00000");
             }
+            userOrgList.removeAll(Collections.singleton(null));
+            userOrgList.removeAll(Collections.singleton(""));
+            request.getSession().setAttribute(SessionContants.UserOrgSaas, userOrgList);
+            //2017年9月29日 zj  end
         }
     }
 

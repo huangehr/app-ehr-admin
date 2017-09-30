@@ -4,6 +4,7 @@ import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -210,10 +211,10 @@ public class ResourceBrowseController extends BaseUIController {
         String resultStr = "";
         String url = "/resources/ResourceBrowses/getQuotaResourceData";
         //当前用户机构 -- 预留
-        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
 //        String orgCode = userDetailModel.getOrganization();
 //        params.put("orgCode", orgCode);
-        params.put("userId", userDetailModel.getId());
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        params.put("userOrgList", userOrgList);
         params.put("resourcesId", resourcesId);
         if(searchParams != null) {
             if (searchParams.contains("{") || searchParams.contains("}")) {
@@ -400,7 +401,7 @@ public class ResourceBrowseController extends BaseUIController {
      * @param searchParams
      */
     @RequestMapping("/outQuotaExcel")
-    public void outQuotaExcel(HttpServletResponse response, String resourcesId, String searchParams){
+    public void outQuotaExcel(HttpServletResponse response, String resourcesId, String searchParams,HttpServletRequest request){
         Envelop envelop = new Envelop();
         String fileName = "指标资源数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
@@ -410,6 +411,8 @@ public class ResourceBrowseController extends BaseUIController {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("resourcesId", resourcesId);
             params.put("queryCondition", searchParams);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
             //处理Excel
