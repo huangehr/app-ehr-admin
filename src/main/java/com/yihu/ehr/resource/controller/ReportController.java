@@ -6,6 +6,7 @@ import com.yihu.ehr.agModel.resource.RsReportModel;
 import com.yihu.ehr.agModel.resource.RsReportViewModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -430,8 +431,8 @@ public class ReportController extends BaseUIController {
                     viewInfo.put("resourceId", view.getResourceId());
                     params.clear();
                     params.put("resourceId", view.getResourceId());
-                    UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-                    params.put("userId", userDetailModel.getId());
+                    List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+                    params.put("userOrgList", userOrgList);
                     String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                     List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {
                     });
