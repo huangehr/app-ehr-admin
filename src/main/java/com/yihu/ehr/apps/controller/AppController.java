@@ -124,6 +124,7 @@ public class AppController extends BaseUIController {
 
         builder.setPageNumber(page)
                 .setPageSize(rows);
+        builder.addSorter("createTime", false);
         String param = builder.toString();
         String url = "/apps";
         String resultStr = "";

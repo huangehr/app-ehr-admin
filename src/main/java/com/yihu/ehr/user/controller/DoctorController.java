@@ -99,6 +99,7 @@ public class DoctorController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
+        params.put("sorts", "-insertTime");
         params.put("page", page);
         params.put("size", rows);
         try {
