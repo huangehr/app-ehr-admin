@@ -147,7 +147,7 @@ public class HealthProblemDictController extends BaseUIController {
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
-                String urlGet = "/dict/hp/"+model.getId();
+                String urlGet = "/getHpDict/hp/"+model.getId();
                 String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
                 if (!envelopGet.isSuccessFlg()){
