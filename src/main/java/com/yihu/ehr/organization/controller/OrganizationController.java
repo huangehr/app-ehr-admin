@@ -173,7 +173,7 @@ public class OrganizationController extends BaseUIController {
             }*/
             params.put("fields", "");
             params.put("filters", filters);
-            params.put("sorts", "");
+            params.put("sorts", "-createDate");
             params.put("size", rows);
             params.put("page", page);
             params.put("province", province);
