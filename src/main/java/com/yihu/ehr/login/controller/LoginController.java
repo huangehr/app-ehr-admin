@@ -121,6 +121,7 @@ public class LoginController extends BaseUIController {
     @RequestMapping(value = "autoLogin", method = RequestMethod.POST)
     @ResponseBody
     public Envelop autoLogin(HttpServletRequest request,
+                             Model model,
                              @RequestParam String token,
                              @RequestParam(name = "isQcReport", required = false) String isQcReport) throws Exception {
         try {
@@ -150,8 +151,8 @@ public class LoginController extends BaseUIController {
                 //获取用户saas机构及区域
                 getUserSaasOrgAndArea(userDetailModel, request);
 
-                request.getSession().setAttribute("tempCurrentUser", userDetailModel); // SessionOutTimeFilter.java 中使用
-                request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
+                model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 request.getSession().setAttribute("isLogin", true);
                 request.getSession().setAttribute("token", accessToken);
                 request.getSession().setAttribute("loginName", loginName);
