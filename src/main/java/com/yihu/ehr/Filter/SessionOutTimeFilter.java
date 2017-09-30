@@ -83,7 +83,8 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
             // 因为被授权系统二次登录，再自动授权登录当前系统时，从session中得到的还是第一次登录被授权系统的用户信息，原因不详，
             // 故重新覆盖session中的用户信息。
             UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute("tempCurrentUser");
-            request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+            if (userDetailModel != null)
+                request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
         } else {
             //验证token
             String validTokenUrl = "/oauth/validToken?clientId=" + clientId + "&accessToken=" + accessToken;
