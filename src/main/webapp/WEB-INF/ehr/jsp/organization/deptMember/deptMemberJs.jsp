@@ -223,10 +223,9 @@
                     $('#btn_add').unbind('click');
 					$('#btn_add').click(function(e){
                         event.stopPropagation();
-                        debugger
 						$.publish("rs:info:open",['','new',categoryId,categoryOrgId]);
 					});
-					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId){
+					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
 						var title = "";
                         event.stopPropagation();
 						if(mode == "modify"){title = "修改成员";}
