@@ -71,7 +71,7 @@
         line-height: 30px;
         font-size: 12px;
         color: #fff;
-        margin-right: 20px;
+        margin-right: 5px;
         -webkit-border-radius: 2px;
         -moz-border-radius: 2px;
         border-radius: 2px;
@@ -91,8 +91,10 @@
         background: #0c93e4;
     }
     .screen-con{
-        width: 100%;
-        padding: 10px 0;
+        /*width: 100%;*/
+        padding: 19px 0;
+        float: right;    margin-right: 11px;margin-left: 4px;
+        vertical-align: middle;
         overflow: hidden;
     }
     .sc-btn{
@@ -136,7 +138,7 @@
         width: 287px;
         position: absolute;
         left: 0;
-        top: 134px;
+        top: 77px;
         bottom: 0;
         border: 1px solid #e1e1e1;
         overflow: hidden;
@@ -147,8 +149,8 @@
     }
     .query-conc{
         position: absolute;
-        left: 307px;
-        top: 134px;
+        left: 294px;
+        top: 77px;
         right: 0;
         bottom: 0;
         /*border: 1px solid #e1e1e1;*/
@@ -251,7 +253,6 @@
     }
     .tree-con{
         height: 100%;
-
     }
     #divLeftTree{
         /*height: 100%;*/
@@ -261,7 +262,7 @@
         line-height: 22px;
     }
     .tree-con-zhcx{
-        height: 88%;
+        height: 89%;
         overflow: auto;
     }
     .l-panel td{
@@ -269,6 +270,7 @@
         line-height: 40px;
     }
     .l-tree{
+        background: none !important;
         /*overflow: auto!important;*/
     }
 </style>

@@ -27,14 +27,14 @@
             <div class="chang-btn cb-right active">档案数据</div>
             <div class="chang-btn cb-left">指标统计</div>
         </div>
+        <div class="screen-con">
+            <div class="sc-btn">展开筛选<i class="iconn-xiala"></i></div>
+        </div>
         <ui class="single-btns">
             <sec:authorize url="Ehr_InteQuery_Query"><li class="single-btn query-con">查询</li> </sec:authorize>
             <sec:authorize url="Ehr_InteQuery_CreateView"><li class="single-btn gen-view">生成视图</li></sec:authorize>
             <sec:authorize url="Ehr_InteQuery_export"><li class="single-btn out-exc">导出</li></sec:authorize>
         </ui>
-    </div>
-    <div class="screen-con">
-        <div class="sc-btn">展开筛选<i class="iconn-xiala"></i></div>
     </div>
 
     <%--树--%>

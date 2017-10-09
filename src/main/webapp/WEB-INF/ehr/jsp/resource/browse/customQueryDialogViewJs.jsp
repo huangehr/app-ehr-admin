@@ -78,6 +78,8 @@
                     textField: 'name',
                     width:240
                 });
+                this.$interface.ligerGetComboBoxManager().setValue(type == '0' ? 'getEhrCenter' : 'getQuotaData');
+                this.$interface.ligerGetComboBoxManager().setDisabled();
             },
 
             bindEvents: function () {
