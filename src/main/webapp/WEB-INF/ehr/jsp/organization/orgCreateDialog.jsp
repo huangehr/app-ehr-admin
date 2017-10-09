@@ -188,24 +188,6 @@
                         </div>
                     </li>
                     <li>
-                        <form  id ="uploadForm" enctype="multipart/form-data">
-                            <div class="m-form-group">
-                                <label>医院LOGO</label>
-                                <div class="l-text-wrapper m-form-control ">
-                                    <%--<input type="hidden" id="logoUrl"  data-attr-scan="logoUrl" >--%>
-                                    <%--<input type="file"  name="logoFileUrl" class="file" >--%>
-                                    <%--<input type="button" value="上传" id="logoUrlButton" class="uploadBtn"  />--%>
-                                    <input type="text" class="i-text" id="logoUrl" data-attr-scan="logoUrl" readonly="readonly" />
-                                    <div class="uploadBtn">上传
-                                        <input type="file" id="logoUrlButton" name="logoFileUrl" class="file" value="" />
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                </ul>
-                <ul class="list-item f-fl f-w507">
-                    <li>
                         <div class="m-form-group">
                             <label>经度</label>
                             <div class="l-text-wrapper m-form-control ">
@@ -222,6 +204,24 @@
                                        data-attr-scan="lat"/>
                             </div>
                         </div>
+                    </li>
+                </ul>
+                <ul class="list-item f-fl f-w507">
+                    <li>
+                        <form  id ="uploadForm" enctype="multipart/form-data">
+                            <div class="m-form-group">
+                                <label>医院LOGO</label>
+                                <div class="l-text-wrapper m-form-control ">
+                                    <%--<input type="hidden" id="logoUrl"  data-attr-scan="logoUrl" >--%>
+                                    <%--<input type="file"  name="logoFileUrl" class="file" >--%>
+                                    <%--<input type="button" value="上传" id="logoUrlButton" class="uploadBtn"  />--%>
+                                    <input type="text" class="i-text" id="logoUrl" data-attr-scan="logoUrl" readonly="readonly" />
+                                    <div class="uploadBtn">上传
+                                        <input type="file" id="logoUrlButton" name="logoFileUrl" class="file" value="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </li>
                     <li>
                         <div class="m-form-group">
