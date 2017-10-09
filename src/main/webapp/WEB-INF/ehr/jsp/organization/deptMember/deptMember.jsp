@@ -47,7 +47,7 @@
         <div id="div_left" class="f-w240 f-bd f-of-hd" style="position: relative;">
             <div style="position: absolute;left: 10px;top: 6px;">备注：右击可进行部门信息的维护</div>
             <!--资源浏览树-->
-            <div id="div_tree" class="f-w230 f-pt30">
+            <div id="div_tree" class="f-w230 f-mt30">
                 <div id="div_resource_browse_tree"></div>
             </div>
         </div>

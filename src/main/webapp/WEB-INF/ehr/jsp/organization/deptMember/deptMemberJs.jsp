@@ -781,7 +781,7 @@
 						$("#pyCode").parent().css({
 							width:'241'
 						}).parent().css({
-							display:'inline-block',
+							display:'inline`-block',
 							width:'238px'
 						});
 					}
