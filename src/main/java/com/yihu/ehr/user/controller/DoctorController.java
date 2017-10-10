@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -30,6 +31,7 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -408,5 +410,42 @@ public class DoctorController extends BaseUIController {
             }
         }
         return fileId;
+    }
+
+    @RequestMapping(value = "/getOrgDeptsDate", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object getOrgDeptByOrgId(String orgId) {
+        String url = "/org/getOrgDeptsDate";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> param = new HashMap<>();
+        param.put("orgId", orgId);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, param, username, password);
+            List<Object> data = toModel(resultStr, Envelop.class).getDetailModelList();
+            return toJson(data);
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+    @RequestMapping(value = "/getOrgDeptInfoList", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object getOrgDeptInfoList(String idCardNo) {
+        String url = "/org/userId/getOrgDeptInfoList";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> param = new HashMap<>();
+        param.put("idCardNo", idCardNo);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, param, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
     }
 }
