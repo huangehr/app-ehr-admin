@@ -44,22 +44,4 @@
     .m-form-group .m-form-control.m-form-control-fr {
         float: right;
     }
-    .btn-file-container {
-        display: inline-block;
-        position: relative;
-        overflow-x: hidden;
-    }
-    .btn-file-container form {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        z-index: 999;
-    }
-    .btn-file-container input[type="file"] {
-        width: 100%;
-        height: 100%;
-    }
 </style>

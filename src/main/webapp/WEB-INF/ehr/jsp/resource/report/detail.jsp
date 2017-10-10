@@ -46,12 +46,10 @@
                    id="templatePath" data-attr-scan="templatePath">
         </div>
         <div class="m-form-control">
-            <form id ="uploadForm" enctype="multipart/form-data">
-                <div class="l-button u-btn u-btn-primary u-btn-small f-mt5 btn-file-container">
-                    <span>模版导入</span>
-                    <input type="file" name="file" id="templatePathBtn">
-                </div>
-            </form>
+            <div class="l-button u-btn u-btn-primary u-btn-small f-mt5">
+                <div id="templateBtn">模版导入</div>
+                <div id="filePickerBtnDetail" class="f-dn"></div>
+            </div>
         </div>
     </div>
 
