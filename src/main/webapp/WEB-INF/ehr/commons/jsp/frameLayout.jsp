@@ -26,7 +26,7 @@
     <div class="f-fr usr_msg">
         欢迎登录：${current_user.realName}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/user/initialChangePassword"
                                                                  class="f-color-0">修改密码</a><br>
-        上次登录：${last_login_time}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/logout" class="f-color-0">退出</a>
+        上次登录：${last_login_time}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/logout/reLogin" class="f-color-0">退出</a>
     </div>
 </div>
 <div id="div_main_content" class="l-layout">
