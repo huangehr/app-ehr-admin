@@ -70,7 +70,16 @@ public class DoctorController extends BaseUIController {
         model.addAttribute("contentPage", "user/doctor/addDoctorInfoDialog");
         return "generalView";
     }
-
+    /**
+     * 选择机构部门
+     * @param model
+     * @return
+     */
+    @RequestMapping("selectOrgDept")
+    public String selectOrgDept(Model model) {
+        model.addAttribute("contentPage", "user/doctor/selectOrgDept");
+        return "generalView";
+    }
     /**
      * 查找医生
      * @param searchNm
