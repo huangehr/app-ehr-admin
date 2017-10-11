@@ -76,7 +76,8 @@ public class DoctorController extends BaseUIController {
      * @return
      */
     @RequestMapping("selectOrgDept")
-    public String selectOrgDept(Model model) {
+    public String selectOrgDept(String idCardNo, Model model) {
+        model.addAttribute("idCardNo", idCardNo);
         model.addAttribute("contentPage", "user/doctor/selectOrgDept");
         return "generalView";
     }

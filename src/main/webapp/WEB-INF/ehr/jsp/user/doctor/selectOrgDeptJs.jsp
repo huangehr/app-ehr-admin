@@ -22,6 +22,8 @@
                     '${contextRoot}/doctor/getOrgDeptInfoList'
                 ];
 
+            var idCardNo = '${idCardNo}'
+
             var SelOD = {
                 $orgTree: $('#orgTree'),
                 $deptTree: $('#deptTree'),
@@ -33,7 +35,6 @@
                 treeNodeTmp: $('#treeNodeTmp').html(),
                 treeChildNodeTmp: $('#treeChildNodeTmp').html(),
                 index:0,
-                checkData: [],
                 init: function () {
                     this.getOrgAllData();
                     this.loadRightTree();
@@ -46,7 +47,7 @@
                     var me = this;
                     me.leftTree = me.$orgTree.ligerSearchTree({
                         nodeWidth: 270,
-                        url: intf[0],
+                        url: idCardNo == '' ? intf[0] : intf[2] + '?idCardNo=' + idCardNo,
                         idFieldName: 'id',
                         textFieldName: 'fullName',
                         isExpand: false,
@@ -63,6 +64,32 @@
                                 }
                             } else {
                                 $.Notice.error('数据有误');
+                            }
+                        },
+                        onSuccess: function (res) {
+                            if (idCardNo != '') {
+                                if (res.successFlg) {
+                                    me.leftTree.setData(res.detailModelList);
+                                    $.each(res.detailModelList, function (k, obj) {
+                                        if (obj.checked) {
+                                            me.leftTree.selectNode(obj.id);
+                                        }
+                                    })
+                                    me.rightTree.setData(res.obj);
+                                    $.each(res.obj, function (k, obj) {
+                                        var cLen = obj.children.length,
+                                                num = 0;
+                                        $.each(obj.children, function (key,o) {
+                                            if (o.checked) {
+                                                num++;
+                                                me.rightTree.selectNode(o.id);
+                                            }
+                                        });
+                                        me.rightTree.selectNode(obj.id);
+//                                        if (cLen == num) {
+//                                        }
+                                    });
+                                }
                             }
                         }
                     });
@@ -128,6 +155,7 @@
                             cd = [];
                         if (checkData.length > 0) {
                             $.each(checkData, function (k, obj) {
+                                debugger
                                 var $target = $(obj.target),
                                     level = $target.attr('outlinelevel');
                                 if (level == '1') {

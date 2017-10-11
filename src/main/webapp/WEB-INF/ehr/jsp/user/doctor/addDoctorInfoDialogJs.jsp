@@ -241,6 +241,7 @@
                     var dataModel = $.DataModel.init(),
                         jsonModel = win.parent.ORGDEPTVAL;
                     if (jsonModel.length <= 0) {
+                        waittingDialog.close();
                         $.Notice.error('请选择机构部门');
                         return;
                     }
@@ -255,6 +256,7 @@
                                 win.parent.showAddSuccPop();
                                 win.parent.closeAddDoctorInfoDialog();
                             } else {
+                                waittingDialog.close();
                                 $.Notice.error(data.errorMsg);
                             }
                         }
@@ -273,6 +275,9 @@
                         width: 600,
                         title: '选择机构部门',
                         url: '${contextRoot}/doctor/selectOrgDept',
+                        urlParms: {
+                            idCardNo: ''
+                        },
                         isHidden: false,
                         show: false,
                         onLoaded:function() {

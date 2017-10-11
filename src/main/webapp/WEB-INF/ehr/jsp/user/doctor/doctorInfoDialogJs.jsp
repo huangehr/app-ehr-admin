@@ -25,6 +25,8 @@
 
         /* ************************** 变量定义结束 **************************** */
 
+        win.parent.orgDeptDio = null;
+        win.parent.ORGDEPTVAL = '';
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             doctorInfo.init();
@@ -57,6 +59,7 @@
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
             $roleType:$("#inp_roleType"),
+            $divBtnShow: document.getElementById('divBtnShow'),
 
             init: function () {
 				var self = this;
@@ -180,9 +183,17 @@
                 function update(doctorModel) {
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
-                    var dataModel = $.DataModel.init();
+                    var dataModel = $.DataModel.init(),
+                        jsonModel = win.parent.ORGDEPTVAL;
+                    if (jsonModel.length <= 0) {
+                        waittingDialog.close();
+                        $.Notice.error('请选择机构部门');
+                        return;
+                    }
+                    jsonModel = JSON.stringify(jsonModel);
+                    win.parent.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
-                        data: {doctorModelJsonData: doctorModelJsonData},
+                        data: {doctorModelJsonData: doctorModelJsonData,jsonModel: jsonModel},
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
@@ -199,6 +210,27 @@
                 this.$cancelBtn.click(function () {
                     win.closeDoctorInfoDialog();
                 });
+
+
+                self.$divBtnShow.onclick = function () {
+                    var wait = $.Notice.waitting("请稍后...");
+                    win.parent.orgDeptDio = win.parent.$.ligerDialog.open({
+                        height: 590,
+                        width: 600,
+                        title: '选择机构部门',
+                        url: '${contextRoot}/doctor/selectOrgDept',
+                        urlParms: {
+                            idCardNo: self.$idCardNo.ligerGetComboBoxManager().getValue()
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded:function() {
+                            wait.close();
+                            win.parent.orgDeptDio.show();
+                        }
+                    });
+                    win.parent.orgDeptDio.hide();
+                }
             }
 
         };
