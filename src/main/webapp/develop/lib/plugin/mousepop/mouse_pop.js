@@ -11,7 +11,7 @@
                     '<h3 class="pop-tit">{{title}}</h3>',
                     '<div class="pop-form">',
                         '<label for="name">名称：</label>',
-                        '<input id="name" class="name" type="text" value="{{name}}" /><span style="line-height: 26px;    vertical-align: bottom;padding-left: 10px;color: red;">*</span>',
+                        '<input id="name" class="name" type="text" value="{{name}}" /><input type="hidden" id="oldName" value="{{name}}" /><span style="line-height: 26px;    vertical-align: bottom;padding-left: 10px;color: red;">*</span>',
                     '</div>',
                     '<div class="pop-form {{classCode}}">',
                         '<label for="code">编码：</label>',

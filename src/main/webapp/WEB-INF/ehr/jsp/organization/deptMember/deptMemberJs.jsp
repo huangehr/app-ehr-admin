@@ -351,7 +351,7 @@
 							$.Notice.error('编码不能为空');
 							return false;
 						}
-						var params = {id:id,mode:'new',code:code,name:name};
+						var params = {id:id,mode:'new',code:code,name:name,oldName:"",orgId:orgId};
 						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
 							var deptPhone = me.$popWim.find('.deptPhone').val(),
@@ -449,7 +449,6 @@
 				},
 				//修改名称
 				setEditNameFun: function ( id, me, categoryName) {
-					debugger
 					var editData = {};
 					var name = "修改名称";
 					if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
@@ -458,12 +457,14 @@
 					me.showPopWin(me,function () {
 						//确认按钮回调：返回true关闭窗口
 						var url = "${contextRoot}/deptMember/updateOrgDept",
+								oldName = me.$popWim.find('#oldName').val(),
 								name = me.$popWim.find('.name').val();
+
 						if(name =='' || name == undefined){
 							$.Notice.error('名称不能为空');
 							return false;
 						}
-						var params = {id:id,mode:'modify',code:'',name:name};
+						var params = {id:id,mode:'modify',code:'',name:name,oldName:oldName,orgId:orgId};
 						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
 							var deptPhone = me.$popWim.find('.deptPhone').val(),
@@ -667,7 +668,6 @@
                 },
                 //添加父类
                 setAddParentFun: function ( id, me, categoryName) {
-					debugger
 //                    var html = ['<div class="pop-form">',
 //									'<label for="name">机构：</label>',
 //								    $('#h_org_name').val(),
@@ -690,7 +690,7 @@
 //							$.Notice.error('机构不能为空');
 //							return false;
 //						}
-						var params = {id:orgId,mode:'addRoot',code:code,name:name};
+						var params = {id:id,mode:'addRoot',code:code,name:name,oldName:'',orgId:orgId};
 						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
 							var deptPhone = me.$popWim.find('.deptPhone').val(),
@@ -720,7 +720,7 @@
 											return true;
 										});
 									}else{
-										$.Notice.error('操作失败');
+										$.Notice.error(data.errorMsg);
 										return false;
 									}
 								}

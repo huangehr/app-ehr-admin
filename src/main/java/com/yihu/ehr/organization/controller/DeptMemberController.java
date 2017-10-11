@@ -164,25 +164,24 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
 //                return envelop;
 //            }
             Map<String,Object> params = new HashMap<>();
-            String urlGet = "/orgDept/checkUser";
-            params.clear();
-            params.put("orgId",model.getOrgId());
-            params.put("userId",model.getUserId());
-            params.put("deptId",deptId);
-            String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
-            Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
-            if (!envelopGet2.isSuccessFlg()){
-                return envelopGetStr2;
-            }
-
             if("new".equals(mode)){
+                params.clear();
+                params.put("orgId",model.getOrgId());
+                params.put("userId",model.getUserId());
+                params.put("deptId",deptId);
+                String urlGet = "/orgDept/checkUser";
+                String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
+                Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
+                if (!envelopGet2.isSuccessFlg()){
+                    return envelopGetStr2;
+                }
                 Map<String,Object> args = new HashMap<>();
                 args.put("memberRelationJsonData",objectMapper.writeValueAsString(model));
                 String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
                 return envelopStr;
             } else if("modify".equals(mode)){
-                urlGet = "/orgDeptMember/admin/" + model.getId();
-                String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
+                String urlGetUser = "/orgDeptMember/admin/" + model.getId();
+                String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGetUser,username,password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
                 if (!envelopGet.isSuccessFlg()){
                     envelop.setErrorMsg("原成员息获取失败！");
@@ -287,9 +286,20 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
 
 
     //添加子部门和更新部门名称
+
+    /**
+     *
+     * @param id  上级部门ID
+     * @param mode
+     * @param code 编码
+     * @param name 新名称
+     * @param oldName 旧名称
+     * @param orgId 机构ID
+     * @return
+     */
     @RequestMapping("/updateOrgDept")
     @ResponseBody
-    public Object updateOrgDept(String id,String mode,String code,String name){
+    public Object updateOrgDept(String id,String mode,String code,String name,String oldName ,String orgId){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         try{
@@ -301,35 +311,29 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 envelop.setErrorMsg("名称不能为空！");
                 return envelop;
             }
-
+            String urlCheckNameGet = "/orgDept/checkDeptName";
             Map<String,Object> params = new HashMap<>();
+            params.clear();
+            params.put("orgId",orgId);
+            params.put("name",name);
+            boolean flag = true;
+            if("modify".equals(mode) && name.equals(oldName)){
+                flag = false;
+            }
+            if(flag){
+                String envelopCheckNameStr = HttpClientUtil.doPut(comUrl + urlCheckNameGet, params, username, password);
+                Envelop envelopCheckName = objectMapper.readValue(envelopCheckNameStr,Envelop.class);
+                if (!envelopCheckName.isSuccessFlg()){
+                    return envelopCheckNameStr;
+                }
+            }
 
             if("new".equals(mode)){
-                String urlGet = "/orgDept/detail";
-                params.clear();
-                params.put("deptId",id);//上级部门id
-                String envelopGetStr = HttpClientUtil.doPost(comUrl + urlGet, params, username, password);
-                Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
-                if (!envelopGet.isSuccessFlg()){
-                    envelop.setErrorMsg("上级部门信息获取失败！");
-                    return envelop;
-                }
-                OrgDeptModel  parentpModel = getEnvelopModel(envelopGet.getObj(),OrgDeptModel.class);
-                urlGet = "/orgDept/checkDeptName";
-                params.clear();
-                params.put("orgId",parentpModel.getOrgId());
-                params.put("name",name);
-                String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
-                Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2,Envelop.class);
-                if (!envelopGet2.isSuccessFlg()){
-                    return envelopGetStr2;
-                }
-
                 OrgDeptModel sunorgDeptModel = new OrgDeptModel();
                 sunorgDeptModel.setCode(code);
                 sunorgDeptModel.setName(name);
                 sunorgDeptModel.setParentDeptId(Integer.valueOf(id));
-                sunorgDeptModel.setOrgId(parentpModel.getOrgId());
+                sunorgDeptModel.setOrgId(orgId);
                 Map<String,Object> args = new HashMap<>();
                 args.put("orgDeptsJsonData",objectMapper.writeValueAsString(sunorgDeptModel));
                 String addUrl = "/orgDept";
@@ -346,7 +350,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 OrgDeptModel rootDeptModel = new OrgDeptModel();
                 rootDeptModel.setCode(code);
                 rootDeptModel.setName(name);
-                rootDeptModel.setOrgId(id);
+                rootDeptModel.setOrgId(orgId);
                 Map<String,Object> args = new HashMap<>();
                 args.put("orgDeptsJsonData",objectMapper.writeValueAsString(rootDeptModel));
                 String addUrl = "/orgDept";
@@ -449,8 +453,9 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                     .addEqual("orgId", orgId)
                     .addLikeNotNull("userName", searchParm);
             String resultStr = service.doPost(comUrl + url, pageParms);
-            Envelop envelop = formatComboData(resultStr, "id", "userName");
-            return envelop;
+            return resultStr;
+//            Envelop envelop = formatComboData(resultStr, "id", "userName");
+//            return envelop;
         } catch (Exception e) {
             return systemError();
         }
