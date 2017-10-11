@@ -26,7 +26,7 @@
 			$remark: $("#inp_remark"),
 //			$deptId: $("#inp_deptId"),
 			$parentUserId: $("#inp_parentUserId"),
-			$userNames: $('#userName'),
+			$userName: $('#userName'),
 			$parentUserNames: $('#parentUserName'),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -42,11 +42,22 @@
 
 				this.$dutyName.ligerTextBox({width:240});
 				this.$remark.ligerTextBox({width:240, height: 120 });
-				<%--this.$userId.customCombo('${contextRoot}/deptMember/getUserList', p, undefined, undefined, false);--%>
 				this.$userId.customCombo('${contextRoot}/deptMember/getUserList',{});
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
-//				this.$parentUserId.customCombo(url, p, undefined, undefined, false);
-				this.$parentUserId.customCombo(url,{});
+				this.$parentUserId.customCombo(url,null,null,null,null,
+						{
+							valueField: 'id',
+							textField: 'userName',
+							condition: null,
+							absolute:false,
+							selectBoxHeight: 'auto'
+						},
+						{
+							columns: [
+								{ header: 'userName', name: 'userName', width: '50%' },
+								{ header: 'deptName', name: 'deptName', width: '50%'}
+							]
+						});
 				<%--this.$deptId.customCombo('${contextRoot}/deptMember/getDeptList');--%>
 
 				var mode = '${mode}';
@@ -64,12 +75,15 @@
 					this.$form.Fields.fillValues({
 						id:info.id,
 						dutyName:info.dutyName,
+						userName:info.userName,
 						remark:info.remark
 					});
 
 					$("#inp_userId").ligerGetComboBoxManager().setValue(info.userId);
 					$("#inp_userId").ligerGetComboBoxManager().setText(info.userName);
+					$("#inp_userId").ligerGetComboBoxManager().setDisabled();
 
+					debugger
 					$("#inp_parentUserId").ligerGetComboBoxManager().setValue(info.parentUserId);
 					$("#inp_parentUserId").ligerGetComboBoxManager().setText(info.parentUserName);
 
@@ -91,7 +105,7 @@
 				});
 				self.$userId.on('change',function () {
 					var name = $(this).val();
-					self.$userNames.val(name);
+					self.$userName.val(name);
 				});
 				self.$parentUserId.on('change',function () {
 					var name = $(this).val();
