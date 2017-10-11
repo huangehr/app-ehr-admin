@@ -245,6 +245,7 @@
                         $.Notice.error('请选择机构部门');
                         return;
                     }
+                    debugger
                     jsonModel = JSON.stringify(jsonModel);
                     win.parent.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {

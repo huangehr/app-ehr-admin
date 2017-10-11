@@ -107,6 +107,7 @@
                 this.$sex.ligerRadio();
                 $imageShow: $('#div_file_list'),
                 this.$form.attrScan();
+                win.parent.ORGDEPTVAL = allData.detailModelList;
                 this.$form.Fields.fillValues({
                     id: doctor.id,
                     code: doctor.code,
@@ -220,7 +221,8 @@
                         title: '选择机构部门',
                         url: '${contextRoot}/doctor/selectOrgDept',
                         urlParms: {
-                            idCardNo: self.$idCardNo.ligerGetComboBoxManager().getValue()
+                            idCardNo: self.$idCardNo.ligerGetComboBoxManager().getValue(),
+                            type: '${mode}'
                         },
                         isHidden: false,
                         show: false,

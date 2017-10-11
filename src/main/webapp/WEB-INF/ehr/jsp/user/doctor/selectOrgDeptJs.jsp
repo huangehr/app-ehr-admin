@@ -22,7 +22,8 @@
                     '${contextRoot}/doctor/getOrgDeptInfoList'
                 ];
 
-            var idCardNo = '${idCardNo}'
+            var idCardNo = '${idCardNo}';
+            var type = '${type}';
 
             var SelOD = {
                 $orgTree: $('#orgTree'),
@@ -42,6 +43,9 @@
                     this.$selBottom.mCustomScrollbar({
                         axis: "xy"
                     });
+                    if (type == 'view') {
+                        this.$selSaveBtn.hide();
+                    }
                 },
                 getOrgAllData: function () {
                     var me = this;
