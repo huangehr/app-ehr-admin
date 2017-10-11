@@ -5,11 +5,9 @@ import com.yihu.ehr.agModel.resource.RsCategoryTypeTreeModel;
 import com.yihu.ehr.agModel.resource.RsReportModel;
 import com.yihu.ehr.agModel.resource.RsReportViewModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.resource.MChartInfoModel;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -24,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -317,40 +314,35 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("upload")
     @ResponseBody
-    public Object upload(@RequestParam MultipartFile file, @RequestParam Integer id) {
+    public Object upload(Integer id, String name, HttpServletRequest request) {
         try {
             Envelop result = new Envelop();
 
-            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(file.getInputStream(), file.getOriginalFilename());
+            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(request.getInputStream(), name);
             String storagePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
 
-            if (!StringUtils.isEmpty(storagePath)) {
-                String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
-                String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
-                Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
-                RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
-                updateModel.setTemplatePath(storagePath);
+            String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
+            String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
+            Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+            RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
+            updateModel.setTemplatePath(storagePath);
 
-                Map<String, Object> params = new HashMap<>();
-                params.put("rsReport", objectMapper.writeValueAsString(updateModel));
-                String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
+            Map<String, Object> params = new HashMap<>();
+            params.put("rsReport", objectMapper.writeValueAsString(updateModel));
+            String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
 
-                Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
-                if (envelopUpdate.isSuccessFlg()) {
-                    result.setSuccessFlg(true);
-                    result.setObj(storagePath);
-                } else {
-                    result.setSuccessFlg(false);
-                    result.setErrorMsg("文件保存失败！");
-                }
+            Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
+            if (envelopUpdate.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+                result.setObj(storagePath);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg("请上传非空文件！");
+                result.setErrorMsg("文件保存失败！");
             }
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            return failed("上传文件发生异常");
+            return failed("导入模版发生异常");
         }
     }
 
@@ -376,7 +368,7 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("getTemplateData")
     @ResponseBody
-    public Object getTemplateData(@RequestParam String reportCode,HttpServletRequest request) {
+    public Object getTemplateData(@RequestParam String reportCode, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> resultMap = new HashMap<>();
@@ -431,7 +423,7 @@ public class ReportController extends BaseUIController {
                     viewInfo.put("resourceId", view.getResourceId());
                     params.clear();
                     params.put("resourceId", view.getResourceId());
-                    List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+                    List<String> userOrgList = (List<String>) request.getSession().getAttribute(SessionContants.UserOrgSaas);
                     params.put("userOrgList", userOrgList);
                     String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                     List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {

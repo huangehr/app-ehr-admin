@@ -23,7 +23,7 @@
         <div class="f-fr c-h-right m-form-inline">
             <div class="f-db f-fr f-pt10 f-mr10" id="div_search_data_role_form">
                 <%--档案数据配置按钮--%>
-                <div id="daBtns" class="f-fl f-mr10" style="display: none">
+                <div id="daBtns" class="f-fl" style="display: none;margin-right: 3px">
                     <div id="norBtn" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <span>默认参数配置</span>
                     </div>

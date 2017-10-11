@@ -5,15 +5,13 @@ import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -39,20 +37,15 @@ public class FileUploadController extends BaseUIController {
      */
     @RequestMapping("upload")
     @ResponseBody
-    public Object upload(@RequestParam("file") MultipartFile file) {
+    public Object upload(String name, HttpServletRequest request) {
         try {
             Envelop result = new Envelop();
 
-            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(file.getInputStream(), file.getOriginalFilename());
+            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(request.getInputStream(), name);
             String storagePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
 
-            if(!StringUtils.isEmpty(storagePath)) {
-                result.setSuccessFlg(true);
-                result.setObj(storagePath);
-            } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("请上传非空文件！");
-            }
+            result.setSuccessFlg(true);
+            result.setObj(storagePath);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

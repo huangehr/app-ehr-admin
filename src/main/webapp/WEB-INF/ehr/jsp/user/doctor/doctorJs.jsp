@@ -171,7 +171,7 @@
                         var wait = $.Notice.waitting("请稍后...");
                         self.addDoctorInfoDialog = $.ligerDialog.open({
                             height: 590,
-                            width: 760,
+                            width: 820,
                             title: '新增医生信息',
                             url: '${contextRoot}/doctor/addDoctorInfoDialog?'+ $.now(),
                             isHidden: false,

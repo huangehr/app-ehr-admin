@@ -79,6 +79,7 @@
 //                    var queryMainH = this.WH - 128 - 25;
 //                    this.$queryMain.height(queryMainH);
                     this.initForm();
+                    this.loadEventType();
                     this.loadSelData();
                     this.loadTree();
                     this.bindEvent();
@@ -121,6 +122,27 @@
                 //医疗机构
                 loadRsDictEntryListData: function (p) {
                     return this.loadPromise(pubInf.getRsDictEntryList, p);
+                },
+                loadEventType: function () {
+                    var html = '',
+                        eObj = {
+                            pCode: 'event_type',
+                            label: '事件类型',
+                            obj: [
+                                {id: 0, name: '门诊'},
+                                {id: 1, name: '住院'},
+                                {id: 2, name: '线上'}
+                            ]
+                        };
+                    html = this.render(this.selTmp, eObj, function (d, $1) {
+                        var obj = d.obj || [],
+                            str = '';
+                        for (var i = 0, len = obj.length; i < len; i++) {
+                            str += '<li class="con-item" data-code="' + obj[i].id + '">' + obj[i].name + '</li>';
+                        }
+                        eObj.content = str;
+                    });
+                    this.$pubSel.append(html);
                 },
                 //加载默认筛选条件
                 loadSelData: function () {
@@ -166,10 +188,8 @@
                             me.$scBtn.removeClass('show');
                             me.$selectCon.hide();
                             if (me.selectData.length > 0) {
-//                                me.queryCondition = me.getSelCon();
                                 if (me.type == 0) {
                                     var ma = [], ca = [], sjyArr = [];
-//                                    me.loadGrid();
                                     if (me.selectData[0].data.level == 2 && me.selectData.length == 1) {
                                         me.selectData.push({data:this.getDataByNode(this.getParentTreeItem(me.selectData[0].target))});
                                     }
@@ -190,11 +210,6 @@
                                     me.index = 0;
                                     me.$selMore.html('');
                                     me.GridCloumnNamesData = sjyArr;
-//                                    me.reloadResourcesGrid({
-//                                        metaData: me.childArr,
-//                                        resourcesCode: me.masterArr,
-//                                        searchParams: me.queryCondition
-//                                    });
                                     me.setSearchData();
                                 } else {
                                     me.tjQuotaIds = [];
@@ -536,7 +551,6 @@
                         me.$scBtn.removeClass('show');
                         me.$selectCon.hide();
                         if (me.type == 0) {
-                            debugger
                             me.queryCondition = me.getSelCon();
                             me.reloadResourcesGrid({
                                 metaData: me.childArr,
@@ -628,6 +642,7 @@
                                         width:500,
                                         title:'新增视图',
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
+                                        resType: 'POST',
                                         urlParms:{
                                             queryCondition: qc,
                                             type: me.type,
@@ -637,8 +652,8 @@
                                         show:false,
                                         isHidden:false,
                                         onLoaded:function(){
-                                            wait.close(),
-                                                    rsInfoDialog.show()
+                                            wait.close();
+                                            rsInfoDialog.show();
                                         }
                                     });
                                     rsInfoDialog.hide();

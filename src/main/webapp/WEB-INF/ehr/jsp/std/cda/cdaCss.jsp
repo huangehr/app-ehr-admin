@@ -101,4 +101,12 @@
     .s-con .btn#btn_add_element{
         margin-right: 10px!important;
     }
+    #div_right{
+        margin-left: 10px;
+        position: absolute;
+        left: 328px;
+        right: 10px;
+        top: 50px;
+        bottom: 9px;
+    }
 </style>
