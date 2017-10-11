@@ -151,7 +151,7 @@ public class DoctorController extends BaseUIController {
      */
     @RequestMapping(value = "updateDoctor", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updateDoctor(String doctorModelJsonData, String orgId, String deptId, HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public Object updateDoctor(String doctorModelJsonData, String jsonModel, HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         String url = "/doctor/";
         String resultStr = "";
@@ -209,7 +209,7 @@ public class DoctorController extends BaseUIController {
                         updateDoctor.setPhoto(imageId);
 
                     params.add("doctor_json_data", toJson(updateDoctor));
-
+                    params.add("model", jsonModel);
                     resultStr = templates.doPut(comUrl + url, params);
                 } else {
                     result.setSuccessFlg(false);
@@ -218,8 +218,7 @@ public class DoctorController extends BaseUIController {
                 }
             } else {
                 params.add("doctor_json_data", toJson(doctorDetailModel));
-                params.add("orgId", orgId);
-                params.add("deptId", deptId);
+                params.add("model", jsonModel);
                 resultStr = templates.doPost(comUrl + url, params);
                 result = toModel(resultStr,Envelop.class);
                 DoctorDetailModel addDoctorModel = toModel(toJson(result.getObj()),DoctorDetailModel.class);
