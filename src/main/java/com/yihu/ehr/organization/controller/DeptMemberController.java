@@ -373,13 +373,20 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
     @RequestMapping("delOrgDept")
     @ResponseBody
     public Object delOrgDept(int orgDeptId) {
-        String url = "/orgDept/delete";
+
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
         params.put("deptId", orgDeptId);
         try {
+            String checkMemberUrl = "/orgDept/checkMembers";
+            resultStr = HttpClientUtil.doPost(comUrl + checkMemberUrl, params, username, password);
+            if (resultStr.equals("true")) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("此部门下还存在成员，只有此部门无成员存在时才能删除！");
+                return result;
+            }
+            String url = "/orgDept/delete";
             resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             if (resultStr.equals("true")) {
                 result.setSuccessFlg(true);

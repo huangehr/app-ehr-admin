@@ -616,15 +616,12 @@
                                             return true;
                                         });
                                     }else{
-                                        $.Notice.error('删除失败');
+										$.Notice.error(data.errorMsg);
                                         return false;
                                     }
                                 }
                         );
                     });
-//					if (!confirm('确定要删除吗？')){
-//						return false;
-//					}
 				},
 				//上移
 				setUpFun: function ( id, me, pId) {
