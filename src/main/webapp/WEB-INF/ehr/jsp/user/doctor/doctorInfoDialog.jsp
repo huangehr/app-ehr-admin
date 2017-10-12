@@ -83,6 +83,16 @@
             <input type="text" id="inp_xlzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xlzc"/>
         </div>
     </div>
+
+    <div class="m-form-group">
+        <label>选择机构部门:</label>
+        <div class="l-text-wrapper m-form-control">
+            <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" style="width: 238px !important;    height: 30px;line-height: 30px;" id="divBtnShow">
+                <span>选择机构部门</span>
+            </div>
+        </div>
+    </div>
+
     <div class="m-form-group">
         <label><spring:message code="lbl.doctor.familyTel"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control">
