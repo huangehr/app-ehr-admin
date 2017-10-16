@@ -94,20 +94,20 @@
 	<c:if test="${userCards.auditStatus == '0'}">
 		<div class="m-form-group">
 			<label>审核：</label>
-			<div class="m-form-control ">
+			<div class="l-text-wrapper m-form-control essential" style="padding-right: 10px;">
 					<input type="text" data-type="select" id="audit">
 			</div>
 
-			<div class="m-form-control " id="refuseReasonGroup" style="display: none;">
-				<label>拒绝原因：</label>
+			<div class="l-text-wrapper m-form-control essential" id="refuseReasonGroup" style="display: none;padding-right: 10px;">
+				<label style="width: 139px;">拒绝原因：</label>
 				<div class="m-form-control" >
 					<input type="text" id="reason" data-type="select"  class="col">
 				</div>
 			</div>
 
-			<label class="">原因：</label>
-			<div class="m-form-control ">
-				<textarea id="otherReason" style="min-height: 35px;width:150px;border: 1px solid #D0D0D0;" class="max-length-500 validate-special-char"  maxlength="500"></textarea>
+			<label class="" style="width: 139px;">原因：</label>
+			<div class="l-text-wrapper m-form-control essential" style="padding-right: 10px;">
+				<textarea id="otherReason" style="width:150px;border: 1px solid #D0D0D0;" class="max-length-500 validate-special-char"  maxlength="500"></textarea>
 			</div>
 		</div>
 

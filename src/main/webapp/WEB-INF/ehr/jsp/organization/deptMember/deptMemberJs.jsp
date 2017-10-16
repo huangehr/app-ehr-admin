@@ -588,6 +588,7 @@
 									valueField: 'code',
 									textField: 'value'
 								});
+                                debugger
 								$("#pyCode").parent().css({
 									width:'241'
 								}).parent().css({
@@ -724,7 +725,6 @@
 						);
 						return true;
                     },{title:'添加根部门'});
-
 					if( $("#h_org_type").val()=="Hospital"){//如果机构类型为医院，则添加上述信息
 						var html = [
 							'<div class="pop-form">',
@@ -777,7 +777,7 @@
 						$("#pyCode").parent().css({
 							width:'241'
 						}).parent().css({
-							display:'inline`-block',
+							display:'inline-block',
 							width:'238px'
 						});
 					}
