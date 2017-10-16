@@ -44,13 +44,10 @@
 				this.$remark.ligerTextBox({width:240, height: 120 });
 				this.$userId.customCombo('${contextRoot}/deptMember/getUserList',{});
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
-				this.$parentUserId.customCombo(url,null,null,null,null,
+				this.$parentUserId.customCombo(url,{},null,null,null,
 						{
 							valueField: 'id',
-							textField: 'userName',
-							condition: null,
-							absolute:false,
-							selectBoxHeight: 'auto'
+							textField: 'userName'
 						},
 						{
 							columns: [
