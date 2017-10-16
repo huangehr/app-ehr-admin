@@ -22,6 +22,7 @@
         var dataModel = $.DataModel.init();
         var patientModel = "";
         var idCardNo="";
+        var patientOldTel = "";
         var typeTree = null;
         var patientDialogType = '${patientDialogType}';
         var userId = '${userId}';
@@ -244,6 +245,7 @@
                         email: patientModel.email
                     });
                     self.$patientCopyId.val(patientModel.idCardNo);
+                    patientOldTel = patientModel.telephoneNo;
 
                     var pic = patientModel.picPath;
                     if(!Util.isStrEmpty(pic)){
@@ -428,6 +430,9 @@
                                 if(Util.isStrEquals($(elm).attr('id'),'inp_patientTel')){
                                     var telephoneNo = self.$patientTel.val();
                                     var url = '${contextRoot}/patient/checkTelphoneNumber';
+                                    if (Util.isStrEquals(telephoneNo, patientOldTel)) {
+                                        return true;
+                                    }
                                     result = self.checkData(url, telephoneNo, "该电话号码已被使用");
                                 }
                                 return result;
@@ -538,7 +543,7 @@
 
                 //关闭dailog的方法
                 patientInfo.$cancelBtn.click(function(){
-                    win.parent.patientDialogClose();
+                    win.patientDialogClose();
                     //dialog.close();
                 })
             }
