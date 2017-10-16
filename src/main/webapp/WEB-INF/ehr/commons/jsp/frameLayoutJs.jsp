@@ -74,6 +74,7 @@
             // 面包屑导航栏
             $breadcrumbBar: $('#div_nav_breadcrumb_bar'),
             $breadcrumbContent: $('#span_nav_breadcrumb_content'),
+            $contentPage: $("#contentPage"),
             init: function () {
                 //判断是否内嵌登录
                 var hash = window.location.hash;
@@ -94,6 +95,13 @@
                     allowLeftCollapse: false
                 });
                 this.$breadcrumbBar.show();
+
+                this.$contentPage.on('change', function () {
+                    var $formLogin = $(this).find('#form_login');
+                    if ($formLogin.length > 0) {
+                        window.location.reload('${contextRoot}/ehr/login');
+                    }
+                });
             }
         };
 
