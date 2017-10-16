@@ -87,7 +87,10 @@ $(function(){
                     var naval='';//面包屑
                     var navalId=''//id
                     if($(this).attr("data-url")){
-                        $("#contentPage").load($(this).attr("data-url"));
+                        $("#contentPage").load($(this).attr("data-url"), function () {
+                            $("#contentPage").change();
+                        });
+
                         //加ON
                         $(Obj).find(".on").removeClass("on");
                         $(this).addClass("on");

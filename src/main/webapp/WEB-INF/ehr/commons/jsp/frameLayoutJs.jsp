@@ -4,23 +4,38 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <script type="text/javascript">
+
+    var ha = window.location.hash;
+    var host = '${host}';
+    function getHost() {
+        var num = 0,
+            str = '';
+        if (host.indexOf('http://') >= 0) {
+            num = ('http://').length;
+        }
+        if (host.indexOf('https://') >= 0) {
+            num = ('https://').length;
+        }
+        str= host.substring(num, host.indexOf('/', num));
+        return str;
+    }
     try {
-        var ha = window.location.hash;
-        var host = '${host}';
         if(ha.indexOf("#signin")>=0) {
-            var num = 0,
-                str = '';
-            if (host.indexOf('http://') >= 0) {
-                num = ('http://').length;
-            }
-            if (host.indexOf('https://') >= 0) {
-                num = ('https://').length;
-            }
-            str= host.substring(num, host.indexOf('/', num));
-            document.domain = str;
+            document.domain = getHost();
         }
     } catch (e) {
         console.log(e.message);
+    }
+
+    function bingConChangeEvent(t) {
+        var $formLogin = $(t).find('#form_login');
+        if ($formLogin.length > 0) {
+            if(ha.indexOf("#signin")>=0) {
+                top.location = 'http://' + getHost() + '/login';
+            } else {
+                window.location.reload('${contextRoot}/ehr/login');
+            }
+        }
     }
     $(function () {
 
@@ -63,7 +78,8 @@
             $.MenuInit(".l-layout-left",navMenu)
             notice.init();
         }
-
+        
+        
         /* ************************** 函数定义结束 **************************** */
 
         /* *************************** 模块初始化 ***************************** */
@@ -74,7 +90,7 @@
             // 面包屑导航栏
             $breadcrumbBar: $('#div_nav_breadcrumb_bar'),
             $breadcrumbContent: $('#span_nav_breadcrumb_content'),
-            $contentPage: $("#contentPage"),
+//            $contentPage: $("#contentPage"),
             init: function () {
                 //判断是否内嵌登录
                 var hash = window.location.hash;
@@ -96,12 +112,12 @@
                 });
                 this.$breadcrumbBar.show();
 
-                this.$contentPage.on('change', function () {
-                    var $formLogin = $(this).find('#form_login');
-                    if ($formLogin.length > 0) {
-                        window.location.reload('${contextRoot}/ehr/login');
-                    }
-                });
+                <%--this.$contentPage.on('change', function () {--%>
+                    <%--var $formLogin = $(this).find('#form_login');--%>
+                    <%--if ($formLogin.length > 0) {--%>
+                        <%--window.location.reload('${contextRoot}/ehr/login');--%>
+                    <%--}--%>
+                <%--});--%>
             }
         };
 
