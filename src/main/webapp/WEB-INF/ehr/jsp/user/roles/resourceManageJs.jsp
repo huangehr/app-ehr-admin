@@ -156,7 +156,7 @@
 				},
 				//查询列表方法
 				find : function (rolesId, rolesResourceId) {
-					var params = !rolesId? em.params: (em.params = {extParms: '{"rolesResId": "'+ rolesResourceId +'"}', page:1, rows: 999});
+					var params = !rolesId? em.params: (em.params = {extParms: '{"rolesResId": "'+ rolesResourceId +'", "appId": "'+ dataModel.backParams.appId +'"}', page:1, rows: 999});
 					reloadGrid(this.grid, 1, params);
 				},
 				//公开方法
