@@ -451,6 +451,21 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }
     }
 
+    @RequestMapping("/getOrgCodeAndNameList")
+    @ResponseBody
+    public Object getOrgCodeAndNameList( String searchParm,int page, int rows) {
+        try {
+            String url = "/organizations";
+            PageParms pageParms = new PageParms(rows, page)
+                    .addLikeNotNull("fullName", searchParm);
+            String resultStr = service.doGet(comUrl + url, pageParms);
+            Envelop envelop = formatComboData(resultStr, "orgCode", "fullName");
+            return envelop;
+        } catch (Exception e) {
+            return systemError();
+        }
+    }
+
     @RequestMapping("/getOrgMemberList")
     @ResponseBody
     public Object getOrgMemberList( String searchParm,String orgId,int page, int rows) {
