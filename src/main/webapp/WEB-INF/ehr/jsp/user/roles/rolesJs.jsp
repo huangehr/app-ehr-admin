@@ -314,6 +314,7 @@
 							'code':code,
 							'categoryIds':'',
 							'sourceFilter':'',
+                            'appId':appId
 						}
 						var url = '${contextRoot}/userRoles/resource/initial?';
 						$("#contentPage").empty();

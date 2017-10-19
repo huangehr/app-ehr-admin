@@ -15,6 +15,7 @@
 			var isFirstPage = true;
 			var typeTree = null;
 			var backParams = ${backParams};
+			var appId = backParams.appId;
 			var rolesId = backParams.rolesId;
 			//角色组已授权资源集合
 			var rolesRsIds = [];
@@ -127,6 +128,7 @@
 						parentIcon:null,
 						onSelect: function (e) {
 							categoryId = e.data.id;
+                            rolesId = backParams.rolesId;
 							master.reloadGrid();
 						},
 						onSuccess: function (data) {
@@ -154,7 +156,9 @@
 						url: '${contextRoot}/resource/resourceManage/resources',
 						parms: {
 							searchNm: '',
-							categoryId: categoryId
+							categoryId: categoryId,
+                            rolesId: rolesId,
+                            appId: appId
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
@@ -192,7 +196,7 @@
 				},
 				reloadGrid: function () {
 					var searchNm = $('#inp_searchNm').val();
-					reloadGrid.call(this,{'searchNm':searchNm,'categoryId': categoryId});
+					reloadGrid.call(this,{'searchNm':searchNm,'categoryId': categoryId, rolesId: rolesId, 'appId': appId});
 				},
 				loadResourceIds:function(){
 					var dataModel = $.DataModel.init();

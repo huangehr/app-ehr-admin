@@ -22,7 +22,7 @@
 				$('#resource_name').val(dataModel.resourceName);
 				$('#resource_code').val(dataModel.code);
 				$('#resource_sub').val(dataModel.resourceSub);
-				$('#resource_title').html(dataModel.resourceName + "_视图授权");
+				$('#resource_title').html(dataModel.resourceName + "_数据元授权");
 			}();
 
 			var em = {
@@ -129,12 +129,12 @@
 					var m = em;
 					var columns = [
 						{display: 'ID', name: 'id', hide: true},
-						{display: '字段名称', name: 'resourceMetadataName', width: '30%', align: 'left'},
-						{display: '维度授权', name: 'dimensionValue', width: '50%', align: 'left', render: dimensionRender},
-						{display: '是否有效', name: 'valid', width: '10%', align: 'left', render: function (row) {
+						{display: '字段名称', name: 'resourceMetadataName', width: '60%', align: 'left'},
+						{display: '维度授权', hide: true, name: 'dimensionValue', width: '50%', align: 'left', render: dimensionRender},
+						{display: '是否有效', name: 'valid', width: '40%', align: 'left', render: function (row) {
 							return row.valid==1? '是': '否';
 						}},
-						{display: '操作', name: 'operator', width: '10%', render: m.opratorRender}];
+						{display: '操作', hide: true, name: 'operator', width: '10%', render: m.opratorRender}];
 
 					m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, rownumbers: true, usePager: false, heightDiff: 20});
 				},
