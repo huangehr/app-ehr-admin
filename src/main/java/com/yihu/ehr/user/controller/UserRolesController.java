@@ -65,14 +65,18 @@ public class UserRolesController extends BaseUIController {
         model.addAttribute("appId",appId);
         Envelop envelop = new Envelop();
         String en = "";
-        try {
-            en = objectMapper.writeValueAsString(envelop);
-            String url = "/roles/role/" + id;
-            String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
-            model.addAttribute("envelop", envelopStr);
-        } catch (Exception ex) {
-            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            model.addAttribute("envelop", en);
+        if(mode.equals("modify")){
+            try {
+                en = objectMapper.writeValueAsString(envelop);
+                String url = "/roles/role/" + id;
+                String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
+                model.addAttribute("envelop", envelopStr);
+            } catch (Exception ex) {
+                LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+                model.addAttribute("envelop", en);
+            }
+        }else {
+            model.addAttribute("envelop", "{  \"obj\": \"\"}");
         }
         return "simpleView";
     }
