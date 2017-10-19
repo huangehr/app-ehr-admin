@@ -32,7 +32,7 @@
 				this.$code.ligerTextBox({width:240});
 				this.$name.ligerTextBox({width:240});
 				this.$description.ligerTextBox({width:240, height: 120 });
-				this.$orgCode.customCombo('${contextRoot}/deptMember/getOrgCodeAndNameList');
+				this.$orgCode.customCombo('${contextRoot}/deptMember/getOrgCodeAndNameList',{});
 
 				if(mode == 'view'){
 					rolesInfo.$form.addClass('m-form-readonly');
