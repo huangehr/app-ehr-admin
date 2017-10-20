@@ -901,7 +901,7 @@ public class UserRolesController extends BaseUIController {
             return failed("角色组id不能为空");
         }
         try{
-            String url = ServiceApi.Roles.RoleOrgsNoPaging;
+            String url = ServiceApi.Roles.RoleOrgsNoPage;
             Map<String,Object> params = new HashMap<>();
             params.put("filters","roleId="+roleId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
