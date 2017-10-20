@@ -71,6 +71,11 @@ public class OrganizationController extends BaseUIController {
         model.addAttribute("contentPage", "organization/organizationGrant");
         return "pageView";
     }
+    @RequestMapping("uploadOrgErrorDialog")
+    public String uploadOrgErrorDialog(Model model) {
+        model.addAttribute("contentPage", "organization/uploadOrgErrorDialog");
+        return "simpleView";
+    }
 
     @RequestMapping("dialog/orgInfo")
     public String orgInfoTemplate(Model model, String orgCode, String mode, HttpSession session) {

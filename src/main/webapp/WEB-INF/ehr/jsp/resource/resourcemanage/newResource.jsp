@@ -124,7 +124,7 @@
             </div>
         </div>
         <!--资源浏览详情-->
-        <div id="div_right" class="div-resource-browse" style="width:100%;height:100%;position: relative;">
+        <div id="div_right" class="div-resource-browse" style="height:100%;">
             <div class="div-result-msg nr-con" style="z-index: 2">
                 <div id="divResourceInfoGrid"></div>
             </div>

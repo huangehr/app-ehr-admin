@@ -32,11 +32,11 @@
 
             function onUploadSuccess(g, result){
                 if(result)
-                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+                    openDialog("${contextRoot}/organization/uploadOrgErrorDialog", "导入错误信息", 1000, 640, {result: result});
                 else
                     $.Notice.success("导入成功！");
             }
-            $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess});
+            $('#upOrg').uploadFile({url: "${contextRoot}/orgImport/importOrg", onUploadSuccess: onUploadSuccess, str: '导入机构'});
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
