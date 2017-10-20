@@ -1,9 +1,11 @@
 package com.yihu.ehr.util.service;
 
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -79,12 +81,35 @@ public class GetInfoService {
         return user.getId();
     }
 
+    /**
+     * 获取登录用户所属角色组下的应用Id
+     * @return
+     */
     public String appIdList() {
         String userId = getCurrentUserId();
         String url ="/BasicInfo/getAppIdsByUserId";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultStr;
+    }
+
+    /**
+     * 获取登录用户所属角色的机构下的用户身份证号码
+     * @return
+     */
+    public String idCardNoList(HttpServletRequest request) {
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        String orgCode = StringUtils.join(userOrgList, ",");
+        String url ="/BasicInfo/getIdCardNoByOrgCode";
+        String resultStr = "";
+        Map<String, Object> params = new HashMap<>();
+        params.put("orgCode", orgCode);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
         } catch (Exception e) {
