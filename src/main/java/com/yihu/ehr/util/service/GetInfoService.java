@@ -78,4 +78,18 @@ public class GetInfoService {
         UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
         return user.getId();
     }
+
+    public String appIdList() {
+        String userId = getCurrentUserId();
+        String url ="/BasicInfo/getAppIdsByUserId";
+        String resultStr = "";
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultStr;
+    }
 }
