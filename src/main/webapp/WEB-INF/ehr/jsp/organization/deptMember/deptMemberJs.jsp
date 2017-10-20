@@ -3,6 +3,11 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script src="${contextRoot}/develop/lib/plugin/mousepop/mouse_pop.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -27,8 +32,14 @@
 				page:rsPageParams&&rsPageParams.page || 1,
 				pageSize:rsPageParams&&rsPageParams.pageSize || 15,
 			}
+            function onUploadSuccess(g, result){
+                if(result)
+                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+                else
+                    $.Notice.success("导入成功！");
+            }
 
-
+            $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess, str: '导入部门'});
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
 				resizeContent();

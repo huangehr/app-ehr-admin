@@ -77,13 +77,39 @@
                         </div>
                     </sec:authorize>
                 </div>
-                <div class="m-form-control  f-mr10">
-                    <sec:authorize url="/deptMember/infoInitial">
-                        <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml10">
-                            <span>新增成员</span>
+
+
+                <div class="m-form-control m-form-control-fr" style="float: right">
+                    <div class="m-form-control ">
+                        <sec:authorize url="/deptMember/infoInitial">
+                            <div id="assignPerson" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml10">
+                                <span>分配部门人员</span>
+                            </div>
+                        </sec:authorize>
+                    </div>
+                    <div class="m-form-control ">
+                        <sec:authorize url="/deptMember/infoInitial">
+                            <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                                <span>新增机构成员</span>
+                            </div>
+                        </sec:authorize>
+                    </div>
+                    <sec:authorize url="/ehr/organization/template">
+                        <div id="div_down_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                            <a href="<%=request.getContextPath()%>/template/部门机构导入模板.xls"
+                               style="color: #fff">
+                                下载部门模版
+                            </a>
+                        </div>
+                    </sec:authorize>
+                    <sec:authorize url="/orgDeptImport/importOrgDept">
+                        <div id="div_upload_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                            <div id="upd" class="f-fr" style="overflow: hidden; width: 84px" ></div>
                         </div>
                     </sec:authorize>
                 </div>
+
+
             </div>
             <div class="div-result-msg">
                 <div id="div_resource_info_grid"></div>

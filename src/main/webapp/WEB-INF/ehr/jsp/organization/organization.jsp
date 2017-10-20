@@ -53,15 +53,15 @@
                 </sec:authorize>
                 <sec:authorize url="/ehr/organization/template">
                     <div id="div_down_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
-                            <a href="<%=request.getContextPath()%>/template/部门机构导入模板.xls"
-                               style="color: #fff">
-                                下载模版
-                            </a>
+                        <a href="<%=request.getContextPath()%>/template/机构导入模板.xls"
+                           style="color: #fff">
+                            下载机构模版
+                        </a>
                     </div>
                 </sec:authorize>
                 <sec:authorize url="/orgDeptImport/importOrgDept">
                     <div id="div_upload_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
-                            <div id="upd" class="f-fr" style="overflow: hidden; width: 84px" ></div>
+                        <div id="upOrg" class="f-fr" style="overflow: hidden; width: 84px" ></div>
                     </div>
                 </sec:authorize>
 

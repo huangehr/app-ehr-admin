@@ -365,6 +365,7 @@
                                 height: '100%',
                                 checkbox: true
                             }));
+                            me.resourceInfoGrid.adjustToWidth();
                         }
                     }
                 },
@@ -437,6 +438,7 @@
                                             height: '100%',
                                             checkbox: true
                                         }));
+                                        me.qutoResourceInfoGrid.adjustToWidth();
                                     } else {
                                         $.Notice.error(data.errorMsg);
                                     }

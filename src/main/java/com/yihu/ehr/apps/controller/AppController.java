@@ -122,6 +122,13 @@ public class AppController extends BaseUIController {
             builder.addFilter("org", "=", null, null);
         }*/
 
+       String appsId = getInfoService.appIdList();
+       if (!StringUtils.isEmpty(appsId)) {
+           builder.addFilter("id", "=", appsId, null);
+       } else {
+           builder.addFilter("id", "=", null, null);
+       }
+
         builder.setPageNumber(page)
                 .setPageSize(rows);
         builder.addSorter("createTime", false);
