@@ -128,7 +128,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         model.addAttribute("mode",mode);
         model.addAttribute("categoryId",categoryId);
         model.addAttribute("categoryOrgId",categoryOrgId);
-        model.addAttribute("contentPage","/organization/deptMember/deptMemberInfoDialog");
+        model.addAttribute("contentPage","/organization/deptMember/deptDoctorDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
         String categoryName = "";
@@ -623,5 +623,41 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
 
             return result;
         }
+    }
+
+    @RequestMapping("/getDoctorList")
+    @ResponseBody
+    public Object getDoctorList( String searchParm, int page, int rows) {
+        try {
+            String url = "/doctors";
+            PageParms pageParms = new PageParms(rows, page)
+                    .addLikeNotNull("name", searchParm);
+            String resultStr = service.search(url, pageParms);
+            return formatComboData(resultStr, "id", "name");
+        } catch (Exception e) {
+            return systemError();
+        }
+    }
+
+    @RequestMapping("/deptMembersInfoInitial")
+    public String deptMembersInfoInitial(Model model,String id,String mode,String categoryId,String categoryOrgId){
+        model.addAttribute("mode",mode);
+        model.addAttribute("categoryId",categoryId);
+        model.addAttribute("categoryOrgId",categoryOrgId);
+        model.addAttribute("contentPage","/organization/deptMember/deptMemberInfoDialog");
+        Envelop envelop = new Envelop();
+        String envelopStr = "";
+        String categoryName = "";
+        try{
+            model.addAttribute("categoryName",categoryName);
+            if (!StringUtils.isEmpty(id)) {
+                String url = "/orgDeptMember/admin/"+id;
+                envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
+            }
+            model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
+        }catch (Exception ex){
+            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
+        }
+        return "simpleView";
     }
 }

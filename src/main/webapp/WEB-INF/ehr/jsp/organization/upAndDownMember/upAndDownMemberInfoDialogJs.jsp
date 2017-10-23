@@ -34,7 +34,16 @@
 			},
 			initForm: function () {
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
-				this.$userId.customCombo(url,{});
+                this.$userId.customCombo(url,{},null,null,null,
+                    {
+                        valueField: 'id',
+                        textField: 'userName'
+                    },
+                    {
+                        columns: [
+                            { header: 'userName', name: 'userName', width: '100%' }
+                        ]
+                    });
 				var mode = '${mode}';
 				this.$form.attrScan();
 				this.$form.show();

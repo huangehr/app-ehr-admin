@@ -74,6 +74,7 @@
 				$search: $("#inp_search"),
 				$btnSearch: $("#btn_search"),
 				$searchNm: $('#inp_searchNm'),
+                $searchNmLeft: $('#inp_searchNm_left'),
 				$level: $('#inp_level'),
 
 				init: function () {
@@ -84,7 +85,9 @@
 					});
 
 					<%--this.$search.customCombo('${contextRoot}/deptMember/getOrgList');--%>
-
+                    this.$searchNmLeft.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
+                        self.getResourceBrowseTree();
+                    }});
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
 						var searchNm = $('#inp_searchNm').val();
 						var parms = {
@@ -99,9 +102,10 @@
 				},
 
 				getResourceBrowseTree: function () {
+                    var searchNm = $('#inp_searchNm_left').val();
 					typeTree = this.$resourceBrowseTree.ligerSearchTree({
 						nodeWidth: 240,
-						url: '${contextRoot}/upAndDownMember/categories?orgId='+orgId,
+						url: '${contextRoot}/upAndDownMember/categories?orgId='+orgId+'&searchNm='+searchNm,
 						checkbox: false,
 						idFieldName: 'id',
 						parentIDFieldName :'parentUserId',
