@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
+import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.organization.controller.model.OrgMsgModel;
 import com.yihu.ehr.organization.controller.service.OrgService;
@@ -111,7 +112,7 @@ public class OrgImportController extends ExtendController<OrgService> {
     private int validate(OrgMsgModel model, Set<String> orgCodes){
         int rs = 1;
         if(orgCodes.contains(model.getOrgCode())){
-            model.addErrorMsg("orgCode", "该部门编号在部门表已存在，请核对！");
+            model.addErrorMsg("orgCode", "该机构代码已存在，请核对！");
             rs = 0;
         }
         return rs;
@@ -184,18 +185,68 @@ public class OrgImportController extends ExtendController<OrgService> {
         }
     }
 
-    @RequestMapping("/orgIsExistence")
+    @RequestMapping("orgIsExistence")
     @ResponseBody
-    public Object orgIsExistence(String filters){
+    public Object orgIsExistence(String filters) {
+        String getOrgUrl = "/organizations/existence/" + filters;
+        String resultStr = "";
+        Envelop envelop = new Envelop();
         try {
-            Map map = new HashMap<>();
-            map.put("filters", filters);
-            String resultStr = "";
-            resultStr = HttpClientUtil.doGet(comUrl + "/org/code/existence", map, username, password);
-            return resultStr;
+            resultStr = HttpClientUtil.doGet(comUrl + getOrgUrl, username, password);
+            if (!Boolean.parseBoolean(resultStr)) {
+                envelop.setSuccessFlg(true);
+            } else {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+            }
+            return envelop;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    @RequestMapping("/batchSave")
+    @ResponseBody
+    public Object batchSave(String doctors, String eFile, String tFile, String datePath){
+
+        try{
+            eFile = datePath + TemPath.separator + eFile;
+            File file = new File(TemPath.getFullPath(eFile, parentFile));
+            List<OrgMsgModel> all = (List<OrgMsgModel>) ObjectFileRW.read(file);
+            List<OrgMsgModel> orgMsgModels = objectMapper.readValue(doctors, new TypeReference<List<OrgMsgModel>>() {});
+            Map<String, Set> repeat = new HashMap<>();
+            repeat.put("orgCode", new HashSet<String>());
+            for(OrgMsgModel model : orgMsgModels){
+                model.validate(repeat);
+            }
+            //获取机构代码
+            Set<String> orgCodes = findExistOrgCode(toJson(repeat.get("orgCode")));
+
+            OrgMsgModel model;
+            List saveLs = new ArrayList<>();
+            for(int i=0; i<orgMsgModels.size(); i++){
+                model = orgMsgModels.get(i);
+                if(validate(model, orgCodes)==0|| model.errorMsg.size()>0) {
+                    all.set(all.indexOf(model), model);
+                }else{
+                    saveLs.add(model);
+                    all.remove(model);
+                }
+
+            }
+            saveMeta(toJson(saveLs));
+            ObjectFileRW.write(file, all);
+
+            return success("");
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();
         }
     }
+
+
+
+
 }
