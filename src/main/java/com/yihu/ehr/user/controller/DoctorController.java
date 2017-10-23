@@ -108,12 +108,12 @@ public class DoctorController extends BaseUIController {
         } else {
             stringBuffer.append("userId=" + "-1" + ";");
         }*/
-        /*String idCardNoList = getInfoService.idCardNoList(request);
+        String idCardNoList = getInfoService.idCardNoList(request);
         if (!StringUtils.isEmpty(idCardNoList)) {
             stringBuffer.append("idCardNo=" + idCardNoList + ";");
         } else {
             stringBuffer.append("idCardNo=-1;");
-        }*/
+        }
 
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
