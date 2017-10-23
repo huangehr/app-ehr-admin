@@ -199,6 +199,7 @@ public class AppRoleController extends BaseUIController {
         }else {
             url = ServiceApi.AppFeature.FilterFeatureNoPage;
             params.put("filters", filters);
+            params.put("sorts", "+sort");
             params.put("roleId", appRoleId);
         }
         String resultStr = "";

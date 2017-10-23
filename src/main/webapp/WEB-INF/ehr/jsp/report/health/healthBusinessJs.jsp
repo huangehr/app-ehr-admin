@@ -49,7 +49,7 @@
                                 {
                                     display: '操作', name: 'operator', width: '25%', align: 'center',render: function (row) {
                                         var html = '';
-                                        html += '<sec:authorize url="/"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "health:healthBusinessInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
+                                        html += '<sec:authorize url="/health/editHealthBusiness"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "health:healthBusinessInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
                                         html += '<sec:authorize url="/health/deleteHealthBusiness"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "health:healthBusinessInfo:delete", row.id) + '"></a></sec:authorize>';
                                         return html;
                                     }

@@ -3,7 +3,10 @@ package com.yihu.ehr.resource.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -44,15 +47,22 @@ public class ResourceController extends BaseUIController {
 
     @RequestMapping("/initial")
     public String resourceInitial(Model model){
+        model.addAttribute("contentPage","/resource/resourcemanage/newResource");
+        return "pageView";
+    }
+    @RequestMapping("/newInitial")
+    public String newResourceInitial(Model model){
         model.addAttribute("contentPage","/resource/resourcemanage/resource");
         return "pageView";
     }
 
     @RequestMapping("/infoInitial")
-    public String resourceInterfaceInfoInitial(Model model,String id,String mode,String categoryId){
-        model.addAttribute("mode",mode);
-        model.addAttribute("categoryId",categoryId);
-        model.addAttribute("contentPage","/resource/resourcemanage/resourceInfoDialog");
+    public String resourceInterfaceInfoInitial(Model model,String id,String mode,String categoryId, String name, String dataSource){
+        model.addAttribute("mode", mode);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("name", name);
+        model.addAttribute("dataSource", dataSource);
+        model.addAttribute("contentPage", "/resource/resourcemanage/resourceInfoDialog");
         Envelop envelop = new Envelop();
         String envelopStr = "";
         String categoryName = "";
@@ -132,7 +142,7 @@ public class ResourceController extends BaseUIController {
      */
     @RequestMapping("/resources")
     @ResponseBody
-    public Object searchResources(String searchNm, String categoryId, Integer dataSource, int page, int rows){
+    public Object searchResources(String searchNm, String categoryId, String rolesId, String appId, Integer dataSource, int page, int rows){
         String url = "/resources";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -154,6 +164,15 @@ public class ResourceController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
+
+        if (!StringUtils.isEmpty(rolesId)) {
+            params.put("rolesId", rolesId);
+        }
+
+        if (!StringUtils.isEmpty(appId)) {
+            params.put("appId", appId);
+        }
+
         params.put("page", page);
         params.put("size", rows);
         try {
@@ -471,13 +490,15 @@ public class ResourceController extends BaseUIController {
      * @return
      */
     @RequestMapping("/resourceShow")
-    public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter){
+    public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter,HttpServletRequest request){
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
         params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        params.put("userOrgList", userOrgList);
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
            if( !StringUtils.isEmpty(quotaFilter) ){
@@ -507,7 +528,7 @@ public class ResourceController extends BaseUIController {
      */
     @RequestMapping("/resourceUpDown")
     @ResponseBody
-    public String getResourceUpDown(String id, String dimension,String quotaFilter,String quotaId){
+    public String getResourceUpDown(String id, String dimension,String quotaFilter,String quotaId,HttpServletRequest request){
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -515,6 +536,8 @@ public class ResourceController extends BaseUIController {
         params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        params.put("userOrgList", userOrgList);
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
             if( !StringUtils.isEmpty(quotaFilter) ){

@@ -70,6 +70,19 @@
                     if(auditVal==1){
                         $("#refuseReasonGroup").css('display','none');
                     }
+                    if ($(this).val().length > 0) {
+                        $("#audit").parent().removeClass('validation-failed');
+                    }
+                });
+                $('#otherReason').change(function () {
+                    if ($(this).val().length > 0) {
+                        $("#otherReason").removeClass('validation-failed');
+                    }
+                });
+                $('#reason').change(function () {
+                    if ($(this).val().length > 0) {
+                        $("#reason").parent().removeClass('validation-failed');
+                    }
                 });
 
                 this.$btnSave.click(function () {
@@ -78,16 +91,18 @@
                     var reasonVal = $("#reason_val").val();
                     var otherResonVal = $("#otherReason").val();
                     reasonTxt = otherResonVal;
-                    debugger;
                     if(auditVal=='' || auditVal==undefined){
+                        $("#audit").parent().addClass('validation-failed');
                         $.Notice.error('审核不能为空');
                         return;
                     }else if(auditVal=='2'){
                         if(reasonVal==''){
+                            $("#reason").parent().addClass('validation-failed');
                             $.Notice.error('拒绝原因不能为空');
                             return;
                         }else if(reasonVal=='0'){
                             if(otherResonVal=='' || otherResonVal==undefined){
+                                $("#otherReason").addClass('validation-failed');
                                 $.Notice.error('原因不能为空');
                                 return;
                             }

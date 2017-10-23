@@ -151,7 +151,7 @@
       });
     },
     add: function (id, type) {
-      var _tital = type == "modify" ? "修改资源分类" : "新增资源分类";
+      var _tital = type == "modify" ? "修改视图分类" : "新增视图分类";
       var _url = cateType.list._url + "/rscategory/typeupdate?id=" + id;
       var callback = function () {
         cateType.list.getTypeList();

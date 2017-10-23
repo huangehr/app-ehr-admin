@@ -5,6 +5,7 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.resource.RsReportCategoryInfoModel;
 import com.yihu.ehr.agModel.resource.RsRolesResourceModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
+import com.yihu.ehr.agModel.user.RoleOrgModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
 import com.yihu.ehr.agModel.user.RolesModel;
 import com.yihu.ehr.constants.ErrorCode;
@@ -64,14 +65,18 @@ public class UserRolesController extends BaseUIController {
         model.addAttribute("appId",appId);
         Envelop envelop = new Envelop();
         String en = "";
-        try {
-            en = objectMapper.writeValueAsString(envelop);
-            String url = "/roles/role/" + id;
-            String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
-            model.addAttribute("envelop", envelopStr);
-        } catch (Exception ex) {
-            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            model.addAttribute("envelop", en);
+        if(mode.equals("modify")){
+            try {
+                en = objectMapper.writeValueAsString(envelop);
+                String url = "/roles/role/" + id;
+                String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
+                model.addAttribute("envelop", envelopStr);
+            } catch (Exception ex) {
+                LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+                model.addAttribute("envelop", en);
+            }
+        }else {
+            model.addAttribute("envelop", "{  \"obj\": \"\"}");
         }
         return "simpleView";
     }
@@ -112,6 +117,7 @@ public class UserRolesController extends BaseUIController {
             updateModel.setAppId(model.getAppId());
             updateModel.setType(model.getType());
             updateModel.setDescription(model.getDescription());
+            updateModel.setOrgCode(model.getOrgCode());
             String updateModelJson = objectMapper.writeValueAsString(updateModel);
             Map<String,Object> params = new HashMap<>();
             params.put("data_json",updateModelJson);
@@ -218,6 +224,14 @@ public class UserRolesController extends BaseUIController {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
+    }
+
+    @RequestMapping("/orgDialog")
+    public String orgDialog(Model model, String obj, String dialogType) {
+        String dialogUrl = dialogType.equals("users")?"user/roles/rolesUsers":"user/roles/rolesOrg";
+        model.addAttribute("obj", obj);
+        model.addAttribute("contentPage", dialogUrl);
+        return "simpleView";
     }
 
     @RequestMapping("/configDialog")
@@ -776,5 +790,125 @@ public class UserRolesController extends BaseUIController {
             return result;
         }
         return resultStr;
+    }
+
+
+    //获取所有有效机构列表
+    @RequestMapping("/searchOrgs")
+    @ResponseBody
+    public Object searchOrgs(String searchNm,int page, int rows) {
+        String url = "/organizations";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(searchNm)) {
+            stringBuffer.append("fullName?" + searchNm + ";");
+        }
+        String filters = stringBuffer.toString();
+        params.put("fields","");
+        params.put("sorts","");
+        params.put("filters", filters);
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+
+    }
+
+    //用户角色组添加机构
+    @RequestMapping("/orgCreate")
+    @ResponseBody
+    public Object roleOrgCreate(String orgCode,String roleId) {
+        if(StringUtils.isEmpty(orgCode)){
+            return failed("机构不能为空！");
+        }
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空！");
+        }
+        RoleOrgModel model = new RoleOrgModel();
+        model.setRoleId(Long.parseLong(roleId));
+        model.setOrgCode(orgCode);
+        try{
+            String url = ServiceApi.Roles.RoleOrg;
+            Map<String,Object> params = new HashMap<>();
+            params.put("data_json",objectMapper.writeValueAsString(model));
+            String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //用户角色组删除机构
+    @RequestMapping("/orgDelete")
+    @ResponseBody
+    public Object roleOrgDelete(String orgCode,String roleId) {
+        if(StringUtils.isEmpty(orgCode)){
+            return failed("机构不能为空！");
+        }
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空！");
+        }
+        try{
+            Map<String,Object> params = new HashMap<>();
+            params.put("org_code",orgCode);
+            params.put("role_id",roleId);
+            String url = ServiceApi.Roles.RoleOrg;
+            String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //角色组人员配置机构列表查询
+    @RequestMapping("/roleOrgList")
+    @ResponseBody
+    public Object getRoleOrgList(String searchNm,int page,int rows){
+        if(StringUtils.isEmpty(searchNm)){
+            return failed("角色组id不能为空");
+        }
+        try{
+            String url = ServiceApi.Roles.RoleOrgs;
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters","roleId="+searchNm);
+            params.put("sorts","");
+            params.put("page",page);
+            params.put("size",rows);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    //获取用户角色组配置的所有 机构
+    @RequestMapping("/roleOrgByRoleId")
+    @ResponseBody
+    public Object getRoleOrgListNoPage(String roleId){
+        if(StringUtils.isEmpty(roleId)){
+            return failed("角色组id不能为空");
+        }
+        try{
+            String url = ServiceApi.Roles.RoleOrgsNoPage;
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","roleId="+roleId);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
     }
 }

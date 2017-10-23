@@ -8,7 +8,7 @@ cateType.list = {
     TypeSearch: null,
     init: function () {
         this.top = $.Util.getTopWindowDOM();
-        //资源分类 列名
+        //视图分类 列名
         this.columns = [
             {display: '名称', name: 'name',width: "43%", align: 'left', id: 'tree_id'},
             {display: '说明', name: 'description',width: "43%", align: 'left'},
@@ -140,7 +140,7 @@ cateType.list = {
         });
     },
     add: function (id, type) {
-        var _tital = type == "modify" ? "修改资源分类" : "新增资源分类";
+        var _tital = type == "modify" ? "修改视图分类" : "新增视图分类";
         var _url = cateType.list._url + "/rscategory/typeupdate?id=" + id;
         var callback = function () {
             cateType.list.getTypeList();

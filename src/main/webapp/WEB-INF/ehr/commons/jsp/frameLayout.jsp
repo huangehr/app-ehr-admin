@@ -14,6 +14,11 @@
     <tiles:insertAttribute name="header" />
     <tiles:insertAttribute name="layoutCss" ignore="true"/>
     <tiles:insertAttribute name="pageCss" ignore="true"/>
+        <style>
+            .mCustomScrollBox{
+                max-height: 100%!important;
+            }
+        </style>
 </head>
 <body>
 
@@ -21,7 +26,7 @@
     <div class="f-fr usr_msg">
         欢迎登录：${current_user.realName}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/user/initialChangePassword"
                                                                  class="f-color-0">修改密码</a><br>
-        上次登录：${last_login_time}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/logout" class="f-color-0">退出</a>
+        上次登录：${last_login_time}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/logout/reLogin" class="f-color-0">退出</a>
     </div>
 </div>
 <div id="div_main_content" class="l-layout">
@@ -53,7 +58,7 @@
         <%--</div>--%>
         <%--</div>--%>
         <div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb f-dn">位置：<span id="span_nav_breadcrumb_content"></span></div>
-        <div data-content-page class="f-p10 f-pr" id="contentPage">
+        <div data-content-page class="f-p10 f-pr" id="contentPage" style="height: 100%" onchange="bingConChangeEvent(this);">
             <%--<tiles:insertAttribute name="contentPage" ignore="true"/>--%>
         </div>
     </div>

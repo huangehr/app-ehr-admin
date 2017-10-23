@@ -122,8 +122,16 @@ public class AppController extends BaseUIController {
             builder.addFilter("org", "=", null, null);
         }*/
 
+       String appsId = getInfoService.appIdList();
+       if (!StringUtils.isEmpty(appsId)) {
+           builder.addFilter("id", "=", appsId, null);
+       } else {
+           builder.addFilter("id", "=", null, null);
+       }
+
         builder.setPageNumber(page)
                 .setPageSize(rows);
+        builder.addSorter("createTime", false);
         String param = builder.toString();
         String url = "/apps";
         String resultStr = "";
@@ -213,9 +221,9 @@ public class AppController extends BaseUIController {
                 appUpdate.setDescription(appDetailModel.getDescription());
                 appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
-//                ========================
                 appUpdate.setIcon(appDetailModel.getIcon());
                 appUpdate.setReleaseFlag(appDetailModel.getReleaseFlag());
+                appUpdate.setManageType(appDetailModel.getManageType());
                 //更新
                 MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
                 conditionMap.add("app", toJson(appUpdate));

@@ -20,7 +20,7 @@
 				});
                 $('#resource_name').val(dataModel.resourceName);
                 $('#resource_sub').val(dataModel.resourceSub);
-                $('#resource_title').html(dataModel.resourceName + "_资源授权");
+                $('#resource_title').html(dataModel.resourceName + "_视图授权");
             }();
             var master = {
                 tree: undefined,
@@ -191,7 +191,7 @@
                         }},
                         {display: '操作', name: 'operator', width: '10%', render: m.opratorRender}];
 
-                    m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, rownumbers: true, usePager: false, heightDiff: 20});
+                    m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, rownumbers: true, usePager: false, heightDiff: 20,height: 528});
                 },
                 //操作栏渲染器
                 opratorRender: function (row){
@@ -220,12 +220,14 @@
             }
 
             var resizeContent = function(){
+                debugger
                 var contentW = $('#grid_content').width();
                 var leftW = $('#div_left').width();
-                $('#div_right').width(contentW-leftW-20);
+                $('#div_right_g').width(contentW-leftW-50);
 
                 var contentH = $('.l-layout-center').height();
-                $('#treeMenuWrap').height(contentH - 189);
+//                $('#treeMenuWrap').height(contentH - 189);
+                $('#treeMenuWrap').height(499);
             }();
 
             //窗体改变大小事件

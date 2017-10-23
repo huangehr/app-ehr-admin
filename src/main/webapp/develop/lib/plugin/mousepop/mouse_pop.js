@@ -11,7 +11,7 @@
                     '<h3 class="pop-tit">{{title}}</h3>',
                     '<div class="pop-form">',
                         '<label for="name">名称：</label>',
-                        '<input id="name" class="name" type="text" value="{{name}}" /><span style="line-height: 26px;    vertical-align: bottom;padding-left: 10px;color: red;">*</span>',
+                        '<input id="name" class="name" type="text" value="{{name}}" /><input type="hidden" id="oldName" value="{{name}}" /><span style="line-height: 26px;    vertical-align: bottom;padding-left: 10px;color: red;">*</span>',
                     '</div>',
                     '<div class="pop-form {{classCode}}">',
                         '<label for="code">编码：</label>',
@@ -52,7 +52,7 @@
                 me.closeMousePop(me);
             }
             if (e.which === 3) {
-                var parentDom = $(e.target).parent().parent(),
+                var parentDom = $(e.target).closest('li'),
                     id = parentDom.attr('id'),
                     htmlStr = '<div class="mouse-pop-win" data-id="' + id + '">',
                     x = e.pageX,
@@ -68,7 +68,7 @@
                     })();
                 me.prevId = parentDom.prev().attr('id');
                 me.nextId = parentDom.next().attr('id');
-                if (id === 'div_tree') {
+                if (parentDom.length <= 0) {
                     htmlStr += me.render(me.parentShowHtml,{ 'id' : id, categoryName:categoryName, prevId: me.prevId},function ( data, $1) {
                         me.checkNPData( data, $1);
                     });

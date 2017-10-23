@@ -111,22 +111,28 @@
 						},
 						columns: [
 							{display: 'id', name: 'id', hide: true},
-							{display: '角色组编码', name: 'code', width: '20%', isAllowHide: false, align: 'center'},
-							{display: '角色组名称', name: 'name', width: '20%', isAllowHide: false, align: 'center'},
-							{display: '描述', name: 'description', width: '30%', isAllowHide: false, align: 'center'},
+							{display: '角色组编码', name: 'code', width: '15%', isAllowHide: false, align: 'center'},
+							{display: '角色组名称', name: 'name', width: '15%', isAllowHide: false, align: 'center'},
+							{display: '机构名称', name: 'orgName', width: '15%', isAllowHide: false, align: 'center'},
+							{display: '描述', name: 'description', width: '10%', isAllowHide: false, align: 'center'},
 							{
-								display: '操作', name: 'operator', width: '30%', render: function (row) {
+								display: '操作', name: 'operator', width: '45%', render: function (row) {
 								var jsonStr = JSON.stringify(row);
 								var html = '';
 
 								<sec:authorize url="/appRole/updateFeatureConfig">
 									html = '<a class="label_a" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"limits") + '>权限配置</a>';
 								</sec:authorize>
+
 								<sec:authorize url="Role_User_Setting">
-									html += '<a class="label_a" style="margin-left:15px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"users") + '>人员配置</a>';
+									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:config:open", jsonStr,"users") + '>人员配置</a>';
 								</sec:authorize>
 
-								html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+								<sec:authorize url="/userRoles/orgConfig">
+									html += '<a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:orgConfig:open", jsonStr,"roles.org") + '>机构授权</a>';
+								</sec:authorize>
+
+								html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:resource:list", row.id,row.name,row.catalogName) + '">视图授权</a></sec:authorize>';
 
                                 html += '<sec:authorize url="/userRoles/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "roles:resource:bbconfig", row.id) + '">资源报表配置</a></sec:authorize>';
 
@@ -195,7 +201,7 @@
 							appId = '';
 						}
 						rolesMaster.rolesInfoDialog = $.ligerDialog.open({
-							height: 360,
+							height: 400,
 							width: 500,
 							title: title,
 							show:false,
@@ -261,6 +267,26 @@
 						});
 					});
 
+
+					//机构授权弹出页面
+					$.subscribe("roles:orgConfig:open",function(events,obj,type){
+						var model = JSON.parse(obj)
+						var title = '角色管理>机构数据授权';
+						rolesMaster.roleRelationDialog = $.ligerDialog.open({
+							height: 600,
+							width: 800,
+							title: title,
+							urlParms:{
+								obj:obj,
+								dialogType:type,
+							},
+							url: '${contextRoot}/userRoles/orgDialog',
+							isHidden: false,
+							load: true
+						})
+					});
+
+
 					//人员、权限配置弹出页面
 					$.subscribe("roles:config:open",function(events,obj,type){
 						var model = JSON.parse(obj)
@@ -288,6 +314,7 @@
 							'code':code,
 							'categoryIds':'',
 							'sourceFilter':'',
+                            'appId':appId
 						}
 						var url = '${contextRoot}/userRoles/resource/initial?';
 						$("#contentPage").empty();

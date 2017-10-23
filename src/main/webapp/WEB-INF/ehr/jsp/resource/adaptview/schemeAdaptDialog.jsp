@@ -6,7 +6,7 @@
   <input id="id" name="id" data-attr-scan="id"  hidden>
   <div class="m-form-group">
     <label>方案类别<spring:message code="spe.colon"/></label>
-    <div class="l-text-wrapper m-form-control essential u-readonly f-pr0">
+    <div class="l-text-wrapper m-form-control u-readonly f-pr0">
       <input type="text" id="ipt_type" data-type="select" class="required useTitle" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
     </div>
   </div>
@@ -17,12 +17,13 @@
     </div>
   </div>
 
-  <div class="m-form-group" id="adapter_version_div" style="display: none">
+  <div class="m-form-group" id="adapter_version_div">
     <label>版本号<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">
       <input type="text" id="adapter_version" data-type="select" class="useTitle" data-attr-scan="adapterVersion" required-title=<spring:message code="lbl.must.input"/>>
     </div>
   </div>
+
   <div class="m-form-group" >
     <label>方案名称<spring:message code="spe.colon"/></label>
     <div class="l-text-wrapper m-form-control essential">

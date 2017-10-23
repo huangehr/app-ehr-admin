@@ -5,6 +5,7 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.org.RsOrgResourceModel;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.model.org.MRsOrgResource;
 import com.yihu.ehr.patient.controller.PatientController;
@@ -59,7 +60,7 @@ public class OrganizationController extends BaseUIController {
     @Autowired
     private GetInfoService getInfoService;
 
-    @RequestMapping("initial")
+    @RequestMapping("/initial")
     public String orgInitial(Model model) {
         model.addAttribute("contentPage", "organization/organization");
         return "pageView";
@@ -69,6 +70,11 @@ public class OrganizationController extends BaseUIController {
     public String organizationGrant(Model model) {
         model.addAttribute("contentPage", "organization/organizationGrant");
         return "pageView";
+    }
+    @RequestMapping("uploadOrgErrorDialog")
+    public String uploadOrgErrorDialog(Model model) {
+        model.addAttribute("contentPage", "organization/uploadOrgErrorDialog");
+        return "simpleView";
     }
 
     @RequestMapping("dialog/orgInfo")
@@ -115,7 +121,7 @@ public class OrganizationController extends BaseUIController {
 
     @RequestMapping(value = "searchOrgs", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object searchOrgs(String searchParm, String searchWay, String orgType, String province, String city, String district, int page, int rows) {
+    public Object searchOrgs(String searchParm, String searchWay, String orgType, String province, String city, String district, int page, int rows,HttpServletRequest request) {
         Envelop envelop = new Envelop();
         try {
             //获取地址的 ids
@@ -151,6 +157,8 @@ public class OrganizationController extends BaseUIController {
             if (!StringUtils.isEmpty(orgType)) {
                 filters += "orgType=" + orgType + ";";
             }
+            //根据登录人的机构获取saas化机构
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
 
            /* String orgCode = getInfoService.getOrgCode();*/
            /* String districtList = getInfoService.getDistrictList();*/
@@ -173,12 +181,13 @@ public class OrganizationController extends BaseUIController {
             }*/
             params.put("fields", "");
             params.put("filters", filters);
-            params.put("sorts", "");
+            params.put("sorts", "-createDate");
             params.put("size", rows);
             params.put("page", page);
             params.put("province", province);
             params.put("city", city);
             params.put("district", district);
+            params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
@@ -359,6 +368,9 @@ public class OrganizationController extends BaseUIController {
                 orgForUpdate.setIng(org.getIng());
                 orgForUpdate.setLat(org.getLat());
                 orgForUpdate.setZxy(org.getZxy());
+                if ("Hospital".equalsIgnoreCase(org.getOrgType())) {
+                    orgForUpdate.setBerth(org.getBerth());
+                }
 
 
 

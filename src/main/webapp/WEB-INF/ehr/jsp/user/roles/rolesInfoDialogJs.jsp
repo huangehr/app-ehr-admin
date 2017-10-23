@@ -26,10 +26,14 @@
 			$code: $("#inp_roles_code"),
 			$name: $("#inp_roles_name"),
 			$description: $("#inp_description"),
+			$orgCode: $("#inp_appRole_orgCode"),
+
 			init: function () {
 				this.$code.ligerTextBox({width:240});
 				this.$name.ligerTextBox({width:240});
 				this.$description.ligerTextBox({width:240, height: 120 });
+				this.$orgCode.customCombo('${contextRoot}/deptMember/getOrgCodeAndNameList',{});
+
 				if(mode == 'view'){
 					rolesInfo.$form.addClass('m-form-readonly');
 					$("#btn_save").hide();
@@ -47,6 +51,9 @@
 						name:info.name,
 						description:info.description
 					});
+
+					$("#inp_appRole_orgCode").ligerGetComboBoxManager().setValue(info.orgCode);
+					$("#inp_appRole_orgCode").ligerGetComboBoxManager().setText(info.orgName);
 				}
 				if(mode == 'new'){
 					$('#appId').val(appId);

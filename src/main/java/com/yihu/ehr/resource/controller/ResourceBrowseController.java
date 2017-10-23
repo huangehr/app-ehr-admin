@@ -4,6 +4,7 @@ import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.SessionContants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -15,6 +16,7 @@ import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +45,9 @@ public class ResourceBrowseController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+    @Autowired
+    private ResourceIntegratedController resourceIntegratedController;
 
     @RequestMapping("/browse")
     public String resourceBrowse(Model model) {
@@ -142,6 +147,14 @@ public class ResourceBrowseController extends BaseUIController {
         UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String orgCode = userDetailModel.getOrganization();
         //params.put("orgCode", "41872607-9");
+//       List<String> userOrgCodeList= (List)request.getSession().getAttribute("userOrgCode");
+//        if(null!=userOrgCodeList&&userOrgCodeList.size()>0){
+//            for(String org:userOrgCodeList){
+//                if(null!=orgCode){
+//                    orgCode=","+org;
+//                }
+//            }
+//        }
         params.put("orgCode", orgCode);
         params.put("resourcesCode", resourcesCode);
         Pattern pattern = Pattern.compile("\\[.+?\\]");
@@ -159,7 +172,21 @@ public class ResourceBrowseController extends BaseUIController {
         params.put("size", rows);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
+
+            envelop = toModel(resultStr, Envelop.class);
+            List<Map<String, Object>> envelopList = envelop.getDetailModelList();
+            List<Map<String, Object>> resultList = new ArrayList<>();
+            for(Map<String, Object> envelopMap : envelopList) {
+                Map<String, Object> resultMap = new HashMap<String, Object>();
+                for(String key : envelopMap.keySet()) {
+                    String value = envelopMap.get(key).toString();
+                    resultMap.put(key, value);
+                }
+                resultList.add(resultMap);
+            }
+            List<Map<String, Object>> listMap = resourceIntegratedController.changeIdCardNo(resultList, request);
+            envelop.setDetailModelList(listMap);
+//            return resultStr;
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("数据检索失败");
@@ -183,11 +210,11 @@ public class ResourceBrowseController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
         String url = "/resources/ResourceBrowses/getQuotaResourceData";
-        //当前用户机构
-        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String orgCode = userDetailModel.getOrganization();
-        //params.put("orgCode", "41872607-9");
-        params.put("orgCode", orgCode);
+        //当前用户机构 -- 预留
+//        String orgCode = userDetailModel.getOrganization();
+//        params.put("orgCode", orgCode);
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        params.put("userOrgList", userOrgList);
         params.put("resourcesId", resourcesId);
         if(searchParams != null) {
             if (searchParams.contains("{") || searchParams.contains("}")) {
@@ -204,6 +231,27 @@ public class ResourceBrowseController extends BaseUIController {
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("数据检索失败");
+        }
+        return envelop;
+    }
+
+    /**
+     * 指标资源检索条件获取
+     * @param resourcesId
+     * @return
+     */
+    @RequestMapping("/searchQuotaResourceParam")
+    @ResponseBody
+    public Envelop searchQuotaDataParam(String resourcesId) {
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/resources/ResourceBrowses/getQuotaResourceParam";
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("resourcesId", resourcesId);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        }catch (Exception e) {
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
     }
@@ -353,7 +401,7 @@ public class ResourceBrowseController extends BaseUIController {
      * @param searchParams
      */
     @RequestMapping("/outQuotaExcel")
-    public void outQuotaExcel(HttpServletResponse response, String resourcesId, String searchParams){
+    public void outQuotaExcel(HttpServletResponse response, String resourcesId, String searchParams,HttpServletRequest request){
         Envelop envelop = new Envelop();
         String fileName = "指标资源数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
@@ -363,6 +411,8 @@ public class ResourceBrowseController extends BaseUIController {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("resourcesId", resourcesId);
             params.put("queryCondition", searchParams);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
             //处理Excel

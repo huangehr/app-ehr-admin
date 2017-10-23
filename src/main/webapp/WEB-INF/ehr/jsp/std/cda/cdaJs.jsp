@@ -135,9 +135,9 @@
             $("#div_right .l-text").css({
                 "margin-left": 100, "margin-top": -20
             });
-            $("#div_right").css({
-                "width": $("#div_wrapper").width() - $("#div_left").width() - 10
-            });
+//            $("#div_right").css({
+//                "width": $("#div_wrapper").width() - $("#div_left").width() - 10
+//            });
         },
         getVersionList: function () {
             var u = cda.list;

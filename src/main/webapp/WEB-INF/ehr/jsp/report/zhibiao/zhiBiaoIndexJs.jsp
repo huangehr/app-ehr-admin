@@ -174,7 +174,7 @@
                                        html += '<sec:authorize url="/tjQuota/deleteTjQuota"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
                                        html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">任务执行</a></sec:authorize>';
                                    }
-                                    html += '<sec:authorize url="/tjQuota/queryTjQuotaResult"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:result:selectResult", row.id) + '">结果查询</a></sec:authorize>';
+                                    html += '<sec:authorize url="/tjQuota/queryTjQuotaResult"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:result:selectResult", row.id,row.code) + '">结果查询</a></sec:authorize>';
                                     html += '<sec:authorize url="/tjQuota/queryTjQuotaLog"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
                                     return html;
                                 }
@@ -321,10 +321,11 @@
                         })
                     });
 
-                    $.subscribe('zhibiao:result:selectResult', function (event, id) {
+                    $.subscribe('zhibiao:result:selectResult', function (event, id,quotaCode) {
                         var url = '${contextRoot}/tjQuota/initialResult';
                         var urlParms = {
                             tjQuotaId:id,
+                            quotaCode:quotaCode,
                             quotaType: quotaType,
                             name: searchVal
                         }

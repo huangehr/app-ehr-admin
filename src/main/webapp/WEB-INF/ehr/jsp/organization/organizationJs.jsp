@@ -32,11 +32,11 @@
 
             function onUploadSuccess(g, result){
                 if(result)
-                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+                    openDialog("${contextRoot}/organization/uploadOrgErrorDialog", "导入错误信息", 1000, 640, {result: result});
                 else
                     $.Notice.success("导入成功！");
             }
-            $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess});
+            $('#upOrg').uploadFile({url: "${contextRoot}/orgImport/importOrg", onUploadSuccess: onUploadSuccess, str: '导入机构'});
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
@@ -150,7 +150,7 @@
                             {
                                 display: '操作', name: 'operator', width: '30%', render: function (row) {
                                 var html = '';
-                                html += '<sec:authorize url="/organization/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:resource:list", row.orgCode,row.id, row.fullName) + '">资源授权</a></sec:authorize>';
+                                <%--html += '<sec:authorize url="/organization/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:resource:list", row.orgCode,row.id, row.fullName) + '">视图授权</a></sec:authorize>';--%>
                                 html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a"  style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName,row.orgType) + '">部门管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/organization/upAndDownMember"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:upAndDownMember", row.orgCode, row.id, row.fullName) + '">人员关系</a></sec:authorize>';
                                 html += '<sec:authorize url="/orgTemplate/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:modelConfig", row.orgCode, row.orgTypeName, row.fullName) + '">模板配置</a></sec:authorize>';
@@ -289,7 +289,7 @@
                         $("#contentPage").empty();
                         $("#contentPage").load(url, orgData);
                     });
-                    //资源授权页面跳转
+                    //视图授权页面跳转
                     $.subscribe('org:resource:list', function (event, orgCode, orgId,orgName) {
 //					rolesMaster.savePageParamsToSession();
                         var data = {

@@ -92,7 +92,7 @@
                     <input type="text" id="inp_systemDictEntity_catalog" class="max-length-32 validate-logic-conditions" />
                 </div>
             </div>
-            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_addSystemDictEntity_btn">
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_addSystemDictEntity_btn" >
                 <span>确认</span>
             </div>
         </div>

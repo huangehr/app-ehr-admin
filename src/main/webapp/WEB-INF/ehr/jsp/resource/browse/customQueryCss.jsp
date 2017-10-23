@@ -3,6 +3,7 @@
 
 <style>
     .query-main{
+        height: 100%;
         position: relative;
     }
     .query-btns{
@@ -21,6 +22,7 @@
         position: absolute;
         left: 50%;
         top: 50%;
+        background: #fff;
         -webkit-transform: translate(-50%,-50%);
         -moz-transform: translate(-50%,-50%);
         -ms-transform: translate(-50%,-50%);
@@ -69,7 +71,7 @@
         line-height: 30px;
         font-size: 12px;
         color: #fff;
-        margin-right: 20px;
+        margin-right: 5px;
         -webkit-border-radius: 2px;
         -moz-border-radius: 2px;
         border-radius: 2px;
@@ -89,8 +91,10 @@
         background: #0c93e4;
     }
     .screen-con{
-        width: 100%;
-        padding: 10px 0;
+        /*width: 100%;*/
+        padding: 19px 0;
+        float: right;    margin-right: 11px;margin-left: 4px;
+        vertical-align: middle;
         overflow: hidden;
     }
     .sc-btn{
@@ -108,7 +112,7 @@
         -ms-user-select: none;
         user-select: none;
     }
-    .icon-xiala{
+    .iconn-xiala{
         width: 13px;
         height: 5px;
         display: inline-block;
@@ -122,7 +126,7 @@
         transform: translateY(-50%);
         background: url(${staticRoot}/images/icon_xiala.png) no-repeat center center;
     }
-    .sc-btn.show .icon-xiala{
+    .sc-btn.show .iconn-xiala{
         top: 44%;
         -webkit-transform: rotate(180deg);
         -moz-transform: rotate(180deg);
@@ -134,7 +138,7 @@
         width: 287px;
         position: absolute;
         left: 0;
-        top: 134px;
+        top: 77px;
         bottom: 0;
         border: 1px solid #e1e1e1;
         overflow: hidden;
@@ -145,8 +149,8 @@
     }
     .query-conc{
         position: absolute;
-        left: 307px;
-        top: 134px;
+        left: 294px;
+        top: 77px;
         right: 0;
         bottom: 0;
         /*border: 1px solid #e1e1e1;*/
@@ -154,9 +158,16 @@
         overflow: auto;
     }
     .select-con{
+        width: 100%;
+        max-height: 450px;
         padding-top: 20px;
         border: 1px solid #e1e1e1;
         margin-bottom: 20px;
+        position: absolute;
+        z-index: 1;
+        background: #fff;
+        padding-bottom: 15px;
+        overflow: auto;
     }
     .sel-item{
         width: 100%;
@@ -193,8 +204,11 @@
         /*position: absolute;*/
         /*left: 0;*/
         /*top: 0;*/
-
+        width: 141px;
+        text-align: right;
         display: table-cell;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .con-list{
         /*padding: 0 85px 0 100px;*/
@@ -239,14 +253,25 @@
     }
     .tree-con{
         height: 100%;
-
     }
     #divLeftTree{
-        height: 100%;
+        /*height: 100%;*/
     }
     .l-tree .l-body span{
         height: 22px;
         line-height: 22px;
+    }
+    .tree-con-zhcx{
+        height: 89%;
+        overflow: auto;
+    }
+    .l-panel td{
+        height: 40px;
+        line-height: 40px;
+    }
+    .l-tree{
+        background: none !important;
+        /*overflow: auto!important;*/
     }
 </style>
 

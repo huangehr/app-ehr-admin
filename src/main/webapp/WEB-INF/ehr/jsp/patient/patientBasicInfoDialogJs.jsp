@@ -162,7 +162,8 @@
                     var roleName = item.roleName;
                     if (appDom.find(".div-item[data-id='" + roleId + "']").length == 0) {
                         resultHtml += '<div class="h-40 div-item" data-id="'+roleId+'">'+
-                                '<div class="div-main-content" title="'+roleName+'">'+roleName+'</div>'+
+                                '<div class="div-main-content" style="width: 50%" title="'+ item.appName +'">'+ item.appName +'</div>'+
+                                '<div class="div-main-content" style="width: 50%" title="'+ roleName +'">'+ roleName +'</div>'+
 //                                '<div class="div-delete-content"><a class="grid_delete" href="#" title="删除"></a></div>'+
                                 '</div>';
                     }

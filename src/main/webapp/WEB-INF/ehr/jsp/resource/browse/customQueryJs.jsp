@@ -13,7 +13,9 @@
             //医疗机构
             getOrgByUserId: '${contextRoot}/user/getOrgByUserId',
             //检测字段
-            getRsDictEntryList: '${contextRoot}/resourceBrowse/getRsDictEntryList'
+            getRsDictEntryList: '${contextRoot}/resourceBrowse/getRsDictEntryList',
+            //获取指标维度
+            searchQuotaParam: '${contextRoot}/resourceIntegrated/searchQuotaParam'
         };
         var conInf = [
             //档案数据
@@ -47,12 +49,13 @@
                 $searchInp: $('#searchInp'),
                 $startDate: $('#startDate'),
                 $endDate: $('#endDate'),
-                $treeCon: $('.tree-con'),
+                $treeCon: $('.tree-con-zhcx'),
                 $divLeftTree: $('#divLeftTree'),
                 $divResourceInfoGrid: $('#divResourceInfoGrid'),
                 $zbGrid: $('#zbGrid'),
                 dataModel: $.DataModel.init(),
                 selTmp: $('#selTmp').html(),
+                selDateTmp: $('#selDateTmp').html(),
                 leftTree: null,
                 filters: '',
                 //档案数据参数
@@ -73,13 +76,18 @@
                 params: {},
                 init: function () {
                     //设置综合查询页面的高度
-                    var queryMainH = this.WH - 128 - 25;
-                    this.$queryMain.height(queryMainH);
+//                    var queryMainH = this.WH - 128 - 25;
+//                    this.$queryMain.height(queryMainH);
                     this.initForm();
+                    this.loadEventType();
                     this.loadSelData();
                     this.loadTree();
                     this.bindEvent();
                     this.loadGrid();
+
+                    this.$treeCon.mCustomScrollbar({
+                        axis: "xy"
+                    });
                 },
                 //初始化表单控件
                 initForm: function () {
@@ -88,32 +96,19 @@
                         width: 245,
                         isSearch: true,
                         search: function () {
-                            debugger
                             var serVal = $('#searchInp').val();
                             me.filters = serVal;
                             me.loadTree();
                         }
                     });
-
-                    me.$treeCon.mCustomScrollbar({
-                        axis: "y"
-                    });
                     me.$queryConc.mCustomScrollbar({
                         axis: "y"
                     });
                     me.$startDate.ligerDateEditor({
-                        width: 180,
-                        onChangeDate: function () {
-                            var $parent = me.$startDate.closest('.sel-item');
-                            $parent.attr('data-start-date', me.$startDate.val());
-                        }
+                        width: 180
                     });
                     me.$endDate.ligerDateEditor({
-                        width: 180,
-                        onChangeDate: function () {
-                            var $parent = me.$endDate.closest('.sel-item');
-                            $parent.attr('data-end-date', me.$endDate.val());
-                        }
+                        width: 180
                     });
                 },
                 //地区
@@ -128,6 +123,27 @@
                 loadRsDictEntryListData: function (p) {
                     return this.loadPromise(pubInf.getRsDictEntryList, p);
                 },
+                loadEventType: function () {
+                    var html = '',
+                        eObj = {
+                            pCode: 'event_type',
+                            label: '事件类型',
+                            obj: [
+                                {id: 0, name: '门诊'},
+                                {id: 1, name: '住院'},
+                                {id: 2, name: '线上'}
+                            ]
+                        };
+                    html = this.render(this.selTmp, eObj, function (d, $1) {
+                        var obj = d.obj || [],
+                            str = '';
+                        for (var i = 0, len = obj.length; i < len; i++) {
+                            str += '<li class="con-item" data-code="' + obj[i].id + '">' + obj[i].name + '</li>';
+                        }
+                        eObj.content = str;
+                    });
+                    this.$pubSel.append(html);
+                },
                 //加载默认筛选条件
                 loadSelData: function () {
                     var me = this;
@@ -138,12 +154,12 @@
                         var htm = '';
                         _.each(res, function (o, k) {
                             o.label = k == 0 ? '地区' : '医疗机构';
-                            o.pCode = k == 0 ? 'EHR_000241' : 'EHR_000021';
+                            o.pCode = k == 0 ? 'org_area' : 'org_name';
                             htm += me.render(me.selTmp, o, function (d, $1) {
                                 var obj = d.obj || [],
                                     str = '';
                                 for (var i = 0, len = obj.length; i < len; i++) {
-                                    str += '<li class="con-item" data-code="' + (k == 0 ? obj[i].name : obj[i].fullName) + '">' + (k == 0 ? obj[i].name : obj[i].fullName) + '</li>';
+                                    str += '<li class="con-item" data-code="' + (k == 0 ? obj[i].id : obj[i].fullName) + '">' + (k == 0 ? obj[i].name : obj[i].fullName) + '</li>';
                                 }
                                 o.content = str;
                             });
@@ -171,11 +187,12 @@
                             me.selectData = this.getChecked();
                             me.$scBtn.removeClass('show');
                             me.$selectCon.hide();
-                            me.queryCondition = me.getSelCon();
                             if (me.selectData.length > 0) {
                                 if (me.type == 0) {
                                     var ma = [], ca = [], sjyArr = [];
-                                    me.loadGrid();
+                                    if (me.selectData[0].data.level == 2 && me.selectData.length == 1) {
+                                        me.selectData.push({data:this.getDataByNode(this.getParentTreeItem(me.selectData[0].target))});
+                                    }
                                     for (var i = 0, len = me.selectData.length; i < len; i++) {
                                         switch (me.selectData[i].data.level) {
                                             case '1':
@@ -193,34 +210,18 @@
                                     me.index = 0;
                                     me.$selMore.html('');
                                     me.GridCloumnNamesData = sjyArr;
-                                    me.reloadResourcesGrid({
-                                        metaData: me.childArr,
-                                        resourcesCode: me.masterArr,
-                                        searchParams: me.queryCondition
-                                    });
                                     me.setSearchData();
                                 } else {
                                     me.tjQuotaIds = [];
                                     me.tjQuotaCodes = [];
-                                    me.loadZBGrid();
                                     for (var k = 0, len = me.selectData.length; k < len; k++) {
                                         if (me.selectData[k].data.level == 2) {
                                             me.tjQuotaIds.push(me.selectData[k].data.id);
                                             me.tjQuotaCodes.push(me.selectData[k].data.code);
                                         }
                                     }
-                                    var par = {
-                                        tjQuotaIds: me.tjQuotaIds.join(','),
-                                        tjQuotaCodes: me.tjQuotaCodes.join(','),
-                                        //                                  searchParams: me.queryCondition,
-
-//                                        tjQuotaIds: '16,18',
-//                                        tjQuotaCodes: 'depart_treat_count,disease_add_count'
-//                                        searchParams: me.queryCondition
-                                    };
                                     me.ZBCloumnNamesData = [];
-                                    me.loadZBCol(par);
-                                    me.reloadZBGrid(par);
+                                    me.setZBSearchData();
                                 }
                             } else {
                                 me.resetDate();
@@ -282,7 +283,7 @@
                         this.loadZBGrid();
                     }
                 },
-                //筛选存在数据字典中的字段
+                //档案数据-筛选存在数据字典中的字段
                 setSearchData: function (d) {
                     var me = this,
                         data = me.GridCloumnNamesData;
@@ -290,18 +291,22 @@
                         return
                     }
                     if (data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
-                        me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
-                            data: {dictId: data[me.index].dictCode},
-                            type: 'GET',
-                            async: false,
-                            success: function (d) {
-                                if (d.successFlg) {
-                                    d.label = data[me.index].name;
-                                    d.pCode = data[me.index].code;
-                                    me.resetSelHtml(d);
+                        if (data[me.index].dictCode == 'DATECONDITION') {
+                            me.resetSelHtml(data[me.index], 'date');
+                        } else {
+                            me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
+                                data: {dictId: data[me.index].dictCode},
+                                type: 'GET',
+                                async: false,
+                                success: function (da) {
+                                    if (da.successFlg) {
+                                        da.label = data[me.index].name;
+                                        da.pCode = data[me.index].code;
+                                        me.resetSelHtml(da, 'list');
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                     me.index++;
                     if (me.index < me.GridCloumnNamesData.length) {
@@ -309,18 +314,81 @@
                     }
                 },
                 //添加查询条件
-                resetSelHtml: function (d) {
+                resetSelHtml: function (d, t) {
                     var me = this,
                         htm = '';
-                    htm = me.render(me.selTmp, d, function (d, $1) {
-                        var obj = d.detailModelList || [],
-                            str = '';
-                        for (var i = 0, len = obj.length; i < len; i++) {
-                            str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
+                    if (t == 'list') {
+                        htm = me.render(me.selTmp, d, function (dd, $1) {
+                            var obj = d.detailModelList || [],
+                                    str = '';
+                            for (var i = 0, len = obj.length; i < len; i++) {
+                                str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
+                            }
+                            dd.content = str;
+                        });
+                        me.$selMore.append(htm);
+                    } else {
+                        htm = me.render(me.selDateTmp, d, function (dd, $1) {
+                            var str = ['<li class="con-item ci-inp">',
+                                            '<input type="text" id="startDate' + d.code + '">',
+                                        '</li>',
+                                        '<li class="con-item ci-inp">',
+                                            '<input type="text" id="endDate' + d.code + '">',
+                                        '</li>'].join('');
+                            if ($1 == 'label') {
+                                dd.label = d.name;
+                            }
+                            if ($1 == 'content') {
+                                dd.content = str;
+                            }
+                        });
+                        me.$selMore.append(htm);
+                        me.loadLirderDate(d.code);
+                    }
+                },
+                setZBSearchData: function () {
+                    var me = this;
+                    me.dataModel.fetchRemote(pubInf.searchQuotaParam, {
+                        data: {
+                            tjQuotaCodes: (me.tjQuotaCodes).join(',')
+                        },
+                        success: function (data) {
+                            if (data.successFlg) {
+                                var d = data.obj,
+                                    htm = '';
+                                if (d) {
+                                    $.each(d, function (k, obj) {
+                                        htm += me.render(me.selTmp, obj, function (dd, $1) {
+                                            var str = '';
+                                            if ($1 == 'label') {
+                                                dd.label = dd.name;
+                                            }
+                                            if ($1 == 'pCode') {
+                                                dd.pCode = dd.key;
+                                            }
+                                            if ($1 == 'content') {
+                                                for (var i = 0, len = dd.value.length; i < len; i++) {
+                                                    str += '<li class="con-item" data-code="' + dd.value[i]+ '">' + dd.value[i] + '</li>';
+                                                }
+                                                dd.content = str;
+                                            }
+                                        });
+                                    });
+                                }
+                                me.$pubSel.html(htm);
+                            }
                         }
-                        d.content = str;
                     });
-                    me.$selMore.append(htm);
+                },
+                loadLirderDate: function (code) {
+                    var sT = $('#startDate' + code),
+                        eT = $('#endDate' + code);
+                    sT.ligerDateEditor({
+                        width: 180
+                    });
+                    eT.ligerDateEditor({
+                        width: 180
+                    });
                 },
                 //加载档案数据表格
                 loadGrid: function () {
@@ -356,7 +424,7 @@
                         url: conInf[me.type][1],
                         parms: {
                             tjQuotaIds: '',
-                            tjQuotaCodes: ''
+                            tjQuotaCodes: '',
 //                                        searchParams: me.queryCondition
                         },
                         columns: columnModel,
@@ -388,6 +456,7 @@
                 },
                 //加载档案数据
                 reloadResourcesGrid: function (searchParams) {
+                    this.loadGrid();
                     this.resourceInfoGrid.setOptions({parms: searchParams});
                     this.resourceInfoGrid.loadData(true);
                 },
@@ -406,9 +475,11 @@
                             return;
                         }
                         if (index == 0) {
+                            me.loadSelData();
                             me.$divResourceInfoGrid.show();
                             me.$zbGrid.hide();
                         } else {
+                            me.$pubSel.html('');
                             me.$divResourceInfoGrid.hide();
                             me.$zbGrid.show();
                         }
@@ -479,12 +550,24 @@
                     me.$queryCon.on('click', function () {
                         me.$scBtn.removeClass('show');
                         me.$selectCon.hide();
-                        me.queryCondition = me.getSelCon();
-                        me.reloadResourcesGrid({
-                            metaData: me.childArr,
-                            resourcesCode: me.masterArr,
-                            searchParams: me.queryCondition
-                        });
+                        if (me.type == 0) {
+                            me.queryCondition = me.getSelCon();
+                            me.reloadResourcesGrid({
+                                metaData: me.childArr,
+                                resourcesCode: me.masterArr,
+                                searchParams: me.queryCondition
+                            });
+                        } else {
+                            me.queryCondition = me.getZBSelCon();
+                            var p = {
+                                tjQuotaIds: me.tjQuotaIds.join(','),
+                                tjQuotaCodes: me.tjQuotaCodes.join(','),
+                                searchParams: me.queryCondition
+                            };
+                            me.loadZBCol(p);
+                            me.loadZBGrid();
+                            me.reloadZBGrid(p);
+                        }
                     });
                     //导出excel
                     me.$outExc.on('click', function () {
@@ -557,8 +640,9 @@
                                     rsInfoDialog = $.ligerDialog.open({
                                         height:550,
                                         width:500,
-                                        title:'新增资源',
+                                        title:'新增视图',
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
+                                        resType: 'POST',
                                         urlParms:{
                                             queryCondition: qc,
                                             type: me.type,
@@ -568,8 +652,8 @@
                                         show:false,
                                         isHidden:false,
                                         onLoaded:function(){
-                                            wait.close(),
-                                                    rsInfoDialog.show()
+                                            wait.close();
+                                            rsInfoDialog.show();
                                         }
                                     });
                                     rsInfoDialog.hide();
@@ -584,14 +668,15 @@
                     var $selItems = me.$selectCon.find('.sel-item'),
                             jsonData = [];
                     for (var i = 0, len = $selItems.length; i < len; i++) {
+//                        debugger
                         var pCode = $selItems.eq(i).attr('data-parent-code'),
-                                codeList = $selItems.eq(i).attr('data-code-list');
-                        if (codeList) {
+                            codeList = $selItems.eq(i).attr('data-code-list');
+                        if (!$selItems.eq(i).hasClass('time')) {
                             var codeArr = codeList.length > 0 ? codeList.split(',') : [];
                             if (codeArr.length > 0) {
                                 for (var j = 0, leng = codeArr.length; j < leng; j++) {
                                     var values = {andOr: '', condition: '', field: '', value: ''};
-                                    values.andOr = 'Or';
+                                    values.andOr = 'OR';
                                     values.condition = '=';
                                     values.field = pCode;
                                     values.value = codeArr[j];
@@ -600,9 +685,13 @@
                             }
                         } else {
                             //时间条件
-                            var sT = $selItems.eq(i).attr('data-start-date'),
-                                    eT = $selItems.eq(i).attr('data-end-date'),
-                                    aArr = [];
+                            var sT = $selItems.eq(i).find('[id^=startDate]').val(),
+                                eT = $selItems.eq(i).find('[id^=endDate]').val(),
+                                aArr = [];
+
+//                            var sT = $selItems.eq(i).attr('data-start-date'),
+//                                    eT = $selItems.eq(i).attr('data-end-date'),
+//                                    aArr = [];
                             if (sT && sT != '') {
                                 aArr.push({
                                     type: '0',
@@ -630,6 +719,32 @@
                             }
                         }
                     }
+                    return JSON.stringify(jsonData);
+                },
+                getZBSelCon: function () {
+                    var me = this;
+                    var $selItems = me.$selectCon.find('.sel-item'),
+                        jsonData = {};
+                    for (var i = 0, len = $selItems.length; i < len; i++) {
+                        var pCode = $selItems.eq(i).attr('data-parent-code'),
+                            codeList = $selItems.eq(i).attr('data-code-list');
+                        if (!$selItems.eq(i).hasClass('time')) {
+                            if (codeList) {
+                                jsonData[pCode] = codeList;
+                            }
+                        } else {
+                            //时间条件
+                            var sT = $selItems.eq(i).find('[id^=startDate]').val(),
+                                eT = $selItems.eq(i).find('[id^=endDate]').val();
+                            if (sT) {
+                                jsonData['startDate'] = sT;
+                            }
+                            if (eT) {
+                                jsonData['endDate'] = eT;
+                            }
+                        }
+                    }
+                    console.log(JSON.stringify(jsonData));
                     return JSON.stringify(jsonData);
                 },
                 //导出指标统计excel

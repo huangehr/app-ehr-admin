@@ -8,23 +8,23 @@
 <!-- ####### 页面部分 ####### -->
 <div class="adpater-plan-modal">
   <!-- ####### 查询条件部分 ####### -->
-  <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline condition" data-role-form>
-    <div class="m-form-group f-mt10">
-      <div class="m-form-control">
+  <div class="m-retrieve-area f-dn f-pr m-form-inline condition" data-role-form>
+    <div class="m-form-group f-mt10" style="padding-bottom: 0">
+      <div class="m-form-control f-mb10">
         <!--输入框-->
         <input type="text" id="ipt_search" placeholder="请输入方案名称或编码" class="f-ml10" data-attr-scan="searchNm"/>
       </div>
-      <div class="m-form-control f-ml10">
+      <div class="m-form-control f-ml10 f-mb10">
         <!--方案类别-->
         <input type="text" id="ipt_search_type"  placeholder="请选择方案类别" data-type="select" data-attr-scan="type">
       </div>
-      <div class="m-form-control m-form-control-fr f-ml10">
+      <div class="m-form-control m-form-control-fr f-ml10 f-mb10">
         <!--按钮:搜索-->
         <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
           <span>搜索</span>
         </div>
       </div>
-      <div class="m-form-control m-form-control-fr">
+      <div class="m-form-control m-form-control-fr f-mb10" style="float: right">
         <!--按钮:新增-->
 		  <sec:authorize url="/schemeAdapt/gotoModify">
 			  <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >

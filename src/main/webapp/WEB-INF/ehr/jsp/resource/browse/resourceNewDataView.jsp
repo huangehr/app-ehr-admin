@@ -76,7 +76,7 @@
                 <div>视图查询：</div>
             </div>
             <div class="m-form-control f-fs12">
-                <input type="text" id="searchNm" placeholder="请输入应用名称">
+                <input type="text" id="searchNm" placeholder="请输入名称">
             </div>
         </div>
     </div>

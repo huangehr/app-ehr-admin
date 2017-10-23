@@ -32,5 +32,7 @@
         </div>
 
         <div id="grid"></div>
+
+        <div id="filePickerBtn" class="f-dn"></div>
     </div>
 </div>

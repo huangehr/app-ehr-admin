@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -30,6 +31,7 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,7 +70,18 @@ public class DoctorController extends BaseUIController {
         model.addAttribute("contentPage", "user/doctor/addDoctorInfoDialog");
         return "generalView";
     }
-
+    /**
+     * 选择机构部门
+     * @param model
+     * @return
+     */
+    @RequestMapping("selectOrgDept")
+    public String selectOrgDept(String idCardNo, String type, Model model) {
+        model.addAttribute("idCardNo", idCardNo);
+        model.addAttribute("type", type);
+        model.addAttribute("contentPage", "user/doctor/selectOrgDept");
+        return "generalView";
+    }
     /**
      * 查找医生
      * @param searchNm
@@ -78,7 +91,7 @@ public class DoctorController extends BaseUIController {
      */
     @RequestMapping("searchDoctor")
     @ResponseBody
-    public Object searchDoctor(String searchNm, int page, int rows) {
+    public Object searchDoctor(String searchNm, int page, int rows, HttpServletRequest request) {
         String url = "/doctors";
         String resultStr = "";
         Envelop result = new Envelop();
@@ -95,10 +108,18 @@ public class DoctorController extends BaseUIController {
         } else {
             stringBuffer.append("userId=" + "-1" + ";");
         }*/
+        String idCardNoList = getInfoService.idCardNoList(request);
+        if (!StringUtils.isEmpty(idCardNoList)) {
+            stringBuffer.append("idCardNo=" + idCardNoList + ";");
+        } else {
+            stringBuffer.append("idCardNo=-1;");
+        }
+
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
+        params.put("sorts", "-insertTime");
         params.put("page", page);
         params.put("size", rows);
         try {
@@ -148,7 +169,7 @@ public class DoctorController extends BaseUIController {
      */
     @RequestMapping(value = "updateDoctor", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updateDoctor(String doctorModelJsonData, String orgId, String deptId, HttpServletRequest request, HttpServletResponse response) throws IOException{
+    public Object updateDoctor(String doctorModelJsonData, String jsonModel, HttpServletRequest request, HttpServletResponse response) throws IOException{
 
         String url = "/doctor/";
         String resultStr = "";
@@ -206,7 +227,7 @@ public class DoctorController extends BaseUIController {
                         updateDoctor.setPhoto(imageId);
 
                     params.add("doctor_json_data", toJson(updateDoctor));
-
+                    params.add("model", jsonModel);
                     resultStr = templates.doPut(comUrl + url, params);
                 } else {
                     result.setSuccessFlg(false);
@@ -215,8 +236,7 @@ public class DoctorController extends BaseUIController {
                 }
             } else {
                 params.add("doctor_json_data", toJson(doctorDetailModel));
-                params.add("orgId", orgId);
-                params.add("deptId", deptId);
+                params.add("model", jsonModel);
                 resultStr = templates.doPost(comUrl + url, params);
                 result = toModel(resultStr,Envelop.class);
                 DoctorDetailModel addDoctorModel = toModel(toJson(result.getObj()),DoctorDetailModel.class);
@@ -407,5 +427,42 @@ public class DoctorController extends BaseUIController {
             }
         }
         return fileId;
+    }
+
+    @RequestMapping(value = "/getOrgDeptsDate", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object getOrgDeptByOrgId(String orgId) {
+        String url = "/org/getOrgDeptsDate";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> param = new HashMap<>();
+        param.put("orgId", orgId);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, param, username, password);
+            List<Object> data = toModel(resultStr, Envelop.class).getDetailModelList();
+            return toJson(data);
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+    }
+
+    @RequestMapping(value = "/getOrgDeptInfoList", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object getOrgDeptInfoList(String idCardNo) {
+        String url = "/org/userId/getOrgDeptInfoList";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> param = new HashMap<>();
+        param.put("idCardNo", idCardNo);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, param, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
     }
 }

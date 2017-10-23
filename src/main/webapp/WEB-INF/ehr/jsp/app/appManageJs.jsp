@@ -125,9 +125,9 @@
 							{ display: '操作', name: 'operator', width: '25%', render: function (row) {
 								var html = '';
 								if(Util.isStrEquals( row.status,'WaitingForApprove') || Util.isStrEquals( row.status,'Approved')){
-									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">资源授权</a></sec:authorize>';
+									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">视图授权</a></sec:authorize>';
 								}
-                                html += '<sec:authorize url="/app/feature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:platform:manager", row.id,row.name) + '">功能管理</a></sec:authorize>';
+                                html += '<sec:authorize url="/app/functionfeature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:platform:manager", row.id,row.name) + '">功能管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/app/feature/initial"><a class="label_a" style="margin-left:10px"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:api:manager", row.id,row.name) + '">API管理</a></sec:authorize>';
                                 html += '<sec:authorize url="/app/template/appInfo"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
 								html += '<sec:authorize url="/app/deleteApp"><a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:appInfo:delete", row.id) + '"></a></sec:authorize>';
@@ -195,7 +195,7 @@
 						if(mode == 'new'){title = '新增应用信息';};
 						if(mode == 'view'){title = '查看应用信息';}
                         master.appInfoDialog = $.ligerDialog.open({
-                            height:490,
+                            height:530,
                             width: 850,
                             title : title,
                             url: '${contextRoot}/app/template/appInfo',

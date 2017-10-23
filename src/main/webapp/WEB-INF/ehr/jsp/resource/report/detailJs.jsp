@@ -6,6 +6,7 @@
     var dataModel = $.DataModel.init();
     var validator;
     var $form = $("#reportForm");
+    var $filePickerBtnDetail = $('#filePickerBtnDetail');
 
     $(function () {
         init();
@@ -18,7 +19,7 @@
     }
 
     function initForm() {
-        $('#code').ligerTextBox({width: 240});
+        var codeTb = $('#code').ligerTextBox({width: 240});
         $('#name').ligerTextBox({width: 240});
         $("#reportCategoryId").ligerComboBox({
             treeLeafOnly: false,
@@ -43,6 +44,21 @@
         });
         $('#remark').ligerTextBox({width: 240, height: 150});
         $('#templatePath').ligerTextBox({width: 240, disabled: true});
+
+        if(detailModel.id) {
+            codeTb.setDisabled(true);
+        }
+
+        $filePickerBtnDetail.instance = $filePickerBtnDetail.webupload({
+            pick: {id: '#filePickerBtnDetail'},
+            auto: true,
+            server: '${contextRoot}/fileUpload/upload',
+            accept: {
+                title: 'Html',
+                extensions: 'html',
+                mimeTypes: 'text/html'
+            }
+        });
 
         $form.attrScan();
         $form.Fields.fillValues({
@@ -92,26 +108,25 @@
         });
 
         // 模版导入
-        $('#templatePathBtn').change(function () {
-            var formData = new FormData($( "#uploadForm" )[0]);
-            $.ajax({
-                url: '${contextRoot}/fileUpload/upload',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    if(data.successFlg){
-                        $('#templatePath').val(data.obj);
-                        $.Notice.success('上传成功！');
-                    } else {
-                        $.Notice.warn(data.errorMsg);
-                    }
-                },
-                error: function () {
-                    $.Notice.error('上传文件发生异常');
-                }
-            });
+        var uploader = $filePickerBtnDetail.instance;
+        $('#templateBtn').click(function () {
+            uploader.reset();
+            $(".webuploader-element-invisible", $filePickerBtnDetail).trigger("click");
+        });
+        uploader.on('success', function (file, data, b) {
+            if (data.successFlg) {
+                $('#templatePath').val(data.obj);
+                $.Notice.success('导入成功');
+            } else if (data.errorMsg)
+                $.Notice.error(data.errorMsg);
+            else
+                $.Notice.error('导入失败');
+        });
+        uploader.on('error', function (file, data) {
+            if (file == 'Q_TYPE_DENIED')
+                $.Notice.error('请上传html的非空文件！');
+            else
+                $.Notice.error('导入失败');
         });
     }
 

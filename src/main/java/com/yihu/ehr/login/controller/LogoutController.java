@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/logout")
 public class LogoutController{
 
-    @RequestMapping(value = "")
+    @RequestMapping(value = "/reLogin")
     public String login(Model model,HttpServletRequest request) {
         request.getSession().removeAttribute(SessionAttributeKeys.CurrentUser);
         model.addAttribute("contentPage","login/login");

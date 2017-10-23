@@ -40,5 +40,21 @@
   .font_right{
     text-align: right;
   }
-
+.s-con{
+    display: inline-block;
+    overflow: hidden;
+    height: 45px;
+    position: relative;
+    padding-top: 10px;
+}
+    .s-con .l-text{
+        margin-top: 0!important;
+        margin-left: 10px!important;
+    }
+      .s-con .btn{
+          margin-top: 0!important;
+      }
+     .s-con .btn#btn_add_element{
+         margin-right: 10px!important;
+     }
 </style>

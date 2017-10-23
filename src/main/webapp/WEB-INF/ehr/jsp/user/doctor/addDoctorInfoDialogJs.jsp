@@ -24,7 +24,8 @@
         var orgSelectedValue = "";
         var deptSelectedValue = "";
         /* ************************** 变量定义结束 **************************** */
-
+        win.parent.orgDeptDio = null;
+        win.parent.ORGDEPTVAL = '';
         /* *************************** 函数定义 ******************************* */
         /**
          * 页面初始化。
@@ -63,8 +64,9 @@
 			$xlzc:$("#inp_xlzc"),
 			$zxzc:$("#inp_zxzc"),
             $roleType:$("#inp_roleType"),
-            $org:$("#inp_org"),
-            $dept:$("#inp_dept"),
+            $divBtnShow: document.getElementById('divBtnShow'),
+//            $org:$("#inp_org"),
+//            $dept:$("#inp_dept"),
 
             init: function () {
                 var self = this;
@@ -106,39 +108,39 @@
                 me.$lczc.ligerTextBox({width: 240});
                 me.$xlzc.ligerTextBox({width: 240});
                 me.$zxzc.ligerTextBox({width: 240});
-                me.$org.customCombo('${contextRoot}/organization/searchOrgs',{},null,null,null,{
-                    valueField: 'id',
-                    textField: 'fullName',
-                    onSelected: function (id) {
-                        var orgId = id;
-                        orgSelectedValue = id;
-                        me.$dept.ligerComboBox({
-                            url: '${contextRoot}/deptMember/getAllDeptByOrgId',
-                            ajaxType: 'post',
-                            valueField: 'id',
-                            textField: 'name',
-                            urlParms: {
-                                orgId: orgId
-                            },
-                            dataParmName: 'detailModelList'});
-                    }
-                },{
-                columns: [
-                    {display : '名称', name :'fullName',width : 210, align: 'left'}
-                ]});
-                me.$dept.ligerComboBox().setValue("");
-                me.$org.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
-                });
-                me.$dept.parent().css({
-                    width:'240'
-                }).parent().css({
-                    display:'inline-block',
-                    width:'240px'
-                });
+                <%--me.$org.customCombo('${contextRoot}/organization/searchOrgs',{},null,null,null,{--%>
+                    <%--valueField: 'id',--%>
+                    <%--textField: 'fullName',--%>
+                    <%--onSelected: function (id) {--%>
+                        <%--var orgId = id;--%>
+                        <%--orgSelectedValue = id;--%>
+                        <%--me.$dept.ligerComboBox({--%>
+                            <%--url: '${contextRoot}/deptMember/getAllDeptByOrgId',--%>
+                            <%--ajaxType: 'post',--%>
+                            <%--valueField: 'id',--%>
+                            <%--textField: 'name',--%>
+                            <%--urlParms: {--%>
+                                <%--orgId: orgId--%>
+                            <%--},--%>
+                            <%--dataParmName: 'detailModelList'});--%>
+                    <%--}--%>
+                <%--},{--%>
+                <%--columns: [--%>
+                    <%--{display : '名称', name :'fullName',width : 210, align: 'left'}--%>
+                <%--]});--%>
+//                me.$dept.ligerComboBox().setValue("");
+//                me.$org.parent().css({
+//                    width:'240'
+//                }).parent().css({
+//                    display:'inline-block',
+//                    width:'240px'
+//                });
+//                me.$dept.parent().css({
+//                    width:'240'
+//                }).parent().css({
+//                    display:'inline-block',
+//                    width:'240px'
+//                });
                 <%--this.$org.ligerComboBox({--%>
                     <%--url: '${contextRoot}/organization/searchOrgs',--%>
                     <%--valueField: 'id',--%>
@@ -236,9 +238,18 @@
                 function update(doctorModel) {
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
-                    var dataModel = $.DataModel.init();
+                    var dataModel = $.DataModel.init(),
+                        jsonModel = win.parent.ORGDEPTVAL;
+                    if (jsonModel.length <= 0) {
+                        waittingDialog.close();
+                        $.Notice.error('请选择机构部门');
+                        return;
+                    }
+                    debugger
+                    jsonModel = JSON.stringify(jsonModel);
+                    win.parent.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
-                        data: {doctorModelJsonData: doctorModelJsonData,orgId: orgSelectedValue, deptId: $("#inp_dept_val").val().trim()},
+                        data: {doctorModelJsonData: doctorModelJsonData,jsonModel: jsonModel},
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
@@ -246,6 +257,7 @@
                                 win.parent.showAddSuccPop();
                                 win.parent.closeAddDoctorInfoDialog();
                             } else {
+                                waittingDialog.close();
                                 $.Notice.error(data.errorMsg);
                             }
                         }
@@ -255,6 +267,27 @@
                 self.$cancelBtn.click(function () {
                     win.parent.closeAddDoctorInfoDialog();
                 });
+                
+                
+                self.$divBtnShow.onclick = function () {
+                    var wait = $.Notice.waitting("请稍后...");
+                    win.parent.orgDeptDio = win.parent.$.ligerDialog.open({
+                        height: 590,
+                        width: 600,
+                        title: '选择机构部门',
+                        url: '${contextRoot}/doctor/selectOrgDept',
+                        urlParms: {
+                            idCardNo: ''
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded:function() {
+                            wait.close();
+                            win.parent.orgDeptDio.show();
+                        }
+                    });
+                    win.parent.orgDeptDio.hide();
+                }
             }
         };
         /* ************************* 模块初始化结束 ************************** */

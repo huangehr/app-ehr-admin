@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="m-form-control f-mr10 f-fr">
-                        <sec:authorize url="/health/">
+                        <sec:authorize url="/health/createHealthBusiness">
                             <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam"  onclick="javascript:$.publish('health:healthBusinessInfo:open',['','new'])">
                                 <span><spring:message code="btn.create"/></span>
                             </div>

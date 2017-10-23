@@ -34,6 +34,16 @@
     .l-dialog-winbtns{
         top: 8px
     }
+    #logoImage{
+        width: 140px;
+        height: 80px;
+        margin-bottom: 5px;
+        border:1px solid #ccc;
+        overflow: hidden;
+    }
+    #logoImage img{
+        width: 100% !important;
+    }
 </style>
 <div class="content-main">
     <!--######机构管理页面 > 机构信息对话框模板页######-->
@@ -110,6 +120,16 @@
         </ul>
         <ul class="list-item">
             <li>
+                <div class="m-form-group" id="berthDiv">
+                    <label>核定床位<spring:message code="spe.colon"/></label>
+                    <div class="l-text-wrapper m-form-control essential">
+                        <input type="text" id="berth" name="berth" placeholder="请输入核定床位" class="required useTitle  validate-positive-integer" required-title=
+                        <spring:message code="lbl.must.input"/> validate-positive-integer-title="请输入正确的核定床位"
+                               data-attr-scan="berth"/>
+                    </div>
+                </div>
+            </li>
+            <li>
                 <div class="m-form-group">
                     <label>联系人<spring:message code="spe.colon"/></label>
                     <div class="l-text-wrapper m-form-control">
@@ -172,22 +192,6 @@
                 </div>
             </li>
             <li>
-                <form  id ="uploadForm" enctype="multipart/form-data">
-                    <div class="m-form-group">
-                        <label>医院LOGO</label>
-                        <div class="l-text-wrapper m-form-control ">
-                            <div id="logoImage"></div>
-                            <input type="text" class="i-text" id="logoUrl" data-attr-scan="logoUrl" readonly="readonly" />
-                            <div class="uploadBtn">上传
-                                <input type="file" id="logoUrlButton" name="logoFileUrl" class="file" value="" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </li>
-        </ul>
-        <ul class="list-item f-fl f-w507">
-            <li>
                 <div class="m-form-group">
                     <label>纬度</label>
                     <div class="l-text-wrapper m-form-control ">
@@ -204,6 +208,22 @@
                                data-attr-scan="ing"/>
                     </div>
                 </div>
+            </li>
+        </ul>
+        <ul class="list-item f-fl f-w507">
+            <li>
+                <form  id ="uploadForm" enctype="multipart/form-data">
+                    <div class="m-form-group">
+                        <label>医院LOGO</label>
+                        <div class="l-text-wrapper m-form-control ">
+                            <div id="logoImage" style="position: relative"><span class="is-null">无</span></div>
+                            <input type="text" class="i-text" style="width: 140px" id="logoUrl" data-attr-scan="logoUrl" readonly="readonly" />
+                            <div class="uploadBtn">上传
+                                <input type="file" id="logoUrlButton" name="logoFileUrl" class="file" value="" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </li>
             <li>
                 <div class="m-form-group" hidden="hidden" id="publicKeyInfoDiv">

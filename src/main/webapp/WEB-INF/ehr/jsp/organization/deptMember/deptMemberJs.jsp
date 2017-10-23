@@ -3,6 +3,11 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script src="${contextRoot}/develop/lib/plugin/mousepop/mouse_pop.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
 	(function ($, win) {
 		$(function () {
@@ -27,8 +32,14 @@
 				page:rsPageParams&&rsPageParams.page || 1,
 				pageSize:rsPageParams&&rsPageParams.pageSize || 15,
 			}
+            function onUploadSuccess(g, result){
+                if(result)
+                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+                else
+                    $.Notice.success("导入成功！");
+            }
 
-
+            $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess, str: '导入部门'});
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
 				resizeContent();
@@ -161,13 +172,13 @@
 						},
 						columns: [
 							{name: 'id', hide: true, isAllowHide: false},
-							{display: '姓名', name: 'userName', width: '15%', align: 'left'},
-							{display: '职务', name: 'dutyName', width: '15%', align: 'left'},
-							{display: '部门', name: 'deptName', width: '15%', align: 'left'},
-							{display: '描述', name: 'remark', width: '23%', align: 'left'},
+							{display: '姓名', name: 'userName', width: '16%', align: 'left'},
+							{display: '职务', name: 'dutyName', width: '16%', align: 'left'},
+							{display: '部门', name: 'deptName', width: '16%', align: 'left'},
+							{display: '描述', name: 'remark', width: '24%', align: 'left'},
 							{display: '是否生/失效',
 								name: 'activityFlagName',
-								width: '8%',
+								width: '8%', hide: true,
 								isAllowHide: false,
 								render: function (row) {
 									var html = '';
@@ -181,7 +192,7 @@
 									return html;
 								}
 							},
-							{display: '操作', name: 'operator', width: '24%', render: function (row) {
+							{display: '操作', name: 'operator', width: '28%', render: function (row) {
 								var html = '';
 								html += '<sec:authorize url="/deptMember/infoInitial"><a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "rs:info:open", row.id,'modify',categoryId) + '"></a></sec:authorize>';
 								html += '<sec:authorize url="/deptMember/deleteOrgDeptMember"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "deptMember:deptMemberDialog:del", row.id) + '"></a></sec:authorize>';
@@ -220,11 +231,14 @@
 				bindEvents: function () {
 					var self = this;
 					//新增修改
-					$('#btn_add').click(function(){
+                    $('#btn_add').unbind('click');
+					$('#btn_add').click(function(e){
+                        event.stopPropagation();
 						$.publish("rs:info:open",['','new',categoryId,categoryOrgId]);
 					});
-					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId){
+					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
 						var title = "";
+                        event.stopPropagation();
 						if(mode == "modify"){title = "修改成员";}
 						if(mode == "new"){
 							title = "新增成员";
@@ -307,6 +321,7 @@
 			win.closeRsInfoDialog = function (callback) {
 				isFirstPage = false;
 				master.rsInfoDialog.close();
+                master.rsInfoDialog = null;
 			};
 			//新增、修改（成员分类有修改情况）定位
 			win.locationTree = function(callbackParams){
@@ -347,7 +362,7 @@
 							$.Notice.error('编码不能为空');
 							return false;
 						}
-						var params = {id:id,mode:'new',code:code,name:name};
+						var params = {id:id,mode:'new',code:code,name:name,oldName:"",orgId:orgId};
 						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
 							var deptPhone = me.$popWim.find('.deptPhone').val(),
@@ -445,7 +460,6 @@
 				},
 				//修改名称
 				setEditNameFun: function ( id, me, categoryName) {
-					debugger
 					var editData = {};
 					var name = "修改名称";
 					if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
@@ -454,12 +468,14 @@
 					me.showPopWin(me,function () {
 						//确认按钮回调：返回true关闭窗口
 						var url = "${contextRoot}/deptMember/updateOrgDept",
+								oldName = me.$popWim.find('#oldName').val(),
 								name = me.$popWim.find('.name').val();
+
 						if(name =='' || name == undefined){
 							$.Notice.error('名称不能为空');
 							return false;
 						}
-						var params = {id:id,mode:'modify',code:'',name:name};
+						var params = {id:id,mode:'modify',code:'',name:name,oldName:oldName,orgId:orgId};
 						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
 							var deptPhone = me.$popWim.find('.deptPhone').val(),
@@ -583,6 +599,7 @@
 									valueField: 'code',
 									textField: 'value'
 								});
+                                debugger
 								$("#pyCode").parent().css({
 									width:'241'
 								}).parent().css({
@@ -611,15 +628,12 @@
                                             return true;
                                         });
                                     }else{
-                                        $.Notice.error('删除失败');
+										$.Notice.error(data.errorMsg);
                                         return false;
                                     }
                                 }
                         );
                     });
-//					if (!confirm('确定要删除吗？')){
-//						return false;
-//					}
 				},
 				//上移
 				setUpFun: function ( id, me, pId) {
@@ -663,7 +677,6 @@
                 },
                 //添加父类
                 setAddParentFun: function ( id, me, categoryName) {
-					debugger
 //                    var html = ['<div class="pop-form">',
 //									'<label for="name">机构：</label>',
 //								    $('#h_org_name').val(),
@@ -686,7 +699,7 @@
 //							$.Notice.error('机构不能为空');
 //							return false;
 //						}
-						var params = {id:orgId,mode:'addRoot',code:code,name:name};
+						var params = {id:id,mode:'addRoot',code:code,name:name,oldName:'',orgId:orgId};
 						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
 							var deptPhone = me.$popWim.find('.deptPhone').val(),
@@ -716,14 +729,13 @@
 											return true;
 										});
 									}else{
-										$.Notice.error('操作失败');
+										$.Notice.error(data.errorMsg);
 										return false;
 									}
 								}
 						);
 						return true;
                     },{title:'添加根部门'});
-
 					if( $("#h_org_type").val()=="Hospital"){//如果机构类型为医院，则添加上述信息
 						var html = [
 							'<div class="pop-form">',

@@ -6,7 +6,8 @@
 <script>
     var dataModel = $.DataModel.init();
     var detailDialog, grid, tree;
-    var reportCategoryId = '';
+    var reportCategoryId = '', reportId = '';
+    var $filePickerBtn = $('#filePickerBtn');
 
     $(function () {
         init();
@@ -70,12 +71,7 @@
                     render: function (row) {
                         var html = '';
                         html += '<sec:authorize url="/resource/report/setting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';
-                        html += '<sec:authorize url="/resource/report/upload"><a class="label_a f-ml10 btn-file-container" title="模版导入" href="javascript:void(0)">' +
-                                '   模版导入' +
-                                '   <form id ="uploadForm' + row.id + '" enctype="multipart/form-data">' +
-                                '       <input type="file" name="file" onchange="javascript:' + $.Util.format("$.publish('{0}',['{1}', '{2}'])", "resource:report:upload", row.id) + '">' +
-                                '   </form>' +
-                                '</a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/report/upload"><a class="label_a f-ml10" title="模版导入" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:upload", row.id) + '">模版导入</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/preview"><a class="label_a f-ml10" title="预览" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}', '{2}'])", "resource:report:preview", row.code, row.templatePath) + '">预览</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:report:open", row.id, 'modify') + '"></a></sec:authorize>';
                         html += '<sec:authorize url="/resource/report/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:delete", row.id) + '"></a></sec:authorize>';
@@ -87,6 +83,17 @@
             usePager: true
         }));
         grid.adjustToWidth();
+
+        $filePickerBtn.instance = $filePickerBtn.webupload({
+            pick: {id: '#filePickerBtn'},
+            auto: true,
+            server: '${contextRoot}/resource/report/upload',
+            accept: {
+                title: 'Html',
+                extensions: 'html',
+                mimeTypes: 'text/html'
+            }
+        });
     }
 
     function bindEvents() {
@@ -108,27 +115,28 @@
         });
 
         // 模版导入
+        var uploader = $filePickerBtn.instance;
         $.subscribe('resource:report:upload', function (event, id) {
-            var formData = new FormData($( "#uploadForm" + id)[0]);
-            formData.append('id', id);
-            $.ajax({
-                url: '${contextRoot}/resource/report/upload',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    if(data.successFlg){
-                        reloadGrid();
-                        $.Notice.success('上传成功！');
-                    } else {
-                        $.Notice.warn(data.errorMsg);
-                    }
-                },
-                error: function () {
-                    $.Notice.error('上传文件发生异常');
-                }
-            });
+            reportId = id;
+            uploader.reset();
+            $(".webuploader-element-invisible", $filePickerBtn).trigger("click");
+        });
+        uploader.on('beforeSend', function (file, data) {
+            data.id = reportId;
+        });
+        uploader.on('success', function (file, data, b) {
+            if (data.successFlg)
+                $.Notice.success('导入成功');
+            else if (data.errorMsg)
+                $.Notice.error(data.errorMsg);
+            else
+                $.Notice.error('导入失败');
+        });
+        uploader.on('error', function (file, data) {
+            if (file == 'Q_TYPE_DENIED')
+                $.Notice.error('请上传html的非空文件！');
+            else
+                $.Notice.error('导入失败');
         });
 
         // 预览
@@ -139,7 +147,7 @@
             }
 
             detailDialog = $.ligerDialog.open({
-                height: 740,
+                height: 700,
                 width: 1100,
                 title: '报表预览',
                 url: '${contextRoot}/resource/report/preview',

@@ -270,7 +270,6 @@
                                 var app = data.obj;
                                 if(frm != '1'){
                                     closeDialog('保存成功！');
-                                    closeDialog('保存成功！');
                                 }
                                 else{
                                     adapterModel(values);

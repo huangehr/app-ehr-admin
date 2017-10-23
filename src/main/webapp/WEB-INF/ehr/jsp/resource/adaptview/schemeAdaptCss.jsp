@@ -2,10 +2,11 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <style>
-  #btn_add{
-    right: 114px;
-    position: absolute;
-  }
+
+    #btn_add {
+        right: 0;
+        position: relative;
+    }
   #btn_del{
     right: 10px;
     position: absolute;
