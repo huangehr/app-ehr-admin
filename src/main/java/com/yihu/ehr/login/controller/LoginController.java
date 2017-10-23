@@ -491,7 +491,7 @@ public class LoginController extends BaseUIController {
                 for(MRsRolesResource rsRolesResource : rolesResourceList){
                     rolesResourceIdList.add(rsRolesResource.getResourceId());
                 }
-                request.getSession().setAttribute(SessionContants.UserRoles, rolesResourceIdList);
+                request.getSession().setAttribute(SessionContants.UserResource, rolesResourceIdList);
             }
         }
     }
