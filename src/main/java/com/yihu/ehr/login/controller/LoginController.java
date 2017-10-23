@@ -312,7 +312,7 @@ public class LoginController extends BaseUIController {
             //使用orgCode获取saas化的机构或者区域。
             String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
             Map<String, Object> uParams = new HashMap<>();
-            uParams.put("orgCodeList", roleOrgCodes);
+            uParams.put("orgCodeStr",org.apache.commons.lang.StringUtils.join(roleOrgCodes,',') );
             String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
             envelop = getEnvelop(resultStrUserSaasOrg);
             request.getSession().setAttribute("userAreaSaas", envelop.getObj());
