@@ -320,7 +320,6 @@ public class LoginController extends BaseUIController {
             envelop = getEnvelop(resultStrUserSaasOrg);
             request.getSession().setAttribute("userAreaSaas", envelop.getObj());
             request.getSession().setAttribute("userOrgSaas", envelop.getDetailModelList());
-            request.getSession().setAttribute("permissionsInfo", permissionsInfo);
             userOrgList = envelop.getDetailModelList();
             List<String> districtList = (List<String>) envelop.getObj();
             String geographyUrl = "/geography_entries/";
@@ -471,38 +470,44 @@ public class LoginController extends BaseUIController {
      * @throws Exception
      */
     public void getUserRolePermissions(UserDetailModel userDetailModel,HttpServletRequest request) throws Exception {
-        //获取用户角色
-        String roleStr = "";
-        List<String> roleList = new ArrayList<>();
-        roleStr =  gerUserRoles(userDetailModel.getId());
-        if( !StringUtils.isEmpty(roleStr)){
-            roleList =  Arrays.asList(roleStr.split(","));
-            request.getSession().setAttribute(SessionContants.UserRoles, roleList);
-            //获取角色机构
-            List<RoleOrgModel> roleOrgModels = new ArrayList<>();
-            gerRolesOrgs(roleList,roleOrgModels);
-            if(roleOrgModels !=null && roleOrgModels.size() >0){
-                List<String> roleOrgCodes = new ArrayList<>();
-                for(RoleOrgModel roleOrgModel : roleOrgModels){
-                    roleOrgCodes.add(roleOrgModel.getOrgCode());
-                }
-                getUserSaasOrgAndArea(roleOrgCodes, request);
-            }
-            //获取角色视图
-            List<String> rolesResourceIdList =  new ArrayList<>();
-            List<MRsRolesResource> rolesResourceList = new ArrayList<>();
-            gerRolesResource(roleList, rolesResourceList);
-            if(rolesResourceList !=null && rolesResourceList.size() >0){
-                List<String> rolesResourceIdList =  new ArrayList<>();
-                for(MRsRolesResource rsRolesResource : rolesResourceList){
-                    rolesResourceIdList.add(rsRolesResource.getResourceId());
-                }
-                request.getSession().setAttribute(SessionContants.UserResource, rolesResourceIdList);
-            }else{
-                request.getSession().setAttribute(SessionContants.UserResource, rolesResourceIdList.add("-NoneResource"));
-            }
+        if(userDetailModel.getLoginCode().equals(permissionsInfo)){
+            request.getSession().setAttribute(SessionContants.UserRoles, null);
+            request.getSession().setAttribute(SessionContants.UserResource, null);
+            request.getSession().setAttribute(SessionContants.UserAreaSaas, null);
+            request.getSession().setAttribute(SessionContants.UserOrgSaas, null);
         }else{
-            request.getSession().setAttribute(SessionContants.UserRoles, roleList.add("-NoneRole"));
+            //获取用户角色
+            String roleStr = "";
+            List<String> roleList = new ArrayList<>();
+            roleStr =  gerUserRoles(userDetailModel.getId());
+            if( !StringUtils.isEmpty(roleStr)){
+                roleList =  Arrays.asList(roleStr.split(","));
+                request.getSession().setAttribute(SessionContants.UserRoles, roleList);
+                //获取角色机构
+                List<RoleOrgModel> roleOrgModels = new ArrayList<>();
+                gerRolesOrgs(roleList,roleOrgModels);
+                if(roleOrgModels !=null && roleOrgModels.size() >0){
+                    List<String> roleOrgCodes = new ArrayList<>();
+                    for(RoleOrgModel roleOrgModel : roleOrgModels){
+                        roleOrgCodes.add(roleOrgModel.getOrgCode());
+                    }
+                    getUserSaasOrgAndArea(roleOrgCodes, request);
+                }
+                //获取角色视图
+                List<String> rolesResourceIdList =  new ArrayList<>();
+                List<MRsRolesResource> rolesResourceList = new ArrayList<>();
+                gerRolesResource(roleList, rolesResourceList);
+                if(rolesResourceList !=null && rolesResourceList.size() >0){
+                    for(MRsRolesResource rsRolesResource : rolesResourceList){
+                        rolesResourceIdList.add(rsRolesResource.getResourceId());
+                    }
+                    request.getSession().setAttribute(SessionContants.UserResource, rolesResourceIdList);
+                }else{
+                    request.getSession().setAttribute(SessionContants.UserResource, rolesResourceIdList.add("-NoneResource"));
+                }
+            }else{
+                request.getSession().setAttribute(SessionContants.UserRoles, roleList.add("-NoneRole"));
+            }
         }
     }
 
