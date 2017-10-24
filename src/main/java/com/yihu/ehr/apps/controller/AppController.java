@@ -128,7 +128,6 @@ public class AppController extends BaseUIController {
        } else if (StringUtils.isEmpty(appsId)) {
            builder.addFilter("id", "=", null, null);
        }
-
         builder.setPageNumber(page)
                 .setPageSize(rows);
         builder.addSorter("createTime", false);
