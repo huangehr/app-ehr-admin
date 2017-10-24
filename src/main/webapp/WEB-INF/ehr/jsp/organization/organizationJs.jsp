@@ -32,7 +32,7 @@
 
             function onUploadSuccess(g, result){
                 if(result)
-                    openDialog("${contextRoot}/organization/uploadOrgErrorDialog", "导入错误信息", 1000, 640, {result: result});
+                    openDialog("${contextRoot}/orgImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
                 else
                     $.Notice.success("导入成功！");
             }

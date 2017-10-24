@@ -78,6 +78,8 @@ public class LoginController extends BaseUIController {
     public String browseClientId;
     @Value("${std.version}")
     public String stdVersion;
+    @Value("${permissions.info}")
+    private String permissionsInfo;
 
     @RequestMapping(value = "")
     public String login(Model model) {
@@ -317,6 +319,8 @@ public class LoginController extends BaseUIController {
             String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
             envelop = getEnvelop(resultStrUserSaasOrg);
             request.getSession().setAttribute("userAreaSaas", envelop.getObj());
+            request.getSession().setAttribute("userOrgSaas", envelop.getDetailModelList());
+            request.getSession().setAttribute("permissionsInfo", permissionsInfo);
             userOrgList = envelop.getDetailModelList();
             List<String> districtList = (List<String>) envelop.getObj();
             String geographyUrl = "/geography_entries/";
@@ -489,6 +493,7 @@ public class LoginController extends BaseUIController {
             List<MRsRolesResource> rolesResourceList = new ArrayList<>();
             gerRolesResource(roleList, rolesResourceList);
             if(rolesResourceList !=null && rolesResourceList.size() >0){
+                List<String> rolesResourceIdList =  new ArrayList<>();
                 for(MRsRolesResource rsRolesResource : rolesResourceList){
                     rolesResourceIdList.add(rsRolesResource.getResourceId());
                 }

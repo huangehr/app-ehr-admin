@@ -20,6 +20,9 @@ fast-dfs:
     anti-steal-token: no
     secret-key: FastDFS1234567890
 
+permissions:
+  info: admin
+
 ---
 spring:
   profiles: dev
@@ -33,11 +36,11 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://172.19.103.73:10260/
-  oauth2OutSize: http://27.154.233.186:10260/  #上饶-认证外网
+  oauth2OutSize: http://27.154.233.186:10260/  #厦门-认证外网
 service-gateway:
   username: user
   password: eureka
-  url: http://172.19.103.73:10000/api/v1.0/admin
+  url: http://localhost:10000/api/v1.0/admin
   stdurl: http://172.19.103.73:10000/api/v1.0/admin/std
   versionurl: http://172.19.103.73:10000/api/v1.0/admin/version
   cdatypeurl: http://172.19.103.73:10000/api/v1.0/admin/cda_type
@@ -156,7 +159,7 @@ logging:
 spring:
   profiles: prod_fz
   datasource:
-    url: jdbc:mysql://192.168.135.39:3306/healtharchive?useUnicode=true&amp;characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.135.39:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8
     username: sr_healtharchive
     password: data!@)1
 app:
