@@ -77,6 +77,8 @@ public class LoginController extends BaseUIController {
     public String browseClientId;
     @Value("${std.version}")
     public String stdVersion;
+    @Value("${permissions.info}")
+    private String permissionsInfo;
 
     @RequestMapping(value = "")
     public String login(Model model) {
@@ -317,7 +319,7 @@ public class LoginController extends BaseUIController {
             envelop = getEnvelop(resultStrUserSaasOrg);
             request.getSession().setAttribute("userAreaSaas", envelop.getObj());
             request.getSession().setAttribute("userOrgSaas", envelop.getDetailModelList());
-
+            request.getSession().setAttribute("permissionsInfo", permissionsInfo);
             userOrgList = envelop.getDetailModelList();
             List<String> districtList = (List<String>) envelop.getObj();
             String geographyUrl = "/geography_entries/";
