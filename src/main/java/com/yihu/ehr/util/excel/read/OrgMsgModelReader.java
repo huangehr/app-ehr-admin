@@ -40,13 +40,14 @@ public class OrgMsgModelReader extends AExcelReader {
                     p.setProvinceName(getCellCont(sheet, i, 12));
                     p.setCityName(getCellCont(sheet, i, 13));
                     p.setDistrict(getCellCont(sheet, i, 14));
-                    p.setStreet(getCellCont(sheet, i, 15));
-                    p.setTraffic(getCellCont(sheet, i ,16));
-                    p.setSettledWay(getCellCont(sheet, i ,17));
-                    p.setIng(getCellCont(sheet, i, 18));
-                    p.setLat(getCellCont(sheet, i, 19));
-                    p.setTags(getCellCont(sheet, i, 20));
-                    p.setIntroduction(getCellCont(sheet, i, 21));
+                    p.setTown(getCellCont(sheet, i, 15));
+                    p.setStreet(getCellCont(sheet, i, 16));
+                    p.setTraffic(getCellCont(sheet, i ,17));
+                    p.setSettledWay(getCellCont(sheet, i ,18));
+                    p.setIng(getCellCont(sheet, i, 19));
+                    p.setLat(getCellCont(sheet, i, 20));
+                    p.setTags(getCellCont(sheet, i, 21));
+                    p.setIntroduction(getCellCont(sheet, i, 22));
                     p.setExcelSeq(j);
 
                     int rs = p.validate(repeat);

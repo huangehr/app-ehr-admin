@@ -54,18 +54,20 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
     @Location(x=14)
     private String district;// 机构地址---县
     @Location(x=15)
-    private String street;// 机构地址--街道
+    private String town;// 机构地址---镇
     @Location(x=16)
-    private String traffic;// 交通路线
+    private String street;// 机构地址--街道
     @Location(x=17)
-    private String settledWay;    // 接入方式：直连/平台接入
+    private String traffic;// 交通路线
     @Location(x=18)
-    private String ing;//经度
+    private String settledWay;    // 接入方式：直连/平台接入
     @Location(x=19)
-    private String lat;//纬度
+    private String ing;//经度
     @Location(x=20)
-    private String tags;//标签
+    private String lat;//纬度
     @Location(x=21)
+    private String tags;//标签
+    @Location(x=22)
     private String introduction;//简介
 //    @Location(x=22)
 //    private String qualification;//资质信息
@@ -269,6 +271,14 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
 
     public void setLat(String lat) {
         this.lat = lat;
+    }
+
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
     }
 
     @Override

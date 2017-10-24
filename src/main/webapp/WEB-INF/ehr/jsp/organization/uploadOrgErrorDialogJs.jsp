@@ -166,6 +166,7 @@
                     {display: '机构地址--省',  hide: true,name: 'provinceName', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--市',  hide: true,name: 'cityName', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--县',  hide: true,name: 'district', width: '95', align: 'left', render: textRender},
+                    {display: '机构地址--镇',  hide: true,name: 'town', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--街道',  hide: true,name: 'street', width: '95', align: 'left', render: textRender},
                     {display: '交通路线',  hide: true,name: 'traffic', width: '95', align: 'left', render: textRender},
                     {display: '入驻方式',  hide: true,name: 'settledWay', width: '95', align: 'left', render: textRender},
