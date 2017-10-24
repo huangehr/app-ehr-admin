@@ -16,6 +16,7 @@ import com.yihu.ehr.model.common.ListResult;
 import com.yihu.ehr.model.geography.MGeographyDict;
 import com.yihu.ehr.model.org.MOrganization;
 import com.yihu.ehr.model.resource.MRsRolesResource;
+import com.yihu.ehr.model.user.MRoles;
 import com.yihu.ehr.util.DateTimeUtils;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -314,12 +315,11 @@ public class LoginController extends BaseUIController {
             //使用orgCode获取saas化的机构或者区域。
             String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
             Map<String, Object> uParams = new HashMap<>();
-            uParams.put("orgCodeList", roleOrgCodes);
+            uParams.put("orgCodeStr",org.apache.commons.lang.StringUtils.join(roleOrgCodes,',') );
             String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
             envelop = getEnvelop(resultStrUserSaasOrg);
             request.getSession().setAttribute("userAreaSaas", envelop.getObj());
             request.getSession().setAttribute("userOrgSaas", envelop.getDetailModelList());
-            request.getSession().setAttribute("permissionsInfo", permissionsInfo);
             userOrgList = envelop.getDetailModelList();
             List<String> districtList = (List<String>) envelop.getObj();
             String geographyUrl = "/geography_entries/";
@@ -367,6 +367,8 @@ public class LoginController extends BaseUIController {
             userOrgList.removeAll(Collections.singleton(null));
             userOrgList.removeAll(Collections.singleton(""));
             request.getSession().setAttribute(SessionContants.UserOrgSaas, userOrgList);
+        }else{
+            request.getSession().setAttribute(SessionContants.UserOrgSaas, userOrgList.add("-NoneOrg"));
         }
     }
 
@@ -468,32 +470,43 @@ public class LoginController extends BaseUIController {
      * @throws Exception
      */
     public void getUserRolePermissions(UserDetailModel userDetailModel,HttpServletRequest request) throws Exception {
-        //获取用户角色
-        String roleStr = "";
-        List<String> roleList = new ArrayList<>();
-        roleStr =  gerUserRoles(userDetailModel.getId());
-        if( !StringUtils.isEmpty(roleStr)){
-            roleList =  Arrays.asList(roleStr.split(","));
-            request.getSession().setAttribute(SessionContants.UserRoles, roleList);
-            //获取角色机构
-            List<RoleOrgModel> roleOrgModels = new ArrayList<>();
-            gerRolesOrgs(roleList,roleOrgModels);
-            if(roleOrgModels !=null && roleOrgModels.size() >0){
-                List<String> roleOrgCodes = new ArrayList<>();
-                for(RoleOrgModel roleOrgModel : roleOrgModels){
-                    roleOrgCodes.add(roleOrgModel.getOrgCode());
+        if(userDetailModel.getLoginCode().equals(permissionsInfo)){
+            request.getSession().setAttribute(SessionContants.UserRoles, null);
+            request.getSession().setAttribute(SessionContants.UserResource, null);
+            request.getSession().setAttribute(SessionContants.UserAreaSaas, null);
+            request.getSession().setAttribute(SessionContants.UserOrgSaas, null);
+        }else{
+            //获取用户角色
+            String roleStr = "";
+            List<String> roleList = new ArrayList<>();
+            roleStr =  gerUserRoles(userDetailModel.getId());
+            if( !StringUtils.isEmpty(roleStr)){
+                roleList =  Arrays.asList(roleStr.split(","));
+                request.getSession().setAttribute(SessionContants.UserRoles, roleList);
+                //获取角色机构
+                List<RoleOrgModel> roleOrgModels = new ArrayList<>();
+                gerRolesOrgs(roleList,roleOrgModels);
+                if(roleOrgModels !=null && roleOrgModels.size() >0){
+                    List<String> roleOrgCodes = new ArrayList<>();
+                    for(RoleOrgModel roleOrgModel : roleOrgModels){
+                        roleOrgCodes.add(roleOrgModel.getOrgCode());
+                    }
+                    getUserSaasOrgAndArea(roleOrgCodes, request);
                 }
-                getUserSaasOrgAndArea(roleOrgCodes, request);
-            }
-            //获取角色视图
-            List<MRsRolesResource> rolesResourceList = new ArrayList<>();
-            gerRolesResource(roleList, rolesResourceList);
-            if(rolesResourceList !=null && rolesResourceList.size() >0){
+                //获取角色视图
                 List<String> rolesResourceIdList =  new ArrayList<>();
-                for(MRsRolesResource rsRolesResource : rolesResourceList){
-                    rolesResourceIdList.add(rsRolesResource.getResourceId());
+                List<MRsRolesResource> rolesResourceList = new ArrayList<>();
+                gerRolesResource(roleList, rolesResourceList);
+                if(rolesResourceList !=null && rolesResourceList.size() >0){
+                    for(MRsRolesResource rsRolesResource : rolesResourceList){
+                        rolesResourceIdList.add(rsRolesResource.getResourceId());
+                    }
+                    request.getSession().setAttribute(SessionContants.UserResource, rolesResourceIdList);
+                }else{
+                    request.getSession().setAttribute(SessionContants.UserResource, rolesResourceIdList.add("-NoneResource"));
                 }
-                request.getSession().setAttribute(SessionContants.UserResource, rolesResourceIdList);
+            }else{
+                request.getSession().setAttribute(SessionContants.UserRoles, roleList.add("-NoneRole"));
             }
         }
     }
@@ -529,8 +542,22 @@ public class LoginController extends BaseUIController {
     public List<RoleOrgModel> gerRolesOrgs(List<String> roleList,List<RoleOrgModel> roleOrgs){
             for(String roleId : roleList){
                 try {
-                    String url = ServiceApi.Roles.RoleOrgsNoPage;
                     Map<String,Object> params = new HashMap<>();
+                    String roleUrl = "/roles/role/"+roleId;
+                    params.put("id",Long.valueOf(roleId));
+                    String envelopRoleStr = HttpClientUtil.doGet(comUrl + roleUrl,params, username, password);
+                    Envelop envelopRole = objectMapper.readValue(envelopRoleStr,Envelop.class);
+                    if(envelopRole.getObj() != null){
+                        MRoles mRoles = objectMapper.convertValue(envelopRole.getObj(), MRoles.class);
+                        if ( ! StringUtils.isEmpty( mRoles.getOrgCode() )){
+                            RoleOrgModel roleOrgModel = new RoleOrgModel();
+                            roleOrgModel.setOrgCode(mRoles.getOrgCode());
+                            roleOrgModel.setRoleId(mRoles.getId());
+                            roleOrgs.add(roleOrgModel);
+                        }
+                    }
+                    String url = ServiceApi.Roles.RoleOrgsNoPage;
+                    params.clear();
                     params.put("filters","roleId=" + roleId);
                     String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
                     Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
