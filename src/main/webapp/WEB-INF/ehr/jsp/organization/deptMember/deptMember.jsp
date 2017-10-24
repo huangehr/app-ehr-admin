@@ -81,7 +81,7 @@
 
                 <div class="m-form-control m-form-control-fr" style="float: right">
                     <div class="m-form-control ">
-                        <sec:authorize url="/deptMember/infoInitial">
+                        <sec:authorize url="/deptMember/deptMembersInfoInitial">
                             <div id="assignPerson" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-ml10">
                                 <span>分配部门人员</span>
                             </div>

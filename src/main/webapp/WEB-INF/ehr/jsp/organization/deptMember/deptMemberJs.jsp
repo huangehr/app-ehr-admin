@@ -230,7 +230,39 @@
 
 				bindEvents: function () {
 					var self = this;
-					//新增修改
+                    //新增部门人员
+                    $('#assignPerson').unbind('click');
+                    $('#assignPerson').click(function(e){
+                        event.stopPropagation();
+                        $.publish("rs:info:opendept",['','new',categoryId,categoryOrgId]);
+                    });
+                    $.subscribe("rs:info:opendept",function(event,resourceId,mode,categoryId){
+                        var title = "";
+                        event.stopPropagation();
+                        if(mode == "modify"){title = "修改部门人员";}
+                        if(mode == "new"){
+                            title = "分配部门人员";
+                            if(categoryId == ''){
+                                $.Notice.error('请在左边选中一个部门');
+                                return ;
+                            }
+                        }
+                        master.rsInfoDialog = $.ligerDialog.open({
+                            height:400,
+                            width:500,
+                            title:title,
+                            url:'${contextRoot}/deptMember/deptMembersInfoInitial',
+                            urlParms:{
+                                id:resourceId,
+                                mode:mode,
+                                categoryId:categoryId,
+                                categoryOrgId:categoryOrgId
+                            },
+                            load:true
+                        });
+                    });
+
+					//新增机构成员
                     $('#btn_add').unbind('click');
 					$('#btn_add').click(function(e){
                         event.stopPropagation();
@@ -239,11 +271,11 @@
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId){
 						var title = "";
                         event.stopPropagation();
-						if(mode == "modify"){title = "修改成员";}
+						if(mode == "modify"){title = "修改机构成员";}
 						if(mode == "new"){
-							title = "新增成员";
+							title = "新增机构成员";
 							if(categoryId == ''){
-								$.Notice.error('请在坐边选中一个机构');
+								$.Notice.error('请在左边选中一个部门');
 								return ;
 							}
 						}
@@ -260,15 +292,6 @@
 							},
 							load:true
 						});
-					});
-
-					$.subscribe('deptMember:deptMemberDialog:status', function (event, id, status,msg) {
-						$.ligerDialog.confirm('是否对该成员进行'+msg+'操作', function (yes) {
-							if (yes) {
-								self.activity(id, status);
-							}
-						});
-
 					});
 
 					$.subscribe('deptMember:deptMemberDialog:del',function(event,id){

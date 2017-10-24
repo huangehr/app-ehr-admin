@@ -29,6 +29,7 @@
     </div>
     <!-- ####### 查询条件部分 ####### -->
     <div id="div_content" class="f-ww contentH">
+
         <div id="div_left" class="f-w240 f-bd f-of-hd">
             <%--<div class="f-mt10 f-mb10 f-ml10 f-w200">--%>
               <%--<input type="text" id="inp_search" data-type="select"  placeholder="请选择机构" class="f-ml10 f-h28"/>--%>
@@ -37,6 +38,8 @@
                 <%--</div>--%>
             <%--</div>--%>
             <!--成员浏览树-->
+            <input type="text" id="inp_searchNm_left" placeholder="请输入成员名称" class="f-ml10 f-h28 f-w240"
+                       data-attr-scan="searchNmLeft"/>
             <div id="div_tree" class="f-w230">
                 <div id="div_resource_browse_tree"></div>
             </div>
