@@ -65,7 +65,9 @@ public class UserRolesController extends BaseUIController {
         model.addAttribute("appId",appId);
         Envelop envelop = new Envelop();
         String en = "";
-        if(mode.equals("modify")){
+        if(mode.equals("new")){
+            model.addAttribute("envelop", "{  \"obj\": \"\"}");
+        }else {
             try {
                 en = objectMapper.writeValueAsString(envelop);
                 String url = "/roles/role/" + id;
@@ -75,8 +77,6 @@ public class UserRolesController extends BaseUIController {
                 LogService.getLogger(UserRolesController.class).error(ex.getMessage());
                 model.addAttribute("envelop", en);
             }
-        }else {
-            model.addAttribute("envelop", "{  \"obj\": \"\"}");
         }
         return "simpleView";
     }
