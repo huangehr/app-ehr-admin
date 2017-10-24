@@ -85,7 +85,11 @@ public class GetInfoService {
      * 获取登录用户所属角色组下的应用Id
      * @return
      */
-    public String appIdList() {
+    public String appIdList(HttpServletRequest request) {
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        if (null == userOrgList) {
+            return "admin";
+        }
         String userId = getCurrentUserId();
         String url ="/BasicInfo/getAppIdsByUserId";
         String resultStr = "";
@@ -105,6 +109,9 @@ public class GetInfoService {
      */
     public String idCardNoList(HttpServletRequest request) {
         List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        if (null == userOrgList) {
+            return "admin";
+        }
         String orgCode = StringUtils.join(userOrgList, ",");
         String url ="/BasicInfo/getIdCardNoByOrgCode";
         String resultStr = "";

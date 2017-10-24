@@ -109,9 +109,9 @@ public class DoctorController extends BaseUIController {
             stringBuffer.append("userId=" + "-1" + ";");
         }*/
         String idCardNoList = getInfoService.idCardNoList(request);
-        if (!StringUtils.isEmpty(idCardNoList)) {
+        if (!StringUtils.isEmpty(idCardNoList) && !"admin".equals(idCardNoList)) {
             stringBuffer.append("idCardNo=" + idCardNoList + ";");
-        } else {
+        } else if (StringUtils.isEmpty(idCardNoList)) {
             stringBuffer.append("idCardNo=-1;");
         }
 

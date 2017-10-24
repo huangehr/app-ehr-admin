@@ -95,7 +95,7 @@ public class AppController extends BaseUIController {
      * 应用列表及特定查询
      */
     @ResponseBody
-    public Object getAppList(String sourceType, String searchNm,String org, String catalog, String status, int page, int rows) {
+    public Object getAppList(String sourceType, String searchNm,String org, String catalog, String status, int page, int rows, HttpServletRequest request) {
         URLQueryBuilder builder = new URLQueryBuilder();
         if(!StringUtils.isEmpty(sourceType)){
             builder.addFilter("sourceType", "=", sourceType, null);
@@ -122,10 +122,10 @@ public class AppController extends BaseUIController {
             builder.addFilter("org", "=", null, null);
         }*/
 
-       String appsId = getInfoService.appIdList();
-       if (!StringUtils.isEmpty(appsId)) {
+       String appsId = getInfoService.appIdList(request);
+       if (!StringUtils.isEmpty(appsId) && !"admin".equals(appsId)) {
            builder.addFilter("id", "=", appsId, null);
-       } else {
+       } else if (StringUtils.isEmpty(appsId)) {
            builder.addFilter("id", "=", null, null);
        }
 
