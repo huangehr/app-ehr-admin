@@ -4,13 +4,14 @@ import com.yihu.ehr.util.excel.AExcelWriter;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
 
 public class DoctorMsgModelWriter extends AExcelWriter {
     public void addHeader(WritableSheet ws) throws WriteException {
-        String[] header = {"医生编号", "姓名", "身份证号码", "性别", "机构代码", "机构全称", "部门名称", "医生专长", "邮箱", "联系电话", "办公电话(固)", "教学职称", "临床职称", "学历", "行政职称", "简介", "医生门户首页"};
+        String[] header = {"医生编号", "姓名", "身份证号码", "性别", "机构代码", "机构全称", "部门名称", "医生专长", "邮箱", "联系电话", "办公电话(固)", "教学职称", "临床职称", "学历", "行政职称", "简介", "医生门户首页", "错误信息"};
         if (!"".equals(header)) {
             int i = 0;
             for (String h : header) {
@@ -18,6 +19,28 @@ public class DoctorMsgModelWriter extends AExcelWriter {
                 i++;
             }
         }
+    }
+
+    public String getErrorInfo(DoctorMsgModel m) {
+        String errorInfo = "";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("code")) ? "" : m.findErrorMsg("code") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("name")) ? "" : m.findErrorMsg("name") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("idCardNo")) ? "" : m.findErrorMsg("idCardNo") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("sex")) ? "" : m.findErrorMsg("sex") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("orgCode")) ? "" : m.findErrorMsg("orgCode") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("orgFullName")) ? "" : m.findErrorMsg("orgFullName") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("orgDeptName")) ? "" : m.findErrorMsg("orgDeptName") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("skill")) ? "" : m.findErrorMsg("skill") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("email")) ? "" : m.findErrorMsg("email") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("phone")) ? "" : m.findErrorMsg("phone") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("officeTel")) ? "" : m.findErrorMsg("officeTel") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("jxzc")) ? "" : m.findErrorMsg("jxzc") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("lczc")) ? "" : m.findErrorMsg("lczc") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("xlzc")) ? "" : m.findErrorMsg("xlzc") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("xzzc")) ? "" : m.findErrorMsg("xzzc") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("jxzc")) ? "" : m.findErrorMsg("jxzc") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("workPortal")) ? "" : m.findErrorMsg("workPortal") + "；";
+        return StringUtils.isEmpty(errorInfo) ? errorInfo : errorInfo.substring(0,errorInfo.length()-1);
     }
 
     public void write(WritableWorkbook wwb, List ls) throws Exception {
@@ -43,6 +66,7 @@ public class DoctorMsgModelWriter extends AExcelWriter {
                 addCell(ws, i, 14, m.getXzzc(), m.findErrorMsg("xzzc"));
                 addCell(ws, i, 15, m.getIntroduction(), m.findErrorMsg("introduction"));
                 addCell(ws, i, 16, m.getWorkPortal(), m.findErrorMsg("workPortal"));
+                addCell(ws, i, 17, getErrorInfo(m), "");
                 i++;
             }
             wwb.write();
