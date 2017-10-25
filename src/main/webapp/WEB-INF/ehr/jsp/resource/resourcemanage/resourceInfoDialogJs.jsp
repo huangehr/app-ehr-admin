@@ -59,6 +59,7 @@
 					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
 					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
 				}
+				debugger
 				if(mode !='new'){
 					var info = ${envelop}.obj;
 					debugger

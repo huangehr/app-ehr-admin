@@ -314,7 +314,7 @@
                                 if (data.successFlg) {
                                     window.open('${contextRoot}/login/broswerSignin?idCardNo='+idCardNo,'_blank');
                                 } else {
-                                    $.Notice.error('该居民无档案数据');
+                                    $.Notice.success('该居民无档案信息');
                                 }
                             },
                             error: function (e) {
