@@ -470,11 +470,13 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
     @ResponseBody
     public Object getOrgMemberList( String searchParm,String orgId,int page, int rows) {
         try {
-            String url = "/orgDeptMember/list";
-            PageParms pageParms = new PageParms(rows, page)
-                    .addEqual("orgId", orgId)
-                    .addLikeNotNull("userName", searchParm);
-            String resultStr = service.doPost(comUrl + url, pageParms);
+            String url = "/orgDeptMember/getOrgDeptMembers";
+            Map<String, Object> params = new HashMap<>();
+            params.put("orgId",orgId);
+            params.put("searchParm",searchParm==null?"":searchParm);
+            params.put("page",page);
+            params.put("size",rows);
+            String resultStr = service.doPost(comUrl + url, params);
             return resultStr;
 //            Envelop envelop = formatComboData(resultStr, "id", "userName");
 //            return envelop;
