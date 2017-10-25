@@ -60,7 +60,7 @@
 							searchNm: ''
 						},
 						columns: [
-							{display:'id',name:'id',hide:true},
+							{display:'id',name:'id', width: '0.1%',hide:true},
 							{display: '指标编码', name: 'code', width: '20%', align: 'left'},
 							{display: '指标名称', name: 'name', width: '20%',align:'left'},
 							{display: '指标类别', name: 'typeName', width: '10%',align:'center'},
@@ -68,7 +68,7 @@
 							{display: '正常值上限', name: 'upperLimit', width: '10%', align: 'center'},
 							{display: '正常值下限', name: 'lowerLimit', width: '10%', align: 'center'},
 							{
-								display: '操作', name: 'operator', width: '10%', align: 'center',render: function(row){
+								display: '操作', name: 'operator', minWidth: 100, align: 'center',render: function(row){
 								html ='<sec:authorize url="/specialdict/indicator/update"><a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "indicator:info:open", row.id,'modify') + '"></a></sec:authorize>'
 										+'<sec:authorize url="/specialdict/indicator/deletes"><a class="grid_delete" name="delete_click" style="" title="删除"' +
 										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "indicator:info:delete", row.id) + '"></a></sec:authorize>';

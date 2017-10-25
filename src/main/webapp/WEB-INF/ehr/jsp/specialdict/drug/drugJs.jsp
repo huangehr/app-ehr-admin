@@ -60,7 +60,7 @@
 							searchNm: ''
 						},
 						columns: [
-							{display:'id',name:'id',hide:true},
+							{display:'id',name:'id', width: '0.1%',hide:true},
 							{display: '药品编码', name: 'code', width: '20%', align: 'left'},
 							{display: '药品名称', name: 'name', width: '20%',align:'left'},
 							{display: '药品类别', name: 'typeName', width: '10%',align:'left'},
@@ -68,7 +68,7 @@
 							{display: '单位', name: 'unit', width: '10%', align: 'center'},
 							{display: '规格', name: 'specifications', width: '10%', align: 'center'},
 							{
-								display: '操作', name: 'operator', width: '10%', align: 'center',render: function(row){
+								display: '操作', name: 'operator', minWidth: 100, align: 'center',render: function(row){
 								var html ='<sec:authorize url="/specialdict/drug/update"><a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "drug:info:open", row.id,'modify') + '"></a></sec:authorize>'
 										+'<sec:authorize url="/specialdict/drug/deletes"><a class="grid_delete" name="delete_click" style="" title="删除"' +
 										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "drug:info:delete", row.id) + '"></a></sec:authorize>';

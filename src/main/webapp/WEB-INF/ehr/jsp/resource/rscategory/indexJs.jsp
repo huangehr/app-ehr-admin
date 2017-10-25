@@ -19,13 +19,13 @@
         {display: '名称', name: 'name',width: "43%", align: 'left', id: 'tree_id'},
         {display: '说明', name: 'description',width: "43%", align: 'left'},
         {
-          name: 'id', hide: true, render: function (rowdata) {
+          name: 'id', hide: true,width: "0.1%", render: function (rowdata) {
           var html = "<div id='" + rowdata.id + "' pid='" + rowdata.pid + "'></div>";
           return html;
         }
         },
         {
-          display: '操作', isSort: false, width: "14%", align: 'center', render: function (rowdata, rowindex, value) {
+          display: '操作', isSort: false, minWidth: 120, align: 'center', render: function (rowdata, rowindex, value) {
           var html = '';
           <sec:authorize url="/rscategory/typeupdate">
           html += "<a class='grid_edit' title='编辑' name='edit_click' style='' onclick='cateType.list.add(\"" + rowdata.id + "\", \"modify\")'></a> " ;
@@ -76,7 +76,7 @@
       // window.grid=u.grid=null;
       if (u.grid == null) {
         //$.LigerGridEx.config(
-        u.grid = $("#div_cate_type_grid").ligerGrid({
+        u.grid = $("#div_cate_type_grid").ligerGrid($.LigerGridEx.config({
           record: 'totalCount',
           root: 'detailModelList',
           pageSize: 15,
@@ -95,7 +95,8 @@
           checkbox: false,
           root: 'Rows',
           tree: {columnId: 'tree_id', height: '100%'}
-        });
+        }));
+        u.grid.adjustToWidth();
       }
       else {
         u.grid.reload(gridData);

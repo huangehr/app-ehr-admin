@@ -173,7 +173,7 @@
                             {display: '家庭地址', name: 'homeAddress', width: '25%', minColumnWidth: 20,align: 'left'},
                             {display: '注册时间', name: 'registerTime', width: '15%', minColumnWidth: 20,align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '20%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 160, render: function (row) {
                                 var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientBroswerInfoDialog:open", row.idCardNo) + '">档案查询</a>';
 
                                 html += '<sec:authorize url="/patient/updatePatient"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:patientInfoModifyDialog:open", row.idCardNo,row.userId) + '"></a></sec:authorize>';

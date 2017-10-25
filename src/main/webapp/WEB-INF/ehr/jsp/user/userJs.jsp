@@ -102,7 +102,7 @@
                         },
                         columns: [
                             // 隐藏列：hide: true（隐藏），isAllowHide: false（列名右击菜单中不显示）
-                            {name: 'id', hide: true, isAllowHide: false},
+                            {name: 'id', hide: true, width: '0.1%', isAllowHide: false},
                             {display: '用户类型', name: 'userTypeName', width: '15%',align:'left'},
                             {display: '姓名', name: 'realName', width: '15%',align:'left'},
                             {display: '账号',name: 'loginCode', width:'15%', isAllowHide: false,align:'left'},
@@ -124,7 +124,7 @@
                             }},
 //                            {display:'用户来源',name:'sourceName',width:'10%'},
 							{display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
-                            {display: '操作', name: 'operator', width: '12%', render: function (row) {
+                            {display: '操作', name: 'operator', minWidth: 130, render: function (row) {
 								var html = '';
                                 <sec:authorize url="/user/appFeatureInitial">
 								html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';

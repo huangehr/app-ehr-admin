@@ -60,14 +60,14 @@
             url: '${contextRoot}/resource/report/search',
             parms: { reportCategoryId: reportCategoryId },
             columns: [
-                {display: 'ID', name: 'id', hide: true},
-                {display: 'status', name: 'status', hide: true},
+                {display: 'ID', name: 'id', width: '0.1%', hide: true},
+                {display: 'status', name: 'status', width: '0.1%', hide: true},
                 {display: '报表名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '报表编码', name: 'code', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '状态', name: 'statusName', width: '5%', isAllowHide: false, align: 'center'},
                 {display: '报表模板', name: 'templatePath', width: '20%', isAllowHide: false, align: 'center'},
                 {display: '备注', name: 'remark', width: '15%', isAllowHide: false, align: 'left'},
-                {display: '操作', name: 'operator', width: '30%', align: 'center',
+                {display: '操作', name: 'operator', minWidth: 250, align: 'center',
                     render: function (row) {
                         var html = '';
                         html += '<sec:authorize url="/resource/report/setting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';

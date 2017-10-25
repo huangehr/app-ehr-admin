@@ -88,13 +88,13 @@
                             searchNm: searchNm
                         },
                         columns: [
-                            { display: 'id', name: 'id', hide:true },
-                            { display: '类型代码', name: 'sourceType',hide:true, isAllowHide: false },
+                            { display: 'id', name: 'id', width: '0.1%', hide:true },
+                            { display: '类型代码', name: 'sourceType',hide:true, width: '0.1%', isAllowHide: false },
                             { display: '类型', name: 'sourceValue',width: '13%', isAllowHide: false },
                             { display: '编码', name: 'code',width: '20%',align:'left', isAllowHide: false },
                             { display: '名称',name: 'name', width: '35%',align:'left',isAllowHide: false },
                             { display: '创建时间',name: 'createDate', width: '20%',isAllowHide: false },
-                            { display: '操作', name: 'operator', width: '12%', render: function (row) {
+                            { display: '操作', name: 'operator', minWidth: 120, render: function (row) {
 //								var html ='<div class="grid_edit"  style="" title="修改" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "std:stdInfo:open", row.id,'modify') + '"></div>'
 //										+'<div class="grid_delete"  style="" title="删除"' +
 //										' onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "stdInfo:stdInfoGrid:delete", row.id) + '"></div>';

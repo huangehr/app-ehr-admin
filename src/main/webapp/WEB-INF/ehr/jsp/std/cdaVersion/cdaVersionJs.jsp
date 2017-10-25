@@ -59,7 +59,7 @@
 							{display: '创建者', name: 'author', width: '15%',align:'left'},
 							{display: '发布时间', name: 'commitTime', width: '15%', align: 'left'},
 							{display: '继承版本', name: 'baseVersion', width: '15%', align: 'left'},
-							{display: '状态码', name: 'inStage', align: 'left',hide: true},
+							{display: '状态码', name: 'inStage',  width: '0.1%',align: 'left',hide: true},
 							{display: '状态', name: 'inStage', width: '15%', align: 'center',
 								render:function(row){
 									var html = '未发布';
@@ -73,7 +73,7 @@
 								}
 							},
 							{
-								display: '操作', name: 'operator', width: '15%', align: 'center',render: function(row){
+								display: '操作', name: 'operator', minWidth: 120, align: 'center',render: function(row){
 								var _title = "";
 //								if(row.inStage == false){
 //									_title="重新发布";
