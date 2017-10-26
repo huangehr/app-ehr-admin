@@ -159,9 +159,9 @@ logging:
 spring:
   profiles: prod_fz
   datasource:
-    url: jdbc:mysql://192.168.135.39:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8
-    username: sr_healtharchive
-    password: data!@)1
+    url: jdbc:mysql://localhost:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: tiger
 app:
   baseClientId: zkGuSIm2Fg  # 【基础信息管理】应用
   qcReportClientId: 2YTOSRI0tw
@@ -172,14 +172,14 @@ app:
 service-gateway:
   username: user
   password: eureka
-  url: http://192.168.135.31:10000/api/v1.0/admin
-  stdurl: http://192.168.135.31:10000/api/v1.0/admin/std
-  versionurl: http://192.168.135.31:10000/api/v1.0/admin/version
-  cdatypeurl: http://192.168.135.31:10000/api/v1.0/admin/cda_type
-  stdsourceurl: http://192.168.135.31:10000/api/v1.0/admin/standard_source
-  adaption: http://192.168.135.31:10000/api/v1.0/adapter
-  template: http://192.168.135.31:10000/api/v1.0/template
-  standard: http://192.168.135.31:10000/api/v1.0/std
+  url: http://localhost:10001/api/v1.0/admin
+  stdurl: http://localhost:10001/api/v1.0/admin/std
+  versionurl: http://localhost:10001/api/v1.0/admin/version
+  cdatypeurl: http://localhost:10001/api/v1.0/admin/cda_type
+  stdsourceurl: http://localhost:10001/api/v1.0/admin/standard_source
+  adaption: http://localhost:10001/api/v1.0/adapter
+  template: http://localhost:10001/api/v1.0/template
+  standard: http://localhost:10001/api/v1.0/std
   BrowseClienturl: http://192.168.135.34:8010/ehr/browser
   profileurl: http://192.168.135.32:9009/api/v1.0
 fast-dfs:

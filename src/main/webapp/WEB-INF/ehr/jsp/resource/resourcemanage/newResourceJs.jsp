@@ -33,7 +33,7 @@
                 searchResourceData: "${contextRoot}/resourceBrowse/searchResourceData",//获取档案数据
                 searchQuotaResourceData: "${contextRoot}/resourceBrowse/searchQuotaResourceData",//获取指标统计
                 searchDictEntryList :"${contextRoot}/resourceView/searchDictEntryList",
-                getGridCloumnNames: "${contextRoot}/resourceView/getGridCloumnNames",//获取表头-档案数据
+                getGridCloumnNames: "${contextRoot}/resourceBrowse/getGridCloumnNames",//获取表头-档案数据
                 getRsDictEntryList: "${contextRoot}/resourceBrowse/getRsDictEntryList",
                 searchQuotaResourceParam: "${contextRoot}/resourceBrowse/searchQuotaResourceParam",//指标资源检索条件获取
                 updateResourceQuery: "${contextRoot}/resourceIntegrated/updateResourceQuery"//保存搜索条件

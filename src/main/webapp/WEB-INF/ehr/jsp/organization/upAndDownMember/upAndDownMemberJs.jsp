@@ -54,7 +54,7 @@
 				function expandNode (id){
 					var level = $($('#'+id).parent()).parent().attr('outlinelevel')
 					if(level){
-						var parentId = $($('#'+id).parent()).parent().attr('id')
+						var parentId = $($('#'+id).parent()).parent().attr('userId');
 						$($($('#'+id).parent()).prev()).children(".l-expandable-close").click()//展开节点
 						expandNode(parentId);
 					}
@@ -107,14 +107,14 @@
 						nodeWidth: 240,
 						url: '${contextRoot}/upAndDownMember/categories?orgId='+orgId+'&searchNm='+searchNm,
 						checkbox: false,
-						idFieldName: 'id',
+						idFieldName: 'userId',
 						parentIDFieldName :'parentUserId',
 						textFieldName: 'userName',
 						isExpand: false,
 						childIcon:null,
 						parentIcon:null,
 						onSelect: function (e) {
-							categoryId = e.data.id;
+							categoryId = e.data.userId;
 							categoryName = e.data.userName;
 							categoryOrgId = e.data.orgId;
 							$('#categoryOrgId').text(categoryOrgId);
@@ -272,7 +272,7 @@
 					master.reloadGrid();
 					return
 				}
-				treeNodeInit(categoryIdNew);
+                retrieve.getResourceBrowseTree();
 			};
 			win.closeRsInfoDialog = function (callback) {
 				isFirstPage = false;

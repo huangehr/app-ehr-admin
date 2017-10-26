@@ -89,6 +89,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         Map<String, Object> params = new HashMap<>();
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("status=0;");
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("userName?" + searchNm + ";" );
         }
@@ -155,6 +156,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         try{
             OrgDeptMemberModel model = objectMapper.readValue(dataJson, OrgDeptMemberModel.class);
             model.setDeptId(Integer.valueOf(deptId));
+
             if(StringUtils.isEmpty(model.getUserId())){
                 envelop.setErrorMsg("姓名不能为空！");
                 return envelop;
@@ -635,7 +637,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
             PageParms pageParms = new PageParms(rows, page)
                     .addLikeNotNull("name", searchParm);
             String resultStr = service.search(url, pageParms);
-            return formatComboData(resultStr, "id", "name");
+            return formatComboData(resultStr, "userId", "name");
         } catch (Exception e) {
             return systemError();
         }
