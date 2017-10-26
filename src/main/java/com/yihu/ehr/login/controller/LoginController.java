@@ -152,7 +152,7 @@ public class LoginController extends BaseUIController {
                 String ex = this.objectMapper.writeValueAsString(envelop.getObj());
                 UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
                 //获取用户的角色，机构，视图 等权限
-                getUserRolePermissions(userDetailModel,request);
+                getUserRolePermissions(userDetailModel, loginName, request);
                 // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
                 model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 HttpSession session = request.getSession();
@@ -204,7 +204,7 @@ public class LoginController extends BaseUIController {
             //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
                 //获取用户的角色，机构，视图 等权限
-                getUserRolePermissions(userDetailModel, request);
+                getUserRolePermissions(userDetailModel, userName, request);
                 //增加超级管理员信息
                 HttpSession session = request.getSession();
                 if(userName.equals(permissionsInfo)) {
@@ -464,9 +464,9 @@ public class LoginController extends BaseUIController {
      * @param request
      * @throws Exception
      */
-    public void getUserRolePermissions(UserDetailModel userDetailModel,HttpServletRequest request) throws Exception {
+    public void getUserRolePermissions(UserDetailModel userDetailModel, String loginCode, HttpServletRequest request) throws Exception {
         HttpSession session = request.getSession();
-        if(userDetailModel.getLoginCode().equals(permissionsInfo)){
+        if(loginCode.equals(permissionsInfo)){
             session.setAttribute(AuthorityKey.UserRoles, null);
             session.setAttribute(AuthorityKey.UserResource, null);
             session.setAttribute(AuthorityKey.UserAreaSaas, null);
