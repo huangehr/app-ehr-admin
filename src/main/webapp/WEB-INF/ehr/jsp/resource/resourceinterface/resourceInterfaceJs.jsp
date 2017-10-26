@@ -56,13 +56,13 @@
 							searchNm: '',
 						},
 						columns: [
-							{name: 'id', hide: true, isAllowHide: false},
+							{name: 'id', hide: true, width: '0.1%', isAllowHide: false},
 							{display: '接口名称',name: 'name', width:'35%', isAllowHide: false,align:'left'},
 							{display: '接口编码', name: 'resourceInterface', width: '55%',align:'left'},
-							{display: '请求参数', name: 'paramDescription', width: '25%', resizable: true,align:'left',hide:true},
-							{display: '响应结果格式', name: 'resultDescription', width: '25%', resizable: true,align:'left',hide:true},
+							{display: '请求参数', name: 'paramDescription', width: '0.1%', resizable: true,align:'left',hide:true},
+							{display: '响应结果格式', name: 'resultDescription', width: '0.1%', resizable: true,align:'left',hide:true},
 							{
-								display: '操作', name: 'operator', width: '10%', render: function (row) {
+								display: '操作', name: 'operator', minWidth: 120, render: function (row) {
 								var html = '<sec:authorize url="/resource/resourceInterface/infoInitial"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:infoDialog:open", row.id, 'modify') + '"></a></sec:authorize>';
 								html+= '<sec:authorize url="/resource/resourceInterface/delete"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "interface:confirmDialog:del", row.id) + '"></a></sec:authorize>';
 								return html;

@@ -75,8 +75,8 @@
                             name: ""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
@@ -87,7 +87,7 @@
                             {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';
@@ -120,8 +120,8 @@
                             name: ""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
@@ -132,7 +132,7 @@
                             {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';
@@ -165,8 +165,8 @@
                             name: ""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
@@ -177,7 +177,7 @@
                             {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';
@@ -210,8 +210,8 @@
                             name: ""
                         },
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '类型', name: 'typeName', width: '10%', isAllowHide: false, align: 'left'},
@@ -222,7 +222,7 @@
                             {display: '修改人', name: 'updateUserName', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '备注', name: 'remark', width: '10%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '10%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/tjDimensionMain/updateTjDimensionMain">
                                 html += '<a class="grid_edit"  href="#" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a>';

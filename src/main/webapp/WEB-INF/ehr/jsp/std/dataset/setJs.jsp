@@ -56,7 +56,7 @@
                 {display: '列类型', name: 'columnType', align: 'left', width: '10%'},
                 {display: '检验字典', name: 'dictName', align: 'left', width: '20%'},
                 {
-                    display: '操作', width: '15%', isSort: false, render: function (rowdata, rowindex, value) {
+                    display: '操作', minWidth: 120, isSort: false, render: function (rowdata, rowindex, value) {
                     var html = '';
                     <sec:authorize url="/std/dataset/elementupdate">
                     html += "<a class='grid_edit' href='#' onclick='set.list.updateElement(\"" + rowdata.id + "\")'></a>";

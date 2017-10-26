@@ -86,7 +86,7 @@
                     {display: '是否可为空', name: 'nullAble', width: '10%', align: 'left', render: function (row) {
                         return row.nullAble ==1 ? '是' : '否';
                     }},
-                    {display: '操作', name: 'operator', width: '15%', render: opratorRender}];
+                    {display: '操作', name: 'operator', minWidth: 120, render: opratorRender}];
 
                 grid = initGrid($('#gtGrid'), urls.list, {}, columns, {delayLoad: true, checkbox: false});
                 searchFun();

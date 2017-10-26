@@ -120,15 +120,15 @@
                             type:""
                         },
                         columns: [
-                            {display: 'ID', name: 'id', hide: true},
-                            {display: 'adapterVersion', name: 'adapterVersion', hide: true},
+                            {display: 'ID', name: 'id', width: '0.1%', hide: true},
+                            {display: 'adapterVersion', name: 'adapterVersion', width: '0.1%', hide: true},
                             {display: '方案类别', name: 'typeName', width: '15%', align: 'left'},
                             {display: '方案名称', name: 'name',  width: '15%', align: 'left'},
                             {display: '方案编码', name: 'code', width: '15%', minColumnWidth: 60, align: 'left'},
                             {display: '标准名称/版本号', name: 'adapterVersionName', width: '15%', align: 'left'},
                             {display: '说明', name: 'description', width: '25%', align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '15%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 125, render: function (row) {
                                 var html = '<sec:authorize url="/schemeAdaptDataSet/initial"><a class="label_a" title="适配" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterScheme:adapter", row.id, row.adapterVersion) + '">适配</a></sec:authorize>';
 								html += '<sec:authorize url="/schemeAdapt/gotoModify"><a class="grid_edit" title="编辑" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}',])", "adapter:adapterScheme:open", row.id, 'modify') + '"></a></sec:authorize>' +
 								'<sec:authorize url="/schemeAdapt/delete"><a class="grid_delete" title="删除" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "adapter:adapterScheme:delete",row.id,row.status) + '"></a></sec:authorize>';

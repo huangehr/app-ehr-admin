@@ -141,7 +141,7 @@
                                 quotaType : quotaType
                             },
                             columns: [
-                                {display: 'id', name: 'id', hide: true},
+                                {display: 'id', name: 'id', width: '0.1%', hide: true},
 //                                {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
 //                                {display: '指标类型', name: 'quotaTypeName', width: '11%', isAllowHide: false, align: 'left'},
@@ -164,7 +164,7 @@
                                 {display: '存储方式', name: 'dataLevelName', width: '9%', isAllowHide: false, align: 'left'},
 //                                {display: '备注', name: 'remark', width: '8%', isAllowHide: false, align: 'left'},
                                 {
-                                    display: '操作', name: 'operator', width: '40%', align: 'center',render: function (row) {
+                                    display: '操作', name: 'operator', minWidth: 400, align: 'center',render: function (row) {
 
                                     var html = '';
                                     html += '<sec:authorize url="/tjQuota/updateDimensionTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';

@@ -132,7 +132,7 @@
                             {
                                 display: '是否生/失效',
                                 name: 'activityFlagName',
-                                width: '8%',
+                                width: 85,
                                 isAllowHide: false,
                                 render: function (row) {
                                     var html = '';
@@ -146,9 +146,9 @@
                                     return html;
                                 }
                             },
-                            {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
+                            {display: '入驻方式', name: 'settledWayName', width: '0.1%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '30%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 286, render: function (row) {
                                 var html = '';
                                 <%--html += '<sec:authorize url="/organization/resource/initial"><a class="label_a"  href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:resource:list", row.orgCode,row.id, row.fullName) + '">视图授权</a></sec:authorize>';--%>
                                 html += '<sec:authorize url="/organization/upAndDownOrg"><a class="label_a"  style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "org:orgInfoDialog:deptMember", row.orgCode, row.id, row.fullName,row.orgType) + '">部门管理</a></sec:authorize>';
@@ -159,8 +159,8 @@
                                 return html;
                             }
                             },
-                            {name: 'activityFlag', hide: true, align: "center"},
-                            {name: 'settledWay', hide: true, align: "center"}
+                            {name: 'activityFlag', hide: true, width: '0.1%', align: "center"},
+                            {name: 'settledWay', hide: true, width: '0.1%', align: "center"}
                         ],
                         enabledEdit: true,
                         validate: true,

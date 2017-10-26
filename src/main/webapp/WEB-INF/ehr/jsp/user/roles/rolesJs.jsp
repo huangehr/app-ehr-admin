@@ -110,13 +110,13 @@
 							appId: appId,
 						},
 						columns: [
-							{display: 'id', name: 'id', hide: true},
+							{display: 'id', name: 'id', width: '0.1%', hide: true},
 							{display: '角色组编码', name: 'code', width: '15%', isAllowHide: false, align: 'center'},
 							{display: '角色组名称', name: 'name', width: '15%', isAllowHide: false, align: 'center'},
 							{display: '机构名称', name: 'orgName', width: '15%', isAllowHide: false, align: 'center'},
 							{display: '描述', name: 'description', width: '10%', isAllowHide: false, align: 'center'},
 							{
-								display: '操作', name: 'operator', width: '45%', render: function (row) {
+								display: '操作', name: 'operator', minWidth: 405, render: function (row) {
 								var jsonStr = JSON.stringify(row);
 								var html = '';
 
@@ -156,6 +156,7 @@
 							$.publish('roles:infoDialog:open',[data.id,'view']);
 						}
 					}));
+                    this.rolesGrid.adjustToWidth();
 					this.bindEvents();
 				},
 				reloadRolesGrid:function(){

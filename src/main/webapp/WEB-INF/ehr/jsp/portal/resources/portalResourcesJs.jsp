@@ -75,7 +75,7 @@
                             {display: '描述', name: 'description', width: '25%', resizable: true,align: 'left'},
                             {display: '上传日期', name: 'uploadTime', width: '15%', resizable: true,align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '20%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 160, render: function (row) {
                                 var html = '<sec:authorize url="/portalResources/updatePortalResources"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/portalResources/deletePortalResources"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalResources:ResourcesInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                 html += '<sec:authorize url="/appportalResources/uploadFile"><a data-toggle="model"  class="label_a" target="_blank" href="${contextRoot}/portalResources/uploadFile?storagePath='+ row.url + ' " >'+'下载'+'</a></sec:authorize>'

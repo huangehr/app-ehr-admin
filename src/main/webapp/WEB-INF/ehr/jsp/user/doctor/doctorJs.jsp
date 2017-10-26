@@ -102,7 +102,7 @@
                             {
                                 display: '生/失效',
                                 name: 'status',
-                                width: '8%',
+                                minWidth: 80,
                                 isAllowHide: false,
                                 render: function (row) {
                                     var html = '';
@@ -116,7 +116,7 @@
                             },
                             {display: '注册时间', name: 'insertTime', width: '8%', minColumnWidth: 20,align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '8%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 90, render: function (row) {
                                     var html = '<sec:authorize url="/doctor/updateDoctor"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "doctor:doctorInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/doctor/deleteDoctor"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "doctor:doctorInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                     return html;

@@ -17,9 +17,9 @@
 			<div id="upd" class="f-fr f-mr10" style="overflow: hidden; width: 84px; position: relative"></div>
 		</sec:authorize>
     </div>
-    <div id="div_wrapper">
+    <div id="div_wrapper" style="position: relative;overflow: hidden">
 
-        <div id="grid_content" style="width: 100%">
+        <div id="grid_content" style="width: 100%;position: relative;overflow: hidden"">
             <!--   字典-->
             <div id="div_left" style=" width:400px;float: left;">
                 <div id="retrieve" class="m-retrieve-area f-h50 f-pr m-form-inline condition retrieve-border" data-role-form>
@@ -41,7 +41,7 @@
             </div>
 
             <!--   字典项   -->
-            <div id="div_right" style="float: left;width: 700px;margin-left: 10px">
+            <div id="div_right" style="/*float: left;width: 700px;margin-left: 10px*/position: absolute;left: 408px;top: 0;right: 0;bottom: 0;">
                 <div id="entryRetrieve" class="m-retrieve-area f-pr m-form-inline condition retrieve-border" data-role-form>
                     <input id="s_dictId" data-attr-scan="dictId"  hidden>
                     <div id="entry_retrieve_inner" class="m-retrieve-inner m-form-group f-mt10" style="padding-bottom: 0">

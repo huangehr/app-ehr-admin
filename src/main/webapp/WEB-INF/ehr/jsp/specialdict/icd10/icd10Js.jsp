@@ -60,9 +60,9 @@
 							searchNm: ''
 						},
 						columns: [
-							{display:'id',name:'id',hide:true},
-							{display:'传染病',name:'infectiousFlag',hide:true},
-							{display:'慢病',name:'chronicFlag',hide:true},
+							{display:'id',name:'id',width: '0.1%',hide:true},
+							{display:'传染病',name:'infectiousFlag',width: '0.1%',hide:true},
+							{display:'慢病',name:'chronicFlag',width: '0.1%',hide:true},
 							{display: '诊断编码', name: 'code', width: '30%', align: 'left'},
 							{display: '诊断名称', name: 'name', width: '30%',align:'left'},
 							{display: '标志', name: '', width: '15%', align: 'center',render:function(row){
@@ -75,7 +75,7 @@
 								}
 								return text1+text2;
 							}},
-							{display: '数据关联', name: '', width: '15%', align: 'center',
+							{display: '数据关联', name: '', minWidth: 100, align: 'center',
 								render:function(row){
 									var html = '<sec:authorize url="/specialdict/icd10/indicator/initial"><a class="label_a" style="margin-left:0px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "indicatorIcd10:grid:open", row.id) + '">指标</a> /</sec:authorize>';
                                     html += '<sec:authorize url="/specialdict/icd10/drugRelaInfo/initial"><a class="label_a" style="margin-left:5px;" href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "drugIcd10:grid:open", row.id) + '">药品</a></sec:authorize>';
@@ -83,7 +83,7 @@
 								}
 							},
 							{
-								display: '操作', name: 'operator', width: '10%', align: 'center',render: function(row){
+								display: '操作', name: 'operator', minWidth: 100, align: 'center',render: function(row){
 								var html ='<sec:authorize url="/specialdict/icd10/update"><a class="grid_edit" name="delete_click" style="" title="编辑" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "icd10:info:open", row.id,'modify') + '"></a></sec:authorize>'
 										+'<sec:authorize url="/specialdict/icd10/deletes"><a class="grid_delete" name="delete_click" style="" title="删除" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "icd10:info:delete", row.id) + '"></a></sec:authorize>';
 								return html;

@@ -12,6 +12,7 @@ import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.model.common.ListResult;
 import com.yihu.ehr.model.geography.MGeographyDict;
 import com.yihu.ehr.model.org.MOrganization;
 import com.yihu.ehr.model.resource.MRsRolesResource;
@@ -152,7 +153,7 @@ public class LoginController extends BaseUIController {
                 UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
                 //获取用户的角色，机构，视图 等权限
                 getUserRolePermissions(userDetailModel,request);
-                //注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
+                // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
                 model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 HttpSession session = request.getSession();
                 //增加超级管理员信息
@@ -179,6 +180,7 @@ public class LoginController extends BaseUIController {
                 Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(loginName, "", gas);
                 //将信息存放到SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(AuthenticationToken);
+
                 return success(accessToken);
             } else {
                 String msg = String.valueOf(map.get("message"));
@@ -189,7 +191,7 @@ public class LoginController extends BaseUIController {
         }
     }
 
-    @RequestMapping(value = "/validate", method = RequestMethod.POST)
+    @RequestMapping(value = "validate", method = RequestMethod.POST)
     public String loginValid(Model model, String userName, String password, HttpServletRequest request) {
         String url = "/users/verification/" + userName;
         String resultStr = "";
@@ -310,6 +312,9 @@ public class LoginController extends BaseUIController {
     public void getUserSaasOrgAndArea(List<String> roleOrgCodes, HttpServletRequest request) throws Exception {
         Envelop envelop = new Envelop();
         List<String> userOrgList = new ArrayList<>();
+        for(String code : roleOrgCodes){
+            userOrgList.add(code);
+        }
         //使用orgCode获取saas化的机构或者区域。
         String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
         Map<String, Object> uParams = new HashMap<>();
@@ -317,8 +322,8 @@ public class LoginController extends BaseUIController {
         String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
         envelop = getEnvelop(resultStrUserSaasOrg);
         HttpSession session = request.getSession();
-        session.setAttribute(AuthorityKey.UserAreaSaas, envelop.getObj());
-        session.setAttribute(AuthorityKey.UserOrgSaas, envelop.getDetailModelList());
+        session.setAttribute("userAreaSaas", envelop.getObj());
+        session.setAttribute("userOrgSaas", envelop.getDetailModelList());
         userOrgList = envelop.getDetailModelList();
         List<String> districtList = (List<String>) envelop.getObj();
         String geographyUrl = "/geography_entries/";
@@ -360,13 +365,9 @@ public class LoginController extends BaseUIController {
                 }
             }
         }
-        if (userOrgList!=null && userOrgList.size() >0) {
-            userOrgList.removeAll(Collections.singleton(null));
-            userOrgList.removeAll(Collections.singleton(""));
-            session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
-        }else{
-            session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList.add("-NoneOrg"));
-        }
+        userOrgList.removeAll(Collections.singleton(null));
+        userOrgList.removeAll(Collections.singleton(""));
+        request.getSession().setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
     }
 
     @RequestMapping(value = "/userVerification")
@@ -414,6 +415,7 @@ public class LoginController extends BaseUIController {
         params.put("activity", activated);
         try {
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+
             if (Boolean.parseBoolean(resultStr)) {
                 result.setSuccessFlg(true);
             } else {
@@ -422,9 +424,8 @@ public class LoginController extends BaseUIController {
             }
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
             result.setSuccessFlg(false);
-            result.setErrorMsg(e.getMessage());
+            result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }
     }
@@ -477,7 +478,7 @@ public class LoginController extends BaseUIController {
             roleStr =  gerUserRoles(userDetailModel.getId());
             if( !StringUtils.isEmpty(roleStr)){
                 roleList =  Arrays.asList(roleStr.split(","));
-                request.getSession().setAttribute(AuthorityKey.UserRoles, roleList);
+                session.setAttribute(AuthorityKey.UserRoles, roleList);
                 //获取角色机构
                 List<RoleOrgModel> roleOrgModels = new ArrayList<>();
                 gerRolesOrgs(roleList,roleOrgModels);
@@ -487,6 +488,10 @@ public class LoginController extends BaseUIController {
                         roleOrgCodes.add(roleOrgModel.getOrgCode());
                     }
                     getUserSaasOrgAndArea(roleOrgCodes, request);
+                }else{
+                    List<String> userOrgList = new ArrayList<>();
+                    userOrgList.add("-NoneOrg");
+                    session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
                 }
                 //获取角色视图
                 List<String> rolesResourceIdList =  new ArrayList<>();

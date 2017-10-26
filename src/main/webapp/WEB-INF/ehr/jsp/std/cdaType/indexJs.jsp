@@ -86,7 +86,7 @@
       // window.grid=u.grid=null;
       if (u.grid == null) {
         //$.LigerGridEx.config(
-        u.grid = $("#div_cda_type_grid").ligerGrid({
+        u.grid = $("#div_cda_type_grid").ligerGrid($.LigerGridEx.config({
           record: 'totalCount',
           root: 'detailModelList',
           pageSize:15,
@@ -110,7 +110,8 @@
           onGroupExtend: function () {
             alert(1);
           }
-        });
+        }));
+        u.grid.adjustToWidth();
       }
       else {
         u.grid.reload(gridData);

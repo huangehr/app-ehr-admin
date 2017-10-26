@@ -180,12 +180,12 @@
                             dictId: dictId
                         },
                         columns: [
-                            {display: 'sort', name: 'sort', hide: true},
-                            {display: 'catalog', name: 'catalog', hide: true},
+                            {display: 'sort', name: 'sort', hide: true, width: '0.1%'},
+                            {display: 'catalog', name: 'catalog', hide: true, width: '0.1%'},
                             {display: '字典代码', name: 'code', width: '40%'},
                             {display: '值', name: 'value', width: '45%'},
                             {
-                                display: '操作', name: 'operator', width: '15%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '';
                                 <sec:authorize url="/dict/updateDictEntry">
                                 html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "systemDictEntity:systemDictEntityInfoModifyDialog:update", row.code, row.value, row.sort, row.catalog) + '"></a>';

@@ -61,7 +61,16 @@
   <div class="m-form-group">
     <label>URL<spring:message code="spe.colon"/></label>
     <div class="m-form-control ">
-      <textarea id="ipt_af_url" class="ajax f-w240 max-length-200" data-attr-scan="url" maxlength="500"></textarea>
+      <textarea id="ipt_af_url" class="ajax f-w240 max-length-250" data-attr-scan="url" maxlength="250"
+                placeholder="菜单相对访问路径，模块时没有值，菜单时有值，功能时不一定有值"></textarea>
+    </div>
+  </div>
+
+  <div class="m-form-group">
+    <label>URL前缀<spring:message code="spe.colon"/></label>
+    <div class="m-form-control ">
+      <textarea id="ipt_af_prefixUrl" class="ajax f-w240 max-length-50" data-attr-scan="prefixUrl" maxlength="50"
+                placeholder="应用的JavaWeb上下文路径或站点+上下文路径"></textarea>
     </div>
   </div>
 

@@ -304,12 +304,12 @@
                     this.grid = $("#div_relation_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/cdadict/searchDictEntryList',
                         columns: [
-                            {display: 'id', name: 'id', hide: true},
-                            {display: 'dictId', name: 'dictId', hide: true},
+                            {display: 'id', name: 'id', width: '0.1%', hide: true},
+                            {display: 'dictId', name: 'dictId', width: '0.1%', hide: true},
                             {display: '值域编码', name: 'code', width: '33%', isAllowHide: false, align: 'left'},
                             {display: '值域名称', name: 'value', width: '34%', isAllowHide: false, align: 'left'},
                             {
-                                display: '操作', name: 'operator', width: '33%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
 
                                 var html = '';
                                 <sec:authorize url="/cdadict/saveDictEntry">
