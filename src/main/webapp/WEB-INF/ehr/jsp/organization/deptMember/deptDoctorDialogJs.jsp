@@ -46,7 +46,7 @@
 				var url = '${contextRoot}/deptMember/getOrgMemberList?orgId='+categoryOrgId;
 				this.$parentUserId.customCombo(url,{},null,null,null,
 						{
-							valueField: 'id',
+							valueField: 'userId',
 							textField: 'userName'
 						},
 						{
