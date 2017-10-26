@@ -58,6 +58,14 @@ public class UserRolesController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/rolesBatchAddInitial")
+    public String rolesBatchAddInitial(Model model,String appId) {
+        model.addAttribute("contentPage", "user/roles/rolesBatchAddDialog");
+        model.addAttribute("appId",appId);
+        Envelop envelop = new Envelop();
+        return "simpleView";
+    }
+
     @RequestMapping("/rolesInfoInitial")
     public String rolesInfoInitial(Model model, String id, String mode,String appId) {
         model.addAttribute("contentPage", "user/roles/rolesInfoDialog");
@@ -89,6 +97,9 @@ public class UserRolesController extends BaseUIController {
             RolesModel model = objectMapper.readValue(dataJson,RolesModel.class);
             if(StringUtils.isEmpty(model.getName())){
                 return failed("角色组名称不能为空！");
+            }
+            if(StringUtils.isEmpty(model.getOrgCode())){
+                return failed("机构不能为空！");
             }
             if(StringUtils.isEmpty(model.getCode())){
                 return failed("角色组编码不能为空！");
@@ -148,6 +159,41 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
+    //角色组批量添加
+    @RequestMapping("/batchAdd")
+    @ResponseBody
+    public Object batchAdd(String dataJson,String orgCodes) {
+        String url = ServiceApi.Roles.RoleBatchAdd;
+        try{
+            RolesModel model = objectMapper.readValue(dataJson,RolesModel.class);
+            if(StringUtils.isEmpty(model.getName())){
+                return failed("角色组名称不能为空！");
+            }
+            if(StringUtils.isEmpty(model.getCode())){
+                return failed("角色组编码不能为空！");
+            }
+            if(StringUtils.isEmpty(model.getType())){
+                return failed("角色组类型不能为空！");
+            }
+            if(StringUtils.isEmpty(model.getAppId())){
+                return failed("应用id不能为空！");
+            }
+            if(StringUtils.isEmpty(orgCodes)){
+                return failed("机构不能为空！");
+            }
+            // 重新写一个方法
+            Map<String,Object> args = new HashMap<>();
+            args.put("data_json",dataJson);
+            args.put("orgCodes",orgCodes);
+            String envelopStr = HttpClientUtil.doPost(comUrl+url,args,username,password);
+            return envelopStr;
+        }catch(Exception ex){
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+
     //角色组列表查询
     @RequestMapping("/search")
     @ResponseBody
@@ -197,11 +243,13 @@ public class UserRolesController extends BaseUIController {
 
     @RequestMapping("/isNameExistence")
     @ResponseBody
-    public Object isNameExistence(String appId,String name){
+    public Object isNameExistence(String appId,String name,String orgCode){
         try{
             Map<String,Object> params = new HashMap<>();
             params.put("name",name);
             params.put("app_id",appId);
+            params.put("orgCode",orgCode);
+            params.put("type",1);
             String url = ServiceApi.Roles.RoleNameExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
@@ -212,11 +260,13 @@ public class UserRolesController extends BaseUIController {
     }
     @RequestMapping("/isCodeExistence")
     @ResponseBody
-    public Object isCodeExistence(String appId,String code){
+    public Object isCodeExistence(String appId,String code,String orgCode){
         try{
             Map<String,Object> params = new HashMap<>();
             params.put("code",code);
             params.put("app_id",appId);
+            params.put("orgCode",orgCode);
+            params.put("type",1);
             String url = ServiceApi.Roles.RoleCodeExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;

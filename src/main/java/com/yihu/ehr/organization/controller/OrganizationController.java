@@ -239,6 +239,35 @@ public class OrganizationController extends BaseUIController {
         }
     }
 
+    /**
+     * 获取所有机构代码下拉框
+     */
+    @RequestMapping("/getAllorgCodes")
+    @ResponseBody
+    public Object getAllorgCodes(){
+        Envelop envelop = new Envelop();
+        try{
+            String url = "/organizations";
+            Map<String,Object> params = new HashMap<>();
+            params.put("fields","");
+            params.put("filters","");
+            params.put("sorts","");
+            params.put("page",1);
+            params.put("size",1000);
+            String envelopStrFGet = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            Envelop envelopGet = objectMapper.readValue(envelopStrFGet,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                envelop.setObj(envelopGet.getDetailModelList());
+                envelop.setSuccessFlg(true);
+                return envelop;
+            }
+            return envelop;
+        }catch (Exception ex){
+            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            return envelop;
+        }
+    }
+
     @RequestMapping("deleteOrg")
     @ResponseBody
     public Object deleteOrg(String orgCode) {

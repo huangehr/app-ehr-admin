@@ -50,6 +50,14 @@
 					</div>
 					</sec:authorize>
 
+					<sec:authorize url="/userRoles/batchAddRoles">
+						<div class="m-form-control f-mr20 f-mb10" style="float: right">
+							<div id="div_new_batchAddRoles" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+								<span>批量添加角色</span>
+							</div>
+						</div>
+					</sec:authorize>
+
 				</div>
 			</div>
 			<div id="div_roles_grid" ></div>
