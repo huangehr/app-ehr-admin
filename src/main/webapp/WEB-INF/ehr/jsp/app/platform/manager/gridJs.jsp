@@ -126,7 +126,8 @@
                                 }
                             }
                         },
-                        {display: 'URL', name: 'url', width: '30%', align: 'left'},
+                        {display: 'URL', name: 'url', width: '15%', align: 'left'},
+                        {display: 'URL前缀', name: 'prefixUrl', width: '15%', align: 'left'},
                         {display: '操作', name: 'operator', width: '15%', render: m.opratorRender}];
 
                     m.grid = initGrid($('#rightGrid'), urls.list, {}, columns, {
@@ -162,7 +163,7 @@
                         em.params = {frm: frm,  rowId: rowId}
                         params = {id: id, mode: mode, rowId: rowId}
                     }
-                    em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 600, params);
+                    em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 660, params);
                 },
                 del: function (event, id, frm, rowId, parentId, type, url) {
 
