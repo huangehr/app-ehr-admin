@@ -3,10 +3,8 @@ package com.yihu.ehr.resource.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.common.constants.SessionContants;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -24,8 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClientException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -193,24 +191,39 @@ public class ResourceController extends BaseUIController {
      */
     @RequestMapping("/resources/tree")
     @ResponseBody
-    public Envelop getResourceTree(String filters, Integer dataSource){
+    public Envelop getResourceTree(String filters, Integer dataSource, HttpServletRequest request){
         Envelop envelop = new Envelop();
         String url = "/resources/tree";
         String resultStr = "";
-        Map<String, Object> params = new HashMap<>();
-        StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-        if(dataSource != null && dataSource != 0) {
-            params.put("dataSource", dataSource);
+        //从Session中获取用户的角色和和授权视图列表作为查询参数
+        HttpSession session = request.getSession();
+        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
+        if(!isAccessAll) {
+            if(null == userResourceList || userResourceList.size() <= 0) {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("无权访问！");
+            }
         }
         try {
+            Map<String, Object> params = new HashMap<>();
+            if (!StringUtils.isEmpty(filters)) {
+                params.put("filters", filters);
+            }
+            if(dataSource != null && dataSource != 0) {
+                params.put("dataSource", dataSource);
+            }
+            if(isAccessAll) {
+                params.put("userResource", "*");
+            }else {
+                params.put("userResource", objectMapper.writeValueAsString(userResourceList));
+            }
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg(e.getMessage());
             return envelop;
         }
         return envelop;
@@ -497,7 +510,7 @@ public class ResourceController extends BaseUIController {
         params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
         params.put("userOrgList", userOrgList);
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();
@@ -536,7 +549,7 @@ public class ResourceController extends BaseUIController {
         params.put("resourceId", id);
         params.put("dimension", dimension);
         params.put("quotaId", quotaId);
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
         params.put("userOrgList", userOrgList);
         try {
             Map<String, Object> quotaFilterMap = new HashMap<>();

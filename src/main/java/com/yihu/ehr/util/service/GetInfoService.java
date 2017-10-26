@@ -1,7 +1,7 @@
 package com.yihu.ehr.util.service;
 
 import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.common.constants.SessionContants;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
@@ -86,7 +86,7 @@ public class GetInfoService {
      * @return
      */
     public String appIdList(HttpServletRequest request) {
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
         if (null == userOrgList) {
             return "admin";
         }
@@ -108,7 +108,7 @@ public class GetInfoService {
      * @return
      */
     public String idCardNoList(HttpServletRequest request) {
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
         if (null == userOrgList) {
             return "admin";
         }
