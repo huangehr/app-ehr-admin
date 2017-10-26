@@ -4,7 +4,7 @@ import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.common.constants.SessionContants;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -88,6 +89,12 @@ public class ResourceBrowseController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/initial")
+    public String resourceBrowseInitial(Model model) {
+        model.addAttribute("contentPage", "/resource/resourcebrowse/resourceBrowse");
+        return "pageView";
+    }
+
     @RequestMapping("/searchResourceList")
     @ResponseBody
     public Object searchResourceList() {
@@ -99,15 +106,10 @@ public class ResourceBrowseController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
-    }
-
-    @RequestMapping("/initial")
-    public String resourceBrowseInitial(Model model) {
-        model.addAttribute("contentPage", "/resource/resourcebrowse/resourceBrowse");
-        return "pageView";
     }
 
     @RequestMapping("/searchResource")
@@ -122,9 +124,86 @@ public class ResourceBrowseController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop.getDetailModelList();
+    }
+
+    /**
+     * 动态获取GRID的列名
+     * @param dictId
+     * @return
+     */
+    @RequestMapping("/getGridCloumnNames")
+    @ResponseBody
+    public Object getGridColumnNames(String dictId, HttpServletRequest request) {
+        Envelop envelop;
+        envelop = getColumns(dictId, request);
+        if(envelop != null) {
+            return envelop.getDetailModelList();
+        }else {
+            return new ArrayList<Object>();
+        }
+    }
+
+    public Envelop getColumns(String resourceCode, HttpServletRequest request) {
+        Envelop envelop = new Envelop();
+        String url = "/resources/ResourceBrowses/getResourceMetadata";
+        String resultStr = "";
+        //从Session中获取用户的角色信息作为查询参数
+        HttpSession session = request.getSession();
+        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+        List<String> userRoleList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
+        if(!isAccessAll) {
+            if(null == userRoleList || userRoleList.size() <= 0) {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("无权访问");
+                return envelop;
+            }
+        }
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("resourcesCode", resourceCode);
+            if(isAccessAll) {
+                params.put("roleId", "*");
+            }else {
+                params.put("roleId", objectMapper.writeValueAsString(userRoleList));
+            }
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    /**
+     * 获取字典值
+     * @param dictId
+     * @return
+     */
+    @RequestMapping("/getRsDictEntryList")
+    @ResponseBody
+    public Object getRsDictEntryList(String dictId) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        String resultStr = "";
+        String dictEntryUrl = "/resources/noPageDictEntries";
+        params.put("filters", "dictCode=" + dictId + " g0");
+        try {
+            if (!StringUtils.isEmpty(dictId)) {
+                resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
+                return resultStr;
+            }
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("字典查询失败");
+        }
+        return envelop;
     }
 
     /**
@@ -140,97 +219,74 @@ public class ResourceBrowseController extends BaseUIController {
     @ResponseBody
     public Object searchResourceData(String resourcesCode, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String resultStr = "";
         String url = "/resources/ResourceBrowses/getResourceData";
-        //当前用户机构
-        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String orgCode = userDetailModel.getOrganization();
-        //params.put("orgCode", "41872607-9");
-//       List<String> userOrgCodeList= (List)request.getSession().getAttribute("userOrgCode");
-//        if(null!=userOrgCodeList&&userOrgCodeList.size()>0){
-//            for(String org:userOrgCodeList){
-//                if(null!=orgCode){
-//                    orgCode=","+org;
-//                }
-//            }
-//        }
-        params.put("orgCode", orgCode);
-        params.put("resourcesCode", resourcesCode);
-        Pattern pattern = Pattern.compile("\\[.+?\\]");
-        Matcher matcher = pattern.matcher(searchParams);
-        if(matcher.find()) {
-            if(searchParams.contains("{") || searchParams.contains("}")) {
-                params.put("queryCondition", searchParams);
+        String resultStr = "";
+        //从Session中获取用户的角色信息和授权视图列表作为查询参数
+        HttpSession session = request.getSession();
+        List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
+        List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
+        List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
+        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+        if(!isAccessAll) {
+            if(null == userRolesList || userRolesList.size() <= 0) {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("无权访问");
+                return envelop;
+            }
+            if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("无权访问");
+                return envelop;
+            }
+        }
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("resourcesCode", resourcesCode);
+            if(isAccessAll) {
+                params.put("roleId", "*");
+                params.put("orgCode", "*");
+                params.put("areaCode", "*");
+            }else {
+                params.put("roleId", objectMapper.writeValueAsString(userRolesList));
+                params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
+                params.put("areaCode", objectMapper.writeValueAsString(userAreaSaasList));
+            }
+            Pattern pattern = Pattern.compile("\\[.+?\\]");
+            Matcher matcher = pattern.matcher(searchParams);
+            if(matcher.find()) {
+                if(searchParams.contains("{") || searchParams.contains("}")) {
+                    params.put("queryCondition", searchParams);
+                }else {
+                    params.put("queryCondition", "");
+                }
             }else {
                 params.put("queryCondition", "");
             }
-        }else {
-            params.put("queryCondition", "");
-        }
-        params.put("page", page);
-        params.put("size", rows);
-        try {
+            params.put("page", page);
+            params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-
             envelop = toModel(resultStr, Envelop.class);
-            List<Map<String, Object>> envelopList = envelop.getDetailModelList();
-            List<Map<String, Object>> resultList = new ArrayList<>();
-            for(Map<String, Object> envelopMap : envelopList) {
-                Map<String, Object> resultMap = new HashMap<String, Object>();
-                for(String key : envelopMap.keySet()) {
-                    String value = envelopMap.get(key).toString();
-                    resultMap.put(key, value);
+            if(envelop.isSuccessFlg()) {
+                List<Map<String, Object>> envelopList = envelop.getDetailModelList();
+                List<Map<String, Object>> resultList = new ArrayList<>();
+                for (Map<String, Object> envelopMap : envelopList) {
+                    Map<String, Object> resultMap = new HashMap<String, Object>();
+                    for (String key : envelopMap.keySet()) {
+                        String value = envelopMap.get(key).toString();
+                        resultMap.put(key, value);
+                    }
+                    resultList.add(resultMap);
                 }
-                resultList.add(resultMap);
+                List<Map<String, Object>> listMap = resourceIntegratedController.changeIdCardNo(resultList, request);
+                envelop.setDetailModelList(listMap);
+            }else {
+                return envelop;
             }
-            List<Map<String, Object>> listMap = resourceIntegratedController.changeIdCardNo(resultList, request);
-            envelop.setDetailModelList(listMap);
-//            return resultStr;
+            //return resultStr;
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("数据检索失败");
-        }
-        return envelop;
-    }
-
-    /**
-     * 指标资源浏览
-     * @param resourcesId
-     * @param searchParams
-     * @param page
-     * @param rows
-     * @param request
-     * @return
-     */
-    @RequestMapping("/searchQuotaResourceData")
-    @ResponseBody
-    public Object searchQuotaResourceData(String resourcesId, String searchParams, int page, int rows, HttpServletRequest request) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String resultStr = "";
-        String url = "/resources/ResourceBrowses/getQuotaResourceData";
-        //当前用户机构 -- 预留
-//        String orgCode = userDetailModel.getOrganization();
-//        params.put("orgCode", orgCode);
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
-        params.put("userOrgList", userOrgList);
-        params.put("resourcesId", resourcesId);
-        if(searchParams != null) {
-            if (searchParams.contains("{") || searchParams.contains("}")) {
-                params.put("queryCondition", searchParams);
-            } else {
-                params.put("queryCondition", "");
-            }
-        }
-        params.put("page", page);
-        params.put("size", rows);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("数据检索失败");
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -257,82 +313,44 @@ public class ResourceBrowseController extends BaseUIController {
     }
 
     /**
-     * 动态获取GRID的列名
-     *
-     * @param dictId
+     * 指标资源浏览
+     * @param resourcesId
+     * @param searchParams
+     * @param page
+     * @param rows
+     * @param request
      * @return
      */
-    @RequestMapping("/getGridCloumnNames")
+    @RequestMapping("/searchQuotaResourceData")
     @ResponseBody
-    public Object getGridCloumnNames(String dictId) {
-        String resultStr = getColumns(dictId);
-        return resultStr;
-    }
-
-    @RequestMapping("/getRsDictEntryList")
-    @ResponseBody
-    public Object getRsDictEntryList(String dictId) {
-
+    public Object searchQuotaResourceData(String resourcesId, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
-        String dictEntryUrl = "/resources/noPageDictEntries";
-        params.put("filters", "dictCode=" + dictId + " g0");
-
-        try {
-            if (!StringUtils.isEmpty(dictId)) {
-
-                resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
-                return resultStr;
+        String url = "/resources/ResourceBrowses/getQuotaResourceData";
+        //当前用户机构 -- 预留
+        //String orgCode = userDetailModel.getOrganization();
+        //params.put("orgCode", orgCode);
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+        params.put("userOrgList", userOrgList);
+        params.put("resourcesId", resourcesId);
+        if(searchParams != null) {
+            if (searchParams.contains("{") || searchParams.contains("}")) {
+                params.put("queryCondition", searchParams);
+            } else {
+                params.put("queryCondition", "");
             }
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("字典查询失败");
+            envelop.setErrorMsg(e.getMessage());
         }
-
         return envelop;
-    }
-
-    @RequestMapping("/searchDictEntryList")
-    @ResponseBody
-    public Object getDictEntryList(String dictId, String conditions) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        List<RsBrowseModel> rsBrowseModelList = new ArrayList<>();
-        String resultStr = "";
-        String url = "";
-        try {
-            if (!StringUtils.isEmpty(dictId)) {
-                switch (dictId) {
-                    case "34":
-                        params.put("filters", "dictId=" + dictId);
-                        params.put("page", 1);
-                        params.put("size", 500);
-                        params.put("fields", "");
-                        params.put("sorts", "");
-                        String con = changeConditions(conditions);
-                        if (!StringUtils.isEmpty(con)) {
-                            params.put("filters", "dictId=" + dictId + " g0;value=" + con + " g1");
-                        }
-                        url = "/dictionaries/entries";
-                        resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-                        break;
-                    case "andOr":
-                        rsBrowseModelList.add(new RsBrowseModel("AND", "并且"));
-                        rsBrowseModelList.add(new RsBrowseModel("OR", "或者"));
-                        envelop.setDetailModelList(rsBrowseModelList);
-                        return envelop;
-                    default:
-                        url = "/resources/ResourceBrowses";
-                        params.put("category_id", dictId);
-                        resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-                        break;
-                }
-            }
-        } catch (Exception e) {
-
-        }
-        return resultStr;
     }
 
     /**
@@ -352,8 +370,7 @@ public class ResourceBrowseController extends BaseUIController {
         String fileName = "档案资源数据";
         String resourceCategoryName = System.currentTimeMillis() + "";
         try {
-            resultStr = getColumns(resourcesCode);
-            envelop = toModel(resultStr, Envelop.class);
+            envelop = getColumns(resourcesCode, request);
             response.setContentType("octets/stream");
             response.setHeader("Content-Disposition", "attachment; filename="
                     + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
@@ -411,7 +428,7 @@ public class ResourceBrowseController extends BaseUIController {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("resourcesId", resourcesId);
             params.put("queryCondition", searchParams);
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
             params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -441,6 +458,70 @@ public class ResourceBrowseController extends BaseUIController {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 填充数据
+     * @param sheet
+     * @param dataList
+     * @param cells
+     * @return
+     * @throws Exception
+     */
+    public WritableSheet inputData(WritableSheet sheet, List<Object> dataList, Cell[] cells) throws Exception{
+        for (int i = 0; i < dataList.size(); i++) {
+            Map<String, String> map = toModel(toJson(dataList.get(i)), Map.class);
+            for (String key : map.keySet()) {
+                for (Cell cell : cells) {
+                    if (cell.getContents().equals(key)) {
+                        sheet.addCell(new Label(cell.getColumn(), i + 2, String.valueOf(map.get(key))));
+                    }
+                }
+            }
+        }
+        return sheet;
+    }
+
+    @RequestMapping("/searchDictEntryList")
+    @ResponseBody
+    public Object getDictEntryList(String dictId, String conditions) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        List<RsBrowseModel> rsBrowseModelList = new ArrayList<>();
+        String resultStr = "";
+        String url = "";
+        try {
+            if (!StringUtils.isEmpty(dictId)) {
+                switch (dictId) {
+                    case "34":
+                        params.put("filters", "dictId=" + dictId);
+                        params.put("page", 1);
+                        params.put("size", 500);
+                        params.put("fields", "");
+                        params.put("sorts", "");
+                        String con = changeConditions(conditions);
+                        if (!StringUtils.isEmpty(con)) {
+                            params.put("filters", "dictId=" + dictId + " g0;value=" + con + " g1");
+                        }
+                        url = "/dictionaries/entries";
+                        resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                        break;
+                    case "andOr":
+                        rsBrowseModelList.add(new RsBrowseModel("AND", "并且"));
+                        rsBrowseModelList.add(new RsBrowseModel("OR", "或者"));
+                        envelop.setDetailModelList(rsBrowseModelList);
+                        return envelop;
+                    default:
+                        url = "/resources/ResourceBrowses";
+                        params.put("category_id", dictId);
+                        resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                        break;
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return resultStr;
     }
 
     @RequestMapping("/browseBefore")
@@ -517,21 +598,7 @@ public class ResourceBrowseController extends BaseUIController {
         }
     }
 
-    public String getColumns(String resourceCode) {
-        Map<String, Object> params = new HashMap<>();
-        String url = "/resources/ResourceBrowses/getResourceMetadata";
-        String resultStr = "";
-        params.put("resourcesCode", resourceCode);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return resultStr;
-    }
-
     public String changeConditions(String conditions) {
-
         String value = "";
         if (StringUtils.isEmpty(conditions)) {
             return value;
@@ -539,7 +606,6 @@ public class ResourceBrowseController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String condition = "";
         String conditionAll = "";
-
         String url = "/dictionaries/entries";
         params.put("filters", "dictId=30 g0;code=" + conditions + " g1");
         params.put("page", 1);
@@ -563,28 +629,6 @@ public class ResourceBrowseController extends BaseUIController {
             e.printStackTrace();
         }
         return value;
-    }
-
-    /**
-     * 填充数据
-     * @param sheet
-     * @param dataList
-     * @param cells
-     * @return
-     * @throws Exception
-     */
-    public WritableSheet inputData(WritableSheet sheet, List<Object> dataList, Cell[] cells) throws Exception{
-        for (int i = 0; i < dataList.size(); i++) {
-            Map<String, String> map = toModel(toJson(dataList.get(i)), Map.class);
-            for (String key : map.keySet()) {
-                for (Cell cell : cells) {
-                    if (cell.getContents().equals(key)) {
-                        sheet.addCell(new Label(cell.getColumn(), i + 2, String.valueOf(map.get(key))));
-                    }
-                }
-            }
-        }
-        return sheet;
     }
 
 }

@@ -5,7 +5,7 @@ import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.common.constants.SessionContants;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -390,7 +390,7 @@ public class TjQuotaController extends BaseUIController {
             filters.put("city", city);
             filters.put("district", district);
             Map<String, Object> params = new HashMap<>();
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
             params.put("userOrgList", userOrgList);
             params.put("id", tjQuotaId);
             params.put("pageNo", page);

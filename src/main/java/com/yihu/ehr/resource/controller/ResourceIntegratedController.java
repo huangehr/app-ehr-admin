@@ -2,12 +2,11 @@ package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.common.constants.SessionContants;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.operator.NumberUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Cell;
@@ -15,7 +14,6 @@ import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -52,17 +51,44 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping("/getMetadataList")
     @ResponseBody
-    public Envelop getMetadataList(String filters) {
+    public Envelop getMetadataList(String filters, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         String url = "/resources/integrated/metadata_list";
-        Map<String, Object> params = new HashMap<>();
-        params.put("filters", filters);
         String resultStr = "";
+        //从Session中获取用户的角色信息和授权视图列表作为查询参数
+        HttpSession session = request.getSession();
+        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+        List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
+        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
+        if(!isAccessAll) {
+            if(null == userResourceList || userResourceList.size() <= 0) {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("无权访问！");
+                return envelop;
+            }
+            if(null == userRolesList || userRolesList.size() <= 0) {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("无权访问！");
+                return envelop;
+            }
+        }
         try {
+            Map<String, Object> params = new HashMap<>();
+            if(isAccessAll) {
+                params.put("userResource", "*");
+                params.put("roleId", "*");
+            }else {
+                params.put("userResource", objectMapper.writeValueAsString(userResourceList));
+                params.put("roleId", objectMapper.writeValueAsString(userRolesList));
+            }
+            if (!StringUtils.isEmpty(filters)) {
+                params.put("filters", filters);
+            }
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -81,27 +107,39 @@ public class ResourceIntegratedController extends BaseUIController {
     @ResponseBody
     public Envelop searchMetadataData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
+        String url = "/resources/integrated/metadata_data";
+        String resultStr = "";
         if(resourcesCode == null || resourcesCode.equals("")) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("资源编码不能为空");
             return envelop;
         }
-        String url = "/resources/integrated/metadata_data";
-        Map<String, Object> params = new HashMap<>();
-        String resultStr = "";
-        //当前用户机构
-        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        params.put("resourcesCode", resourcesCode);
-        params.put("metaData", metaData);
-        //（获取用户机构代码）待确认
-        String orgCode = userDetailModel.getOrganization();
-        if(orgCode != null) {
-            params.put("orgCode", userDetailModel.getOrganization());
+        //权限控制
+        HttpSession session = request.getSession();
+        List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
+        List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
+        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+        if(!isAccessAll) {
+            if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("无权访问");
+                return envelop;
+            }
         }
-        //暂未进行控制
-        params.put("appId", "JKZL");
-        params.put("queryCondition", searchParams);
-        params.put("page", page);
-        params.put("size", rows);
         try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("resourcesCode", resourcesCode);
+            params.put("metaData", metaData);
+            if(isAccessAll) {
+                params.put("orgCode", "*");
+                params.put("areaCode", "*");
+            }else {
+                params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
+                params.put("areaCode", objectMapper.writeValueAsString(userAreaSaasList));
+            }
+            params.put("queryCondition", searchParams);
+            params.put("page", page);
+            params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
             List<Map<String, Object>> envelopList = envelop.getDetailModelList();
@@ -128,11 +166,12 @@ public class ResourceIntegratedController extends BaseUIController {
                 }
                 resultList.add(resultMap);
             }
-
             List<Map<String, Object>> listMap = changeIdCardNo(resultList, request);
             envelop.setDetailModelList(listMap);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -176,7 +215,7 @@ public class ResourceIntegratedController extends BaseUIController {
             params.put("quotaIds", tjQuotaIds);
             params.put("quotaCodes", tjQuotaCodes);
             params.put("queryCondition", searchParams);
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
             params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -342,7 +381,7 @@ public class ResourceIntegratedController extends BaseUIController {
             params.put("quotaIds", tjQuotaIds);
             params.put("quotaCodes", tjQuotaCodes);
             params.put("queryCondition", searchParams);
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
             params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);

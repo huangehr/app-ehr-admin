@@ -5,7 +5,7 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.org.RsOrgResourceModel;
-import com.yihu.ehr.common.constants.SessionContants;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.model.org.MRsOrgResource;
 import com.yihu.ehr.patient.controller.PatientController;
@@ -158,7 +158,7 @@ public class OrganizationController extends BaseUIController {
                 filters += "orgType=" + orgType + ";";
             }
             //根据登录人的机构获取saas化机构
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(SessionContants.UserOrgSaas);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
 
            /* String orgCode = getInfoService.getOrgCode();*/
            /* String districtList = getInfoService.getDistrictList();*/
