@@ -31,6 +31,7 @@
                 $roleGroupbtn: $(".div-roleGroup-btn"),
                 $apiFeatrueBtn: $("#div_api_featrue_btn"),
                 $featrueSaveBtn: $("#div_featrue_save_btn"),
+                $funFeatrueSearch: $('#inp_fun_featrue_search'),
 
                 apiInit: function () {
                     var self = this;
@@ -76,6 +77,19 @@
                             }
                         });
                     }
+
+
+                    self.$funFeatrueSearch.ligerTextBox({
+                        width: 200, isSearch: true, search: function () {
+                            var categoryName = self.$funFeatrueSearch.val();
+                            self.$apiFeatrueTree.s_search(categoryName);
+                            if (categoryName == '') {
+                                self.$apiFeatrueTree.collapseAll();
+                            } else {
+                                self.$apiFeatrueTree.expandAll();
+                            }
+                        }
+                    });
                 },
                 reloadRoleGrid: function (appRoleId) {
                 var searchParams = {searchNm: '', treeType: 'configapiTree', appRoleId: appRoleId, appId: obj.appId};

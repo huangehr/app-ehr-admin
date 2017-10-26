@@ -40,7 +40,7 @@
                 {display: '名称', name: 'name', align: 'left'},
                 {display: '说明', name: 'description', align: 'left'},
                 {
-                    display: '操作', isSort: false, width: 180, render: function (rowdata, rowindex, value) {
+                    display: '操作', isSort: false, minWidth: 180, render: function (rowdata, rowindex, value) {
 
                     var html = '';
                     <sec:authorize url="/cda/cdaRelationship">
@@ -204,7 +204,7 @@
 
                     }
                 }));
-
+                u.grid.adjustToWidth();
                 window.grid = u.grid;
                 $(".l-grid-body2").css({
                     'overflow-x': 'hidden'

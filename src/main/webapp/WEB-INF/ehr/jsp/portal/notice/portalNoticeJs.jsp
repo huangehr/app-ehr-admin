@@ -74,7 +74,7 @@
 //                            {display: '内容', name: 'content', width: '45%', resizable: true,align: 'left'},
                             {display: '发布日期', name: 'releaseDate', width: '20%', resizable: true,align: 'center'},
                             {
-                                display: '操作', name: 'operator', width: '20%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                     var html = '<sec:authorize url="/portalNotice/updatePortalNotice"><a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalNotice:noticeInfoModifyDialog:open", row.id) + '"></a></sec:authorize>';
                                     html += '<sec:authorize url="/portalNotice/deletePortalNotice"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "portalNotice:noticeInfoModifyDialog:del", row.id) + '"></a></sec:authorize>';
                                     return html;

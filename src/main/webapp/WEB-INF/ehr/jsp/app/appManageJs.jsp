@@ -94,8 +94,8 @@
 							page:searchParms.page
                         },
                         columns: [
-							{ display: 'APP ID',name: 'id', width: '10%',isAllowHide: false,hide:true},
-							{ display: 'APP Secret', name: 'secret', width: '11%', minColumnWidth: 60, hide:true},
+							{ display: 'APP ID',name: 'id', width: '0.1%',isAllowHide: false,hide:true},
+							{ display: 'APP Secret', name: 'secret', width: '0.1%', minColumnWidth: 60, hide:true},
                             { display: '应用名称', name: 'name',width: '20%', isAllowHide: false,align:'left' },
                             { display: '应用来源', name: 'sourceType',width: '10%',isAllowHide: false,render:function(row){
                                 if (row.sourceType==1) {
@@ -109,7 +109,7 @@
 							{ display: '机构名称', name: 'orgName',width: '18%',align:'left'},
 							{ display: '类型', name: 'catalogName', width: '10%'},
 //                          { display: '回调URL', name: 'url', width: '15%',align:'left'},
-							{ display: '审核', name: 'checkStatus', width: '8%',minColumnWidth: 20,render: function (row){
+							{ display: '审核', name: 'checkStatus', width: 80,minColumnWidth: 20,render: function (row){
 								if(Util.isStrEquals( row.status,'WaitingForApprove')) {
 									return '<sec:authorize url="/app/check"><a data-toggle="model"  class="checkPass label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:approved", row.id)+'">'+'通过'+'</a>/' +
 											'<a class="veto label_a" onclick="javascript:'+Util.format("$.publish('{0}',['{1}'])","appInfo:appInfoGrid:reject", row.id)+'">'+'否决'+'</a></sec:authorize>'
@@ -122,7 +122,7 @@
 								}
 							}},
 //							{ display: '已授权资源', name: 'resourceNames', width: '8%',align:'left'},
-							{ display: '操作', name: 'operator', width: '25%', render: function (row) {
+							{ display: '操作', name: 'operator', minWidth: 240, render: function (row) {
 								var html = '';
 								if(Util.isStrEquals( row.status,'WaitingForApprove') || Util.isStrEquals( row.status,'Approved')){
 									html += '<sec:authorize url="/app/resource/initial"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "app:resource:list", row.id,row.name,row.catalogName) + '">视图授权</a></sec:authorize>';

@@ -290,6 +290,9 @@
 
                 //新增的点击事件
                 this.$addUserBtn.click(function () {
+                    if ($('#jryycyc_val').val().length == 0) {
+                        $('#jryycyc').addClass('required');
+                    }
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
 					var roles = addUserInfo.roleIds(addUser.role);
@@ -386,6 +389,7 @@
 						//autoCheckboxEven:false,
 						isExpand:true,
 						onClick:function(e){
+                            debugger
 							self.listTree(trees);
 						},
 						onSuccess:function(data){
@@ -393,7 +397,10 @@
 //								$('#'+data[item].id).children('.l-body').children('.l-checkbox').hide();
 //							}
 						}
-					}
+					},
+                    onBeforeSelect: function () {
+                        debugger
+                    }
 				})
 
 				function removeSclBox(){

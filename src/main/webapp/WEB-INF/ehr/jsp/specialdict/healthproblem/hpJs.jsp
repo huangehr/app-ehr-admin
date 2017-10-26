@@ -60,12 +60,12 @@
 							searchNm: ''
 						},
 						columns: [
-							{display:'id',name:'id',hide:true},
+							{display:'id',name:'id', width: '0.1%',hide:true},
 							{display: '疾病编码', name: 'code', width: '20%', align: 'left'},
 							{display: '疾病名称', name: 'name', width: '25%',align:'left'},
 							{display: '关联诊断', name: 'icd10Name', width: '35%',align:'left'},
 							{
-								display: '操作', name: 'operator', width: '20%', align: 'center',render: function(row){
+								display: '操作', name: 'operator', minWidth: 170, align: 'center',render: function(row){
 								var html = '';
 								html += '<sec:authorize url="/specialdict/hp/hpIcd10Relation/initial"><a class="label_a" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "hpIcd10:relation:info:open", row.id) + '">关联诊断</a></sec:authorize>';
 								html += '<sec:authorize url="/specialdict/hp/dialog/hp"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "hp:info:open", row.id,'modify') + '"></a></sec:authorize>';

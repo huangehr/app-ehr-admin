@@ -3,8 +3,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">用户角色管理</div>
-<div id="div_wrapper" >
-	<div style="width: 100%" id="grid_content">
+<div id="div_wrapper" style="overflow: hidden;position: relative">
+	<div style="width: 100%" id="grid_content" style="overflow: hidden;position: relative">
 		<!--######平台应用列表######-->
 		<div id="div_left" style=" width:300px;float: left;">
 			<div id="std_app" class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0px">
@@ -27,7 +27,7 @@
 		</div>
 
 		<!--  应用角色组   -->
-		<div id="div_right" style="float: right;width:calc(100% - 300px - 20px);margin-left: 10px">
+		<div id="div_right" style="/*float: right;width:calc(100% - 300px - 20px);margin-left: 10px*/position: absolute;left: 310px;right: 0;top: 0;bottom: 0;">
 			<div id="std_roles" class="m-retrieve-area f-dn f-pr m-form-inline" style="display:block;border: 1px solid #D6D6D6;border-bottom: 0px">
 				<div class="m-form-group f-mt10" style="padding-bottom: 0">
 					<div class="f-mt5 f-fs14 f-ml10 f-fl f-fwb f-mr10 f-mb10">

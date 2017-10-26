@@ -21,6 +21,15 @@
       <input type="text" data-attr-scan="pid" id="ipt_select" data-type="select">
     </div>
   </div>
+
+
+  <div class="m-form-group">
+    <label>视图分类：</label>
+    <div class="l-text-wrapper m-form-control essential">
+      <input type="text" data-attr-scan="code" class="required" id="ipt_view" data-type="select" required-title="请选择视图分类">
+    </div>
+  </div>
+
   <div class="m-form-group">
     <label>说明：</label>
     <div class="m-form-control">

@@ -14,8 +14,8 @@
                 </div>
 
                 <sec:authorize url="/rscategory/typeupdate">
-                <div style="float: right; width: 250px; margin-top: -5px;">
-                    <a id="btn_Update_relation" class="btn btn-primary J_add-btn f-fr f-mr10">
+                <div style="float: right; width: 95px; margin-top: -5px;">
+                    <a id="btn_Update_relation" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         新增
                     </a>
                 </div>

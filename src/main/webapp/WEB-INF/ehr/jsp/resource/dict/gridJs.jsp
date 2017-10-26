@@ -173,10 +173,10 @@
                 rendGrid : function(){
                     var m = em;
                     var columns = [
-                        {display: 'ID', name: 'id', hide: true},
+                        {display: 'ID', name: 'id', width: '0.1%', hide: true},
                         {display: '值域编码', name: 'code', width: '40%', align: 'left'},
                         {display: '值域名称', name: 'name', width: '30%', align: 'left'},
-                        {display: '操作', name: 'operator', width: '30%', render: m.opratorRender}];
+                        {display: '操作', name: 'operator', minWidth: 120, render: m.opratorRender}];
 
                     m.grid = initGrid($('#rightGrid'), m.urls.list, {}, columns, {delayLoad: true, checkbox: false});
                 },
@@ -228,14 +228,14 @@
                 }
             }
 
-            var resizeContent = function(){
-                var contentW = $('#grid_content').width();
-                var leftW = $('#div_left').width();
-                $('#div_right').width(contentW-leftW-20);
-            }();
-            $(window).bind('resize', function() {
-                resizeContent();
-            });
+//            var resizeContent = function(){
+//                var contentW = $('#grid_content').width();
+//                var leftW = $('#div_left').width();
+//                $('#div_right').width(contentW-leftW-20);
+//            }();
+//            $(window).bind('resize', function() {
+//                resizeContent();
+//            });
 
             em.init();
             master.init();

@@ -115,7 +115,7 @@
                             {
                                 display: '是否生/失效',
                                 name: 'activityFlagName',
-                                width: '8%',
+                                minWidth: 70,
                                 isAllowHide: false,
                                 render: function (row) {
                                     var html = '';
@@ -129,16 +129,16 @@
                                     return html;
                                 }
                             },
-                            {display: '入驻方式', name: 'settledWayName', width: '10%',hide: true, isAllowHide: false},
+                            {display: '入驻方式', name: 'settledWayName', width: '0.1%',hide: true, isAllowHide: false},
                             {
-                                display: '操作', name: 'operator', width: '15%', render: function (row) {
+                                display: '操作', name: 'operator', minWidth: 130, render: function (row) {
                                 var html = '';
                                 html += '<sec:authorize url="/organization/dialog/orgDataGrant"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "org:orgInfoDialog:orgDataGrant", row.orgCode, row.orgTypeName, row.fullName) + '">机构数据授权</a></sec:authorize>';
                                 return html;
                             }
                             },
-                            {name: 'activityFlag', hide: true, align: "center"},
-                            {name: 'settledWay', hide: true, align: "center"}
+                            {name: 'activityFlag', hide: true,width: '0.1%', align: "center"},
+                            {name: 'settledWay', hide: true,width: '0.1%', align: "center"}
                         ],
                         enabledEdit: true,
                         validate: true,

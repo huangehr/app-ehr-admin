@@ -232,9 +232,24 @@ cateType.list = {
 cateType.attr = {
     cateTypePid: "",
     type_form: $("#div_catetype_info_form"),
+    $ipt_view: $('#ipt_view'),
     validator: null,
     parent_select: null,
+    ipt_view: null,
+    iptViewData: [
+        {id: 'standard', name: '标准分类'},
+        {id: 'derived', name: '派生分类'}
+    ],
     init: function () {
+        this.ipt_view = this.$ipt_view.ligerComboBox({
+            data: this.iptViewData,
+            valueField: 'id',
+            textField: 'name',
+            width: 240,
+            selectBoxWidth: 240,
+        });
+
+
         this.getCateTypeInfo();
         this.event();
         this.validator = new $.jValidation.Validation(this.type_form, {
@@ -272,6 +287,7 @@ cateType.attr = {
             dataType: "json",
             data: {strIds: id},
             success: function (data) {
+                debugger
                 var envelop = eval(data);
                 var info = envelop.obj;
                 if (info != null) {
@@ -280,6 +296,12 @@ cateType.attr = {
                     var initValue = info.pid;
                     var initText = info.pname;
                     cateType.attr.getParentType(initValue, initText);
+                    $.each(cateType.attr.iptViewData, function (k, o) {
+                        if (o.id == info.code) {
+                            this.ipt_view.setValue(info.code);
+                            this.ipt_view.setText(o.name);
+                        }
+                    });
                 }
                 else {
                     $.Notice.error(result.errorMsg);
@@ -294,10 +316,12 @@ cateType.attr = {
         var id = $("#hdId").val();
         cateType.attr.type_form.attrScan();
         var dataJson = cateType.attr.type_form.Fields;
+        debugger
         var saveJson = {};
         saveJson.id = id;
         saveJson.pid = dataJson.pid.getValue();
         saveJson.name = dataJson.name.getValue();
+        saveJson.code = dataJson.code.getValue();
         saveJson.description = dataJson.description.getValue();
         var _url = cateType.list._url + "/rscategory/saveCateType";
         var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
