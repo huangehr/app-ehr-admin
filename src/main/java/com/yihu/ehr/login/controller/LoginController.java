@@ -498,10 +498,12 @@ public class LoginController extends BaseUIController {
                     }
                     session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
                 }else{
-                    session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList.add("-NoneResource"));
+                    rolesResourceIdList.add("-NoneResource");
+                    session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
                 }
             }else{
-                session.setAttribute(AuthorityKey.UserRoles, roleList.add("-NoneRole"));
+                roleList.add("-NoneRole");
+                session.setAttribute(AuthorityKey.UserRoles, roleList);
             }
         }
     }
