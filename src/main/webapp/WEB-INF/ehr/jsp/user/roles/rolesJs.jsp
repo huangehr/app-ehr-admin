@@ -138,7 +138,7 @@
 
 
 								<sec:authorize url="/userRoles/update">
-									html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:infoDialog:open", row.id, 'modify') + '"></a>';
+									html += '<a class="grid_edit" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "roles:infoDialog:open", row.id, 'modify', appId) + '"></a>';
 								</sec:authorize>
 								<sec:authorize url="/userRoles/delete">
 									html+= '<a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "roles:info:delete", row.id, 'delete') + '"></a>';
@@ -187,6 +187,12 @@
 					$('#div_new_record').click(function () {
 						$.publish("roles:infoDialog:open",['','new',appId]);
 					});
+
+					//批量新增角色组
+					$('#div_new_batchAddRoles').click(function () {
+						$.publish("roles:div_new_batchAddRoles:open",[appId]);
+					});
+
 					$.subscribe("roles:infoDialog:open",function(events,id,mode,appId){
 						isFirstPage = false;
 						var title = '';
@@ -220,6 +226,28 @@
 							}
 						})
 						rolesMaster.rolesInfoDialog.hide();
+					});
+
+					$.subscribe("roles:div_new_batchAddRoles:open",function(events,appId){
+						if(!appId){
+							appId = '';
+						}
+						rolesMaster.rolesBatchAddDialog = $.ligerDialog.open({
+							height: 400,
+							width: 500,
+							title: '批量添加角色组',
+							show:false,
+							urlParms:{
+								appId:appId
+							},
+							url: '${contextRoot}/userRoles/rolesBatchAddInitial',
+							isHidden: false,
+							load: true,
+							onLoaded:function() {
+								rolesMaster.rolesBatchAddDialog.show()
+							}
+						})
+						rolesMaster.rolesBatchAddDialog.hide();
 					});
 
 
@@ -362,6 +390,10 @@
 			win.closeRolesInfoDialog = function () {
 				//角色组新增、修改会话框关闭
 				rolesMaster.rolesInfoDialog.close();
+			};
+			win.rolesBatchAddDialog = function () {
+				//角色组新增
+				rolesMaster.rolesBatchAddDialog.close();
 			};
             win.closeBBConfigDialogDialog = function () {
                 //关闭资源报表配置会话框
