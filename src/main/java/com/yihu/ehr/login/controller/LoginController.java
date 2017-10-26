@@ -203,11 +203,10 @@ public class LoginController extends BaseUIController {
             Envelop envelop = getEnvelop(resultStr);
             UserDetailModel userDetailModel = getEnvelopModel(envelop.getObj(), UserDetailModel.class);
 
-            //获取用户的角色，机构，视图 等权限
-            getUserRolePermissions(userDetailModel,request);
-
             //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
+                //获取用户的角色，机构，视图 等权限
+                getUserRolePermissions(userDetailModel,request);
                 String lastLoginTime = null;
                 //model.addAttribute("successFlg", false);
                 //判断用户是否失效
