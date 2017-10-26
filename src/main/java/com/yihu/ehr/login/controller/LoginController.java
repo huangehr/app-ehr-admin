@@ -311,65 +311,61 @@ public class LoginController extends BaseUIController {
     public void getUserSaasOrgAndArea(List<String> roleOrgCodes, HttpServletRequest request) throws Exception {
         Envelop envelop = new Envelop();
         List<String> userOrgList = new ArrayList<>();
-//        for(RoleOrgModel roleOrgModel : roleOrgModels){
-            //使用orgCode获取saas化的机构或者区域。
-            String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
-            Map<String, Object> uParams = new HashMap<>();
-            uParams.put("orgCodeStr",org.apache.commons.lang.StringUtils.join(roleOrgCodes,',') );
-            String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
-            envelop = getEnvelop(resultStrUserSaasOrg);
-            request.getSession().setAttribute("userAreaSaas", envelop.getObj());
-            request.getSession().setAttribute("userOrgSaas", envelop.getDetailModelList());
-            userOrgList = envelop.getDetailModelList();
-            List<String> districtList = (List<String>) envelop.getObj();
-            String geographyUrl = "/geography_entries/";
-            if(districtList != null && districtList.size() > 0){
-                for(String code : districtList){
+        for(String code : roleOrgCodes){
+            userOrgList.add(code);
+        }
+        //使用orgCode获取saas化的机构或者区域。
+        String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
+        Map<String, Object> uParams = new HashMap<>();
+        uParams.put("orgCodeStr",org.apache.commons.lang.StringUtils.join(roleOrgCodes,',') );
+        String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
+        envelop = getEnvelop(resultStrUserSaasOrg);
+        request.getSession().setAttribute("userAreaSaas", envelop.getObj());
+        request.getSession().setAttribute("userOrgSaas", envelop.getDetailModelList());
+        userOrgList = envelop.getDetailModelList();
+        List<String> districtList = (List<String>) envelop.getObj();
+        String geographyUrl = "/geography_entries/";
+        if(districtList != null && districtList.size() > 0){
+            for(String code : districtList){
+                uParams.clear();
+                String   mGeographyDictStr = HttpClientUtil.doGet(comUrl + geographyUrl + code, uParams, username, password);
+                envelop = getEnvelop(mGeographyDictStr);
+                MGeographyDict mGeographyDict = null;
+                mGeographyDict = getEnvelopModel(envelop.getObj(), MGeographyDict.class);
+                if(mGeographyDict != null){
+                    String province = "";
+                    String city = "";
+                    String district = "";
+                    if(mGeographyDict.getLevel() == 1){
+                        province =  mGeographyDict.getName();
+                    }else if(mGeographyDict.getLevel() == 2){
+                        city =  mGeographyDict.getName();
+                    }else if(mGeographyDict.getLevel() == 3){
+                        district =  mGeographyDict.getName();
+                    }
+                    String  orgGeographyStr = "/organizations/geography";
                     uParams.clear();
-                    String   mGeographyDictStr = HttpClientUtil.doGet(comUrl + geographyUrl + code, uParams, username, password);
-                    envelop = getEnvelop(mGeographyDictStr);
-                    MGeographyDict mGeographyDict = null;
-                    mGeographyDict = getEnvelopModel(envelop.getObj(), MGeographyDict.class);
-                    if(mGeographyDict != null){
-                        String province = "";
-                        String city = "";
-                        String district = "";
-                        if(mGeographyDict.getLevel() == 1){
-                            province =  mGeographyDict.getName();
-                        }else if(mGeographyDict.getLevel() == 2){
-                            city =  mGeographyDict.getName();
-                        }else if(mGeographyDict.getLevel() == 3){
-                            district =  mGeographyDict.getName();
-                        }
-                        String  orgGeographyStr = "/organizations/geography";
-                        uParams.clear();
-                        uParams.put("province",province);
-                        uParams.put("city",city);
-                        uParams.put("district",district);
-                        String   mOrgsStr = HttpClientUtil.doGet(comUrl + orgGeographyStr , uParams, username, password);
-                        envelop = getEnvelop(mOrgsStr);
-                        if(envelop !=null && envelop.getDetailModelList() != null ){
-                            List<MOrganization> organizations = (List<MOrganization>)getEnvelopList(envelop.getDetailModelList(),new ArrayList<MOrganization>(),MOrganization.class);
-                            if(organizations !=null ){
-                                java.util.Iterator it = organizations.iterator();
-                                while(it.hasNext()){
-                                    MOrganization mOrganization = (MOrganization)it.next();
-                                    userOrgList.add(mOrganization.getCode());
-                                }
+                    uParams.put("province",province);
+                    uParams.put("city",city);
+                    uParams.put("district",district);
+                    String   mOrgsStr = HttpClientUtil.doGet(comUrl + orgGeographyStr , uParams, username, password);
+                    envelop = getEnvelop(mOrgsStr);
+                    if(envelop !=null && envelop.getDetailModelList() != null ){
+                        List<MOrganization> organizations = (List<MOrganization>)getEnvelopList(envelop.getDetailModelList(),new ArrayList<MOrganization>(),MOrganization.class);
+                        if(organizations !=null ){
+                            java.util.Iterator it = organizations.iterator();
+                            while(it.hasNext()){
+                                MOrganization mOrganization = (MOrganization)it.next();
+                                userOrgList.add(mOrganization.getCode());
                             }
                         }
                     }
                 }
             }
-
-//        }
-        if (userOrgList!=null && userOrgList.size() >0) {
-            userOrgList.removeAll(Collections.singleton(null));
-            userOrgList.removeAll(Collections.singleton(""));
-            request.getSession().setAttribute(SessionContants.UserOrgSaas, userOrgList);
-        }else{
-            request.getSession().setAttribute(SessionContants.UserOrgSaas, userOrgList.add("-NoneOrg"));
         }
+        userOrgList.removeAll(Collections.singleton(null));
+        userOrgList.removeAll(Collections.singleton(""));
+        request.getSession().setAttribute(SessionContants.UserOrgSaas, userOrgList);
     }
 
     @RequestMapping(value = "/userVerification")
@@ -492,6 +488,9 @@ public class LoginController extends BaseUIController {
                         roleOrgCodes.add(roleOrgModel.getOrgCode());
                     }
                     getUserSaasOrgAndArea(roleOrgCodes, request);
+                }else{
+                    List<String> userOrgList = new ArrayList<>();
+                    request.getSession().setAttribute(SessionContants.UserOrgSaas, userOrgList.add("-NoneOrg"));
                 }
                 //获取角色视图
                 List<String> rolesResourceIdList =  new ArrayList<>();
