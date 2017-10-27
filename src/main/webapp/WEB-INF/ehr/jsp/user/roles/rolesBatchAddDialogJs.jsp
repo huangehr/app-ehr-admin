@@ -86,16 +86,16 @@
 			bindEvents: function () {
 				var self = this;
 				//验证编码、名字不可重复
-				function checkUnique(url,appId, value, errorMsg) {
+				function checkUnique(url,appId, value,orgCode, errorMsg) {
 					var result = new jValidation.ajax.Result();
 					var dataModel = $.DataModel.init();
 					dataModel.fetchRemote(url, {
-						data: {appId:appId,name:value,code:value},
+						data: {appId:appId,name:value,code:value,orgCode:orgCode},
 						async: false,
 						success: function (data) {
 							if (data.successFlg) {
 								result.setResult(false);
-								result.setErrorMsg(errorMsg);
+								result.setErrorMsg(data.errorMsg);
 							} else {
 								result.setResult(true);
 							}
@@ -107,17 +107,15 @@
 				$("#btn_save").click(function () {
 					var validator =  new jValidation.Validation(self.$form, {immediate: true, onSubmit: false,
 						onElementValidateForAjax: function (elm) {
-							if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_name')) {
-								var name = $("#inp_roles_name").val();
-								if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
-									return checkUnique("${contextRoot}/userRoles/isNameExistence",appId,name,"角色组名称已被使用！");
-								}
+							var name = $("#inp_roles_name").val();
+							var orgCode = $("#orgCodes").val();
+							debugger
+							if(!Util.isStrEmpty(name) && !Util.isStrEmpty(orgCode)){
+								return checkUnique("${contextRoot}/userRoles/isNameExistence",appId,name,orgCode,"角色组名称已被使用！");
 							}
-							if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {
-								var code = $("#inp_roles_code").val();
-								if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){
-									return checkUnique("${contextRoot}/userRoles/isCodeExistence",appId,code,"角色组编码已被使用！");
-								}
+							var code = $("#inp_roles_code").val();
+							if(!Util.isStrEmpty(code) && !Util.isStrEmpty(orgCode)){
+								return checkUnique("${contextRoot}/userRoles/isCodeExistence",appId,code,orgCode,"角色组编码已被使用！");
 							}
 						}
 					});

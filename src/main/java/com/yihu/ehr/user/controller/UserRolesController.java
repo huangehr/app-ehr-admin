@@ -181,7 +181,6 @@ public class UserRolesController extends BaseUIController {
             if(StringUtils.isEmpty(orgCodes)){
                 return failed("机构不能为空！");
             }
-            // 重新写一个方法
             Map<String,Object> args = new HashMap<>();
             args.put("data_json",dataJson);
             args.put("orgCodes",orgCodes);
@@ -245,14 +244,33 @@ public class UserRolesController extends BaseUIController {
     @ResponseBody
     public Object isNameExistence(String appId,String name,String orgCode){
         try{
+            String url = ServiceApi.Roles.RoleNameExistence;
             Map<String,Object> params = new HashMap<>();
             params.put("name",name);
             params.put("app_id",appId);
-            params.put("orgCode",orgCode);
             params.put("type",1);
-            String url = ServiceApi.Roles.RoleNameExistence;
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            return envelopStr;
+            List<Envelop> envelops = new ArrayList<>();
+            String [] orgs = orgCode.split(";");
+            for(int i=0;i<orgs.length ;i++){
+                params.put("orgCode",orgs[i]);
+                String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+                Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
+                if(envelop.isSuccessFlg()){
+                    envelops.add(envelop);
+                }
+            }
+            Envelop result = new Envelop();
+            if(envelops != null && envelops.size() > 0){
+                String message = "";
+                for(Envelop envelop:envelops){
+                    message = message + envelop.getObj() + ";";
+                }
+                result.setErrorMsg(message.length()>1?message.substring(0,message.length()-1):message);
+                result.setSuccessFlg(true);
+            }else {
+                result.setSuccessFlg(false);
+            }
+            return result;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             return failed(ErrorCode.SystemError.toString());
@@ -268,8 +286,28 @@ public class UserRolesController extends BaseUIController {
             params.put("orgCode",orgCode);
             params.put("type",1);
             String url = ServiceApi.Roles.RoleCodeExistence;
-            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-            return envelopStr;
+            List<Envelop> envelops = new ArrayList<>();
+            String [] orgs = orgCode.split(";");
+            for(int i=0;i<orgs.length ;i++){
+                params.put("orgCode",orgs[i]);
+                String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+                Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+                if(envelop.isSuccessFlg()){
+                    envelops.add(envelop);
+                }
+            }
+            Envelop result = new Envelop();
+            if(envelops != null && envelops.size() > 0){
+                String message = "";
+                for(Envelop envelop:envelops){
+                    message = message + envelop.getObj() + ";";
+                }
+                result.setErrorMsg(message.length()>1?message.substring(0,message.length()-1):message);
+                result.setSuccessFlg(true);
+            }else {
+                result.setSuccessFlg(false);
+            }
+            return result;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             return failed(ErrorCode.SystemError.toString());
