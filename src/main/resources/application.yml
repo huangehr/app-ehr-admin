@@ -48,7 +48,8 @@ service-gateway:
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
   template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
-  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
+  browseClienturl: http://192.168.1.221:8010/ehr/browser
+  browseClientOutSizeurl: http://27.154.233.186:9480/ehr/browser
   profileurl: http://172.17.110.227:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
