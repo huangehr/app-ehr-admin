@@ -54,14 +54,25 @@ import java.util.*;
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
 public class LoginController extends BaseUIController {
 
+    private final long a1 = getIpNum("10.0.0.0");
+    private final long a2 = getIpNum("10.255.255.255");
+    private final long b1 = getIpNum("172.16.0.0");
+    private final long b2 = getIpNum("172.31.255.255");
+    private final long c1 = getIpNum("192.168.0.0");
+    private final long c2 = getIpNum("192.168.255.255");
+    private final long d1 = getIpNum("10.44.0.0");
+    private final long d2 = getIpNum("10.69.0.255");
+
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
-    @Value("${service-gateway.BrowseClienturl}")
-    private String browseClienturl;
+    @Value("${service-gateway.browseClientUrl}")
+    private String browseClientUrl;
+    @Value("${service-gateway.browseClientOutSizeUrl}")
+    private String browseClientOutSizeUrl;
     @Value("${service-gateway.profileurl}")
     private String profileurl;
     @Value("${app.oauth2authorize}")
@@ -288,22 +299,79 @@ public class LoginController extends BaseUIController {
         }
     }
 
-    /**
-     * 单点登录
-     */
+    //------------------------------------------------- 单点登录 start -------------------------------------------
+
     @RequestMapping(value = "/broswerSignin", method = RequestMethod.GET)
     public void signin(Model model, HttpServletRequest request, HttpServletResponse response, String idCardNo) throws Exception {
+        initUrlInfo(request);
+        model.addAttribute("model", request.getSession());
+        model.addAttribute("idCardNo", idCardNo);
         String clientId = browseClientId;
-        String url = browseClienturl + "/common/login/signin?idCardNo=" + idCardNo;
-        //response.sendRedirect("http://localhost:10260/oauth/authorize?response_type=token&client_id=111111&redirect_uri=http://localhost:8011/login/test&user=me");
         //获取code
         HttpSession session = request.getSession();
         AccessToken token = (AccessToken) session.getAttribute("token");
         String user = token.getUser();
-        model.addAttribute("model", request.getSession());
-        model.addAttribute("idCardNo", idCardNo);
-        response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
+        boolean isInnerIp = (Boolean) session.getAttribute("isInnerIp");
+        System.out.println("isInnerIp:" + isInnerIp);
+        if(isInnerIp) {
+            String url = browseClientUrl + "/common/login/signin?idCardNo=" + idCardNo;
+            response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
+        }else {
+            String url = browseClientOutSizeUrl + "/common/login/signin?idCardNo=" + idCardNo;
+            response.sendRedirect(oauth2OutSize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
+        }
+        //response.sendRedirect("http://localhost:10260/oauth/authorize?response_type=token&client_id=111111&redirect_uri=http://localhost:8011/login/test&user=me");
     }
+
+    /**
+     * 初始化内外网IP信息
+     * @param request
+     */
+    public void initUrlInfo(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        if(ip != null) {
+            if("0:0:0:0:0:0:0:1".equals(ip)) {
+                request.getSession().setAttribute("isInnerIp", true);
+            }else {
+                if("127.0.0.1".equals(ip) || isInnerIP(ip)) {
+                    request.getSession().setAttribute("isInnerIp", true);
+                }else {
+                    request.getSession().setAttribute("isInnerIp", false);
+                }
+            }
+        }
+    }
+
+    public long getIpNum(String ipAddress) {
+        String [] ip = ipAddress.split("\\.");
+        long a = Integer.parseInt(ip[0]);
+        long b = Integer.parseInt(ip[1]);
+        long c = Integer.parseInt(ip[2]);
+        long d = Integer.parseInt(ip[3]);
+        return a * 256 * 256 * 256 + b * 256 * 256 + c * 256 + d;
+    }
+
+    public boolean isInnerIP(String ip){
+        long n = getIpNum(ip);
+        return (n >= a1 && n <= a2) || (n >= b1 && n <= b2) || (n >= c1 && n <= c2) || (n >= d1 && n <= d2);
+    }
+
+    //------------------------------------------------- 单点登录 end -------------------------------------------
 
     /**
      * 获取用的saas机构
