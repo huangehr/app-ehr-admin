@@ -66,7 +66,6 @@
 
 				//验证编码、名字不可重复
 				function checkUnique(url,appId, value,orgCode, errorMsg) {
-					debugger
 					var result = new jValidation.ajax.Result();
 					var dataModel = $.DataModel.init();
 					dataModel.fetchRemote(url, {
@@ -90,13 +89,13 @@
 						onElementValidateForAjax: function (elm) {
 							if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_name')) {
 								var name = $("#inp_roles_name").val();
-								if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
+								if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy)  && !Util.isStrEmpty(orgCode) )){
 									return checkUnique("${contextRoot}/userRoles/isNameExistence",appId,name,orgCode,"此机构下的角色组名称已被使用！");
 								}
 							}
 							if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {
 								var code = $("#inp_roles_code").val();
-								if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy))){
+								if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy)  && !Util.isStrEmpty(orgCode) )){
 									return checkUnique("${contextRoot}/userRoles/isCodeExistence",appId,code,orgCode,"此机构下的角色组编码已被使用！");
 								}
 							}
