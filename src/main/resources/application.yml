@@ -48,8 +48,8 @@ service-gateway:
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
   template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
-  browseClienturl: http://192.168.1.221:8010/ehr/browser
-  browseClientOutSizeurl: http://27.154.233.186:9480/ehr/browser
+  browseClientUrl: http://192.168.1.221:8010/ehr/browser
+  browseClientOutSizeUrl: http://27.154.233.186:9480/ehr/browser
   profileurl: http://172.17.110.227:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
@@ -82,7 +82,8 @@ service-gateway:
   adaption: http://localhost:10000/api/v1.0/adapter
   template: http://localhost:10000/api/v1.0/template
   standard: http://localhost:10000/api/v1.0/std
-  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
+  browseClientUrl: http://192.168.1.221:8010/ehr/browser
+  browseClientOutSizeUrl: http://192.168.1.221:8010/ehr/browser
   profileurl: http://localhost:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.54:22122
@@ -114,7 +115,8 @@ service-gateway:
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
   template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
-  BrowseClienturl: http://172.19.103.73:8010/ehr/browser
+  browseClientUrl: http://172.19.103.73:8010/ehr/browser
+  browseClientOutSizeUrl: http://172.19.103.73:8010/ehr/browser
   profileurl: http://172.19.103.73:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
@@ -147,7 +149,8 @@ service-gateway:
   adaption: http://11.1.2.21:10000/api/v1.0/adapter
   template: http://11.1.2.21:10000/api/v1.0/template
   standard: http://11.1.2.21:10000/api/v1.0/std
-  BrowseClienturl: http://192.168.1.221:8010/ehr/browser
+  browseClientUrl: http://192.168.1.221:8010/ehr/browser
+  browseClientOutSizeUrl: http://192.168.1.221:8010/ehr/browser
   profileurl: http://11.1.2.21:9009/api/v1.0
 fast-dfs:
   tracker-server: 11.1.2.9:22122
@@ -181,7 +184,8 @@ service-gateway:
   adaption: http://192.168.135.31:10000/api/v1.0/adapter
   template: http://192.168.135.31:10000/api/v1.0/template
   standard: http://192.168.135.31:10000/api/v1.0/std
-  BrowseClienturl: http://192.168.135.34:8010/ehr/browser
+  browseClientUrl: http://192.168.135.34:8010/ehr/browser
+  browseClientOutSizeUrl: http://192.168.135.34:8010/ehr/browser
   profileurl: http://192.168.135.32:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.135.42:22122
@@ -216,7 +220,8 @@ service-gateway:
   adaption: http://10.176.97.10:10000/api/v1.0/adapter
   template: http://10.176.97.10:10000/api/v1.0/template
   standard: http://10.176.97.10:10000/api/v1.0/std
-  BrowseClienturl: http://10.176.97.11:8010/ehr/browser
+  browseClientUrl: http://10.176.97.11:8010/ehr/browser
+  browseClientOutSizeUrl: http://10.176.97.11:8010/ehr/browser
   profileurl: http://10.176.97.12:9009/api/v1.0
 fast-dfs:
   tracker-server: 10.176.97.5:22122
