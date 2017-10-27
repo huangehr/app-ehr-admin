@@ -371,6 +371,7 @@ public class LoginController extends BaseUIController {
             ip = request.getRemoteAddr();
         }
         if(ip != null) {
+            System.out.println(ip);
             if("0:0:0:0:0:0:0:1".equals(ip)) {
                 request.getSession().setAttribute("isInnerIp", true);
             }else {
