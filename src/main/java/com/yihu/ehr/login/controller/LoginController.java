@@ -301,9 +301,35 @@ public class LoginController extends BaseUIController {
 
     //------------------------------------------------- 单点登录 start -------------------------------------------
 
+    /**
+     * 验证某个用户是否有数据
+     * @param idCardNo
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
+    @ResponseBody
+    public Envelop check(String idCardNo, HttpServletRequest request) {
+        initUrlInfo(request);
+        Envelop envelop = new Envelop();
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("demographic_id", idCardNo);
+        paramsMap.put("version", stdVersion);
+        String url2 = "/" + paramsMap.get("demographic_id") + "/profile/info";
+        try {
+            String result = HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
+            if (StringUtils.isEmpty(result)) {
+                return envelop;
+            }
+        } catch (Exception e) {
+            return envelop;
+        }
+        envelop.setSuccessFlg(true);
+        return envelop;
+    }
+
     @RequestMapping(value = "/broswerSignin", method = RequestMethod.GET)
     public void signin(Model model, HttpServletRequest request, HttpServletResponse response, String idCardNo) throws Exception {
-        initUrlInfo(request);
         model.addAttribute("model", request.getSession());
         model.addAttribute("idCardNo", idCardNo);
         String clientId = browseClientId;
@@ -497,34 +523,6 @@ public class LoginController extends BaseUIController {
             return result;
         }
     }
-
-    /**
-     * 验证某个用户是否有数据
-     *
-     * @param idCardNo
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
-    @ResponseBody
-    public Envelop check(String idCardNo) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("demographic_id", idCardNo);
-        paramsMap.put("version", stdVersion);
-        String url2 = "/" + paramsMap.get("demographic_id") + "/profile/info";
-        try {
-            String result = HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
-            if (StringUtils.isEmpty(result)) {
-                return envelop;
-            }
-        } catch (Exception e) {
-            return envelop;
-        }
-        envelop.setSuccessFlg(true);
-        return envelop;
-    }
-
 
     /**
      * 获取用户的角色，机构，视图 等权限
