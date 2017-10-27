@@ -176,10 +176,10 @@ public class RsResourceCategoryController extends BaseUIController {
         try{
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(RsResourceCategoryController.class).error(ex.getMessage());
+        }catch (Exception e){
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
