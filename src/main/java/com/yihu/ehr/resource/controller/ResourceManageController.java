@@ -32,7 +32,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/resource/resourceManage")
-public class ResourceController extends BaseUIController {
+public class ResourceManageController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
@@ -278,7 +278,7 @@ public class ResourceController extends BaseUIController {
                 return envelopStr;
             }
         }catch (Exception ex){
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return envelop;
@@ -334,7 +334,7 @@ public class ResourceController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
@@ -356,7 +356,7 @@ public class ResourceController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
@@ -382,7 +382,7 @@ public class ResourceController extends BaseUIController {
                 list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
             }
         }catch (Exception ex){
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
         }
         return list;
     }
@@ -396,23 +396,39 @@ public class ResourceController extends BaseUIController {
      */
     @RequestMapping("/rsCategory")
     @ResponseBody
-    public Object searchRsCategory(String searchParm,int page,int rows){
-        String url = "/resources/categories/search";
+    public Object searchRsCategory(String searchParm, HttpServletRequest request, int page, int rows){
         Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(searchParm)) {
-            stringBuffer.append("name?" + searchParm +";");
+        String url = "/resources/categories/search";
+        String envelopStrGet = "";
+        HttpSession session = request.getSession();
+        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+        List<String> userRoleList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
+        if(!isAccessAll) {
+            if(null == userRoleList || userRoleList.size() <= 0) {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("无权访问");
+                return envelop;
+            }
         }
-        params.put("filters", "");
-        String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-        params.put("page", page);
-        params.put("size", rows);
         try {
-            String envelopStrGet = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Map<String, Object> params = new HashMap<>();
+            if(isAccessAll) {
+                params.put("roleId", "*");
+            }else {
+                params.put("roleId", objectMapper.writeValueAsString(userRoleList));
+            }
+            StringBuffer stringBuffer = new StringBuffer();
+            if (!StringUtils.isEmpty(searchParm)) {
+                stringBuffer.append("name?" + searchParm +";");
+            }
+            params.put("filters", "");
+            String filters = stringBuffer.toString();
+            if (!StringUtils.isEmpty(filters)) {
+                params.put("filters", filters);
+            }
+            params.put("page", page);
+            params.put("size", rows);
+            envelopStrGet = HttpClientUtil.doGet(comUrl + url, params, username, password);
             Envelop envelopGet = objectMapper.readValue(envelopStrGet,Envelop.class);
             List<RsCategoryModel> rsCategoryModels = new ArrayList<>();
             List<Map> list = new ArrayList<>();
@@ -428,10 +444,11 @@ public class ResourceController extends BaseUIController {
                 return envelopGet;
             }
             return envelop;
-        } catch (Exception ex) {
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(ResourceManageController.class).error(e.getMessage());
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg(e.getMessage());
             return envelop;
         }
     }
@@ -455,7 +472,7 @@ public class ResourceController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(ResourceController.class).error(ex.getMessage());
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
