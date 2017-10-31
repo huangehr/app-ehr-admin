@@ -362,7 +362,7 @@ public class ResourceBrowseController extends BaseUIController {
      * @param resourcesCode
      * @param searchParams
      */
-    @RequestMapping("outExcel")
+    @RequestMapping("/outExcel")
     public void outExcel(HttpServletResponse response, HttpServletRequest request, Integer page, Integer size, String resourcesCode, String searchParams) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -387,12 +387,32 @@ public class ResourceBrowseController extends BaseUIController {
                 sheet.addCell(new Label(i + 6, 1, String.valueOf(cmap.get("value"))));
             }
             String url = "/resources/ResourceBrowses/getResourceData";
-            //当前用户机构
-            UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-            String orgCode = userDetailModel.getOrganization();
-            //params.put("orgCode", "41872607-9");
-            params.put("orgCode", orgCode);
+            //从Session中获取用户的角色信息和授权视图列表作为查询参数
+            HttpSession session = request.getSession();
+            List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
+            List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
+            List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
+            boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+            if(!isAccessAll) {
+                if(null == userRolesList || userRolesList.size() <= 0) {
+                    System.out.println("无权访问");
+                    return;
+                }
+                if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+                    System.out.println("无权访问");
+                    return;
+                }
+            }
             params.put("resourcesCode", resourcesCode);
+            if(isAccessAll) {
+                params.put("roleId", "*");
+                params.put("orgCode", "*");
+                params.put("areaCode", "*");
+            }else {
+                params.put("roleId", objectMapper.writeValueAsString(userRolesList));
+                params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
+                params.put("areaCode", objectMapper.writeValueAsString(userAreaSaasList));
+            }
             params.put("queryCondition", searchParams);
             params.put("page", 1);
             params.put("size", 500);

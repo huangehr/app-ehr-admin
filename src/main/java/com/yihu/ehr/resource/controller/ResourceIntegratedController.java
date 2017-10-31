@@ -297,7 +297,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param searchParams
      * @param metaData
      */
-    @RequestMapping(value = "/outFileExcel")
+    @RequestMapping(value = "outFileExcel")
     public void outExcel(HttpServletRequest request, HttpServletResponse response, Integer size, String resourcesCode, String searchParams, String metaData) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
@@ -324,21 +324,25 @@ public class ResourceIntegratedController extends BaseUIController {
                 metaDataList.add(String.valueOf(temp.get("code")));
             }
             String url = "/resources/integrated/metadata_data";
-            //当前用户机构
-            UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-            params.put("resourcesCode", resourcesCode);
-            params.put("metaData", objectMapper.writeValueAsString(metaDataList));
-            /**
-             * 待确认
-             */
-            String orgCode = userDetailModel.getOrganization();
-            if(orgCode != null) {
-                params.put("orgCode", userDetailModel.getOrganization());
+            //权限控制
+            HttpSession session = request.getSession();
+            List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
+            List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
+            boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+            if(!isAccessAll) {
+                if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+                    System.out.println("无权访问");
+                }
             }
-            /**
-             * 暂未进行控制
-             */
-            params.put("appId", "JKZL");
+            params.put("resourcesCode", resourcesCode);
+            params.put("metaData", metaData);
+            if(isAccessAll) {
+                params.put("orgCode", "*");
+                params.put("areaCode", "*");
+            }else {
+                params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
+                params.put("areaCode", objectMapper.writeValueAsString(userAreaSaasList));
+            }
             params.put("queryCondition", searchParams);
             params.put("page", 1);
             params.put("size", size);
