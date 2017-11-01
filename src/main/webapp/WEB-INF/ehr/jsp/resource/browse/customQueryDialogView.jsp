@@ -41,8 +41,8 @@
     <div class="m-form-group">
         <label>访问方式<spring:message code="spe.colon"/></label>
         <div class="u-checkbox-wrap m-form-control">
-            <input type="radio" value="1" name="grantType" data-attr-scan/>开放访问
-            <input type="radio" value="0" name="grantType" data-attr-scan/>授权访问
+            <input type="radio" value="1" name="grantType" data-attr-scan/>授权访问
+            <input type="radio" value="0" name="grantType" data-attr-scan/>开放访问
         </div>
     </div>
     <div class="m-form-group">
