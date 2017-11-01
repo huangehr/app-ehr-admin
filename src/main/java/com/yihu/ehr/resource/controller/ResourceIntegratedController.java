@@ -297,7 +297,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param searchParams
      * @param metaData
      */
-    @RequestMapping(value = "outFileExcel")
+    @RequestMapping(value = "/outFileExcel")
     public void outExcel(HttpServletRequest request, HttpServletResponse response, Integer size, String resourcesCode, String searchParams, String metaData) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
