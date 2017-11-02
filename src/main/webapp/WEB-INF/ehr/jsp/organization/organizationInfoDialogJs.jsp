@@ -144,78 +144,80 @@
 
                 this.$form.attrScan();
                 var tags = '';
-                for (var i = 0; i < org.tags.length; i++) {
-                    tags += (org.tags)[i] + ';'
-                }
-                tags = tags.substring(0, tags.length - 1);
-                this.$form.Fields.fillValues({
-                    orgCode: org.orgCode,
-                    fullName: org.fullName,
-                    shortName: org.shortName,
-                    //location: org.location,
-                    orgType: org.orgType,
-                    settledWay: org.settledWay,
-                    admin: org.admin,
-                    tel: org.tel,
-                    tags: tags,
+                if (org) {
+                    for (var i = 0; i < org.tags.length; i++) {
+                        tags += (org.tags)[i] + ';'
+                    }
+                    tags = tags.substring(0, tags.length - 1);
+                    this.$form.Fields.fillValues({
+                        orgCode: org.orgCode,
+                        fullName: org.fullName,
+                        shortName: org.shortName,
+                        //location: org.location,
+                        orgType: org.orgType,
+                        settledWay: org.settledWay,
+                        admin: org.admin,
+                        tel: org.tel,
+                        tags: tags,
 
-                    traffic:org.traffic,
-                    ing:org.ing,
-                    lat:org.lat,
-                    hosTypeId:org.hosTypeId,
-                    ascriptionType:org.ascriptionType,
-                    phone:org.phone,
-                    introduction:org.introduction,
-                    levelId:org.levelId,
-                    legalPerson:org.legalPerson,
-                    zxy:org.zxy,
-                    berth: org.berth,
+                        traffic:org.traffic,
+                        ing:org.ing,
+                        lat:org.lat,
+                        hosTypeId:org.hosTypeId,
+                        ascriptionType:org.ascriptionType,
+                        phone:org.phone,
+                        introduction:org.introduction,
+                        levelId:org.levelId,
+                        legalPerson:org.legalPerson,
+                        zxy:org.zxy,
+                        berth: org.berth,
 
-                    publicKey: org.publicKey,
-                    validTime: org.validTime,
-                    startTime: org.startTime
-                });
-                this.$publicKeyMessage.val(org.publicKey);
-                this.$publicKeyValidTime.html(org.validTime);
-                this.$publicKeyStartTime.html(org.startTime);
-                if (org.publicKey != null && org.publicKey != undefined) {
-                    this.$publicKeyInfo.val("已分配");
-                } else {
-                    this.$publicKeyInfo.val("未分配");
-                }
-                $("#parentHosId").ligerGetComboBoxManager().setValue(org.parentHosId);
-                $("#parentHosId").ligerGetComboBoxManager().setText(org.parentHosName);
+                        publicKey: org.publicKey,
+                        validTime: org.validTime,
+                        startTime: org.startTime
+                    });
+                    this.$publicKeyMessage.val(org.publicKey);
+                    this.$publicKeyValidTime.html(org.validTime);
+                    this.$publicKeyStartTime.html(org.startTime);
+                    if (org.publicKey != null && org.publicKey != undefined) {
+                        this.$publicKeyInfo.val("已分配");
+                    } else {
+                        this.$publicKeyInfo.val("未分配");
+                    }
+                    $("#parentHosId").ligerGetComboBoxManager().setValue(org.parentHosId);
+                    $("#parentHosId").ligerGetComboBoxManager().setText(org.parentHosName);
 
-                this.$form.Fields.location.setValue([org.province, org.city, org.district, org.street]);
+                    this.$form.Fields.location.setValue([org.province, org.city, org.district, org.street]);
 
-                if ('${mode}' == 'view') {
-                    this.$form.addClass("m-form-readonly");
-                    this.$publicKey.hide();
-                    this.$footer.hide();
-                    this.$publicKeyInfoDiv.show();
-//                    this.$selectPublicKeyMessage.show();
-//                    this.$selectPublicKeyValidTime.show();
-//                    this.$selectPublicKeyStartTime.show();
-                    this.$filePicker.addClass("hidden");
-                    $("#filePicker2").hide();
-                    $('#div_organization_info_form textarea').attr("disabled","disabled");
-                    $(".m-form-control .l-text-trigger-cancel").remove();
-                    $(".info").hide();
-                }
-                if ('${mode}' == 'modify') {
-                    //this.$publicManage.hide();
-                    this.$parentPublicKey.show();
-                }
-                var pic = org.imgRemotePath;
-                if (!Util.isStrEmpty(pic)) {
-                    this.$orgImageShow.html('<img src="${contextRoot}/organization/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w70 f-h70"></img>');
-                }
+                    if ('${mode}' == 'view') {
+                        this.$form.addClass("m-form-readonly");
+                        this.$publicKey.hide();
+                        this.$footer.hide();
+                        this.$publicKeyInfoDiv.show();
+    //                    this.$selectPublicKeyMessage.show();
+    //                    this.$selectPublicKeyValidTime.show();
+    //                    this.$selectPublicKeyStartTime.show();
+                        this.$filePicker.addClass("hidden");
+                        $("#filePicker2").hide();
+                        $('#div_organization_info_form textarea').attr("disabled","disabled");
+                        $(".m-form-control .l-text-trigger-cancel").remove();
+                        $(".info").hide();
+                    }
+                    if ('${mode}' == 'modify') {
+                        //this.$publicManage.hide();
+                        this.$parentPublicKey.show();
+                    }
+                    var pic = org.imgRemotePath;
+                    if (!Util.isStrEmpty(pic)) {
+                        this.$orgImageShow.html('<img src="${contextRoot}/organization/showImage?timestamp='+(new Date()).valueOf()+'" class="f-w70 f-h70"></img>');
+                    }
 
-                var logoPic = org.logoUrl;
-                if (!Util.isStrEmpty(logoPic)) {
-                    this.$logoImageShow.html('<img style="width:130px;height:80px;" src="${contextRoot}/organization/showImageLogo?storagePath='+logoPic+'" ></img>');
-                }
+                    var logoPic = org.logoUrl;
+                    if (!Util.isStrEmpty(logoPic)) {
+                        this.$logoImageShow.html('<img style="width:130px;height:80px;" src="${contextRoot}/organization/showImageLogo?storagePath='+logoPic+'" ></img>');
+                    }
 
+                }
             },
             initDDL: function (dictId, target) {
                 target.ligerComboBox({
@@ -422,26 +424,28 @@
         });
         pageInit();
         function addImg(){
-            if(imgLop.detailModelList.length>0){
-                $("#dndArea").css("display",'none');
-                $(".filelist").css("display","block");
-                var html=""
-                for(var j in imgLop.detailModelList){
-                    html+="<li id='WU_FILE_"+(parseInt(j)+1)+"' class=\"state-complete\">"+
-                            "<p class=\"title\">服务器图片"+(parseInt(j)+1)+".JPG</p>"+
-                            "<p class=\"imgWrap\">"+
-                            "<img style='height: 100%;' id='imageview"+(parseInt(j)+1)+"'></p><p class=\"progress\"><span style=\"display: none; width: 0px;\">"+
-                            " </span>"+
-                            "</p>"+
-                            "<span class=\"success\"></span>"+
-                            "<div class='file-panel' ><a href='javascript:void(0);' class='fangda'></a><span class='cancel' imgnum='"+(parseInt(j)+1)+"'   id='"+imgLop.detailModelList[j]+"'>删除</span></div>"+
-                            "</li>"
+            if (imgLop.detailModelList) {
+                if(imgLop.detailModelList.length>0){
+                    $("#dndArea").css("display",'none');
+                    $(".filelist").css("display","block");
+                    var html=""
+                    for(var j in imgLop.detailModelList){
+                        html+="<li id='WU_FILE_"+(parseInt(j)+1)+"' class=\"state-complete\">"+
+                                "<p class=\"title\">服务器图片"+(parseInt(j)+1)+".JPG</p>"+
+                                "<p class=\"imgWrap\">"+
+                                "<img style='height: 100%;' id='imageview"+(parseInt(j)+1)+"'></p><p class=\"progress\"><span style=\"display: none; width: 0px;\">"+
+                                " </span>"+
+                                "</p>"+
+                                "<span class=\"success\"></span>"+
+                                "<div class='file-panel' ><a href='javascript:void(0);' class='fangda'></a><span class='cancel' imgnum='"+(parseInt(j)+1)+"'   id='"+imgLop.detailModelList[j]+"'>删除</span></div>"+
+                                "</li>"
+                    }
+                    $("#filelist").html(html);
+                    if ('${mode}' == 'view') {
+                        $(".file-panel .cancel").hide();
+                    }
+                    doGetImg(1,imgLop.detailModelList[0]);
                 }
-                $("#filelist").html(html);
-                if ('${mode}' == 'view') {
-                    $(".file-panel .cancel").hide();
-                }
-                doGetImg(1,imgLop.detailModelList[0]);
             }
             $("#filelist .cancel").bind("click",function(){
                 _this = this;
@@ -473,10 +477,12 @@
                     }
                 }
             });
-            if(index<imgLop.detailModelList.length){
-                setTimeout(function(){
-                    doGetImg((index+1),imgLop.detailModelList[index])
-                },200);
+            if (imgLop.detailModelList) {
+                if(index<imgLop.detailModelList.length){
+                    setTimeout(function(){
+                        doGetImg((index+1),imgLop.detailModelList[index])
+                    },200);
+                }
             }
         }
 
