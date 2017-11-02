@@ -75,7 +75,12 @@
                 dimensionMapArr.push(item.dimensionOptions);
                 $('#' + item.quotaCode + '_a').attr('data-id', j);
                 var chart = echarts.init(document.getElementById('' + item.quotaCode));
-                chart.setOption(JSON.parse(item.option));
+                try {
+                    chart.setOption(JSON.parse(item.option));
+                } catch (e){
+                    console.log(e.message);
+                }
+                debugger
                 (function (c, n, id) {
                     chartsArr.push(c);
                     quotaIdArr.push(id);
@@ -135,10 +140,14 @@
 
     // 渲染数据的条件范围
     function renderConditions(code, conditions) {
-        var conditionsTpl = document.getElementById('data-conditions-tpl').innerHTML.trim();
-        Mustache.parse(conditionsTpl);
-        var conditionsHtml = Mustache.render(conditionsTpl, conditions);
-        $('#' + code).before(conditionsHtml);
+        var cond = document.getElementById('data-conditions-tpl'),
+            conditionsTpl = '';
+        if (cond != null) {
+            conditionsTpl = cond.innerHTML.trim();
+            Mustache.parse(conditionsTpl);
+            var conditionsHtml = Mustache.render(conditionsTpl, conditions);
+            $('#' + code).before(conditionsHtml);
+        }
     }
 
     // 获取上卷下砖数据
