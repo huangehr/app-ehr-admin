@@ -105,7 +105,7 @@
 	<div class="m-form-group" id="inp_content_div">
 		<label><spring:message code="lbl.portalResources.description"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<textarea id="inp_description" class="f-w240 max-length-256 validate-special-char"
+			<textarea id="inp_description" class="required f-w240 max-length-256 validate-special-char"
 					  data-attr-scan="description" ></textarea>
 		</div>
 	</div>
