@@ -94,7 +94,7 @@ public class OrganizationController extends BaseUIController {
             Envelop imageLop =   getEnvelop(envelopStr);
             session.setAttribute("imageLop",toJson(imageLop));
         } catch (Exception e) {
-             session.setAttribute("imageLop","");
+             session.setAttribute("imageLop","{\"successFlg\":false,\"pageSize\":10,\"currPage\":0,\"totalPage\":0,\"totalCount\":0,\"detailModelList\":null,\"obj\":null,\"errorMsg\":\"系统错误,请联系管理员!\",\"errorCode\":0}");
              LogService.getLogger(OrganizationController.class).error(e.getMessage());
         }
         model.addAttribute("mode", mode);
