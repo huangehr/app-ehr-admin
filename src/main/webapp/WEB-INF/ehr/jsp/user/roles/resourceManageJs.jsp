@@ -82,8 +82,9 @@
 							success: function (data) {
 								if (data.successFlg) {
 									$.Notice.success('操作成功！');
-									m.find();
-								} else {
+                                    m.rendGrid();
+                                    m.find();
+                                } else {
 									$.Notice.error(data.errorMsg);
 								}
 							},
@@ -157,8 +158,9 @@
 				//查询列表方法
 				find : function (rolesId, rolesResourceId) {
 					var params = !rolesId? em.params: (em.params = {extParms: '{"rolesResId": "'+ rolesResourceId +'", "appId": "'+ dataModel.backParams.appId +'"}', page:1, rows: 999});
+					console.log(this)
 					reloadGrid(this.grid, 1, params);
-				},
+                },
 				//公开方法
 				publishFunc : function (){
 					debugger;

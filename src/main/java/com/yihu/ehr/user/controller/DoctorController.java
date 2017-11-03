@@ -3,6 +3,7 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -102,19 +103,15 @@ public class DoctorController extends BaseUIController {
         if (!StringUtils.isEmpty(searchNm)) {
             stringBuffer.append("name?" + searchNm + ";");
         }
-       /* String userId = getInfoService.getUserId();
-        if (!StringUtils.isEmpty(userId)) {
-            stringBuffer.append("userId=" + userId + ";");
-        } else {
-            stringBuffer.append("userId=" + "-1" + ";");
-        }*/
-        String idCardNoList = getInfoService.idCardNoList(request);
-        if (!StringUtils.isEmpty(idCardNoList) && !"admin".equals(idCardNoList)) {
-            stringBuffer.append("idCardNo=" + idCardNoList + ";");
-        } else if (StringUtils.isEmpty(idCardNoList)) {
-            stringBuffer.append("idCardNo=-1;");
-        }
 
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+        if (null != userOrgList && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
+            result.setSuccessFlg(true);
+            return result;
+        } else if (null != userOrgList && userOrgList.size() > 0) {
+            String orgCode = String.join(",", userOrgList);
+            params.put("orgCode", orgCode);
+        }
         String filters = stringBuffer.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);

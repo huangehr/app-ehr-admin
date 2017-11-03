@@ -575,7 +575,7 @@
                             var rgd = me.resourceInfoGrid.getData();
                             if (rgd && rgd.length > 0) {
                                 var rowData = me.resourceInfoGrid.data.detailModelList;
-                                me.outExcel(rowData, me.resourceInfoGrid.currentData.totalPage * me.resourceInfoGrid.currentData.pageSize);
+                                me.outExcel(rowData, me.resourceInfoGrid.currentData.pageSize);
                             } else {
                                 $.Notice.error('请先选择数据！');
                             }
@@ -749,7 +749,7 @@
                 },
                 //导出指标统计excel
                 outZBWxcel: function () {
-                    window.open("${contextRoot}/resourceIntegrated/outQuotaExcel?tjQuotaIds=" + this.tjQuotaIds.join(',') + "&tjQuotaCodes=" + this.tjQuotaCodes.join(',') + "&searchParams=" + '{}', "指标统计导出");
+                    window.open("${contextRoot}/resourceIntegrated/outQuotaExcel?tjQuotaIds=" + this.tjQuotaIds.join(',') + "&tjQuotaCodes=" + this.tjQuotaCodes.join(',') + "&searchParams=" + '{}' + '&size=' + this.$zbGrid.find('.l-bar-selectpagesize').find('select').val() + '&page=' + this.$zbGrid.find('.pcontrol').find('input').val(), "指标统计导出");
                 },
                 //导出档案数据excel
                 outExcel: function (rowData, size) {
@@ -790,7 +790,8 @@
                             });
                         }
                     }
-                    window.open("${contextRoot}/resourceIntegrated/outFileExcel?size=" + size + "&resourcesCode=" + this.masterArr + "&searchParams=" + this.queryCondition + "&metaData=" + JSON.stringify(metaData), "档案数据导出");
+
+                    window.open("${contextRoot}/resourceIntegrated/outFileExcel?size=" + this.$divResourceInfoGrid.find('.l-bar-selectpagesize').find('select').val() + "&resourcesCode=" + this.masterArr + "&searchParams=" + this.queryCondition + "&metaData=" + JSON.stringify(metaData) + '&page=' + this.$divResourceInfoGrid.find('.pcontrol').find('input').val(), "档案数据导出");
                 },
                 calLen: function () {
                     var $selItems = $('.select-con').find('.sel-item');
