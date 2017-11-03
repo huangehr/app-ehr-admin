@@ -407,9 +407,6 @@ public class LoginController extends BaseUIController {
     public void getUserSaasOrgAndArea(List<String> roleOrgCodes, HttpServletRequest request) throws Exception {
         Envelop envelop = new Envelop();
         List<String> userOrgList = new ArrayList<>();
-        for(String code : roleOrgCodes){
-            userOrgList.add(code);
-        }
         //使用orgCode获取saas化的机构或者区域。
         String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
         Map<String, Object> uParams = new HashMap<>();
@@ -459,6 +456,10 @@ public class LoginController extends BaseUIController {
                     }
                 }
             }
+        }
+        //加上自身默认机构
+        for(String code : roleOrgCodes){
+            userOrgList.add(code);
         }
         userOrgList.removeAll(Collections.singleton(null));
         userOrgList.removeAll(Collections.singleton(""));
