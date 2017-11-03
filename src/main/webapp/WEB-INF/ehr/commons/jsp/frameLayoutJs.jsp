@@ -5,8 +5,20 @@
 
 <script type="text/javascript">
 
+    var parentOrder = '';
     var ha = window.location.hash;
     var host = '${host}';
+
+    window.addEventListener('message', function(e){
+        if (e.data == 'callChild') {
+            parentOrder = e.data
+        } else {
+            alert('未定义的消息');
+        }
+    }, false);
+
+
+
     function getHost() {
         var num = 0,
             str = '';
@@ -19,19 +31,14 @@
         str= host.substring(num, host.indexOf('/', num));
         return str;
     }
-    try {
-        if(ha.indexOf("#signin")>=0) {
-            document.domain = getHost();
-        }
-    } catch (e) {
-        console.log(e.message);
-    }
-
     function bingConChangeEvent(t) {
         var $formLogin = $(t).find('#form_login');
         if ($formLogin.length > 0) {
             if(ha.indexOf("#signin")>=0) {
-                top.location = 'http://' + getHost() + '/login';
+                window.parent.postMessage({
+                    msg: 'loadLogin'
+                }, '*');
+//                top.location = 'http://' + getHost() + '/login';
             } else {
                 window.location.reload('${contextRoot}/ehr/login');
             }
