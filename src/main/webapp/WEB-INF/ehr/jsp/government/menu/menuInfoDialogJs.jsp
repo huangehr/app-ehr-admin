@@ -98,18 +98,6 @@
             bindEvents: function () {
                 var self = this;
                 var validator =  new jValidation.Validation(this.$form, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                    /*if (Util.isStrEquals($(elm).attr('id'),'inp_parent_id')) {
-                        debugger
-                        var result = new jValidation.ajax.Result();
-                        var parentId = parentSelectedVal;
-                        if (id == parentId) {
-                            result.setResult(false);
-                            result.setErrorMsg("您选的父级ID不合法");
-                        } else {
-                            result.setResult(true);
-                        }
-                        return result;
-                    }*/
                     if(Util.isStrEquals($(elm).attr('id'),'inp_code')){
                         var result = new jValidation.ajax.Result();
                         var code = self.$inpCode.val();

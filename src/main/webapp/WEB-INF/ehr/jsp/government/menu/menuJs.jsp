@@ -97,8 +97,6 @@
                 bindEvents: function () {
                     $.subscribe('government:menuInfo:open', function (event, id, mode) {
                         var title = '';
-                        var height = 400;
-                        var width = 480;
                         if (mode == 'modify') {
                             title = '修改菜单';
 
@@ -108,8 +106,8 @@
                             height = 300;
                         }
                         dictMaster.dictInfoDialog = $.ligerDialog.open({
-                            height: height,
-                            width: width,
+                            height: 300,
+                            width: 480,
                             title: title,
                             url: '${contextRoot}/governmentMenu/getPage',
                             urlParms: {
@@ -121,26 +119,26 @@
                         });
                     });
 
-                    $.subscribe('government:menuInfo:delete', function (event, id) {
+                    <%--$.subscribe('government:menuInfo:delete', function (event, id) {--%>
 
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
-                            if (r) {
-                                var dataModel = $.DataModel.init();
-                                dataModel.updateRemote('${contextRoot}/governmentMenu/deleteQuotaCategory', {
-                                    data: {id: parseInt(id)},
-                                    success: function (data) {
-                                        debugger
-                                        if(data.successFlg){
-                                            $.Notice.success('删除成功！');
-                                            dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
-                                        }else{
-                                            $.Notice.error(data.errorMsg);
-                                        }
-                                    }
-                                });
-                            }
-                        })
-                    });
+                        <%--$.Notice.confirm('确认要删除所选数据？', function (r) {--%>
+                            <%--if (r) {--%>
+                                <%--var dataModel = $.DataModel.init();--%>
+                                <%--dataModel.updateRemote('${contextRoot}/governmentMenu/deleteQuotaCategory', {--%>
+                                    <%--data: {id: parseInt(id)},--%>
+                                    <%--success: function (data) {--%>
+                                        <%--debugger--%>
+                                        <%--if(data.successFlg){--%>
+                                            <%--$.Notice.success('删除成功！');--%>
+                                            <%--dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));--%>
+                                        <%--}else{--%>
+                                            <%--$.Notice.error(data.errorMsg);--%>
+                                        <%--}--%>
+                                    <%--}--%>
+                                <%--});--%>
+                            <%--}--%>
+                        <%--})--%>
+                    <%--});--%>
 
                 }
             };
