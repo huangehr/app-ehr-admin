@@ -199,7 +199,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
 
                 params.clear();
                 params.put("memberRelationJsonData",updateModelJson);
-                String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
+                String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
                 return envelopStr;
             }
         }catch (Exception ex){
