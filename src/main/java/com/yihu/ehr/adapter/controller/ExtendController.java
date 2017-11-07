@@ -58,7 +58,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
 
     @RequestMapping("/gotoModify")
-    public Object gotoModify(Model model, String id, String mode, String extParms){
+    public Object gotoModify(Model model, String id, String mode, String extParms, String myFlag){
         try {
             Envelop envelop = new Envelop();
 
@@ -81,6 +81,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
             model.addAttribute("model",toJson(plan));
             model.addAttribute("mode",mode);
+            model.addAttribute("myFlag",myFlag);
             model.addAttribute("contentPage", getModeUrl(mode));
             model.addAttribute("staged", params.get("staged"));
             return "simpleView";
