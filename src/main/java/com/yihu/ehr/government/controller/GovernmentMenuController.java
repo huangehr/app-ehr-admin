@@ -82,7 +82,7 @@ public class GovernmentMenuController extends BaseUIController {
 
     @RequestMapping("/addOrUpdate")
     @ResponseBody
-    public Object addOrUpdate(String mode, String jsonDate, HttpServletRequest request){
+    public Object addOrUpdate(String mode, String jsonDate, String ids, HttpServletRequest request){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         String resultStr = "";
@@ -112,6 +112,7 @@ public class GovernmentMenuController extends BaseUIController {
                 Map<String,Object> args = new HashMap<>();
                 governmentMenuModel.setCreateUser(userDetailModel.getId());
                 args.put("jsonData",objectMapper.writeValueAsString(governmentMenuModel));
+                args.put("ids", ids);
                 String addUrl = "/government/save";
                 String envelopStr = HttpClientUtil.doPost(comUrl + addUrl, args, username, password);
                 return envelopStr;
@@ -129,6 +130,7 @@ public class GovernmentMenuController extends BaseUIController {
                     updateModel.setStatus(governmentMenuModel.getStatus());
                     updateModel.setUpdateUser(userDetailModel.getId());
                     args.put("jsonData",objectMapper.writeValueAsString(updateModel));
+                    args.put("ids", ids);
                     String updateUrl = "/government/update";
                     String envelopStr = HttpClientUtil.doPost(comUrl + updateUrl, args, username, password);
                     return envelopStr;
@@ -201,5 +203,30 @@ public class GovernmentMenuController extends BaseUIController {
             LogService.getLogger(GovernmentMenuController.class).error(e.getMessage());
         }
         return  false;
+    }
+
+    @RequestMapping("/getMonitorTypeList")
+    @ResponseBody
+    public Object getMonitorTypeList(String menuId){
+        String url = "/resources/rsReportMonitorType/getRsReportMonitorTypeNoPage";
+        String resultStr = "";
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("menuId", menuId);
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelopGet = objectMapper.readValue(resultStr,Envelop.class);
+            if(envelopGet.isSuccessFlg()){
+                envelop.setObj(envelopGet.getDetailModelList());
+                envelop.setSuccessFlg(true);
+                return envelop;
+            }
+            return resultStr;
+        } catch (Exception ex) {
+            LogService.getLogger(GovernmentMenuController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
     }
 }

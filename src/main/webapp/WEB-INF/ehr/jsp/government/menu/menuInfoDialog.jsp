@@ -29,6 +29,13 @@
         </div>
 
         <div class="m-form-group">
+            <label>监控配置: </label>
+            <div class="l-text-wrapper m-form-control essential">
+                <input type="text" id="inpMonitorType" data-code="typeNames" data-type="select" class="required useTitle f-pr0 f-ml10 inp-reset div-table-colums "/>
+            </div>
+        </div>
+
+        <div class="m-form-group">
             <label>状态：</label>
 
             <div class="u-checkbox-wrap m-form-control">
