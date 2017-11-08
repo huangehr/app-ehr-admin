@@ -227,6 +227,8 @@
                         urlParms['extParms'] = JSON.stringify(extParms);
 
                         urlParms['mode'] = mode;
+
+                        urlParms['myFlag'] = !!dataModel.orgType;
                         var title = '新增模板';
                         if (mode == 'copy') {
                             title = '复制模板';
