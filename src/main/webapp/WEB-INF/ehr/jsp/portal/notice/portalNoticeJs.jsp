@@ -68,9 +68,9 @@
                         },
                        allowHideColumn:false,
                         columns: [
-                            {display: '标题', name: 'title', width: '35%',align: 'left'},
+                            {display: '标题', name: 'title', width: '45%',align: 'left'},
                             {display: '类型', name: 'typeName', width: '15%'},
-                            {display: '门户类型', name: 'portalTypeName', width: '10%'},
+//                            {display: '门户类型', name: 'portalTypeName', width: '10%'},
 //                            {display: '内容', name: 'content', width: '45%', resizable: true,align: 'left'},
                             {display: '发布日期', name: 'releaseDate', width: '20%', resizable: true,align: 'center'},
                             {

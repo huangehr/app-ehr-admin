@@ -81,11 +81,34 @@ public class ReportController extends BaseUIController {
     /**
      * 展示资源配置
      */
+    @RequestMapping(value = "selView")
+    public String selView(Model model, Integer id) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/report/selView");
+        return "simpleView";
+    }
+
+
+
+    /**
+     * 展示资源配置
+     */
     @RequestMapping(value = "setting")
     public String setting(Model model, Integer id) {
         Object detailModel = new RsReportModel();
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "resource/report/setting");
+        return "simpleView";
+    }
+
+    /**
+     * 展示资源配置
+     */
+    @RequestMapping(value = "tmpViewSetting")
+    public String tmpViewSetting(Model model, Integer id) {
+        Object detailModel = new RsReportModel();
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/report/tmpViewSetting");
         return "simpleView";
     }
 

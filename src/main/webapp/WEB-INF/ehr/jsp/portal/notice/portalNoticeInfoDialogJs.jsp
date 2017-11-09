@@ -52,7 +52,7 @@
         noticeInfo = {
             $form: $("#div_info_form"),
             $selectType: $("#inp_select_type"),
-            $selectPortalType: $("#inp_select_portal_type"),
+//            $selectPortalType: $("#inp_select_portal_type"),
             $title: $("#inp_title"),
             $content: $("#inp_content"),
             $updateDtn: $("#div_update_btn"),
@@ -79,15 +79,15 @@
                     }
                 });
 
-                var selectPortalType = this.$selectPortalType.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 56
-                    }
-                });
+                <%--var selectPortalType = this.$selectPortalType.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 56--%>
+                    <%--}--%>
+                <%--});--%>
 
                 this.$form.attrScan();
                 this.$form.Fields.fillValues({
