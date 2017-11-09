@@ -103,10 +103,9 @@
                         }
                         else {
                             title = '新增菜单';
-                            height = 300;
                         }
                         dictMaster.dictInfoDialog = $.ligerDialog.open({
-                            height: 300,
+                            height: 350,
                             width: 480,
                             title: title,
                             url: '${contextRoot}/governmentMenu/getPage',
