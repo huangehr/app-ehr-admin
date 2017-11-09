@@ -57,7 +57,7 @@
             $addBtn: $("#div_btn_add"),
             $cancelBtn: $("#div_cancel_btn"),
             $selectType: $("#inp_select_type"),
-            $selectPortalType: $("#inp_select_portal_type"),
+//            $selectPortalType: $("#inp_select_portal_type"),
             $title:$("#inp_title"),
             $content:$("#inp_content"),
 
@@ -86,21 +86,21 @@
                     }
                 });
 
-                var selectPortalType = this.$selectPortalType.ligerComboBox({
-                    url: '${contextRoot}/dict/searchDictEntryList',
-                    valueField: 'code',
-                    textField: 'value',
-                    dataParmName: 'detailModelList',
-                    urlParms: {
-                        dictId: 56
-                    },
-                    autocomplete: true,
-                    onSuccess: function (data) {
-                        if (data.length > 0) {
-                            selectPortalType.setValue(data[0].code);
-                        }
-                    }
-                });
+                <%--var selectPortalType = this.$selectPortalType.ligerComboBox({--%>
+                    <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
+                    <%--valueField: 'code',--%>
+                    <%--textField: 'value',--%>
+                    <%--dataParmName: 'detailModelList',--%>
+                    <%--urlParms: {--%>
+                        <%--dictId: 56--%>
+                    <%--},--%>
+                    <%--autocomplete: true,--%>
+                    <%--onSuccess: function (data) {--%>
+                        <%--if (data.length > 0) {--%>
+                            <%--selectPortalType.setValue(data[0].code);--%>
+                        <%--}--%>
+                    <%--}--%>
+                <%--});--%>
 
                 this.$form.attrScan();
             },
