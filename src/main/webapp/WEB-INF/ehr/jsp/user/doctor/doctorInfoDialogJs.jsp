@@ -24,9 +24,8 @@
         var roleTypeDictId = 13;
 
         /* ************************** 变量定义结束 **************************** */
-
-        win.parent.orgDeptDio = null;
-        win.parent.ORGDEPTVAL = '';
+        win.orgDeptDio = null;
+        win.ORGDEPTVAL = '';
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             doctorInfo.init();
@@ -107,7 +106,7 @@
                 this.$sex.ligerRadio();
                 $imageShow: $('#div_file_list'),
                 this.$form.attrScan();
-                win.parent.ORGDEPTVAL = allData.detailModelList;
+                win.ORGDEPTVAL = allData.detailModelList;
                 this.$form.Fields.fillValues({
                     id: doctor.id,
                     code: doctor.code,
@@ -185,14 +184,14 @@
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
                     var dataModel = $.DataModel.init(),
-                        jsonModel = win.parent.ORGDEPTVAL;
+                        jsonModel = win.ORGDEPTVAL;
                     if (jsonModel.length <= 0) {
                         waittingDialog.close();
                         $.Notice.error('请选择机构部门');
                         return;
                     }
                     jsonModel = JSON.stringify(jsonModel);
-                    win.parent.ORGDEPTVAL = null;
+                    win.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
                         data: {doctorModelJsonData: doctorModelJsonData,jsonModel: jsonModel},
                         success: function (data) {
@@ -215,7 +214,7 @@
 
                 self.$divBtnShow.onclick = function () {
                     var wait = $.Notice.waitting("请稍后...");
-                    win.parent.orgDeptDio = win.$.ligerDialog.open({
+                    win.orgDeptDio = win.$.ligerDialog.open({
                         height: 590,
                         width: 600,
                         title: '选择机构部门',

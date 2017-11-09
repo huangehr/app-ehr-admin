@@ -6,6 +6,7 @@ import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.geography.controller.AddressController;
@@ -36,10 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zlf
@@ -85,7 +83,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("searchUsers")
     @ResponseBody
-    public Object searchUsers(String searchNm,String searchOrg, String searchType, int page, int rows) {
+    public Object searchUsers(String searchNm,String searchOrg, String searchType, int page, int rows, HttpServletRequest request) {
 
         String url = "/users";
         String resultStr = "";
@@ -94,13 +92,13 @@ public class UserController extends BaseUIController {
 
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName"+ PageParms.LIKE + searchNm );
+            stringBuffer.append("realName"+ PageParms.LIKE + searchNm + ";");
         }
         if (!StringUtils.isEmpty(searchOrg)) {
-            stringBuffer.append("organization=" + searchOrg);
+            stringBuffer.append("organization=" + searchOrg + ";");
         }
         if (!StringUtils.isEmpty(searchType)) {
-            stringBuffer.append("userType=" + searchType);
+            stringBuffer.append("userType=" + searchType + ";");
         }
 
         params.put("filters", "");
@@ -108,7 +106,14 @@ public class UserController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
-
+        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+        if (null != userOrgList && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
+            envelop.setSuccessFlg(true);
+            return envelop;
+        } else if (null != userOrgList && userOrgList.size() > 0) {
+            String orgCode = String.join(",", userOrgList);
+            params.put("orgCode", orgCode);
+        }
         params.put("page", page);
         params.put("size", rows);
         try {
@@ -179,7 +184,6 @@ public class UserController extends BaseUIController {
     @RequestMapping(value = "updateUser", produces = "text/html;charset=UTF-8")
     @ResponseBody
     public Object updateUser(String userModelJsonData,HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         String url = "/user/";
         String resultStr = "";
         Envelop envelop = new Envelop();

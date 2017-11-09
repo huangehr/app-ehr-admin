@@ -67,12 +67,18 @@ public class ResourceBrowseController extends BaseUIController {
         model.addAttribute("contentPage", "/resource/browse/resourceNewDataView");
         return "pageView";
     }
+
     @RequestMapping("/customQuery")
     public String customQuery(Model model) {
         model.addAttribute("contentPage", "/resource/browse/customQuery");
         return "pageView";
     }
 
+    @RequestMapping("/dataCenter")
+    public String dataCenter(Model model) {
+        model.addAttribute("contentPage", "/resource/dataCenter/dataCenter");
+        return "pageView";
+    }
 
     @RequestMapping("/customNewQuery")
     public String customNewQuery(Model model) {

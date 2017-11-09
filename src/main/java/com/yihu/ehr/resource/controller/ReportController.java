@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -80,11 +81,34 @@ public class ReportController extends BaseUIController {
     /**
      * 展示资源配置
      */
+    @RequestMapping(value = "selView")
+    public String selView(Model model, Integer id) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/report/selView");
+        return "simpleView";
+    }
+
+
+
+    /**
+     * 展示资源配置
+     */
     @RequestMapping(value = "setting")
     public String setting(Model model, Integer id) {
         Object detailModel = new RsReportModel();
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "resource/report/setting");
+        return "simpleView";
+    }
+
+    /**
+     * 展示资源配置
+     */
+    @RequestMapping(value = "tmpViewSetting")
+    public String tmpViewSetting(Model model, Integer id) {
+        Object detailModel = new RsReportModel();
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/report/tmpViewSetting");
         return "simpleView";
     }
 
@@ -144,24 +168,37 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/getViewsTreeData")
     @ResponseBody
-    public Object getViewsTreeData(String codeName, Integer reportId) {
+    public Object getViewsTreeData(String codeName, Integer reportId, HttpServletRequest request) {
         try {
-            String rsCategoryTreeStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.CategoryTree, username, password);
+            //从Session中获取用户的角色和和授权视图列表作为查询参数
+            HttpSession session = request.getSession();
+            boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+            List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
+            if(!isAccessAll) {
+                if(null == userResourceList || userResourceList.size() <= 0) {
+                    return failed("无权访问");
+                }
+            }
+            Map<String, Object> params = new HashMap<>();
+            if(isAccessAll) {
+                params.put("userResource", "*");
+            }else {
+                params.put("userResource", "auth");
+            }
+            String rsCategoryTreeStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.CategoryTree, params, username, password);
             List<Object> treeModelList = objectMapper.readValue(rsCategoryTreeStr, Envelop.class).getDetailModelList();
             List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList = (List<RsCategoryTypeTreeModel>) this.getEnvelopList(treeModelList, new ArrayList<RsCategoryTypeTreeModel>(), RsCategoryTypeTreeModel.class);
-
-            this.setRsCategoryViews(rsCategoryTypeTreeModelList, reportId);
-
+            this.setRsCategoryViews(rsCategoryTypeTreeModelList, reportId, userResourceList, isAccessAll);
             return rsCategoryTypeTreeModelList;
         } catch (Exception e) {
             e.printStackTrace();
             LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(e.getMessage());
         }
     }
 
     // 设置视图类别拥有的视图
-    private void setRsCategoryViews(List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList, Integer reportId) throws Exception {
+    private void setRsCategoryViews(List<RsCategoryTypeTreeModel> rsCategoryTypeTreeModelList, Integer reportId, List<String> userResourceList, boolean isAccessAll) throws Exception {
         Map<String, Object> params;
         RsCategoryTypeTreeModel rsCategoryTypeTreeModel;
         for (RsCategoryTypeTreeModel rsCategory : rsCategoryTypeTreeModelList) {
@@ -170,23 +207,23 @@ public class ReportController extends BaseUIController {
             String rsResourcesStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.NoPageResources, params, username, password);
             List<Object> rsResourcesList = objectMapper.readValue(rsResourcesStr, Envelop.class).getDetailModelList();
             List<RsResourcesModel> rsResourcesModelList = (List<RsResourcesModel>) this.getEnvelopList(rsResourcesList, new ArrayList<RsResourcesModel>(), RsResourcesModel.class);
-
             for (RsResourcesModel rsResources : rsResourcesModelList) {
-                rsCategoryTypeTreeModel = new RsCategoryTypeTreeModel();
-                rsCategoryTypeTreeModel.setId(rsResources.getId());
-                rsCategoryTypeTreeModel.setName(rsResources.getName());
-                rsCategoryTypeTreeModel.setPid(rsCategory.getId());
-                params = new HashMap<>();
-                params.put("reportId", reportId);
-                params.put("resourceId", rsResources.getId());
-                String ischeckedStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViewExist, params, username, password);
-                boolean ischecked = (Boolean) objectMapper.readValue(ischeckedStr, Envelop.class).getObj();
-                rsCategoryTypeTreeModel.setIschecked(ischecked);
-                rsCategory.getChildren().add(rsCategoryTypeTreeModel);
+                if(isAccessAll || (rsResources.getGrantType().equals("0") || userResourceList.contains(rsResources.getId()))) {
+                    rsCategoryTypeTreeModel = new RsCategoryTypeTreeModel();
+                    rsCategoryTypeTreeModel.setId(rsResources.getId());
+                    rsCategoryTypeTreeModel.setName(rsResources.getName());
+                    rsCategoryTypeTreeModel.setPid(rsCategory.getId());
+                    params = new HashMap<>();
+                    params.put("reportId", reportId);
+                    params.put("resourceId", rsResources.getId());
+                    String ischeckedStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportViewExist, params, username, password);
+                    boolean ischecked = (Boolean) objectMapper.readValue(ischeckedStr, Envelop.class).getObj();
+                    rsCategoryTypeTreeModel.setIschecked(ischecked);
+                    rsCategory.getChildren().add(rsCategoryTypeTreeModel);
+                }
             }
-
             if (rsCategory.getChildren() != null && rsCategory.getChildren().size() != 0) {
-                setRsCategoryViews(rsCategory.getChildren(), reportId);
+                setRsCategoryViews(rsCategory.getChildren(), reportId, userResourceList, isAccessAll);
             }
         }
     }

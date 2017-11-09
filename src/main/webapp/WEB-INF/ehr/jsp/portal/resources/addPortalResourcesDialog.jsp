@@ -104,8 +104,13 @@
 
 	<div class="m-form-group" id="inp_content_div">
 		<label><spring:message code="lbl.portalResources.description"/><spring:message code="spe.colon"/></label>
+<<<<<<< HEAD
 		<div class="m-form-control">
 			<textarea id="inp_description" class="f-w240 max-length-256 validate-special-char"
+=======
+		<div class="l-text-wrapper m-form-control essential">
+			<textarea id="inp_description" class="required f-w240 max-length-256 validate-special-char"
+>>>>>>> 641485dfbf8bbcc241482087a3d3254b6144954b
 					  data-attr-scan="description" ></textarea>
 		</div>
 	</div>
