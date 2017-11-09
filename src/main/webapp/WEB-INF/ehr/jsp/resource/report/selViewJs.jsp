@@ -41,7 +41,7 @@
                         name = obj.data.name;
                     $.ligerDialog.confirm('确认选择“' + name + '”视图吗？',function(yes){
                         if (yes) {
-                            closeselViewDialog({id: id, name: name});
+                            closeselViewDialog('', id);
                         }
                     })
                 }

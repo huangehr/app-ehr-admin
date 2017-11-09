@@ -490,6 +490,36 @@ public class ReportController extends BaseUIController {
         }
     }
 
+
+    @RequestMapping("getRsQuotaPreview")
+    @ResponseBody
+    public Object getRsQuotaPreview(@RequestParam String resourceId, HttpServletRequest request) {
+        Envelop envelop = new Envelop();
+        List<Map<String, Object>> options = new ArrayList<>();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.clear();
+            params.put("resourceId", resourceId);
+            List<String> userOrgList = (List<String>) request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+            params.put("userOrgList", userOrgList);
+            String chartInfoListStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+            List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {  });
+            for (MChartInfoModel chartInfo : chartInfoList) {
+                Map<String, Object> option = new HashMap<>();
+                option.put("quotaCode", chartInfo.getQuotaCode());
+                option.put("quotaId", chartInfo.getQuotaId());
+                option.put("option", chartInfo.getOption());
+                options.add(option);
+            }
+            envelop.setSuccessFlg(true);
+            envelop.setDetailModelList(options);
+        }catch (Exception e){
+            e.printStackTrace();
+            return failed("获取报表数据发生异常");
+        }
+        return envelop;
+    }
+
     /**
      * 转换视图数据筛选条件
      */
