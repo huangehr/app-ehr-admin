@@ -62,6 +62,16 @@ public class OrgImportController extends ExtendController<OrgService> {
             List saveLs = new ArrayList<>();
             //获取机构代码
             Set<String> orgCodes = findExistOrgCode(toJson(excelReader.getRepeat().get("orgCode")));
+            //根据字典代码获取字典项列表--机构类型,如:行政\科研等
+            Set<String> orgTypes = getDictEntryByDictId(toJson(excelReader.getRepeat().get("orgCode")));
+            //根据字典代码获取字典项列表--入驻方式：直连/第三方接入
+            Set<String> settledWays = getDictEntryByDictId(toJson(excelReader.getRepeat().get("orgCode")));
+            //根据字典代码获取字典项列表--医院类型：综合性医院/眼科医院
+            Set<String> hosTypeIds = getDictEntryByDictId(toJson(excelReader.getRepeat().get("orgCode")));
+            //根据字典代码获取字典项列表--医院归属：省属/市属。
+            Set<String> ascriptionTypes = getDictEntryByDictId(toJson(excelReader.getRepeat().get("orgCode")));
+            //根据字典代码获取字典项列表--中西医标识：中医/西医
+            Set<String> zxys = getDictEntryByDictId(toJson(excelReader.getRepeat().get("orgCode")));
 
             writerResponse(response, 35+"", "l_upd_progress");
             OrgMsgModel model;
@@ -246,7 +256,14 @@ public class OrgImportController extends ExtendController<OrgService> {
         }
     }
 
+    //根据字典代码获取字典项列表
+    // /systemDict/getDictEntryByDictId/{dictId}
+    private Set<String> getDictEntryByDictId(String dictId) throws Exception {
+        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
+        conditionMap.add("dictId", dictId);
+        RestTemplates template = new RestTemplates();
+        String rs = template.doPost(service.comUrl + "/systemDict/getDictEntryByDictId/"+dictId, conditionMap);
 
-
-
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
 }

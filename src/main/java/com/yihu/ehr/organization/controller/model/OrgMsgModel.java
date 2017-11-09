@@ -14,7 +14,7 @@ import java.util.*;
  * Created by zdm on 2017/10/19
  */
 @Row(start = 1)
-@Title(names= "{'机构代码', '机构全名','医院类型', '医院归属', '机构简称', '机构类型', '医院等级', '医院法人', '联系人', '联系方式', '中西医标识', '上级医院', '机构地址', '交通路线', '入驻方式', '经度', '纬度', '标签', '医院简介', '资质信息'}")
+@Title(names= "{'机构代码', '机构全名','医院类型', '医院归属', '机构简称', '机构类型', '医院等级', '医院法人', '联系人', '联系方式', '中西医标识', '上级医院', '机构地址', '交通路线', '入驻方式', '经度', '纬度', '标签', '医院简介', '床位'}")
 public class OrgMsgModel extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
@@ -69,8 +69,8 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
     private String tags;//标签
     @Location(x=22)
     private String introduction;//简介
-//    @Location(x=22)
-//    private String qualification;//资质信息
+    @Location(x=23)
+    private String berth;//核定床位
 
     public String getAscriptionType() {
         return ascriptionType;
@@ -279,6 +279,14 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
 
     public void setTown(String town) {
         this.town = town;
+    }
+
+    public String getBerth() {
+        return berth;
+    }
+
+    public void setBerth(String berth) {
+        this.berth = berth;
     }
 
     @Override
