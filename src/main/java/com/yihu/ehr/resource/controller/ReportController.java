@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -546,4 +547,49 @@ public class ReportController extends BaseUIController {
         return conditions;
     }
 
+    /**
+     * 生成模板
+     * @param id
+     * @param content
+     * @return
+     */
+    @RequestMapping("/uploadTemplate")
+    @ResponseBody
+    public Object uploadTemplate(Integer id, String content) {
+        try {
+            Envelop result = new Envelop();
+            String filePath = this.getClass().getResource("/").getPath() + "temp/";
+            String fileName = System.currentTimeMillis() + "template.html";
+            // 生成模板
+            FileUploadUtil.createFile(filePath, fileName, content);
+            FileInputStream inputStream = new FileInputStream(filePath + fileName);
+            Map<String, Object> uploadFileParams = FileUploadUtil.getParams(inputStream, fileName);
+            String storagePath = uploadFileParams.size() == 0 ? "" : HttpClientUtil.doPost(comUrl + "/filesReturnUrl", uploadFileParams, username, password);
+
+            String urlGet = comUrl + ServiceApi.Resources.RsReportPrefix + id;
+            String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
+            Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
+            RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
+            updateModel.setTemplatePath(storagePath);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("rsReport", objectMapper.writeValueAsString(updateModel));
+            String envelopUpdateStr = HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);
+            // 删除临时文件
+            FileUploadUtil.delDir(filePath);
+
+            Envelop envelopUpdate = objectMapper.readValue(envelopUpdateStr, Envelop.class);
+            if (envelopUpdate.isSuccessFlg()) {
+                result.setSuccessFlg(true);
+                result.setObj(storagePath);
+            } else {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("保存失败！");
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed("生成模版发生异常");
+        }
+    }
 }
