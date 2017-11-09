@@ -58,20 +58,31 @@
                     //机构
                     if (res.successFlg) {
                         var d = res.obj;
-                        var mechanisms = [];
-                        for (var i = 0, len = d.length; i < len; i++) {
-                            mechanisms.push({
-                                text: d[i].name,
-                                id: d[i].id
-                            });
-                        }
+//                        var mechanisms = [];
+//                        for (var i = 0, len = d.length; i < len; i++) {
+//                            mechanisms.push({
+//                                text: d[i].name,
+//                                id: d[i].id,
+//                                flag: d[i].flag
+//                            });
+//                        }
                         me.$inpMonitorType.ligerComboBox({
+                            url: '${contextRoot}/governmentMenu/getMonitorTypeList',
+                            parms: {menuId: id},
                             isShowCheckBox: true,
                             width: '240',
-                            data: mechanisms,
+                            valueField: 'id',
+                            textField: 'name',
+//                            data: mechanisms,
                             isMultiSelect: true,
-                            valueFieldID: 'ids'
+                            valueFieldID: 'ids',
+                            dataParmName: 'obj'
                         });
+                        var aaa = '';
+                        $.each(d, function (k, obj) {
+                            obj.flag && (aaa += (obj.id + ';'));
+                        })
+                        me.$inpMonitorType.liger().selectValue(aaa);
                     } else {
                         me.$inpMonitorType.ligerComboBox({width: '240'});
                     }
@@ -138,7 +149,8 @@
                 self.$inpName.ligerTextBox({width: 240});
                 self.$inpUrl.ligerTextBox({width: 240});
                 self.$inpStatus.eq(0).attr("checked","true");
-                self.$inpStatus.ligerRadio();
+                self.$inpStatus.eq(0).ligerRadio();
+                self.$inpStatus.eq(1).ligerRadio();
                 self.$form.attrScan();
             },
 
