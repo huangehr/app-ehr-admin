@@ -104,9 +104,9 @@ public class ReportController extends BaseUIController {
      *
      */
     @RequestMapping(value = "tmpViewSetting")
-    public String tmpViewSetting(Model model, Integer id) {
-        Object detailModel = new RsReportModel();
+    public String tmpViewSetting(Model model, Integer id, String code) {
         model.addAttribute("id", id);
+        model.addAttribute("code", code);
         model.addAttribute("contentPage", "resource/report/tmpViewSetting");
         return "simpleView";
     }
@@ -465,16 +465,17 @@ public class ReportController extends BaseUIController {
                     params.put("resourceId", view.getResourceId());
                     List<String> userOrgList = (List<String>) request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
                     params.put("userOrgList", userOrgList);
-                    String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-                    String chartInfo = objectMapper.readValue(chartInfoStr, Envelop.class).getObj().toString();
-                    MChartInfoModel chartInfoModel = objectMapper.readValue(chartInfo,MChartInfoModel.class);
-                    Map<String, Object> option = new HashMap<>();
-                    option.put("resourceCode", chartInfoModel.getResourceCode());
-                    option.put("resourceId", chartInfoModel.getResourceId());
-                    option.put("dimensionList", chartInfoModel.getListMap());
-                    option.put("dimensionOptions", chartInfoModel.getDimensionMap());
-                    option.put("option", chartInfoModel.getOption());
-                    options.add(option);
+                    String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+                    Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
+//                    String sStr = objectMapper.writeValue(envelop1.getObj());
+//                    MChartInfoModel chartInfoModel = objectMapper.readValue(sStr,MChartInfoModel.class);
+//                    Map<String, Object> option = new HashMap<>();
+//                    option.put("resourceCode", chartInfoModel.getResourceCode());
+//                    option.put("resourceId", chartInfoModel.getResourceId());
+//                    option.put("dimensionList", chartInfoModel.getListMap());
+//                    option.put("dimensionOptions", chartInfoModel.getDimensionMap());
+//                    option.put("option", chartInfoModel.getOption());
+//                    options.add(option);
                     viewInfo.put("options", options); // 视图包含的指标echart图形的option。
                     viewInfos.add(viewInfo);
                 }
@@ -503,8 +504,8 @@ public class ReportController extends BaseUIController {
             List<String> userOrgList = (List<String>) request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
             params.put("userOrgList", userOrgList);
             String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-            String chartInfo = objectMapper.readValue(chartInfoStr, Envelop.class).getObj().toString();
-            MChartInfoModel chartInfoModel = objectMapper.readValue(chartInfo,MChartInfoModel.class);
+            Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
+            MChartInfoModel chartInfoModel = objectMapper.readValue(envelop1.getObj().toString(),MChartInfoModel.class);
 
             Map<String, Object> option = new HashMap<>();
             option.put("resourceCode", chartInfoModel.getResourceCode());
