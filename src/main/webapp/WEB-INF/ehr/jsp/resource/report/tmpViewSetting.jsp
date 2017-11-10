@@ -17,9 +17,9 @@
     <%--content--%>
     <div class="tmp-con">
     </div>
-        <%--暂无模板展示--%>
-        <div class="none-tmp">
-            <img src="${staticRoot}/images/error.png" alt="">
-            <div class="none-tmp-text">请添加模板...</div>
-        </div>
+    <%--暂无模板展示--%>
+    <div class="none-tmp" style="display: none">
+        <img src="${staticRoot}/images/error.png" alt="">
+        <div class="none-tmp-text">请添加模板...</div>
+    </div>
 </div>

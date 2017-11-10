@@ -56,6 +56,7 @@
         // 保存
         $('#btnSave').click(function () {
             var loading = $.ligerDialog.waitting("正在保存数据...");
+            debugger
             dataModel.fetchRemote("${contextRoot}/resource/report/saveSetting", {
                 type: 'post',
                 data: {

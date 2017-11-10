@@ -20,6 +20,7 @@
                 $upFileInp: $('.up-file'),
                 $tmpCon: $('.tmp-con'),
                 $saveTmp: $('#saveTmp'),
+                resourseIds: [],
                 chart: null,
                 chartTit: '',
                 id: '${id}',
@@ -43,6 +44,7 @@
                                 me.$noneTmp.hide();
                                 me.$tmpCon.html(data.obj.templateContent);
                             } else {
+                                me.$noneTmp.show();
                                 $.Notice.warn('获取报表模版失败！');
                             }
                         },
@@ -131,13 +133,27 @@
                         dataType: 'json',
                         success: function (res) {
                             if (res.successFlg) {
+                                var resourceId = res.detailModelList[0].resourceId,
+                                    oldResourceId = TVS.chart.attr('id'),
+                                    newIndex = TVS.resourseIds.indexOf(resourceId),
+                                    oldIndex = TVS.resourseIds.indexOf(oldResourceId);
                                 debugger
+                                if (newIndex >= 0) {
+                                    console.log(TVS.resourseIds);
+                                    alert('该视图已选择，请重选！');
+                                    return;
+                                }
+                                if (oldIndex >= 0) {
+                                    TVS.resourseIds = TVS.resourseIds.splice(oldIndex, 1);
+                                }
                                 var option = JSON.parse(res.detailModelList[0].option);
                                 var myChart = echarts.init(TVS.chart[0]);
                                 TVS.chartTit.html(option.title.text);
-                                TVS.chart.attr('id', option.title.text);
+                                TVS.resourseIds.push(resourceId);
+                                TVS.chart.attr('id', resourceId);
                                 delete option.title;
                                 myChart.setOption(option);
+                                console.log(TVS.resourseIds);
                             } else {
                                 $.Notice.error(res.errorMsg);
                             }
