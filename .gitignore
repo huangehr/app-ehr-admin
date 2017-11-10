@@ -2,10 +2,10 @@
 ehr.ipr
 ehr.iws
 ehr.ids
-*/*.iml
-*/target
+target/*
 .idea/*
-app-admin/.idea/*
+logs/*
+app-admin.iml
 
 
 # ---> Java
