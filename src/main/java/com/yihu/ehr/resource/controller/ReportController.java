@@ -462,18 +462,16 @@ public class ReportController extends BaseUIController {
                     params.put("resourceId", view.getResourceId());
                     List<String> userOrgList = (List<String>) request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
                     params.put("userOrgList", userOrgList);
-                    String chartInfoListStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-                    List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {
-                    });
-                    for (MChartInfoModel chartInfo : chartInfoList) {
-                        Map<String, Object> option = new HashMap<>();
-                        option.put("quotaCode", chartInfo.getQuotaCode());
-                        option.put("quotaId", chartInfo.getQuotaId());
-                        option.put("dimensionList", chartInfo.getListMap());
-                        option.put("dimensionOptions", chartInfo.getDimensionMap());
-                        option.put("option", chartInfo.getOption());
-                        options.add(option);
-                    }
+                    String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+                    String chartInfo = objectMapper.readValue(chartInfoStr, Envelop.class).getObj().toString();
+                    MChartInfoModel chartInfoModel = objectMapper.readValue(chartInfo,MChartInfoModel.class);
+                    Map<String, Object> option = new HashMap<>();
+                    option.put("resourceCode", chartInfoModel.getResourceCode());
+                    option.put("resourceId", chartInfoModel.getResourceId());
+                    option.put("dimensionList", chartInfoModel.getListMap());
+                    option.put("dimensionOptions", chartInfoModel.getDimensionMap());
+                    option.put("option", chartInfoModel.getOption());
+                    options.add(option);
                     viewInfo.put("options", options); // 视图包含的指标echart图形的option。
                     viewInfos.add(viewInfo);
                 }
@@ -501,15 +499,15 @@ public class ReportController extends BaseUIController {
             params.put("resourceId", resourceId);
             List<String> userOrgList = (List<String>) request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
             params.put("userOrgList", userOrgList);
-            String chartInfoListStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-            List<MChartInfoModel> chartInfoList = objectMapper.readValue(chartInfoListStr, new TypeReference<List<MChartInfoModel>>() {  });
-            for (MChartInfoModel chartInfo : chartInfoList) {
-                Map<String, Object> option = new HashMap<>();
-                option.put("quotaCode", chartInfo.getQuotaCode());
-                option.put("quotaId", chartInfo.getQuotaId());
-                option.put("option", chartInfo.getOption());
-                options.add(option);
-            }
+            String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+            String chartInfo = objectMapper.readValue(chartInfoStr, Envelop.class).getObj().toString();
+            MChartInfoModel chartInfoModel = objectMapper.readValue(chartInfo,MChartInfoModel.class);
+
+            Map<String, Object> option = new HashMap<>();
+            option.put("resourceCode", chartInfoModel.getResourceCode());
+            option.put("resourceId", chartInfoModel.getResourceId());
+            option.put("option", chartInfoModel.getOption());
+            options.add(option);
             envelop.setSuccessFlg(true);
             envelop.setDetailModelList(options);
         }catch (Exception e){
