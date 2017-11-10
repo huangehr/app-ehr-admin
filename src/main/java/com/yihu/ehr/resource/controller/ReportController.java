@@ -467,15 +467,15 @@ public class ReportController extends BaseUIController {
                     params.put("userOrgList", userOrgList);
                     String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                     Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
-//                    String sStr = objectMapper.writeValue(envelop1.getObj());
-//                    MChartInfoModel chartInfoModel = objectMapper.readValue(sStr,MChartInfoModel.class);
-//                    Map<String, Object> option = new HashMap<>();
-//                    option.put("resourceCode", chartInfoModel.getResourceCode());
-//                    option.put("resourceId", chartInfoModel.getResourceId());
-//                    option.put("dimensionList", chartInfoModel.getListMap());
-//                    option.put("dimensionOptions", chartInfoModel.getDimensionMap());
-//                    option.put("option", chartInfoModel.getOption());
-//                    options.add(option);
+                    String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
+                    MChartInfoModel chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
+                    Map<String, Object> option = new HashMap<>();
+                    option.put("resourceCode", chartInfoModel.getResourceCode());
+                    option.put("resourceId", chartInfoModel.getResourceId());
+                    option.put("dimensionList", chartInfoModel.getListMap());
+                    option.put("dimensionOptions", chartInfoModel.getDimensionMap());
+                    option.put("option", chartInfoModel.getOption());
+                    options.add(option);
                     viewInfo.put("options", options); // 视图包含的指标echart图形的option。
                     viewInfos.add(viewInfo);
                 }
@@ -505,7 +505,8 @@ public class ReportController extends BaseUIController {
             params.put("userOrgList", userOrgList);
             String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
             Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
-            MChartInfoModel chartInfoModel = objectMapper.readValue(envelop1.getObj().toString(),MChartInfoModel.class);
+            String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
+            MChartInfoModel chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
 
             Map<String, Object> option = new HashMap<>();
             option.put("resourceCode", chartInfoModel.getResourceCode());
