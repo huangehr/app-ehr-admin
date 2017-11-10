@@ -43,13 +43,13 @@ public class RsResourceCategoryController extends BaseUIController {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @RequestMapping("index")
+    @RequestMapping("/index")
     public String cdaTypeInitial(Model model) {
         model.addAttribute("contentPage", "resource/rscategory/index");
         return "pageView";
     }
 
-    @RequestMapping("typeupdate")
+    @RequestMapping("/typeupdate")
     public String typeupdate(Model model,HttpServletRequest request) {
         model.addAttribute("id", request.getParameter("id"));
         model.addAttribute("contentPage", "resource/rscategory/RsCategoryDetail");
@@ -159,7 +159,7 @@ public class RsResourceCategoryController extends BaseUIController {
      * @param id
      * @return
      */
-    @RequestMapping("getCateTypeByPid")
+    @RequestMapping("/getCateTypeByPid")
     @ResponseBody
     public Object getCateTypeByPid(String id) {
         Envelop envelop = new Envelop();
