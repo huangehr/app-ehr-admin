@@ -3,21 +3,29 @@ package com.yihu.ehr.util.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 
-/** UI用controller工具类
+/**
+ * UI用controller工具类
  * Created by Administrator on 2016/3/16.
  */
 public class BaseUIController {
 
-    private static String ERR_SYSREM_DES = "系统错误,请联系管理员!";
-
     @Autowired
-    public ObjectMapper objectMapper;
+    protected ObjectMapper objectMapper;
+    @Value("${service-gateway.username}")
+    protected String username;
+    @Value("${service-gateway.password}")
+    protected String password;
+    @Value("${service-gateway.url}")
+    protected String comUrl;
+
+    private static String ERR_SYSTEM_DES = "系统错误,请联系管理员!";
 
     public Envelop getEnvelop(String json){
         try {
@@ -117,6 +125,6 @@ public class BaseUIController {
     }
 
     protected Envelop failedSystem() {
-        return failed(ERR_SYSREM_DES);
+        return failed(ERR_SYSTEM_DES);
     }
 }
