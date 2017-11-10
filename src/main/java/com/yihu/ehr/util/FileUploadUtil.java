@@ -4,7 +4,7 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,4 +47,40 @@ public class FileUploadUtil {
         return params;
     }
 
+
+    public static void createFile(String filePath, String fileName, String content) {
+        File f = new File(filePath);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        File file = new File(f,fileName);
+        if (!file.exists()) {
+            try {
+                boolean newFile = file.createNewFile();
+                if (newFile) {
+                    FileOutputStream out = new FileOutputStream(filePath + fileName);
+                    out.write(content.getBytes("UTF-8"));
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void delDir(String filePath) {
+        File dir = new File(filePath);
+        if(dir.exists()) {
+            File[] tmp=dir.listFiles();
+            for(int i = 0; i < tmp.length; i++) {
+                if(tmp[i].isDirectory()) {
+                    delDir(filePath + tmp[i].getName());
+                }
+                 else {
+                    tmp[i].delete();
+                }
+            }
+            dir.delete();
+        }
+    }
 }

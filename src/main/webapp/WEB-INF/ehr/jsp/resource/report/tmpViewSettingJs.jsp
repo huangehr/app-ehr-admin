@@ -1,26 +1,33 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${staticRoot}/lib/plugin/echarts/3.0/js/echarts.min.js"></script>
 <script src="${staticRoot}/lib/plugin/editTmp/editTmp.js"></script>
 
 <script>
     (function (w, $) {
         var selViewDialog;
+        var url = '${contextRoot}/resource/report/getRsQuotaPreview';
         $(function () {
             var TVS = {
                 $upHtmlFile: $('#upHtmlFile'),
                 $upFileInp: $('.up-file'),
                 $tmpCon: $('.tmp-con'),
                 $saveTmp: $('#saveTmp'),
+                chart: null,
+                chartTit: '',
                 init: function () {
                     _ET({
                         $main: $('#editMain'),
-                        addViewFun: this.showViewList
+                        addViewFun: this.showViewList.bind(this)
                     });
                     this.bindEvent();
                 },
                 showViewList: function ($dom) {
-                    var wait = $.Notice.waitting("请稍后...");
+                    var wait = $.Notice.waitting("请稍后..."),
+                        me = this;
+                    me.chart = $dom.closest('.charts').find('.charts-con');
+                    me.chartTit = $dom.closest('.charts').find('.c-title');
                     selViewDialog = $.ligerDialog.open({
                         height: 700,
                         width: 378,
@@ -69,11 +76,32 @@
                 }
             }
             TVS.init();
+            function getChartData (id) {
+                $.ajax({
+                    url: url,
+                    data: {resourceId: id},
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.successFlg) {
+                            var option = JSON.parse(res.detailModelList[0].option);
+                            var myChart = echarts.init(TVS.chart[0]);
+                            TVS.chartTit.html(option.title.text);
+                            delete option.title;
+                            myChart.setOption(option);
+                        } else {
+                            $.Notice.error(res.errorMsg);
+                        }
+                    }
+                });
+            }
+            w.closeselViewDialog = function (msg, id) {
+                selViewDialog.close();
+                getChartData(id);
+
+                w._ET = null;
+                msg && $.Notice.success(msg);
+            };
         });
-        w.closeselViewDialog = function (type, msg) {
-            selViewDialog.close();
-            w._ET = null;
-            msg && $.Notice.success(msg);
-        };
     })(window, jQuery);
 </script>

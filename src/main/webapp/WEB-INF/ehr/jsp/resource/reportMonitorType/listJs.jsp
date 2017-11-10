@@ -3,6 +3,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <script>
+    var Util = $.Util;
     var dataModel = $.DataModel.init();
     var detailDialog = null;
     var grid = null;
@@ -36,6 +37,7 @@
                 {display: '操作', name: 'operator', minWidth: 120, align: 'center',
                     render: function (row) {
                         var html = '';
+                        html += '<sec:authorize url="/resource/rsReportMonitorType/reportConfig"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportMonitorTypeReportConfig:open", row.id, "reportConfig") + '">报表配置</a></sec:authorize>';
                         html += '<sec:authorize url="/resource/rsReportMonitorType/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportMonitorType:open", row.id, 'modify') + '"></a></sec:authorize>';
                         html += '<sec:authorize url="/resource/rsReportMonitorType/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:reportMonitorType:delete", row.id) + '"></a></sec:authorize>';
                         return html;
@@ -55,8 +57,8 @@
                 title = '修改资源报表监测分类';
             }
             detailDialog = $.ligerDialog.open({
-                height: 450,
-                width: 480,
+                height: 550,
+                width: 580,
                 title: title,
                 url: '${contextRoot}/resource/reportMonitorType/detail',
                 urlParms: {
@@ -92,6 +94,23 @@
                 }
             })
         });
+
+        $.subscribe('resource:reportMonitorTypeReportConfig:open', function (event, id, mode) {
+            var title = '资源报表监测分类报表配置';
+            detailDialog = $.ligerDialog.open({
+                height: 600,
+                width: 800,
+                title: title,
+                url: '${contextRoot}/resource/reportMonitorType/reportConfig',
+                urlParms: {
+                    id: id,
+                    mode: mode
+                },
+                opener: true,
+                load: true
+            });
+        });
+
     }
 
     function reloadGrid() {

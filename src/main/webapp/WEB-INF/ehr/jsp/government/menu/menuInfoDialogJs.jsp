@@ -34,19 +34,77 @@
             $inpCode: $("#inp_code"),
             $inpName: $("#inp_name"),
             $inpUrl: $("#inp_url"),
+            $inpMonitorType: $("#inpMonitorType"),
             $inpStatus: $('input[name="inp_status"]', this.$form),
             $healthId:$("#health_id"),
             $updateBtn:$("#div_update_btn"),
             $cancelBtn:$("#div_cancel_btn"),
+            dataModel: $.DataModel.init(),//ajax初始化
             weekDialog: null,
             init: function () {
                 this.initForm();
                 this.bindEvents();
+                this.loadSelData();
                 if (id != '-1') {
                     this.getZBInfo(this.setZBInfo , this);
                     $("#inp_code").closest(".m-form-group").addClass("m-form-readonly");
                 }
             },
+
+            //加载默认筛选条件
+            loadSelData: function () {
+                var me = this;
+                me.loadReportMonitorTypeDate().then(function (res) {
+                    //机构
+                    if (res.successFlg) {
+                        var d = res.obj;
+//                        var mechanisms = [];
+//                        for (var i = 0, len = d.length; i < len; i++) {
+//                            mechanisms.push({
+//                                text: d[i].name,
+//                                id: d[i].id,
+//                                flag: d[i].flag
+//                            });
+//                        }
+                        me.$inpMonitorType.ligerComboBox({
+                            url: '${contextRoot}/governmentMenu/getMonitorTypeList',
+                            parms: {menuId: id},
+                            isShowCheckBox: true,
+                            width: '240',
+                            valueField: 'id',
+                            textField: 'name',
+//                            data: mechanisms,
+                            isMultiSelect: true,
+                            valueFieldID: 'ids',
+                            dataParmName: 'obj'
+                        });
+                        var aaa = '';
+                        $.each(d, function (k, obj) {
+                            obj.flag && (aaa += (obj.id + ';'));
+                        })
+                        me.$inpMonitorType.liger().selectValue(aaa);
+                    } else {
+                        me.$inpMonitorType.ligerComboBox({width: '240'});
+                    }
+                });
+            },
+            //资源报表监测类型
+            loadReportMonitorTypeDate: function () {
+                return this.loadPromise("${contextRoot}/governmentMenu/getMonitorTypeList", {menuId:id});
+            },
+            loadPromise: function (url, d) {
+                var me = this;
+                return new Promise(function (resolve, reject) {
+                    me.dataModel.fetchRemote(url, {
+                        data: d,
+                        type: 'GET',
+                        success: function (data) {
+                            resolve(data);
+                        }
+                    });
+                });
+            },
+
             parentSelected:function(pid, name){
                 parentSelectedVal = pid;
             },
@@ -91,7 +149,8 @@
                 self.$inpName.ligerTextBox({width: 240});
                 self.$inpUrl.ligerTextBox({width: 240});
                 self.$inpStatus.eq(0).attr("checked","true");
-                self.$inpStatus.ligerRadio();
+                self.$inpStatus.eq(0).ligerRadio();
+                self.$inpStatus.eq(1).ligerRadio();
                 self.$form.attrScan();
             },
 
@@ -153,13 +212,14 @@
                         values.url = $("#inp_url").val();
                         values.status = $('input[name=inp_status]:checked').val();
                         var mode = "new";
+                        var ids = $("#ids").val();
                         if (id != '-1') {
                             values.id = id.toString();
                             mode = "modify";
                         }
                         var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/governmentMenu/addOrUpdate", {
-                            data: {jsonDate:JSON.stringify(values), mode:mode},
+                            data: {jsonDate:JSON.stringify(values), mode:mode, ids:ids},
                             async: false,
                             type: 'post',
                             success: function (data) {

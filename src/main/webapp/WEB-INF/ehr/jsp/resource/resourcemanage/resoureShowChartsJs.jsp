@@ -79,6 +79,7 @@
                 var me = this,
                     html = '',
                     conHtml = '';
+                debugger
                 $.each(chartsTitArr, function (key, val) {
                     var cN = key == 0 ? 'active' : '',
                         cl = key != 0 ? 'un-show' : '',
@@ -92,16 +93,16 @@
                         },
                         checkboxHtml = '';
                     var list = [];
-                    $.each(listMap[key], function (key, obj) {
-                        var dis = obj.isMain == 'true' ? 'disabled' : '';
-                        var che = obj.isCheck == 'true' ? 'checked' : '';
-                        checkboxHtml += '<input type="checkbox" data-key="' +
-                                            obj.code + '" ' +
-                                            che + '  '+
-                                            dis + '/>' +
-                                            obj.name;
-                        list.push(obj.code);
-                    });
+//                    $.each(listMap[key], function (key, obj) {
+//                        var dis = obj.isMain == 'true' ? 'disabled' : '';
+//                        var che = obj.isCheck == 'true' ? 'checked' : '';
+//                        checkboxHtml += '<input type="checkbox" data-key="' +
+//                                            obj.code + '" ' +
+//                                            che + '  '+
+//                                            dis + '/>' +
+//                                            obj.name;
+//                        list.push(obj.code);
+//                    });
                     obj.dimension = list.join(',');
                     obj.checkboxs = checkboxHtml;
                     html += '<li class="tab-item '+ cN +'"><a href="javascript:;" title="'+ val +'">' + val + '</a></li>';

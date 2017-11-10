@@ -172,4 +172,11 @@ public class ReportMonitorTypeController extends BaseUIController {
         }
     }
 
+    @RequestMapping("/reportConfig")
+    public String reportConfig(String id ,Model model) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/reportMonitorType/monitorTypeReport");
+        return "simpleView";
+    }
+
 }
