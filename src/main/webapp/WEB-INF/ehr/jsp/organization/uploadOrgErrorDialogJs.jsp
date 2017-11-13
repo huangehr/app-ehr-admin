@@ -163,7 +163,7 @@
                     {display: '联系方式', name: 'phone', width: '125', align: 'left', render: textRender},
                     {display: '中西医标识', name: 'zxy', width: '140', align: 'left', render: textRender},
 
-                    {display: '床位', name: 'berth', width: '70', align: 'left', render: textRender},
+                    {display: '床位',hide: true, name: 'berth', width: '70', align: 'left', render: textRender},
                     {display: '机构地址--省',  hide: true,name: 'provinceName', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--市',  hide: true,name: 'cityName', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--县',  hide: true,name: 'district', width: '95', align: 'left', render: textRender},
