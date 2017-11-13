@@ -79,6 +79,16 @@ public class ReportController extends BaseUIController {
     }
 
     /**
+     *
+     */
+    @RequestMapping(value = "selView")
+    public String selView(Model model, Integer id) {
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/report/selView");
+        return "simpleView";
+    }
+
+    /**
      * 展示资源配置
      */
     @RequestMapping(value = "setting")
@@ -86,6 +96,17 @@ public class ReportController extends BaseUIController {
         Object detailModel = new RsReportModel();
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "resource/report/setting");
+        return "simpleView";
+    }
+
+    /**
+     *
+     */
+    @RequestMapping(value = "tmpViewSetting")
+    public String tmpViewSetting(Model model, Integer id) {
+        Object detailModel = new RsReportModel();
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/report/tmpViewSetting");
         return "simpleView";
     }
 
@@ -149,17 +170,17 @@ public class ReportController extends BaseUIController {
         try {
             //从Session中获取用户的角色和和授权视图列表作为查询参数
             HttpSession session = request.getSession();
-            boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-            List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
-            if(!isAccessAll) {
-                if(null == userResourceList || userResourceList.size() <= 0) {
+            boolean isAccessAll = (boolean) session.getAttribute(AuthorityKey.IsAccessAll);
+            List<String> userResourceList = (List<String>) session.getAttribute(AuthorityKey.UserResource);
+            if (!isAccessAll) {
+                if (null == userResourceList || userResourceList.size() <= 0) {
                     return failed("无权访问");
                 }
             }
             Map<String, Object> params = new HashMap<>();
-            if(isAccessAll) {
+            if (isAccessAll) {
                 params.put("userResource", "*");
-            }else {
+            } else {
                 params.put("userResource", "auth");
             }
             String rsCategoryTreeStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.CategoryTree, params, username, password);
@@ -185,7 +206,7 @@ public class ReportController extends BaseUIController {
             List<Object> rsResourcesList = objectMapper.readValue(rsResourcesStr, Envelop.class).getDetailModelList();
             List<RsResourcesModel> rsResourcesModelList = (List<RsResourcesModel>) this.getEnvelopList(rsResourcesList, new ArrayList<RsResourcesModel>(), RsResourcesModel.class);
             for (RsResourcesModel rsResources : rsResourcesModelList) {
-                if(isAccessAll || (rsResources.getGrantType().equals("0") || userResourceList.contains(rsResources.getId()))) {
+                if (isAccessAll || (rsResources.getGrantType().equals("0") || userResourceList.contains(rsResources.getId()))) {
                     rsCategoryTypeTreeModel = new RsCategoryTypeTreeModel();
                     rsCategoryTypeTreeModel.setId(rsResources.getId());
                     rsCategoryTypeTreeModel.setName(rsResources.getName());
@@ -389,6 +410,9 @@ public class ReportController extends BaseUIController {
         List<Map<String, Object>> viewInfos = new ArrayList<>();
         List<Map<String, Object>> options = new ArrayList<>();
         try {
+            List<String> userRolesList = (List<String>)request.getSession().getAttribute(AuthorityKey.UserRoles);
+            String roleId = objectMapper.writeValueAsString(userRolesList);
+
             // 获取报表模版内容
             params.put("reportCode", reportCode);
             String tcEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportTemplateContent, params, username, password);
@@ -427,6 +451,7 @@ public class ReportController extends BaseUIController {
                     // 获取展示的列名
                     params.clear();
                     params.put("resourcesCode", rsResourcesModel.getCode());
+                    params.put("roleId", roleId);
                     String rowsEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.ResourceBrowseResourceMetadata, params, username, password);
                     List columns = objectMapper.readValue(rowsEnvelopStr, Envelop.class).getDetailModelList();
                     viewInfo.put("columns", columns);
