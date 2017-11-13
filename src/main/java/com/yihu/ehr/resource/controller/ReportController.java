@@ -587,8 +587,9 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/uploadTemplate")
     @ResponseBody
-    public Object uploadTemplate(Integer id, String content) {
+    public Object uploadTemplate(Integer id, String content, String reportData) {
         try {
+            saveSetting(id, reportData);
             Envelop result = new Envelop();
             String filePath = this.getClass().getResource("/").getPath() + "temp/";
             String fileName = System.currentTimeMillis() + "template.html";

@@ -41,8 +41,18 @@
                         data: {reportCode: me.code},
                         success: function(data) {
                             if(data.successFlg) {
+                                var d = data.obj.viewInfos;
                                 me.$noneTmp.hide();
                                 me.$tmpCon.html(data.obj.templateContent);
+                                $.each(d , function (k, obj) {
+                                    var $dom = $('#' + obj.resourceId),
+                                        myChart = echarts.init($dom[0]),
+                                        option = JSON.parse(obj.options[0].option);
+                                    me.resourseIds.push(obj.resourceId);
+                                    $dom.closest('.charts').find('.c-title').html(option.title.text);
+                                    delete option.title;
+                                    myChart.setOption(option);
+                                });
                             } else {
                                 me.$noneTmp.show();
                                 $.Notice.warn('获取报表模版失败！');
@@ -52,9 +62,6 @@
                             $.Notice.error('获取报表模版发生异常！');
                         }
                     });
-                },
-                getTmpData: function () {
-
                 },
                 showViewList: function ($dom) {
                     var wait = $.Notice.waitting("请稍后..."),
@@ -100,20 +107,31 @@
                             num = tmp.indexOf('</style>') + ('</style>'.length),
                             styleStr = me.getFormatData(tmp.substring(0, num)),
                             tmpStr = me.getFormatData(tmp.substring(num, tmp.length)),
-                            $tmpDom = $(tmpStr);
+                            $tmpDom = $(tmpStr),
+                            reportData = [];
                         $tmpDom.find('.c-title').html('');
                         $tmpDom.find('.charts-con').removeAttr('style').removeAttr('_echarts_instance_').html('');
-                        tmpStr = styleStr + $tmpDom.html();
+                        tmpStr = styleStr + '<div>' + $tmpDom.html() + '</div>';
+                        $.each(me.resourseIds, function (k, o) {
+                            reportData.push({
+                                id: '',
+                                reportId: me.id,
+                                resourceId: o
+                            });
+                        })
+                        reportData = JSON.stringify(reportData);
                         $.ajax({
                             url: url[1],
                             data: {
                                 id: parseInt(me.id),
-                                content: tmpStr
+                                content: tmpStr,
+                                reportData: reportData
                             },
-                            type: 'GET',
+                            type: 'POST',
                             dataType: 'json',
                             success: function (res) {
                                 if (res.successFlg) {
+                                    closeTmpSettingDialogDialog();
                                     $.Notice.success('保存成功！');
                                 } else {
                                     $.Notice.error('保存失败！');
@@ -137,14 +155,12 @@
                                     oldResourceId = TVS.chart.attr('id'),
                                     newIndex = TVS.resourseIds.indexOf(resourceId),
                                     oldIndex = TVS.resourseIds.indexOf(oldResourceId);
-                                debugger
                                 if (newIndex >= 0) {
-                                    console.log(TVS.resourseIds);
-                                    alert('该视图已选择，请重选！');
+                                    $.Notice.error('该视图已选择，请重选！');
                                     return;
                                 }
                                 if (oldIndex >= 0) {
-                                    TVS.resourseIds = TVS.resourseIds.splice(oldIndex, 1);
+                                    TVS.resourseIds.splice(oldIndex, 1);
                                 }
                                 var option = JSON.parse(res.detailModelList[0].option);
                                 var myChart = echarts.init(TVS.chart[0]);
@@ -153,7 +169,6 @@
                                 TVS.chart.attr('id', resourceId);
                                 delete option.title;
                                 myChart.setOption(option);
-                                console.log(TVS.resourseIds);
                             } else {
                                 $.Notice.error(res.errorMsg);
                             }
