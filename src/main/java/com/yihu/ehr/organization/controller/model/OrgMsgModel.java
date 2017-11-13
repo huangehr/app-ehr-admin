@@ -72,6 +72,10 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
     @Location(x=23)
     private String berth;//核定床位
 
+
+    private boolean isAdDivisionExist;//判断是否存在最小行政区域
+    private Integer administrativeDivision;//最小行政区域id
+
     public String getAscriptionType() {
         return ascriptionType;
     }
@@ -303,5 +307,21 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
 //            addErrorMsg("phone", "联系方式重复！" );
 //        }
         return valid;
+    }
+
+    public boolean isAdDivisionExist() {
+        return isAdDivisionExist;
+    }
+
+    public void setAdDivisionExist(boolean adDivisionExist) {
+        isAdDivisionExist = adDivisionExist;
+    }
+
+    public Integer getAdministrativeDivision() {
+        return administrativeDivision;
+    }
+
+    public void setAdministrativeDivision(Integer administrativeDivision) {
+        this.administrativeDivision = administrativeDivision;
     }
 }
