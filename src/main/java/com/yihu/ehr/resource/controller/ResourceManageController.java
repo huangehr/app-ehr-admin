@@ -27,21 +27,13 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * 视图管理控制器
+ * Controller - 视图管理控制器
  * Created by yww on 2016/5/27.
  */
 @Controller
 @RequestMapping("/resource/resourceManage")
 public class ResourceManageController extends BaseUIController {
 
-    @Value("${service-gateway.username}")
-    private String username;
-    @Value("${service-gateway.password}")
-    private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @RequestMapping("/initial")
     public String resourceInitial(Model model){
@@ -131,7 +123,7 @@ public class ResourceManageController extends BaseUIController {
     }
 
     /**
-     * 资源分页查询
+     * 资源分页查询 -- 弃用
      * @param searchNm
      * @param categoryId
      * @param page
@@ -162,15 +154,12 @@ public class ResourceManageController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
-
         if (!StringUtils.isEmpty(rolesId)) {
             params.put("rolesId", rolesId);
         }
-
         if (!StringUtils.isEmpty(appId)) {
             params.put("appId", appId);
         }
-
         params.put("page", page);
         params.put("size", rows);
         try {
@@ -303,6 +292,11 @@ public class ResourceManageController extends BaseUIController {
                 result.setErrorMsg("已授权资源不能删除");
                 return result;
             }
+            if(isRsReportInUse(id)){
+                result.setSuccessFlg(false);
+                result.setErrorMsg("已关联报表资源不能删除");
+                return result;
+            }
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             result = objectMapper.readValue(resultStr, Envelop.class);
             if (result.isSuccessFlg()) {
@@ -314,10 +308,9 @@ public class ResourceManageController extends BaseUIController {
             return result;
         } catch (Exception e) {
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
             return result;
         }
-
     }
 
     /**
@@ -585,17 +578,38 @@ public class ResourceManageController extends BaseUIController {
         return resultStr;
     }
 
-    public Boolean isRsInUse(String resourceId) throws Exception{
+    /**
+     * 判断资源是否已被授权
+     * @param resourceId
+     * @return
+     * @throws Exception
+     */
+    public boolean isRsInUse(String resourceId) throws Exception{
         String url = "/resources/grants/no_paging";
         Map<String,Object> params = new HashMap<>();
-        params.put("filters","resourceId="+resourceId);
+        params.put("filters","resourceId=" + resourceId);
         String resultStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
         Envelop result = objectMapper.readValue(resultStr, Envelop.class);
-        if (result.isSuccessFlg()&&result.getDetailModelList().size() >0) {
+        if (result.isSuccessFlg() && result.getDetailModelList().size() > 0) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * 判断资源报表是否关联相关资源
+     * @param resourceId
+     * @return
+     * @throws Exception
+     */
+    public boolean isRsReportInUse(String resourceId) throws Exception {
+        String url = "/resources/reportView/existByResourceId";
+        Map<String,Object> params = new HashMap<>();
+        params.put("resourceId", resourceId);
+        String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
+        return (boolean)envelop.getObj();
     }
 
 }
