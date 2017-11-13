@@ -40,7 +40,7 @@ public class OrgMsgModelReader extends AExcelReader {
                     p.setAdmin(getCellCont(sheet, i, 8));
                     p.setPhone(getCellCont(sheet, i, 9));
                     p.setZxy(getCellCont(sheet, i, 10));
-                    p.setParentHosId(getCellCont(sheet, i, 11));
+                    p.setBerth(getCellCont(sheet,i,11));
                     p.setProvinceName(getCellCont(sheet, i, 12));
                     p.setCityName(getCellCont(sheet, i, 13));
                     p.setDistrict(getCellCont(sheet, i, 14));
@@ -52,7 +52,7 @@ public class OrgMsgModelReader extends AExcelReader {
                     p.setLat(getCellCont(sheet, i, 20));
                     p.setTags(getCellCont(sheet, i, 21));
                     p.setIntroduction(getCellCont(sheet, i, 22));
-                    p.setBerth(getCellCont(sheet,i,23));
+
                     p.setExcelSeq(j);
 
                     int rs = p.validate(repeat);

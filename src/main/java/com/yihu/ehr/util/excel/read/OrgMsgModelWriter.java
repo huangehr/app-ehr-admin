@@ -16,7 +16,7 @@ import java.util.List;
 public class OrgMsgModelWriter extends AExcelWriter {
 
     public void addHeader(WritableSheet ws) throws WriteException {
-       String[] header ={"机构代码", "机构全名","医院类型", "医院归属", "机构简称", "机构类型", "医院等级", "医院法人", "联系人", "联系方式", "中西医标识", "上级医院", "机构地址", "", "", "", "交通路线", "入驻方式", "经度", "纬度", "标签", "医院简介", "床位", "错误信息"};
+       String[] header ={"机构代码", "机构全名","医院类型", "医院归属", "机构简称", "机构类型", "医院等级", "医院法人", "联系人", "联系方式", "中西医标识", "床位", "机构地址", "", "", "", "交通路线", "入驻方式", "经度", "纬度", "标签", "医院简介", "错误信息"};
         if (!"".equals(header)) {
             int i = 0;
             for (String h : header) {
@@ -39,7 +39,7 @@ public class OrgMsgModelWriter extends AExcelWriter {
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("admin")) ? "" : m.findErrorMsg("admin") + "；";
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("phone")) ? "" : m.findErrorMsg("phone") + "；";
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("zxy")) ? "" : m.findErrorMsg("zxy") + "；";
-        errorInfo += StringUtils.isEmpty(m.findErrorMsg("parentHosId")) ? "" : m.findErrorMsg("parentHosId") + "；";
+        errorInfo += StringUtils.isEmpty(m.findErrorMsg("berth")) ? "" : m.findErrorMsg("berth") + "；";
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("provinceName")) ? "" : m.findErrorMsg("provinceName") + "；";
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("cityName")) ? "" : m.findErrorMsg("cityName") + "；";
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("district")) ? "" : m.findErrorMsg("district") + "；";
@@ -50,7 +50,6 @@ public class OrgMsgModelWriter extends AExcelWriter {
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("lat")) ? "" : m.findErrorMsg("lat") + "；";
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("tags")) ? "" : m.findErrorMsg("tags") + "；";
         errorInfo += StringUtils.isEmpty(m.findErrorMsg("introduction")) ? "" : m.findErrorMsg("introduction") + "；";
-        errorInfo += StringUtils.isEmpty(m.findErrorMsg("berth")) ? "" : m.findErrorMsg("berth") + "；";
         return StringUtils.isEmpty(errorInfo) ? errorInfo : errorInfo.substring(0,errorInfo.length()-1);
     }
 
@@ -72,7 +71,7 @@ public class OrgMsgModelWriter extends AExcelWriter {
                 addCell(ws, i, 8, m.getAdmin(), m.findErrorMsg("admin"));
                 addCell(ws, i, 9, m.getPhone(), m.findErrorMsg("phone"));
                 addCell(ws, i, 10, m.getZxy(), m.findErrorMsg("zxy"));
-                addCell(ws, i, 11, m.getParentHosId(), m.findErrorMsg("parentHosId"));
+                addCell(ws, i, 11, m.getBerth(), m.findErrorMsg("berth"));
                 addCell(ws, i, 12, m.getProvinceName(), m.findErrorMsg("provinceName"));
                 addCell(ws, i, 13, m.getCityName(), m.findErrorMsg("cityName"));
                 addCell(ws, i, 14, m.getDistrict(), m.findErrorMsg("district"));
@@ -83,7 +82,6 @@ public class OrgMsgModelWriter extends AExcelWriter {
                 addCell(ws, i, 19, m.getLat(), m.findErrorMsg("lat"));
                 addCell(ws, i, 20, m.getTags(), m.findErrorMsg("tags"));
                 addCell(ws, i, 21, m.getIntroduction(), m.findErrorMsg("introduction"));
-                addCell(ws, i, 21, m.getBerth(), m.findErrorMsg("berth"));
                 addCell(ws, i, 22, getErrorInfo(m), "");
                 i++;
             }
