@@ -409,7 +409,6 @@ public class ReportController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> resultMap = new HashMap<>();
         List<Map<String, Object>> viewInfos = new ArrayList<>();
-        List<Map<String, Object>> options = new ArrayList<>();
         try {
             List<String> userRolesList = (List<String>)request.getSession().getAttribute(AuthorityKey.UserRoles);
             String roleId = objectMapper.writeValueAsString(userRolesList);
@@ -444,6 +443,7 @@ public class ReportController extends BaseUIController {
                 Map<String, Object> viewInfo = new HashMap<>();
                 Map<String, Object> conditions = translateViewCondition(rsResourcesModel.getDataSource(), queryStr);
                 viewInfo.put("conditions", conditions); // 视图数据过滤条件。
+                List<Map<String, Object>> options = new ArrayList<>();
                 if (rsResourcesModel.getDataSource() == 1) {
                     // 档案视图场合
                     viewInfo.put("type", "record");
@@ -587,8 +587,9 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/uploadTemplate")
     @ResponseBody
-    public Object uploadTemplate(Integer id, String content) {
+    public Object uploadTemplate(Integer id, String content, String reportData) {
         try {
+            saveSetting(id, reportData);
             Envelop result = new Envelop();
             String filePath = this.getClass().getResource("/").getPath() + "temp/";
             String fileName = System.currentTimeMillis() + "template.html";
