@@ -20,7 +20,7 @@
             var barTools = function(){
 
                 function save(){
-                    if(true){
+                    if(validator.validate()){
                         if($form.Fields)
                             $form.removeData('propMap');
                         $form.attrScan();
@@ -152,16 +152,16 @@
                     }},
                     {display: '机构代码', name: 'orgCode', width: '150', align: 'left', render: textRender},
                     {display: '机构全名', name: 'fullName', width: '200', align: 'left', render: textRender},
-                    {display: '医院类型', name: 'hosTypeId', width: '80', align: 'left', render: textRender},
-                    {display: '医院归属', name: 'ascriptionType', width: '90', align: 'left', render: textRender},
+                    {display: '医院类型', name: 'hosTypeId', width: '82', align: 'left', render: textRender},
+                    {display: '医院归属', name: 'ascriptionType', width: '82', align: 'left', render: textRender},
                     {display: '机构简称', hide: true, name: 'shortName', width: '110', align: 'left', render: textRender},
-                    {display: '机构类型', name: 'orgType', width: '110', align: 'left', render: textRender},
+                    {display: '机构类型', name: 'orgType', width: '82', align: 'left', render: textRender},
                     {display: '医院等级',hide: true,  name: 'levelId', width: '100', align: 'left', render: textRender},
 
                     {display: '医院法人', hide: true,  name: 'legalPerson', width: '100', align: 'left', render: textRender},
-                    {display: '联系人', name: 'admin', width: '100', align: 'left', render: textRender},
+                    {display: '联系人', name: 'admin', width: '95', align: 'left', render: textRender},
                     {display: '联系方式', name: 'phone', width: '125', align: 'left', render: textRender},
-                    {display: '中西医标识', name: 'zxy', width: '140', align: 'left', render: textRender},
+                    {display: '中西医标识', name: 'zxy', width: '80', align: 'left', render: textRender},
 
                     {display: '床位',hide: true, name: 'berth', width: '70', align: 'left', render: textRender},
                     {display: '机构地址--省',  hide: true,name: 'provinceName', width: '95', align: 'left', render: textRender},
@@ -170,7 +170,7 @@
                     {display: '机构地址--镇',  hide: true,name: 'town', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--街道',  hide: true,name: 'street', width: '95', align: 'left', render: textRender},
                     {display: '交通路线',  hide: true,name: 'traffic', width: '95', align: 'left', render: textRender},
-                    {display: '入驻方式',  hide: true,name: 'settledWay', width: '95', align: 'left', render: textRender},
+                    {display: '入驻方式',name: 'settledWay', width: '80', align: 'left', render: textRender},
                     {display: '经度',  hide: true,name: 'ing', width: '95', align: 'left', render: textRender},
                     {display: '纬度', hide: true, name: 'lat', width: '95', align: 'left', render: textRender},
                     {display: '标签',  hide: true,name: 'tags', width: '95', align: 'left', render: textRender},
