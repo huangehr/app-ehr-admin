@@ -20,7 +20,7 @@
             var barTools = function(){
 
                 function save(){
-                    if(true){
+                    if(validator.validate()){
                         if($form.Fields)
                             $form.removeData('propMap');
                         $form.attrScan();
@@ -94,6 +94,7 @@
                     if(field.indexOf('orgCode')!=-1){
                         return uniqValid(urls.orgIsExistence,val, "该机构代码已存在！");
                     }
+
                 });
                 validator.validate();
             }
@@ -133,7 +134,7 @@
                 }
                 else{
                     var ajaxClz = ['required'];
-                    if( column.name=='orgCode') ajaxClz.push('ajax');
+                    if( column.name=='orgCode'|| column.name=='hosTypeId' || column.name=='ascriptionType'|| column.name=='orgType' || column.name=='settledWay'|| column.name=='zxy' ) ajaxClz.push('ajax');
                     html = '<input data-old-val="'+ val +'" type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
                     html += '<script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
                 }
@@ -151,31 +152,31 @@
                     }},
                     {display: '机构代码', name: 'orgCode', width: '150', align: 'left', render: textRender},
                     {display: '机构全名', name: 'fullName', width: '200', align: 'left', render: textRender},
-                    {display: '医院类型', name: 'hosTypeId', width: '80', align: 'left', render: textRender},
-                    {display: '医院归属', name: 'ascriptionType', width: '90', align: 'left', render: textRender},
+                    {display: '医院类型', name: 'hosTypeId', width: '82', align: 'left', render: textRender},
+                    {display: '医院归属', name: 'ascriptionType', width: '82', align: 'left', render: textRender},
                     {display: '机构简称', hide: true, name: 'shortName', width: '110', align: 'left', render: textRender},
-                    {display: '机构类型', name: 'orgType', width: '110', align: 'left', render: textRender},
+                    {display: '机构类型', name: 'orgType', width: '82', align: 'left', render: textRender},
                     {display: '医院等级',hide: true,  name: 'levelId', width: '100', align: 'left', render: textRender},
 
-                    {display: '医院法人', name: 'legalPerson', width: '100', align: 'left', render: textRender},
-                    {display: '联系人', name: 'admin', width: '100', align: 'left', render: textRender},
+                    {display: '医院法人', hide: true,  name: 'legalPerson', width: '100', align: 'left', render: textRender},
+                    {display: '联系人', name: 'admin', width: '95', align: 'left', render: textRender},
                     {display: '联系方式', name: 'phone', width: '125', align: 'left', render: textRender},
-                    {display: '中西医标识',hide: true, name: 'zxy', width: '140', align: 'left', render: textRender},
+                    {display: '中西医标识', name: 'zxy', width: '80', align: 'left', render: textRender},
 
-                    {display: '上级医院',  hide: true,name: 'parentHosId', width: '95', align: 'left', render: textRender},
+                    {display: '床位',hide: true, name: 'berth', width: '70', align: 'left', render: textRender},
                     {display: '机构地址--省',  hide: true,name: 'provinceName', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--市',  hide: true,name: 'cityName', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--县',  hide: true,name: 'district', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--镇',  hide: true,name: 'town', width: '95', align: 'left', render: textRender},
                     {display: '机构地址--街道',  hide: true,name: 'street', width: '95', align: 'left', render: textRender},
                     {display: '交通路线',  hide: true,name: 'traffic', width: '95', align: 'left', render: textRender},
-                    {display: '入驻方式',  hide: true,name: 'settledWay', width: '95', align: 'left', render: textRender},
+                    {display: '入驻方式',name: 'settledWay', width: '80', align: 'left', render: textRender},
                     {display: '经度',  hide: true,name: 'ing', width: '95', align: 'left', render: textRender},
                     {display: '纬度', hide: true, name: 'lat', width: '95', align: 'left', render: textRender},
                     {display: '标签',  hide: true,name: 'tags', width: '95', align: 'left', render: textRender},
                     {display: '医院简介',  hide: true,name: 'introduction', width: '95', align: 'left', render: textRender}
 //                    {display: '资质信息',  hide: true,name: 'qualification', width: '95', align: 'left', render: textRender},
-                    ];
+                ];
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
                 searchFun();
             };
