@@ -19,7 +19,11 @@ public class OrgMsgModelReader extends AExcelReader {
             int j = 0, rows;
             OrgMsgModel p;
             getRepeat().put("orgCode", new HashSet<>());
-//            getRepeat().put("phone", new HashSet<>());
+            getRepeat().put("orgType", new HashSet<>());// 机构类型,如:行政\科研等
+            getRepeat().put("settledWay", new HashSet<>());// 入驻方式：直连/第三方接入
+            getRepeat().put("hosTypeId", new HashSet<>());// 医院类型：综合性医院/眼科医院
+            getRepeat().put("ascriptionType", new HashSet<>());// 医院归属：省属/市属。
+            getRepeat().put("zxy", new HashSet<>());// 中西医标识：中医/西医
 
             for (Sheet sheet : sheets) {
                 if ((rows = sheet.getRows()) == 0) continue;
@@ -36,7 +40,7 @@ public class OrgMsgModelReader extends AExcelReader {
                     p.setAdmin(getCellCont(sheet, i, 8));
                     p.setPhone(getCellCont(sheet, i, 9));
                     p.setZxy(getCellCont(sheet, i, 10));
-                    p.setParentHosId(getCellCont(sheet, i, 11));
+                    p.setBerth(getCellCont(sheet,i,11));
                     p.setProvinceName(getCellCont(sheet, i, 12));
                     p.setCityName(getCellCont(sheet, i, 13));
                     p.setDistrict(getCellCont(sheet, i, 14));
@@ -48,6 +52,7 @@ public class OrgMsgModelReader extends AExcelReader {
                     p.setLat(getCellCont(sheet, i, 20));
                     p.setTags(getCellCont(sheet, i, 21));
                     p.setIntroduction(getCellCont(sheet, i, 22));
+
                     p.setExcelSeq(j);
 
                     int rs = p.validate(repeat);
