@@ -1015,6 +1015,10 @@
                 dataElementDialog.close();
                 $selDom.trigger('click');
             }
+            w.closeZhibaioConfigueDialog = function (callback) {
+                zhibaioConfigueDialog.close();
+            };
+
         });
     })(window, jQuery);
 </script>
