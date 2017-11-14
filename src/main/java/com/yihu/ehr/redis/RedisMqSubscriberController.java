@@ -1,6 +1,7 @@
 package com.yihu.ehr.redis;
 
 import com.yihu.ehr.agModel.redis.RedisMqChannelModel;
+import com.yihu.ehr.agModel.redis.RedisMqSubscriberModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -18,14 +19,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Redis消息队列 controller
+ * Redis消息订阅者 controller
  *
  * @author 张进军
- * @date 2017/11/10 11:45
+ * @date 2017/11/13 15:14
  */
 @Controller
-    @RequestMapping("/redis/mq/channel")
-public class RedisMqChannelController extends BaseUIController {
+@RequestMapping("/redis/mq/subscriber")
+public class RedisMqSubscriberController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
@@ -35,8 +36,9 @@ public class RedisMqChannelController extends BaseUIController {
     private String comUrl;
 
     @RequestMapping("/index")
-    public String index(Model model) {
-        model.addAttribute("contentPage", "redis/mq/channel/list");
+    public String index(Model model, String channel) {
+        model.addAttribute("channel", channel);
+        model.addAttribute("contentPage", "redis/mq/subscriber/list");
         return "pageView";
     }
 
@@ -44,20 +46,20 @@ public class RedisMqChannelController extends BaseUIController {
      * 展示明细
      */
     @RequestMapping(value = "/detail")
-    public String detail(Model model, Integer id) {
-        Object detailModel = new RedisMqChannelModel();
+    public String detail(Model model, Integer id, String channel) {
+        Object detailModel = new RedisMqChannelModel(channel);
         try {
             if (id != null) {
-                String url = comUrl + ServiceApi.Redis.MqChannel.Prefix + id;
+                String url = comUrl + ServiceApi.Redis.MqSubscriber.Prefix + id;
                 String result = HttpClientUtil.doGet(url, username, password);
                 detailModel = objectMapper.readValue(result, Envelop.class).getObj();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
         }
         model.addAttribute("detailModel", toJson(detailModel));
-        model.addAttribute("contentPage", "redis/mq/channel/detail");
+        model.addAttribute("contentPage", "redis/mq/subscriber/detail");
         return "simpleView";
     }
 
@@ -66,12 +68,13 @@ public class RedisMqChannelController extends BaseUIController {
      */
     @RequestMapping("/search")
     @ResponseBody
-    public Object search(String searchContent, int page, int rows) {
+    public Object search(String searchContent, String channel, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         StringBuffer filters = new StringBuffer();
 
+        filters.append("channel=" + channel + ";");
         if (!StringUtils.isEmpty(searchContent)) {
-            filters.append("channel?" + searchContent + ";channelName?" + searchContent + ";");
+            filters.append("subscribedUrl?" + searchContent + ";");
         }
 
         params.put("filters", filters.toString());
@@ -79,10 +82,10 @@ public class RedisMqChannelController extends BaseUIController {
         params.put("size", rows);
 
         try {
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqChannel.Search, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqSubscriber.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -97,7 +100,7 @@ public class RedisMqChannelController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
 
         try {
-            RedisMqChannelModel model = objectMapper.readValue(data, RedisMqChannelModel.class);
+            RedisMqSubscriberModel model = objectMapper.readValue(data, RedisMqSubscriberModel.class);
             if (StringUtils.isEmpty(model.getChannel())) {
                 return failed("消息队列编码不能为空！");
             }
@@ -105,25 +108,25 @@ public class RedisMqChannelController extends BaseUIController {
             if (model.getId() == null) {
                 // 新增
                 params.put("entityJson", data);
-                return HttpClientUtil.doPost(comUrl + ServiceApi.Redis.MqChannel.Save, params, username, password);
+                return HttpClientUtil.doPost(comUrl + ServiceApi.Redis.MqSubscriber.Save, params, username, password);
             } else {
                 // 修改
-                String urlGet = comUrl + ServiceApi.Redis.MqChannel.Prefix + model.getId();
+                String urlGet = comUrl + ServiceApi.Redis.MqSubscriber.Prefix + model.getId();
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
 
-                RedisMqChannelModel updateModel = getEnvelopModel(envelopGet.getObj(), RedisMqChannelModel.class);
+                RedisMqSubscriberModel updateModel = getEnvelopModel(envelopGet.getObj(), RedisMqSubscriberModel.class);
                 updateModel.setChannel(model.getChannel());
-                updateModel.setChannelName(model.getChannelName());
-//                updateModel.setAuthorizedCode(model.getAuthorizedCode());
+                updateModel.setAppId(model.getAppId());
+                updateModel.setSubscribedUrl(model.getSubscribedUrl());
                 updateModel.setRemark(model.getRemark());
 
                 params.put("entityJson", objectMapper.writeValueAsString(updateModel));
-                return HttpClientUtil.doPut(comUrl + ServiceApi.Redis.MqChannel.Save, params, username, password);
+                return HttpClientUtil.doPut(comUrl + ServiceApi.Redis.MqSubscriber.Save, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -137,48 +140,29 @@ public class RedisMqChannelController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("id", id);
-            return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.MqChannel.Delete, params, username, password);
+            return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.MqSubscriber.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
 
     /**
-     * 验证消息队列编码是否唯一
+     * 验证消息订阅者服务地址是否唯一
      */
-    @RequestMapping("/isUniqueChannel")
+    @RequestMapping("/isUniqueSubscribedUrl")
     @ResponseBody
-    public Object isUniqueChannel(Integer id, String channel) {
+    public Object isUniqueSubscribedUrl(Integer id, String subscriberUrl) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         try {
             params.put("id", id);
-            params.put("channel", channel);
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqChannel.IsUniqueChannel, params, username, password);
+            params.put("subscriberUrl", subscriberUrl);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqSubscriber.IsUniqueSubscribedUrl, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
-        }
-    }
-
-    /**
-     * 验证消息队列名是否唯一
-     */
-    @RequestMapping("/isUniqueChannelName")
-    @ResponseBody
-    public Object isUniqueChannelName(Integer id, String channelName) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        try {
-            params.put("id", id);
-            params.put("channelName", channelName);
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqChannel.IsUniqueChannelName, params, username, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
