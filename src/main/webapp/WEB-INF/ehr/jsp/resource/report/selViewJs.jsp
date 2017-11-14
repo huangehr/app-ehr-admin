@@ -17,7 +17,7 @@
     }
 
     function initWidget() {
-        $('#settingTreeContainer').mCustomScrollbar({
+        $('#supplyTree').mCustomScrollbar({
             axis: "y"
         });
 
