@@ -14,7 +14,7 @@ import java.util.*;
  * Created by zdm on 2017/10/19
  */
 @Row(start = 1)
-@Title(names= "{'机构代码', '机构全名','医院类型', '医院归属', '机构简称', '机构类型', '医院等级', '医院法人', '联系人', '联系方式', '中西医标识', '上级医院', '机构地址', '交通路线', '入驻方式', '经度', '纬度', '标签', '医院简介', '资质信息'}")
+@Title(names= "{'机构代码', '机构全名','医院类型', '医院归属', '机构简称', '机构类型', '医院等级', '医院法人', '联系人', '联系方式', '中西医标识', '床位', '机构地址', '交通路线', '入驻方式', '经度', '纬度', '标签', '医院简介'}")
 public class OrgMsgModel extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
@@ -41,8 +41,7 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
     @Location(x=10)
     private String zxy;// 中西医标识
     @Location(x=11)
-    private String parentHosId; //上级医院
-
+    private String berth;//核定床位
     private String location;        // 机构地址
     private String provinceId;
     @Location(x=12)
@@ -69,8 +68,9 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
     private String tags;//标签
     @Location(x=22)
     private String introduction;//简介
-//    @Location(x=22)
-//    private String qualification;//资质信息
+
+    private boolean isAdDivisionExist;//判断是否存在最小行政区域
+    private Integer administrativeDivision;//最小行政区域id
 
     public String getAscriptionType() {
         return ascriptionType;
@@ -241,14 +241,6 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
         this.levelId = levelId;
     }
 
-    public String getParentHosId() {
-        return parentHosId;
-    }
-
-    public void setParentHosId(String parentHosId) {
-        this.parentHosId = parentHosId;
-    }
-
     public String getZxy() {
         return zxy;
     }
@@ -281,6 +273,14 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
         this.town = town;
     }
 
+    public String getBerth() {
+        return berth;
+    }
+
+    public void setBerth(String berth) {
+        this.berth = berth;
+    }
+
     @Override
     public int validate(Map<String, Set> repeatMap) {
         int valid = 1;
@@ -290,10 +290,22 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
             addErrorMsg("orgCode", "机构代码重复！" );
         }
 
-//        if(!repeatMap.get("phone").add(phone)){
-//            valid = 0;
-//            addErrorMsg("phone", "联系方式重复！" );
-//        }
         return valid;
+    }
+
+    public boolean isAdDivisionExist() {
+        return isAdDivisionExist;
+    }
+
+    public void setAdDivisionExist(boolean adDivisionExist) {
+        isAdDivisionExist = adDivisionExist;
+    }
+
+    public Integer getAdministrativeDivision() {
+        return administrativeDivision;
+    }
+
+    public void setAdministrativeDivision(Integer administrativeDivision) {
+        this.administrativeDivision = administrativeDivision;
     }
 }

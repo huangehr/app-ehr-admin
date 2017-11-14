@@ -38,7 +38,9 @@
     }
     .wrapper .content {
         /*padding: 10px;*/
+        width: 324px !important;
         height: 490px;
+        overflow-y: auto;
     }
     #settingTreeContainer {
         height: 490px;

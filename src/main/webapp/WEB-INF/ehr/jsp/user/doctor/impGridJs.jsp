@@ -25,7 +25,7 @@
             var barTools = function(){
 
                 function save(){
-                    if(true){
+                    if(validator.validate()){
                         if($form.Fields)
                             $form.removeData('propMap');
                         $form.attrScan();
