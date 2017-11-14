@@ -101,8 +101,8 @@ public class RedisMqSubscriberController extends BaseUIController {
 
         try {
             RedisMqSubscriberModel model = objectMapper.readValue(data, RedisMqSubscriberModel.class);
-            if (StringUtils.isEmpty(model.getChannel())) {
-                return failed("消息队列编码不能为空！");
+            if (StringUtils.isEmpty(model.getSubscribedUrl())) {
+                return failed("订阅者服务地址不能为空！");
             }
 
             if (model.getId() == null) {
