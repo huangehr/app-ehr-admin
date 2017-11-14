@@ -129,7 +129,7 @@
 							async: false,
 							success: function (data) {
 								if (data.successFlg) {
-									window.top.$.Notice.error('已经有一个编辑状态的版本，不能再新增！');
+									$.Notice.error('已经有一个编辑状态的版本，不能再新增！');
 								} else {
 									createNewVersion(data.obj);
 								}
@@ -151,7 +151,7 @@
 											masters.reloadGrid();
 											$.Notice.success('CDA版本新增成功');
 										} else {
-											window.top.$.Notice.error('CDA版本新增失败');
+											$.Notice.error('CDA版本新增失败');
 										}
 									},
 								});
