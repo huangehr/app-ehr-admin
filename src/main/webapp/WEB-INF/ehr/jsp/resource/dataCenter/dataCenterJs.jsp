@@ -447,7 +447,7 @@
                 var me = this;
                 me.myCharts5 = echarts.init(me.$el5);
                 var option = {
-                    color:['#42d16f', '#ffbd5c'],
+                    color:['#ffbd5c', '#42d16f'],
                     calculable : false,
                     series : [
                         {
