@@ -1,6 +1,7 @@
 package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.resource.MRsCategory;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,15 +58,27 @@ public class RsResourceCategoryController extends BaseUIController {
     //获取TreeData 用于初始页面显示嵌套model
     @RequestMapping("getTreeGridData")
     @ResponseBody
-    public Object getTreeGridData(String codeName) {
+    public Object getTreeGridData(String codeName,HttpServletRequest request) {
         Envelop envelop = new Envelop();
-        Map<String,Object> params = new HashMap<>();
         String url ="/resources/categories/tree";
         String strResult = "";
-        if (StringUtils.isEmpty(codeName)){
-            codeName = "";
-        }else{
-            params.put("name",codeName);
+        Map<String,Object> params = new HashMap<>();
+        //从Session中获取用户的角色和和授权视图列表作为查询参数
+        HttpSession session = request.getSession();
+        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
+        if(!isAccessAll) {
+            if(null == userResourceList || userResourceList.size() <= 0) {
+                return failed("无权访问");
+            }
+        }
+        if(isAccessAll) {
+            params.put("userResource", "*");
+        }else {
+            params.put("userResource", "auth");
+        }
+        if (!StringUtils.isEmpty(codeName)){
+            params.put("name", codeName);
         }
         try{
             strResult = HttpClientUtil.doGet(comUrl+url,params,username,password);
@@ -74,6 +89,7 @@ public class RsResourceCategoryController extends BaseUIController {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
+
     }
 
     /**
