@@ -123,8 +123,8 @@ public class UserRolesController extends BaseUIController {
                 return failed("原角色组信息获取失败！");
             }
             RolesModel updateModel = getEnvelopModel(envelopGet.getObj(),RolesModel.class);
-            updateModel.setCode(model.getCode());
-            updateModel.setName(model.getName());
+            updateModel.setCode(model.getCode().replaceAll("\\s*", ""));
+            updateModel.setName(model.getName().replaceAll("\\s*", ""));
             updateModel.setAppId(model.getAppId());
             updateModel.setType(model.getType());
             updateModel.setDescription(model.getDescription());
