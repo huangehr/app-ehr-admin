@@ -515,26 +515,40 @@
                     },
                     tooltip : {
                         show: true,
-                        trigger: 'item'
+                        trigger: 'axis',
+                        formatter: '{b}(岁) : {c}',
+                        axisPointer: {
+                            type: 'none'
+                        }
                     },
-                    xAxis: [{
-                        name : '年龄',
-                        data: xAxisData,
-                        axisLine : {    // 轴线
-                            show: false
-                        },
-                        axisTick: {show:false},
-                        axisLabel: {show:true,textStyle:{
-                            color: '#909090',
-                            fontSize:12
-                        }},
-                        splitArea: {show:false},
-                        splitLine: {show:false}
-                    }, {
-                        // 辅助 x 轴
-                        show: false,
-                        data: xAxisData
-                    }],
+                    xAxis: [
+//                            {
+//                        // 辅助 x 轴
+//                        show: false,
+//                        axisLine: {show:false},
+//                        axisTick: {show:false},
+//                        axisLabel: {show:false},
+//                        splitArea: {show:false},
+//                        splitLine: {show:false},
+//                        data: xAxisData
+//                    },
+                        {
+                            type: 'category',
+                            name : '年龄',
+                            data: xAxisData,
+                            position: 'bottom',
+                            axisLine : {    // 轴线
+                                show: false
+                            },
+                            axisTick: {show:false},
+                            axisLabel: {show:true,textStyle:{
+                                color: '#909090',
+                                fontSize:12
+                            }},
+                            splitArea: {show:false},
+                            splitLine: {show:false}
+                        }
+                    ],
                     yAxis: {
                         type : 'value',
                         name : '单位:人',
@@ -556,22 +570,22 @@
                         }
                     },
                     series: [
-                        {
-                            // 辅助系列
-                            type           : 'bar',
-                            silent         : true,
-                            xAxisIndex     : 1,
-                            itemStyle      : {
-                                normal         : {
-                                    barBorderRadius: 0,
-                                    color: '#f7f7ff'
-                                }
-                            },
-                            barWidth: 20,
-                            data: data.yData.map(function (val) {
-                                return _.max(data.yData);
-                            })
-                        },
+//                        {
+//                            // 辅助系列
+//                            type           : 'bar',
+//                            silent         : true,
+//                            xAxisIndex     : 1,
+//                            itemStyle      : {
+//                                normal         : {
+//                                    barBorderRadius: 0,
+//                                    color: '#f7f7ff'
+//                                }
+//                            },
+//                            barWidth: 20,
+//                            data: data.yData.map(function (val) {
+//                                return _.max(data.yData);
+//                            })
+//                        },
                         {
                             type: 'bar',
                             data: data.yData,
@@ -579,13 +593,14 @@
                             itemStyle: {
                                 normal: {
                                     barBorderRadius: 0,
-                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                        offset: 0,
-                                        color: '#9c9af4'
-                                    }, {
-                                        offset: 1,
-                                        color: '#65c5ff'
-                                    }])
+                                    color:['#9c9af4']
+//                                            new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+//                                        offset: 0,
+//                                        color: '#9c9af4'
+//                                    }, {
+//                                        offset: 1,
+//                                        color: '#65c5ff'
+//                                    }])
                                 }
                             }
                         }
