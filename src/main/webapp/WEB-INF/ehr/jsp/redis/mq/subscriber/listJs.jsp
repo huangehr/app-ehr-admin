@@ -4,7 +4,7 @@
 
 <script>
     var dataModel = $.DataModel.init();
-    var channel = ${channel};
+    var channel = '${channel}';
     var detailDialog = null;
     var grid = null;
 

@@ -21,7 +21,7 @@
     <div class="m-form-group">
         <label>订阅者服务地址：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-50 required ajax"
+            <input type="text" class="f-w240 max-length-150 required ajax"
                    id="subscribedUrl" data-attr-scan="subscribedUrl">
         </div>
     </div>
