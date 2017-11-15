@@ -760,7 +760,7 @@ public class DataSetsController extends BaseUIController {
                         return envelop;
                     }
                     //插入数据元信息
-                    metaData.setId(0);//为0内部自增
+                    metaData.setId(0L);//为0内部自增
                     metaData.setDataSetId(dataSet.getId());
                     metaData.setCode(code);
                     metaData.setName(name);
