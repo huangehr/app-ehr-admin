@@ -95,7 +95,7 @@
                         </div>
                         <div class="div-instruction">
                             <div class="div-jkda-amount" id="hosCountNum"></div>
-                            <div class="div-jkda-title">住院/门诊</div>
+                            <div class="div-jkda-title">住院/门诊/体检</div>
                         </div>
                     </div>
                     <div class="c-w-100 div-bottom-instruction">
