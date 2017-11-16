@@ -450,7 +450,7 @@ public class LoginController extends BaseUIController {
                             java.util.Iterator it = organizations.iterator();
                             while(it.hasNext()){
                                 MOrganization mOrganization = (MOrganization)it.next();
-                                userOrgList.add(mOrganization.getCode());
+                                userOrgList.add(mOrganization.getOrgCode());
                             }
                         }
                     }
