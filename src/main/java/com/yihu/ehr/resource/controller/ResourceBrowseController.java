@@ -275,13 +275,15 @@ public class ResourceBrowseController extends BaseUIController {
             if(envelop.isSuccessFlg()) {
                 List<Map<String, Object>> envelopList = envelop.getDetailModelList();
                 List<Map<String, Object>> resultList = new ArrayList<>();
-                for (Map<String, Object> envelopMap : envelopList) {
-                    Map<String, Object> resultMap = new HashMap<String, Object>();
-                    for (String key : envelopMap.keySet()) {
-                        String value = envelopMap.get(key).toString();
-                        resultMap.put(key, value);
+                if(envelopList != null && envelopList.size() > 0){
+                    for (Map<String, Object> envelopMap : envelopList) {
+                        Map<String, Object> resultMap = new HashMap<String, Object>();
+                        for (String key : envelopMap.keySet()) {
+                            String value = envelopMap.get(key).toString();
+                            resultMap.put(key, value);
+                        }
+                        resultList.add(resultMap);
                     }
-                    resultList.add(resultMap);
                 }
                 List<Map<String, Object>> listMap = resourceIntegratedController.changeIdCardNo(resultList, request);
                 envelop.setDetailModelList(listMap);
