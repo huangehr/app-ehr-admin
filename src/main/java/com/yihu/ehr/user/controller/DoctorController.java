@@ -175,6 +175,7 @@ public class DoctorController extends BaseUIController {
         ObjectMapper mapper = new ObjectMapper();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(doctorModelJsonData, "UTF-8").split(";");
+        jsonModel = URLDecoder.decode(jsonModel,"UTF-8");
         DoctorDetailModel doctorDetailModel = toModel(strings[0], DoctorDetailModel.class);
         RestTemplates templates = new RestTemplates();
 

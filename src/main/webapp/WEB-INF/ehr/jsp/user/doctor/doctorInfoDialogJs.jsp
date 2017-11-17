@@ -61,7 +61,7 @@
             $divBtnShow: document.getElementById('divBtnShow'),
 
             init: function () {
-				var self = this;
+                var self = this;
 
                 self.initForm();
                 self.bindEvents();
@@ -105,7 +105,7 @@
                 this.initDDL(roleTypeDictId, this.$roleType);
                 this.$sex.ligerRadio();
                 $imageShow: $('#div_file_list'),
-                this.$form.attrScan();
+                        this.$form.attrScan();
                 win.ORGDEPTVAL = allData.detailModelList;
                 this.$form.Fields.fillValues({
                     id: doctor.id,
@@ -158,21 +158,26 @@
 
                 //修改的点击事件
                 this.$updateDtn.click(function () {
-
+                    var jsonModel = win.ORGDEPTVAL;
+                    if (jsonModel.length <= 0) {
+                        $.Notice.error('请选择机构部门');
+                        return;
+                    }
                     var imgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         doctorModel = self.$form.Fields.getValues();
                         if (imgHtml == 0) {
-                            update(doctorModel);
+                            update(doctorModel, jsonModel);
                         } else {
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
                             if (image) {
                                 upload.options.formData.doctorModelJsonData = encodeURIComponent(JSON.stringify(doctorModel));
+                                upload.options.formData.jsonModel = encodeURIComponent(JSON.stringify(jsonModel));
                                 upload.upload();
                                 win.reloadMasterUpdateGrid();
                             } else {
-                                update(doctorModel);
+                                update(doctorModel, jsonModel);
                             }
                         }
                     } else {
@@ -180,16 +185,11 @@
                     }
                 });
 
-                function update(doctorModel) {
+                function update(doctorModel, jsonModel) {
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
-                    var dataModel = $.DataModel.init(),
-                        jsonModel = win.ORGDEPTVAL;
-                    if (jsonModel.length <= 0) {
-                        waittingDialog.close();
-                        $.Notice.error('请选择机构部门');
-                        return;
-                    }
+                    var dataModel = $.DataModel.init();
+
                     jsonModel = JSON.stringify(jsonModel);
                     win.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
