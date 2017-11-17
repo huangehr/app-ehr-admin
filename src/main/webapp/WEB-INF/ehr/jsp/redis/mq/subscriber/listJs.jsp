@@ -76,7 +76,7 @@
 
         // 删除
         $.subscribe('redis:mq:subscriber:delete', function (event, id) {
-            $.Notice.confirm('确认要删除所选数据吗？', function (r) {
+            $.Notice.confirm('删除后该订阅者服务地址将不会接收到发布的消息，确认要删除吗？', function (r) {
                 if (r) {
                     var loading = $.ligerDialog.waitting("正在删除数据...");
                     dataModel.updateRemote('${contextRoot}/redis/mq/subscriber/delete', {

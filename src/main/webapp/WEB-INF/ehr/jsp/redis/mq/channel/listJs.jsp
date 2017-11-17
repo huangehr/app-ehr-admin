@@ -30,21 +30,10 @@
                 {display: '消息队列编码', name: 'channel', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '消息队列名称', name: 'channelName', width: '20%', isAllowHide: false, align: 'left'},
 //                {display: '授权码', name: 'authorizedCode', width: '0%', isAllowHide: false, align: 'left'},
-                {display: '订阅数', name: 'subscriberNum', width: '5%', isAllowHide: false, align: 'center',
-                    render: function (row) {
-                        if(!row.subscriberNum) return '0';
-                    }
-                },
-                {display: '入队数', name: 'enqueuedNum', width: '5%', isAllowHide: false, align: 'center',
-                    render: function (row) {
-                        if(!row.enqueuedNum) return '0';
-                    }
-                },
-                {display: '出队数', name: 'dequeuedNum', width: '5%', isAllowHide: false, align: 'center',
-                    render: function (row) {
-                        if(!row.dequeuedNum) return '0';
-                    }
-                },
+                {display: '入列数', name: 'enqueuedNum', width: '5%', isAllowHide: false, align: 'center'},
+                {display: '出列数', name: 'dequeuedNum', width: '5%', isAllowHide: false, align: 'center'},
+                {display: '订阅者数', name: 'subscriberNum', width: '5%', isAllowHide: false, align: 'center'},
+                {display: '发布者数', name: 'publisherNum', width: '5%', isAllowHide: false, align: 'center'},
                 {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},
                 {display: '操作', name: 'operator', width: '15%', minWidth: 120, align: 'center',
                     render: function (row) {
