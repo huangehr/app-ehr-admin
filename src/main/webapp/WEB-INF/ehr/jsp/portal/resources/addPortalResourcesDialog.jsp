@@ -40,8 +40,8 @@
 
 		<div class="m-form-group">
 			<label>apkUrl</label>
-			<div class="l-text-wrapper m-form-control ">
-				<input type="text" class="i-text" id="apkUrl" data-attr-scan="url" readonly="readonly" />
+			<div class="l-text-wrapper m-form-control essential">
+				<input type="text" class="i-text required" id="apkUrl" data-attr-scan="url" readonly="readonly" />
 				<div class="uploadBtn">上传
 					<input type="file" id="inp_file_apk" name="apkFile" class="file" value="" />
 				</div>
@@ -51,8 +51,8 @@
 
 		<div class="m-form-group">
 			<label>AndroidUrl</label>
-			<div class="l-text-wrapper m-form-control ">
-				<input type="text" class="i-text" id="androidUrl" data-attr-scan="androidQrCodeUrl" readonly="readonly" />
+			<div class="l-text-wrapper m-form-control essential">
+				<input type="text" class="i-text required" id="androidUrl" data-attr-scan="androidQrCodeUrl" readonly="readonly" />
 				<div class="uploadBtn">上传
 					<input type="file" id="inp_file_android" name="androidFile"  class="file">
 				</div>
@@ -62,8 +62,8 @@
 
 		<div class="m-form-group">
 			<label>IOSUrl</label>
-			<div class="l-text-wrapper m-form-control ">
-				<input type="text"  class="i-text" id="iosUrl" data-attr-scan="iosQrCodeUrl"  readonly="readonly" />
+			<div class="l-text-wrapper m-form-control essential">
+				<input type="text"  class="i-text required" id="iosUrl" data-attr-scan="iosQrCodeUrl"  readonly="readonly" />
 				<div class="uploadBtn">上传
 					<input type="file" id="inp_file_iosUrl" name="iosFile" class="file">
 				</div>
