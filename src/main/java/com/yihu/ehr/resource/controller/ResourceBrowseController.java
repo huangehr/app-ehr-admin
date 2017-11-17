@@ -272,23 +272,35 @@ public class ResourceBrowseController extends BaseUIController {
             params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
-            if(envelop.isSuccessFlg()) {
-                List<Map<String, Object>> envelopList = envelop.getDetailModelList();
-                List<Map<String, Object>> resultList = new ArrayList<>();
+            List<Map<String, Object>> envelopList = envelop.getDetailModelList();
+            List<Map<String, Object>> finalList = new ArrayList<Map<String, Object>>();
+            if(envelop.isSuccessFlg() && envelopList != null) {
+                List<Map<String, Object>> middleList = new ArrayList<>();
                 for (Map<String, Object> envelopMap : envelopList) {
                     Map<String, Object> resultMap = new HashMap<String, Object>();
                     for (String key : envelopMap.keySet()) {
                         String value = envelopMap.get(key).toString();
-                        resultMap.put(key, value);
+                        if (key.equals("event_type")) {
+                            String eventType = envelopMap.get(key).toString();
+                            if (eventType.equals("0")) {
+                                resultMap.put(key, "门诊");
+                            } else if (eventType.equals("1")) {
+                                resultMap.put(key, "住院");
+                            } else if (eventType.equals("2")) {
+                                resultMap.put(key, "线上");
+                            }
+                        } else if (value.contains("T") && value.contains("Z")) {
+                            String newDateStr = value.replace("T", " ").replace("Z", "");
+                            resultMap.put(key, newDateStr);
+                        } else {
+                            resultMap.put(key, value);
+                        }
                     }
-                    resultList.add(resultMap);
+                    middleList.add(resultMap);
                 }
-                List<Map<String, Object>> listMap = resourceIntegratedController.changeIdCardNo(resultList, request);
-                envelop.setDetailModelList(listMap);
-            }else {
-                return envelop;
+                finalList = resourceIntegratedController.changeIdCardNo(middleList, request);
             }
-            //return resultStr;
+            envelop.setDetailModelList(finalList);
         } catch (Exception e) {
             e.printStackTrace();
             envelop.setSuccessFlg(false);

@@ -35,14 +35,6 @@ import java.util.*;
 @RequestMapping("/resourceIntegrated")
 public class ResourceIntegratedController extends BaseUIController {
 
-    @Value("${service-gateway.username}")
-    private String username;
-    @Value("${service-gateway.password}")
-    private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     /**
      * 综合查询档案数据列表树
@@ -143,31 +135,34 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
             List<Map<String, Object>> envelopList = envelop.getDetailModelList();
-            List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
-            for(Map<String, Object> envelopMap : envelopList) {
-                Map<String, Object> resultMap = new HashMap<String, Object>();
-                for(String key : envelopMap.keySet()) {
-                    String value = envelopMap.get(key).toString();
-                    if (key.equals("event_type")) {
-                        String eventType = envelopMap.get(key).toString();
-                        if (eventType.equals("0")) {
-                            resultMap.put(key, "门诊");
-                        } else if (eventType.equals("1")) {
-                            resultMap.put(key, "住院");
-                        } else if (eventType.equals("2")) {
-                            resultMap.put(key, "线上");
+            List<Map<String, Object>> finalList = new ArrayList<Map<String, Object>>();
+            if(envelop.isSuccessFlg() && envelopList != null) {
+                List<Map<String, Object>> middleList = new ArrayList<Map<String, Object>>();
+                for (Map<String, Object> envelopMap : envelopList) {
+                    Map<String, Object> resultMap = new HashMap<String, Object>();
+                    for (String key : envelopMap.keySet()) {
+                        String value = envelopMap.get(key).toString();
+                        if (key.equals("event_type")) {
+                            String eventType = envelopMap.get(key).toString();
+                            if (eventType.equals("0")) {
+                                resultMap.put(key, "门诊");
+                            } else if (eventType.equals("1")) {
+                                resultMap.put(key, "住院");
+                            } else if (eventType.equals("2")) {
+                                resultMap.put(key, "线上");
+                            }
+                        } else if (value.contains("T") && value.contains("Z")) {
+                            String newDateStr = value.replace("T", " ").replace("Z", "");
+                            resultMap.put(key, newDateStr);
+                        } else {
+                            resultMap.put(key, value);
                         }
-                    } else if (value.contains("T") && value.contains("Z")) {
-                        String newDateStr = value.replace("T", " ").replace("Z", "");
-                        resultMap.put(key, newDateStr);
-                    } else {
-                        resultMap.put(key, value);
                     }
+                    middleList.add(resultMap);
                 }
-                resultList.add(resultMap);
+                finalList = changeIdCardNo(middleList, request);
             }
-            List<Map<String, Object>> listMap = changeIdCardNo(resultList, request);
-            envelop.setDetailModelList(listMap);
+            envelop.setDetailModelList(finalList);
         } catch (Exception e) {
             e.printStackTrace();
             envelop.setSuccessFlg(false);
@@ -506,14 +501,14 @@ public class ResourceIntegratedController extends BaseUIController {
     }
 
     public List<Map<String, Object>> changeIdCardNo(List<Map<String, Object>> resultList, HttpServletRequest request) {
-        List<Map<String, Object>> listMap = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> finalList = new ArrayList<Map<String, Object>>();
         boolean flag = false;
         try {
             Map<String, Object> params = new HashMap<>();
             UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
             params.put("userId", StringUtils.isEmpty(userDetailModel) ? "" : userDetailModel.getId());
             String result = HttpClientUtil.doGet(comUrl + "/roles/role_feature/hasPermission", params, username, password);
-            if ("true".equals(result)) {
+            if (result.equals("true")) {
                 flag = true;
             }
             if (!flag) {
@@ -546,15 +541,15 @@ public class ResourceIntegratedController extends BaseUIController {
                     if (!StringUtils.isEmpty(map.get("EHR_001266"))) {
                         map.put("EHR_001266", NumberUtil.changeIdCardNo(map.get("EHR_001266").toString()));
                     }
-                    listMap.add(map);
+                    finalList.add(map);
                 }
             } else {
-                listMap.addAll(resultList);
+                finalList.addAll(resultList);
             }
-            return listMap;
+            return finalList;
         } catch (Exception e) {
-            listMap.addAll(resultList);
-            return listMap;
+            finalList.addAll(resultList);
+            return finalList;
         }
     }
 }
