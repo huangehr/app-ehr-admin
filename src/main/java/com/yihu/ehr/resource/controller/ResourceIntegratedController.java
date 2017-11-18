@@ -508,7 +508,7 @@ public class ResourceIntegratedController extends BaseUIController {
             UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
             params.put("userId", StringUtils.isEmpty(userDetailModel) ? "" : userDetailModel.getId());
             String result = HttpClientUtil.doGet(comUrl + "/roles/role_feature/hasPermission", params, username, password);
-            if (result.equals("true")) {
+            if ("true".equals(result)) {
                 flag = true;
             }
             if (!flag) {
