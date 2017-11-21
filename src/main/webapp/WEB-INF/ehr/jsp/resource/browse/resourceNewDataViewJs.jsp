@@ -20,6 +20,7 @@
             var resourceData = {};
 //            var resourcesCode = resourceData.resourceCode;
             var resourcesCode = null;
+            var resourceId = null;
             var resourcesName = resourceData.resourceName;
             var resourcesSub = resourceData.resourceSub;
             var jsonData = new Array();
@@ -229,12 +230,14 @@
                                 queryParam.resourceName = $($(data.target.parentElement.parentElement).find(".l-body span")[0]).html();
                                 queryParam.resourceCode = resultData.code;
                                 resourcesCode = queryParam.resourceCode;
+                                resourceId = queryParam.resourceId
                                 resourceBrowseMaster.init();
                                 console.log(resourceInfoGrid);
                                 if(resourceInfoGrid){
                                     resourceBrowseMaster.reloadResourcesGrid({
                                         searchParams: queryParam,
-                                        resourcesCode: resourcesCode
+                                        resourceCode: resourcesCode,
+                                        resourceId: resourceId
                                     });
                                     paramModel.dictId[1] = resourcesCode;
                                     self.getSearchData(1, 1);
@@ -265,7 +268,8 @@
                         dataType: 'json',
                         type: 'GET',
                         data:{
-                            dictId: paramModel.dictId[url]
+                            resourceCode: paramModel.dictId[url],
+                            resourceId: resourceId
                         },
                         success: function (data) {
                             if (data && data.length > 0) {
@@ -324,7 +328,8 @@
                     if (!Util.isStrEmpty(resourcesCode)) {
                         dataModel.fetchRemote("${contextRoot}/resourceView/getGridCloumnNames", {
                             data: {
-                                dictId: resourcesCode
+                                resourceCode: resourcesCode,
+                                resourceId: resourceId
                             },
                             async: false,
                             success: function (data) {
@@ -336,7 +341,7 @@
                                 }
                                 resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
                                     url: '${contextRoot}/resourceBrowse/searchResourceData',
-                                    parms: {searchParams: '', resourcesCode: resourcesCode},
+                                    parms: {searchParams: '', resourceCode: resourcesCode, resourceId: resourceId},
                                     columns: columnModel,
                                     height: windowHeight - 110,
                                     checkbox: true,
@@ -526,7 +531,7 @@
                             valueList.push(values);
                             values = [];
                         }
-                        window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
+                        window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourceCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
                     }
                 }
             };
