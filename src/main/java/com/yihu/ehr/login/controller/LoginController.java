@@ -92,7 +92,7 @@ public class LoginController extends BaseUIController {
     @Value("${permissions.info}")
     private String permissionsInfo;
 
-    @RequestMapping(value = "")
+    @RequestMapping()
     public String login(Model model) {
         model.addAttribute("contentPage", "login/login");
         model.addAttribute("successFlg", true);
@@ -102,7 +102,7 @@ public class LoginController extends BaseUIController {
     /**
      * 总支撑门户-oauth2验证集成
      */
-    @RequestMapping(value = "signin")
+    @RequestMapping(value = "/signin")
     public String signin(Model model, HttpServletRequest request) {
         model.addAttribute("contentPage", "login/signin");
         model.addAttribute("successFlg", true);
@@ -116,7 +116,7 @@ public class LoginController extends BaseUIController {
      * 质控报告-oauth2验证集成
      * 接口删除或变更时，请通告ESB项目组
      */
-    @RequestMapping(value = "signinReport")
+    @RequestMapping(value = "/signinReport")
     public String signinReport(Model model) {
         model.addAttribute("contentPage", "login/signinReport");
         model.addAttribute("successFlg", true);
@@ -126,7 +126,7 @@ public class LoginController extends BaseUIController {
     /**
      * 资源视图-oauth2验证集成
      */
-    @RequestMapping(value = "signinResource")
+    @RequestMapping(value = "/signinResource")
     public String signinResource(Model model) {
         model.addAttribute("contentPage", "login/signinResource");
         model.addAttribute("successFlg", true);
@@ -136,7 +136,7 @@ public class LoginController extends BaseUIController {
     /*
      * 自动登录
      */
-    @RequestMapping(value = "autoLogin", method = RequestMethod.POST)
+    @RequestMapping(value = "/autoLogin", method = RequestMethod.POST)
     @ResponseBody
     public Envelop autoLogin(HttpServletRequest request, Model model,
                              @RequestParam String token,
@@ -202,7 +202,7 @@ public class LoginController extends BaseUIController {
         }
     }
 
-    @RequestMapping(value = "validate", method = RequestMethod.POST)
+    @RequestMapping(value = "/validate", method = RequestMethod.POST)
     public String loginValid(Model model, String userName, String password, HttpServletRequest request) {
         String url = "/users/verification/" + userName;
         String resultStr = "";
@@ -256,13 +256,13 @@ public class LoginController extends BaseUIController {
                     session.setAttribute("last_login_time", lastLoginTime);
                     //update lastLoginTime
                     userDetailModel.setLastLoginTime(DateTimeUtils.utcDateTimeFormat(date));
-                    url = "/user";
                     MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
                     conditionMap.add("user_json_data", toJson(userDetailModel));
                     //没用的代码
                     //RestTemplates templates = new RestTemplates();
                     //resultStr = templates.doPut(comUrl + url, conditionMap);
                     session.setAttribute("loginCode", userDetailModel.getLoginCode());
+                    session.setAttribute("userId", userDetailModel.getId());
                     //获取用户角色信息
                     List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
                     Collection<GrantedAuthority> gas = new ArrayList<>();

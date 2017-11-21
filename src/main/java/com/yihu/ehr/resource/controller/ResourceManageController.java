@@ -1,6 +1,5 @@
 package com.yihu.ehr.resource.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
@@ -10,8 +9,6 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -226,49 +223,58 @@ public class ResourceManageController extends BaseUIController {
      */
     @RequestMapping("/update")
     @ResponseBody
-    public Object updateResource(String dataJson, String mode){
+    public Envelop updateResource(String dataJson, String mode, HttpServletRequest request){
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
         String url = "/resources";
         try{
-            RsResourcesModel model = objectMapper.readValue(dataJson, RsResourcesModel.class);
-            if(StringUtils.isEmpty(model.getCode())){
-                envelop.setErrorMsg("资源编码不能为空！");
-                return envelop;
-            }
-            if(StringUtils.isEmpty(model.getName())){
-                envelop.setErrorMsg("资源名称不能为空！");
-                return envelop;
-            }
-            if("new".equals(mode)){
-                Map<String,Object> args = new HashMap<>();
-                args.put("resource",objectMapper.writeValueAsString(model));
-                String envelopStr = HttpClientUtil.doPost(comUrl + url,args,username,password);
-                return envelopStr;
-            } else if("modify".equals(mode)){
-                String urlGet = "/resources/"+model.getId();
-                String envelopGetStr = HttpClientUtil.doGet(comUrl+urlGet,username,password);
-                Envelop envelopGet = objectMapper.readValue(envelopGetStr,Envelop.class);
-                if (!envelopGet.isSuccessFlg()){
-                    envelop.setErrorMsg("原资源信息获取失败！");
+            //RsResourcesModel model = objectMapper.readValue(dataJson, RsResourcesModel.class);
+            Map<String, Object> resourceMap = objectMapper.readValue(dataJson, Map.class);
+            if(resourceMap != null) {
+                if (StringUtils.isEmpty(resourceMap.get("code"))) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("资源编码不能为空！");
+                    return envelop;
                 }
-                RsResourcesModel updateModel = getEnvelopModel(envelopGet.getObj(),RsResourcesModel.class);
-                updateModel.setCode(model.getCode());
-                updateModel.setName(model.getName());
-                updateModel.setCategoryId(model.getCategoryId());
-                updateModel.setRsInterface(model.getRsInterface());
-                updateModel.setGrantType(model.getGrantType());
-                updateModel.setDescription(model.getDescription());
-                updateModel.setDataSource(model.getDataSource());
-                String updateModelJson = objectMapper.writeValueAsString(updateModel);
-                Map<String,Object> params = new HashMap<>();
-                params.put("resource",updateModelJson);
-                String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
-                return envelopStr;
+                if (StringUtils.isEmpty(resourceMap.get("name"))) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("资源名称不能为空！");
+                    return envelop;
+                }
+                // 新增
+                if ("new".equals(mode)) {
+                    resourceMap.put("creator", request.getSession().getAttribute("userId"));
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("resource", objectMapper.writeValueAsString(resourceMap));
+                    String result = HttpClientUtil.doPost(comUrl + url, params, username, password);
+                    Envelop EnvelopPost = toModel(result, Envelop.class);
+                    return EnvelopPost;
+                } else if ("modify".equals(mode)) {
+                    String urlGet = "/resources/" + resourceMap.get("id");
+                    String result1 = HttpClientUtil.doGet(comUrl + urlGet, username, password);
+                    Envelop getEnvelop = objectMapper.readValue(result1, Envelop.class);
+                    if (!getEnvelop.isSuccessFlg()) {
+                        envelop.setSuccessFlg(false);
+                        envelop.setErrorMsg("原资源信息获取失败！");
+                        return envelop;
+                    }
+                    Map<String, Object> rsObj = (Map<String, Object>) getEnvelop.getObj();
+                    resourceMap.put("creator", rsObj.get("creator").toString());
+                    resourceMap.put("modifier", request.getSession().getAttribute("userId"));
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("resource", objectMapper.writeValueAsString(resourceMap));
+                    String result2 = HttpClientUtil.doPut(comUrl + url, params, username, password);
+                    Envelop envelopPut = envelop = toModel(result2, Envelop.class);
+                    return envelopPut;
+                }
+            }else {
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("参数有误");
+                return envelop;
             }
-        }catch (Exception ex){
-            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }catch (Exception e){
+            LogService.getLogger(ResourceManageController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }

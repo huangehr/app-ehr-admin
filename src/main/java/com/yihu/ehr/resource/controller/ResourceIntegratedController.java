@@ -1,12 +1,13 @@
 package com.yihu.ehr.resource.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.operator.NumberUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Cell;
@@ -14,8 +15,6 @@ import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -248,16 +248,30 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping(value = "/updateResource", method = RequestMethod.POST)
     @ResponseBody
-    public Envelop updateResource(String dataJson) {
+    public Envelop updateResource(String dataJson, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/integrated/resource_update";
-        params.put("dataJson", dataJson);
         try {
+            // 转换参数
+            Map<String, Object> dataMap = objectMapper.readValue(dataJson, Map.class);
+            // 获取资源字符串
+            String resource = objectMapper.writeValueAsString(dataMap.get("resource"));
+            // 获取资源Map映射
+            Map<String, Object> rsObj = objectMapper.readValue(resource, Map.class);
+            // 设置创建者
+            rsObj.put("creator", request.getSession().getAttribute("userId"));
+            // 更新参数
+            dataMap.put("resource", rsObj);
+            // 设置请求参数
+            params.put("dataJson", objectMapper.writeValueAsString(dataMap));
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            //e.printStackTrace();
+            LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
