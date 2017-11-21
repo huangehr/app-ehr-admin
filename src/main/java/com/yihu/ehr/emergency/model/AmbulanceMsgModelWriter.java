@@ -48,7 +48,7 @@ public class AmbulanceMsgModelWriter extends AExcelWriter {
                 addCell(ws, i, 5, m.getOrgName(), m.findErrorMsg("orgName"));
                 addCell(ws, i, 6, m.getPhone(), m.findErrorMsg("phone"));
                 addCell(ws, i, 7, m.getEntityName(), m.findErrorMsg("entityName"));
-                addCell(ws, i, 17, getErrorInfo(m), "");
+                addCell(ws, i, 8, getErrorInfo(m), "");
                 i++;
             }
             wwb.write();

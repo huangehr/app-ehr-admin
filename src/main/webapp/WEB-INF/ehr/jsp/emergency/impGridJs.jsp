@@ -99,10 +99,10 @@
                     }
 
                     if(field.indexOf('id')!=-1){
-                        return uniqValid(urls.idOrPhoneIsExistence+"?type=id&values="+val, "该车牌号已存在！");
+                        return uniqValid(urls.idOrPhoneIsExistence+"?type=id&values="+val,undefined, "该车牌号已存在！");
                     }
                     if(field.indexOf('phone')!=-1){
-                        return uniqValid(urls.idOrPhoneIsExistence+"?type=phone&values="+val  , "该随车手机号已存在！");
+                        return uniqValid(urls.idOrPhoneIsExistence+"?type=phone&values="+val ,undefined , "该随车手机号已存在！");
                     }
                     if(field.indexOf('orgCode')!=-1){
                         var result=uniqValid(urls.isOrgExistence, "orgCode="+val+";orgName="+ $('#' + orgName).val(), "该机构代码或机构名称不正确！");
