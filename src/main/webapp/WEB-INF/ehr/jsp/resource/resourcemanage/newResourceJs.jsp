@@ -254,19 +254,19 @@
                                     if (yes) {
                                         var dataModel = $.DataModel.init();
                                         dataModel.updateRemote("${contextRoot}/resource/resourceManage/delete",{
-                                                data:{id: treeNode.id},
-                                                async:true,
-                                                success: function(data) {
-                                                    if(data.successFlg){
-                                                        $.Notice.success('删除成功。');
-                                                        var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
-                                                        zTree.removeNode(treeNode);
-                                                    }else{
-                                                        $.Notice.error(data.errorMsg);
-                                                    }
+                                            data:{id: treeNode.id},
+                                            async:true,
+                                            success: function(data) {
+                                                if(data.successFlg){
+                                                    $.Notice.success('删除成功。');
+                                                    var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
+                                                    zTree.removeNode(treeNode);
+                                                }else{
+                                                    $.Notice.error(data.errorMsg);
                                                 }
-                                            });
-                                        }
+                                            }
+                                        });
+                                    }
                                 });
                                 return false;
                             },
@@ -308,8 +308,8 @@
                         editObj.hide();
                         if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
                         var addStr = "<span class='button add' id='addBtn_" +
-                                         treeNode.tId +
-                                      "' title='新增视图' onfocus='this.blur();'></span>";
+                            treeNode.tId +
+                            "' title='新增视图' onfocus='this.blur();'></span>";
                         sObj.after(addStr);
                         var btn = $("#addBtn_"+treeNode.tId);
                         if (btn) btn.on("click", function(){
@@ -334,7 +334,7 @@
                                 } else {
                                     me.$autBtn.hide();
                                 }
-                                me.loadDAGridData(data.code, data.id);
+                                me.loadDAGridData(data.code);
                                 break;
                             case 2:
                                 me.zbSelData = data;
@@ -346,21 +346,20 @@
                     }
                 },
                 //加载档案数据-表格
-                loadDAGridData: function (resourcesCode, resourcesId) {
+                loadDAGridData: function (resourcesCode) {
                     var me = this;
                     var columnModel = new Array();
                     //获取列名
                     if (!Util.isStrEmpty(resourcesCode)) {
                         if (me.resourceInfoGrid) {
-                            me.reloadDAGridData(resourcesCode, resourcesId);
+                            me.reloadDAGridData(resourcesCode);
                         } else {
                             columnModel = me.daColumn(resourcesCode);
                             me.resourceInfoGrid = me.$divResourceInfoGrid.ligerGrid($.LigerGridEx.config({
                                 url: infa.searchResourceData,
                                 parms: {
                                     searchParams: me.queryCondition,
-                                    resourceCode: resourcesCode,
-                                    resourceId: resourcesId
+                                    resourcesCode: resourcesCode
                                 },
                                 columns: columnModel,
                                 height: '100%',
@@ -370,13 +369,12 @@
                         }
                     }
                 },
-                daColumn: function (resourcesCode, resourceId) {
+                daColumn: function (resourcesCode) {
                     var me = this,
                         columnModel = [];
                     me.dataModel.fetchRemote( infa.getGridCloumnNames, {
                         data: {
-                            resourceCode: resourcesCode,
-                            resourceId: resourceId
+                            dictId: resourcesCode
                         },
                         async: false,
                         success: function (data) {
@@ -397,13 +395,12 @@
                     });
                     return columnModel;
                 },
-                reloadDAGridData: function (resourcesCode, resourcesId) {
+                reloadDAGridData: function (resourcesCode) {
                     if (resourcesCode) {
                         this.resourceInfoGrid.setOptions({parms: {
                             searchParams: this.queryCondition,
-                            resourceCode: resourcesCode,
-                            resourceId: resourcesId
-                        }, columns: this.daColumn(resourcesCode, resourcesId)});
+                            resourcesCode: resourcesCode
+                        }, columns: this.daColumn(resourcesCode)});
                         this.resourceInfoGrid.loadData(true);
                     }
                 },
@@ -652,16 +649,16 @@
                     me.$ddSeach.on('click', function (e) {
                         e.stopPropagation();
                         if ($(e.target).hasClass('l-table-checkbox') ||
-                                $(e.target).hasClass('l-trigger-icon') ||
-                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
-                                $(e.target).hasClass('l-text-field') ||
-                                $(e.target).hasClass('j-text-wrapper') ||
-                                $(e.target).hasClass('u-btn-large') ||
-                                $(e.target).hasClass('inp-label') ||
-                                $(e.target).hasClass('pop-s-con') ||
-                                $(e.target).hasClass('f-mt6') ||
-                                e.target.tagName.toLocaleLowerCase() == 'span' ||
-                                $(e.target).hasClass('clear-s')) {
+                            $(e.target).hasClass('l-trigger-icon') ||
+                            $(e.target).hasClass('l-box-dateeditor-absolute') ||
+                            $(e.target).hasClass('l-text-field') ||
+                            $(e.target).hasClass('j-text-wrapper') ||
+                            $(e.target).hasClass('u-btn-large') ||
+                            $(e.target).hasClass('inp-label') ||
+                            $(e.target).hasClass('pop-s-con') ||
+                            $(e.target).hasClass('f-mt6') ||
+                            e.target.tagName.toLocaleLowerCase() == 'span' ||
+                            $(e.target).hasClass('clear-s')) {
                             return;
                         }
                         if (me.$popMain.css('display') == 'none') {
@@ -686,7 +683,7 @@
                         me.$popMain.css('display', 'none');
                         if (me.type == 1) {
                             me.queryCondition = me.getQuerySearchData();
-                            me.reloadDAGridData(me.daSelData.code, me.daSelData.id);
+                            me.reloadDAGridData(me.daSelData.code);
                         } else {
                             me.queryQutoCondition = me.getZBSearchData();
                             me.reloadZBGridData(me.zbSelData.id);
@@ -765,21 +762,21 @@
                         valueList.push(values);
                         values = [];
                     }
-                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourceCode=" + this.daSelData.code + "&searchParams=" + RSsearchParams, "视图数据导出");
+                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + this.daSelData.code + "&searchParams=" + RSsearchParams, "视图数据导出");
                 },
                 //下拉框列表项初始化
                 initDDL: function (v) {
                     var me = this;
                     var url = me.type == 1 ? infa.getGridCloumnNames : infa.searchQuotaResourceParam,
                         param =  me.type == 1 ? (function () {
-                                return {
-                                    dictId: v
-                                }
-                            })() : (function () {
-                                return {
-                                    resourcesId: v
-                                }
-                            })();
+                            return {
+                                dictId: v
+                            }
+                        })() : (function () {
+                            return {
+                                resourcesId: v
+                            }
+                        })();
                     //初始化
                     me.index = 0;
                     me.$addSearchDom.html('');
@@ -861,21 +858,21 @@
                         if (data[me.index].dict == 'DATECONDITION') {
                             var $div1 = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
                                 html1 = ['<label class="inp-label" for="inpStarTime' + me.index + '">' +
-                                            data[me.index].value + '(开始日期): </label>',
-                                        '<div class="inp-text">',
-                                        '<input type="text" id="inpStarTime' +
-                                        me.index + '" data-code="' +
-                                        data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                data[me.index].value + '(开始日期): </label>',
+                                    '<div class="inp-text">',
+                                    '<input type="text" id="inpStarTime' +
+                                    me.index + '" data-code="' +
+                                    data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
                                     '</div>'].join('');
                             var $div2 = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
                                 html2 = ['<label class="inp-label" for="inpEndTime' + me.index + '">' +
-                                            data[me.index].value + '(结束日期): </label>',
-                                        '<div class="inp-text">',
-                                        '<input type="text" id="inpEndTime' +
-                                            me.index + '" data-code="' +
-                                            data[me.index].code +
-                                        '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                        '</div>'].join('');
+                                data[me.index].value + '(结束日期): </label>',
+                                    '<div class="inp-text">',
+                                    '<input type="text" id="inpEndTime' +
+                                    me.index + '" data-code="' +
+                                    data[me.index].code +
+                                    '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                    '</div>'].join('');
                             $div1.append(html1);
                             $div2.append(html2);
                             $div1.find('input').ligerDateEditor({
@@ -890,10 +887,10 @@
                             me.$addSearchDom.append($div2);
                         } else {
                             var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                    html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
-                                        '<div class="inp-text">',
-                                        '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                        '</div>'].join('');
+                                html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
+                                    '<div class="inp-text">',
+                                    '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                    '</div>'].join('');
                             $div.append(html);
                             var inp = $div.find('input').ligerComboBox({
                                 url: infa.getRsDictEntryList,
@@ -921,8 +918,8 @@
                     var resetInp = $(pModel.find('.inp-reset'));
                     for (var i = 0; i < resetInp.length; i++) {
                         var code = $(resetInp[i]).attr('data-code'),
-                                value = $(resetInp[i]).liger().getValue(),
-                                valArr = [];
+                            value = $(resetInp[i]).liger().getValue(),
+                            valArr = [];
                         if (typeof value != 'string' && value instanceof Date) {
                             value = value.format('yyyy-MM-dd') + 'T00:00:00Z';
                         }

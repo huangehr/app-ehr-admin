@@ -20,7 +20,6 @@
             var resourceData = {};
 //            var resourcesCode = resourceData.resourceCode;
             var resourcesCode = null;
-            var resourceId = null;
             var resourcesName = resourceData.resourceName;
             var resourcesSub = resourceData.resourceSub;
             var jsonData = new Array();
@@ -230,14 +229,12 @@
                                 queryParam.resourceName = $($(data.target.parentElement.parentElement).find(".l-body span")[0]).html();
                                 queryParam.resourceCode = resultData.code;
                                 resourcesCode = queryParam.resourceCode;
-                                resourceId = queryParam.resourceId
                                 resourceBrowseMaster.init();
                                 console.log(resourceInfoGrid);
                                 if(resourceInfoGrid){
                                     resourceBrowseMaster.reloadResourcesGrid({
                                         searchParams: queryParam,
-                                        resourceCode: resourcesCode,
-                                        resourceId: resourceId
+                                        resourcesCode: resourcesCode
                                     });
                                     paramModel.dictId[1] = resourcesCode;
                                     self.getSearchData(1, 1);
@@ -268,8 +265,7 @@
                         dataType: 'json',
                         type: 'GET',
                         data:{
-                            resourceCode: paramModel.dictId[url],
-                            resourceId: resourceId
+                            dictId: paramModel.dictId[url]
                         },
                         success: function (data) {
                             if (data && data.length > 0) {
@@ -288,10 +284,10 @@
                         data = me.GridCloumnNamesData;
                     if (data[me.index].dict && !Util.isStrEquals(data[me.index].dict, 0) && data[me.index].dict != '') {
                         var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
-                                    '<div class="inp-text">',
-                                    '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                    '</div>'].join('');
+                            html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
+                                '<div class="inp-text">',
+                                '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                '</div>'].join('');
                         $div.append(html);
                         var inp = $div.find('input').ligerComboBox({
                             url: paramModel.url[3],
@@ -315,21 +311,20 @@
                 init: function () {
                     var self = retrieve;
                     var columnModel = new Array(),
-                            //基本信息
-                            defArr = [
-                                {"key": 'patient_name', "name": "病人姓名"},
-                                {"key": 'event_type', "name": "就诊类型"},
-                                {"key": 'org_name', "name": "机构名称"},
-                                {"key": 'org_code', "name": "机构编号"},
-                                {"key": 'event_date', "name": "时间"},
-                                {"key": 'demographic_id', "name": "病人身份证号码"}
-                            ];
+                        //基本信息
+                        defArr = [
+                            {"key": 'patient_name', "name": "病人姓名"},
+                            {"key": 'event_type', "name": "就诊类型"},
+                            {"key": 'org_name', "name": "机构名称"},
+                            {"key": 'org_code', "name": "机构编号"},
+                            {"key": 'event_date', "name": "时间"},
+                            {"key": 'demographic_id', "name": "病人身份证号码"}
+                        ];
                     //获取列名
                     if (!Util.isStrEmpty(resourcesCode)) {
                         dataModel.fetchRemote("${contextRoot}/resourceView/getGridCloumnNames", {
                             data: {
-                                resourceCode: resourcesCode,
-                                resourceId: resourceId
+                                dictId: resourcesCode
                             },
                             async: false,
                             success: function (data) {
@@ -341,7 +336,7 @@
                                 }
                                 resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({
                                     url: '${contextRoot}/resourceBrowse/searchResourceData',
-                                    parms: {searchParams: '', resourceCode: resourcesCode, resourceId: resourceId},
+                                    parms: {searchParams: '', resourcesCode: resourcesCode},
                                     columns: columnModel,
                                     height: windowHeight - 110,
                                     checkbox: true,
@@ -385,16 +380,16 @@
                             return;
                         }
                         if ($(e.target).hasClass('l-table-checkbox') ||
-                                $(e.target).hasClass('l-trigger-icon') ||
-                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
-                                $(e.target).hasClass('l-text-field') ||
-                                $(e.target).hasClass('j-text-wrapper') ||
-                                $(e.target).hasClass('u-btn-large') ||
-                                $(e.target).hasClass('inp-label') ||
-                                $(e.target).hasClass('pop-s-con') ||
-                                $(e.target).hasClass('f-mt6') ||
-                                e.target.tagName.toLocaleLowerCase() == 'span' ||
-                                $(e.target).hasClass('clear-s')) {
+                            $(e.target).hasClass('l-trigger-icon') ||
+                            $(e.target).hasClass('l-box-dateeditor-absolute') ||
+                            $(e.target).hasClass('l-text-field') ||
+                            $(e.target).hasClass('j-text-wrapper') ||
+                            $(e.target).hasClass('u-btn-large') ||
+                            $(e.target).hasClass('inp-label') ||
+                            $(e.target).hasClass('pop-s-con') ||
+                            $(e.target).hasClass('f-mt6') ||
+                            e.target.tagName.toLocaleLowerCase() == 'span' ||
+                            $(e.target).hasClass('clear-s')) {
                             return;
                         }
                         if (self.$popMain.css('display') == 'none') {
@@ -531,7 +526,7 @@
                             valueList.push(values);
                             values = [];
                         }
-                        window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourceCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
+                        window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
                     }
                 }
             };

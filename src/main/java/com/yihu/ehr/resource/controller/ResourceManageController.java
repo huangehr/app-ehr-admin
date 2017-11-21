@@ -242,22 +242,29 @@ public class ResourceManageController extends BaseUIController {
                 }
                 // 新增
                 if ("new".equals(mode)) {
-                    resourceMap.put("creator", request.getSession().getAttribute("userId"));
+                    HttpSession session = request.getSession();
+                    resourceMap.put("creator", session.getAttribute("userId"));
                     Map<String, Object> params = new HashMap<>();
                     params.put("resource", objectMapper.writeValueAsString(resourceMap));
                     String result = HttpClientUtil.doPost(comUrl + url, params, username, password);
-                    Envelop EnvelopPost = toModel(result, Envelop.class);
-                    return EnvelopPost;
+                    Envelop envelopPost = toModel(result, Envelop.class);
+                    if(envelopPost.isSuccessFlg()) {
+                        Map<String, Object> rsObj = (Map<String, Object>) envelopPost.getObj();
+                        List<String> userResourceList = (List<String>) session.getAttribute(AuthorityKey.UserResource);
+                        userResourceList.add(String.valueOf(rsObj.get("id")));
+                        session.setAttribute(AuthorityKey.UserResource, userResourceList);
+                    }
+                    return envelopPost;
                 } else if ("modify".equals(mode)) {
                     String urlGet = "/resources/" + resourceMap.get("id");
                     String result1 = HttpClientUtil.doGet(comUrl + urlGet, username, password);
-                    Envelop getEnvelop = objectMapper.readValue(result1, Envelop.class);
-                    if (!getEnvelop.isSuccessFlg()) {
+                    Envelop envelopGet = objectMapper.readValue(result1, Envelop.class);
+                    if (!envelopGet.isSuccessFlg()) {
                         envelop.setSuccessFlg(false);
                         envelop.setErrorMsg("原资源信息获取失败！");
                         return envelop;
                     }
-                    Map<String, Object> rsObj = (Map<String, Object>) getEnvelop.getObj();
+                    Map<String, Object> rsObj = (Map<String, Object>) envelopGet.getObj();
                     resourceMap.put("creator", rsObj.get("creator").toString());
                     resourceMap.put("modifier", request.getSession().getAttribute("userId"));
                     Map<String, Object> params = new HashMap<>();
