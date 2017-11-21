@@ -406,6 +406,7 @@
                             }
                         }
                     }
+                    debugger
                     //初始化表格
                     me.resourceInfoGrid = me.$divResourceInfoGrid.ligerGrid($.LigerGridEx.config({
                         url: conInf[me.type][1],
