@@ -19,10 +19,10 @@
         </div>
     </div>
     <div class="m-form-group">
-        <label>订阅者服务地址：</label>
-        <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-150 required ajax"
-                   id="subscribedUrl" data-attr-scan="subscribedUrl">
+        <label>授权码：</label>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" class="f-w240 max-length-50"
+                   id="authorizedCode" data-attr-scan="authorizedCode">
         </div>
     </div>
     <div class="m-form-group">

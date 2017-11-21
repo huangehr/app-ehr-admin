@@ -19,13 +19,13 @@
 
     function initForm() {
         $('#channel').ligerTextBox({width: 240, disabled: true, readonly: true});
-//        var appIdTb = $('#appId').ligerTextBox({width: 240});
+        var appIdTb = $('#appId').ligerTextBox({width: 240});
         var subscribedUrlTb = $('#subscribedUrl').ligerTextBox({width: 240});
         $('#remark').ligerTextBox({width: 240, height: 150});
 
         if(detailModel.id) {
-//            appIdTb.setDisabled(true);
-//            appIdTb.setReadonly(true);
+            appIdTb.setDisabled(true);
+            appIdTb.setReadonly(true);
             subscribedUrlTb.setDisabled(true);
             subscribedUrlTb.setReadonly(true);
         }
@@ -78,11 +78,18 @@
                 var id = detailModel.id || -1; // 新增时传-1。
                 var elId = $(el).attr("id");
                 switch(elId) {
+                    case 'appId':
+                        var appId = $("#appId").val();
+                        if(!$.Util.isStrEquals(channel, detailModel.channel)) {
+                            var ulr = "${contextRoot}/redis/mq/subscriber/isUniqueAppId";
+                            return validateByAjax(ulr, {id: id, channel: channel, appId: appId});
+                        }
+                        break;
                     case 'subscribedUrl':
                         var subscriberUrl = $("#subscribedUrl").val();
                         if(!$.Util.isStrEquals(channel, detailModel.channel)) {
                             var ulr = "${contextRoot}/redis/mq/subscriber/isUniqueSubscribedUrl";
-                            return validateByAjax(ulr, {id: id, subscriberUrl: subscriberUrl});
+                            return validateByAjax(ulr, {id: id, channel: channel, subscriberUrl: subscriberUrl});
                         }
                         break;
                 }

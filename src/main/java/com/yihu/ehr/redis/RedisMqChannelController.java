@@ -113,9 +113,8 @@ public class RedisMqChannelController extends BaseUIController {
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
 
                 RedisMqChannelModel updateModel = getEnvelopModel(envelopGet.getObj(), RedisMqChannelModel.class);
-                updateModel.setChannel(model.getChannel());
                 updateModel.setChannelName(model.getChannelName());
-//                updateModel.setAuthorizedCode(model.getAuthorizedCode());
+                updateModel.setMessageTemplate(model.getMessageTemplate());
                 updateModel.setRemark(model.getRemark());
 
                 params.put("entityJson", objectMapper.writeValueAsString(updateModel));
