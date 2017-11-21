@@ -334,7 +334,7 @@
                                 } else {
                                     me.$autBtn.hide();
                                 }
-                                me.loadDAGridData(data.code);
+                                me.loadDAGridData(data.code, data.id);
                                 break;
                             case 2:
                                 me.zbSelData = data;
@@ -346,20 +346,21 @@
                     }
                 },
                 //加载档案数据-表格
-                loadDAGridData: function (resourcesCode) {
+                loadDAGridData: function (resourcesCode, resourcesId) {
                     var me = this;
                     var columnModel = new Array();
                     //获取列名
                     if (!Util.isStrEmpty(resourcesCode)) {
                         if (me.resourceInfoGrid) {
-                            me.reloadDAGridData(resourcesCode);
+                            me.reloadDAGridData(resourcesCode, resourcesId);
                         } else {
                             columnModel = me.daColumn(resourcesCode);
                             me.resourceInfoGrid = me.$divResourceInfoGrid.ligerGrid($.LigerGridEx.config({
                                 url: infa.searchResourceData,
                                 parms: {
                                     searchParams: me.queryCondition,
-                                    resourcesCode: resourcesCode
+                                    resourceCode: resourcesCode,
+                                    resourceId: resourcesId
                                 },
                                 columns: columnModel,
                                 height: '100%',
@@ -369,12 +370,13 @@
                         }
                     }
                 },
-                daColumn: function (resourcesCode) {
+                daColumn: function (resourcesCode, resourceId) {
                     var me = this,
                         columnModel = [];
                     me.dataModel.fetchRemote( infa.getGridCloumnNames, {
                         data: {
-                            dictId: resourcesCode
+                            resourceCode: resourcesCode,
+                            resourceId: resourceId
                         },
                         async: false,
                         success: function (data) {
@@ -395,12 +397,13 @@
                     });
                     return columnModel;
                 },
-                reloadDAGridData: function (resourcesCode) {
+                reloadDAGridData: function (resourcesCode, resourcesId) {
                     if (resourcesCode) {
                         this.resourceInfoGrid.setOptions({parms: {
                             searchParams: this.queryCondition,
-                            resourcesCode: resourcesCode
-                        }, columns: this.daColumn(resourcesCode)});
+                            resourceCode: resourcesCode,
+                            resourceId: resourcesId
+                        }, columns: this.daColumn(resourcesCode, resourcesId)});
                         this.resourceInfoGrid.loadData(true);
                     }
                 },
@@ -683,7 +686,7 @@
                         me.$popMain.css('display', 'none');
                         if (me.type == 1) {
                             me.queryCondition = me.getQuerySearchData();
-                            me.reloadDAGridData(me.daSelData.code);
+                            me.reloadDAGridData(me.daSelData.code, me.daSelData.id);
                         } else {
                             me.queryQutoCondition = me.getZBSearchData();
                             me.reloadZBGridData(me.zbSelData.id);
@@ -762,7 +765,7 @@
                         valueList.push(values);
                         values = [];
                     }
-                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + this.daSelData.code + "&searchParams=" + RSsearchParams, "视图数据导出");
+                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourceCode=" + this.daSelData.code + "&searchParams=" + RSsearchParams, "视图数据导出");
                 },
                 //下拉框列表项初始化
                 initDDL: function (v) {

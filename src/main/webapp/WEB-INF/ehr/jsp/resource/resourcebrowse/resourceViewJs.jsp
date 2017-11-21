@@ -551,7 +551,7 @@
                         valueList.push(values);
                         values = [];
                     }
-                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "视图数据导出");
+                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourceCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "视图数据导出");
                 },
                 loadAllPromise: function (arr) {
                     return Promise.all(_.map(arr, function (o) {
