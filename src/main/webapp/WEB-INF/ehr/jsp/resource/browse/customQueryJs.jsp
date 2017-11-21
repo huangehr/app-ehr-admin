@@ -230,7 +230,7 @@
                         onSuccess: function (data) {
                             console.log('a');
                             var detailModelList = data.detailModelList,
-                                    dmList = [];
+                                dmList = [];
                             if (detailModelList) {
                                 if (me.type == 0) {
                                     for(var i = 0; i < detailModelList.length; i++){
@@ -320,7 +320,7 @@
                     if (t == 'list') {
                         htm = me.render(me.selTmp, d, function (dd, $1) {
                             var obj = d.detailModelList || [],
-                                    str = '';
+                                str = '';
                             for (var i = 0, len = obj.length; i < len; i++) {
                                 str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
                             }
@@ -330,11 +330,11 @@
                     } else {
                         htm = me.render(me.selDateTmp, d, function (dd, $1) {
                             var str = ['<li class="con-item ci-inp">',
-                                            '<input type="text" id="startDate' + d.code + '">',
-                                        '</li>',
-                                        '<li class="con-item ci-inp">',
-                                            '<input type="text" id="endDate' + d.code + '">',
-                                        '</li>'].join('');
+                                '<input type="text" id="startDate' + d.code + '">',
+                                '</li>',
+                                '<li class="con-item ci-inp">',
+                                '<input type="text" id="endDate' + d.code + '">',
+                                '</li>'].join('');
                             if ($1 == 'label') {
                                 dd.label = d.name;
                             }
@@ -406,7 +406,6 @@
                             }
                         }
                     }
-                    debugger
                     //初始化表格
                     me.resourceInfoGrid = me.$divResourceInfoGrid.ligerGrid($.LigerGridEx.config({
                         url: conInf[me.type][1],
@@ -667,7 +666,7 @@
                 getSelCon: function () {
                     var me = this;
                     var $selItems = me.$selectCon.find('.sel-item'),
-                            jsonData = [];
+                        jsonData = [];
                     for (var i = 0, len = $selItems.length; i < len; i++) {
 //                        debugger
                         var pCode = $selItems.eq(i).attr('data-parent-code'),

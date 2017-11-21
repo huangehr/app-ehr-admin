@@ -281,7 +281,7 @@
                             success: function (data) {
                                 waittingDialog.close();
                                 var dataArr = data.detailModelList,
-                                        titArr = data.obj;
+                                    titArr = data.obj;
                                 for (var i = 0; i < titArr.length; i++) {
                                     columnModel.push({display: titArr[i].name, name: titArr[i].key, width: 100});
                                 }
@@ -337,12 +337,12 @@
                 getQuerySearchData: function () {
                     var me = this;
                     var pModel = me.$newSearch.children('div'),
-                            jsonData = [];
+                        jsonData = [];
                     var resetInp = $(pModel.find('.inp-reset'));
                     for (var i = 0; i < resetInp.length; i++) {
                         var code = $(resetInp[i]).attr('data-code'),
-                                value = $(resetInp[i]).liger().getValue(),
-                                valArr = [];
+                            value = $(resetInp[i]).liger().getValue(),
+                            valArr = [];
                         if (typeof value != 'string' && value instanceof Date) {
                             value = value.format('yyyy-MM-dd') + 'T00:00:00Z';
                         }
@@ -378,13 +378,13 @@
                 //筛选存在数据字典中的字段
                 setSearchData: function () {
                     var me = this,
-                            data = me.GridCloumnNamesData;
+                        data = me.GridCloumnNamesData;
                     if (data[me.index].dict && !Util.isStrEquals(data[me.index].dict, 0) && data[me.index].dict != '') {
                         var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
-                                    '<div class="inp-text">',
-                                    '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                    '</div>'].join('');
+                            html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
+                                '<div class="inp-text">',
+                                '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                '</div>'].join('');
                         $div.append(html);
                         var inp = $div.find('input').ligerComboBox({
                             url: inf.getRsDictEntryList,
@@ -466,16 +466,16 @@
                             return;
                         }
                         if ($(e.target).hasClass('l-table-checkbox') ||
-                                $(e.target).hasClass('l-trigger-icon') ||
-                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
-                                $(e.target).hasClass('l-text-field') ||
-                                $(e.target).hasClass('j-text-wrapper') ||
-                                $(e.target).hasClass('u-btn-large') ||
-                                $(e.target).hasClass('inp-label') ||
-                                $(e.target).hasClass('pop-s-con') ||
-                                $(e.target).hasClass('f-mt6') ||
-                                e.target.tagName.toLocaleLowerCase() == 'span' ||
-                                $(e.target).hasClass('clear-s')) {
+                            $(e.target).hasClass('l-trigger-icon') ||
+                            $(e.target).hasClass('l-box-dateeditor-absolute') ||
+                            $(e.target).hasClass('l-text-field') ||
+                            $(e.target).hasClass('j-text-wrapper') ||
+                            $(e.target).hasClass('u-btn-large') ||
+                            $(e.target).hasClass('inp-label') ||
+                            $(e.target).hasClass('pop-s-con') ||
+                            $(e.target).hasClass('f-mt6') ||
+                            e.target.tagName.toLocaleLowerCase() == 'span' ||
+                            $(e.target).hasClass('clear-s')) {
                             return;
                         }
                         if (me.$popMain.css('display') == 'none') {
@@ -551,7 +551,7 @@
                         valueList.push(values);
                         values = [];
                     }
-                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourceCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "视图数据导出");
+                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "视图数据导出");
                 },
                 loadAllPromise: function (arr) {
                     return Promise.all(_.map(arr, function (o) {
@@ -585,450 +585,450 @@
 
 
 <%--<script>--%>
-    <%--(function ($, win) {--%>
-        <%--$(function () {--%>
-            <%--/* ************************** 变量定义 ******************************** */--%>
-            <%--// 通用工具类库--%>
-            <%--var Util = $.Util;--%>
-            <%--// 页面表格条件部模块--%>
-            <%--var retrieve = null;--%>
-            <%--// 页面主模块，对应于用户信息表区域--%>
-            <%--var resourceBrowseMaster = null;--%>
-            <%--var height = $(window).height();--%>
-            <%--var defaultWidth = $("#div-f-w1").width();--%>
-            <%--var defaultWidthAndOr = $("#div-f-w2").width();--%>
-            <%--var windowHeight = $(window).height();--%>
-            <%--var searcHheight = $(".div-search-height").height();--%>
-            <%--//检索模块初始化--%>
-            <%--var resourceData = ${dataModel};--%>
-            <%--var resourcesCode = resourceData.resourceCode;--%>
-            <%--var resourcesName = resourceData.resourceName;--%>
-            <%--var resourcesSub = resourceData.resourceSub;--%>
-            <%--var dataSource = resourceData.dataSource;--%>
-            <%--var jsonData = new Array();--%>
+<%--(function ($, win) {--%>
+<%--$(function () {--%>
+<%--/* ************************** 变量定义 ******************************** */--%>
+<%--// 通用工具类库--%>
+<%--var Util = $.Util;--%>
+<%--// 页面表格条件部模块--%>
+<%--var retrieve = null;--%>
+<%--// 页面主模块，对应于用户信息表区域--%>
+<%--var resourceBrowseMaster = null;--%>
+<%--var height = $(window).height();--%>
+<%--var defaultWidth = $("#div-f-w1").width();--%>
+<%--var defaultWidthAndOr = $("#div-f-w2").width();--%>
+<%--var windowHeight = $(window).height();--%>
+<%--var searcHheight = $(".div-search-height").height();--%>
+<%--//检索模块初始化--%>
+<%--var resourceData = ${dataModel};--%>
+<%--var resourcesCode = resourceData.resourceCode;--%>
+<%--var resourcesName = resourceData.resourceName;--%>
+<%--var resourcesSub = resourceData.resourceSub;--%>
+<%--var dataSource = resourceData.dataSource;--%>
+<%--var jsonData = new Array();--%>
 <%--debugger--%>
-            <%--var paramModel = null;--%>
-            <%--var resourceInfoGrid = null;--%>
-            <%--var resourceCategoryName = "";--%>
-            <%--var inpTypes = "";--%>
-            <%--var conditionBo = false;--%>
-            <%--var RSsearchParams = null;--%>
+<%--var paramModel = null;--%>
+<%--var resourceInfoGrid = null;--%>
+<%--var resourceCategoryName = "";--%>
+<%--var inpTypes = "";--%>
+<%--var conditionBo = false;--%>
+<%--var RSsearchParams = null;--%>
 
-            <%--var dataModel = $.DataModel.init();--%>
+<%--var dataModel = $.DataModel.init();--%>
 
-            <%--/* *************************** 函数定义 ******************************* */--%>
-            <%--/**--%>
-             <%--* 页面初始化。--%>
-             <%--* @type {Function}--%>
-             <%--*/--%>
-            <%--function pageInit() {--%>
-                <%--$("#sp_resourceSub").html(resourcesSub);--%>
-                <%--$("#sp_resourceName").html(resourcesName);--%>
-                <%--retrieve.init();--%>
-                <%--resourceBrowseMaster.bindEvents();--%>
-                <%--resourceBrowseMaster.init();--%>
+<%--/* *************************** 函数定义 ******************************* */--%>
+<%--/**--%>
+<%--* 页面初始化。--%>
+<%--* @type {Function}--%>
+<%--*/--%>
+<%--function pageInit() {--%>
+<%--$("#sp_resourceSub").html(resourcesSub);--%>
+<%--$("#sp_resourceName").html(resourcesName);--%>
+<%--retrieve.init();--%>
+<%--resourceBrowseMaster.bindEvents();--%>
+<%--resourceBrowseMaster.init();--%>
 
-                <%--Date.prototype.format = function (fmt) {--%>
-                    <%--var o = {--%>
-                        <%--"M+": this.getMonth() + 1, //月份--%>
-                        <%--"d+": this.getDate(), //日--%>
-                        <%--"H+": this.getHours(), //小时--%>
-                        <%--"m+": this.getMinutes(), //分--%>
-                        <%--"s+": this.getSeconds(), //秒--%>
-                        <%--"q+": Math.floor((this.getMonth() + 3) / 3), //季度--%>
-                        <%--"S": this.getMilliseconds() //毫秒--%>
-                    <%--};--%>
-                    <%--if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));--%>
-                    <%--for (var k in o)--%>
-                        <%--if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));--%>
-                    <%--return fmt;--%>
-                <%--}--%>
-            <%--}--%>
+<%--Date.prototype.format = function (fmt) {--%>
+<%--var o = {--%>
+<%--"M+": this.getMonth() + 1, //月份--%>
+<%--"d+": this.getDate(), //日--%>
+<%--"H+": this.getHours(), //小时--%>
+<%--"m+": this.getMinutes(), //分--%>
+<%--"s+": this.getSeconds(), //秒--%>
+<%--"q+": Math.floor((this.getMonth() + 3) / 3), //季度--%>
+<%--"S": this.getMilliseconds() //毫秒--%>
+<%--};--%>
+<%--if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));--%>
+<%--for (var k in o)--%>
+<%--if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));--%>
+<%--return fmt;--%>
+<%--}--%>
+<%--}--%>
 
-            <%--function reloadGrid(url, ps) {--%>
-                <%--resourceInfoGrid.setOptions({parms: ps});--%>
-                <%--resourceInfoGrid.loadData(true);--%>
-            <%--}--%>
-            <%--/* *************************** 检索模块初始化 ***************************** */--%>
-            <%--paramModel = {--%>
-                <%--url: ["${contextRoot}/resourceView/searchDictEntryList", '${contextRoot}/resourceView/getGridCloumnNames', "${contextRoot}/resourceView/searchDictEntryList", "${contextRoot}/resourceBrowse/getRsDictEntryList"],--%>
-                <%--dictId: ['andOr', resourcesCode, '34', '']--%>
-            <%--};--%>
-            <%--/* *************************** 检索模块初始化结束 ***************************** */--%>
+<%--function reloadGrid(url, ps) {--%>
+<%--resourceInfoGrid.setOptions({parms: ps});--%>
+<%--resourceInfoGrid.loadData(true);--%>
+<%--}--%>
+<%--/* *************************** 检索模块初始化 ***************************** */--%>
+<%--paramModel = {--%>
+<%--url: ["${contextRoot}/resourceView/searchDictEntryList", '${contextRoot}/resourceView/getGridCloumnNames', "${contextRoot}/resourceView/searchDictEntryList", "${contextRoot}/resourceBrowse/getRsDictEntryList"],--%>
+<%--dictId: ['andOr', resourcesCode, '34', '']--%>
+<%--};--%>
+<%--/* *************************** 检索模块初始化结束 ***************************** */--%>
 
-            <%--/* *************************** 模块初始化 ***************************** */--%>
-            <%--retrieve = {--%>
-                <%--$resourceBrowseTree: $("#div_resource_browse_tree"),--%>
-                <%--$defaultCondition: $("#inp_default_condition"),--%>
-                <%--$logicalRelationship: $("#inp_logical_relationship"),--%>
-                <%--$defualtParam: $(".inp_defualt_param"),--%>
-                <%--$resourceBrowseMsg: $("#div_resource_browse_msg"),--%>
-                <%--$searchModel: $(".div_search_model"),--%>
-                <%--$resourceInfoGrid: $("#div_resource_info_grid"),--%>
-                <%--$newSearch: $("#div_search_data_role_form"),--%>
-                <%--$newSearchBtn: $("#sp_new_search_btn"),--%>
-                <%--$SearchBtn: $("#div_search_btn"),--%>
-                <%--$delBtn: $(".sp-del-btn"),--%>
-                <%--$resetBtn: $("#div_reset_btn"),--%>
-                <%--$outSelExcelBtn: $("#div_out_sel_excel_btn"),--%>
-                <%--$outAllExcelBtn: $("#div_out_all_excel_btn"),--%>
-                <%--$resourceBrowse: $(".div-resource-browse"),--%>
+<%--/* *************************** 模块初始化 ***************************** */--%>
+<%--retrieve = {--%>
+<%--$resourceBrowseTree: $("#div_resource_browse_tree"),--%>
+<%--$defaultCondition: $("#inp_default_condition"),--%>
+<%--$logicalRelationship: $("#inp_logical_relationship"),--%>
+<%--$defualtParam: $(".inp_defualt_param"),--%>
+<%--$resourceBrowseMsg: $("#div_resource_browse_msg"),--%>
+<%--$searchModel: $(".div_search_model"),--%>
+<%--$resourceInfoGrid: $("#div_resource_info_grid"),--%>
+<%--$newSearch: $("#div_search_data_role_form"),--%>
+<%--$newSearchBtn: $("#sp_new_search_btn"),--%>
+<%--$SearchBtn: $("#div_search_btn"),--%>
+<%--$delBtn: $(".sp-del-btn"),--%>
+<%--$resetBtn: $("#div_reset_btn"),--%>
+<%--$outSelExcelBtn: $("#div_out_sel_excel_btn"),--%>
+<%--$outAllExcelBtn: $("#div_out_all_excel_btn"),--%>
+<%--$resourceBrowse: $(".div-resource-browse"),--%>
 
-                <%--$ddSeach: $('#ddSeach'),--%>
-                <%--$sjIcon: $('.sj-icon'),--%>
-                <%--$popSCon: $('.pop-s-con'),--%>
-                <%--$popMain: $('.pop-main'),--%>
+<%--$ddSeach: $('#ddSeach'),--%>
+<%--$sjIcon: $('.sj-icon'),--%>
+<%--$popSCon: $('.pop-s-con'),--%>
+<%--$popMain: $('.pop-main'),--%>
 
-                <%--$inpRegion: $('#inpRegion'),--%>
-                <%--$inpMechanism: $('#inpMechanism'),--%>
-                <%--$inpStarTime: $('#inpStarTime'),--%>
-                <%--$inpEndTime: $('#inpEndTime'),--%>
-                <%--$addSearchDom: $('#addSearchDom'),--%>
-                <%--GridCloumnNamesData: [],--%>
-                <%--index: 0,--%>
+<%--$inpRegion: $('#inpRegion'),--%>
+<%--$inpMechanism: $('#inpMechanism'),--%>
+<%--$inpStarTime: $('#inpStarTime'),--%>
+<%--$inpEndTime: $('#inpEndTime'),--%>
+<%--$addSearchDom: $('#addSearchDom'),--%>
+<%--GridCloumnNamesData: [],--%>
+<%--index: 0,--%>
 
-                <%--init: function () {--%>
-                    <%--var self = this;--%>
-                    <%--self.$resourceBrowseMsg.height(windowHeight - 185);--%>
-                    <%--self.$resourceBrowse.mCustomScrollbar({--%>
-                        <%--axis: "y"--%>
-                    <%--});--%>
+<%--init: function () {--%>
+<%--var self = this;--%>
+<%--self.$resourceBrowseMsg.height(windowHeight - 185);--%>
+<%--self.$resourceBrowse.mCustomScrollbar({--%>
+<%--axis: "y"--%>
+<%--});--%>
 
-                    <%--$($("#div_resource_browse_msg").children('div').children('div')[0]).css('margin-right','0');--%>
-                    <%--self.initDDL();--%>
-                    <%--//地区--%>
-                    <%--var regions = [];--%>
-                    <%--$.ajax({--%>
-                        <%--url: '${contextRoot}/user/getDistrictByUserId',--%>
-                        <%--data: {},--%>
-                        <%--type: 'GET',--%>
-                        <%--dataType: 'json',--%>
-                        <%--success: function (data) {--%>
-                            <%--if (data.successFlg == true) {--%>
-                                <%--var d = data.obj;--%>
-                                <%--for (var i = 0, len = d.length; i < len; i++) {--%>
-                                    <%--regions.push({--%>
-                                        <%--text: d[i].name,--%>
-                                        <%--id: d[i].name--%>
-                                    <%--});--%>
-                                <%--}--%>
-                                <%--self.$inpRegion.ligerComboBox({--%>
-                                    <%--isShowCheckBox: true,--%>
-                                    <%--isMultiSelect: true,--%>
-                                    <%--width: '240',--%>
-                                    <%--data: regions,--%>
-                                    <%--valueFieldID: 'inpRegions'--%>
-                                <%--});--%>
-                            <%--}--%>
-                        <%--}--%>
-                    <%--});--%>
-                    <%--//医疗机构--%>
-                    <%--var mechanisms = [];--%>
+<%--$($("#div_resource_browse_msg").children('div').children('div')[0]).css('margin-right','0');--%>
+<%--self.initDDL();--%>
+<%--//地区--%>
+<%--var regions = [];--%>
+<%--$.ajax({--%>
+<%--url: '${contextRoot}/user/getDistrictByUserId',--%>
+<%--data: {},--%>
+<%--type: 'GET',--%>
+<%--dataType: 'json',--%>
+<%--success: function (data) {--%>
+<%--if (data.successFlg == true) {--%>
+<%--var d = data.obj;--%>
+<%--for (var i = 0, len = d.length; i < len; i++) {--%>
+<%--regions.push({--%>
+<%--text: d[i].name,--%>
+<%--id: d[i].name--%>
+<%--});--%>
+<%--}--%>
+<%--self.$inpRegion.ligerComboBox({--%>
+<%--isShowCheckBox: true,--%>
+<%--isMultiSelect: true,--%>
+<%--width: '240',--%>
+<%--data: regions,--%>
+<%--valueFieldID: 'inpRegions'--%>
+<%--});--%>
+<%--}--%>
+<%--}--%>
+<%--});--%>
+<%--//医疗机构--%>
+<%--var mechanisms = [];--%>
 
-                    <%--$.ajax({--%>
-                        <%--url: '${contextRoot}/user/getOrgByUserId',--%>
-                        <%--data: {},--%>
-                        <%--type: 'GET',--%>
-                        <%--dataType: 'json',--%>
-                        <%--success: function (data) {--%>
-                            <%--if (data.successFlg) {--%>
-                                <%--var d = data.obj;--%>
-                                <%--for (var i = 0, len = d.length; i < len; i++) {--%>
-                                    <%--mechanisms.push({--%>
-                                        <%--text: d[i].fullName,--%>
-                                        <%--id: d[i].fullName--%>
-                                    <%--});--%>
-                                <%--}--%>
-                                <%--self.$inpMechanism.ligerComboBox({--%>
-                                    <%--isShowCheckBox: true,--%>
-                                    <%--width: '240',--%>
-                                    <%--isMultiSelect: true,--%>
-                                    <%--data: mechanisms,--%>
-                                    <%--valueFieldID: 'mechanism'--%>
-                                <%--});--%>
-                            <%--}--%>
-                        <%--}--%>
-                    <%--});--%>
-                    <%--//期间--%>
-                    <%--self.$inpStarTime.ligerDateEditor({--%>
-                        <%--format: 'yyyy-MM-dd'--%>
-                    <%--});--%>
-                    <%--self.$inpEndTime.ligerDateEditor({--%>
-                        <%--format: 'yyyy-MM-dd'--%>
-                    <%--});--%>
-                    <%--self.$inpStarTime.attr('readonly',true);--%>
-                    <%--self.$inpEndTime.attr('readonly',true);--%>
+<%--$.ajax({--%>
+<%--url: '${contextRoot}/user/getOrgByUserId',--%>
+<%--data: {},--%>
+<%--type: 'GET',--%>
+<%--dataType: 'json',--%>
+<%--success: function (data) {--%>
+<%--if (data.successFlg) {--%>
+<%--var d = data.obj;--%>
+<%--for (var i = 0, len = d.length; i < len; i++) {--%>
+<%--mechanisms.push({--%>
+<%--text: d[i].fullName,--%>
+<%--id: d[i].fullName--%>
+<%--});--%>
+<%--}--%>
+<%--self.$inpMechanism.ligerComboBox({--%>
+<%--isShowCheckBox: true,--%>
+<%--width: '240',--%>
+<%--isMultiSelect: true,--%>
+<%--data: mechanisms,--%>
+<%--valueFieldID: 'mechanism'--%>
+<%--});--%>
+<%--}--%>
+<%--}--%>
+<%--});--%>
+<%--//期间--%>
+<%--self.$inpStarTime.ligerDateEditor({--%>
+<%--format: 'yyyy-MM-dd'--%>
+<%--});--%>
+<%--self.$inpEndTime.ligerDateEditor({--%>
+<%--format: 'yyyy-MM-dd'--%>
+<%--});--%>
+<%--self.$inpStarTime.attr('readonly',true);--%>
+<%--self.$inpEndTime.attr('readonly',true);--%>
 
-                <%--},--%>
-                <%--//下拉框列表项初始化--%>
-                <%--initDDL: function () {--%>
-                    <%--var me = this;--%>
-                    <%--debugger--%>
-                    <%--$.ajax({--%>
-                        <%--url: paramModel.url[1],--%>
-                        <%--data: {--%>
-                            <%--dictId: paramModel.dictId[1]--%>
-                        <%--},--%>
-                        <%--type: 'GET',--%>
-                        <%--dataType: 'json',--%>
-                        <%--success: function (data) {--%>
-                            <%--if (data.length > 0) {--%>
-                                <%--me.GridCloumnNamesData = data;--%>
-                                <%--me.setSearchData();--%>
-                            <%--}--%>
-                        <%--}--%>
-                    <%--});--%>
-                <%--},--%>
-                <%--//筛选存在数据字典中的字段--%>
-                <%--setSearchData: function () {--%>
-                    <%--var me = this,--%>
-                            <%--data = me.GridCloumnNamesData;--%>
-                    <%--if (data[me.index].dict && !Util.isStrEquals(data[me.index].dict, 0) && data[me.index].dict != '') {--%>
-                        <%--var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),--%>
-                                <%--html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',--%>
-                                    <%--'<div class="inp-text">',--%>
-                                    <%--'<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',--%>
-                                    <%--'</div>'].join('');--%>
-                        <%--$div.append(html);--%>
-                        <%--var inp = $div.find('input').ligerComboBox({--%>
-                            <%--url: paramModel.url[3],--%>
-                            <%--parms: {dictId: data[me.index].dict},--%>
-                            <%--valueField: 'code',--%>
-                            <%--textField: 'name',--%>
-                            <%--width: '240',--%>
-                            <%--dataParmName: 'detailModelList',--%>
-                            <%--isShowCheckBox: true,--%>
-                            <%--isMultiSelect: true--%>
-                        <%--});--%>
-                        <%--me.$addSearchDom.append($div);--%>
-                    <%--}--%>
-                    <%--me.index++;--%>
-                    <%--if (me.index < me.GridCloumnNamesData.length) {--%>
-                        <%--me.setSearchData();--%>
-                    <%--}--%>
-                <%--}--%>
-            <%--};--%>
-            <%--resourceBrowseMaster = {--%>
-                <%--init: function () {--%>
-                    <%--var self = retrieve;--%>
-                    <%--var columnModel = new Array(),--%>
-                        <%--//基本信息--%>
-                        <%--defArr = [--%>
-                                  <%--{"key": 'patient_name', "name": "病人姓名"},--%>
-                                  <%--{"key": 'event_type', "name": "就诊类型"},--%>
-                                  <%--{"key": 'org_name', "name": "机构名称"},--%>
-                                  <%--{"key": 'org_code', "name": "机构编号"},--%>
-                                  <%--{"key": 'event_date', "name": "时间"},--%>
-                                  <%--{"key": 'demographic_id', "name": "病人身份证号码"}--%>
-                        <%--];--%>
-                    <%--//获取列名--%>
-                    <%--if (!Util.isStrEmpty(resourcesCode)) {--%>
-                        <%--dataModel.fetchRemote("${contextRoot}/resourceView/getGridCloumnNames", {--%>
-                            <%--data: {--%>
-                                <%--dictId: resourcesCode--%>
-                            <%--},--%>
-                            <%--success: function (data) {--%>
-                                <%--if (data.length > 0) {--%>
-                                    <%--for (var j = 0, len = defArr.length; j < len; j++) {--%>
-                                        <%--columnModel.push({display: defArr[j].name, name: defArr[j].key, width: 100});--%>
-                                    <%--}--%>
-                                <%--}--%>
-                                <%--for (var i = 0; i < data.length; i++) {--%>
-                                    <%--columnModel.push({display: data[i].value, name: data[i].code, width: 100});--%>
-                                <%--}--%>
-                                <%--resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({--%>
-                                    <%--url: '${contextRoot}/resourceBrowse/searchResourceData',--%>
-                                    <%--parms: {searchParams: '', resourcesCode: resourcesCode},--%>
-                                    <%--columns: columnModel,--%>
-                                    <%--height: windowHeight - (searcHheight + 235),--%>
-                                    <%--checkbox: true,--%>
-                                    <%--onSelectRow:function () {--%>
-                                        <%--if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){--%>
-                                            <%--self.$outSelExcelBtn.css('background','#B9C8D2');--%>
-                                        <%--}else{--%>
-                                            <%--self.$outSelExcelBtn.css('background','#2D9BD2');--%>
-                                        <%--}--%>
-                                    <%--},--%>
-                                    <%--onUnSelectRow:function () {--%>
-                                        <%--if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){--%>
-                                            <%--self.$outSelExcelBtn.css('background','#B9C8D2');--%>
-                                        <%--}else{--%>
-                                            <%--self.$outSelExcelBtn.css('background','#2D9BD2');--%>
-                                        <%--}--%>
-                                    <%--},--%>
-                                    <%--onAfterShowData:function () {--%>
-                                        <%--self.$outAllExcelBtn.css('background','#B9C8D2');--%>
-                                        <%--if (resourceInfoGrid.data.detailModelList.length > 0){--%>
-                                            <%--self.$outAllExcelBtn.css('background','#2D9BD2');--%>
-                                        <%--}--%>
-                                    <%--}--%>
-                                <%--}));--%>
-                            <%--}--%>
-                        <%--});--%>
-                    <%--}--%>
-                <%--},--%>
-                <%--reloadResourcesGrid: function (searchParams) {--%>
-                    <%--reloadGrid.call(this, '${contextRoot}/resourceView/searchResourceData', searchParams);--%>
-                <%--},--%>
-                <%--getQuerySearchData: function () {--%>
-                    <%--var self = retrieve;--%>
-                    <%--var pModel = self.$newSearch.children('div'),--%>
-                            <%--jsonData = [];--%>
-                    <%--var resetInp = $(pModel.find('.inp-reset'));--%>
-                    <%--for (var i = 0; i < resetInp.length; i++) {--%>
-                        <%--var code = $(resetInp[i]).attr('data-code'),--%>
-                                <%--value = $(resetInp[i]).liger().getValue(),--%>
-                                <%--valArr = [];--%>
-                        <%--if (typeof value != 'string' && value instanceof Date) {--%>
-                            <%--value = value.format('yyyy-MM-dd') + 'T00:00:00Z';--%>
-                        <%--}--%>
-                        <%--valArr = value ? value.split(';') : [];--%>
-                        <%--for (var j = 0, len = valArr.length; j < len; j++) {--%>
-                            <%--var values = {andOr: '', condition: '', field: '', value: ''};--%>
-                            <%--values.field = code;--%>
-                            <%--if (valArr[j] && valArr[j] != '') {--%>
-                                <%--values.andOr = 'OR';--%>
-                                <%--values.condition = '=';--%>
-                                <%--if ($(resetInp[i]).attr('id') == 'inpStarTime') {--%>
-                                    <%--values.andOr = 'AND';--%>
-                                    <%--values.condition = '>';--%>
-                                <%--}--%>
-                                <%--if ($(resetInp[i]).attr('id') == 'inpEndTime') {--%>
-                                    <%--values.andOr = 'AND';--%>
-                                    <%--values.condition = '<';--%>
-                                <%--}--%>
-                                <%--values.value = valArr[j];--%>
-                                <%--jsonData.push(values);--%>
-                            <%--}--%>
-                        <%--}--%>
-                    <%--}--%>
-                    <%--for (var j = 0; j < jsonData.length; j++) {--%>
-                        <%--if (Util.isStrEmpty(jsonData[j].value) || Util.isStrEmpty(jsonData[j].field)) {--%>
-                            <%--jsonData.splice(j, 1);--%>
-                            <%--j--;--%>
-                        <%--}--%>
-                    <%--}--%>
-                    <%--jsonData = RSsearchParams = Util.isStrEquals(jsonData.length, 0) ? "" : JSON.stringify(jsonData);--%>
-                    <%--return jsonData;--%>
-                <%--},--%>
+<%--},--%>
+<%--//下拉框列表项初始化--%>
+<%--initDDL: function () {--%>
+<%--var me = this;--%>
+<%--debugger--%>
+<%--$.ajax({--%>
+<%--url: paramModel.url[1],--%>
+<%--data: {--%>
+<%--dictId: paramModel.dictId[1]--%>
+<%--},--%>
+<%--type: 'GET',--%>
+<%--dataType: 'json',--%>
+<%--success: function (data) {--%>
+<%--if (data.length > 0) {--%>
+<%--me.GridCloumnNamesData = data;--%>
+<%--me.setSearchData();--%>
+<%--}--%>
+<%--}--%>
+<%--});--%>
+<%--},--%>
+<%--//筛选存在数据字典中的字段--%>
+<%--setSearchData: function () {--%>
+<%--var me = this,--%>
+<%--data = me.GridCloumnNamesData;--%>
+<%--if (data[me.index].dict && !Util.isStrEquals(data[me.index].dict, 0) && data[me.index].dict != '') {--%>
+<%--var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),--%>
+<%--html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',--%>
+<%--'<div class="inp-text">',--%>
+<%--'<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',--%>
+<%--'</div>'].join('');--%>
+<%--$div.append(html);--%>
+<%--var inp = $div.find('input').ligerComboBox({--%>
+<%--url: paramModel.url[3],--%>
+<%--parms: {dictId: data[me.index].dict},--%>
+<%--valueField: 'code',--%>
+<%--textField: 'name',--%>
+<%--width: '240',--%>
+<%--dataParmName: 'detailModelList',--%>
+<%--isShowCheckBox: true,--%>
+<%--isMultiSelect: true--%>
+<%--});--%>
+<%--me.$addSearchDom.append($div);--%>
+<%--}--%>
+<%--me.index++;--%>
+<%--if (me.index < me.GridCloumnNamesData.length) {--%>
+<%--me.setSearchData();--%>
+<%--}--%>
+<%--}--%>
+<%--};--%>
+<%--resourceBrowseMaster = {--%>
+<%--init: function () {--%>
+<%--var self = retrieve;--%>
+<%--var columnModel = new Array(),--%>
+<%--//基本信息--%>
+<%--defArr = [--%>
+<%--{"key": 'patient_name', "name": "病人姓名"},--%>
+<%--{"key": 'event_type', "name": "就诊类型"},--%>
+<%--{"key": 'org_name', "name": "机构名称"},--%>
+<%--{"key": 'org_code', "name": "机构编号"},--%>
+<%--{"key": 'event_date', "name": "时间"},--%>
+<%--{"key": 'demographic_id', "name": "病人身份证号码"}--%>
+<%--];--%>
+<%--//获取列名--%>
+<%--if (!Util.isStrEmpty(resourcesCode)) {--%>
+<%--dataModel.fetchRemote("${contextRoot}/resourceView/getGridCloumnNames", {--%>
+<%--data: {--%>
+<%--dictId: resourcesCode--%>
+<%--},--%>
+<%--success: function (data) {--%>
+<%--if (data.length > 0) {--%>
+<%--for (var j = 0, len = defArr.length; j < len; j++) {--%>
+<%--columnModel.push({display: defArr[j].name, name: defArr[j].key, width: 100});--%>
+<%--}--%>
+<%--}--%>
+<%--for (var i = 0; i < data.length; i++) {--%>
+<%--columnModel.push({display: data[i].value, name: data[i].code, width: 100});--%>
+<%--}--%>
+<%--resourceInfoGrid = self.$resourceInfoGrid.ligerGrid($.LigerGridEx.config({--%>
+<%--url: '${contextRoot}/resourceBrowse/searchResourceData',--%>
+<%--parms: {searchParams: '', resourcesCode: resourcesCode},--%>
+<%--columns: columnModel,--%>
+<%--height: windowHeight - (searcHheight + 235),--%>
+<%--checkbox: true,--%>
+<%--onSelectRow:function () {--%>
+<%--if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){--%>
+<%--self.$outSelExcelBtn.css('background','#B9C8D2');--%>
+<%--}else{--%>
+<%--self.$outSelExcelBtn.css('background','#2D9BD2');--%>
+<%--}--%>
+<%--},--%>
+<%--onUnSelectRow:function () {--%>
+<%--if(Util.isStrEquals(resourceInfoGrid.getSelectedRows().length,0)){--%>
+<%--self.$outSelExcelBtn.css('background','#B9C8D2');--%>
+<%--}else{--%>
+<%--self.$outSelExcelBtn.css('background','#2D9BD2');--%>
+<%--}--%>
+<%--},--%>
+<%--onAfterShowData:function () {--%>
+<%--self.$outAllExcelBtn.css('background','#B9C8D2');--%>
+<%--if (resourceInfoGrid.data.detailModelList.length > 0){--%>
+<%--self.$outAllExcelBtn.css('background','#2D9BD2');--%>
+<%--}--%>
+<%--}--%>
+<%--}));--%>
+<%--}--%>
+<%--});--%>
+<%--}--%>
+<%--},--%>
+<%--reloadResourcesGrid: function (searchParams) {--%>
+<%--reloadGrid.call(this, '${contextRoot}/resourceView/searchResourceData', searchParams);--%>
+<%--},--%>
+<%--getQuerySearchData: function () {--%>
+<%--var self = retrieve;--%>
+<%--var pModel = self.$newSearch.children('div'),--%>
+<%--jsonData = [];--%>
+<%--var resetInp = $(pModel.find('.inp-reset'));--%>
+<%--for (var i = 0; i < resetInp.length; i++) {--%>
+<%--var code = $(resetInp[i]).attr('data-code'),--%>
+<%--value = $(resetInp[i]).liger().getValue(),--%>
+<%--valArr = [];--%>
+<%--if (typeof value != 'string' && value instanceof Date) {--%>
+<%--value = value.format('yyyy-MM-dd') + 'T00:00:00Z';--%>
+<%--}--%>
+<%--valArr = value ? value.split(';') : [];--%>
+<%--for (var j = 0, len = valArr.length; j < len; j++) {--%>
+<%--var values = {andOr: '', condition: '', field: '', value: ''};--%>
+<%--values.field = code;--%>
+<%--if (valArr[j] && valArr[j] != '') {--%>
+<%--values.andOr = 'OR';--%>
+<%--values.condition = '=';--%>
+<%--if ($(resetInp[i]).attr('id') == 'inpStarTime') {--%>
+<%--values.andOr = 'AND';--%>
+<%--values.condition = '>';--%>
+<%--}--%>
+<%--if ($(resetInp[i]).attr('id') == 'inpEndTime') {--%>
+<%--values.andOr = 'AND';--%>
+<%--values.condition = '<';--%>
+<%--}--%>
+<%--values.value = valArr[j];--%>
+<%--jsonData.push(values);--%>
+<%--}--%>
+<%--}--%>
+<%--}--%>
+<%--for (var j = 0; j < jsonData.length; j++) {--%>
+<%--if (Util.isStrEmpty(jsonData[j].value) || Util.isStrEmpty(jsonData[j].field)) {--%>
+<%--jsonData.splice(j, 1);--%>
+<%--j--;--%>
+<%--}--%>
+<%--}--%>
+<%--jsonData = RSsearchParams = Util.isStrEquals(jsonData.length, 0) ? "" : JSON.stringify(jsonData);--%>
+<%--return jsonData;--%>
+<%--},--%>
 
-                <%--bindEvents: function () {--%>
-                    <%--var self = retrieve;--%>
-                    <%--var searchBo = false;--%>
+<%--bindEvents: function () {--%>
+<%--var self = retrieve;--%>
+<%--var searchBo = false;--%>
 
-                    <%--//返回资源注册页面--%>
-                    <%--$('#btn_back').click(function(){--%>
-                        <%--$('#contentPage').empty();--%>
-                        <%--$('#contentPage').load('${contextRoot}/resource/resourceManage/initial');--%>
-                    <%--});--%>
+<%--//返回资源注册页面--%>
+<%--$('#btn_back').click(function(){--%>
+<%--$('#contentPage').empty();--%>
+<%--$('#contentPage').load('${contextRoot}/resource/resourceManage/initial');--%>
+<%--});--%>
 
-                    <%--//检索--%>
-                    <%--self.$SearchBtn.click(function (e) {--%>
-                        <%--e.stopPropagation();--%>
-                        <%--e.preventDefault();--%>
-                        <%--debugger--%>
-                        <%--self.index = 0;--%>
-                        <%--var queryCondition = resourceBrowseMaster.getQuerySearchData();--%>
-                        <%--resourceBrowseMaster.reloadResourcesGrid({--%>
-                            <%--searchParams: queryCondition,--%>
-                            <%--resourcesCode: resourcesCode--%>
-                        <%--});--%>
+<%--//检索--%>
+<%--self.$SearchBtn.click(function (e) {--%>
+<%--e.stopPropagation();--%>
+<%--e.preventDefault();--%>
+<%--debugger--%>
+<%--self.index = 0;--%>
+<%--var queryCondition = resourceBrowseMaster.getQuerySearchData();--%>
+<%--resourceBrowseMaster.reloadResourcesGrid({--%>
+<%--searchParams: queryCondition,--%>
+<%--resourcesCode: resourcesCode--%>
+<%--});--%>
 
-                        <%--self.$popMain.css('display', 'none');--%>
-                    <%--});--%>
+<%--self.$popMain.css('display', 'none');--%>
+<%--});--%>
 
-                    <%--self.$ddSeach.on('click', function (e) {--%>
-                        <%--e.stopPropagation();--%>
-                        <%--if (self.$resourceInfoGrid.html() == '') {--%>
-                            <%--return;--%>
-                        <%--}--%>
-                        <%--if ($(e.target).hasClass('l-table-checkbox') ||--%>
-                                <%--$(e.target).hasClass('l-trigger-icon') ||--%>
-                                <%--$(e.target).hasClass('l-box-dateeditor-absolute') ||--%>
-                                <%--$(e.target).hasClass('l-text-field') ||--%>
-                                <%--$(e.target).hasClass('j-text-wrapper') ||--%>
-                                <%--$(e.target).hasClass('u-btn-large') ||--%>
-                                <%--$(e.target).hasClass('inp-label') ||--%>
-                                <%--$(e.target).hasClass('pop-s-con') ||--%>
-                                <%--$(e.target).hasClass('f-mt6') ||--%>
-                                <%--e.target.tagName.toLocaleLowerCase() == 'span' ||--%>
-                                <%--$(e.target).hasClass('clear-s')) {--%>
-                            <%--return;--%>
-                        <%--}--%>
-                        <%--if (self.$popMain.css('display') == 'none') {--%>
-                            <%--self.$popMain.css('display', 'block');--%>
-                            <%--self.$sjIcon.css('display', 'block');--%>
-                            <%--self.$popSCon.css('display', 'block');--%>
-                        <%--} else {--%>
-                            <%--self.$popMain.css('display', 'none');--%>
-                            <%--self.$sjIcon.css('display', 'none');--%>
-                            <%--self.$popSCon.css('display', 'none');--%>
-                        <%--}--%>
-                    <%--});--%>
-                    <%--//重置--%>
-                    <%--self.$resetBtn.click(function () {--%>
-                        <%--resetSearch();--%>
-                    <%--});--%>
-                    <%--//导出选择结果--%>
-                    <%--self.$outSelExcelBtn.click(function () {--%>
-                        <%--var jsonDatas = [];--%>
-                        <%--var rowData = resourceInfoGrid.getSelectedRows();--%>
-                        <%--$.each(rowData,function (key,value) {--%>
-                            <%--var jsonParam = {andOr: "OR", field: "rowkey", condition: "=", value: ""};--%>
-                            <%--jsonParam.value = value.rowkey;--%>
-                            <%--jsonDatas.push(jsonParam);--%>
-                        <%--});--%>
-                        <%--outExcel(rowData, rowData.length,JSON.stringify(jsonDatas));--%>
-                    <%--});--%>
-                    <%--//导出全部结果--%>
-                    <%--self.$outAllExcelBtn.click(function () {--%>
-                        <%--var rowData = resourceInfoGrid.data.detailModelList;--%>
-                        <%--outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize,RSsearchParams);--%>
-                    <%--});--%>
-                    <%--function outExcel(rowData, size,RSsearchParams) {--%>
-                        <%--if (rowData.length <= 0) {--%>
-                            <%--$.Notice.error('请先选择数据');--%>
-                            <%--return;--%>
-                        <%--}--%>
-                        <%--var columnNames = resourceInfoGrid.columns;--%>
-                        <%--var codes = [];--%>
-                        <%--var names = [];--%>
-                        <%--var values = [];--%>
-                        <%--var valueList = [];--%>
-                        <%--for (var i = 0; i < rowData.length; i++) {--%>
-                            <%--$.each(rowData[i], function (key, value) {--%>
-                                <%--for (var j = 0; j < columnNames.length; j++) {--%>
-                                    <%--var code = columnNames[j].columnname;--%>
-                                    <%--if (Util.isStrEquals(code, key)) {--%>
-                                        <%--if (Util.isStrEquals($.inArray(code, codes), -1)) {--%>
-                                            <%--codes.push(code);--%>
-                                            <%--names.push(columnNames[j].display);--%>
-                                        <%--}--%>
-                                    <%--}--%>
-                                <%--}--%>
-                                <%--if (!Util.isStrEquals($.inArray(key, codes), -1)) {--%>
-                                    <%--values.push(value);--%>
-                                <%--}--%>
-                            <%--});--%>
-                            <%--valueList.push(values);--%>
-                            <%--values = [];--%>
-                        <%--}--%>
-                        <%--window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");--%>
-                    <%--}--%>
-                <%--}--%>
-            <%--};--%>
-            <%--function resetSearch() {--%>
-                <%--var pModel = retrieve.$newSearch.children('div');--%>
-                <%--var resetInp = $(pModel.find('.inp-reset'));--%>
-                <%--for (var i = 1; i < resetInp.length; i++) {--%>
-                    <%--$(resetInp[i]).liger().setValue('');--%>
-                <%--}--%>
-            <%--}--%>
-            <%--/* ************************* 模块初始化结束 ************************** */--%>
+<%--self.$ddSeach.on('click', function (e) {--%>
+<%--e.stopPropagation();--%>
+<%--if (self.$resourceInfoGrid.html() == '') {--%>
+<%--return;--%>
+<%--}--%>
+<%--if ($(e.target).hasClass('l-table-checkbox') ||--%>
+<%--$(e.target).hasClass('l-trigger-icon') ||--%>
+<%--$(e.target).hasClass('l-box-dateeditor-absolute') ||--%>
+<%--$(e.target).hasClass('l-text-field') ||--%>
+<%--$(e.target).hasClass('j-text-wrapper') ||--%>
+<%--$(e.target).hasClass('u-btn-large') ||--%>
+<%--$(e.target).hasClass('inp-label') ||--%>
+<%--$(e.target).hasClass('pop-s-con') ||--%>
+<%--$(e.target).hasClass('f-mt6') ||--%>
+<%--e.target.tagName.toLocaleLowerCase() == 'span' ||--%>
+<%--$(e.target).hasClass('clear-s')) {--%>
+<%--return;--%>
+<%--}--%>
+<%--if (self.$popMain.css('display') == 'none') {--%>
+<%--self.$popMain.css('display', 'block');--%>
+<%--self.$sjIcon.css('display', 'block');--%>
+<%--self.$popSCon.css('display', 'block');--%>
+<%--} else {--%>
+<%--self.$popMain.css('display', 'none');--%>
+<%--self.$sjIcon.css('display', 'none');--%>
+<%--self.$popSCon.css('display', 'none');--%>
+<%--}--%>
+<%--});--%>
+<%--//重置--%>
+<%--self.$resetBtn.click(function () {--%>
+<%--resetSearch();--%>
+<%--});--%>
+<%--//导出选择结果--%>
+<%--self.$outSelExcelBtn.click(function () {--%>
+<%--var jsonDatas = [];--%>
+<%--var rowData = resourceInfoGrid.getSelectedRows();--%>
+<%--$.each(rowData,function (key,value) {--%>
+<%--var jsonParam = {andOr: "OR", field: "rowkey", condition: "=", value: ""};--%>
+<%--jsonParam.value = value.rowkey;--%>
+<%--jsonDatas.push(jsonParam);--%>
+<%--});--%>
+<%--outExcel(rowData, rowData.length,JSON.stringify(jsonDatas));--%>
+<%--});--%>
+<%--//导出全部结果--%>
+<%--self.$outAllExcelBtn.click(function () {--%>
+<%--var rowData = resourceInfoGrid.data.detailModelList;--%>
+<%--outExcel(rowData, resourceInfoGrid.currentData.totalPage * resourceInfoGrid.currentData.pageSize,RSsearchParams);--%>
+<%--});--%>
+<%--function outExcel(rowData, size,RSsearchParams) {--%>
+<%--if (rowData.length <= 0) {--%>
+<%--$.Notice.error('请先选择数据');--%>
+<%--return;--%>
+<%--}--%>
+<%--var columnNames = resourceInfoGrid.columns;--%>
+<%--var codes = [];--%>
+<%--var names = [];--%>
+<%--var values = [];--%>
+<%--var valueList = [];--%>
+<%--for (var i = 0; i < rowData.length; i++) {--%>
+<%--$.each(rowData[i], function (key, value) {--%>
+<%--for (var j = 0; j < columnNames.length; j++) {--%>
+<%--var code = columnNames[j].columnname;--%>
+<%--if (Util.isStrEquals(code, key)) {--%>
+<%--if (Util.isStrEquals($.inArray(code, codes), -1)) {--%>
+<%--codes.push(code);--%>
+<%--names.push(columnNames[j].display);--%>
+<%--}--%>
+<%--}--%>
+<%--}--%>
+<%--if (!Util.isStrEquals($.inArray(key, codes), -1)) {--%>
+<%--values.push(value);--%>
+<%--}--%>
+<%--});--%>
+<%--valueList.push(values);--%>
+<%--values = [];--%>
+<%--}--%>
+<%--window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");--%>
+<%--}--%>
+<%--}--%>
+<%--};--%>
+<%--function resetSearch() {--%>
+<%--var pModel = retrieve.$newSearch.children('div');--%>
+<%--var resetInp = $(pModel.find('.inp-reset'));--%>
+<%--for (var i = 1; i < resetInp.length; i++) {--%>
+<%--$(resetInp[i]).liger().setValue('');--%>
+<%--}--%>
+<%--}--%>
+<%--/* ************************* 模块初始化结束 ************************** */--%>
 
-            <%--/* *************************** 页面初始化 **************************** */--%>
-            <%--pageInit();--%>
-            <%--/* ************************* 页面初始化结束 ************************** */--%>
-        <%--});--%>
-    <%--})(jQuery, window)--%>
+<%--/* *************************** 页面初始化 **************************** */--%>
+<%--pageInit();--%>
+<%--/* ************************* 页面初始化结束 ************************** */--%>
+<%--});--%>
+<%--})(jQuery, window)--%>
 <%--</script>--%>
