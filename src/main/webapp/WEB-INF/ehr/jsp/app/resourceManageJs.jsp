@@ -82,6 +82,7 @@
 							success: function (data) {
 								if (data.successFlg) {
 									$.Notice.success('操作成功！');
+									m.rendGrid()
 									m.find();
 								} else {
 									$.Notice.error(data.errorMsg);
