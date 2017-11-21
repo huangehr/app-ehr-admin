@@ -1,6 +1,6 @@
 package com.yihu.ehr.redis;
 
-import com.yihu.ehr.agModel.redis.RedisMqSubscriberModel;
+import com.yihu.ehr.agModel.redis.RedisMqPublisherModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -18,14 +18,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Redis消息订阅者 controller
+ * Redis消息发布者 controller
  *
  * @author 张进军
- * @date 2017/11/13 15:14
+ * @date 2017/11/20 15:28
  */
 @Controller
-@RequestMapping("/redis/mq/subscriber")
-public class RedisMqSubscriberController extends BaseUIController {
+@RequestMapping("/redis/mq/publisher")
+public class RedisMqPublisherController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
@@ -37,7 +37,7 @@ public class RedisMqSubscriberController extends BaseUIController {
     @RequestMapping("/index")
     public String index(Model model, String channel) {
         model.addAttribute("channel", channel);
-        model.addAttribute("contentPage", "redis/mq/subscriber/list");
+        model.addAttribute("contentPage", "redis/mq/publisher/list");
         return "pageView";
     }
 
@@ -46,19 +46,19 @@ public class RedisMqSubscriberController extends BaseUIController {
      */
     @RequestMapping(value = "/detail")
     public String detail(Model model, Integer id, String channel) {
-        Object detailModel = new RedisMqSubscriberModel(channel);
+        Object detailModel = new RedisMqPublisherModel(channel);
         try {
             if (id != null) {
-                String url = comUrl + ServiceApi.Redis.MqSubscriber.Prefix + id;
+                String url = comUrl + ServiceApi.Redis.MqPublisher.Prefix + id;
                 String result = HttpClientUtil.doGet(url, username, password);
                 detailModel = objectMapper.readValue(result, Envelop.class).getObj();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
         }
         model.addAttribute("detailModel", toJson(detailModel));
-        model.addAttribute("contentPage", "redis/mq/subscriber/detail");
+        model.addAttribute("contentPage", "redis/mq/publisher/detail");
         return "simpleView";
     }
 
@@ -73,7 +73,7 @@ public class RedisMqSubscriberController extends BaseUIController {
 
         filters.append("channel=" + channel + ";");
         if (!StringUtils.isEmpty(searchContent)) {
-            filters.append("subscribedUrl?" + searchContent + ";");
+            filters.append("appId?" + searchContent + ";");
         }
 
         params.put("filters", filters.toString());
@@ -81,10 +81,10 @@ public class RedisMqSubscriberController extends BaseUIController {
         params.put("size", rows);
 
         try {
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqSubscriber.Search, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqPublisher.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -99,30 +99,26 @@ public class RedisMqSubscriberController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
 
         try {
-            RedisMqSubscriberModel model = objectMapper.readValue(data, RedisMqSubscriberModel.class);
-            if (StringUtils.isEmpty(model.getSubscribedUrl())) {
-                return failed("订阅者服务地址不能为空！");
-            }
-
+            RedisMqPublisherModel model = objectMapper.readValue(data, RedisMqPublisherModel.class);
             if (model.getId() == null) {
                 // 新增
                 params.put("entityJson", data);
-                return HttpClientUtil.doPost(comUrl + ServiceApi.Redis.MqSubscriber.Save, params, username, password);
+                return HttpClientUtil.doPost(comUrl + ServiceApi.Redis.MqPublisher.Save, params, username, password);
             } else {
                 // 修改
-                String urlGet = comUrl + ServiceApi.Redis.MqSubscriber.Prefix + model.getId();
+                String urlGet = comUrl + ServiceApi.Redis.MqPublisher.Prefix + model.getId();
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
 
-                RedisMqSubscriberModel updateModel = getEnvelopModel(envelopGet.getObj(), RedisMqSubscriberModel.class);
+                RedisMqPublisherModel updateModel = getEnvelopModel(envelopGet.getObj(), RedisMqPublisherModel.class);
                 updateModel.setRemark(model.getRemark());
 
                 params.put("entityJson", objectMapper.writeValueAsString(updateModel));
-                return HttpClientUtil.doPut(comUrl + ServiceApi.Redis.MqSubscriber.Save, params, username, password);
+                return HttpClientUtil.doPut(comUrl + ServiceApi.Redis.MqPublisher.Save, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -136,16 +132,16 @@ public class RedisMqSubscriberController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("id", id);
-            return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.MqSubscriber.Delete, params, username, password);
+            return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.MqPublisher.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
 
     /**
-     * 验证指定消息队列中订阅者应用ID是否唯一
+     * 验证指定队列中发布者应用ID是否唯一
      */
     @RequestMapping("/isUniqueAppId")
     @ResponseBody
@@ -156,30 +152,10 @@ public class RedisMqSubscriberController extends BaseUIController {
             params.put("id", id);
             params.put("channel", channel);
             params.put("appId", appId);
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqSubscriber.IsUniqueAppId, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqPublisher.IsUniqueAppId, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
-        }
-    }
-
-    /**
-     * 验证指定消息队列中订阅者服务地址是否唯一
-     */
-    @RequestMapping("/isUniqueSubscribedUrl")
-    @ResponseBody
-    public Object isUniqueSubscribedUrl(Integer id, String channel, String subscriberUrl) {
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        try {
-            params.put("id", id);
-            params.put("channel", channel);
-            params.put("subscriberUrl", subscriberUrl);
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqSubscriber.IsUniqueSubscribedUrl, params, username, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogService.getLogger(RedisMqSubscriberController.class).error(e.getMessage());
+            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }

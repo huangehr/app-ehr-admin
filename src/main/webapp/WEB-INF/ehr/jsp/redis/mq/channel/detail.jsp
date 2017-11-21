@@ -13,18 +13,18 @@
     </div>
     <div class="m-form-group">
         <label>消息队列名称：</label>
-        <div class="l-text-wrapper m-form-control">
-            <input type="text" class="f-w240 max-length-50 ajax"
+        <div class="l-text-wrapper m-form-control essential">
+            <input type="text" class="f-w240 max-length-50 required ajax"
                    id="channelName" data-attr-scan="channelName">
         </div>
     </div>
-    <%--<div class="m-form-group">
-        <label>授权码：</label>
-        <div class="l-text-wrapper m-form-control">
-            <input type="text" class="f-w240 max-length-20"
-                   id="authorizedCode" data-attr-scan="authorizedCode">
+    <div class="m-form-group">
+        <label>消息模版：</label>
+        <div class="m-form-control">
+            <textarea rows="3" class="f-w240 max-length-255"
+                      id="messageTemplate" data-attr-scan="messageTemplate"></textarea>
         </div>
-    </div>--%>
+    </div>
     <div class="m-form-group">
         <label>备注：</label>
         <div class="m-form-control">

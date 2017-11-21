@@ -29,7 +29,6 @@
                 {display: 'ID', name: 'id', hide: true},
                 {display: '消息队列编码', name: 'channel', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '消息队列名称', name: 'channelName', width: '20%', isAllowHide: false, align: 'left'},
-//                {display: '授权码', name: 'authorizedCode', width: '0%', isAllowHide: false, align: 'left'},
                 {display: '入列数', name: 'enqueuedNum', width: '5%', isAllowHide: false, align: 'center'},
                 {display: '出列数', name: 'dequeuedNum', width: '5%', isAllowHide: false, align: 'center'},
                 {display: '订阅者数', name: 'subscriberNum', width: '5%', isAllowHide: false, align: 'center'},
@@ -38,7 +37,8 @@
                 {display: '操作', name: 'operator', width: '15%', minWidth: 120, align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/redis/mq/channel/detail"><a class="label_a f-ml10" title="订阅者" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:mq:channel:subscriberList", row.channel) + '">订阅者</a></sec:authorize>';
+                        html += '<sec:authorize url="/redis/mq/channel/publisherList"><a class="label_a f-ml10" title="发布者" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:mq:channel:publisherList", row.channel) + '">发布者</a></sec:authorize>';
+                        html += '<sec:authorize url="/redis/mq/channel/subscriberList"><a class="label_a f-ml10" title="订阅者" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:mq:channel:subscriberList", row.channel) + '">订阅者</a></sec:authorize>';
                         html += '<sec:authorize url="/redis/mq/channel/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "redis:mq:channel:detail", row.id, 'modify') + '"></a></sec:authorize>';
                         html += '<sec:authorize url="/redis/mq/channel/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:mq:channel:delete", row.id) + '"></a></sec:authorize>';
                         return html;
@@ -53,6 +53,13 @@
     }
 
     function bindEvents() {
+        // 发布者
+        $.subscribe('redis:mq:channel:publisherList', function (event, channel) {
+            var url = '${contextRoot}/redis/mq/publisher/index?';
+            $("#contentPage").empty();
+            $("#contentPage").load(url,{channel: channel});
+        });
+
         // 订阅者
         $.subscribe('redis:mq:channel:subscriberList', function (event, channel) {
             var url = '${contextRoot}/redis/mq/subscriber/index?';
@@ -67,7 +74,7 @@
                 title = '修改消息队列';
             }
             detailDialog = $.ligerDialog.open({
-                height: 450,
+                height: 560,
                 width: 480,
                 title: title,
                 url: '${contextRoot}/redis/mq/channel/detail',
