@@ -165,7 +165,7 @@ $(function () {
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
-                                win.top.closeAddPortalResourcesInfoDialog(function () {
+                                parent.closeAddPortalResourcesInfoDialog(function () {
                                     $.Notice.success('新增成功');
                                 });
                             } else {

@@ -1,30 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-<div id="redisMqChannelForm" class="m-form-inline f-mt20" data-role-form>
+<div id="redisMqSubscriberForm" class="m-form-inline f-mt20" data-role-form>
     <input type="hidden" id="id" data-attr-scan="id">
 
     <div class="m-form-group">
         <label>消息队列编码：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-50 required ajax"
+            <input type="text" class="f-w240 max-length-50 required"
                    id="channel" data-attr-scan="channel">
         </div>
     </div>
     <div class="m-form-group">
-        <label>消息队列名称：</label>
+        <label>应用ID：</label>
         <div class="l-text-wrapper m-form-control">
-            <input type="text" class="f-w240 max-length-50 ajax"
-                   id="channelName" data-attr-scan="channelName">
+            <input type="text" class="f-w240 max-length-30"
+                   id="appId" data-attr-scan="appId">
         </div>
     </div>
-    <%--<div class="m-form-group">
+    <div class="m-form-group">
         <label>授权码：</label>
         <div class="l-text-wrapper m-form-control">
-            <input type="text" class="f-w240 max-length-20"
+            <input type="text" class="f-w240 max-length-50"
                    id="authorizedCode" data-attr-scan="authorizedCode">
         </div>
-    </div>--%>
+    </div>
     <div class="m-form-group">
         <label>备注：</label>
         <div class="m-form-control">

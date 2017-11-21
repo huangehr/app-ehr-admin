@@ -5,7 +5,7 @@
     var detailModel = ${detailModel};
     var dataModel = $.DataModel.init();
     var validator;
-    var $form = $("#redisMqChannelForm");
+    var $form = $("#redisMqSubscriberForm");
 
     $(function () {
         init();
@@ -18,13 +18,14 @@
     }
 
     function initForm() {
-        var channelTb = $('#channel').ligerTextBox({width: 240});
-        $('#channelName').ligerTextBox({width: 240});
-//        $('#authorizedCode').ligerTextBox({width: 240});
+        $('#channel').ligerTextBox({width: 240, disabled: true, readonly: true});
+        var appIdTb = $('#appId').ligerTextBox({width: 240});
+        $('#authorizedCode').ligerTextBox({width: 240, disabled: true, readonly: true});
         $('#remark').ligerTextBox({width: 240, height: 150});
 
         if(detailModel.id) {
-            channelTb.setDisabled(true);
+            appIdTb.setDisabled(true);
+            appIdTb.setReadonly(true);
         }
 
         $form.attrScan();
@@ -37,7 +38,7 @@
             if (!validator.validate()) { return; }
 
             var loading = $.ligerDialog.waitting("正在保存数据...");
-            dataModel.fetchRemote("${contextRoot}/redis/mq/channel/save", {
+            dataModel.fetchRemote("${contextRoot}/redis/mq/publisher/save", {
                 type: 'post',
                 data: {data: JSON.stringify($form.Fields.getValues())},
                 success: function (data) {
@@ -75,18 +76,11 @@
                 var id = detailModel.id || -1; // 新增时传-1。
                 var elId = $(el).attr("id");
                 switch(elId) {
-                    case 'channel':
-                        var channel = $("#channel").val();
+                    case 'appId':
+                        var appId = $("#appId").val();
                         if(!$.Util.isStrEquals(channel, detailModel.channel)) {
-                            var ulr = "${contextRoot}/redis/mq/channel/isUniqueChannel";
-                            return validateByAjax(ulr, {id: id, channel: channel});
-                        }
-                        break;
-                    case 'channelName':
-                        var channelName = $("#channelName").val();
-                        if(!$.Util.isStrEquals(channelName, detailModel.channelName)) {
-                            var ulr = "${contextRoot}/redis/mq/channel/isUniqueChannelName";
-                            return validateByAjax(ulr, {id: id, channelName: channelName});
+                            var ulr = "${contextRoot}/redis/mq/publisher/isUniqueAppId";
+                            return validateByAjax(ulr, {id: id, channel: channel, appId: appId});
                         }
                         break;
                 }
