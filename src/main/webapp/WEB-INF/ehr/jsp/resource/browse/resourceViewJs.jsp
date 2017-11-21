@@ -212,7 +212,8 @@
                     if (!Util.isStrEmpty(me.resourcesCode)) {
                         me.dataModel.fetchRemote( inf.getGridCloumnNames, {
                             data: {
-                                dictId: me.resourcesCode
+                                resourceCode: me.resourcesCode,
+                                resourcesId: me.resourcesId
                             },
                             async: false,
                             success: function (data) {
@@ -424,7 +425,8 @@
                     if (me.type == '1') {
                         me.params = {
                             searchParams: me.queryCondition,
-                            resourcesCode: me.resourcesCode
+                            resourceCode: me.resourcesCode,
+                            resourceId: me.resourcesId
                         };
                     } else {
                         me.params = {
@@ -531,7 +533,7 @@
                         valueList.push(values);
                         values = [];
                     }
-                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
+                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourceCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
                 },
                 loadAllPromise: function (arr) {
                     return Promise.all(_.map(arr, function (o) {
