@@ -3,7 +3,6 @@ package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -23,13 +22,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
 /**
- * 资源综合查询服务控制器
- * Created by Sxy on 2017/08/01.
+ * Controller - 资源综合查询服务控制器
+ * Created by Progr1mmer on 2017/08/01.
  */
 @Controller
 @RequestMapping("/resourceIntegrated")
@@ -176,7 +174,9 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -203,7 +203,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -224,7 +226,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -287,7 +291,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -302,7 +308,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param metaData
      */
     @RequestMapping(value = "/outFileExcel")
-    public void outExcel(HttpServletRequest request, HttpServletResponse response, Integer size, String resourcesCode, String searchParams, String metaData) {
+    public void outExcel(HttpServletRequest request, HttpServletResponse response, String resourcesCode, Integer size, String searchParams, String metaData) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
