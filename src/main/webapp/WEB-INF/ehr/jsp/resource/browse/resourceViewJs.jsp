@@ -212,8 +212,7 @@
                     if (!Util.isStrEmpty(me.resourcesCode)) {
                         me.dataModel.fetchRemote( inf.getGridCloumnNames, {
                             data: {
-                                resourceCode: me.resourcesCode,
-                                resourcesId: me.resourcesId
+                                dictId: me.resourcesCode
                             },
                             async: false,
                             success: function (data) {
@@ -347,12 +346,12 @@
                 getQuerySearchData: function () {
                     var me = this;
                     var pModel = me.$newSearch.children('div'),
-                            jsonData = [];
+                        jsonData = [];
                     var resetInp = $(pModel.find('.inp-reset'));
                     for (var i = 0; i < resetInp.length; i++) {
                         var code = $(resetInp[i]).attr('data-code'),
-                                value = $(resetInp[i]).liger().getValue(),
-                                valArr = [];
+                            value = $(resetInp[i]).liger().getValue(),
+                            valArr = [];
                         if (typeof value != 'string' && value instanceof Date) {
                             value = value.format('yyyy-MM-dd') + 'T00:00:00Z';
                         }
@@ -391,10 +390,10 @@
                         data = me.GridCloumnNamesData;
                     if (data[me.index].dict && !Util.isStrEquals(data[me.index].dict, 0) && data[me.index].dict != '') {
                         var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
-                                    '<div class="inp-text">',
-                                    '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                    '</div>'].join('');
+                            html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
+                                '<div class="inp-text">',
+                                '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                '</div>'].join('');
                         $div.append(html);
                         var inp = $div.find('input').ligerComboBox({
                             url: inf.getRsDictEntryList,
@@ -425,8 +424,7 @@
                     if (me.type == '1') {
                         me.params = {
                             searchParams: me.queryCondition,
-                            resourceCode: me.resourcesCode,
-                            resourceId: me.resourcesId
+                            resourcesCode: me.resourcesCode
                         };
                     } else {
                         me.params = {
@@ -454,16 +452,16 @@
                             return;
                         }
                         if ($(e.target).hasClass('l-table-checkbox') ||
-                                $(e.target).hasClass('l-trigger-icon') ||
-                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
-                                $(e.target).hasClass('l-text-field') ||
-                                $(e.target).hasClass('j-text-wrapper') ||
-                                $(e.target).hasClass('u-btn-large') ||
-                                $(e.target).hasClass('inp-label') ||
-                                $(e.target).hasClass('pop-s-con') ||
-                                $(e.target).hasClass('f-mt6') ||
-                                e.target.tagName.toLocaleLowerCase() == 'span' ||
-                                $(e.target).hasClass('clear-s')) {
+                            $(e.target).hasClass('l-trigger-icon') ||
+                            $(e.target).hasClass('l-box-dateeditor-absolute') ||
+                            $(e.target).hasClass('l-text-field') ||
+                            $(e.target).hasClass('j-text-wrapper') ||
+                            $(e.target).hasClass('u-btn-large') ||
+                            $(e.target).hasClass('inp-label') ||
+                            $(e.target).hasClass('pop-s-con') ||
+                            $(e.target).hasClass('f-mt6') ||
+                            e.target.tagName.toLocaleLowerCase() == 'span' ||
+                            $(e.target).hasClass('clear-s')) {
                             return;
                         }
                         if (me.$popMain.css('display') == 'none') {
@@ -533,7 +531,7 @@
                         valueList.push(values);
                         values = [];
                     }
-                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourceCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
+                    window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + resourcesCode + "&searchParams=" + RSsearchParams, "资源数据导出");
                 },
                 loadAllPromise: function (arr) {
                     return Promise.all(_.map(arr, function (o) {

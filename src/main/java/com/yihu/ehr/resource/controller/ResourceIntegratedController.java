@@ -3,7 +3,6 @@ package com.yihu.ehr.resource.controller;
 
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -23,13 +22,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
 /**
- * 资源综合查询服务控制器
- * Created by Sxy on 2017/08/01.
+ * Controller - 资源综合查询服务控制器
+ * Created by Progr1mmer on 2017/08/01.
  */
 @Controller
 @RequestMapping("/resourceIntegrated")
@@ -52,18 +50,6 @@ public class ResourceIntegratedController extends BaseUIController {
         boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
         List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
         List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
-        if(!isAccessAll) {
-            if(null == userResourceList || userResourceList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问！");
-                return envelop;
-            }
-            if(null == userRolesList || userRolesList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问！");
-                return envelop;
-            }
-        }
         try {
             Map<String, Object> params = new HashMap<>();
             if(isAccessAll) {
@@ -188,7 +174,9 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -215,7 +203,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -236,7 +226,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -253,6 +245,7 @@ public class ResourceIntegratedController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/integrated/resource_update";
         try {
+            HttpSession session = request.getSession();
             // 转换参数
             Map<String, Object> dataMap = objectMapper.readValue(dataJson, Map.class);
             // 获取资源字符串
@@ -260,13 +253,19 @@ public class ResourceIntegratedController extends BaseUIController {
             // 获取资源Map映射
             Map<String, Object> rsObj = objectMapper.readValue(resource, Map.class);
             // 设置创建者
-            rsObj.put("creator", request.getSession().getAttribute("userId"));
+            rsObj.put("creator", session.getAttribute("userId"));
             // 更新参数
             dataMap.put("resource", rsObj);
             // 设置请求参数
             params.put("dataJson", objectMapper.writeValueAsString(dataMap));
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
+            if(envelop.isSuccessFlg()) {
+                String newRsId = (String) envelop.getObj();
+                List<String> userResourceList = (List<String>) session.getAttribute(AuthorityKey.UserResource);
+                userResourceList.add(newRsId);
+                session.setAttribute(AuthorityKey.UserResource, userResourceList);
+            }
         } catch (Exception e) {
             //e.printStackTrace();
             LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
@@ -292,7 +291,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -307,7 +308,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param metaData
      */
     @RequestMapping(value = "/outFileExcel")
-    public void outExcel(HttpServletRequest request, HttpServletResponse response, Integer size, String resourcesCode, String searchParams, String metaData) {
+    public void outExcel(HttpServletRequest request, HttpServletResponse response, String resourcesCode, Integer size, String searchParams, String metaData) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";
