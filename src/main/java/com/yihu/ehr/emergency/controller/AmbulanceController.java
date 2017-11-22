@@ -254,10 +254,10 @@ public class AmbulanceController extends BaseUIController {
             List<AmbulanceMsgModel> all = (List<AmbulanceMsgModel>) ObjectFileRW.read(file);
             List<AmbulanceMsgModel> ambulanceMsgModels = objectMapper.readValue(ambulances, new TypeReference<List<AmbulanceMsgModel>>() {});
             Map<String, Set> repeat = new HashMap<>();
+            repeat.put("id", new HashSet<String>());
+            repeat.put("orgCode", new HashSet<String>());
+            repeat.put("orgName", new HashSet<String>());
             repeat.put("phone", new HashSet<String>());
-            repeat.put("code", new HashSet<String>());
-            repeat.put("email", new HashSet<String>());
-            repeat.put("idCardNo", new HashSet<String>());
             for(AmbulanceMsgModel model : ambulanceMsgModels){
                 model.validate(repeat);
             }
@@ -266,7 +266,7 @@ public class AmbulanceController extends BaseUIController {
             //获取eme_ambulance所有随车电话
             Set<String> phones = findExistIdOrPhoneInAmbulance("phone",toJson(repeat.get("phone")));
             //获取机构表所有机构、机构名称
-            Map<String,String> orgs = findExistOrgInOrganization(toJson(repeat.get("idCardNo")));
+            Map<String,String> orgs = findExistOrgInOrganization(toJson(repeat.get("orgCode")));
             AmbulanceMsgModel model;
             List saveLs = new ArrayList<>();
             for(int i=0; i<ambulanceMsgModels.size(); i++){
