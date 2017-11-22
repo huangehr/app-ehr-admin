@@ -17,6 +17,7 @@
 
         var queryCondition = '${queryCondition}' || [];
         var metadatas = '${metadatas}';
+        console.log(metadatas);
         console.log(queryCondition + '-' + metadatas);
 
         /* *************************** 函数定义 ******************************* */
