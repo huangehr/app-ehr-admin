@@ -7,11 +7,10 @@
         $(function () {
             var grid;
             var urls = {
-                list: '${contextRoot}/ambulanceImport/importLs',
-                isOrgExistence: "${contextRoot}/ambulanceImport/isOrgExistence",
-                idOrPhoneIsExistence: "${contextRoot}/ambulanceImport/idOrPhoneIsExistence",
-                batchSave: "${contextRoot}/ambulanceImport/batchSave",
-                downLoad: "${contextRoot}/ambulanceImport/downLoadErrInfo",
+                list: '${contextRoot}/scheduleImport/importLs',
+                idOrPhoneIsExistence: "${contextRoot}/scheduleImport/idOrPhoneIsExistence",
+                batchSave: "${contextRoot}/scheduleImport/batchSave",
+                downLoad: "${contextRoot}/scheduleImport/downLoadErrInfo",
             }
             var files = ${files};
             var mode = 'eFile';
@@ -30,7 +29,6 @@
                         var model = [], f, m;
 
                         for(var k in formData){
-                            debugger
                             f = k.split('_');
                             m = model[f[1]] || {};
                             m[f[0]] = formData[k];
@@ -39,7 +37,7 @@
 
                         var dataModel = $.DataModel.init();
                         dataModel.createRemote(urls.batchSave, {
-                            data: {ambulances: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
+                            data: {schedules: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
                             success: function (data) {
                                 waitting.close();
                                 if (data.successFlg) {
@@ -87,42 +85,15 @@
                     var oldVal = $(elm).attr('data-old-val');
                     var errMsg = $(elm).attr('err-msg');
                     var o= field.split('_');
-                    debugger
-
-                    var code='orgCode'+'_'+o[1];
-                    var orgName='orgName'+'_'+o[1];
                     if(oldVal==val && errMsg && errMsg!='undefined' && errMsg!=''){
                         var result = new $.jValidation.ajax.Result();
                         result.setResult(false);
                         result.setErrorMsg(errMsg);
                         return result;
                     }
-
-                    if(field.indexOf('id')!=-1){
-                        return uniqValid(urls.idOrPhoneIsExistence+"?type=id&values="+val,undefined, "该车牌号已存在！");
-                    }
-                    if(field.indexOf('phone')!=-1){
-                        return uniqValid(urls.idOrPhoneIsExistence+"?type=phone&values="+val ,undefined , "该随车手机号已存在！");
-                    }
-                    if(field.indexOf('orgCode')!=-1){
-                        var result=uniqValid(urls.isOrgExistence, "orgCode="+val+";orgName="+ $('#' + orgName).val(), "该机构代码或机构名称不正确！");
-                        if(result.result){
-                            $.jValidation.Validation.reset("#orgName"+o[1]);
-                        } else {
-                            $.jValidation.Validation.showErrorMsg('ajax', "#orgName"+o[1], "该机构代码或机构名称不正确！");
-                        }
-                        return result;
-                    }
-                    if(field.indexOf('orgName')!=-1){
-                        debugger;
-                        var result=uniqValid(urls.isOrgExistence, "orgCode="+$('#' + code).val()+";orgName="+val, "该机构代码或机构名称不正确！");
-                        if(result.result){
-                            $.jValidation.Validation.reset("#orgCode_"+o[1]);
-                        } else {
-                            $.jValidation.Validation.showErrorMsg('ajax', "#orgCode_"+o[1], "该机构代码或机构名称不正确！");
-                        }
-                        return result;
-
+                    if(field.indexOf('carId')!=-1){
+                        debugger
+                        return uniqValid(urls.idOrPhoneIsExistence+"?type=id&values="+val,undefined, "该车牌号不存在！");
                     }
                 });
                 validator.validate();
@@ -138,11 +109,9 @@
                 var html;
                 if(!errMsg || errMsg=='' || errMsg=='undefined'){
                     html = '<input type="hidden" id="'+ id +'" data-attr-scan="'+ id +'" value="'+ val +'"/>';
-//                    html += '<input type="hidden" id="'+ dictId +'" data-attr-scan="'+ dictId +'" value="'+ row.dictId +'">';
                     html += val;
                 }  else{
                     var html = '<input type="text" data-old-val="'+ val +'" err-msg="'+ errMsg +'" id="'+ id +'" data-type="select" class="ajax" data-attr-scan="'+ id +'">';
-//                    html += '<input type="hidden" id="'+ dictId +'" data-attr-scan="'+ dictId +'">';
                     html += '<script>initCombo("'+ id +'", '+ column.width +', "'+ val +'", '+ index +')<\/script>';
                 }
                 return html;
@@ -162,7 +131,7 @@
                 }
                 else{
                     var ajaxClz = ['required'];
-                    if( column.name=='id' || column.name=='orgCode' || column.name=='orgName'|| column.name=='phone') ajaxClz.push('ajax');
+                    if( column.name=='carId' || column.name=='dutyName' || column.name=='dutyNum'|| column.name=='dutyPhone'|| column.name=='start'|| column.name=='end'|| column.name=='main') ajaxClz.push('ajax');
                     html = '<input data-old-val="'+ val +'" type="text" id="'+ id +'" err-msg="'+ errMsg +'" class="'+ ajaxClz.join(' ') +'" data-attr-scan="'+ id +'"/>';
                     html += '<script>initText("'+ id +'", '+ column.width +', "'+ val +'")<\/script>';
                 }
@@ -183,16 +152,16 @@
                     {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                     }},
-                    {display: '车牌号码', name: 'id', width: '110', align: 'left', render: textRender},
-                    {display: '初始经度', name: 'initLongitude', width: '90', align: 'left', render: textRender},
-                    {display: '初始纬度', name: 'initLatitude', width: '90', align: 'left', render: textRender},
-                    {display: '归属片区', name: 'district', width: '100', align: 'left', render: textRender},
-                    {display: '所属医院编码', name: 'orgCode', width: '120', align: 'left', render: textRender},
-                    {display: '所属医院名称', name: 'orgName', width: '150', align: 'left', render: textRender},
-                    {display: '随车手机号码', name: 'phone', width: '120', align: 'left', render: textRender},
-                    {display: '状态',hide:true, name: 'status', width: '80', align: 'left', render: textRender},
-                    {display: '创建者',hide:true, name: 'creator', width: '120', align: 'left', render: textRender},
-                    {display: '百度鹰眼设备号', name: 'entityName', width: '150', align: 'left', render: textRender}];
+                    {display: '姓名', name: 'dutyName', width: '90', align: 'left', render: textRender},
+                    {display: '性别', name: 'gender', width: '70', align: 'left', render: textRender},
+                    {display: '工号', name: 'dutyNum', width: '110', align: 'left', render: textRender},
+                    {display: '角色', name: 'dutyRole', width: '80', align: 'left', render: textRender},
+                    {display: '手机号', name: 'dutyPhone', width: '100', align: 'left', render: textRender},
+                    {display: '车牌号', name: 'carId', width: '120', align: 'left', render: textRender},
+                    {display: '开始时间', name: 'start', width: '150', align: 'left', render: textRender},
+                    {display: '结束时间', name: 'end', width: '150', align: 'left', render: textRender},
+                    {display: '创建者',hide:true, name: 'creator', width: '130', align: 'left', render: textRender},
+                    {display: '主班/副班', name: 'main', width: '80', align: 'left', render: textRender}];
 
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
                 searchFun();

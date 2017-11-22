@@ -3,9 +3,7 @@ package com.yihu.ehr.emergency.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.emergency.model.AmbulanceMsgModel;
-import com.yihu.ehr.emergency.model.AmbulanceMsgModelReader;
-import com.yihu.ehr.emergency.model.AmbulanceMsgModelWriter;
+import com.yihu.ehr.emergency.model.*;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.excel.AExcelReader;
@@ -30,45 +28,40 @@ import java.io.OutputStream;
 import java.util.*;
 
 /**
- * Created by zdm on 2017/11/15.
+ * Created by zdm on 2017/11/20.
  */
 @Controller
-@RequestMapping("/ambulanceImport")
-public class AmbulanceController extends BaseUIController {
+@RequestMapping("/scheduleImport")
+public class ScheduleController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
-    static final String parentFile = "ambulance";
+    static final String parentFile = "schedule";
 
     @RequestMapping(value = "import")
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
-            AExcelReader excelReader = new AmbulanceMsgModelReader();
+            AExcelReader excelReader = new ScheduleMsgModelReader();
             excelReader.read(file.getInputStream());
-            List<AmbulanceMsgModel> errorLs = excelReader.getErrorLs();
-            List<AmbulanceMsgModel> correctLs = excelReader.getCorrectLs();
+            List<ScheduleMsgModel> errorLs = excelReader.getErrorLs();
+            List<ScheduleMsgModel> correctLs = excelReader.getCorrectLs();
             writerResponse(response, 20+"", "l_upd_progress");
             List saveLs = new ArrayList<>();
-            //获取eme_ambulance所有车牌号
-            Set<String> ids = findExistIdOrPhoneInAmbulance("id",toJson(excelReader.getRepeat().get("id")));
-            //获取eme_ambulance所有随车电话
-            Set<String> phones = findExistIdOrPhoneInAmbulance("phone",toJson(excelReader.getRepeat().get("phone")));
-            //获取机构表所有机构、机构名称
-            Map<String,String> orgs = findExistOrgInOrganization(toJson(excelReader.getRepeat().get("orgCode")));
+            //获取eme_schedule所有车牌号
+            Set<String> carIds = findExistIdOrPhoneInSchedule("id",toJson(excelReader.getRepeat().get("carId")));
             writerResponse(response, 35+"", "l_upd_progress");
-            AmbulanceMsgModel model;
+            ScheduleMsgModel model;
             for(int i=0; i<correctLs.size(); i++){
                 model = correctLs.get(i);
                 model.setCreator(user.getId());
-                if(validate(model, ids,phones,orgs)==0)
+                if(validate(model, carIds)==0)
                     errorLs.add(model);
                 else
                     saveLs.add(model);
@@ -76,7 +69,7 @@ public class AmbulanceController extends BaseUIController {
             for(int i=0; i<errorLs.size(); i++){
                 model = errorLs.get(i);
                 model.setCreator(user.getId());
-                validate(model, ids,phones,orgs);
+                validate(model, carIds);
             }
             writerResponse(response, 55+"", "l_upd_progress");
             Map rs = new HashMap<>();
@@ -112,7 +105,7 @@ public class AmbulanceController extends BaseUIController {
     @RequestMapping("/gotoImportLs")
     public String gotoImportLs(Model model, String result){
         model.addAttribute("files", result);
-        model.addAttribute("contentPage", "/emergency/impGrid");
+        model.addAttribute("contentPage", "/emergency/schedule/scheduleImpGrid");
         return "pageView";
     }
 
@@ -159,13 +152,13 @@ public class AmbulanceController extends BaseUIController {
     }
 
     /**
-     * 根据车牌号、随车手机号在Ambulance表获取数据
+     * 根据车牌号、随车手机号在Schedule表获取数据
      * @param type  查询字段名
      * @param values 多个值
      * @return Set<String>
      * @throws Exception
      */
-    private Set<String> findExistIdOrPhoneInAmbulance(String type, String values) throws Exception {
+    private Set<String> findExistIdOrPhoneInSchedule(String type, String values) throws Exception {
         MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<String, String>();
         conditionMap.add("type", type);
         conditionMap.add("values", values);
@@ -175,35 +168,15 @@ public class AmbulanceController extends BaseUIController {
     }
 
     /**
-     * 根据机构code、name在user表获取数据
-     * @param org_codes 导入文件的所有机构
-     * @return
-     * @throws Exception
-     */
-    private Map<String,String> findExistOrgInOrganization(String org_codes) throws Exception {
-        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
-        conditionMap.add("org_codes", org_codes);
-        RestTemplates template = new RestTemplates();
-        String rs = template.doPost(comUrl +"/organizations/seaOrgsByOrgCode", conditionMap);
-        Envelop envelop = objectMapper.readValue(rs,Envelop.class);
-        Map<String,String> map= new LinkedHashMap<String,String>();
-        if(envelop.isSuccessFlg()&&null!=envelop.getObj()) {
-            map=(LinkedHashMap)envelop.getObj();
-            return map;
-        }
-        return map;
-    }
-
-    /**
      * 保存救护车列表信息
-     * @param ambulances 救护车对象json
+     * @param schedules 救护车对象json
      * @return
      * @throws Exception
      */
-    private List saveMeta(String ambulances) throws Exception {
+    private List saveMeta(String schedules) throws Exception {
         Map map = new HashMap<>();
-        map.put("ambulances", ambulances);
-        String rs = HttpClientUtil.doPost(comUrl+ "/ambulances/batch", map, username, password);
+        map.put("schedules", schedules);
+        String rs = HttpClientUtil.doPost(comUrl+ "/schedules/batch", map, username, password);
         Envelop envelop = objectMapper.readValue(rs,Envelop.class);
         if(envelop.isSuccessFlg()) {
             return envelop.getDetailModelList();
@@ -229,7 +202,7 @@ public class AmbulanceController extends BaseUIController {
             response.setContentType("octets/stream");
             response.addHeader("Content-Disposition", "attachment; filename="
                     + new String((f.substring(0, f.length()-4)+".xls").getBytes("gb2312"), "ISO8859-1"));
-            new AmbulanceMsgModelWriter().write(toClient, (List) ObjectFileRW.read(file));
+            new ScheduleMsgModelWriter().write(toClient, (List) ObjectFileRW.read(file));
             toClient.flush();
             toClient.close();
         } catch (Exception e) {
@@ -239,7 +212,7 @@ public class AmbulanceController extends BaseUIController {
 
     /**
      * 保存救护车信息
-     * @param ambulances
+     * @param schedules
      * @param eFile
      * @param tFile
      * @param datePath
@@ -247,31 +220,30 @@ public class AmbulanceController extends BaseUIController {
      */
     @RequestMapping("/batchSave")
     @ResponseBody
-    public Object batchSave(String ambulances, String eFile, String tFile, String datePath){
+    public Object batchSave(String schedules, String eFile, String tFile, String datePath){
         try{
             eFile = datePath + TemPath.separator + eFile;
             File file = new File(TemPath.getFullPath(eFile, parentFile));
-            List<AmbulanceMsgModel> all = (List<AmbulanceMsgModel>) ObjectFileRW.read(file);
-            List<AmbulanceMsgModel> ambulanceMsgModels = objectMapper.readValue(ambulances, new TypeReference<List<AmbulanceMsgModel>>() {});
+            List<ScheduleMsgModel> all = (List<ScheduleMsgModel>) ObjectFileRW.read(file);
+            List<ScheduleMsgModel> scheduleMsgModels = objectMapper.readValue(schedules, new TypeReference<List<ScheduleMsgModel>>() {});
             Map<String, Set> repeat = new HashMap<>();
-            repeat.put("id", new HashSet<String>());
-            repeat.put("orgCode", new HashSet<String>());
-            repeat.put("orgName", new HashSet<String>());
-            repeat.put("phone", new HashSet<String>());
-            for(AmbulanceMsgModel model : ambulanceMsgModels){
+            repeat.put("carId", new HashSet<String>());
+            repeat.put("dutyNum", new HashSet<String>());
+            repeat.put("dutyPhone", new HashSet<String>());
+            repeat.put("start", new HashSet<String>());
+            repeat.put("end", new HashSet<String>());
+            repeat.put("main", new HashSet<String>());
+
+            for(ScheduleMsgModel model : scheduleMsgModels){
                 model.validate(repeat);
             }
-            //获取eme_ambulance所有车牌号
-            Set<String> ids = findExistIdOrPhoneInAmbulance("id",toJson(repeat.get("id")));
-            //获取eme_ambulance所有随车电话
-            Set<String> phones = findExistIdOrPhoneInAmbulance("phone",toJson(repeat.get("phone")));
-            //获取机构表所有机构、机构名称
-            Map<String,String> orgs = findExistOrgInOrganization(toJson(repeat.get("orgCode")));
-            AmbulanceMsgModel model;
+            //获取eme_schedule所有车牌号
+            Set<String> carIds = findExistIdOrPhoneInSchedule("id",toJson(repeat.get("carId")));
+            ScheduleMsgModel model;
             List saveLs = new ArrayList<>();
-            for(int i=0; i<ambulanceMsgModels.size(); i++){
-                model = ambulanceMsgModels.get(i);
-                if(validate(model, ids,phones,orgs)==0|| model.errorMsg.size()>0) {
+            for(int i=0; i<scheduleMsgModels.size(); i++){
+                model = scheduleMsgModels.get(i);
+                if(validate(model, carIds)==0|| model.errorMsg.size()>0) {
                     all.set(all.indexOf(model), model);
                 }else{
                     saveLs.add(model);
@@ -307,16 +279,12 @@ public class AmbulanceController extends BaseUIController {
             resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/IdOrPhoneExistence", map, username, password);
             Set<String> set=objectMapper.readValue(resultStr, new TypeReference<Set<String>>() {});
             if(null!=set&&set.size()>0){
-                //返回成功 表示库里存在该车牌号或者随车号码
+                //返回成功 表示库里存在该车牌号
+                envelop.setSuccessFlg(true);
+            }else{
                 envelop.setSuccessFlg(true);
                 envelop.setObj(true);
-                if(type.equals("id")){
-                    envelop.setErrorMsg("该车牌号已存在，请核对！");
-                }else if(type.equals("phone")){
-                    envelop.setErrorMsg("该随车号码已存在，请核对！");
-                }
-            }else{
-                envelop.setSuccessFlg(true);
+                envelop.setErrorMsg("该车牌号不存在，请核对！");
             }
             return envelop;
         } catch (Exception e) {
@@ -327,61 +295,11 @@ public class AmbulanceController extends BaseUIController {
         }
     }
 
-    /**
-     * 错误页面 验证机构（机构code、name是否存在；机构code和name是否对应）是否存在
-     * @param orgCode  机构code
-     * @param orgName  机构name
-     * @return
-     */
-    @RequestMapping("/isOrgExistence")
-    @ResponseBody
-    public Object idOrgExistence(String orgCode,String orgName){
-        Envelop envelop = new Envelop();
-        try {
-            Map map = new HashMap<>();
-            map.put("org_codes", orgCode);
-            String resultStr = "";
-            resultStr = HttpClientUtil.doPost(comUrl + "/organizations/seaOrgsByOrgCode", map, username, password);
-            Map<String,String>  orgMap=objectMapper.readValue(resultStr, new TypeReference<Map<String,String>>() {});
-            if(null!=orgMap&&null!=orgMap.get(orgCode)){
-                if(orgName.equals(orgMap.get(orgCode))){
-                    envelop.setSuccessFlg(true);
-                }else{
-                    envelop.setSuccessFlg(false);
-                    envelop.setErrorMsg("该机构code和机构名称不对应，请核对！");
-                }
-            }else{
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("该机构不存在，请核对！");
-            }
-            return envelop;
-        } catch (Exception e) {
-            e.printStackTrace();
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(e.getMessage());
-            return envelop;
-        }
-    }
-
-
-    private int validate(AmbulanceMsgModel model, Set<String> ids, Set<String> phones, Map<String,String> orgs){
+    private int validate(ScheduleMsgModel model, Set<String> carIds){
         int rs = 1;
         //验证车牌号
-        if(ids.contains(model.getId())){
-            model.addErrorMsg("id", "该车牌号已存在，请核对！");
-            rs = 0;
-        }
-        //验证随车手机号
-        if(phones.contains(model.getPhone())){
-            model.addErrorMsg("phone", "该随车手机号已存在，请核对！");
-            rs = 0;
-        }
-        //验证机构
-        if(null==orgs.get(model.getOrgCode())){
-            model.addErrorMsg("orgCode", "该机构不存在，请核对！");
-            rs = 0;
-        }else if(!orgs.get(model.getOrgCode()).equals(model.getOrgName())){
-            model.addErrorMsg("orgName", "该机构名称不正确，请核对！");
+        if(!carIds.contains(model.getCarId())){
+            model.addErrorMsg("carId", "该车牌号不存在，请核对！");
             rs = 0;
         }
         return rs;
