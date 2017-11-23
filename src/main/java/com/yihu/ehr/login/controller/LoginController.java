@@ -36,6 +36,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -104,11 +105,12 @@ public class LoginController extends BaseUIController {
      */
     @RequestMapping(value = "signin")
     public String signin(Model model, HttpServletRequest request) {
+        String clientId = request.getParameter("clientId");
+        String host = request.getHeader("referer");
         model.addAttribute("contentPage", "login/signin");
         model.addAttribute("successFlg", true);
-        model.addAttribute("clientId", request.getParameter("clientId"));
-        String host = request.getHeader("referer");
-        request.getSession().setAttribute("host", host);
+        model.addAttribute("clientId", clientId);
+        model.addAttribute("host", host);
         return "generalView";
     }
 
@@ -166,18 +168,31 @@ public class LoginController extends BaseUIController {
                 getUserRolePermissions(userDetailModel, loginName, request);
                 // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
                 model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                //session 同步到 redis
+                setRedisValue(request, SessionAttributeKeys.CurrentUser, objectMapper.writeValueAsString(userDetailModel));
+
                 HttpSession session = request.getSession();
                 //增加超级管理员信息
                 if(loginName.equals(permissionsInfo)) {
                     session.setAttribute(AuthorityKey.IsAccessAll, true);
+                    //session 同步到 redis
+                    setRedisValue(request, AuthorityKey.IsAccessAll, "true");
                 }else {
                     session.setAttribute(AuthorityKey.IsAccessAll, false);
+                    //session 同步到 redis
+                    setRedisValue(request, AuthorityKey.IsAccessAll, "false");
                 }
                 session.setAttribute("isLogin", true);
                 session.setAttribute("token", accessToken);
                 session.setAttribute("loginName", loginName);
                 session.setAttribute("userId", userDetailModel.getId());
                 session.setAttribute("clientId", clientId);
+                //session 同步到 redis
+                setRedisValue(request, "isLogin", "true");
+                setRedisObjectValue(request, "token", accessToken);
+                setRedisValue(request, "loginName", loginName);
+                setRedisValue(request, "userId", userDetailModel.getId());
+                setRedisValue(request, "clientId", clientId);
                 //获取用户角色信息
                 List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
                 Collection<GrantedAuthority> gas = new ArrayList<>();
@@ -188,7 +203,7 @@ public class LoginController extends BaseUIController {
                     }
                 }
                 //生成认证token
-                Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(loginName, "", gas);
+                Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
                 //将信息存放到SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(AuthenticationToken);
 
@@ -203,7 +218,7 @@ public class LoginController extends BaseUIController {
     }
 
     @RequestMapping(value = "validate", method = RequestMethod.POST)
-    public String loginValid(Model model, String userName, String password, HttpServletRequest request) {
+    public String loginValid(Model model, String userName, String password, HttpServletRequest request,RedirectAttributes attr ) {
         String url = "/users/verification/" + userName;
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
@@ -212,6 +227,7 @@ public class LoginController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
             Envelop envelop = getEnvelop(resultStr);
             UserDetailModel userDetailModel = getEnvelopModel(envelop.getObj(), UserDetailModel.class);
+            String loginName = userDetailModel.getLoginCode();
             //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
                 //获取用户的角色，机构，视图 等权限
@@ -220,11 +236,14 @@ public class LoginController extends BaseUIController {
                 HttpSession session = request.getSession();
                 if(userName.equals(permissionsInfo)) {
                     session.setAttribute(AuthorityKey.IsAccessAll, true);
+                    //session 同步到 redis
+                    setRedisValue(request, AuthorityKey.IsAccessAll, "true");
                 }else {
                     session.setAttribute(AuthorityKey.IsAccessAll, false);
+                    //session 同步到 redis
+                    setRedisValue(request, AuthorityKey.IsAccessAll, "false");
                 }
                 String lastLoginTime = null;
-                //model.addAttribute("successFlg", false);
                 //判断用户是否失效
                 if (!userDetailModel.getActivated()) {
                     model.addAttribute("userName", userName);
@@ -235,34 +254,43 @@ public class LoginController extends BaseUIController {
                 }
                 //判断用户密码是否初始密码
                 model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                //session 同步到 redis
+                setRedisObjectValue(request, SessionAttributeKeys.CurrentUser, userDetailModel);
+
                 if (password.equals("123456")) {
                     session.setAttribute("defaultPassWord", true);
+                    //session 同步到 redis
+                    setRedisValue(request, "defaultPassWord", "true");
                     model.addAttribute("contentPage", "user/changePassword");
                     return "generalView";
                 } else {
                     //创建session保存用户信息
                     session.removeAttribute("defaultPassWord");
+                    //session 同步到 redis
+                    deleteRedisValue(request, "defaultPassWord");
                     SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
                     Date date = new Date();
                     String now = sdf.format(date);
                     if (userDetailModel.getLastLoginTime() != null) {
                         Date dateLogin = DateTimeUtils.utcDateTimeParse(userDetailModel.getLastLoginTime());
                         lastLoginTime = dateLogin == null ? "" : DateTimeUtil.simpleDateTimeFormat(dateLogin);
-                        //lastLoginTime = userDetailModel.getLastLoginTime();
                     } else {
                         lastLoginTime = now;
                     }
-                    //model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                    model.addAttribute("last_login_time", lastLoginTime);
                     session.setAttribute("last_login_time", lastLoginTime);
+                    //session 同步到 redis
+                    setRedisValue(request, "last_login_time", lastLoginTime);
+
                     //update lastLoginTime
                     userDetailModel.setLastLoginTime(DateTimeUtils.utcDateTimeFormat(date));
                     url = "/user";
                     MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
                     conditionMap.add("user_json_data", toJson(userDetailModel));
-                    //没用的代码
-                    //RestTemplates templates = new RestTemplates();
-                    //resultStr = templates.doPut(comUrl + url, conditionMap);
                     session.setAttribute("loginCode", userDetailModel.getLoginCode());
+                    //session 同步到 redis
+                    setRedisValue(request, "loginCode", userDetailModel.getLoginCode());
+
                     //获取用户角色信息
                     List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
                     Collection<GrantedAuthority> gas = new ArrayList<>();
@@ -276,8 +304,12 @@ public class LoginController extends BaseUIController {
                     Authentication token = new UsernamePasswordAuthenticationToken(userName, password, gas);
                     AccessToken accessToken = getAccessToken(userName, password, baseClientId);
                     session.setAttribute("token", accessToken);
+                    //session 同步到 redis
+                    setRedisObjectValue(request, "token", accessToken);
+
                     //将信息存放到SecurityContext
                     SecurityContextHolder.getContext().setAuthentication(token);
+                    attr.addAttribute("loginName",loginName);
                     return "redirect:/index";
                 }
 
@@ -309,8 +341,8 @@ public class LoginController extends BaseUIController {
      */
     @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Envelop check(String idCardNo, HttpServletRequest request) {
-        initUrlInfo(request);
+    public Envelop check(String idCardNo,String loginCode, HttpServletRequest request) {
+        initUrlInfo(loginCode,request);
         Envelop envelop = new Envelop();
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("demographic_id", idCardNo);
@@ -336,8 +368,17 @@ public class LoginController extends BaseUIController {
         //获取code
         HttpSession session = request.getSession();
         AccessToken token = (AccessToken) session.getAttribute("token");
+        if(token == null){
+            token = objectMapper.readValue(getRedisValue(request, "token"), AccessToken.class);
+        }
         String user = token.getUser();
-        boolean isInnerIp = (Boolean) session.getAttribute("isInnerIp");
+        boolean isInnerIp = true;
+        if(session.getAttribute("isInnerIp") != null){
+            isInnerIp = (Boolean) session.getAttribute("isInnerIp");
+        }else {
+            isInnerIp = Boolean.parseBoolean(getRedisValue(request,"isInnerIp"));;
+        }
+
         System.out.println("isInnerIp:" + isInnerIp);
         if(isInnerIp) {
             String url = browseClientUrl + "/common/login/signin?idCardNo=" + idCardNo;
@@ -346,14 +387,13 @@ public class LoginController extends BaseUIController {
             String url = browseClientOutSizeUrl + "/common/login/signin?idCardNo=" + idCardNo;
             response.sendRedirect(oauth2OutSize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
         }
-        //response.sendRedirect("http://localhost:10260/oauth/authorize?response_type=token&client_id=111111&redirect_uri=http://localhost:8011/login/test&user=me");
     }
 
     /**
      * 初始化内外网IP信息
      * @param request
      */
-    public void initUrlInfo(HttpServletRequest request) {
+    public void initUrlInfo(String loginCode ,HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
@@ -374,11 +414,17 @@ public class LoginController extends BaseUIController {
             System.out.println(ip);
             if("0:0:0:0:0:0:0:1".equals(ip)) {
                 request.getSession().setAttribute("isInnerIp", true);
+                //session 同步到 redis
+                setRedisValue(request,"isInnerIp", "true");
             }else {
                 if("127.0.0.1".equals(ip) || isInnerIP(ip)) {
                     request.getSession().setAttribute("isInnerIp", true);
+                    //session 同步到 redis
+                    setRedisValue(request,"isInnerIp", "true");
                 }else {
                     request.getSession().setAttribute("isInnerIp", false);
+                    //session 同步到 redis
+                    setRedisValue(request,"isInnerIp", "false");
                 }
             }
         }
@@ -404,7 +450,7 @@ public class LoginController extends BaseUIController {
      * 获取用的saas机构
      */
     @RequestMapping(value = "/getUserSaasOrgAndArea", method = RequestMethod.GET)
-    public void getUserSaasOrgAndArea(List<String> roleOrgCodes, HttpServletRequest request) throws Exception {
+    public void getUserSaasOrgAndArea(List<String> roleOrgCodes,String loginName, HttpServletRequest request) throws Exception {
         Envelop envelop = new Envelop();
         List<String> userOrgList = new ArrayList<>();
         //使用orgCode获取saas化的机构或者区域。
@@ -414,8 +460,13 @@ public class LoginController extends BaseUIController {
         String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
         envelop = getEnvelop(resultStrUserSaasOrg);
         HttpSession session = request.getSession();
-        session.setAttribute("userAreaSaas", envelop.getObj());
-        session.setAttribute("userOrgSaas", envelop.getDetailModelList());
+        session.setAttribute(AuthorityKey.UserAreaSaas, envelop.getObj());
+        session.setAttribute(AuthorityKey.UserOrgSaas, envelop.getDetailModelList());
+        //session 同步到 redis
+        setRedisObjectValue(request, AuthorityKey.UserAreaSaas, envelop.getObj());
+        setRedisObjectValue(request, AuthorityKey.UserOrgSaas, envelop.getDetailModelList());
+
+
         userOrgList = envelop.getDetailModelList();
         List<String> districtList = (List<String>) envelop.getObj();
         String geographyUrl = "/geography_entries/";
@@ -464,6 +515,9 @@ public class LoginController extends BaseUIController {
         userOrgList.removeAll(Collections.singleton(null));
         userOrgList.removeAll(Collections.singleton(""));
         request.getSession().setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
+        //session 同步到 redis
+        setRedisObjectValue(request, AuthorityKey.UserOrgSaas, envelop.getDetailModelList());
+
     }
 
     @RequestMapping(value = "/userVerification")
@@ -533,12 +587,18 @@ public class LoginController extends BaseUIController {
      * @throws Exception
      */
     public void getUserRolePermissions(UserDetailModel userDetailModel, String loginCode, HttpServletRequest request) throws Exception {
+        String loginName = loginCode;
         HttpSession session = request.getSession();
         if(loginCode.equals(permissionsInfo)){
             session.setAttribute(AuthorityKey.UserRoles, null);
             session.setAttribute(AuthorityKey.UserResource, null);
             session.setAttribute(AuthorityKey.UserAreaSaas, null);
             session.setAttribute(AuthorityKey.UserOrgSaas, null);
+            //session 同步到 redis
+            setRedisValue(request, AuthorityKey.UserRoles, "null");
+            setRedisValue(request, AuthorityKey.UserResource, "null");
+            setRedisValue(request, AuthorityKey.UserAreaSaas, "null");
+            setRedisValue(request, AuthorityKey.UserOrgSaas, "null");
         }else{
             //获取用户角色
             String roleStr = "";
@@ -547,6 +607,8 @@ public class LoginController extends BaseUIController {
             if( !StringUtils.isEmpty(roleStr)){
                 roleList =  Arrays.asList(roleStr.split(","));
                 session.setAttribute(AuthorityKey.UserRoles, roleList);
+                //session 同步到 redis
+                setRedisObjectValue(request, AuthorityKey.UserRoles, roleList);
                 //获取角色机构
                 List<RoleOrgModel> roleOrgModels = new ArrayList<>();
                 gerRolesOrgs(roleList,roleOrgModels);
@@ -555,11 +617,13 @@ public class LoginController extends BaseUIController {
                     for(RoleOrgModel roleOrgModel : roleOrgModels){
                         roleOrgCodes.add(roleOrgModel.getOrgCode());
                     }
-                    getUserSaasOrgAndArea(roleOrgCodes, request);
+                    getUserSaasOrgAndArea(roleOrgCodes, loginName, request);
                 }else{
                     List<String> userOrgList = new ArrayList<>();
                     userOrgList.add("-NoneOrg");
                     session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
+                    //session 同步到 redis
+                    setRedisObjectValue(request, AuthorityKey.UserOrgSaas, userOrgList);
                 }
                 //获取角色视图
                 List<String> rolesResourceIdList =  new ArrayList<>();
@@ -570,13 +634,19 @@ public class LoginController extends BaseUIController {
                         rolesResourceIdList.add(rsRolesResource.getResourceId());
                     }
                     session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
+                    //session 同步到 redis
+                    setRedisObjectValue(request, AuthorityKey.UserResource, rolesResourceIdList);
                 }else{
                     rolesResourceIdList.add("-NoneResource");
                     session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
+                    //session 同步到 redis
+                    setRedisObjectValue(request, AuthorityKey.UserResource, rolesResourceIdList);
                 }
             }else{
                 roleList.add("-NoneRole");
                 session.setAttribute(AuthorityKey.UserRoles, roleList);
+                //session 同步到 redis
+                setRedisObjectValue(request, AuthorityKey.UserRoles, roleList);
             }
         }
     }
