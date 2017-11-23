@@ -218,7 +218,7 @@ public class LoginController extends BaseUIController {
     }
 
     @RequestMapping(value = "validate", method = RequestMethod.POST)
-    public String loginValid(Model model, String userName, String password, HttpServletRequest request,RedirectAttributes attr ) {
+    public String loginValid(Model model, String userName, String password, HttpServletRequest request) {
         String url = "/users/verification/" + userName;
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
@@ -309,7 +309,6 @@ public class LoginController extends BaseUIController {
 
                     //将信息存放到SecurityContext
                     SecurityContextHolder.getContext().setAuthentication(token);
-                    attr.addAttribute("loginName",loginName);
                     return "redirect:/index";
                 }
 
