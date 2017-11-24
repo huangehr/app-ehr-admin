@@ -438,23 +438,24 @@ public class PatientController extends BaseUIController {
 
     @RequestMapping("searchPatientByParams")
     @ResponseBody
-    public Object searchPatientByParams(String searchNm,String gender, String province, String city, String district, String searchRegisterTimeStart,String searchRegisterTimeEnd,int page, int rows) {
+    public Object searchPatientByParams(String searchNm,String gender, String province, String city, String district,
+                                        String searchRegisterTimeStart,String searchRegisterTimeEnd,int page, int rows,HttpServletRequest request) {
         String url = "/populationsByParams";
         String resultStr = "";
         Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String districtList = getInfoService.getDistrictList();
-        params.put("search", searchNm.trim());
-        params.put("gender", gender);
-        params.put("page", page);
-        params.put("rows", rows);
-        params.put("home_province", province);
-        params.put("home_city", city);
-        params.put("home_district", district);
-        params.put("searchRegisterTimeStart", searchRegisterTimeStart);
-        params.put("searchRegisterTimeEnd", searchRegisterTimeEnd);
-       /* params.put("districtList", org.apache.commons.lang.StringUtils.isBlank(districtList) ? "-1" : districtList);*/
         try {
+            Map<String, Object> params = new HashMap<>();
+            String districtList = getInfoService.getDistrictList(request);
+            params.put("search", searchNm.trim());
+            params.put("gender", gender);
+            params.put("page", page);
+            params.put("rows", rows);
+            params.put("home_province", province);
+            params.put("home_city", city);
+            params.put("home_district", district);
+            params.put("searchRegisterTimeStart", searchRegisterTimeStart);
+            params.put("searchRegisterTimeEnd", searchRegisterTimeEnd);
+       /* params.put("districtList", org.apache.commons.lang.StringUtils.isBlank(districtList) ? "-1" : districtList);*/
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
@@ -489,8 +490,6 @@ public class PatientController extends BaseUIController {
     /**
      * 查找用户关联卡（卡状态为审核通过）
      * @param
-     * @param page
-     * @param rows
      * @return
      */
     @RequestMapping("/PatientCardByUserId")
