@@ -4,6 +4,7 @@ import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -308,6 +309,11 @@ public class ResourceManageController extends BaseUIController {
             if(isRsReportInUse(id)){
                 result.setSuccessFlg(false);
                 result.setErrorMsg("已关联报表资源不能删除");
+                return result;
+            }
+            if (isSetReport(id)){
+                result.setSuccessFlg(false);
+                result.setErrorMsg("已配置报表不能删除");
                 return result;
             }
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
@@ -624,5 +630,19 @@ public class ResourceManageController extends BaseUIController {
         Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
         return (boolean)envelop.getObj();
     }
+
+    public Boolean isSetReport(String resourceId) throws Exception{
+        String url = ServiceApi.Resources.RsReportViewExistReport;
+        Map<String,Object> params = new HashMap<>();
+        params.put("resourceId",resourceId);
+        String resultStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+        Envelop result = objectMapper.readValue(resultStr, Envelop.class);
+        if (result.isSuccessFlg()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 }

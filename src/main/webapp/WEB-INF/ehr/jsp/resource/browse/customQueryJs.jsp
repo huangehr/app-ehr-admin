@@ -629,6 +629,7 @@
                                                             resourceId: '',
                                                             quotaTypeName: name,
                                                             quotaChart: 1,
+                                                            quotaCode: chilData.code,
                                                             quotaId: chilData.id
                                                         });
                                                     }

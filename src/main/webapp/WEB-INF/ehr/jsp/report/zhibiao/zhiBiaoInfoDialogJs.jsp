@@ -443,7 +443,7 @@
                             }
                             var dataModel = $.DataModel.init();
                             dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsCode", {
-                                data: {code:code},
+                                data: {code:code.trim()},
                                 async: false,
                                 success: function (data) {
                                     if (!data) {
@@ -465,7 +465,7 @@
                             }
                             var dataModel = $.DataModel.init();
                             dataModel.fetchRemote("${contextRoot}/tjQuota/hasExistsName", {
-                                data: {name:name},
+                                data: {name:name.trim()},
                                 async: false,
                                 success: function (data) {
                                     if (!data) {
