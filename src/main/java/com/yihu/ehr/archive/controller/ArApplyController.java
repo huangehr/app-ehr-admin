@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -234,17 +235,17 @@ public class ArApplyController extends BaseUIController {
     @RequestMapping("arApplyAudit")
     @ResponseBody
     public Object arApplyAudit(String applyId,String status ,String auditReason,String archiveRelationIds, HttpServletRequest request) {
-        String url = "/patientArchive/manager/verify";
-        String resultStr = "";
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", applyId);
-        params.put("status", status);
-        params.put("auditor", userDetailModel.getId());
-        params.put("auditReason", auditReason);
-        params.put("archiveRelationIds", archiveRelationIds);
+        String resultStr = "";
         try {
+            String url = "/patientArchive/manager/verify";
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            Map<String, Object> params = new HashMap<>();
+            params.put("id", applyId);
+            params.put("status", status);
+            params.put("auditor", userDetailModel.getId());
+            params.put("auditReason", auditReason);
+            params.put("archiveRelationIds", archiveRelationIds);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {

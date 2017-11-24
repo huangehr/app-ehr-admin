@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringUtils;
 import com.yihu.ehr.agModel.user.UserDetailModel;
@@ -154,6 +155,10 @@ public class LogAspect {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         HttpSession session = request.getSession();
         String userName = (String) session.getAttribute("loginCode");
+        if(StringUtils.isEmpty(userName)){
+            BaseUIController baseUIController = new BaseUIController();
+            userName = baseUIController.getRedisValue(request,"loginCode");
+        }
 
         JSONObject data = new JSONObject();
         UserDetailModel userModel=(UserDetailModel) session.getAttribute("current_user");

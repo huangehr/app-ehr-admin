@@ -39,7 +39,10 @@ public class IndexController extends BaseUIController {
     @RequestMapping(value = "")
     public String init(Model model, HttpServletRequest request) throws Exception {
         String clientId = (String)request.getSession().getAttribute("clientId");
-        UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        if(StringUtils.isEmpty(clientId)){
+            clientId = getRedisValue(request,"clientId");
+        }
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         if( ! StringUtils.isNotEmpty(clientId)){
              clientId =  getRedisValue(request,"clientId");
         }
@@ -60,7 +63,13 @@ public class IndexController extends BaseUIController {
         String menuData = toJson(envelop.getDetailModelList());
 
         String host = (String)request.getSession().getAttribute("host");
+        if(StringUtils.isEmpty(host)){
+            host = getRedisValue(request,"host");
+        }
         String lastLoginTime = (String)request.getSession().getAttribute("last_login_time");
+        if(StringUtils.isEmpty(lastLoginTime)){
+            lastLoginTime = getRedisValue(request,"last_login_time");
+        }
         if( ! StringUtils.isNotEmpty(host)){
             host = getRedisValue(request ,"host");
         }

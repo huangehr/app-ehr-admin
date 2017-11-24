@@ -8,6 +8,7 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -524,7 +525,13 @@ public class OrgDictController {
     }
 
     private UserDetailModel getCurUser(HttpServletRequest request){
-
-        return (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = new  UserDetailModel();
+        try {
+            BaseUIController baseUIController = new BaseUIController();
+            userDetailModel = baseUIController.getCurrentUserRedis(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return userDetailModel;
     }
 }

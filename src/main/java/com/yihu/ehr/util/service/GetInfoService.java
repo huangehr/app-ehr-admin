@@ -4,6 +4,7 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +33,8 @@ public class GetInfoService {
     @Value("${service-gateway.url}")
     private String comUrl;
 
-    public String getOrgCode() {
-        String userId = getCurrentUserId();
+    public String getOrgCode(HttpServletRequest request) throws IOException {
+        String userId = getCurrentUserId(request);
         String url ="/userInfo/getOrgCode";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
@@ -45,8 +47,8 @@ public class GetInfoService {
         return resultStr;
     }
 
-    public String getUserId() {
-        String userId = getCurrentUserId();
+    public String getUserId(HttpServletRequest request) throws IOException {
+        String userId = getCurrentUserId(request);
         String url ="/getUserIdList";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -60,8 +62,8 @@ public class GetInfoService {
         return resultStr;
     }
 
-    public String getDistrictList() {
-        String userId = getCurrentUserId();
+    public String getDistrictList(HttpServletRequest request) throws IOException {
+        String userId = getCurrentUserId(request);
         String url ="/getDistrictList";
         String resultStr = "";
         Map<String, Object> params = new HashMap<>();
@@ -74,10 +76,9 @@ public class GetInfoService {
         return resultStr;
     }
 
-    private String getCurrentUserId() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session = request.getSession();
-        UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
+    private String getCurrentUserId(HttpServletRequest request) throws IOException {
+        BaseUIController baseUIController = new BaseUIController();
+        UserDetailModel user = baseUIController.getCurrentUserRedis(request);
         return user.getId();
     }
 
@@ -86,16 +87,17 @@ public class GetInfoService {
      * @return
      */
     public String appIdList(HttpServletRequest request) {
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-        if (null == userOrgList) {
-            return "admin";
-        }
-        String userId = getCurrentUserId();
-        String url ="/BasicInfo/getAppIdsByUserId";
         String resultStr = "";
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId", userId);
         try {
+            BaseUIController baseUIController = new BaseUIController();
+            List<String> userOrgList  = baseUIController.getUserOrgSaasListRedis(request);
+            if (null == userOrgList) {
+                return "admin";
+            }
+            String userId = getCurrentUserId(request);
+            String url ="/BasicInfo/getAppIdsByUserId";
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId", userId);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,16 +110,17 @@ public class GetInfoService {
      * @return
      */
     public String idCardNoList(HttpServletRequest request) {
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-        if (null == userOrgList) {
-            return "admin";
-        }
-        String orgCode = StringUtils.join(userOrgList, ",");
-        String url ="/BasicInfo/getIdCardNoByOrgCode";
         String resultStr = "";
-        Map<String, Object> params = new HashMap<>();
-        params.put("orgCode", orgCode);
         try {
+            BaseUIController baseUIController = new BaseUIController();
+            List<String> userOrgList  = baseUIController.getUserOrgSaasListRedis(request);
+            if (null == userOrgList) {
+                return "admin";
+            }
+            String orgCode = StringUtils.join(userOrgList, ",");
+            String url ="/BasicInfo/getIdCardNoByOrgCode";
+            Map<String, Object> params = new HashMap<>();
+            params.put("orgCode", orgCode);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();

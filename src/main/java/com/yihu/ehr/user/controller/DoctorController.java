@@ -1,5 +1,6 @@
 package com.yihu.ehr.user.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
@@ -30,10 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yeshijie on 2017/2/13.
@@ -104,22 +102,22 @@ public class DoctorController extends BaseUIController {
             stringBuffer.append("name?" + searchNm + ";");
         }
 
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-        if (null != userOrgList && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
-            result.setSuccessFlg(true);
-            return result;
-        } else if (null != userOrgList && userOrgList.size() > 0) {
-            String orgCode = String.join(",", userOrgList);
-            params.put("orgCode", orgCode);
-        }
-        String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-        params.put("sorts", "-insertTime");
-        params.put("page", page);
-        params.put("size", rows);
         try {
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
+            if (null != userOrgList && AuthorityKey.NoUserOrgSaas.equalsIgnoreCase(userOrgList.get(0))) {
+                result.setSuccessFlg(true);
+                return result;
+            } else if (null != userOrgList && userOrgList.size() > 0) {
+                String orgCode = String.join(",", userOrgList);
+                params.put("orgCode", orgCode);
+            }
+            String filters = stringBuffer.toString();
+            if (!StringUtils.isEmpty(filters)) {
+                params.put("filters", filters);
+            }
+            params.put("sorts", "-insertTime");
+            params.put("page", page);
+            params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {

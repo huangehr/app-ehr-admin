@@ -1,5 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
@@ -158,18 +159,17 @@ public class ResourceBrowseController extends BaseUIController {
         Envelop envelop = new Envelop();
         String url = "/resources/ResourceBrowses/getResourceMetadata";
         String resultStr = "";
-        //从Session中获取用户的角色信息作为查询参数
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userRoleList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-        if(!isAccessAll) {
-            if(null == userRoleList || userRoleList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问");
-                return envelop;
-            }
-        }
         try {
+            //从Session中获取用户的角色信息作为查询参数
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            List<String> userRoleList  = getUserRolesListRedis(request);
+            if(!isAccessAll) {
+                if(null == userRoleList || userRoleList.size() <= 0) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问");
+                    return envelop;
+                }
+            }
             Map<String, Object> params = new HashMap<>();
             params.put("resourcesCode", resourceCode);
             if(isAccessAll) {
@@ -227,25 +227,24 @@ public class ResourceBrowseController extends BaseUIController {
         Envelop envelop = new Envelop();
         String url = "/resources/ResourceBrowses/getResourceData";
         String resultStr = "";
-        //从Session中获取用户的角色信息和授权视图列表作为查询参数
-        HttpSession session = request.getSession();
-        List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-        List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
-        List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        if(!isAccessAll) {
-            if(null == userRolesList || userRolesList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问");
-                return envelop;
-            }
-            if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问");
-                return envelop;
-            }
-        }
         try {
+            //从Session中获取用户的角色信息和授权视图列表作为查询参数
+            List<String> userRolesList  = getUserRolesListRedis(request);
+            List<String> userOrgSaasList  = getUserOrgSaasListRedis(request);
+            List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            if(!isAccessAll) {
+                if(null == userRolesList || userRolesList.size() <= 0) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问");
+                    return envelop;
+                }
+                if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问");
+                    return envelop;
+                }
+            }
             Map<String, Object> params = new HashMap<>();
             params.put("resourcesCode", resourcesCode);
             if(isAccessAll) {
@@ -343,25 +342,22 @@ public class ResourceBrowseController extends BaseUIController {
     @ResponseBody
     public Object searchQuotaResourceData(String resourcesId, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        String resultStr = "";
-        String url = "/resources/ResourceBrowses/getQuotaResourceData";
-        //当前用户机构 -- 预留
-        //String orgCode = userDetailModel.getOrganization();
-        //params.put("orgCode", orgCode);
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-        params.put("userOrgList", userOrgList);
-        params.put("resourcesId", resourcesId);
-        if(searchParams != null) {
-            if (searchParams.contains("{") || searchParams.contains("}")) {
-                params.put("queryCondition", searchParams);
-            } else {
-                params.put("queryCondition", "");
-            }
-        }
-        params.put("page", page);
-        params.put("size", rows);
         try {
+            Map<String, Object> params = new HashMap<>();
+            String resultStr = "";
+            String url = "/resources/ResourceBrowses/getQuotaResourceData";
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
+            params.put("userOrgList", userOrgList);
+            params.put("resourcesId", resourcesId);
+            if(searchParams != null) {
+                if (searchParams.contains("{") || searchParams.contains("}")) {
+                    params.put("queryCondition", searchParams);
+                } else {
+                    params.put("queryCondition", "");
+                }
+            }
+            params.put("page", page);
+            params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
@@ -407,10 +403,13 @@ public class ResourceBrowseController extends BaseUIController {
             String url = "/resources/ResourceBrowses/getResourceData";
             //从Session中获取用户的角色信息和授权视图列表作为查询参数
             HttpSession session = request.getSession();
-            List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-            List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
-            List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
-            boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+//            List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
+//            List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
+//            List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
+            List<String> userRolesList  = getUserRolesListRedis(request);
+            List<String> userOrgSaasList  = getUserOrgSaasListRedis(request);
+            List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
+            boolean isAccessAll = getIsAccessAllRedis(request);
             if(!isAccessAll) {
                 if(null == userRolesList || userRolesList.size() <= 0) {
                     System.out.println("无权访问");
@@ -466,7 +465,7 @@ public class ResourceBrowseController extends BaseUIController {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("resourcesId", resourcesId);
             params.put("queryCondition", searchParams);
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);

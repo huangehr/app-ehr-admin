@@ -126,9 +126,9 @@ public class DrugDictController extends BaseUIController {
         //新增、修改
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/dict/drug";
         try{
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
             DrugDictModel model = objectMapper.readValue(dictJson,DrugDictModel.class);
             if("new".equals(mode)){
                 model.setCreateUser(userDetailModel.getId());

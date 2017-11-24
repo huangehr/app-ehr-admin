@@ -54,7 +54,7 @@ public class OrgImportController extends ExtendController<OrgService> {
     @ResponseBody
     public void importOrgMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel user = getCurrentUserRedis(request);
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");

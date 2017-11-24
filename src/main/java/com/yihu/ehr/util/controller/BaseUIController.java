@@ -1,14 +1,27 @@
 package com.yihu.ehr.util.controller;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.common.constants.AuthorityKey;
+import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
+import org.apache.catalina.Session;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * UI用controller工具类
@@ -127,4 +140,195 @@ public class BaseUIController {
     protected Envelop failedSystem() {
         return failed(ERR_SYSTEM_DES);
     }
+
+
+    /**
+     * 设置redis 值
+     * @param
+     * @param
+     * @return
+     */
+    public Object setRedisValue(HttpServletRequest request,String key, String value) {
+        String url = ServiceApi.Redis.AppSetRedisValue;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        if(value != null){
+            try {
+                Map<String, Object> params = new HashMap<>();
+                String sessionId = request.getSession().getId();
+                params.put("key", sessionId + "-" + key);
+                params.put("value", value);
+                System.out.println(sessionId);
+                System.out.println("set  key=" + key + ",val = " + value);
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                return resultStr;
+            } catch (Exception e) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.SystemError.toString());
+                return result;
+            }
+        }
+        return null;
+    }
+
+    public Object setRedisObjectValue(HttpServletRequest request,String key, Object value) {
+        String url = ServiceApi.Redis.AppSetRedisJsonValue;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        if(value != null){
+            try {
+                Map<String, Object> params = new HashMap<>();
+                String sessionId = request.getSession().getId();
+                params.put("key", sessionId + "-" + key);
+                params.put("value", objectMapper.writeValueAsString(value));
+                System.out.println(sessionId);
+                System.out.println("set --- key=" + key + ",val = " + objectMapper.writeValueAsString(value));
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                return resultStr;
+            } catch (Exception e) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg(ErrorCode.SystemError.toString());
+                return result;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * 获取redis 值
+     * @param
+     * @param
+     * @return
+     */
+    public String getRedisValue(HttpServletRequest request,String key) {
+        String url = ServiceApi.Redis.AppGetRedisValue;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            String sessionId = request.getSession().getId();
+            params.put("key",sessionId + "-" + key);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            System.out.println("get -- key=" + sessionId + "-" + key + ", value = " + resultStr);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return "";
+    }
+
+
+    /**
+     * 删除redis 值
+     * @param
+     * @param
+     * @return
+     */
+    public Object deleteRedisValue(HttpServletRequest request,String key) {
+        String url = ServiceApi.Redis.AppGetRedisValue;
+        String resultStr = "";
+        Envelop result = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            String sessionId = request.getSession().getId();
+            params.put("key",sessionId + "-" + key);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return resultStr;
+        } catch (Exception e) {
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return result;
+        }
+
+    }
+
+    public UserDetailModel getCurrentUserRedis(HttpServletRequest request) throws IOException {
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        if(userDetailModel == null){
+            userDetailModel = objectMapper.readValue(getRedisValue(request, SessionAttributeKeys.CurrentUser), UserDetailModel.class);
+        }
+        return  userDetailModel;
+    }
+
+    public boolean getIsAccessAllRedis(HttpServletRequest request) throws IOException {
+        boolean isAccessAll = true;
+        if(request.getSession().getAttribute(AuthorityKey.IsAccessAll) != null){
+            isAccessAll = (boolean)request.getSession().getAttribute(AuthorityKey.IsAccessAll);
+        }else {
+            isAccessAll = Boolean.parseBoolean(getRedisValue(request, AuthorityKey.IsAccessAll));
+        }
+        return  isAccessAll;
+    }
+
+    public List<String> getUserAreaSaasListRedis(HttpServletRequest request) throws IOException {
+        List<String> userOrgList  = new ArrayList<>();
+        if(request.getSession().getAttribute(AuthorityKey.UserOrgSaas) != null){
+            userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+        }else {
+            String resultRedis = getRedisValue(request,AuthorityKey.UserOrgSaas) ;
+            if(org.apache.commons.lang3.StringUtils.isNotEmpty(resultRedis)){
+                if(resultRedis.equals(AuthorityKey.NoUserOrgSaas)){
+                    userOrgList.add(AuthorityKey.NoUserOrgSaas);
+                }else {
+                    userOrgList = objectMapper.readValue(resultRedis, new TypeReference<List<String>>(){} );
+                }
+            }
+        }
+        return  userOrgList;
+    }
+
+
+    public List<String> getUserOrgSaasListRedis(HttpServletRequest request) throws IOException {
+        List<String> userOrgList  = new ArrayList<>();
+        if(request.getSession().getAttribute(AuthorityKey.UserOrgSaas) != null){
+            userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+        }else {
+            String resultRedis = getRedisValue(request,AuthorityKey.UserOrgSaas) ;
+            if(org.apache.commons.lang3.StringUtils.isNotEmpty(resultRedis)){
+                if(resultRedis.equals(AuthorityKey.NoUserOrgSaas)){
+                    userOrgList.add(AuthorityKey.NoUserOrgSaas);
+                }else {
+                    userOrgList = objectMapper.readValue(resultRedis, new TypeReference<List<String>>(){} );
+                }
+            }
+        }
+        return  userOrgList;
+    }
+
+    public List<String> getUserRolesListRedis(HttpServletRequest request) throws IOException {
+        List<String> userOrgList  = new ArrayList<>();
+        if(request.getSession().getAttribute(AuthorityKey.UserRoles) != null){
+            userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserRoles);
+        }else {
+            String resultRedis = getRedisValue(request,AuthorityKey.UserRoles) ;
+            if(org.apache.commons.lang3.StringUtils.isNotEmpty(resultRedis)){
+                if(resultRedis.equals(AuthorityKey.NoUserRole)){
+                    userOrgList.add(AuthorityKey.NoUserRole);
+                }else {
+                    userOrgList = objectMapper.readValue(resultRedis, new TypeReference<List<String>>(){} );
+                }
+            }
+        }
+        return  userOrgList;
+    }
+
+    public List<String> getUserResourceListRedis(HttpServletRequest request) throws IOException {
+        List<String> userOrgList  = new ArrayList<>();
+        if(request.getSession().getAttribute(AuthorityKey.UserResource) != null){
+            userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserResource);
+        }else {
+            String resultRedis = getRedisValue(request,AuthorityKey.UserResource) ;
+            if(org.apache.commons.lang3.StringUtils.isNotEmpty(resultRedis)){
+                if(resultRedis.equals(AuthorityKey.NoUserResource)){
+                    userOrgList.add(AuthorityKey.NoUserResource);
+                }else {
+                    userOrgList = objectMapper.readValue(resultRedis, new TypeReference<List<String>>(){} );
+                }
+            }
+        }
+        return  userOrgList;
+    }
+
 }

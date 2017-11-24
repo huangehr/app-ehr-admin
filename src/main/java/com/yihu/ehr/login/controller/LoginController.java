@@ -619,7 +619,7 @@ public class LoginController extends BaseUIController {
                     getUserSaasOrgAndArea(roleOrgCodes, loginName, request);
                 }else{
                     List<String> userOrgList = new ArrayList<>();
-                    userOrgList.add("-NoneOrg");
+                    userOrgList.add(AuthorityKey.NoUserOrgSaas);
                     session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
                     //session 同步到 redis
                     setRedisObjectValue(request, AuthorityKey.UserOrgSaas, userOrgList);
@@ -636,13 +636,13 @@ public class LoginController extends BaseUIController {
                     //session 同步到 redis
                     setRedisObjectValue(request, AuthorityKey.UserResource, rolesResourceIdList);
                 }else{
-                    rolesResourceIdList.add("-NoneResource");
+                    rolesResourceIdList.add(AuthorityKey.NoUserResource);
                     session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
                     //session 同步到 redis
                     setRedisObjectValue(request, AuthorityKey.UserResource, rolesResourceIdList);
                 }
             }else{
-                roleList.add("-NoneRole");
+                roleList.add(AuthorityKey.NoUserRole);
                 session.setAttribute(AuthorityKey.UserRoles, roleList);
                 //session 同步到 redis
                 setRedisObjectValue(request, AuthorityKey.UserRoles, roleList);

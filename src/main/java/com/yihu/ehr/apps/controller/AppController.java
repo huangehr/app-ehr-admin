@@ -1,5 +1,6 @@
 package com.yihu.ehr.apps.controller;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.yihu.ehr.agModel.app.AppDetailModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.resource.RsAppResourceModel;
@@ -163,17 +164,17 @@ public class AppController extends BaseUIController {
 
     @RequestMapping("createApp")
     @ResponseBody
-    public Object createApp(AppDetailModel appDetailModel,HttpServletRequest request) {
+    public Object createApp(AppDetailModel appDetailModel,HttpServletRequest request){
 
         Envelop result = new Envelop();
         String resultStr="";
         String url="/apps";
         MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
-        //不能用 @ModelAttribute(SessionAttributeKeys.CurrentUser)获取，会与AppDetailModel中的id属性有冲突
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        appDetailModel.setCreator(userDetailModel.getId());
-        conditionMap.add("app", toJson(appDetailModel));
         try {
+            //不能用 @ModelAttribute(SessionAttributeKeys.CurrentUser)获取，会与AppDetailModel中的id属性有冲突
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            appDetailModel.setCreator(userDetailModel.getId());
+            conditionMap.add("app", toJson(appDetailModel));
             RestTemplates template = new RestTemplates();
             resultStr = template.doPost(comUrl + url, conditionMap);
             Envelop envelop = getEnvelop(resultStr);

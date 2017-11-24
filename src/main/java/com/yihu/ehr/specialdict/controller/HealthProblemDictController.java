@@ -127,10 +127,10 @@ public class HealthProblemDictController extends BaseUIController {
     @ResponseBody
     public Object updateIcd10Dict(String dictJson,String mode,HttpServletRequest request){
         Envelop envelop = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        envelop.setSuccessFlg(false);
-        String url = "/dict/hp";
         try{
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            envelop.setSuccessFlg(false);
+            String url = "/dict/hp";
             HealthProblemDictModel model = objectMapper.readValue(dictJson, HealthProblemDictModel.class);
             if(StringUtils.isEmpty(model.getCode())){
                 envelop.setErrorMsg("字典项编码不能为空！");
@@ -347,18 +347,18 @@ public class HealthProblemDictController extends BaseUIController {
     //"为健康问题增加ICD10疾病关联。
     public Object createHpIcd10Relations(Long hpId,String icd10Ids,HttpServletRequest request){
         Envelop envelop = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/dict/hp/icd10s";
-        if(StringUtils.isEmpty(icd10Ids)){
-            envelop.setErrorMsg("icd10字典id不能为空！");
-            return envelop;
-        }
-        if (StringUtils.isEmpty(hpId)){
-            envelop.setErrorMsg("指标字典id不能为空！");
-            return envelop;
-        }
-        String[] ids = icd10Ids.split(",");
         try {
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            String url = "/dict/hp/icd10s";
+            if(StringUtils.isEmpty(icd10Ids)){
+                envelop.setErrorMsg("icd10字典id不能为空！");
+                return envelop;
+            }
+            if (StringUtils.isEmpty(hpId)){
+                envelop.setErrorMsg("指标字典id不能为空！");
+                return envelop;
+            }
+            String[] ids = icd10Ids.split(",");
             //单个关联
             if(ids.length == 1){
                 url = "/dict/hp/icd10";

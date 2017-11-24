@@ -1062,8 +1062,8 @@ public class DataSetsController extends BaseUIController {
     public void importData(MultipartFile file, String version,
                            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         try {
+            UserDetailModel user = getCurrentUserRedis(request);
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
             AExcelReader excelReader = new DataSetMsgReader();

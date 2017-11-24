@@ -310,7 +310,7 @@ public class CdaController extends BaseUIController {
         Map<String,Object> params = new HashMap<>();
 
         cdaModel = toModel(cdaJson,CDAModel.class);
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
 
         params.put("version",version);
 

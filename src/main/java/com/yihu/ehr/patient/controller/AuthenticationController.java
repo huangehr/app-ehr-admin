@@ -110,9 +110,9 @@ public class AuthenticationController extends BaseUIController {
     @RequestMapping("/updateStatus")
     @ResponseBody
     public Object updateStatus(String id,String status,HttpServletRequest request){
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         Envelop envelop = new Envelop();
         try{
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
             String urlGet = "/patient/Authentication/"+id;
             String envelopStrGet = HttpClientUtil.doGet(comUrl+urlGet,username,password);
             envelop = getEnvelop(envelopStrGet);
