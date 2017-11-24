@@ -44,6 +44,38 @@ public class ReportCategoryController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/configDialog")
+    public String configDialog(Model model, String id, String dialogType) {
+        String url = "/resources/reportCategory/getRsReportCategoryApps";
+        Map<String,Object> params = new HashMap<>();
+        String result = "";
+        params.put("reportCategoryId", id);
+        try {
+            result = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        model.addAttribute("obj", result);
+        return "simpleView";
+    }
+
+    @RequestMapping("/appConfig")
+    public String appConfig(String id, String dialogType, Model model) {
+        String url = "/resources/reportCategory/getRsReportCategoryApps";
+        Map<String,Object> params = new HashMap<>();
+        String result = "";
+        params.put("reportCategoryId", id);
+        try {
+            result = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        model.addAttribute("obj", result);
+        model.addAttribute("id", id);
+        model.addAttribute("contentPage", "resource/reportCategory/appConfig");
+        return "simpleView";
+    }
+
     @RequestMapping(value = "detail")
     public String detail(Model model, Integer id) {
         Object detailModel = new RsReportCategoryModel();
@@ -195,4 +227,23 @@ public class ReportCategoryController extends BaseUIController {
         }
     }
 
+    @RequestMapping("/selectAppList")
+    @ResponseBody
+    public Object getSelectAppList(String searchNm,int page,int rows){
+        if(org.apache.commons.lang.StringUtils.isEmpty(searchNm)){
+            return failed("id不能为空");
+        }
+        try{
+            String url = "/apps";
+            Map<String,Object> params = new HashMap<>();
+            params.put("filters","id="+searchNm);
+            params.put("page",page);
+            params.put("size",rows);
+            String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ReportCategoryController.class).error(ex.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
 }
