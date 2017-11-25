@@ -74,4 +74,10 @@
         height: 28px;
         width: 240px;
     }
+    .wrapper .content {
+        width: 100%!important;
+        padding: 10px;
+        height: 490px;
+        overflow: scroll;
+    }
 </style>

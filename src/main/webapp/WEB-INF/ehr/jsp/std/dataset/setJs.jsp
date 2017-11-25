@@ -181,7 +181,7 @@
             $.ajax({
                 type: "get",
                 url: u._url + "/std/dataset/searchDataSets",
-                data: {codename: u.setSearch.getValue(), version: versionCode, page: 1, rows: 100},// 你的formid
+                data: {codename: u.setSearch.getValue(), version: versionCode, page: 1, rows: 999999},// 你的formid
                 async: true,
                 dataType: "json",
                 error: function (request) {

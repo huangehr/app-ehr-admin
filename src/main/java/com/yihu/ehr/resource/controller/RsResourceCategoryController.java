@@ -90,6 +90,7 @@ public class RsResourceCategoryController extends BaseUIController {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
+
     }
 
     /**

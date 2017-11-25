@@ -2,12 +2,13 @@ package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.operator.NumberUtil;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Cell;
@@ -15,8 +16,6 @@ import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,8 +28,8 @@ import java.io.OutputStream;
 import java.util.*;
 
 /**
- * 资源综合查询服务控制器
- * Created by Sxy on 2017/08/01.
+ * Controller - 资源综合查询服务控制器
+ * Created by Progr1mmer on 2017/08/01.
  */
 @Controller
 @RequestMapping("/resourceIntegrated")
@@ -46,6 +45,13 @@ public class ResourceIntegratedController extends BaseUIController {
     @ResponseBody
     public Envelop getMetadataList(String filters, HttpServletRequest request) {
         Envelop envelop = new Envelop();
+        String url = "/resources/integrated/metadata_list";
+        String resultStr = "";
+        //从Session中获取用户的角色信息和授权视图列表作为查询参数
+        HttpSession session = request.getSession();
+        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+        List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
+        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
         try {
             String url = "/resources/integrated/metadata_list";
             String resultStr = "";
@@ -189,7 +195,9 @@ public class ResourceIntegratedController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -216,7 +224,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -237,7 +247,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         }catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -249,16 +261,37 @@ public class ResourceIntegratedController extends BaseUIController {
      */
     @RequestMapping(value = "/updateResource", method = RequestMethod.POST)
     @ResponseBody
-    public Envelop updateResource(String dataJson) {
+    public Envelop updateResource(String dataJson, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String url = "/resources/integrated/resource_update";
-        params.put("dataJson", dataJson);
         try {
+            HttpSession session = request.getSession();
+            // 转换参数
+            Map<String, Object> dataMap = objectMapper.readValue(dataJson, Map.class);
+            // 获取资源字符串
+            String resource = objectMapper.writeValueAsString(dataMap.get("resource"));
+            // 获取资源Map映射
+            Map<String, Object> rsObj = objectMapper.readValue(resource, Map.class);
+            // 设置创建者
+            rsObj.put("creator", session.getAttribute("userId"));
+            // 更新参数
+            dataMap.put("resource", rsObj);
+            // 设置请求参数
+            params.put("dataJson", objectMapper.writeValueAsString(dataMap));
             String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
+            if(envelop.isSuccessFlg()) {
+                String newRsId = (String) envelop.getObj();
+                List<String> userResourceList = (List<String>) session.getAttribute(AuthorityKey.UserResource);
+                userResourceList.add(newRsId);
+                session.setAttribute(AuthorityKey.UserResource, userResourceList);
+            }
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            //e.printStackTrace();
+            LogService.getLogger(ResourceIntegratedController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -279,7 +312,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
@@ -294,7 +329,7 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param metaData
      */
     @RequestMapping(value = "/outFileExcel")
-    public void outExcel(HttpServletRequest request, HttpServletResponse response, Integer size, String resourcesCode, String searchParams, String metaData) {
+    public void outExcel(HttpServletRequest request, HttpServletResponse response, String resourcesCode, Integer size, String searchParams, String metaData) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         String resultStr = "";

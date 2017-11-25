@@ -95,7 +95,7 @@
                         </div>
                         <div class="div-instruction">
                             <div class="div-jkda-amount" id="hosCountNum"></div>
-                            <div class="div-jkda-title">住院/门诊</div>
+                            <div class="div-jkda-title">住院/门诊/体检</div>
                         </div>
                     </div>
                     <div class="c-w-100 div-bottom-instruction">
@@ -137,7 +137,7 @@
                 <div class="div-jkda-content">
                     <div class="div-ljjzrs"></div>
                     <div style="font-size: 1.2vw;color:#333;padding: 20px 0px 10px 30px;">累计就诊人数</div>
-                    <div style="font-size: 1.05vw;color:#FF807F;padding: 0px 0px 30px 30px;">每日新增<label style="color:#FF807F;" id="newNum"></label></div>
+                    <div style="font-size: 1.05vw;color:#FF807F;padding: 0px 0px 30px 30px;">每日新增 <label style="color:#FF807F;" id="newNum"></label></div>
                     <div>
                         <label class="c-ffbd5c" style="margin: 0px 10px 0px 30px;font-size: 1.96vw;" id="odCountNum"></label>
                         <label style="font-size: 1.3vw;color:#333;">人</label>
@@ -171,7 +171,7 @@
                             </div>
                             <div>
                                 <label class="bar-a cb-ffbd5c"></label>
-                                今日就诊
+                                今日就诊:
                                 <label class="c-ffbd5c" id="dzConNum"></label>
                             </div>
                         </div>

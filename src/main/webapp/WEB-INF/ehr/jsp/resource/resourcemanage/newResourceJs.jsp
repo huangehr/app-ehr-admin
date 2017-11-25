@@ -254,19 +254,19 @@
                                     if (yes) {
                                         var dataModel = $.DataModel.init();
                                         dataModel.updateRemote("${contextRoot}/resource/resourceManage/delete",{
-                                                data:{id: treeNode.id},
-                                                async:true,
-                                                success: function(data) {
-                                                    if(data.successFlg){
-                                                        $.Notice.success('删除成功。');
-                                                        var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
-                                                        zTree.removeNode(treeNode);
-                                                    }else{
-                                                        $.Notice.error(data.errorMsg);
-                                                    }
+                                            data:{id: treeNode.id},
+                                            async:true,
+                                            success: function(data) {
+                                                if(data.successFlg){
+                                                    $.Notice.success('删除成功。');
+                                                    var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
+                                                    zTree.removeNode(treeNode);
+                                                }else{
+                                                    $.Notice.error(data.errorMsg);
                                                 }
-                                            });
-                                        }
+                                            }
+                                        });
+                                    }
                                 });
                                 return false;
                             },
@@ -308,8 +308,8 @@
                         editObj.hide();
                         if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
                         var addStr = "<span class='button add' id='addBtn_" +
-                                         treeNode.tId +
-                                      "' title='新增视图' onfocus='this.blur();'></span>";
+                            treeNode.tId +
+                            "' title='新增视图' onfocus='this.blur();'></span>";
                         sObj.after(addStr);
                         var btn = $("#addBtn_"+treeNode.tId);
                         if (btn) btn.on("click", function(){
@@ -649,16 +649,16 @@
                     me.$ddSeach.on('click', function (e) {
                         e.stopPropagation();
                         if ($(e.target).hasClass('l-table-checkbox') ||
-                                $(e.target).hasClass('l-trigger-icon') ||
-                                $(e.target).hasClass('l-box-dateeditor-absolute') ||
-                                $(e.target).hasClass('l-text-field') ||
-                                $(e.target).hasClass('j-text-wrapper') ||
-                                $(e.target).hasClass('u-btn-large') ||
-                                $(e.target).hasClass('inp-label') ||
-                                $(e.target).hasClass('pop-s-con') ||
-                                $(e.target).hasClass('f-mt6') ||
-                                e.target.tagName.toLocaleLowerCase() == 'span' ||
-                                $(e.target).hasClass('clear-s')) {
+                            $(e.target).hasClass('l-trigger-icon') ||
+                            $(e.target).hasClass('l-box-dateeditor-absolute') ||
+                            $(e.target).hasClass('l-text-field') ||
+                            $(e.target).hasClass('j-text-wrapper') ||
+                            $(e.target).hasClass('u-btn-large') ||
+                            $(e.target).hasClass('inp-label') ||
+                            $(e.target).hasClass('pop-s-con') ||
+                            $(e.target).hasClass('f-mt6') ||
+                            e.target.tagName.toLocaleLowerCase() == 'span' ||
+                            $(e.target).hasClass('clear-s')) {
                             return;
                         }
                         if (me.$popMain.css('display') == 'none') {
@@ -690,7 +690,6 @@
                         }
                     });
                     me.$outBtn.on('click', function () {
-                        debugger
                         if (me.type == '1') {
                             if (me.resourceInfoGrid) {
                                 var rowData = me.resourceInfoGrid.data.detailModelList;
@@ -769,14 +768,14 @@
                     var me = this;
                     var url = me.type == 1 ? infa.getGridCloumnNames : infa.searchQuotaResourceParam,
                         param =  me.type == 1 ? (function () {
-                                return {
-                                    dictId: v
-                                }
-                            })() : (function () {
-                                return {
-                                    resourcesId: v
-                                }
-                            })();
+                            return {
+                                dictId: v
+                            }
+                        })() : (function () {
+                            return {
+                                resourcesId: v
+                            }
+                        })();
                     //初始化
                     me.index = 0;
                     me.$addSearchDom.html('');
@@ -792,7 +791,6 @@
                                     me.setSearchData();
                                 }
                             } else {
-                                debugger
                                 me.setZBSearchData(data);
                             }
                         }
@@ -809,7 +807,7 @@
                                     '<div class="inp-text">',
                                     '<input type="text" id="inp' + k + '" data-code="' + obj.key + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
                                     '</div>'].join('');
-                            $div.append(html);
+                            $div.append(html)
                             for (var i = 0; i < obj.value.length; i++) {
                                 da.push({
                                     code: obj.value[i],
@@ -858,21 +856,21 @@
                         if (data[me.index].dict == 'DATECONDITION') {
                             var $div1 = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
                                 html1 = ['<label class="inp-label" for="inpStarTime' + me.index + '">' +
-                                            data[me.index].value + '(开始日期): </label>',
-                                        '<div class="inp-text">',
-                                        '<input type="text" id="inpStarTime' +
-                                        me.index + '" data-code="' +
-                                        data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                data[me.index].value + '(开始日期): </label>',
+                                    '<div class="inp-text">',
+                                    '<input type="text" id="inpStarTime' +
+                                    me.index + '" data-code="' +
+                                    data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
                                     '</div>'].join('');
                             var $div2 = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
                                 html2 = ['<label class="inp-label" for="inpEndTime' + me.index + '">' +
-                                            data[me.index].value + '(结束日期): </label>',
-                                        '<div class="inp-text">',
-                                        '<input type="text" id="inpEndTime' +
-                                            me.index + '" data-code="' +
-                                            data[me.index].code +
-                                        '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                        '</div>'].join('');
+                                data[me.index].value + '(结束日期): </label>',
+                                    '<div class="inp-text">',
+                                    '<input type="text" id="inpEndTime' +
+                                    me.index + '" data-code="' +
+                                    data[me.index].code +
+                                    '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                    '</div>'].join('');
                             $div1.append(html1);
                             $div2.append(html2);
                             $div1.find('input').ligerDateEditor({
@@ -887,10 +885,10 @@
                             me.$addSearchDom.append($div2);
                         } else {
                             var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                    html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
-                                        '<div class="inp-text">',
-                                        '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                        '</div>'].join('');
+                                html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
+                                    '<div class="inp-text">',
+                                    '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                    '</div>'].join('');
                             $div.append(html);
                             var inp = $div.find('input').ligerComboBox({
                                 url: infa.getRsDictEntryList,
@@ -918,8 +916,8 @@
                     var resetInp = $(pModel.find('.inp-reset'));
                     for (var i = 0; i < resetInp.length; i++) {
                         var code = $(resetInp[i]).attr('data-code'),
-                                value = $(resetInp[i]).liger().getValue(),
-                                valArr = [];
+                            value = $(resetInp[i]).liger().getValue(),
+                            valArr = [];
                         if (typeof value != 'string' && value instanceof Date) {
                             value = value.format('yyyy-MM-dd') + 'T00:00:00Z';
                         }
@@ -1015,6 +1013,10 @@
                 dataElementDialog.close();
                 $selDom.trigger('click');
             }
+            w.closeZhibaioConfigueDialog = function (callback) {
+                zhibaioConfigueDialog.close();
+            };
+
         });
     })(window, jQuery);
 </script>

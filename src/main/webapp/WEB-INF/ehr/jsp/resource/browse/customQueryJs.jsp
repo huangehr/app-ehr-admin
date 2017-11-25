@@ -228,9 +228,8 @@
                             }
                         },
                         onSuccess: function (data) {
-                            console.log('a');
                             var detailModelList = data.detailModelList,
-                                    dmList = [];
+                                dmList = [];
                             if (detailModelList) {
                                 if (me.type == 0) {
                                     for(var i = 0; i < detailModelList.length; i++){
@@ -320,7 +319,7 @@
                     if (t == 'list') {
                         htm = me.render(me.selTmp, d, function (dd, $1) {
                             var obj = d.detailModelList || [],
-                                    str = '';
+                                str = '';
                             for (var i = 0, len = obj.length; i < len; i++) {
                                 str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
                             }
@@ -330,11 +329,11 @@
                     } else {
                         htm = me.render(me.selDateTmp, d, function (dd, $1) {
                             var str = ['<li class="con-item ci-inp">',
-                                            '<input type="text" id="startDate' + d.code + '">',
-                                        '</li>',
-                                        '<li class="con-item ci-inp">',
-                                            '<input type="text" id="endDate' + d.code + '">',
-                                        '</li>'].join('');
+                                '<input type="text" id="startDate' + d.code + '">',
+                                '</li>',
+                                '<li class="con-item ci-inp">',
+                                '<input type="text" id="endDate' + d.code + '">',
+                                '</li>'].join('');
                             if ($1 == 'label') {
                                 dd.label = d.name;
                             }
@@ -618,19 +617,33 @@
                                         for (var i = 0, len = sd.length; i < len; i++) {
                                             var data = sd[i].data,
                                                 name = '';
+                                            console.log(data)
                                             if (data.level == 1) {
                                                 name = data.name;
+                                                console.log(name)
                                                 for (var l = 0, len = sd.length; l < len; l++) {
                                                     var chilData = sd[l].data;
+                                                    console.log(chilData.id)
                                                     if (chilData.level == 2 && data.id == chilData.quota_type) {
                                                         md.push({
                                                             resourceId: '',
                                                             quotaTypeName: name,
                                                             quotaChart: 1,
+                                                            quotaCode: chilData.code,
                                                             quotaId: chilData.id
                                                         });
                                                     }
+
                                                 }
+                                            }else {
+                                                var chilData = data;
+                                                name = data.name;
+                                                md.push({
+                                                    resourceId: '',
+                                                    quotaTypeName: name,
+                                                    quotaChart: 1,
+                                                    quotaId: chilData.id
+                                                });
                                             }
                                         }
                                         qc = JSON.stringify({});
@@ -666,7 +679,7 @@
                 getSelCon: function () {
                     var me = this;
                     var $selItems = me.$selectCon.find('.sel-item'),
-                            jsonData = [];
+                        jsonData = [];
                     for (var i = 0, len = $selItems.length; i < len; i++) {
 //                        debugger
                         var pCode = $selItems.eq(i).attr('data-parent-code'),
@@ -744,7 +757,6 @@
                             }
                         }
                     }
-                    console.log(JSON.stringify(jsonData));
                     return JSON.stringify(jsonData);
                 },
                 //导出指标统计excel

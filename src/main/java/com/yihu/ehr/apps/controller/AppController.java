@@ -221,9 +221,12 @@ public class AppController extends BaseUIController {
                 appUpdate.setDescription(appDetailModel.getDescription());
                 appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
-                appUpdate.setIcon(appDetailModel.getIcon());
+                String icon = appDetailModel.getIcon();
+                icon = icon.substring(icon.indexOf("group1"), icon.length()).replace("group1/", "group1:");
+                appUpdate.setIcon(icon);
                 appUpdate.setReleaseFlag(appDetailModel.getReleaseFlag());
                 appUpdate.setManageType(appDetailModel.getManageType());
+                appUpdate.setSourceType(appDetailModel.getSourceType());
                 //更新
                 MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
                 conditionMap.add("app", toJson(appUpdate));

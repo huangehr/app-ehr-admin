@@ -136,7 +136,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         try{
             model.addAttribute("categoryName",categoryName);
             if (!StringUtils.isEmpty(id)) {
-                 String url = "/orgDeptMember/admin/"+id;
+                String url = "/orgDeptMember/admin/"+id;
                 envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
             }
             model.addAttribute("envelop",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
