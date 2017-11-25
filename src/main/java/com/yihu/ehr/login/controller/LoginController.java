@@ -161,9 +161,9 @@ public class LoginController extends BaseUIController {
                 String loginName = accessToken.getUser();
                 //验证通过。赋值session中的用户信息
                 String userInfo = HttpClientUtil.doGet(comUrl + "/users/" + loginName, params);
-                Envelop envelop = (Envelop) objectMapper.readValue(userInfo, Envelop.class);
-                String ex = objectMapper.writeValueAsString(envelop.getObj());
-                UserDetailModel userDetailModel = objectMapper.readValue(ex, UserDetailModel.class);
+                Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
+                String ex = this.objectMapper.writeValueAsString(envelop.getObj());
+                UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
                 // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
                 model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                 //session 同步到 redis
@@ -171,9 +171,8 @@ public class LoginController extends BaseUIController {
 
                 HttpSession session = request.getSession();
                 //增加超级管理员信息
-                if (loginName.equals(permissionsInfo)) {
+                if(loginName.equals(permissionsInfo)) {
                     session.setAttribute(AuthorityKey.IsAccessAll, true);
-                } else {
                     //session 同步到 redis
                     setRedisValue(request, AuthorityKey.IsAccessAll, "true");
                 }else {
@@ -230,14 +229,15 @@ public class LoginController extends BaseUIController {
             String loginName = userDetailModel.getLoginCode();
             //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
+                //获取用户的角色，机构，视图 等权限
+                initUserRolePermissions(userDetailModel, userName, request);
                 //增加超级管理员信息
                 HttpSession session = request.getSession();
-                if (userName.equals(permissionsInfo)) {
+                if(userName.equals(permissionsInfo)) {
                     session.setAttribute(AuthorityKey.IsAccessAll, true);
                     //session 同步到 redis
                     setRedisValue(request, AuthorityKey.IsAccessAll, "true");
                 }else {
-                } else {
                     session.setAttribute(AuthorityKey.IsAccessAll, false);
                     //session 同步到 redis
                     setRedisValue(request, AuthorityKey.IsAccessAll, "false");
@@ -335,7 +335,6 @@ public class LoginController extends BaseUIController {
 
     /**
      * 验证某个用户是否有数据
-     *
      * @param idCardNo
      * @return
      * @throws Exception
@@ -381,10 +380,10 @@ public class LoginController extends BaseUIController {
         }
 
         System.out.println("isInnerIp:" + isInnerIp);
-        if (isInnerIp) {
+        if(isInnerIp) {
             String url = browseClientUrl + "/common/login/signin?idCardNo=" + idCardNo;
             response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
-        } else {
+        }else {
             String url = browseClientOutSizeUrl + "/common/login/signin?idCardNo=" + idCardNo;
             response.sendRedirect(oauth2OutSize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
         }
@@ -392,7 +391,6 @@ public class LoginController extends BaseUIController {
 
     /**
      * 初始化内外网IP信息
-     *
      * @param request
      */
     public void initUrlInfo(String loginCode ,HttpServletRequest request) {
@@ -414,16 +412,13 @@ public class LoginController extends BaseUIController {
         }
         if(ip != null) {
             System.out.println(ip);
-            if ("0:0:0:0:0:0:0:1".equals(ip)) {
+            if("0:0:0:0:0:0:0:1".equals(ip)) {
                 request.getSession().setAttribute("isInnerIp", true);
                 //session 同步到 redis
                 setRedisValue(request,"isInnerIp", "true");
             }else {
                 if("127.0.0.1".equals(ip) || isInnerIP(ip)) {
-            } else {
-                if ("127.0.0.1".equals(ip) || isInnerIP(ip)) {
                     request.getSession().setAttribute("isInnerIp", true);
-                } else {
                     //session 同步到 redis
                     setRedisValue(request,"isInnerIp", "true");
                 }else {
@@ -436,7 +431,7 @@ public class LoginController extends BaseUIController {
     }
 
     public long getIpNum(String ipAddress) {
-        String[] ip = ipAddress.split("\\.");
+        String [] ip = ipAddress.split("\\.");
         long a = Integer.parseInt(ip[0]);
         long b = Integer.parseInt(ip[1]);
         long c = Integer.parseInt(ip[2]);
@@ -461,7 +456,7 @@ public class LoginController extends BaseUIController {
         //使用orgCode获取saas化的机构或者区域。
         String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
         Map<String, Object> uParams = new HashMap<>();
-        uParams.put("orgCodeStr", org.apache.commons.lang.StringUtils.join(roleOrgCodes, ','));
+        uParams.put("orgCodeStr",org.apache.commons.lang.StringUtils.join(roleOrgCodes,',') );
         String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
         envelop = getEnvelop(resultStrUserSaasOrg);
         HttpSession session = request.getSession();
@@ -475,37 +470,37 @@ public class LoginController extends BaseUIController {
         userOrgList = envelop.getDetailModelList();
         List<String> districtList = (List<String>) envelop.getObj();
         String geographyUrl = "/geography_entries/";
-        if (districtList != null && districtList.size() > 0) {
-            for (String code : districtList) {
+        if(districtList != null && districtList.size() > 0){
+            for(String code : districtList){
                 uParams.clear();
                 String mGeographyDictStr = HttpClientUtil.doGet(comUrl + geographyUrl + code, uParams, username, password);
                 envelop = getEnvelop(mGeographyDictStr);
                 MGeographyDict mGeographyDict = null;
                 mGeographyDict = getEnvelopModel(envelop.getObj(), MGeographyDict.class);
-                if (mGeographyDict != null) {
+                if(mGeographyDict != null){
                     String province = "";
                     String city = "";
                     String district = "";
-                    if (mGeographyDict.getLevel() == 1) {
-                        province = mGeographyDict.getName();
-                    } else if (mGeographyDict.getLevel() == 2) {
-                        city = mGeographyDict.getName();
-                    } else if (mGeographyDict.getLevel() == 3) {
-                        district = mGeographyDict.getName();
+                    if(mGeographyDict.getLevel() == 1){
+                        province =  mGeographyDict.getName();
+                    }else if(mGeographyDict.getLevel() == 2){
+                        city =  mGeographyDict.getName();
+                    }else if(mGeographyDict.getLevel() == 3){
+                        district =  mGeographyDict.getName();
                     }
-                    String orgGeographyStr = "/organizations/geography";
+                    String  orgGeographyStr = "/organizations/geography";
                     uParams.clear();
-                    uParams.put("province", province);
-                    uParams.put("city", city);
-                    uParams.put("district", district);
-                    String mOrgsStr = HttpClientUtil.doGet(comUrl + orgGeographyStr, uParams, username, password);
+                    uParams.put("province",province);
+                    uParams.put("city",city);
+                    uParams.put("district",district);
+                    String mOrgsStr = HttpClientUtil.doGet(comUrl + orgGeographyStr , uParams, username, password);
                     envelop = getEnvelop(mOrgsStr);
-                    if (envelop != null && envelop.getDetailModelList() != null) {
-                        List<MOrganization> organizations = (List<MOrganization>) getEnvelopList(envelop.getDetailModelList(), new ArrayList<MOrganization>(), MOrganization.class);
-                        if (organizations != null) {
+                    if(envelop !=null && envelop.getDetailModelList() != null ){
+                        List<MOrganization> organizations = (List<MOrganization>)getEnvelopList(envelop.getDetailModelList(),new ArrayList<MOrganization>(),MOrganization.class);
+                        if(organizations !=null ){
                             java.util.Iterator it = organizations.iterator();
-                            while (it.hasNext()) {
-                                MOrganization mOrganization = (MOrganization) it.next();
+                            while(it.hasNext()){
+                                MOrganization mOrganization = (MOrganization)it.next();
                                 userOrgList.add(mOrganization.getCode());
                             }
                         }
@@ -514,7 +509,7 @@ public class LoginController extends BaseUIController {
             }
         }
         //加上自身默认机构
-        for (String code : roleOrgCodes) {
+        for(String code : roleOrgCodes){
             userOrgList.add(code);
         }
         userOrgList.removeAll(Collections.singleton(null));
@@ -587,21 +582,18 @@ public class LoginController extends BaseUIController {
 
     /**
      * 获取用户的角色，机构，视图 等权限
-     *
      * @param userDetailModel
      * @param request
      * @throws Exception
      */
     public void initUserRolePermissions(UserDetailModel userDetailModel, String loginCode, HttpServletRequest request) throws Exception {
-    public void getUserRolePermissions(UserDetailModel userDetailModel, String loginCode, HttpServletRequest request) throws Exception {
         String loginName = loginCode;
         HttpSession session = request.getSession();
-        if (loginCode.equals(permissionsInfo)) {
+        if(loginCode.equals(permissionsInfo)){
             session.setAttribute(AuthorityKey.UserRoles, null);
             session.setAttribute(AuthorityKey.UserResource, null);
             session.setAttribute(AuthorityKey.UserAreaSaas, null);
             session.setAttribute(AuthorityKey.UserOrgSaas, null);
-        } else {
             //session 同步到 redis
             setRedisValue(request, AuthorityKey.UserRoles, "null");
             setRedisValue(request, AuthorityKey.UserResource, "null");
@@ -611,24 +603,22 @@ public class LoginController extends BaseUIController {
             //获取用户角色
             String roleStr = "";
             List<String> roleList = new ArrayList<>();
-            roleStr = gerUserRoles(userDetailModel.getId());
-            if (!StringUtils.isEmpty(roleStr)) {
-                roleList = Arrays.asList(roleStr.split(","));
+            roleStr =  gerUserRoles(userDetailModel.getId());
+            if( !StringUtils.isEmpty(roleStr)){
+                roleList =  Arrays.asList(roleStr.split(","));
                 session.setAttribute(AuthorityKey.UserRoles, roleList);
                 //session 同步到 redis
                 setRedisObjectValue(request, AuthorityKey.UserRoles, roleList);
                 //获取角色机构
                 List<RoleOrgModel> roleOrgModels = new ArrayList<>();
-                gerRolesOrgs(roleList, roleOrgModels);
-                if (roleOrgModels != null && roleOrgModels.size() > 0) {
+                gerRolesOrgs(roleList,roleOrgModels);
+                if(roleOrgModels !=null && roleOrgModels.size() >0){
                     List<String> roleOrgCodes = new ArrayList<>();
-                    for (RoleOrgModel roleOrgModel : roleOrgModels) {
+                    for(RoleOrgModel roleOrgModel : roleOrgModels){
                         roleOrgCodes.add(roleOrgModel.getOrgCode());
                     }
                     getUserSaasOrgAndArea(roleOrgCodes, loginName, request);
                 }else{
-                    getUserSaasOrgAndArea(roleOrgCodes, request);
-                } else {
                     List<String> userOrgList = new ArrayList<>();
                     userOrgList.add(AuthorityKey.NoUserOrgSaas);
                     session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
@@ -636,12 +626,6 @@ public class LoginController extends BaseUIController {
                     setRedisObjectValue(request, AuthorityKey.UserOrgSaas, userOrgList);
                 }
                 //获取角色视图
-                List<String> rolesResourceList = gerRolesResource(userDetailModel.getId(), roleList);
-                if (rolesResourceList != null && rolesResourceList.size() > 0) {
-                    session.setAttribute(AuthorityKey.UserResource, rolesResourceList);
-                } else {
-                    List<String> rolesResourceIdList = new ArrayList<>();
-                    rolesResourceIdList.add("-NoneResource");
                 List<String> rolesResourceIdList =  new ArrayList<>();
                 List<MRsRolesResource> rolesResourceList = new ArrayList<>();
                 gerRolesResource(roleList, rolesResourceList);
@@ -658,8 +642,6 @@ public class LoginController extends BaseUIController {
                     //session 同步到 redis
                     setRedisObjectValue(request, AuthorityKey.UserResource, rolesResourceIdList);
                 }
-            } else {
-                roleList.add("-NoneRole");
             }else{
                 roleList.add(AuthorityKey.NoUserRole);
                 session.setAttribute(AuthorityKey.UserRoles, roleList);
@@ -671,45 +653,43 @@ public class LoginController extends BaseUIController {
 
     /**
      * 获取用户角色
-     *
      * @param userId
      * @return
      */
-    public String gerUserRoles(String userId) {
+    public String gerUserRoles(String userId){
         //获取用户所属角色
         String roleStr = "";
         try {
             String url = "/roles/role_user/userRolesIds";
-            Map<String, Object> params = new HashMap<>();
-            params.put("user_id", userId);
-            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
+            Map<String,Object> params = new HashMap<>();
+            params.put("user_id",userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
             if (envelop.isSuccessFlg() && null != envelop.getObj() && !"".equals(envelop.getObj())) {
                 roleStr = envelop.getObj().toString();
             }
         } catch (Exception ex) {
             LogService.getLogger(LoginController.class).error(ex.getMessage());
         }
-        return roleStr;
+        return  roleStr;
     }
 
     /**
      * 获取角色机构
-     *
      * @param roleList 角色组列表
      * @return
      */
-    public List<RoleOrgModel> gerRolesOrgs(List<String> roleList, List<RoleOrgModel> roleOrgs) {
-        for (String roleId : roleList) {
+    public List<RoleOrgModel> gerRolesOrgs(List<String> roleList,List<RoleOrgModel> roleOrgs){
+        for(String roleId : roleList){
             try {
-                Map<String, Object> params = new HashMap<>();
-                String roleUrl = "/roles/role/" + roleId;
-                params.put("id", Long.valueOf(roleId));
-                String envelopRoleStr = HttpClientUtil.doGet(comUrl + roleUrl, params, username, password);
-                Envelop envelopRole = objectMapper.readValue(envelopRoleStr, Envelop.class);
-                if (envelopRole.getObj() != null) {
+                Map<String,Object> params = new HashMap<>();
+                String roleUrl = "/roles/role/"+roleId;
+                params.put("id",Long.valueOf(roleId));
+                String envelopRoleStr = HttpClientUtil.doGet(comUrl + roleUrl,params, username, password);
+                Envelop envelopRole = objectMapper.readValue(envelopRoleStr,Envelop.class);
+                if(envelopRole.getObj() != null){
                     MRoles mRoles = objectMapper.convertValue(envelopRole.getObj(), MRoles.class);
-                    if (!StringUtils.isEmpty(mRoles.getOrgCode())) {
+                    if ( ! StringUtils.isEmpty( mRoles.getOrgCode() )){
                         RoleOrgModel roleOrgModel = new RoleOrgModel();
                         roleOrgModel.setOrgCode(mRoles.getOrgCode());
                         roleOrgModel.setRoleId(mRoles.getId());
@@ -718,14 +698,14 @@ public class LoginController extends BaseUIController {
                 }
                 String url = ServiceApi.Roles.RoleOrgsNoPage;
                 params.clear();
-                params.put("filters", "roleId=" + roleId);
-                String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-                Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
-                if (envelop.isSuccessFlg() && null != envelop.getDetailModelList() && envelop.getDetailModelList().size() > 0) {
+                params.put("filters","roleId=" + roleId);
+                String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+                Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+                if (envelop.isSuccessFlg() && null != envelop.getDetailModelList() &&  envelop.getDetailModelList().size()>0) {
                     List<RoleOrgModel> roleOrgModels = envelop.getDetailModelList();
-                    if (roleOrgModels != null && roleOrgModels.size() > 0) {
-                        for (int i = 0; i < roleOrgModels.size(); i++) {
-                            RoleOrgModel orgModel = objectMapper.convertValue(roleOrgModels.get(i), RoleOrgModel.class);
+                    if(roleOrgModels != null && roleOrgModels.size() > 0){
+                        for(int i = 0; i < roleOrgModels.size() ;i++){
+                            RoleOrgModel orgModel = objectMapper.convertValue(roleOrgModels.get(i), RoleOrgModel.class) ;
                             roleOrgs.add(orgModel);
                         }
                     }
@@ -734,29 +714,34 @@ public class LoginController extends BaseUIController {
                 LogService.getLogger(LoginController.class).error(ex.getMessage());
             }
         }
-        return roleOrgs;
+        return  roleOrgs;
     }
 
     /**
      * 获取角色视图列表
-     *
-     * @param userId
      * @param roleList
+     * @param rolesResourceList
      * @return
      */
     public List<MRsRolesResource> gerRolesResource(List<String> roleList,List<MRsRolesResource> rolesResourceList){
         for(String roleId : roleList){
             try {
-                //String url = ServiceApi.Resources.GetRolesGrantResources;
-                String url = "/resources/getRolesGrantResources";
-                Map<String, Object> params = new HashMap<>();
-                params.put("rolesId", roles.substring(0, roles.length() - 1));
-                params.put("userId", userId);
-                String result = HttpClientUtil.doGet(comUrl + url, params, username, password);
-                Envelop envelop = objectMapper.readValue(result, Envelop.class);
-                return envelop.getDetailModelList();
-            } catch (Exception e) {
-                LogService.getLogger(LoginController.class).error(e.getMessage());
+                String url = ServiceApi.Resources.GetRolesGrantResources;
+                Map<String,Object> params = new HashMap<>();
+                params.put("rolesId",roleId);
+                String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+                Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+                if (envelop.isSuccessFlg() && null != envelop.getDetailModelList() && envelop.getDetailModelList().size() > 0 ) {
+                    List<MRsRolesResource> roleResourceModels = envelop.getDetailModelList();
+                    if(roleResourceModels != null && roleResourceModels.size() > 0){
+                        for(int i = 0; i < roleResourceModels.size() ;i++){
+                            MRsRolesResource rolesResource = objectMapper.convertValue(roleResourceModels.get(i),MRsRolesResource.class) ;
+                            rolesResourceList.add(rolesResource);
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                LogService.getLogger(LoginController.class).error(ex.getMessage());
             }
         }
         return null;

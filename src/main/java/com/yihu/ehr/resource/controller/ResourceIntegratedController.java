@@ -45,13 +45,6 @@ public class ResourceIntegratedController extends BaseUIController {
     @ResponseBody
     public Envelop getMetadataList(String filters, HttpServletRequest request) {
         Envelop envelop = new Envelop();
-        String url = "/resources/integrated/metadata_list";
-        String resultStr = "";
-        //从Session中获取用户的角色信息和授权视图列表作为查询参数
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
         try {
             String url = "/resources/integrated/metadata_list";
             String resultStr = "";

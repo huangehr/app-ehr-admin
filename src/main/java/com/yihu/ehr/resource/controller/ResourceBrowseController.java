@@ -171,11 +171,6 @@ public class ResourceBrowseController extends BaseUIController {
                     return envelop;
                 }
             }
-        //从Session中获取用户的角色信息作为查询参数
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userRoleList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-        try {
             // 获取资源拥着信息
             String urlGet = "/resources/byCode";
             Map<String, Object> getParams = new HashMap<>();
@@ -247,19 +242,6 @@ public class ResourceBrowseController extends BaseUIController {
         Envelop envelop = new Envelop();
         String url = "/resources/ResourceBrowses/getResourceData";
         String resultStr = "";
-        //从Session中获取用户的角色信息和授权视图列表作为查询参数
-        HttpSession session = request.getSession();
-        List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-        List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
-        List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        if(!isAccessAll) {
-            if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问");
-                return envelop;
-            }
-        }
         try {
             //从Session中获取用户的角色信息和授权视图列表作为查询参数
             List<String> userRolesList  = getUserRolesListRedis(request);
