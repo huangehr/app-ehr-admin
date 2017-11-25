@@ -14,6 +14,7 @@ import org.apache.catalina.Session;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -208,12 +209,14 @@ public class BaseUIController {
         try {
             Map<String, Object> params = new HashMap<>();
             String sessionId = request.getSession().getId();
-            params.put("key",sessionId + "-" + key);
+            System.out.println("sessionId=" + sessionId);
+            params.put("key", sessionId + "-" + key);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             System.out.println("get -- key=" + sessionId + "-" + key + ", value = " + resultStr);
             return resultStr;
         } catch (Exception e) {
             result.setSuccessFlg(false);
+            System.out.println(e.getMessage());
             result.setErrorMsg(ErrorCode.SystemError.toString());
         }
         return "";

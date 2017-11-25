@@ -9,8 +9,8 @@ import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.ObjectMapperUtil;
-import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,6 +48,8 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
 
     @Autowired
     public ObjectMapper objectMapper;
+    @Autowired
+    public RedisService redisService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -69,10 +71,9 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
         String clientId = request.getParameter(ContextAttributes.CLIENT_ID);
         String loginName = request.getParameter(ContextAttributes.LOGIN_NAME);
 
-        BaseUIController baseController = new BaseUIController();
         boolean valid = false;
         if(request.getSession().getAttribute(SessionAttributeKeys.CurrentUser) == null){
-            String currentUser = baseController.getRedisValue(request,SessionAttributeKeys.CurrentUser);
+            String currentUser = redisService.getRedisValue(request,SessionAttributeKeys.CurrentUser);
             if(StringUtils.isEmpty(currentUser)){
                 valid = true;
             }
@@ -106,7 +107,7 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
 
                     request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
                     //session 同步到 redis
-                    baseController.setRedisObjectValue(request,SessionAttributeKeys.CurrentUser, userDetailModel);
+                    redisService.setRedisObjectValue(request,SessionAttributeKeys.CurrentUser, userDetailModel);
 
                     //获取用户角色信息
                     List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());

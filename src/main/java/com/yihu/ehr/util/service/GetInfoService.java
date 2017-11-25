@@ -8,6 +8,7 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -32,6 +33,8 @@ public class GetInfoService {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Autowired
+    RedisService redisService;
 
     public String getOrgCode(HttpServletRequest request) throws IOException {
         String userId = getCurrentUserId(request);
@@ -77,8 +80,7 @@ public class GetInfoService {
     }
 
     private String getCurrentUserId(HttpServletRequest request) throws IOException {
-        BaseUIController baseUIController = new BaseUIController();
-        UserDetailModel user = baseUIController.getCurrentUserRedis(request);
+        UserDetailModel user = redisService.getCurrentUserRedis(request);
         return user.getId();
     }
 
@@ -89,8 +91,7 @@ public class GetInfoService {
     public String appIdList(HttpServletRequest request) {
         String resultStr = "";
         try {
-            BaseUIController baseUIController = new BaseUIController();
-            List<String> userOrgList  = baseUIController.getUserOrgSaasListRedis(request);
+            List<String> userOrgList  = redisService.getUserOrgSaasListRedis(request);
             if (null == userOrgList) {
                 return "admin";
             }
@@ -112,8 +113,7 @@ public class GetInfoService {
     public String idCardNoList(HttpServletRequest request) {
         String resultStr = "";
         try {
-            BaseUIController baseUIController = new BaseUIController();
-            List<String> userOrgList  = baseUIController.getUserOrgSaasListRedis(request);
+            List<String> userOrgList  = redisService.getUserOrgSaasListRedis(request);
             if (null == userOrgList) {
                 return "admin";
             }

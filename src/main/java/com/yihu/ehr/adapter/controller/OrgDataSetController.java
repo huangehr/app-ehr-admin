@@ -10,6 +10,7 @@ import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,9 @@ public class OrgDataSetController {
     private String comUrl;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    RedisService redisService;
+
     @RequestMapping("/initialOld")
     public String orgDataSetInitOld(HttpServletRequest request,String adapterOrg){
         request.setAttribute("adapterOrg",adapterOrg);
@@ -446,8 +450,7 @@ public class OrgDataSetController {
     private UserDetailModel getCurUser(HttpServletRequest request){
         UserDetailModel userDetailModel = new UserDetailModel();
         try {
-            BaseUIController baseUIController = new BaseUIController();
-            userDetailModel = baseUIController.getCurrentUserRedis(request);
+            userDetailModel = redisService.getCurrentUserRedis(request);
         } catch (IOException e) {
             e.printStackTrace();
         }
