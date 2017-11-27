@@ -2,7 +2,6 @@ package com.yihu.ehr.emergency.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.emergency.model.AmbulanceMsgModel;
 import com.yihu.ehr.emergency.model.AmbulanceMsgModelReader;
 import com.yihu.ehr.emergency.model.AmbulanceMsgModelWriter;
@@ -11,14 +10,20 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.excel.AExcelReader;
 import com.yihu.ehr.util.excel.ObjectFileRW;
 import com.yihu.ehr.util.excel.TemPath;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +38,7 @@ import java.util.*;
  * Created by zdm on 2017/11/15.
  */
 @Controller
-@RequestMapping("/ambulanceImport")
+@RequestMapping("/ambulance")
 public class AmbulanceController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
@@ -42,6 +47,123 @@ public class AmbulanceController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
     static final String parentFile = "ambulance";
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ApiOperation(value = "获取所有救护车列表")
+    public Envelop list(
+            @ApiParam(name = "fields", value = "返回的字段，为空返回全部字段")
+            @RequestParam(value = "fields", required = false) String fields,
+            @ApiParam(name = "filters", value = "过滤器，为空检索所有条件")
+            @RequestParam(value = "filters", required = false) String filters,
+            @ApiParam(name = "sorts", value = "排序，规则参见说明文档")
+            @RequestParam(value = "sorts", required = false) String sorts,
+            @ApiParam(name = "page", value = "分页大小", defaultValue = "1")
+            @RequestParam(value = "page", required = false) int page,
+            @ApiParam(name = "size", value = "页码", defaultValue = "15")
+            @RequestParam(value = "size", required = false) int size) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/ambulance/list";
+            params.put("filters", filters);
+            params.put("fields", fields);
+            params.put("sorts", sorts);
+            params.put("page", page);
+            params.put("size", size);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @ApiOperation(value = "查询救护车信息以及包括执勤人员信息，检索条件只针对车辆")
+    public Envelop search(
+            @ApiParam(name = "fields", value = "返回的字段，为空返回全部字段")
+            @RequestParam(value = "fields", required = false) String fields,
+            @ApiParam(name = "filters", value = "过滤器，为空检索所有条件")
+            @RequestParam(value = "filters", required = false) String filters,
+            @ApiParam(name = "sorts", value = "排序，规则参见说明文档")
+            @RequestParam(value = "sorts", required = false) String sorts,
+            @ApiParam(name = "page", value = "分页大小", defaultValue = "1")
+            @RequestParam(value = "page", required = false) int page,
+            @ApiParam(name = "size", value = "页码", defaultValue = "15")
+            @RequestParam(value = "size", required = false) int size) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/ambulance/search";
+            params.put("filters", filters);
+            params.put("fields", fields);
+            params.put("sorts", sorts);
+            params.put("page", page);
+            params.put("size", size);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/updateStatus", method = RequestMethod.PUT)
+    @ApiOperation(value = "更新救护车状态信息")
+    public Envelop update(
+            @ApiParam(name = "carId", value = "车牌号码")
+            @RequestParam(value = "carId") String carId,
+            @ApiParam(name = "status", value = "车辆状态码(0为统一可用状态码，1为统一不可用状态码)")
+            @RequestParam(value = "status") String status) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/ambulance/updateStatus";
+            params.put("carId", carId);
+            params.put("status", status);
+            String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "保存单条记录")
+    public Envelop save(
+            @ApiParam(name = "ambulance", value = "救护车")
+            @RequestParam(value = "ambulance") String ambulance) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/ambulance/save";
+            params.put("ambulance", ambulance);
+            String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "更新单条记录")
+    public Envelop update(
+            @ApiParam(name = "attendance", value = "救护车")
+            @RequestParam(value = "ambulance") String ambulance) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/ambulance/update";
+            params.put("ambulance", ambulance);
+            String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
 
     @RequestMapping(value = "import")
     @ResponseBody
