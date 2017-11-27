@@ -88,7 +88,7 @@ public class GovernmentMenuController extends BaseUIController {
         String resultStr = "";
         try{
             GovernmentMenuModel governmentMenuModel = objectMapper.readValue(jsonDate, GovernmentMenuModel.class);
-            UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
             Map<String,Object> params = new HashMap<>();
 
             if("new".equals(mode)){

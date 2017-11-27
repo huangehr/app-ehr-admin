@@ -88,35 +88,35 @@ public class UserController extends BaseUIController {
         String url = "/users";
         String resultStr = "";
         Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-
-        StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName"+ PageParms.LIKE + searchNm + ";");
-        }
-        if (!StringUtils.isEmpty(searchOrg)) {
-            stringBuffer.append("organization=" + searchOrg + ";");
-        }
-        if (!StringUtils.isEmpty(searchType)) {
-            stringBuffer.append("userType=" + searchType + ";");
-        }
-
-        params.put("filters", "");
-        String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-        if (null != userOrgList && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
-            envelop.setSuccessFlg(true);
-            return envelop;
-        } else if (null != userOrgList && userOrgList.size() > 0) {
-            String orgCode = String.join(",", userOrgList);
-            params.put("orgCode", orgCode);
-        }
-        params.put("page", page);
-        params.put("size", rows);
         try {
+            Map<String, Object> params = new HashMap<>();
+
+            StringBuffer stringBuffer = new StringBuffer();
+            if (!StringUtils.isEmpty(searchNm)) {
+                stringBuffer.append("realName"+ PageParms.LIKE + searchNm + ";");
+            }
+            if (!StringUtils.isEmpty(searchOrg)) {
+                stringBuffer.append("organization=" + searchOrg + ";");
+            }
+            if (!StringUtils.isEmpty(searchType)) {
+                stringBuffer.append("userType=" + searchType + ";");
+            }
+
+            params.put("filters", "");
+            String filters = stringBuffer.toString();
+            if (!StringUtils.isEmpty(filters)) {
+                params.put("filters", filters);
+            }
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
+            if (null != userOrgList && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
+                envelop.setSuccessFlg(true);
+                return envelop;
+            } else if (null != userOrgList && userOrgList.size() > 0) {
+                String orgCode = String.join(",", userOrgList);
+                params.put("orgCode", orgCode);
+            }
+            params.put("page", page);
+            params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
@@ -343,7 +343,7 @@ public class UserController extends BaseUIController {
     }
 
     @RequestMapping("getUser")
-    public Object getUser(Model model, String userId, String mode, HttpSession session) throws IOException {
+    public Object getUser(Model model, String userId, String mode, HttpSession session,HttpServletRequest request) throws IOException {
         String url = "/users/admin/"+userId;
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -463,7 +463,6 @@ public class UserController extends BaseUIController {
 
         try {
             outputStream = response.getOutputStream();
-
             byte[] bytes = Base64.getDecoder().decode(fileStream);
             outputStream.write(bytes);
             outputStream.flush();

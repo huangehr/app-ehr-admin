@@ -127,7 +127,7 @@ public class UserCardsController extends BaseUIController {
     public Object updateUserCards(String userCardsModelJsonData, HttpServletRequest request) throws IOException{
         String resultStr = "";
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         UserCardsModel detailModel = objectMapper.readValue(userCardsModelJsonData, UserCardsModel.class);
         RestTemplates templates = new RestTemplates();
@@ -217,7 +217,7 @@ public class UserCardsController extends BaseUIController {
     @ResponseBody
     public Object auditUserCards(long id,String auditStatus,String reason, HttpServletRequest request)throws Exception {
 
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         String url = "/patientCards/manager/verify";
         Map<String, Object> params = new HashMap<>();
         params.put("id", Long.valueOf(id));

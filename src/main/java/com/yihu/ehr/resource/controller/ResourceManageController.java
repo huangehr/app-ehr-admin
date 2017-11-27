@@ -4,6 +4,7 @@ import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -182,16 +183,16 @@ public class ResourceManageController extends BaseUIController {
         String url = "/resources/tree";
         String resultStr = "";
         //从Session中获取用户的角色和和授权视图列表作为查询参数
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
-        if(!isAccessAll) {
-            if(null == userResourceList || userResourceList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问！");
-            }
-        }
         try {
+            HttpSession session = request.getSession();
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            List<String> userResourceList = getUserResourceListRedis(request);
+            if(!isAccessAll) {
+                if(null == userResourceList || userResourceList.size() <= 0) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问！");
+                }
+            }
             Map<String, Object> params = new HashMap<>();
             if (!StringUtils.isEmpty(filters)) {
                 params.put("filters", filters);
@@ -310,6 +311,11 @@ public class ResourceManageController extends BaseUIController {
                 result.setErrorMsg("已关联报表资源不能删除");
                 return result;
             }
+            if (isSetReport(id)){
+                result.setSuccessFlg(false);
+                result.setErrorMsg("已配置报表不能删除");
+                return result;
+            }
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             result = objectMapper.readValue(resultStr, Envelop.class);
             if (result.isSuccessFlg()) {
@@ -406,17 +412,17 @@ public class ResourceManageController extends BaseUIController {
         Envelop envelop = new Envelop();
         String url = "/resources/categories/search";
         String envelopStrGet = "";
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userRoleList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-        if(!isAccessAll) {
-            if(null == userRoleList || userRoleList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问");
-                return envelop;
-            }
-        }
         try {
+            HttpSession session = request.getSession();
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            List<String> userRoleList = getUserRolesListRedis(request);
+            if(!isAccessAll) {
+                if(null == userRoleList || userRoleList.size() <= 0) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问");
+                    return envelop;
+                }
+            }
             Map<String, Object> params = new HashMap<>();
             if(isAccessAll) {
                 params.put("roleId", "*");
@@ -568,13 +574,13 @@ public class ResourceManageController extends BaseUIController {
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        params.put("resourceId", id);
-        params.put("dimension", dimension);
-        params.put("quotaId", quotaId);
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-        params.put("userOrgList", userOrgList);
         try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("resourceId", id);
+            params.put("dimension", dimension);
+            params.put("quotaId", quotaId);
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
+            params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();
             if( !StringUtils.isEmpty(quotaFilter) ){
                 String filter[] = quotaFilter.split(";");
@@ -624,5 +630,19 @@ public class ResourceManageController extends BaseUIController {
         Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
         return (boolean)envelop.getObj();
     }
+
+    public Boolean isSetReport(String resourceId) throws Exception{
+        String url = ServiceApi.Resources.RsReportViewExistReport;
+        Map<String,Object> params = new HashMap<>();
+        params.put("resourceId",resourceId);
+        String resultStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+        Envelop result = objectMapper.readValue(resultStr, Envelop.class);
+        if (result.isSuccessFlg()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 }

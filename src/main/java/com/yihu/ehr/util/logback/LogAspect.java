@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.service.RedisService;
 import org.apache.commons.lang3.StringUtils;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import org.aspectj.lang.JoinPoint;
@@ -53,6 +55,8 @@ public class LogAspect {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Autowired
+    RedisService redisService;
 
     /**
      * @param joinPoint
@@ -154,6 +158,9 @@ public class LogAspect {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         HttpSession session = request.getSession();
         String userName = (String) session.getAttribute("loginCode");
+        if(StringUtils.isEmpty(userName)){
+            userName = redisService.getRedisValue(request, "loginCode");
+        }
 
         JSONObject data = new JSONObject();
         UserDetailModel userModel=(UserDetailModel) session.getAttribute("current_user");

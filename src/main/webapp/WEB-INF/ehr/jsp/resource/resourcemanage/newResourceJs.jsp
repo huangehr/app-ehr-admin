@@ -690,7 +690,6 @@
                         }
                     });
                     me.$outBtn.on('click', function () {
-                        debugger
                         if (me.type == '1') {
                             if (me.resourceInfoGrid) {
                                 var rowData = me.resourceInfoGrid.data.detailModelList;
@@ -792,7 +791,6 @@
                                     me.setSearchData();
                                 }
                             } else {
-                                debugger
                                 me.setZBSearchData(data);
                             }
                         }
@@ -809,7 +807,7 @@
                                     '<div class="inp-text">',
                                     '<input type="text" id="inp' + k + '" data-code="' + obj.key + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
                                     '</div>'].join('');
-                            $div.append(html);
+                            $div.append(html)
                             for (var i = 0; i < obj.value.length; i++) {
                                 da.push({
                                     code: obj.value[i],
@@ -1015,6 +1013,10 @@
                 dataElementDialog.close();
                 $selDom.trigger('click');
             }
+            w.closeZhibaioConfigueDialog = function (callback) {
+                zhibaioConfigueDialog.close();
+            };
+
         });
     })(window, jQuery);
 </script>

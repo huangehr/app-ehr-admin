@@ -112,7 +112,7 @@ public class PortalSettingController extends BaseUIController {
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(portalSettingModelJsonData, "UTF-8").split(";");
         PortalSettingModel detailModel = toModel(strings[0], PortalSettingModel.class);

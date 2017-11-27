@@ -760,7 +760,7 @@ public class DataSetsController extends BaseUIController {
                         return envelop;
                     }
                     //插入数据元信息
-                    metaData.setId(0);//为0内部自增
+                    metaData.setId(0L);//为0内部自增
                     metaData.setDataSetId(dataSet.getId());
                     metaData.setCode(code);
                     metaData.setName(name);
@@ -1062,8 +1062,8 @@ public class DataSetsController extends BaseUIController {
     public void importData(MultipartFile file, String version,
                            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         try {
+            UserDetailModel user = getCurrentUserRedis(request);
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
             AExcelReader excelReader = new DataSetMsgReader();

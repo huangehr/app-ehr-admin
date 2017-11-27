@@ -228,7 +228,6 @@
                             }
                         },
                         onSuccess: function (data) {
-                            console.log('a');
                             var detailModelList = data.detailModelList,
                                 dmList = [];
                             if (detailModelList) {
@@ -618,19 +617,33 @@
                                         for (var i = 0, len = sd.length; i < len; i++) {
                                             var data = sd[i].data,
                                                 name = '';
+                                            console.log(data)
                                             if (data.level == 1) {
                                                 name = data.name;
+                                                console.log(name)
                                                 for (var l = 0, len = sd.length; l < len; l++) {
                                                     var chilData = sd[l].data;
+                                                    console.log(chilData.id)
                                                     if (chilData.level == 2 && data.id == chilData.quota_type) {
                                                         md.push({
                                                             resourceId: '',
                                                             quotaTypeName: name,
                                                             quotaChart: 1,
+                                                            quotaCode: chilData.code,
                                                             quotaId: chilData.id
                                                         });
                                                     }
+
                                                 }
+                                            }else {
+                                                var chilData = data;
+                                                name = data.name;
+                                                md.push({
+                                                    resourceId: '',
+                                                    quotaTypeName: name,
+                                                    quotaChart: 1,
+                                                    quotaId: chilData.id
+                                                });
                                             }
                                         }
                                         qc = JSON.stringify({});
@@ -744,7 +757,6 @@
                             }
                         }
                     }
-                    console.log(JSON.stringify(jsonData));
                     return JSON.stringify(jsonData);
                 },
                 //导出指标统计excel

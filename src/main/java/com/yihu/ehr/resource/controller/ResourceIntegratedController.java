@@ -1,5 +1,7 @@
 package com.yihu.ehr.resource.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
@@ -43,14 +45,26 @@ public class ResourceIntegratedController extends BaseUIController {
     @ResponseBody
     public Envelop getMetadataList(String filters, HttpServletRequest request) {
         Envelop envelop = new Envelop();
-        String url = "/resources/integrated/metadata_list";
-        String resultStr = "";
-        //从Session中获取用户的角色信息和授权视图列表作为查询参数
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userRolesList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
         try {
+            String url = "/resources/integrated/metadata_list";
+            String resultStr = "";
+            //从Session中获取用户的角色信息和授权视图列表作为查询参数
+            HttpSession session = request.getSession();
+            List<String> userRolesList  = getUserRolesListRedis(request);
+            List<String> userResourceList  = getUserResourceListRedis(request);
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            if(!isAccessAll) {
+                if(null == userResourceList || userResourceList.size() <= 0) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问！");
+                    return envelop;
+                }
+                if(null == userRolesList || userRolesList.size() <= 0) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问！");
+                    return envelop;
+                }
+            }
             Map<String, Object> params = new HashMap<>();
             if(isAccessAll) {
                 params.put("userResource", "*");
@@ -85,26 +99,26 @@ public class ResourceIntegratedController extends BaseUIController {
     @ResponseBody
     public Envelop searchMetadataData(String resourcesCode, String metaData, String searchParams, int page, int rows, HttpServletRequest request) {
         Envelop envelop = new Envelop();
-        String url = "/resources/integrated/metadata_data";
-        String resultStr = "";
-        if(resourcesCode == null || resourcesCode.equals("")) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("资源编码不能为空");
-            return envelop;
-        }
-        //权限控制
-        HttpSession session = request.getSession();
-        List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
-        List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        if(!isAccessAll) {
-            if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+        try {
+            String url = "/resources/integrated/metadata_data";
+            String resultStr = "";
+            if(resourcesCode == null || resourcesCode.equals("")) {
                 envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问");
+                envelop.setErrorMsg("资源编码不能为空");
                 return envelop;
             }
-        }
-        try {
+            //权限控制
+            HttpSession session = request.getSession();
+            List<String> userOrgSaasList  = getUserOrgSaasListRedis(request);
+            List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            if(!isAccessAll) {
+                if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问");
+                    return envelop;
+                }
+            }
             Map<String, Object> params = new HashMap<>();
             params.put("resourcesCode", resourcesCode);
             params.put("metaData", metaData);
@@ -198,7 +212,7 @@ public class ResourceIntegratedController extends BaseUIController {
             params.put("quotaIds", tjQuotaIds);
             params.put("quotaCodes", tjQuotaCodes);
             params.put("queryCondition", searchParams);
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -336,9 +350,9 @@ public class ResourceIntegratedController extends BaseUIController {
             String url = "/resources/integrated/metadata_data";
             //权限控制
             HttpSession session = request.getSession();
-            List<String> userOrgSaasList = (List<String>)session.getAttribute(AuthorityKey.UserOrgSaas);
-            List<String> userAreaSaasList = (List<String>)session.getAttribute(AuthorityKey.UserAreaSaas);
-            boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+            List<String> userOrgSaasList  = getUserOrgSaasListRedis(request);
+            List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
+            boolean isAccessAll = getIsAccessAllRedis(request);
             if(!isAccessAll) {
                 if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
                     System.out.println("无权访问");
@@ -395,7 +409,7 @@ public class ResourceIntegratedController extends BaseUIController {
             params.put("quotaIds", tjQuotaIds);
             params.put("quotaCodes", tjQuotaCodes);
             params.put("queryCondition", searchParams);
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -520,7 +534,7 @@ public class ResourceIntegratedController extends BaseUIController {
         boolean flag = false;
         try {
             Map<String, Object> params = new HashMap<>();
-            UserDetailModel userDetailModel = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
             params.put("userId", StringUtils.isEmpty(userDetailModel) ? "" : userDetailModel.getId());
             String result = HttpClientUtil.doGet(comUrl + "/roles/role_feature/hasPermission", params, username, password);
             if ("true".equals(result)) {

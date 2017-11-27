@@ -124,7 +124,7 @@ public class ResourcesController extends BaseUIController {
         System.out.println();
         ObjectMapper mapper = new ObjectMapper();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(portalResourcesModelJsonData, "UTF-8").split(";");
         PortalResourcesModel detailModel = toModel(strings[0], PortalResourcesModel.class);

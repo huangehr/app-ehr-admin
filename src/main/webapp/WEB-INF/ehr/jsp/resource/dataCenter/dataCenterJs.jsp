@@ -447,7 +447,7 @@
                 var me = this;
                 me.myCharts5 = echarts.init(me.$el5);
                 var option = {
-                    color:['#42d16f', '#ffbd5c'],
+                    color:['#ffbd5c', '#42d16f'],
                     calculable : false,
                     series : [
                         {
@@ -532,22 +532,22 @@
 //                        splitLine: {show:false},
 //                        data: xAxisData
 //                    },
-                    {
-                        type: 'category',
-                        name : '年龄',
-                        data: xAxisData,
-                        position: 'bottom',
-                        axisLine : {    // 轴线
-                            show: false
-                        },
-                        axisTick: {show:false},
-                        axisLabel: {show:true,textStyle:{
-                            color: '#909090',
-                            fontSize:12
-                        }},
-                        splitArea: {show:false},
-                        splitLine: {show:false}
-                    }
+                        {
+                            type: 'category',
+                            name : '年龄',
+                            data: xAxisData,
+                            position: 'bottom',
+                            axisLine : {    // 轴线
+                                show: false
+                            },
+                            axisTick: {show:false},
+                            axisLabel: {show:true,textStyle:{
+                                color: '#909090',
+                                fontSize:12
+                            }},
+                            splitArea: {show:false},
+                            splitLine: {show:false}
+                        }
                     ],
                     yAxis: {
                         type : 'value',

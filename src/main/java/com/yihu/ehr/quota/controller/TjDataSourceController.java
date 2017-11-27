@@ -102,7 +102,7 @@ public class TjDataSourceController extends BaseUIController {
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(tjDataSourceModelJsonData, "UTF-8").split(";");
         TjDataSourceModel detailModel = toModel(strings[0], TjDataSourceModel.class);

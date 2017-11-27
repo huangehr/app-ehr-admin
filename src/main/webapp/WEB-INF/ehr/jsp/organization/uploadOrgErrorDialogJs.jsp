@@ -176,7 +176,7 @@
                     {display: '标签',  hide: true,name: 'tags', width: '95', align: 'left', render: textRender},
                     {display: '医院简介',  hide: true,name: 'introduction', width: '95', align: 'left', render: textRender}
 //                    {display: '资质信息',  hide: true,name: 'qualification', width: '95', align: 'left', render: textRender},
-                    ];
+                ];
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
                 searchFun();
             };
