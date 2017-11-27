@@ -33,8 +33,8 @@
                 {display: '操作', name: 'operator', minWidth: 120, align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/resource/reportCategory/detail"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategoryAppConfig:open", row.id,"modify") + '">应用配置</a></sec:authorize>';
-                        html += '<sec:authorize url="/resource/reportCategory/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategory:open", row.id, 'modify') + '"></a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/reportCategory/appCongig"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategoryAppConfig:open", row.id,"modify") + '">应用配置</a></sec:authorize>';
+                        html += '<sec:authorize url="/resource/reportCategory/edit"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:reportCategory:open", row.id, 'modify') + '"></a></sec:authorize>';
                         html += '<sec:authorize url="/resource/reportCategory/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:reportCategory:delete", row.id) + '"></a></sec:authorize>';
                         return html;
                     }
