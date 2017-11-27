@@ -1,5 +1,6 @@
 package com.yihu.ehr.organization.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgDetailModel;
@@ -124,26 +125,6 @@ public class OrganizationController extends BaseUIController {
     public Object searchOrgs(String searchParm, String searchWay, String orgType, String province, String city, String district, int page, int rows,HttpServletRequest request) {
         Envelop envelop = new Envelop();
         try {
-            //获取地址的 ids
-          /*  String addrIds = "";
-            if (!"".equals(province)) {
-                String urlAddr = "/geographies";
-                Map<String, Object> args = new HashMap<>();
-                args.put("province", province);
-                args.put("city", city);
-                args.put("district", district);
-                String envelopStrAddr = HttpClientUtil.doGet(comUrl + urlAddr, args, username, password);
-                Envelop envelopAddr = getEnvelop(envelopStrAddr);
-                if (envelopAddr.isSuccessFlg()) {
-                    List<String> addrList = (List<String>) getEnvelopList(envelopAddr.getDetailModelList(), new ArrayList<String>(), String.class);
-                    for (String id : addrList) {
-                        addrIds += id + ",";
-                    }
-                    String[] addrIdsArrays = addrList.toArray(new String[addrList.size()]);
-                    addrIds = String.join(",", addrIdsArrays);
-                }
-            }*/
-
             //分页查询机构列表
             String url = "/organizations";
             String filters = "";
@@ -158,27 +139,7 @@ public class OrganizationController extends BaseUIController {
                 filters += "orgType=" + orgType + ";";
             }
             //根据登录人的机构获取saas化机构
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-
-           /* String orgCode = getInfoService.getOrgCode();*/
-           /* String districtList = getInfoService.getDistrictList();*/
-
-           /* if (!StringUtils.isEmpty(orgCode)) {
-                filters += "orgCode=" + orgCode + ";";
-            } else {
-                filters += "orgCode=" + null + ";";
-            }*/
-            /*filters += StringUtils.isEmpty(orgCode) ? "orgCode=" + null + " g2;" : "orgCode=" + orgCode + " g2;";*/
-            /*filters += StringUtils.isEmpty(districtList) ? "location=-1 g2;" : "location=" + districtList + " g2;";*/
-//            if (!StringUtils.isEmpty(districtList)) {
-//                filters += "location=" + districtList + ";";
-//            } else {
-//                filters += "location=-1;";
-//            }
-           /* //添加地址过滤条件
-            if (!"".equals(addrIds)) {
-                filters += "location=" + addrIds + ";";
-            }*/
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("fields", "");
             params.put("filters", filters);
             params.put("sorts", "-createDate");
@@ -489,7 +450,6 @@ public class OrganizationController extends BaseUIController {
 
         try {
             outputStream = response.getOutputStream();
-
             byte[] bytes = Base64.getDecoder().decode(imageStream);
             outputStream.write(bytes);
             outputStream.flush();

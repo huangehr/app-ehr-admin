@@ -170,9 +170,8 @@ public class ReportController extends BaseUIController {
     public Object getViewsTreeData(String codeName, Integer reportId, HttpServletRequest request) {
         try {
             //从Session中获取用户的角色和和授权视图列表作为查询参数
-            HttpSession session = request.getSession();
-            boolean isAccessAll = (boolean) session.getAttribute(AuthorityKey.IsAccessAll);
-            List<String> userResourceList = (List<String>) session.getAttribute(AuthorityKey.UserResource);
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            List<String> userResourceList  = getUserResourceListRedis(request);
             if (!isAccessAll) {
                 if (null == userResourceList || userResourceList.size() <= 0) {
                     return failed("无权访问");
@@ -410,7 +409,7 @@ public class ReportController extends BaseUIController {
         Map<String, Object> resultMap = new HashMap<>();
         List<Map<String, Object>> viewInfos = new ArrayList<>();
         try {
-            List<String> userRolesList = (List<String>)request.getSession().getAttribute(AuthorityKey.UserRoles);
+            List<String> userRolesList  = getUserRolesListRedis(request);
             String roleId = objectMapper.writeValueAsString(userRolesList);
 
             // 获取报表模版内容
@@ -463,7 +462,7 @@ public class ReportController extends BaseUIController {
                     viewInfo.put("resourceId", view.getResourceId());
                     params.clear();
                     params.put("resourceId", view.getResourceId());
-                    List<String> userOrgList = (List<String>) request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+                    List<String> userOrgList  = getUserOrgSaasListRedis(request);
                     params.put("userOrgList", userOrgList);
                     String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                     Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
@@ -501,7 +500,7 @@ public class ReportController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             params.clear();
             params.put("resourceId", resourceId);
-            List<String> userOrgList = (List<String>) request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
             String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
             Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);

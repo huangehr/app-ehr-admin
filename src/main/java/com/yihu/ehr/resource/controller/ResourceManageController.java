@@ -183,16 +183,16 @@ public class ResourceManageController extends BaseUIController {
         String url = "/resources/tree";
         String resultStr = "";
         //从Session中获取用户的角色和和授权视图列表作为查询参数
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
-        if(!isAccessAll) {
-            if(null == userResourceList || userResourceList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问！");
-            }
-        }
         try {
+            HttpSession session = request.getSession();
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            List<String> userResourceList = getUserResourceListRedis(request);
+            if(!isAccessAll) {
+                if(null == userResourceList || userResourceList.size() <= 0) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问！");
+                }
+            }
             Map<String, Object> params = new HashMap<>();
             if (!StringUtils.isEmpty(filters)) {
                 params.put("filters", filters);
@@ -412,17 +412,17 @@ public class ResourceManageController extends BaseUIController {
         Envelop envelop = new Envelop();
         String url = "/resources/categories/search";
         String envelopStrGet = "";
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userRoleList = (List<String>)session.getAttribute(AuthorityKey.UserRoles);
-        if(!isAccessAll) {
-            if(null == userRoleList || userRoleList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问");
-                return envelop;
-            }
-        }
         try {
+            HttpSession session = request.getSession();
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            List<String> userRoleList = getUserRolesListRedis(request);
+            if(!isAccessAll) {
+                if(null == userRoleList || userRoleList.size() <= 0) {
+                    envelop.setSuccessFlg(false);
+                    envelop.setErrorMsg("无权访问");
+                    return envelop;
+                }
+            }
             Map<String, Object> params = new HashMap<>();
             if(isAccessAll) {
                 params.put("roleId", "*");
@@ -574,13 +574,13 @@ public class ResourceManageController extends BaseUIController {
         String url = "/resources/getRsQuotaPreview";
         String resultStr = "";
         Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        params.put("resourceId", id);
-        params.put("dimension", dimension);
-        params.put("quotaId", quotaId);
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-        params.put("userOrgList", userOrgList);
         try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("resourceId", id);
+            params.put("dimension", dimension);
+            params.put("quotaId", quotaId);
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
+            params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();
             if( !StringUtils.isEmpty(quotaFilter) ){
                 String filter[] = quotaFilter.split(";");

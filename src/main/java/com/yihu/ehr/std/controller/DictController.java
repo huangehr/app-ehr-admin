@@ -151,41 +151,37 @@ public class DictController  extends BaseUIController {
     public Object saveDict(String cdaVersion, String dictId, String code, String name, String baseDict, String stdSource, String stdVersion, String description,HttpServletRequest request) {
         Envelop result = new Envelop();
         String resultStr = "";
-
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String userId = userDetailModel.getId().toString();
-
-        if (StringUtils.isEmpty(cdaVersion)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("版本号不能为空！");
-            return result;
-        }
-        if (StringUtils.isEmpty(code)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("代码不能为空！");
-            return result;
-        }
-        if (StringUtils.isEmpty(name)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("名称不能为空！");
-            return result;
-        }
-
-        Map<String, Object> params = new HashMap<>();
-        DictModel dictModel = new DictModel();
-        dictModel.setId(Long.parseLong(dictId));
-        dictModel.setCode(code);
-        dictModel.setName(name);
-        dictModel.setBaseDict(StringUtils.isEmpty(baseDict) ? null : Long.parseLong(baseDict));
-        dictModel.setSourceId(stdSource);
-        dictModel.setDescription(description);
-        dictModel.setAuthor(userId);
-        dictModel.setStdVersion(cdaVersion);
-
-        params.put("version_code",cdaVersion);
-        params.put("json_data",toJson(dictModel));
-
         try{
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            String userId = userDetailModel.getId().toString();
+            if (StringUtils.isEmpty(cdaVersion)) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("版本号不能为空！");
+                return result;
+            }
+            if (StringUtils.isEmpty(code)) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("代码不能为空！");
+                return result;
+            }
+            if (StringUtils.isEmpty(name)) {
+                result.setSuccessFlg(false);
+                result.setErrorMsg("名称不能为空！");
+                return result;
+            }
+            Map<String, Object> params = new HashMap<>();
+            DictModel dictModel = new DictModel();
+            dictModel.setId(Long.parseLong(dictId));
+            dictModel.setCode(code);
+            dictModel.setName(name);
+            dictModel.setBaseDict(StringUtils.isEmpty(baseDict) ? null : Long.parseLong(baseDict));
+            dictModel.setSourceId(stdSource);
+            dictModel.setDescription(description);
+            dictModel.setAuthor(userId);
+            dictModel.setStdVersion(cdaVersion);
+
+            params.put("version_code",cdaVersion);
+            params.put("json_data",toJson(dictModel));
             String url = "/save_dict";
             resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return resultStr;
@@ -913,7 +909,7 @@ public class DictController  extends BaseUIController {
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel user = getCurrentUserRedis(request);
         try {
             String version = request.getParameter("version");
             if(StringUtils.isBlank(version)){

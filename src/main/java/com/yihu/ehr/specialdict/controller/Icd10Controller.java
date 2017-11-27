@@ -124,10 +124,10 @@ public class Icd10Controller extends BaseUIController {
     @ResponseBody
     public Object updateIcd10Dict(String icd10JsonData,String mode,HttpServletRequest request){
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/dict/icd10";
         try{
+            envelop.setSuccessFlg(false);
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            String url = "/dict/icd10";
             Icd10DictModel model = objectMapper.readValue(icd10JsonData, Icd10DictModel.class);
             if(StringUtils.isEmpty(model.getCode())){
                 envelop.setErrorMsg("字典项编码不能为空！");
@@ -325,18 +325,18 @@ public class Icd10Controller extends BaseUIController {
     @ResponseBody
     public Object createIcd10DrugRelations(Long icd10Id,String drugIds,HttpServletRequest request){
         Envelop envelop = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/dict/icd10/drugs";
-        if(icd10Id == null){
-            envelop.setErrorMsg("icd10字典id不能为空！");
-            return envelop;
-        }
-        if (StringUtils.isEmpty(drugIds)){
-            envelop.setErrorMsg("药品字典id不能为空！");
-            return envelop;
-        }
-        String[] ids = drugIds.split(",");
         try {
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            String url = "/dict/icd10/drugs";
+            if(icd10Id == null){
+                envelop.setErrorMsg("icd10字典id不能为空！");
+                return envelop;
+            }
+            if (StringUtils.isEmpty(drugIds)){
+                envelop.setErrorMsg("药品字典id不能为空！");
+                return envelop;
+            }
+            String[] ids = drugIds.split(",");
             //单个关联
             if(ids.length == 1){
                 url = "/dict/icd10/drug";
@@ -565,18 +565,18 @@ public class Icd10Controller extends BaseUIController {
     @ResponseBody
     public Object createIcd10IndicatorRelations(Long icd10Id,String indicatorIds,HttpServletRequest request){
         Envelop envelop = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/dict/icd10/indicators";
-        if(icd10Id == null){
-            envelop.setErrorMsg("icd10字典id不能为空！");
-            return envelop;
-        }
-        if (StringUtils.isEmpty(indicatorIds)){
-            envelop.setErrorMsg("指标字典id不能为空！");
-            return envelop;
-        }
-        String[] ids = indicatorIds.split(",");
         try {
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            String url = "/dict/icd10/indicators";
+            if(icd10Id == null){
+                envelop.setErrorMsg("icd10字典id不能为空！");
+                return envelop;
+            }
+            if (StringUtils.isEmpty(indicatorIds)){
+                envelop.setErrorMsg("指标字典id不能为空！");
+                return envelop;
+            }
+            String[] ids = indicatorIds.split(",");
             //单个关联
             if(ids.length == 1){
                 url = "/dict/icd10/indicator";

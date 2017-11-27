@@ -114,7 +114,7 @@ public class MessageRemindController extends ExtendController<OrgAdapterPlanServ
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(messageRemindModelJsonData, "UTF-8").split(";");
         MessageRemindModel detailModel = toModel(strings[0], MessageRemindModel.class);

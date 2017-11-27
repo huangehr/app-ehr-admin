@@ -123,7 +123,7 @@ public class TjQuotaController extends BaseUIController {
         String url = "/tj/addTjQuota/";
         String resultStr = "";
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(tjQuotaModelJsonData, "UTF-8").split(";");
         TjQuotaModel detailModel = toModel(strings[0], TjQuotaModel.class);
@@ -389,7 +389,7 @@ public class TjQuotaController extends BaseUIController {
             filters.put("city", city);
             filters.put("district", district);
             Map<String, Object> params = new HashMap<>();
-            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+            List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
             params.put("id", tjQuotaId);
             params.put("pageNo", page);

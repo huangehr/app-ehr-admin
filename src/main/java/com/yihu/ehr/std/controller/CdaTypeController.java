@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +47,8 @@ public class CdaTypeController extends BaseUIController {
     }
 
     @RequestMapping("typeupdate")
-    public String typeupdate(Model model,HttpServletRequest request) {
-        UserDetailModel user = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+    public String typeupdate(Model model,HttpServletRequest request) throws IOException {
+        UserDetailModel user = getCurrentUserRedis(request);
         model.addAttribute("UserId", user.getId());
         model.addAttribute("contentPage", "std/cdaType/CdaTypeDetail");
         return "generalView";
@@ -153,11 +154,11 @@ public class CdaTypeController extends BaseUIController {
     //新增、修改的保存合二为一
     public Object SaveCdaType(String dataJson,HttpServletRequest request) {
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        String url = "/cda_types";
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String createUserId = userDetailModel.getId();
         try {
+            envelop.setSuccessFlg(false);
+            String url = "/cda_types";
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            String createUserId = userDetailModel.getId();
             CdaTypeDetailModel detailModel = objectMapper.readValue(dataJson,CdaTypeDetailModel.class);
             if(StringUtils.isEmpty(detailModel.getCode())){
                 envelop.setErrorMsg("cda类别编码不能为空！");

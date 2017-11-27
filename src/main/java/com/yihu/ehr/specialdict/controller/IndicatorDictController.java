@@ -139,10 +139,10 @@ public class IndicatorDictController extends BaseUIController {
     @ResponseBody
     public Object updateIndicatorDict(String dictJson,String mode,HttpServletRequest request){
         Envelop envelop = new Envelop();
-        envelop.setSuccessFlg(false);
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/dict/indicator";
         try{
+            envelop.setSuccessFlg(false);
+            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            String url = "/dict/indicator";
             IndicatorsDictModel model = objectMapper.readValue(dictJson, IndicatorsDictModel.class);
             if(StringUtils.isEmpty(model.getCode())){
                 envelop.setErrorMsg("字典项编码不能为空！");

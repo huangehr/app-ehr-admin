@@ -40,7 +40,7 @@ public class PlatformAppController extends ExtendController<PlatformAppService> 
             Map<String, Object> params = new HashMap<>();
             String resultStr = "";
             if(StringUtils.isEmpty(appDetailModel.getId())){
-                UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+                UserDetailModel userDetailModel = getCurrentUserRedis(request);
                 appDetailModel.setCreator(userDetailModel.getId());
                 appDetailModel.setStatus("'Approved'");
                 appDetailModel.setSourceType(1);
