@@ -74,6 +74,7 @@
                                     appidArr.splice(index,1);
                                     return 'deleteInfo'
                                 })();
+                            obj = appidArr.join(',');
                             dataModel.updateRemote("${contextRoot}/resource/reportCategoryApp/" + url, {
                                 data: {categoryId: id, appId: data.id},
                                 type: 'GET',
