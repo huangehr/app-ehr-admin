@@ -3,20 +3,27 @@ package com.yihu.ehr.emergency.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.emergency.model.*;
+import com.yihu.ehr.emergency.model.ScheduleMsgModel;
+import com.yihu.ehr.emergency.model.ScheduleMsgModelReader;
+import com.yihu.ehr.emergency.model.ScheduleMsgModelWriter;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.excel.AExcelReader;
 import com.yihu.ehr.util.excel.ObjectFileRW;
 import com.yihu.ehr.util.excel.TemPath;
+import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +38,7 @@ import java.util.*;
  * Created by zdm on 2017/11/20.
  */
 @Controller
-@RequestMapping("/scheduleImport")
+@RequestMapping("/schedule")
 public class ScheduleController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
@@ -40,6 +47,73 @@ public class ScheduleController extends BaseUIController {
     @Value("${service-gateway.url}")
     private String comUrl;
     static final String parentFile = "schedule";
+
+
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ApiOperation("获取排班列表")
+    public Envelop list(
+            @ApiParam(name = "fields", value = "返回的字段，为空返回全部字段")
+            @RequestParam(value = "fields", required = false) String fields,
+            @ApiParam(name = "filters", value = "过滤器，为空检索所有条件")
+            @RequestParam(value = "filters", required = false) String filters,
+            @ApiParam(name = "sorts", value = "排序，规则参见说明文档")
+            @RequestParam(value = "sorts", required = false) String sorts,
+            @ApiParam(name = "page", value = "分页大小", defaultValue = "1")
+            @RequestParam(value = "page", required = false) int page,
+            @ApiParam(name = "size", value = "页码", defaultValue = "15")
+            @RequestParam(value = "size", required = false) int size) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/schedule/list";
+            params.put("filters", filters);
+            params.put("fields", fields);
+            params.put("sorts", sorts);
+            params.put("page", page);
+            params.put("size", size);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(ScheduleController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ApiOperation("保存单条记录")
+    public Envelop save(
+            @ApiParam(name = "schedule", value = "排班")
+            @RequestParam(value = "schedule") String schedule){
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/schedule/save";
+            params.put("schedule", schedule);
+            String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(ScheduleController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @ApiOperation("更新单条记录，只允许更新时间和状态")
+    public Envelop update(
+            @ApiParam(name = "schedule", value = "排班")
+            @RequestParam(value = "schedule") String schedule){
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/schedule/update";
+            params.put("schedule", schedule);
+            String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(ScheduleController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
 
     @RequestMapping(value = "import")
     @ResponseBody
