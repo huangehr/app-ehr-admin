@@ -32,7 +32,7 @@
                 {display: 'ID', name: 'id', hide: true},
                 {display: '缓存Key规则名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '缓存Key规则编码', name: 'code', width: '15%', isAllowHide: false, align: 'left'},
-                {display: '缓存分类', name: 'categoryCode', width: '15%', isAllowHide: false, align: 'left'},
+                {display: '缓存分类', name: 'categoryName', width: '15%', isAllowHide: false, align: 'left'},
                 {display: 'Key规则表达式', name: 'expression', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '操作', name: 'operator', minWidth: 120, align: 'center',
