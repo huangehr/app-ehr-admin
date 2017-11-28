@@ -35,10 +35,6 @@
                     isChecked: base.isChecked,
                     onCheckRow: base.onChecked,
                     onCheckAllRow: base.onCheckAllRows,
-                    onAfterShowData: base.onAfterShowData,
-                    onBeforeCheckRow:base.onBeforeCheckRow,
-                    onBeforeCheckAllRow:base.onBeforeCheckAllRow,
-                    onBeforeSelectRow:base.onBeforeSelectRow,
                     root: 'Rows'
                 };
             // init grid
@@ -104,20 +100,29 @@
                 }
             }
             newData = selectedData.concat(data);
-            base.grid.reload({ Rows: newData });
+            base.grid.setOptions({data: { Rows: newData }});
+            base.grid.loadData(true);
+            base.grid.setOptions({
+                // onAfterShowData: base.onAfterShowData,
+                onBeforeCheckRow:base.onBeforeCheckRow,
+                onBeforeCheckAllRow:base.onBeforeCheckAllRow,
+                onBeforeSelectRow:base.onBeforeSelectRow,
+            });
         },
         isChecked: function (rowdata) {
             var uniqueField = base.p.uniqueField,
-                storage = base.p.storage;
+                storage = base.p.storage,
+                isTrue = false;
             for (var i = 0; i < storage.length; i++) {
                 if (storage[i][uniqueField] == rowdata[uniqueField]) {
                     storage[i].name = rowdata.name;
                     storage[i].code = rowdata.code;
                     base.addItem(storage[i]);
-                    return true;
+                    isTrue = true;
+                    break;
                 }
             }
-            return false;
+            return isTrue;
         },
         onAfterShowData: function(currentData){
             if(currentData.Rows.length==base.p.storage.length){
@@ -125,6 +130,7 @@
             }
         },
         onChecked: function (checked, data, rowid, rowdata) {
+            debugger
             $("#pane-list-selected").addClass("changed");//取消是否提示
             // 非多选内容
             if (!base.p.multiple) {
