@@ -276,7 +276,10 @@ public class ResourceIntegratedController extends BaseUIController {
             envelop = toModel(resultStr, Envelop.class);
             if(envelop.isSuccessFlg()) {
                 String newRsId = (String) envelop.getObj();
-                List<String> userResourceList = (List<String>) session.getAttribute(AuthorityKey.UserResource);
+                List<String> userResourceList = getUserResourceListRedis(request);
+                if(userResourceList == null){
+                    userResourceList = new ArrayList<>();
+                }
                 userResourceList.add(newRsId);
                 session.setAttribute(AuthorityKey.UserResource, userResourceList);
             }

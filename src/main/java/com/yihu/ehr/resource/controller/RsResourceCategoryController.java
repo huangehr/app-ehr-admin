@@ -61,27 +61,27 @@ public class RsResourceCategoryController extends BaseUIController {
     @ResponseBody
     public Object getTreeGridData(HttpServletRequest request, String codeName) {
         Envelop envelop = new Envelop();
-        String url ="/resources/categories/tree";
         String strResult = "";
-        Map<String,Object> params = new HashMap<>();
-        //从Session中获取用户的角色和和授权视图列表作为查询参数
-        HttpSession session = request.getSession();
-        boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
-        List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
-        if(!isAccessAll) {
-            if(null == userResourceList || userResourceList.size() <= 0) {
-                return failed("无权访问");
-            }
-        }
-        if(isAccessAll) {
-            params.put("userResource", "*");
-        }else {
-            params.put("userResource", "auth");
-        }
-        if (!StringUtils.isEmpty(codeName)){
-            params.put("name", codeName);
-        }
         try{
+            String url ="/resources/categories/tree";
+            Map<String,Object> params = new HashMap<>();
+            //从Session中获取用户的角色和和授权视图列表作为查询参数
+            HttpSession session = request.getSession();
+            boolean isAccessAll = (boolean)session.getAttribute(AuthorityKey.IsAccessAll);
+            List<String> userResourceList = getUserResourceListRedis(request);
+            if(!isAccessAll) {
+                if(null == userResourceList || userResourceList.size() <= 0) {
+                    return failed("无权访问");
+                }
+            }
+            if(isAccessAll) {
+                params.put("userResource", "*");
+            }else {
+                params.put("userResource", "auth");
+            }
+            if (!StringUtils.isEmpty(codeName)){
+                params.put("name", codeName);
+            }
             strResult = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return strResult;
         }catch(Exception ex){

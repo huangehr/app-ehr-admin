@@ -161,11 +161,14 @@ public class LogAspect {
         if(StringUtils.isEmpty(userName)){
             userName = redisService.getRedisValue(request, "loginCode");
         }
-
         JSONObject data = new JSONObject();
-        UserDetailModel userModel=(UserDetailModel) session.getAttribute("current_user");
-        if(null!=userModel){
-            data.put("patient", userModel.getRealName());// 总支撑
+        try {
+            UserDetailModel userModel = redisService.getCurrentUserRedis(request);
+            if(null!=userModel){
+                data.put("patient", userModel.getRealName());// 总支撑
+            }
+        }catch (Exception e){
+            e.getMessage();
         }
         data.put("url", operationPath);// 调用的控制器路径
         data.put("responseTime", endTimeMillis - startTimeMillis);// 操作响应时间长
