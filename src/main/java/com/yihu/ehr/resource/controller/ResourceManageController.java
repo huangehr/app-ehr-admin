@@ -251,7 +251,10 @@ public class ResourceManageController extends BaseUIController {
                     Envelop envelopPost = toModel(result, Envelop.class);
                     if(envelopPost.isSuccessFlg()) {
                         Map<String, Object> rsObj = (Map<String, Object>) envelopPost.getObj();
-                        List<String> userResourceList = (List<String>) session.getAttribute(AuthorityKey.UserResource);
+                        List<String> userResourceList = getUserResourceListRedis(request);
+                        if(userResourceList == null){
+                            userResourceList = new ArrayList<>();
+                        }
                         userResourceList.add(String.valueOf(rsObj.get("id")));
                         session.setAttribute(AuthorityKey.UserResource, userResourceList);
                     }
