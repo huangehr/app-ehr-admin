@@ -14,7 +14,7 @@
     <div class="m-form-group">
         <label>缓存Key规则编码：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-50 required ajax"
+            <input type="text" class="f-w240 max-length-50 required ajax validate-alpha-underline"
                    id="code" data-attr-scan="code">
         </div>
     </div>
@@ -28,7 +28,7 @@
     <div class="m-form-group">
         <label>规则表达式：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-200 required"
+            <input type="text" class="f-w240 max-length-200 required" placeholder="可用“{}”包含命名参数，如 xxx{a}xx{b}"
                    id="expression" data-attr-scan="expression">
         </div>
     </div>
