@@ -4,6 +4,7 @@
 
 <script>
     var dataModel = $.DataModel.init();
+    var categoryCode = '${categoryCode}';
     var detailDialog = null;
     var grid = null;
 
@@ -24,19 +25,19 @@
         });
 
         grid = $("#grid").ligerGrid($.LigerGridEx.config({
-            url: '${contextRoot}/redis/cache/category/search',
+            url: '${contextRoot}/redis/cache/authorization/search',
+            urlParms: { categoryCode: categoryCode },
             columns: [
                 {display: 'ID', name: 'id', hide: true},
-                {display: '缓存分类名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
-                {display: '缓存分类编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
+                {display: '应用ID', name: 'appId', width: '10%', isAllowHide: false, align: 'left'},
+                {display: '授权码', name: 'authorizedCode', width: '25%', isAllowHide: false, align: 'left'},
                 {display: '修改时间', name: 'modifyDate', width: '15%', isAllowHide: false, align: 'left'},
-                {display: '备注', name: 'remark', width: '30%', isAllowHide: false, align: 'left'},
-                {display: '操作', name: 'operator', width: '15%', minWidth: 120, align: 'center',
+                {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},
+                {display: '操作', name: 'operator', minWidth: 120, align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/redis/cache/category/authorizationList"><a class="label_a f-ml10" title="应用授权" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:cache:category:authorizationList", row.code) + '">应用授权</a></sec:authorize>';
-                        html += '<sec:authorize url="/redis/cache/category/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "redis:cache:category:detail", row.id, 'modify') + '"></a></sec:authorize>';
-                        html += '<sec:authorize url="/redis/cache/category/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:cache:category:delete", row.id) + '"></a></sec:authorize>';
+                        html += '<sec:authorize url="/redis/cache/authorization/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "redis:cache:authorization:detail", row.id, 'modify') + '"></a></sec:authorize>';
+                        html += '<sec:authorize url="/redis/cache/authorization/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:cache:authorization:delete", row.id) + '"></a></sec:authorize>';
                         return html;
                     }
                 }
@@ -49,27 +50,20 @@
     }
 
     function bindEvents() {
-        // 应用授权
-        $.subscribe('redis:cache:category:authorizationList', function (event, categoryCode) {
-            var url = '${contextRoot}/redis/cache/authorization/index?';
-            $("#contentPage").empty();
-            $("#contentPage").load(url,{categoryCode: categoryCode});
-        });
-
         // 新增/修改
-        $.subscribe('redis:cache:category:detail', function (event, id, mode) {
-            var title = '新增缓存分类';
+        $.subscribe('redis:cache:authorization:detail', function (event, id, mode) {
+            var title = '新增缓存授权';
             if (mode == 'modify') {
-                title = '修改缓存分类';
+                title = '修改缓存授权';
             }
             detailDialog = $.ligerDialog.open({
-                height: 410,
+                height: 450,
                 width: 480,
                 title: title,
-                url: '${contextRoot}/redis/cache/category/detail',
+                url: '${contextRoot}/redis/cache/authorization/detail',
                 urlParms: {
                     id: id,
-                    mode: mode
+                    categoryCode: categoryCode
                 },
                 opener: true,
                 load: true
@@ -77,11 +71,11 @@
         });
 
         // 删除
-        $.subscribe('redis:cache:category:delete', function (event, id) {
-            $.Notice.confirm('确认要删除所选数据吗？', function (r) {
+        $.subscribe('redis:cache:authorization:delete', function (event, id) {
+            $.Notice.confirm('删除后，该应用ID不能调用缓存服务接口，来设置所属分类下Key规则的缓存数据，确认要删除吗？', function (r) {
                 if (r) {
                     var loading = $.ligerDialog.waitting("正在删除数据...");
-                    dataModel.updateRemote('${contextRoot}/redis/cache/category/delete', {
+                    dataModel.updateRemote('${contextRoot}/redis/cache/authorization/delete', {
                         data: {id: parseInt(id)},
                         success: function (data) {
                             if (data.successFlg) {
@@ -101,11 +95,21 @@
                 }
             })
         });
+
+        // 返回上一页
+        $('#btn_back').click(function(){
+            $('#contentPage').empty();
+            $('#contentPage').load('${contextRoot}/redis/cache/category/index');
+        });
+
     }
 
     function reloadGrid() {
-        var params = {searchContent: $('#searchContent').val()};
-        $.Util.reloadGrid.call(grid, '${contextRoot}/redis/cache/category/search', params);
+        var params = {
+            searchContent: $('#searchContent').val(),
+            categoryCode: categoryCode
+        };
+        $.Util.reloadGrid.call(grid, '${contextRoot}/redis/cache/authorization/search', params);
     }
 
     /*-- 与明细 Dialog 页面间回调的函数 --*/

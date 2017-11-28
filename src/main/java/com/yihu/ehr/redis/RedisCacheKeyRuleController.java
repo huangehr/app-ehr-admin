@@ -2,7 +2,7 @@ package com.yihu.ehr.redis;
 
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
-import com.yihu.ehr.model.redis.MRedisCacheCategory;
+import com.yihu.ehr.model.redis.MRedisCacheKeyRule;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -18,14 +18,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 缓存分类 Controller
+ * 缓存Key规则 Controller
  *
  * @author 张进军
- * @date 2017/11/24 16:08
+ * @date 2017/11/27 16:21
  */
 @Controller
-@RequestMapping("/redis/cache/category")
-public class RedisCacheCategoryController extends BaseUIController {
+@RequestMapping("/redis/cache/keyRule")
+public class RedisCacheKeyRuleController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
@@ -36,7 +36,7 @@ public class RedisCacheCategoryController extends BaseUIController {
 
     @RequestMapping("/index")
     public String index(Model model) {
-        model.addAttribute("contentPage", "redis/cache/category/list");
+        model.addAttribute("contentPage", "redis/cache/keyRule/list");
         return "pageView";
     }
 
@@ -45,19 +45,19 @@ public class RedisCacheCategoryController extends BaseUIController {
      */
     @RequestMapping(value = "/detail")
     public String detail(Model model, Integer id) {
-        Object detailModel = new MRedisCacheCategory();
+        Object detailModel = new MRedisCacheKeyRule();
         try {
             if (id != null) {
-                String url = comUrl + ServiceApi.Redis.CacheCategory.Prefix + id;
+                String url = comUrl + ServiceApi.Redis.CacheKeyRule.Prefix + id;
                 String result = HttpClientUtil.doGet(url, username, password);
                 detailModel = objectMapper.readValue(result, Envelop.class).getObj();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheCategoryController.class).error(e.getMessage());
+            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
         }
         model.addAttribute("detailModel", toJson(detailModel));
-        model.addAttribute("contentPage", "redis/cache/category/detail");
+        model.addAttribute("contentPage", "redis/cache/keyRule/detail");
         return "simpleView";
     }
 
@@ -66,12 +66,15 @@ public class RedisCacheCategoryController extends BaseUIController {
      */
     @RequestMapping("/search")
     @ResponseBody
-    public Object search(String searchContent, int page, int rows) {
+    public Object search(String searchContent, String categoryCode, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         StringBuffer filters = new StringBuffer();
 
         if (!StringUtils.isEmpty(searchContent)) {
             filters.append("code?" + searchContent + ";name?" + searchContent + ";");
+        }
+        if (!StringUtils.isEmpty(categoryCode)) {
+            filters.append("categoryCode=" + categoryCode + ";");
         }
 
         params.put("filters", filters.toString());
@@ -79,33 +82,10 @@ public class RedisCacheCategoryController extends BaseUIController {
         params.put("size", rows);
 
         try {
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheCategory.Search, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheKeyRule.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
-        }
-    }
-
-    /**
-     * 分页查询（不分页）
-     */
-    @RequestMapping("/searchNoPage")
-    @ResponseBody
-    public Object searchNoPage(String filters, String sorts) {
-        Map<String, Object> params = new HashMap<>();
-        if (StringUtils.isNotEmpty(filters)) {
-            params.put("filters", filters);
-        }
-        if (StringUtils.isNotEmpty(sorts)) {
-            params.put("sorts", sorts);
-        }
-
-        try {
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheCategory.SearchNoPage, params, username, password);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogService.getLogger(RedisCacheCategoryController.class).error(e.getMessage());
+            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -120,31 +100,31 @@ public class RedisCacheCategoryController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
 
         try {
-            MRedisCacheCategory model = objectMapper.readValue(data, MRedisCacheCategory.class);
+            MRedisCacheKeyRule model = objectMapper.readValue(data, MRedisCacheKeyRule.class);
             if (StringUtils.isEmpty(model.getCode())) {
-                return failed("缓存分类编码不能为空！");
+                return failed("缓存Key规则编码不能为空！");
             }
 
             if (model.getId() == null) {
                 // 新增
                 params.put("entityJson", data);
-                return HttpClientUtil.doPost(comUrl + ServiceApi.Redis.CacheCategory.Save, params, username, password);
+                return HttpClientUtil.doPost(comUrl + ServiceApi.Redis.CacheKeyRule.Save, params, username, password);
             } else {
                 // 修改
-                String urlGet = comUrl + ServiceApi.Redis.CacheCategory.Prefix + model.getId();
+                String urlGet = comUrl + ServiceApi.Redis.CacheKeyRule.Prefix + model.getId();
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
 
-                MRedisCacheCategory updateModel = getEnvelopModel(envelopGet.getObj(), MRedisCacheCategory.class);
+                MRedisCacheKeyRule updateModel = getEnvelopModel(envelopGet.getObj(), MRedisCacheKeyRule.class);
                 updateModel.setName(model.getName());
                 updateModel.setRemark(model.getRemark());
 
                 params.put("entityJson", objectMapper.writeValueAsString(updateModel));
-                return HttpClientUtil.doPut(comUrl + ServiceApi.Redis.CacheCategory.Save, params, username, password);
+                return HttpClientUtil.doPut(comUrl + ServiceApi.Redis.CacheKeyRule.Save, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheCategoryController.class).error(e.getMessage());
+            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -158,16 +138,16 @@ public class RedisCacheCategoryController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("id", id);
-            return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.CacheCategory.Delete, params, username, password);
+            return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.CacheKeyRule.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheCategoryController.class).error(e.getMessage());
+            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
 
     /**
-     * 验证缓存分类编码是否唯一
+     * 验证缓存Key规则编码是否唯一
      */
     @RequestMapping("/isUniqueCode")
     @ResponseBody
@@ -177,16 +157,16 @@ public class RedisCacheCategoryController extends BaseUIController {
         try {
             params.put("id", id);
             params.put("code", code);
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheCategory.IsUniqueCode, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheKeyRule.IsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheCategoryController.class).error(e.getMessage());
+            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
 
     /**
-     * 验证缓存分类名是否唯一
+     * 验证缓存Key规则名是否唯一
      */
     @RequestMapping("/isUniqueName")
     @ResponseBody
@@ -196,10 +176,10 @@ public class RedisCacheCategoryController extends BaseUIController {
         try {
             params.put("id", id);
             params.put("name", name);
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheCategory.IsUniqueName, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheKeyRule.IsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheCategoryController.class).error(e.getMessage());
+            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
