@@ -226,7 +226,6 @@ public class LoginController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
             Envelop envelop = getEnvelop(resultStr);
             UserDetailModel userDetailModel = getEnvelopModel(envelop.getObj(), UserDetailModel.class);
-            String loginName = userDetailModel.getLoginCode();
             //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
                 //获取用户的角色，机构，视图 等权限
@@ -287,8 +286,6 @@ public class LoginController extends BaseUIController {
                     conditionMap.add("user_json_data", toJson(userDetailModel));
                     session.setAttribute("loginCode", userDetailModel.getLoginCode());
                     session.setAttribute("userId", userDetailModel.getId());
-                    //获取用户的角色，机构，视图 等权限
-                    initUserRolePermissions(userDetailModel, userName, request);
                     //session 同步到 redis
                     setRedisValue(request, "loginCode", userDetailModel.getLoginCode());
 
