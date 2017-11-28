@@ -242,7 +242,14 @@
                         var thisResourceId = '';
                         var reqUrl = '${contextRoot}/resource/resourceManage/addResourceQuota';
                         var divItem = $("#div_main_relation").find(".div-item");
+                        var num = 0;
                         $.each(divItem,function(key,value){
+                            var qchart = $(value).attr("data-qchart");
+                            if(qchart == 1 || qchart == 2){
+                                num = num + 1;
+                            }else{
+                                num = num + 1;
+                            }
                             var ob = {
                                 quotaId:$(value).attr("data-id"),
                                 resourceId: resourceId,
@@ -252,6 +259,11 @@
                             }
                             saveData.push(ob);
                         });
+                        if(num >1){
+                            wait.close();
+                            $.Notice.error('所选的指标展示图表类型不一致，目前支持同一种图表类型组合以及柱状+线型组合，其他组合暂不支持');
+                            return;
+                        }
                         if (saveData.length == 0) {
                             thisResourceId = resourceId;
                         }
