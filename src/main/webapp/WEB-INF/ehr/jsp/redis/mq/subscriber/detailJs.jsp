@@ -82,41 +82,19 @@
                         var appId = $("#appId").val();
                         if(!$.Util.isStrEquals(channel, detailModel.channel)) {
                             var ulr = "${contextRoot}/redis/mq/subscriber/isUniqueAppId";
-                            return validateByAjax(ulr, {id: id, channel: channel, appId: appId});
+                            return $.Util.validateByAjax(ulr, {id: id, channel: channel, appId: appId});
                         }
                         break;
                     case 'subscribedUrl':
                         var subscriberUrl = $("#subscribedUrl").val();
                         if(!$.Util.isStrEquals(channel, detailModel.channel)) {
                             var ulr = "${contextRoot}/redis/mq/subscriber/isUniqueSubscribedUrl";
-                            return validateByAjax(ulr, {id: id, channel: channel, subscriberUrl: subscriberUrl});
+                            return $.Util.validateByAjax(ulr, {id: id, channel: channel, subscriberUrl: subscriberUrl});
                         }
                         break;
                 }
             }
         });
-    }
-
-    // 通过 jValidation 进行异步验证
-    function validateByAjax(url, params) {
-        var result = new $.jValidation.ajax.Result();
-        var dataModel = $.DataModel.init();
-        dataModel.fetchRemote(url, {
-            data: params,
-            async: false,
-            success: function (data) {
-                if (data.successFlg) {
-                    result.setResult(true);
-                } else {
-                    result.setResult(false);
-                    result.setErrorMsg(data.errorMsg);
-                }
-            },
-            error: function () {
-                $.Notice.error('验证发生异常');
-            }
-        });
-        return result;
     }
 
 </script>

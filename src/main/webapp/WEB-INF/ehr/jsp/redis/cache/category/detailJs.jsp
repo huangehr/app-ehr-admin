@@ -79,41 +79,19 @@
                         var code = $("#code").val();
                         if(!$.Util.isStrEquals(code, detailModel.code)) {
                             var ulr = "${contextRoot}/redis/cache/category/isUniqueCode";
-                            return validateByAjax(ulr, {id: id, code: code});
+                            return $.Util.validateByAjax(ulr, {id: id, code: code});
                         }
                         break;
                     case 'name':
                         var name = $("#name").val();
                         if(!$.Util.isStrEquals(name, detailModel.name)) {
                             var ulr = "${contextRoot}/redis/cache/category/isUniqueName";
-                            return validateByAjax(ulr, {id: id, name: name});
+                            return $.Util.validateByAjax(ulr, {id: id, name: name});
                         }
                         break;
                 }
             }
         });
-    }
-
-    // 通过 jValidation 进行异步验证
-    function validateByAjax(url, params) {
-        var result = new $.jValidation.ajax.Result();
-        var dataModel = $.DataModel.init();
-        dataModel.fetchRemote(url, {
-            data: params,
-            async: false,
-            success: function (data) {
-                if (data.successFlg) {
-                    result.setResult(true);
-                } else {
-                    result.setResult(false);
-                    result.setErrorMsg(data.errorMsg);
-                }
-            },
-            error: function () {
-                $.Notice.error('验证发生异常');
-            }
-        });
-        return result;
     }
 
 </script>
