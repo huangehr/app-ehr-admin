@@ -771,7 +771,7 @@ var kindEditor = {
 };
 var formKindEditor = {
     editor: {},
-    content: top.win_editor_storage,
+    content: parent.win_editor_storage,
 
     init: function () {
         var editor = kindEditor.bulidKindEditor("textarea[name='txb_Immed_Temp']")
