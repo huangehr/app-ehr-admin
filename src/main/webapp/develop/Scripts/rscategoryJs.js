@@ -274,6 +274,7 @@ cateType.attr = {
         cateType.attr.parent_select.setText(initText);
     },
     getCateTypeInfo: function () {
+        var me = this;
         var u = cateType.list;
         var id = $("#hdId").val();
         if (id == "") {
@@ -287,7 +288,6 @@ cateType.attr = {
             dataType: "json",
             data: {strIds: id},
             success: function (data) {
-                debugger
                 var envelop = eval(data);
                 var info = envelop.obj;
                 if (info != null) {
@@ -298,8 +298,8 @@ cateType.attr = {
                     cateType.attr.getParentType(initValue, initText);
                     $.each(cateType.attr.iptViewData, function (k, o) {
                         if (o.id == info.code) {
-                            this.ipt_view.setValue(info.code);
-                            this.ipt_view.setText(o.name);
+                            me.ipt_view.setValue(info.code);
+                            me.ipt_view.setText(o.name);
                         }
                     });
                 }
