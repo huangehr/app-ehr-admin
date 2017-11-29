@@ -4,7 +4,10 @@
 <script>
     var clientId = '${clientId}';
     var signin = {
+        $signinCon: $('#signinCon'),
+        $tipsCon: $('.tips-con'),
         init:function () {
+            var me = this;
             //判断是否自动登录
             var hash = window.location.hash;
             if(hash.indexOf("#access_token")>=0)
@@ -23,17 +26,27 @@
                     },
                     success: function (data) {
                         if(data.successFlg){
-                            location.href = '${contextRoot}/index#signin';
+                            var iframe = document.createElement('iframe');
+                            iframe.src = '${contextRoot}/index#signin';
+                            <%--location.href = '${contextRoot}/index#signin';--%>
+                            me.$signinCon.html(iframe);
                         }else{
-                            location.href = '${contextRoot}/login';
+                            me.$tipsCon.html(me.gethtml('访问失败'));
+                            <%--location.href = '${contextRoot}/login';--%>
                         }
                     },
                     error: function (data) {
-                        location.href = '${contextRoot}/login';
+                        me.$tipsCon.html(me.gethtml('访问失败'));
+                        <%--location.href = '${contextRoot}/login';--%>
                     }
                 });
                 return;
+            } else {
+                me.$tipsCon.html(me.gethtml('访问失败'));
             }
+        },
+        gethtml: function (msg) {
+            return '<img src="${staticRoot}/images/error.png"><p>' + msg + '</p>';
         }
     }
 
