@@ -53,18 +53,6 @@ public class ResourceIntegratedController extends BaseUIController {
             List<String> userRolesList  = getUserRolesListRedis(request);
             List<String> userResourceList  = getUserResourceListRedis(request);
             boolean isAccessAll = getIsAccessAllRedis(request);
-            if(!isAccessAll) {
-                if(null == userResourceList || userResourceList.size() <= 0) {
-                    envelop.setSuccessFlg(false);
-                    envelop.setErrorMsg("无权访问！");
-                    return envelop;
-                }
-                if(null == userRolesList || userRolesList.size() <= 0) {
-                    envelop.setSuccessFlg(false);
-                    envelop.setErrorMsg("无权访问！");
-                    return envelop;
-                }
-            }
             Map<String, Object> params = new HashMap<>();
             if(isAccessAll) {
                 params.put("userResource", "*");
