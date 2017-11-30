@@ -187,12 +187,6 @@ public class ResourceManageController extends BaseUIController {
             HttpSession session = request.getSession();
             boolean isAccessAll = getIsAccessAllRedis(request);
             List<String> userResourceList = getUserResourceListRedis(request);
-            if(!isAccessAll) {
-                if(null == userResourceList || userResourceList.size() <= 0) {
-                    envelop.setSuccessFlg(false);
-                    envelop.setErrorMsg("无权访问！");
-                }
-            }
             Map<String, Object> params = new HashMap<>();
             if (!StringUtils.isEmpty(filters)) {
                 params.put("filters", filters);
