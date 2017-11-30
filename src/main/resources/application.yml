@@ -172,7 +172,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.135.35:10260/
-  oauth2OutSize: http://192.168.135.35:10260/
+  oauth2OutSize: http://11.1.2.16:10260/
 service-gateway:
   username: user
   password: eureka
@@ -185,7 +185,7 @@ service-gateway:
   template: http://192.168.135.31:10000/api/v1.0/template
   standard: http://192.168.135.31:10000/api/v1.0/std
   browseClientUrl: http://192.168.135.34:8010/ehr/browser
-  browseClientOutSizeUrl: http://192.168.135.34:8010/ehr/browser
+  browseClientOutSizeUrl: http://11.1.2.16:8010/ehr/browser
   profileurl: http://192.168.135.32:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.135.42:22122
@@ -225,6 +225,6 @@ service-gateway:
   profileurl: http://10.176.97.12:9009/api/v1.0
 fast-dfs:
   tracker-server: 10.176.97.5:22122
-  public-server: http://10.176.97.5:80
+  public-server: http://10.176.97.5:8888
 std:
   version: 59083976eebd
