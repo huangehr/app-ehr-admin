@@ -6,7 +6,7 @@
         position: absolute;
         width: 100%;
         height: 100%;
-        padding: 20px 20px 70px 20px;
+        padding: 0 20px 70px 20px;
         text-align: center;
     }
     .wrapper .left-items, .wrapper .right-items {
@@ -39,11 +39,11 @@
     .wrapper .content {
         /*padding: 10px;*/
         width: 324px !important;
-        height: 490px;
+        height: 467px;
         overflow-y: auto;
     }
     #settingTreeContainer {
-        height: 490px;
+        height: 467px;
         background-color: inherit;
         padding-bottom: 10px;
         overflow: hidden;
@@ -73,8 +73,33 @@
     .close-toolbar {
         margin-right: 20px;
     }
-    input {
-        height: 28px;
-        width: 240px;
+    /*input {*/
+        /*height: 28px;*/
+        /*width: 240px;*/
+    /*}*/
+    /*input{*/
+        /*width: inherit;*/
+        /*height: inherit;*/
+    /*}*/
+    .v-h-left {
+        width: 100%;
+        text-align: center;
+    }
+    .v-h-con {
+        display: inline-block;
+    }
+    .c-h-l-r {
+        margin-right: 50px;
+    }
+    .c-h-l-r input, .c-h-r-r input {
+        margin: 0 5px;
+        vertical-align: middle;
+    }
+    .c-h-l-r span, .c-h-r-r span {
+        vertical-align: middle;
+    }
+    .c-h-l-r input, .c-h-r-r input {
+        margin: 0 5px;
+        vertical-align: middle;
     }
 </style>
