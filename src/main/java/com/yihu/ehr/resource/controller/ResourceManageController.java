@@ -171,9 +171,9 @@ public class ResourceManageController extends BaseUIController {
     }
 
     /**
-     * 资源列表树
-     * @param filters
-     * @param dataSource
+     * 视图资源列表树
+     * @param filters 过滤查询条件
+     * @param dataSource 1 档案视图 2 指标视图
      * @return
      */
     @RequestMapping("/resources/tree")
