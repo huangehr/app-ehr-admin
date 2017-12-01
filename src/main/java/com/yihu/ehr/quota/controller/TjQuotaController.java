@@ -305,21 +305,17 @@ public class TjQuotaController extends BaseUIController {
     public Object execuQuota(Long tjQuotaId) {
         String url = "/job/execuJob";
         String resultStr = "";
-        Envelop result = new Envelop();
+        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", tjQuotaId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            if (resultStr.equals("true")) {
-                result.setSuccessFlg(true);
-            } else {
-                result.setSuccessFlg(false);
-            }
-            return result;
+            envelop = objectMapper.readValue(resultStr,Envelop.class);
+            return envelop;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
         }
     }
 
