@@ -243,11 +243,13 @@
                         var reqUrl = '${contextRoot}/resource/resourceManage/addResourceQuota';
                         var divItem = $("#div_main_relation").find(".div-item");
                         var num = 0;
+                        var lineOrBarFlag = true;
+                        var pieFlag = true;
                         $.each(divItem,function(key,value){
                             var qchart = $(value).attr("data-qchart");
-                            if(qchart == 1 || qchart == 2){
+                            if(lineOrBarFlag && (qchart == 1 || qchart == 2)){
                                 num = num + 1;
-                            }else{
+                            }else if(pieFlag && qchart == 3){
                                 num = num + 1;
                             }
                             var ob = {
