@@ -464,7 +464,7 @@ public class ReportController extends BaseUIController {
                     params.put("resourceId", view.getResourceId());
                     List<String> userOrgList  = getUserOrgSaasListRedis(request);
                     params.put("userOrgList", userOrgList);
-                    String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+                    String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                     Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
                     String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
                     MChartInfoModel chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
@@ -502,7 +502,7 @@ public class ReportController extends BaseUIController {
             params.put("resourceId", resourceId);
             List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
-            String chartInfoStr = HttpClientUtil.doPost(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+            String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
             Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
             String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
             MChartInfoModel chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
