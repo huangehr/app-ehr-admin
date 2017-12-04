@@ -14,6 +14,7 @@
     function init() {
         initWidget();
         bindEvents();
+        initChart();
     }
 
     function initWidget() {
@@ -102,6 +103,62 @@
             })
         });
 
+    }
+
+    function initChart() {
+        dataModel.fetchRemote('${contextRoot}/redis/cache/statistics/getCategoryKeys', {
+            success: function(data) {
+                if (data.successFlg) {
+                    var cacheKeysChart = echarts.init(document.getElementById('cacheKeys'));
+                    cacheKeysChart.setOption({
+                        title: {
+                            text: '分类缓存数量',
+                            left: 'center'
+                        },
+                        color: ['#3398DB'],
+                        tooltip : {
+                            trigger: 'axis',
+                            axisPointer : {
+                                type : 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis : [
+                            {
+                                type : 'category',
+                                data : data.obj.categoryNameList,
+                                axisTick: {
+                                    alignWithLabel: true
+                                }
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value'
+                            }
+                        ],
+                        series : [
+                            {
+                                name:'缓存数量',
+                                type:'bar',
+                                barWidth: '60%',
+                                data: data.obj.categoryNumList
+                            }
+                        ]
+                    });
+                } else {
+                    $.Notice.error(data.errorMsg);
+                }
+            },
+            error: function() {
+                $.Notice.error('加载缓存数量图表数据发生异常！');
+            }
+        });
     }
 
     function reloadGrid() {

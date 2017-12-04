@@ -2,6 +2,10 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<div class="cache-chart">
+    <div id="cacheKeys" style="width: 500px;height: 300px; display: inline-block;"></div>
+</div>
+
 <div class="m-form-inline">
     <div class="m-form-group f-mt10 f-mb10">
         <div class="m-form-control ">
