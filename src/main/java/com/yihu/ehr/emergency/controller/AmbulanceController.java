@@ -40,6 +40,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/ambulance")
 public class AmbulanceController extends BaseUIController {
+
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -161,6 +162,26 @@ public class AmbulanceController extends BaseUIController {
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除记录")
+    public Envelop delete(
+            @ApiParam(name = "ids", value = "id列表['xxxx','xxxx','xxxx'...] String")
+            @RequestParam(value = "ids") String ids) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/ambulance/delete";
+            params.put("ids", ids);
+            String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
