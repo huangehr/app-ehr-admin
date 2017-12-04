@@ -531,6 +531,7 @@ public class ResourceManageController extends BaseUIController {
      */
     @RequestMapping("/resourceShow")
     public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter,HttpServletRequest request){
+        MChartInfoModel chartInfoModel = new MChartInfoModel();
         String resultStr = "";
         try {
             Map<String, Object> params = new HashMap<>();
@@ -549,11 +550,14 @@ public class ResourceManageController extends BaseUIController {
                params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
            }
             resultStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+            Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
+            String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop.getObj());
+            chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
         model.addAttribute("id", id);
-        model.addAttribute("resultStr", resultStr);
+        model.addAttribute("chartInfoModel", chartInfoModel);
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
         return "simpleView";
     }
