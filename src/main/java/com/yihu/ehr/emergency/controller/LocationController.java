@@ -21,12 +21,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/location")
 public class LocationController extends BaseUIController {
-    @Value("${service-gateway.username}")
-    private String username;
-    @Value("${service-gateway.password}")
-    private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation("获取待命地点列表")
@@ -97,7 +91,7 @@ public class LocationController extends BaseUIController {
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ApiOperation("删除待命地点")
     public Envelop delete(
-            @ApiParam(name = "ids", value = "id列表[1,2,3...] int")
+            @ApiParam(name = "ids", value = "id列表(int)1,2,3,...")
             @RequestParam(value = "ids") String ids){
         Envelop envelop = new Envelop();
         try {

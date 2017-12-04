@@ -40,12 +40,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/schedule")
 public class ScheduleController extends BaseUIController {
-    @Value("${service-gateway.username}")
-    private String username;
-    @Value("${service-gateway.password}")
-    private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
+
     static final String parentFile = "schedule";
 
 

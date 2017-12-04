@@ -22,13 +22,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/attendance")
 public class AttendanceController extends BaseUIController {
-    @Value("${service-gateway.username}")
-    private String username;
-    @Value("${service-gateway.password}")
-    private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
-    static final String parentFile = "ambulance";
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation(value = "保存出勤记录")
