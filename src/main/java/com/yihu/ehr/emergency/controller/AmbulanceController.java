@@ -21,10 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +48,7 @@ public class AmbulanceController extends BaseUIController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation(value = "获取所有救护车列表")
+    @ResponseBody
     public Envelop list(
             @ApiParam(name = "fields", value = "返回的字段，为空返回全部字段")
             @RequestParam(value = "fields", required = false) String fields,
@@ -75,12 +73,24 @@ public class AmbulanceController extends BaseUIController {
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
 
+    /**
+     * 该接口为前端使用
+     * @param fields
+     * @param filters
+     * @param sorts
+     * @param page
+     * @param size
+     * @return
+     */
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ApiOperation(value = "查询救护车信息以及包括执勤人员信息，检索条件只针对车辆")
+    @ResponseBody
     public Envelop search(
             @ApiParam(name = "fields", value = "返回的字段，为空返回全部字段")
             @RequestParam(value = "fields", required = false) String fields,
@@ -105,12 +115,15 @@ public class AmbulanceController extends BaseUIController {
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
 
     @RequestMapping(value = "/updateStatus", method = RequestMethod.PUT)
     @ApiOperation(value = "更新救护车状态信息")
+    @ResponseBody
     public Envelop update(
             @ApiParam(name = "carId", value = "车牌号码")
             @RequestParam(value = "carId") String carId,
@@ -126,12 +139,15 @@ public class AmbulanceController extends BaseUIController {
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation(value = "保存单条记录")
+    @ResponseBody
     public Envelop save(
             @ApiParam(name = "ambulance", value = "救护车")
             @RequestParam(value = "ambulance") String ambulance) {
@@ -144,12 +160,15 @@ public class AmbulanceController extends BaseUIController {
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
     @ApiOperation(value = "更新单条记录")
+    @ResponseBody
     public Envelop update(
             @ApiParam(name = "attendance", value = "救护车")
             @RequestParam(value = "ambulance") String ambulance) {
@@ -162,12 +181,15 @@ public class AmbulanceController extends BaseUIController {
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     @ApiOperation(value = "删除记录")
+    @ResponseBody
     public Envelop delete(
             @ApiParam(name = "ids", value = "id列表['xxxx','xxxx','xxxx'...] String")
             @RequestParam(value = "ids") String ids) {
@@ -177,6 +199,27 @@ public class AmbulanceController extends BaseUIController {
             String url = "/ambulance/delete";
             params.put("ids", ids);
             String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @ApiOperation("获取单条记录")
+    @ResponseBody
+    public Envelop findById(
+            @ApiParam(name = "id", value = "id")
+            @PathVariable(value = "id") String id){
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/ambulance/{id}";
+            params.put("id", id);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(AmbulanceController.class).error(e.getMessage());
