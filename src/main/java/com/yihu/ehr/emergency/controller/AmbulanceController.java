@@ -38,13 +38,7 @@ import java.util.*;
 @RequestMapping("/ambulance")
 public class AmbulanceController extends BaseUIController {
 
-    @Value("${service-gateway.username}")
-    private String username;
-    @Value("${service-gateway.password}")
-    private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
-    static final String parentFile = "ambulance";
+    private static final String parentFile = "ambulance";
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation(value = "获取所有救护车列表")
@@ -191,7 +185,7 @@ public class AmbulanceController extends BaseUIController {
     @ApiOperation(value = "删除记录")
     @ResponseBody
     public Envelop delete(
-            @ApiParam(name = "ids", value = "id列表['xxxx','xxxx','xxxx'...] String")
+            @ApiParam(name = "ids", value = "id列表xxxx,xxxx,xxxx,...")
             @RequestParam(value = "ids") String ids) {
         Envelop envelop = new Envelop();
         try {
