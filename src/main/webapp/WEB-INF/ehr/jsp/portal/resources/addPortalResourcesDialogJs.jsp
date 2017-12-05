@@ -80,7 +80,7 @@ $(function () {
                     $.Notice.error(resp.errorMsg);
                 else
                    $.Notice.success('新增成功');
-                   win.top.closeAddPortalResourcesInfoDialog(function () {
+                   parent.closeAddPortalResourcesInfoDialog(function () {
                 });
             });
         },
