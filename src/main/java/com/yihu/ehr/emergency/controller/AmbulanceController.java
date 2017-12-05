@@ -202,16 +202,16 @@ public class AmbulanceController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
     @ApiOperation("获取单条记录")
     @ResponseBody
     public Envelop findById(
             @ApiParam(name = "id", value = "id")
-            @PathVariable(value = "id") String id){
+            @RequestParam(value = "id") String id){
         Envelop envelop = new Envelop();
         try {
             Map<String, Object> params = new HashMap<String, Object>();
-            String url = "/ambulance/{id}";
+            String url = "/ambulance/findById";
             params.put("id", id);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
