@@ -12,6 +12,16 @@
                 '${contextRoot}/resource/report/uploadTemplate',//保存模板
                 '${contextRoot}/resource/report/getTemplateData',//获取模板
                 '${contextRoot}/resourceBrowse/searchResourceData',//获取模板对应的数据
+                '${contextRoot}/resourceBrowse/getGridCloumnNames'//获取表头
+        ];
+        //档案数据基本数据
+        var defauleColumnModel = [
+            {"name": 'patient_name', "display": "病人姓名", "width": 100},
+            {"name": 'event_type', "display": "就诊类型", "width": 100},
+            {"name": 'org_name', "display": "机构名称", "width": 100},
+            {"name": 'org_code', "display": "机构编号", "width": 100},
+            {"name": 'event_date', "display": "时间", "width": 100},
+            {"name": 'demographic_id', "display": "病人身份证号码", "width": 100}
         ];
         $(function () {
             var TVS = {
@@ -20,55 +30,56 @@
                 $upFileInp: $('.up-file'),
                 $tmpCon: $('.tmp-con'),
                 $saveTmp: $('#saveTmp'),
-                resourseIds: [],
+                rIdsAndQCode: [],
                 chart: null,
                 chartTit: '',
                 id: '${id}',
                 code: '${code}',
+                ET: null,
                 init: function () {
                     this.getTmp();
-                    _ET({
+                    this.ET = _ET({
                         $main: $('#editMain'),
-                        addViewFun: this.showViewList.bind(this)
+                        addViewFun: this.showViewList.bind(this),
+                        cb: this.removeId
                     });
                     this.bindEvent();
                 },
-                getTmp: function () {
+                getTmp: function () {//获取模板&&数据
                     var me = this;
-                    $.ajax({
-                        url: url[2],
-                        type: 'GET',
-                        data: {reportCode: me.code},
-                        success: function(data) {
-                            if(data.successFlg) {
-                                var d = data.obj.viewInfos;
-                                me.$noneTmp.hide();
-                                me.$tmpCon.html(data.obj.templateContent);
-                                $.each(d , function (k, obj) {
-                                    var $dom = $('#' + obj.resourceId),
-                                        myChart = echarts.init($dom[0]),
+                    me.resData(url[2], {
+                        reportCode: me.code
+                    }, function (data) {
+                        if(data.successFlg) {
+                            var d = data.obj.viewInfos, quotaIds = [], $quotaIds = null;
+                            me.$noneTmp.hide();
+                            me.$tmpCon.html(data.obj.templateContent);
+                            $.each(d , function (k, obj) {
+                                var $dom = $('#' + obj.resourceId),
                                         option = JSON.parse(obj.options[0].option);
-                                    me.resourseIds.push(obj.resourceId);
-                                    $dom.closest('.charts').find('.c-title').html(option.title.text);
-                                    delete option.title;
-                                    myChart.setOption(option);
-                                });
-                            } else {
-                                me.$noneTmp.show();
-                                $.Notice.warn('获取报表模版失败！');
+                                me.rIdsAndQCode.push(obj.resourceId);
+                                me.renderQuota($dom, option);
+                            });
+                            $quotaIds = $(document).find('#quotaIds');
+                            if ($quotaIds.length > 0) {
+                                quotaIds = ($quotaIds.val()).split(',')
                             }
-                        },
-                        error: function () {
-                            $.Notice.error('获取报表模版发生异常！');
+                            $.each(quotaIds, function (k, v) {
+                                var $dom = $('#' + v);
+                                me.rIdsAndQCode.push(v);
+                                me.getResourceData(v, $dom, null, $dom.attr('data-name'));
+                            })
+                        } else {
+                            me.$noneTmp.show();
+                            $.Notice.warn('获取报表模版失败！');
                         }
-                    });
+                    })
                 },
-                showViewList: function ($dom) {
+                showViewList: function ($dom) {//展示视图列表
                     var wait = $.Notice.waitting("请稍后..."),
                         me = this;
                     me.chart = $dom.closest('.charts').find('.charts-con');
                     me.chartTit = $dom.closest('.charts').find('.c-title');
-
                     selViewDialog = $.ligerDialog.open({
                         height: 700,
                         width: 378,
@@ -89,7 +100,7 @@
                     me.$upHtmlFile.on('click', function () {
                         me.$upFileInp.trigger('click');
                     });
-                    me.$upFileInp.on('change', function (e) {
+                    me.$upFileInp.on('change', function (e) {//上传模板文件
                         var files = e.target.files[0],
                             type = files.type,
                             reader = new FileReader();
@@ -102,86 +113,172 @@
                         };
                         reader.readAsText(files);
                     });
-                    me.$saveTmp.on('click', function () {
+                    me.$saveTmp.on('click', function () {//保存模板
                         var tmp = me.$tmpCon.html(),
                             num = tmp.indexOf('</style>') + ('</style>'.length),
                             styleStr = me.getFormatData(tmp.substring(0, num)),
                             tmpStr = me.getFormatData(tmp.substring(num, tmp.length)),
-                            $tmpDom = $(tmpStr),
-                            reportData = [];
+                            $tmpDom = $('<div>' + tmpStr + '</div>'),
+                            reportData = [],
+                            quotaIds = [],
+                            isHas = false,
+                            $input = $tmpDom.find('#quotaIds');
+                        if ($input.length <= 0) {
+                            $input = document.createElement('input');
+                            $input.type = 'hidden';
+                            $input.id = 'quotaIds';
+                        } else {
+                            $input = $input[0];
+                            isHas = true;
+                        }
                         $tmpDom.find('.c-title').html('');
-                        $tmpDom.find('.charts-con').removeAttr('style').removeAttr('_echarts_instance_').html('');
-                        tmpStr = styleStr + '<div>' + $tmpDom.html() + '</div>';
-                        $.each(me.resourseIds, function (k, o) {
-                            reportData.push({
-                                id: '',
-                                reportId: me.id,
-                                resourceId: o
-                            });
-                        })
-                        reportData = JSON.stringify(reportData);
-                        $.ajax({
-                            url: url[1],
-                            data: {
-                                id: parseInt(me.id),
-                                content: tmpStr,
-                                reportData: reportData
-                            },
-                            type: 'POST',
-                            dataType: 'json',
-                            success: function (res) {
-                                if (res.successFlg) {
-                                    closeTmpSettingDialogDialog();
-                                    $.Notice.success('保存成功！');
-                                } else {
-                                    $.Notice.error('保存失败！');
-                                }
+                        $tmpDom.find('.charts-con').removeAttr('style').removeAttr('ligeruiid').removeAttr('_echarts_instance_').removeClass('l-panel').removeClass('l-frozen').html('');
+                        $.each($tmpDom.find('.charts-con'), function (k, o) {
+                            var tId = $(o).attr('id'),
+                                t = $(o).attr('data-type');
+                            if (t == 2) {
+                                reportData.push({
+                                    id: '',
+                                    reportId: me.id,
+                                    resourceId: tId
+                                });
+                            } else if (t == 1) {
+                                quotaIds.push(tId);
                             }
                         });
+                        $input.value = quotaIds.join(',');
+                        reportData = JSON.stringify(reportData);
+                        isHas || $tmpDom.append($input);
+                        tmpStr = styleStr + '<div>' + $tmpDom.html() + '</div>';
+                        me.saveData(parseInt(me.id), tmpStr, reportData);
                     });
                 },
-                getFormatData: function (str) {
+                saveData:function (id, tmpStr, reportData) {
+                    this.resData(url[1],{
+                        id: id,
+                        content: tmpStr,
+                        reportData: reportData
+                    }, function (res) {
+                        if (res.successFlg) {
+                            closeTmpSettingDialogDialog();
+                            $.Notice.success('保存成功！');
+                        } else {
+                            $.Notice.error('保存失败！');
+                        }
+                    }, 'POST');
+                },
+                getFormatData: function (str) {//去除空格
                     return str.replace(/[\r\n]/g, '').replace(/^\s+|\s+$/g, '');
                 },
-                getChartData: function (id) {
+                getChartData: function (id) {//获取选中的指标视图数据
+                    TVS.resData(url[0], {
+                        resourceId: id
+                    }, function (res) {
+                        if (res.successFlg) {
+                            var resourceId = res.detailModelList[0].resourceId,
+                                    isT = TVS.checkIsExist(resourceId);
+                            if (!isT) return;
+                            TVS.chart.attr('id', resourceId);
+                            TVS.chart.attr('data-type', 2);
+                            var option = JSON.parse(res.detailModelList[0].option);
+                            TVS.renderQuota(TVS.chart, option);
+                        } else {
+                            $.Notice.error(res.errorMsg);
+                        }
+                    })
+                },
+                renderQuota: function ($dom, opt) {//渲染指标图表
+                    var myChart = null;
+                    myChart = echarts.init($dom[0]);
+                    $dom.parent().find('.c-title').html(opt.title.text);
+                    delete opt.title;
+                    myChart.setOption(opt);
+                },
+                getResourceData: function (id, $dom, sta, name) {//档案数据
+                    var me = this;
+                    me.resData(url[4], {
+                        dictId: id
+                    }, function (res) {
+                        me.renderResourceTable(id, res, $dom, sta, name)
+                    });
+                },
+                renderResourceTable: function (id, res, $dom, sta, name) {//档案数据表格渲染
+                    var col = [], isT = false;
+                    if (sta == 'change') {//change: 视图替换   undefined: 第一次渲染视图
+                        isT = TVS.checkIsExist(id);
+                        if (!isT) return;
+                    }
+                    if (res && res.length > 0) {
+                        col = defauleColumnModel;
+                        $.each(res, function (k, obj) {
+                            col.push({display: obj.value, name: obj.code, width: 100});
+                        })
+                    }
+                    $dom.ligerGrid($.LigerGridEx.config({
+                        url: url[3],
+                        height: $dom.height(),
+                        parms: {
+                            searchParams: '',
+                            resourcesCode: id
+                        },
+                        pageSize: 5,
+                        columns: col,
+                        checkbox: true
+                    }));
+                    $dom.parent().find('.c-title').html(name);
+                    $dom.attr('id', id);
+                    $dom.attr('data-name', name);
+                    $dom.attr('data-type', 1);
+                },
+                checkIsExist: function (id) {//检测id
+                    var oldResourceId = TVS.chart.attr('id'),
+                        newIndex = TVS.rIdsAndQCode.indexOf(id),
+                        oldIndex = TVS.rIdsAndQCode.indexOf(oldResourceId);
+                    if (newIndex >= 0) {
+                        $.Notice.error('该视图已选择，请重选！');
+                        return false;
+                    }
+                    if (oldIndex >= 0) {
+                        TVS.resetHtml();
+                    }
+                    TVS.rIdsAndQCode.push(id);
+                    return true;
+                },
+                resetHtml: function () {
+                    TVS.chart && TVS.ET.resetHtml(TVS.chart.parent(), TVS.removeId);
+                },
+                removeId: function (id) {
+                    var index = TVS.rIdsAndQCode.indexOf(id);
+                    if (index >= 0) {
+                        TVS.rIdsAndQCode.splice(index, 1);
+                    }
+                },
+                resData: function (url, param, cb, type) {
                     $.ajax({
-                        url: url[0],
-                        data: {resourceId: id},
-                        type: 'GET',
+                        url: url,
+                        type: type || 'GET',
                         dataType: 'json',
+                        data: param,
                         success: function (res) {
-                            if (res.successFlg) {
-                                var resourceId = res.detailModelList[0].resourceId,
-                                    oldResourceId = TVS.chart.attr('id'),
-                                    newIndex = TVS.resourseIds.indexOf(resourceId),
-                                    oldIndex = TVS.resourseIds.indexOf(oldResourceId);
-                                if (newIndex >= 0) {
-                                    $.Notice.error('该视图已选择，请重选！');
-                                    return;
-                                }
-                                if (oldIndex >= 0) {
-                                    TVS.resourseIds.splice(oldIndex, 1);
-                                }
-                                var option = JSON.parse(res.detailModelList[0].option);
-                                var myChart = echarts.init(TVS.chart[0]);
-                                TVS.chartTit.html(option.title.text);
-                                TVS.resourseIds.push(resourceId);
-                                TVS.chart.attr('id', resourceId);
-                                delete option.title;
-                                myChart.setOption(option);
-                            } else {
-                                $.Notice.error(res.errorMsg);
-                            }
+                            cb && cb.call(this, res);
+                        },
+                        error: function () {
+                            $.Notice.error('发生异常！');
                         }
                     });
                 }
             };
-            w.closeselViewDialog = function (msg, id) {
+            w.closeselViewDialog = function (msg, id, type, name) {
                 selViewDialog.close();
-                TVS.getChartData(id);
-
-                w._ET = null;
                 msg && $.Notice.success(msg);
+                (id && type) && (function () {
+                    if (type == 1) {
+                        TVS.getResourceData(id, TVS.chart, 'change', name);
+                    } else {
+                        TVS.getChartData(id);
+                    }
+                })()
+                w._ET = null;
             };
             TVS.init();
         });

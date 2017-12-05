@@ -526,6 +526,8 @@
                         if (id != '-1') {
                             values.id = id.toString();
                         }
+                        values.name = values.name.trim();
+                        values.code = values.code.trim();
                         var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                         dataModel.fetchRemote("${contextRoot}/tjQuota/updateTjDataSource", {
                             data: {tjQuotaModelJsonData:JSON.stringify(values)},

@@ -27,7 +27,7 @@ permissions:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: weifuwu
     password: weifuwu
 app:
@@ -61,7 +61,7 @@ std:
 spring:
   profiles: alpha
   datasource:
-    url: jdbc:mysql://192.168.1.220:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.1.220:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: ha
     password: ha
 app:
@@ -94,7 +94,7 @@ std:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: chenweishan
     password: chenweishan
 app:
@@ -128,7 +128,7 @@ std:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:mysql://192.168.1.220:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.1.220:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: ha
     password: ha
 app:
@@ -163,7 +163,7 @@ logging:
 spring:
   profiles: prod_fz
   datasource:
-    url: jdbc:mysql://192.168.135.39:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.135.39:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: sr_healtharchive
     password: data!@)1
 app:
@@ -172,7 +172,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2authorize: http://192.168.135.35:10260/
-  oauth2OutSize: http://192.168.135.35:10260/
+  oauth2OutSize: http://11.1.2.16:10260/
 service-gateway:
   username: user
   password: eureka
@@ -185,7 +185,7 @@ service-gateway:
   template: http://192.168.135.31:10000/api/v1.0/template
   standard: http://192.168.135.31:10000/api/v1.0/std
   browseClientUrl: http://192.168.135.34:8010/ehr/browser
-  browseClientOutSizeUrl: http://192.168.135.34:8010/ehr/browser
+  browseClientOutSizeUrl: http://11.1.2.16:8010/ehr/browser
   profileurl: http://192.168.135.32:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.135.42:22122
@@ -199,7 +199,7 @@ logging:
 spring:
   profiles: prod_sr
   datasource:
-    url: jdbc:mysql://10.176.97.9:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://10.176.97.9:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: healthcloud
     password: GP8Qz4qU
 app:
@@ -224,7 +224,7 @@ service-gateway:
   browseClientOutSizeUrl: http://171.35.109.41:8010/ehr/browser
   profileurl: http://10.176.97.12:9009/api/v1.0
 fast-dfs:
-  tracker-server: 10.176.97.5:22122
-  public-server: http://10.176.97.5:80
+  tracker-server: 10.176.97.5:8888
+  public-server: http://10.176.97.5:8888
 std:
   version: 59083976eebd
