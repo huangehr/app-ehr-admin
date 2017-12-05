@@ -115,7 +115,7 @@ public class AmbulanceController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping(value = "/updateStatus", method = RequestMethod.PUT)
+    @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
     @ApiOperation(value = "更新救护车状态信息")
     @ResponseBody
     public Envelop update(
@@ -160,7 +160,7 @@ public class AmbulanceController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation(value = "更新单条记录")
     @ResponseBody
     public Envelop update(
@@ -181,7 +181,7 @@ public class AmbulanceController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ApiOperation(value = "删除记录")
     @ResponseBody
     public Envelop delete(
