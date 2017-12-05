@@ -1,10 +1,12 @@
 package com.yihu.ehr.resource.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.model.resource.MChartInfoModel;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -529,16 +531,15 @@ public class ResourceManageController extends BaseUIController {
      * @return
      */
     @RequestMapping("/resourceShow")
-    public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter,HttpServletRequest request){
-        String url = "/resources/getRsQuotaPreview";
+    public String resourceShow(String id ,Model model ,String dimension,String quotaFilter,HttpServletRequest request) throws JsonProcessingException{
+        MChartInfoModel chartInfoModel = new MChartInfoModel();
         String resultStr = "";
-        Map<String, Object> params = new HashMap<>();
-        params.put("resourceId", id);
-        params.put("dimension", dimension);
-        params.put("quotaId", quotaId);
-        List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
-        params.put("userOrgList", userOrgList);
         try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("resourceId", id);
+            params.put("dimension", dimension);
+            List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+            params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();
            if( !StringUtils.isEmpty(quotaFilter) ){
                String filter[] = quotaFilter.split(";");
@@ -548,18 +549,21 @@ public class ResourceManageController extends BaseUIController {
                }
                params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
            }
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+            Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
+            String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop.getObj());
+            chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+         }
         model.addAttribute("id", id);
-        model.addAttribute("resultStr", resultStr);
+        model.addAttribute("chartInfoModel", objectMapper.writeValueAsString(chartInfoModel));
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
         return "simpleView";
     }
 
     /**
-     * 指标预览
+     * 指标预览 包含上卷 下钻
      * @param id
      * @param dimension  维度
      * @param quotaFilter 过滤条件 多个;拼接 如：org=123;city=001
@@ -567,15 +571,14 @@ public class ResourceManageController extends BaseUIController {
      */
     @RequestMapping("/resourceUpDown")
     @ResponseBody
-    public String getResourceUpDown(String id, String dimension,String quotaFilter,String quotaId,HttpServletRequest request){
-        String url = "/resources/getRsQuotaPreview";
-        String resultStr = "";
-        Envelop result = new Envelop();
+    public MChartInfoModel getResourceUpDown(String id, String dimension,String quotaFilter ,HttpServletRequest request){
+        MChartInfoModel chartInfoModel = new MChartInfoModel();
         try {
+            Envelop result = new Envelop();
+            String resultStr = "";
             Map<String, Object> params = new HashMap<>();
             params.put("resourceId", id);
             params.put("dimension", dimension);
-            params.put("quotaId", quotaId);
             List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();
@@ -587,11 +590,14 @@ public class ResourceManageController extends BaseUIController {
                 }
                 params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
             }
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            resultStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+            Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
+            String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop.getObj());
+            chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resultStr;
+        return chartInfoModel;
     }
 
     /**
