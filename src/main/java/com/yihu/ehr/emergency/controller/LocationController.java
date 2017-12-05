@@ -70,7 +70,7 @@ public class LocationController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation("更新单条记录")
     public Envelop update(
             @ApiParam(name = "location", value = "排班")
@@ -88,7 +88,7 @@ public class LocationController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ApiOperation("删除待命地点")
     public Envelop delete(
             @ApiParam(name = "ids", value = "id列表(int)1,2,3,...")

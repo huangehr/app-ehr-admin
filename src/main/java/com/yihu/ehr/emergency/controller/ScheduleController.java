@@ -92,7 +92,7 @@ public class ScheduleController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation("更新单条记录，只允许更新时间和状态")
     public Envelop update(
             @ApiParam(name = "schedule", value = "排班")
