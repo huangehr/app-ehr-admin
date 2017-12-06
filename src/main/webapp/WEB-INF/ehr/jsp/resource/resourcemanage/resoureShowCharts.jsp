@@ -22,7 +22,7 @@
                         ms-for="($index, item) in @dimensionMap"
                         ms-if="item.isShow"
                         ms-text="item.value"
-                        ms-click="@cDown(item.key, item.value, $index)"
+                        ms-click="cDown(item.key, item.value, $index)"
                     ></li>
                 </ul>
             </div>
