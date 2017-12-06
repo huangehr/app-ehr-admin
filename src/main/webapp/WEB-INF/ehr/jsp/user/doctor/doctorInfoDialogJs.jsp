@@ -81,7 +81,7 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('修改成功');
-                    closeAddDoctorInfoDialog(function () {});
+                        win.closeDoctorInfoDialog();
                 });
             },//树形结构todo
             initForm: function () {
