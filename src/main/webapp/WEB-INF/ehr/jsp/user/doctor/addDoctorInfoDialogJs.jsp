@@ -88,8 +88,7 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('新增成功');
-                    closeAddDoctorInfoDialog(function () {
-                    });
+                        win.parent.closeAddDoctorInfoDialog();
                 });
             },
             initForm: function () {
