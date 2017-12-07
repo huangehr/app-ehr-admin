@@ -174,19 +174,19 @@ public class BaseUIController {
     }
 
     public List<String> getUserRolesListRedis(HttpServletRequest request) throws IOException {
-        List<String> userOrgList  = new ArrayList<>();
+        List<String> userRoleList  = new ArrayList<>();
         if(request.getSession().getAttribute(AuthorityKey.UserRoles) != null){
-            userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserRoles);
+            userRoleList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserRoles);
         }
-        return  userOrgList;
+        return  userRoleList;
     }
 
     public List<String> getUserResourceListRedis(HttpServletRequest request) throws IOException {
-        List<String> userOrgList  = new ArrayList<>();
+        List<String> userResourceList  = new ArrayList<>();
         if(request.getSession().getAttribute(AuthorityKey.UserResource) != null){
-            userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserResource);
+            userResourceList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserResource);
         }
-        return  userOrgList;
+        return  userResourceList;
     }
 
 }
