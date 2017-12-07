@@ -1,5 +1,6 @@
 package com.yihu.ehr.resource.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
@@ -530,14 +531,13 @@ public class ResourceManageController extends BaseUIController {
      * @return
      */
     @RequestMapping("/resourceShow")
-    public String resourceShow(String id ,Model model,String quotaId,String dimension,String quotaFilter,HttpServletRequest request){
+    public String resourceShow(String id ,Model model ,String dimension,String quotaFilter,HttpServletRequest request) throws JsonProcessingException{
         MChartInfoModel chartInfoModel = new MChartInfoModel();
         String resultStr = "";
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("resourceId", id);
             params.put("dimension", dimension);
-            params.put("quotaId", quotaId);
             List<String> userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
             params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();
@@ -555,9 +555,9 @@ public class ResourceManageController extends BaseUIController {
             chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+         }
         model.addAttribute("id", id);
-        model.addAttribute("chartInfoModel", chartInfoModel);
+        model.addAttribute("chartInfoModel", objectMapper.writeValueAsString(chartInfoModel));
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
         return "simpleView";
     }
@@ -571,7 +571,7 @@ public class ResourceManageController extends BaseUIController {
      */
     @RequestMapping("/resourceUpDown")
     @ResponseBody
-    public MChartInfoModel getResourceUpDown(String id, String dimension,String quotaFilter,String quotaId,HttpServletRequest request){
+    public MChartInfoModel getResourceUpDown(String id, String dimension,String quotaFilter ,HttpServletRequest request){
         MChartInfoModel chartInfoModel = new MChartInfoModel();
         try {
             Envelop result = new Envelop();
@@ -579,7 +579,6 @@ public class ResourceManageController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             params.put("resourceId", id);
             params.put("dimension", dimension);
-            params.put("quotaId", quotaId);
             List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();

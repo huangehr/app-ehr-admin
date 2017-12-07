@@ -26,10 +26,10 @@
                     },
                     success: function (data) {
                         if(data.successFlg){
-                            var iframe = document.createElement('iframe');
-                            iframe.src = '${contextRoot}/index#signin';
-                            <%--location.href = '${contextRoot}/index#signin';--%>
-                            me.$signinCon.html(iframe);
+//                            var iframe = document.createElement('iframe');
+                            <%--iframe.src = '${contextRoot}/index#signin';--%>
+                            location.href = '${contextRoot}/index#signin';
+//                            me.$signinCon.html(iframe);
                         }else{
                             me.$tipsCon.html(me.gethtml('访问失败'));
                             <%--location.href = '${contextRoot}/login';--%>

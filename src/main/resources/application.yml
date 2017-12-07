@@ -30,6 +30,10 @@ spring:
     url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: weifuwu
     password: weifuwu
+  redis:
+    host: 172.19.103.47 # Redis server host.
+    port: 6379
+    password: redis!@456
 app:
   baseClientId: zkGuSIm2Fg  # 【基础信息管理】应用
   qcReportClientId: 2YTOSRI0tw
@@ -64,6 +68,10 @@ spring:
     url: jdbc:mysql://192.168.1.220:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: ha
     password: ha
+  redis:
+     host: 172.19.103.47 # Redis server host.
+     port: 6379
+     password: redis!@456
 app:
   baseClientId: zkGuSIm2Fg  # 【基础信息管理】应用
   qcReportClientId: 2YTOSRI0tw
