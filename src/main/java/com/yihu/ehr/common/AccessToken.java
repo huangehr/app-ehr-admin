@@ -1,9 +1,11 @@
 package com.yihu.ehr.common;
 
+import java.io.Serializable;
+
 /**
  * Created by hzp on 2017/3/28.
  */
-public class AccessToken {
+public class AccessToken implements Serializable {
     private String accessToken;
     private String refreshToken;
     private String tokenType;

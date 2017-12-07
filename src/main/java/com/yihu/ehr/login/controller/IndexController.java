@@ -39,16 +39,7 @@ public class IndexController extends BaseUIController {
     @RequestMapping(value = "")
     public String init(Model model, HttpServletRequest request) throws Exception {
         String clientId = (String)request.getSession().getAttribute("clientId");
-        if(StringUtils.isEmpty(clientId)){
-            clientId = getRedisValue(request,"clientId");
-        }
         UserDetailModel userDetailModel = getCurrentUserRedis(request);
-        if( ! StringUtils.isNotEmpty(clientId)){
-             clientId =  getRedisValue(request,"clientId");
-        }
-        if(userDetailModel == null){
-            userDetailModel = objectMapper.readValue(getRedisValue(request, SessionAttributeKeys.CurrentUser), UserDetailModel.class);
-        }
         Map<String, Object> params = new HashMap<>();
         if (StringUtils.isNotEmpty(clientId)) {
             // 从总支撑门户过来，会附带 appId 参数
@@ -61,22 +52,8 @@ public class IndexController extends BaseUIController {
         String envelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.AppFeature.FindAppMenus, params, username, password);
         Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
         String menuData = toJson(envelop.getDetailModelList());
-
         String host = (String)request.getSession().getAttribute("host");
-        if(StringUtils.isEmpty(host)){
-            host = getRedisValue(request,"host");
-        }
         String lastLoginTime = (String)request.getSession().getAttribute("last_login_time");
-        if(StringUtils.isEmpty(lastLoginTime)){
-            lastLoginTime = getRedisValue(request,"last_login_time");
-        }
-        if( ! StringUtils.isNotEmpty(host)){
-            host = getRedisValue(request ,"host");
-        }
-        if( ! StringUtils.isNotEmpty(lastLoginTime)){
-            lastLoginTime = getRedisValue(request ,"last_login_time");
-        }
-
         model.addAttribute("last_login_time",lastLoginTime);
         model.addAttribute("host",host);
         model.addAttribute("menuData", menuData);
