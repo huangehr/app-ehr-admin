@@ -16,7 +16,6 @@ public class LogoutController extends BaseUIController{
     @RequestMapping(value = "/reLogin")
     public String login(Model model,HttpServletRequest request) {
         request.getSession().removeAttribute(SessionAttributeKeys.CurrentUser);
-        deleteRedisValue(request,SessionAttributeKeys.CurrentUser);
         model.addAttribute("contentPage","login/login");
         model.addAttribute("successFlg", true);
         return "generalView";
