@@ -13,19 +13,19 @@
             chart: document.getElementById('chart'),
             resourceId: '${id}',
             myChart: null,
-            xAxisMap: {},
-            firstDimension: '',
-            index: 0,
+            xAxisMap: {},//细维度
+            firstDimension: '',//默认第一次查询的主维度code
             dimensionMap: {},//主维度-对象
+            $cDropDown: $('#cDropDown'),
             init: function () {
                 this.initAvalon();
                 this.initData();
+                this.bindEvents();
             },
             initAvalon: function () {
                 var me = this;
                 me.nrsAvalon = avalon.define({
                     $id: 'nrsApp',
-                    upClass: '',
                     downClass: '',
                     showDown: false,//是否显示下拉
                     dimensionMap: [],//主维度-数组
@@ -33,7 +33,7 @@
                     downKeyArr: [],//主维度index
                     selVal: '',//图表选中值
                     isSel: false,//是否先选中图表
-                    nowDimension: [],//下砖维度书序
+                    nowDimension: [],//下砖维度顺序
                     num: 0,
                     upVal: function() {
                         var valArr = [],
@@ -80,6 +80,29 @@
                         this.nowDimension.push(key);
                         me.reloadData(key, this.downValArr.join(';'));
                         this.num++;
+                    },
+                    cLink: function (k, l) {
+                        var arrVal = [],
+                            arrKey = [],
+                            arrND = [me.firstDimension],
+                            i;
+                        if (typeof l != 'undefined') {
+                            for (i = 0; i <= l; i++) {
+                                arrVal.push(this.downValArr[i]);
+                                arrKey.push(this.downKeyArr[i]);
+                                arrND.push(this.nowDimension[i + 1]);
+                            }
+                            for (; i < this.dimensionMap.length; i++) {
+                                this.dimensionMap[this.downKeyArr[i]].isShow = true;
+                            }
+                            this.downValArr = arrVal;
+                            this.downKeyArr = arrKey;
+                            this.nowDimension = arrND;
+                            me.reloadData(k, this.downValArr.join(';'));
+                        }
+                    },
+                    getFirstVal: function () {
+                        return me.dimensionMap[me.firstDimension];
                     }
                 });
             },
@@ -113,10 +136,11 @@
                     me.initChart(option);
                 } else {
                     $.Notice.success('图表数据有误！');
+                    return;
                 }
                 me.dimensionMap = me.chartInfoModel.dimensionMap;
                 me.xAxisMap = me.chartInfoModel.xAxisMap;
-                me.firstDimension = me.chartInfoModel.firstDimension;
+                me.firstDimension = me.chartInfoModel.firstDimension;//
                 me.nrsAvalon.nowDimension = [me.chartInfoModel.firstDimension];
                 _.map(me.chartInfoModel.dimensionMap, function (v, k) {
                     if (k == me.firstDimension) return;
@@ -149,6 +173,20 @@
             reloadChart: function (opt) {
                 this.myChart.clear();
                 this.myChart.setOption(opt, true);
+            },
+            bindEvents: function () {
+                var me = this;
+                me.$cDropDown.on('click', function () {
+                    var key = $(this).attr('key');
+                    me.reloadData(key, '');
+                    me.nrsAvalon.downValArr = [];
+                    me.nrsAvalon.downKeyArr = [];
+                    me.nrsAvalon.nowDimension = [me.firstDimension];
+                    me.nrsAvalon.selVal = '';
+                    _.each(me.nrsAvalon.dimensionMap, function (o , k) {
+                        o.isShow = true;
+                    });
+                });
             }
         };
         showCharts.init();

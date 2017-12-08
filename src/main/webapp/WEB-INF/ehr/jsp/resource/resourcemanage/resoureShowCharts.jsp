@@ -30,7 +30,15 @@
 
         <div class="con-t-con">
             <%--goback--%>
-            <div class="condition"></div>
+            <div class="condition">
+                <div class="nav ">下钻项：</div>
+                <div class="nav ">
+                    <ul>
+                        <li id="cDropDown" ms-attr="{key:nowDimension[0]}"><a href="#" ms-text="getFirstVal()"></a></li>
+                        <li ms-for="($index, item) in downKeyArr"><a href="#" ms-text="dimensionMap[item].value" ms-click="cLink(dimensionMap[item].key, $index)"></a> </li>
+                    </ul>
+                </div>
+            </div>
             <%--charts--%>
             <div id="chart" style="width:748px;height: 403px"></div>
         </div>
