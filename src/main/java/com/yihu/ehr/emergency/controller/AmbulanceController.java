@@ -58,9 +58,9 @@ public class AmbulanceController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/list";
-            params.put("filters", filters);
-            params.put("fields", fields);
-            params.put("sorts", sorts);
+//            params.put("filters", filters);
+//            params.put("fields", fields);
+//            params.put("sorts", sorts);
             params.put("page", page);
             params.put("size", size);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -202,16 +202,16 @@ public class AmbulanceController extends BaseUIController {
         return envelop;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
     @ApiOperation("获取单条记录")
     @ResponseBody
     public Envelop findById(
             @ApiParam(name = "id", value = "id")
-            @PathVariable(value = "id") String id){
+            @RequestParam(value = "id") String id){
         Envelop envelop = new Envelop();
         try {
             Map<String, Object> params = new HashMap<String, Object>();
-            String url = "/ambulance/{id}";
+            String url = "/ambulance/findById";
             params.put("id", id);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
@@ -294,6 +294,33 @@ public class AmbulanceController extends BaseUIController {
         model.addAttribute("files", result);
         model.addAttribute("contentPage", "/emergency/impGrid");
         return "pageView";
+    }
+
+    @RequestMapping("/initialization")
+    public String initialization(Model model){
+        model.addAttribute("contentPage", "/urgentcommand/fleet");
+        return "pageView";
+    }
+    @RequestMapping("/intercalatesupervise")
+    public String intercalatesupervise(Model model){
+        model.addAttribute("contentPage", "/urgentcommand/fleetset");
+        return "pageView";
+    }
+
+    @RequestMapping("/sortmanage")
+    public String sortmanage(Model model){
+        model.addAttribute("contentPage", "/urgentcommand/rdermanage");
+        return "pageView";
+    }
+
+    @RequestMapping(value = "getPage")
+    public String getPage(Model model,String id){
+        if (id == "") {
+            model.addAttribute("id","-1");
+        } else {
+            model.addAttribute("id",id);
+        }
+        return  "/urgentcommand/vehiclemMenu";
     }
 
     @RequestMapping("/importLs")

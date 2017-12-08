@@ -8,9 +8,7 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.util.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -41,8 +39,6 @@ public class OrgDictController {
     private String comUrl;
     @Autowired
     ObjectMapper objectMapper;
-    @Autowired
-    RedisService redisService;
 
     @RequestMapping("initial")
     public String orgDictInit() {
@@ -528,12 +524,7 @@ public class OrgDictController {
     }
 
     private UserDetailModel getCurUser(HttpServletRequest request){
-        UserDetailModel userDetailModel = new  UserDetailModel();
-        try {
-            userDetailModel = redisService.getCurrentUserRedis(request);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         return userDetailModel;
     }
 }

@@ -1,13 +1,10 @@
 package com.yihu.ehr.util.logback;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.yihu.ehr.constants.ErrorCode;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.util.service.RedisService;
-import org.apache.commons.lang3.StringUtils;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -29,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,8 +51,6 @@ public class LogAspect {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
-    @Autowired
-    RedisService redisService;
 
     /**
      * @param joinPoint
@@ -158,12 +152,9 @@ public class LogAspect {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         HttpSession session = request.getSession();
         String userName = (String) session.getAttribute("loginCode");
-        if(StringUtils.isEmpty(userName)){
-            userName = redisService.getRedisValue(request, "loginCode");
-        }
-        JSONObject data = new JSONObject();
+               JSONObject data = new JSONObject();
         try {
-            UserDetailModel userModel = redisService.getCurrentUserRedis(request);
+            UserDetailModel userModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
             if(null!=userModel){
                 data.put("patient", userModel.getRealName());// 总支撑
             }

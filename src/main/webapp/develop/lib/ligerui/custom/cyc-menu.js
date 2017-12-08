@@ -78,6 +78,7 @@ $(function(){
             var Obj=obj;
             var ObjCyc=$(this).find("a");
             ObjCyc.bind("click",function(){
+                debugger
                 if($(this).attr("href")=="javascript:void(0);"){
                     if (parentOrder == '' || parentOrder == 'callChild') {
                         parentOrder = parentOrder == '' ? '' : 'openTab';
@@ -125,28 +126,29 @@ $(function(){
                         } else {
                             $(this).not(".three").next("ul").slideToggle();
                         }
-                    }
-                    if($(this).hasClass("three")){//第三级
+                    } else {
+                        if($(this).hasClass("three")){//第三级
 
-                        $(this).closest("li").siblings("li").find("ul").hide();
-                        $(this).addClass("on").next("ul").fadeIn();
+                            $(this).closest("li").siblings("li").find("ul").hide();
+                            $(this).addClass("on").next("ul").fadeIn();
 
-                        $(this).closest("#mCSB_1_container").attr("class","")
-                        $(this).closest("#mCSB_1").attr("class","")
-                        $("#div_main_content").find(">div:eq(0)").attr("class","").css({"position":"relative","z-index":"100","width":"197px"})
-                        var mscbTop=$(this).closest("#mCSB_1_container").css("top");
-                        $(this).closest("#mCSB_1_container").css("top","mscbTop")
-                        $(this).closest("#mCSB_1_container").attr("id","xmCSB_1_container");
-                        setTimeout(function(){
-                            $("#xmCSB_1_container").attr("id","mCSB_1_container");
+                            $(this).closest("#mCSB_1_container").attr("class","")
+                            $(this).closest("#mCSB_1").attr("class","")
+                            $("#div_main_content").find(">div:eq(0)").attr("class","").css({"position":"relative","z-index":"100","width":"197px"})
+                            var mscbTop=$(this).closest("#mCSB_1_container").css("top");
+                            $(this).closest("#mCSB_1_container").css("top","mscbTop")
+                            $(this).closest("#mCSB_1_container").attr("id","xmCSB_1_container");
+                            setTimeout(function(){
+                                $("#xmCSB_1_container").attr("id","mCSB_1_container");
 
-                        },200)
-                    }
-                    if($(this).hasClass("rignav") &&$(this).attr("data-url")!="") {
-                        $(".rignav").closest("ul").slideUp()
-                    }
-                    if($(this).hasClass("one")||$(this).hasClass("two")){
-                        $(".rignav").closest("ul").slideUp()
+                            },200)
+                        }
+                        if($(this).hasClass("rignav") &&$(this).attr("data-url")!="") {
+                            $(".rignav").closest("ul").slideUp()
+                        }
+                        if($(this).hasClass("one")||$(this).hasClass("two")){
+                            $(".rignav").closest("ul").slideUp()
+                        }
                     }
                 }
 
