@@ -2,8 +2,9 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-<div class="cache-chart">
-    <div id="cacheKeys" style="width: 500px;height: 300px; display: inline-block;"></div>
+<div>
+    <div id="categoryMemoryRate" style="width: 600px;height: 300px; display: inline-block;"></div>
+    <div id="cacheKeys" style="width: 600px;height: 300px; display: inline-block;"></div>
 </div>
 
 <div class="m-form-inline">

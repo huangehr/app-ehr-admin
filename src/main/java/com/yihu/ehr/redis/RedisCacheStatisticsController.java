@@ -42,4 +42,19 @@ public class RedisCacheStatisticsController extends BaseUIController {
         }
     }
 
+    /**
+     * 统计缓存分类的缓存内存比率（近似值，比实际略小）
+     */
+    @RequestMapping("/getCategoryMemory")
+    @ResponseBody
+    public Object getCategoryMemory() {
+        try {
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheStatistics.GetCategoryMemory, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(RedisCacheStatisticsController.class).error(e.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
 }

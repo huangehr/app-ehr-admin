@@ -106,6 +106,55 @@
     }
 
     function initChart() {
+        // 缓存分类内存比率统计
+        dataModel.fetchRemote('${contextRoot}/redis/cache/statistics/getCategoryMemory', {
+            success: function(data) {
+                if (data.successFlg) {
+                    var categoryMemoryRateChart = echarts.init(document.getElementById('categoryMemoryRate'));
+                    categoryMemoryRateChart.setOption({
+                        title : {
+                            text: '缓存分类的Redis内存占比',
+                            subtext: '单位：字节（bytes）',
+                            x:'center'
+                        },
+                        tooltip : {
+                            trigger: 'item',
+                            formatter: "{b} : {c} ({d}%)"
+                        },
+                        /*legend: {
+                            type: 'scroll',
+                            orient: 'vertical',
+                            right: 10,
+                            top: 20,
+                            bottom: 20,
+                            data: data.obj.categoryNameList
+                        },*/
+                        series : [
+                            {
+                                type: 'pie',
+                                radius : '55%',
+                                center: ['50%', '60%'],
+                                data: data.obj.categoryMemoryList,
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    });
+                } else {
+                    $.Notice.error(data.errorMsg);
+                }
+            },
+            error: function() {
+                $.Notice.error('加载分类内存占比图表数据发生异常！');
+            }
+        });
+
+        // 缓存个数统计
         dataModel.fetchRemote('${contextRoot}/redis/cache/statistics/getCategoryKeys', {
             success: function(data) {
                 if (data.successFlg) {
@@ -113,7 +162,7 @@
                     cacheKeysChart.setOption({
                         title: {
                             text: '分类缓存数量',
-                            left: 'center'
+                            x:'center'
                         },
                         color: ['#3398DB'],
                         tooltip : {
