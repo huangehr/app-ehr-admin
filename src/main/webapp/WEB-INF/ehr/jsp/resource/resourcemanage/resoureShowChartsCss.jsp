@@ -97,9 +97,10 @@
         height: 30px;
         line-height: 30px;
         position: relative;
-        text-align: right;
+        /*text-align: right;*/
         border-bottom:1px solid #ccc;
         margin-bottom: 10px;
+        margin-top: 30px;
     }
     .un-show{
         display: none;
@@ -226,5 +227,11 @@
     }
     .dirll-item.active{
         background: #2D9BD2 !important;
+    }
+    .nav,.nav ul li{
+        display: inline-block;
+    }
+    .nav ul li a{
+        padding: 0 10px;
     }
 </style>
