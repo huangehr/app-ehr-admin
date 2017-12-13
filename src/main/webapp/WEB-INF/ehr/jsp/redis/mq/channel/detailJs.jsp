@@ -25,6 +25,7 @@
 
         if(detailModel.id) {
             channelTb.setDisabled(true);
+            channelTb.setReadonly(true);
         }
 
         $form.attrScan();
