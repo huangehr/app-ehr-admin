@@ -109,6 +109,7 @@
                             return;
                         }
                         reader.onload = function () {
+                            me.rIdsAndQCode = [];
                             me.$tmpCon.html(this.result);
                         };
                         reader.readAsText(files);
@@ -136,14 +137,16 @@
                         $.each($tmpDom.find('.charts-con'), function (k, o) {
                             var tId = $(o).attr('id'),
                                 t = $(o).attr('data-type');
-                            if (t == 2) {
-                                reportData.push({
-                                    id: '',
-                                    reportId: me.id,
-                                    resourceId: tId
-                                });
-                            } else if (t == 1) {
-                                quotaIds.push(tId);
+                            if (tId) {
+                                if (t == 2) {
+                                    reportData.push({
+                                        id: '',
+                                        reportId: me.id,
+                                        resourceId: tId
+                                    });
+                                } else if (t == 1) {
+                                    quotaIds.push(tId);
+                                }
                             }
                         });
                         $input.value = quotaIds.join(',');
@@ -176,9 +179,9 @@
                     }, function (res) {
                         if (res.successFlg) {
                             var resourceId = res.detailModelList[0].resourceId,
-                                    isT = TVS.checkIsExist(resourceId);
+                                isT = TVS.checkIsExist(id);
                             if (!isT) return;
-                            TVS.chart.attr('id', resourceId);
+                            TVS.chart.attr('id', id);
                             TVS.chart.attr('data-type', 2);
                             var option = JSON.parse(res.detailModelList[0].option);
                             TVS.renderQuota(TVS.chart, option);
@@ -196,11 +199,13 @@
                 },
                 getResourceData: function (id, $dom, sta, name) {//档案数据
                     var me = this;
-                    me.resData(url[4], {
-                        dictId: id
-                    }, function (res) {
-                        me.renderResourceTable(id, res, $dom, sta, name)
-                    });
+                    if (id != '') {
+                        me.resData(url[4], {
+                            dictId: id
+                        }, function (res) {
+                            me.renderResourceTable(id, res, $dom, sta, name)
+                        });
+                    }
                 },
                 renderResourceTable: function (id, res, $dom, sta, name) {//档案数据表格渲染
                     var col = [], isT = false;
