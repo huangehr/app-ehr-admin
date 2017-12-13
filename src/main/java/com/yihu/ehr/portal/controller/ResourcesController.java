@@ -95,6 +95,7 @@ public class ResourcesController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
+        params.put("sorts", "-uploadTime");
         params.put("page", page);
         params.put("size", rows);
         try {
