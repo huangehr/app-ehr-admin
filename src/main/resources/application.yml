@@ -54,7 +54,7 @@ service-gateway:
   standard: http://172.19.103.73:10000/api/v1.0/std
   browseClientUrl: http://192.168.1.221:8010/ehr/browser
   browseClientOutSizeUrl: http://27.154.233.186:9480/ehr/browser
-  profileurl: http://172.17.110.227:9009/api/v1.0
+  profileurl: http://172.19.103.74:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
   public-server: http://172.19.103.52:80
