@@ -78,7 +78,6 @@ $(function(){
             var Obj=obj;
             var ObjCyc=$(this).find("a");
             ObjCyc.bind("click",function(){
-                debugger
                 if($(this).attr("href")=="javascript:void(0);"){
                     if (parentOrder == '' || parentOrder == 'callChild') {
                         parentOrder = parentOrder == '' ? '' : 'openTab';
