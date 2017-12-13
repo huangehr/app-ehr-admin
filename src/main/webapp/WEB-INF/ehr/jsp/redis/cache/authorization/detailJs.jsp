@@ -5,7 +5,7 @@
     var detailModel = ${detailModel};
     var dataModel = $.DataModel.init();
     var validator;
-    var $form = $("#redisCacheCategoryForm");
+    var $form = $("#redisCacheAuthorizationForm");
 
     $(function () {
         init();
@@ -18,13 +18,14 @@
     }
 
     function initForm() {
-        var codeTb = $('#code').ligerTextBox({width: 240});
-        $('#name').ligerTextBox({width: 240});
+        $('#categoryCode').ligerTextBox({width: 240, disabled: true, readonly: true});
+        var appIdTb = $('#appId').ligerTextBox({width: 240});
+        $('#authorizedCode').ligerTextBox({width: 240, disabled: true, readonly: true});
         $('#remark').ligerTextBox({width: 240, height: 150});
 
         if(detailModel.id) {
-            codeTb.setDisabled(true);
-            codeTb.setReadonly(true);
+            appIdTb.setDisabled(true);
+            appIdTb.setReadonly(true);
         }
 
         $form.attrScan();
@@ -37,7 +38,7 @@
             if (!validator.validate()) { return; }
 
             var loading = $.ligerDialog.waitting("正在保存数据...");
-            dataModel.fetchRemote("${contextRoot}/redis/cache/category/save", {
+            dataModel.fetchRemote("${contextRoot}/redis/cache/authorization/save", {
                 type: 'post',
                 data: {data: JSON.stringify($form.Fields.getValues())},
                 success: function (data) {
@@ -75,18 +76,11 @@
                 var id = detailModel.id || -1; // 新增时传-1。
                 var elId = $(el).attr("id");
                 switch(elId) {
-                    case 'code':
-                        var code = $("#code").val();
-                        if(!$.Util.isStrEquals(code, detailModel.code)) {
-                            var ulr = "${contextRoot}/redis/cache/category/isUniqueCode";
-                            return $.Util.validateByAjax(ulr, {id: id, code: code});
-                        }
-                        break;
-                    case 'name':
-                        var name = $("#name").val();
-                        if(!$.Util.isStrEquals(name, detailModel.name)) {
-                            var ulr = "${contextRoot}/redis/cache/category/isUniqueName";
-                            return $.Util.validateByAjax(ulr, {id: id, name: name});
+                    case 'appId':
+                        var appId = $("#appId").val();
+                        if(!$.Util.isStrEquals(appId, detailModel.appId)) {
+                            var ulr = "${contextRoot}/redis/cache/authorization/isUniqueAppId";
+                            return $.Util.validateByAjax(ulr, {id: id, categoryCode: categoryCode, appId: appId});
                         }
                         break;
                 }

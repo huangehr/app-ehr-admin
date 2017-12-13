@@ -31,11 +31,7 @@
                 {display: 'ID', name: 'id', hide: true},
 //                {display: '应用ID', name: 'appId', width: '10%', isAllowHide: false, align: 'left'},
                 {display: '订阅者服务地址', name: 'subscribedUrl', width: '25%', isAllowHide: false, align: 'left'},
-                {display: '创建日期', name: 'createTime', width: '15%', isAllowHide: false, align: 'left',
-                    render: function (row) {
-                        return row.createTime;
-                    }
-                },
+                {display: '创建日期', name: 'createDate', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},
                 {display: '操作', name: 'operator', minWidth: 120, align: 'center',
                     render: function (row) {
