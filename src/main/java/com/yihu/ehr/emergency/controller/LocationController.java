@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class LocationController extends BaseUIController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation("获取待命地点列表")
+    @ResponseBody
     public Envelop list(
             @ApiParam(name = "fields", value = "返回的字段，为空返回全部字段")
             @RequestParam(value = "fields", required = false) String fields,
@@ -39,12 +41,12 @@ public class LocationController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/location/list";
-            params.put("filters", filters);
-            params.put("fields", fields);
-            params.put("sorts", sorts);
+            //params.put("filters", filters);
+            //params.put("fields", fields);
+            //params.put("sorts", sorts);
             params.put("page", page);
             params.put("size", size);
-            String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(LocationController.class).error(e.getMessage());
@@ -90,6 +92,7 @@ public class LocationController extends BaseUIController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ApiOperation("删除待命地点")
+    @ResponseBody
     public Envelop delete(
             @ApiParam(name = "ids", value = "id列表(int)1,2,3,...")
             @RequestParam(value = "ids") String ids){
@@ -98,7 +101,7 @@ public class LocationController extends BaseUIController {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/location/delete";
             params.put("ids", ids);
-            String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
             LogService.getLogger(LocationController.class).error(e.getMessage());
