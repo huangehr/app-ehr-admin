@@ -36,7 +36,7 @@ import java.util.*;
 @Component("loginFilter")
 public class SessionOutTimeFilter extends OncePerRequestFilter {
 
-    @Value("${app.oauth2authorize}")
+    @Value("${app.oauth2InnerUrl}")
     private String authorize;
     @Value("${service-gateway.url}")
     private String comUrl;
