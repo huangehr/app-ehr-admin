@@ -1,8 +1,8 @@
 package com.yihu.ehr.redis;
 
-import com.yihu.ehr.agModel.redis.RedisMqChannelModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.model.redis.MRedisMqChannel;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -45,7 +45,7 @@ public class RedisMqChannelController extends BaseUIController {
      */
     @RequestMapping(value = "/detail")
     public String detail(Model model, Integer id) {
-        Object detailModel = new RedisMqChannelModel();
+        Object detailModel = new MRedisMqChannel();
         try {
             if (id != null) {
                 String url = comUrl + ServiceApi.Redis.MqChannel.Prefix + id;
@@ -97,7 +97,7 @@ public class RedisMqChannelController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
 
         try {
-            RedisMqChannelModel model = objectMapper.readValue(data, RedisMqChannelModel.class);
+            MRedisMqChannel model = objectMapper.readValue(data, MRedisMqChannel.class);
             if (StringUtils.isEmpty(model.getChannel())) {
                 return failed("消息队列编码不能为空！");
             }
@@ -112,7 +112,7 @@ public class RedisMqChannelController extends BaseUIController {
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
 
-                RedisMqChannelModel updateModel = getEnvelopModel(envelopGet.getObj(), RedisMqChannelModel.class);
+                MRedisMqChannel updateModel = getEnvelopModel(envelopGet.getObj(), MRedisMqChannel.class);
                 updateModel.setChannelName(model.getChannelName());
                 updateModel.setMessageTemplate(model.getMessageTemplate());
                 updateModel.setRemark(model.getRemark());

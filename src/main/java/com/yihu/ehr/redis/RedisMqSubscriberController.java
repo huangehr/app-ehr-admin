@@ -1,8 +1,8 @@
 package com.yihu.ehr.redis;
 
-import com.yihu.ehr.agModel.redis.RedisMqSubscriberModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.model.redis.MRedisMqSubscriber;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -46,7 +46,7 @@ public class RedisMqSubscriberController extends BaseUIController {
      */
     @RequestMapping(value = "/detail")
     public String detail(Model model, Integer id, String channel) {
-        Object detailModel = new RedisMqSubscriberModel(channel);
+        Object detailModel = new MRedisMqSubscriber(channel);
         try {
             if (id != null) {
                 String url = comUrl + ServiceApi.Redis.MqSubscriber.Prefix + id;
@@ -99,7 +99,7 @@ public class RedisMqSubscriberController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
 
         try {
-            RedisMqSubscriberModel model = objectMapper.readValue(data, RedisMqSubscriberModel.class);
+            MRedisMqSubscriber model = objectMapper.readValue(data, MRedisMqSubscriber.class);
             if (StringUtils.isEmpty(model.getSubscribedUrl())) {
                 return failed("订阅者服务地址不能为空！");
             }
@@ -114,7 +114,7 @@ public class RedisMqSubscriberController extends BaseUIController {
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
 
-                RedisMqSubscriberModel updateModel = getEnvelopModel(envelopGet.getObj(), RedisMqSubscriberModel.class);
+                MRedisMqSubscriber updateModel = getEnvelopModel(envelopGet.getObj(), MRedisMqSubscriber.class);
                 updateModel.setRemark(model.getRemark());
 
                 params.put("entityJson", objectMapper.writeValueAsString(updateModel));

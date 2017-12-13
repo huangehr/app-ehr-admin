@@ -1,8 +1,8 @@
 package com.yihu.ehr.redis;
 
-import com.yihu.ehr.agModel.redis.RedisMqPublisherModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.model.redis.MRedisMqPublisher;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -46,7 +46,7 @@ public class RedisMqPublisherController extends BaseUIController {
      */
     @RequestMapping(value = "/detail")
     public String detail(Model model, Integer id, String channel) {
-        Object detailModel = new RedisMqPublisherModel(channel);
+        Object detailModel = new MRedisMqPublisher(channel);
         try {
             if (id != null) {
                 String url = comUrl + ServiceApi.Redis.MqPublisher.Prefix + id;
@@ -99,7 +99,7 @@ public class RedisMqPublisherController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
 
         try {
-            RedisMqPublisherModel model = objectMapper.readValue(data, RedisMqPublisherModel.class);
+            MRedisMqPublisher model = objectMapper.readValue(data, MRedisMqPublisher.class);
             if (model.getId() == null) {
                 // 新增
                 params.put("entityJson", data);
@@ -110,7 +110,7 @@ public class RedisMqPublisherController extends BaseUIController {
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
 
-                RedisMqPublisherModel updateModel = getEnvelopModel(envelopGet.getObj(), RedisMqPublisherModel.class);
+                MRedisMqPublisher updateModel = getEnvelopModel(envelopGet.getObj(), MRedisMqPublisher.class);
                 updateModel.setRemark(model.getRemark());
 
                 params.put("entityJson", objectMapper.writeValueAsString(updateModel));
