@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -144,9 +145,12 @@ public class AmbulanceController extends BaseUIController {
     @ResponseBody
     public Envelop save(
             @ApiParam(name = "ambulance", value = "救护车")
-            @RequestParam(value = "ambulance") String ambulance) {
+            @RequestParam(value = "ambulance", required = false) String ambulance) {
         Envelop envelop = new Envelop();
         try {
+            if(StringUtils.isEmpty(ambulance)) {
+                return envelop;
+            }
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/save";
             params.put("ambulance", ambulance);
@@ -298,18 +302,18 @@ public class AmbulanceController extends BaseUIController {
 
     @RequestMapping("/initialization")
     public String initialization(Model model){
-        model.addAttribute("contentPage", "/urgentcommand/fleet");
+        model.addAttribute("contentPage", "/emergency/menu/fleet");
         return "pageView";
     }
     @RequestMapping("/intercalatesupervise")
     public String intercalatesupervise(Model model){
-        model.addAttribute("contentPage", "/urgentcommand/fleetset");
+        model.addAttribute("contentPage", "/emergency/menu/fleetset");
         return "pageView";
     }
 
     @RequestMapping("/sortmanage")
     public String sortmanage(Model model){
-        model.addAttribute("contentPage", "/urgentcommand/rdermanage");
+        model.addAttribute("contentPage", "/emergency/menu/rdermanage");
         return "pageView";
     }
 
@@ -320,7 +324,7 @@ public class AmbulanceController extends BaseUIController {
         } else {
             model.addAttribute("id",id);
         }
-        return  "/urgentcommand/vehiclemMenu";
+        return  "/emergency/menu/vehiclemMenu";
     }
 
     @RequestMapping("/importLs")
