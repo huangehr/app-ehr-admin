@@ -583,12 +583,7 @@ public class ResourceManageController extends BaseUIController {
             params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();
             if( !StringUtils.isEmpty(quotaFilter) ){
-                String filter[] = quotaFilter.split(";");
-                for(int i=0;i<filter.length;i++){
-                    String [] val = filter[i].split("=");
-                    quotaFilterMap.put(val[0].toString(),val[1].toString());
-                }
-                params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
+                params.put("quotaFilter", quotaFilter);
             }
             resultStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
             Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
