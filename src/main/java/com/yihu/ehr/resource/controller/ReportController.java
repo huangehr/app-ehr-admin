@@ -400,12 +400,7 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("getTemplateData")
     @ResponseBody
-    /**
-     * @param reportCode 报表code
-     * @param linkageResourceIdStr 联动视图Id串，多个用;拼接
-     * @param linkageFilter  联动视图条件，多个用;拼接
-     */
-    public Object getTemplateData(String reportCode,String linkageResourceIdStr,String linkageFilter,String linkageDimension, HttpServletRequest request) {
+    public Object getTemplateData(@RequestParam String reportCode, HttpServletRequest request) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         Map<String, Object> resultMap = new HashMap<>();
@@ -466,14 +461,8 @@ public class ReportController extends BaseUIController {
                     params.put("resourceId", view.getResourceId());
                     List<String> userOrgList  = getUserOrgSaasListRedis(request);
                     params.put("userOrgList", userOrgList);
-
-                    if(StringUtils.isNotEmpty(linkageResourceIdStr)){
-                        List<String> resources = Arrays.asList(linkageResourceIdStr.split(";"));
-                        if(resources.contains(rsResourcesModel.getId())){
-                            params.put("dimension", linkageDimension);
-                            params.put("quotaFilter", linkageFilter);
-                        }
-                    }
+                    params.put("quotaFilter", " ");
+                    params.put("dimension", " ");
                     String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                     Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
                     String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
