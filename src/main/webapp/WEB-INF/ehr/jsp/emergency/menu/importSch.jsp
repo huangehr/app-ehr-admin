@@ -20,7 +20,7 @@
             <input type="text" disabled="disabled" id="thelist"  class="uploader-list"/>
             <div id="div_doctor_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
                 <!--用来存放item-->
-                <div id="div_file_picker" class="f-mt10"><spring:message code="btn.file.choose"/></div>
+                <%--<div id="div_file_picker" class="f-mt10"><spring:message code="btn.file.choose"/></div>--%>
             </div>
         </div>
         <%--<div id="uploader" class="wu-example">--%>

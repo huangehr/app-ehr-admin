@@ -16,6 +16,12 @@
             function pageInit() {
                 obj.init();
             }
+
+            //返回上一页
+            function goHis(){
+                $('#contentPage').empty();
+                $('#contentPage').load('${contextRoot}/ambulance/sortmanage');
+            }
             jQuery.fn.rowspan = function (colname, tableObj) {
                 var colIdx;
                 for (var i = 0, n = tableObj.columns.length; i < n; i++) {
@@ -49,8 +55,10 @@
                 detailDialog:null,
                 grid: null,
                 $gohis:$('#gohis'),
+                $time:$('#time'),
                 init :function () {
                     var self = this;
+                    self.$time.html(date+'排班情况')
                     if (this.grid) {
                         this.reloadGrid(1);
                     }else {
@@ -63,6 +71,7 @@
                             },
                             method:'GET',
                             columns: [
+                                {display: 'id', name: 'scheduleIds', width: '0%', hide: true},
                                 {display: '日期', name: 'date', width: '20%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '归属地点', name: 'location', width: '20%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '车牌号码', name: 'carId', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"}},
@@ -75,14 +84,14 @@
                                         var html = '';
                                         if (!row._editing)
                                         {
-                                            html += '<a class="grid_towrite" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:open", row.id) + '"></a>';
-                                            html += '<a class="grid_detail" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "scheDetailsJs:scheInfo:edit",value ) + '">'+'</a>';
+                                            html += '<a class="grid_towrite" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:open") + '"></a>';
+                                            html += '<a class="grid_detail" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit",row.scheduleIds,row.date,row.carId,row.main) + '">'+'</a>';
 
                                         }
                                         else
                                         {
-                                            html += '<a class="grid_hold" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:lock", value) + '"></a>';
-                                            html += '<a class="grid_detail" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "scheDetailsJs:scheInfo:edit", row.id) + '"></a>';
+                                            html += '<a class="grid_hold" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:lock") + '"></a>';
+                                            html += '<a class="grid_detail" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit", row.scheduleIds,row.date,row.carId,row.main) + '"></a>';
 
                                         }
                                         return html;
@@ -111,6 +120,7 @@
                                     }
                                 }
                                 data.detailModelList = list
+
                             }
                         }))
                     }
@@ -142,15 +152,22 @@
                     $.subscribe('scheDetailsJs:scheInfo:lock',function (event,id) {
                         self.endEdit();
                     })
-                    $.subscribe('scheDetailsJs:scheInfo:edit',function (event,value) {
-                        alert(value)
+                    $.subscribe('scheDetailsJs:scheInfo:edit',function (event,scheduleIds,date,carId,main) {
+                        console.log(scheduleIds)
+                        console.log(date)
+                        console.log(carId)
+                        console.log(main)
                         obj.detailDialog = $.ligerDialog.open({
                             height:800 ,
                             width: 1200,
                             title: '排班信息',
                             url: '${contextRoot}/schedule/getPage',
                             urlParms: {
-                                id: value
+                            id:scheduleIds,
+                            date:date,
+                            carId:carId,
+                            main:main
+
                             },
                             isHidden: false,
                             opener: true,
@@ -159,10 +176,26 @@
                     })
 
                     self.$gohis.click(function () {
-                            alert(123)
+                        goHis()
                     })
-                }
+                },
             }
+
+
+
+            /* ******************Dialog页面回调接口****************************** */
+            win.closeDialog = function (type, msg) {
+                obj.detailDialog.close();
+                if (msg)
+                    $.Notice.success(msg);
+            };
+            win.closeMenuInfoDialog = function (callback) {
+                if(callback){
+                    callback.call(win);
+                    obj.reloadData();
+                }
+                obj.detailDialog.close();
+            };
             /* *************************** 页面功能 **************************** */
             pageInit();
         })
