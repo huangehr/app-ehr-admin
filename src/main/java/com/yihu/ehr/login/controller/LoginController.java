@@ -191,9 +191,10 @@ public class LoginController extends BaseUIController {
                     }
                 }
                 //生成认证token
-                Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
+                //Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(loginName, userDetailModel.getPassword(), gas);
                 //将信息存放到SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(AuthenticationToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
                 return success(accessToken);
             } else {
                 String msg = String.valueOf(map.get("message"));
