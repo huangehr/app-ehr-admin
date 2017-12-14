@@ -410,41 +410,45 @@
                     var columnModel = new Array();
                     //获取列名
                     if (!Util.isStrEmpty(resourcesId)) {
-                        if (me.qutoResourceInfoGrid) {
-                            me.reloadZBGridData(resourcesId);
-                        } else {
-                            me.dataModel.fetchRemote( infa.searchQuotaResourceData, {
-                                data: {
-                                    page: 1,
-                                    rows: 15,
-                                    searchParams: me.queryQutoCondition,
-                                    resourcesId: resourcesId
-                                },
-                                async: false,
-                                type: 'GET',
-                                success: function (data) {
-                                    if (data.successFlg) {
-                                        var titArr = data.obj;
-                                        for (var i = 0; i < titArr.length; i++) {
-                                            columnModel.push({display: titArr[i].name, name: titArr[i].key, width: 100});
-                                        }
-                                        me.qutoResourceInfoGrid = me.$divQutoResourceInfoGrid.ligerGrid($.LigerGridEx.config({
-                                            url: infa.searchQuotaResourceData,
-                                            parms: {
-                                                searchParams: me.queryQutoCondition,
-                                                resourcesId: resourcesId
-                                            },
-                                            columns: columnModel,
-                                            height: '100%',
-                                            checkbox: true
-                                        }));
-                                        me.qutoResourceInfoGrid.adjustToWidth();
-                                    } else {
-                                        $.Notice.error(data.errorMsg);
+//                        if (me.qutoResourceInfoGrid) {
+//                            me.reloadZBGridData(resourcesId);
+//                        } else {
+                        //获取表头和数据使用的是同一个接口
+                        me.dataModel.fetchRemote( infa.searchQuotaResourceData, {
+                            data: {
+                                page: 1,
+                                rows: 15,
+                                searchParams: me.queryQutoCondition,
+                                resourcesId: resourcesId
+                            },
+                            async: false,
+                            type: 'GET',
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    var titArr = data.obj;
+                                    for (var i = 0; i < titArr.length; i++) {
+                                        columnModel.push({display: titArr[i].name, name: titArr[i].key, width: 100});
                                     }
+                                    me.qutoResourceInfoGrid = me.$divQutoResourceInfoGrid.ligerGrid($.LigerGridEx.config({
+                                        url: infa.searchQuotaResourceData,
+                                        parms: {
+                                            searchParams: me.queryQutoCondition,
+                                            resourcesId: resourcesId,
+                                            page: 1,
+                                            rows: 15
+                                        },
+                                        columns: columnModel,
+                                        height: '100%',
+                                        checkbox: true,
+                                        usePager: false
+                                    }));
+                                    me.qutoResourceInfoGrid.adjustToWidth();
+                                } else {
+                                    $.Notice.error(data.errorMsg);
                                 }
-                            });
-                        }
+                            }
+                        });
+//                        }
                     }
                 },
                 reloadZBGridData: function (resourcesId) {

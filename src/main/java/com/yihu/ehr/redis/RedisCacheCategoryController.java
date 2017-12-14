@@ -88,6 +88,29 @@ public class RedisCacheCategoryController extends BaseUIController {
     }
 
     /**
+     * 分页查询（不分页）
+     */
+    @RequestMapping("/searchNoPage")
+    @ResponseBody
+    public Object searchNoPage(String filters, String sorts) {
+        Map<String, Object> params = new HashMap<>();
+        if (StringUtils.isNotEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        if (StringUtils.isNotEmpty(sorts)) {
+            params.put("sorts", sorts);
+        }
+
+        try {
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheCategory.SearchNoPage, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(RedisCacheCategoryController.class).error(e.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    /**
      * 保存
      */
     @RequestMapping("/save")

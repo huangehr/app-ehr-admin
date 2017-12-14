@@ -46,6 +46,7 @@ public class ScheduleController extends BaseUIController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation("获取排班列表")
+    @ResponseBody
     public Envelop list(
             @ApiParam(name = "fields", value = "返回的字段，为空返回全部字段")
             @RequestParam(value = "fields", required = false) String fields,
@@ -62,8 +63,8 @@ public class ScheduleController extends BaseUIController {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/schedule/list";
             params.put("filters", filters);
-            params.put("fields", fields);
-            params.put("sorts", sorts);
+            //params.put("fields", fields);
+            //params.put("sorts", sorts);
             params.put("page", page);
             params.put("size", size);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -76,6 +77,7 @@ public class ScheduleController extends BaseUIController {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation("保存单条记录")
+    @ResponseBody
     public Envelop save(
             @ApiParam(name = "schedule", value = "排班")
             @RequestParam(value = "schedule") String schedule){
@@ -94,6 +96,7 @@ public class ScheduleController extends BaseUIController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation("更新单条记录，只允许更新时间和状态")
+    @ResponseBody
     public Envelop update(
             @ApiParam(name = "schedule", value = "排班")
             @RequestParam(value = "schedule") String schedule){
@@ -108,6 +111,58 @@ public class ScheduleController extends BaseUIController {
             LogService.getLogger(ScheduleController.class).error(e.getMessage());
         }
         return envelop;
+    }
+
+    @RequestMapping(value = "/level", method = RequestMethod.GET)
+    @ApiOperation("获取排班层级列表（年-月-日）")
+    @ResponseBody
+    public Envelop level(
+            @ApiParam(name = "date", value = "年-月")
+            @RequestParam(value = "date", required = false) String date,
+            @ApiParam(name = "page", value = "分页大小", required = true, defaultValue = "1")
+            @RequestParam(value = "page") int page,
+            @ApiParam(name = "size", value = "页码", required = true, defaultValue = "15")
+            @RequestParam(value = "size") int size) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/schedule/level";
+            params.put("date", date);
+            params.put("page", page);
+            params.put("size", size);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(ScheduleController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/initial", method = RequestMethod.GET)
+    public String gotoList(Model model, String date){
+        model.addAttribute("data", date);
+        //model.addAttribute("version",  version);
+        /**
+        Map<String, Object> params = new HashMap<String, Object>();
+        String url = "/schedule/level";
+        params.put("date", date);
+        params.put("page", 1);
+        params.put("size", 500);
+        String resultStr = "";
+        Envelop result = new Envelop();
+        //Map<String, Object> params = new HashMap<>();
+        try {
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        }catch (Exception e){
+            e.printStackTrace();
+            //LogService.getLogger(SchemeAdaptDataSetController.class).error(e.getMessage());
+            model.addAttribute("rs", "error");
+        }
+        Envelop envelop = toModel(resultStr, Envelop.class);
+         */
+        //model.addAttribute("date", date);
+        model.addAttribute("contentPage","/emergency/menu/scheDetails");
+        return "pageView";
     }
 
     @RequestMapping(value = "import")
@@ -176,6 +231,21 @@ public class ScheduleController extends BaseUIController {
         model.addAttribute("files", result);
         model.addAttribute("contentPage", "/emergency/schedule/scheduleImpGrid");
         return "pageView";
+    }
+
+    @RequestMapping(value = "getImport")
+    public String getImport(Model model,String id){
+        model.addAttribute("contentPage", "/emergency/menu/importSch");
+        return "pageView";
+    }
+
+    @RequestMapping(value = "getPage")
+    public String getPage(Model model,String id, String main,String carId,String date){
+        model.addAttribute("id",id);
+        model.addAttribute("date",date);
+        model.addAttribute("carId",carId);
+        model.addAttribute("main",main);
+        return  "/emergency/menu/schinfo";
     }
 
     @RequestMapping("/importLs")

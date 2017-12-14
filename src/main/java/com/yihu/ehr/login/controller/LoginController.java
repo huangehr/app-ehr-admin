@@ -76,9 +76,9 @@ public class LoginController extends BaseUIController {
     private String browseClientOutSizeUrl;
     @Value("${service-gateway.profileurl}")
     private String profileurl;
-    @Value("${app.oauth2authorize}")
+    @Value("${app.oauth2InnerUrl}")
     private String authorize;
-    @Value("${app.oauth2OutSize}")
+    @Value("${app.oauth2OuterUrl}")
     private String oauth2OutSize;
     @Value("${app.baseClientId}")
     private String baseClientId;
@@ -191,9 +191,10 @@ public class LoginController extends BaseUIController {
                     }
                 }
                 //生成认证token
-                Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
+                //Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(loginName, userDetailModel.getPassword(), gas);
                 //将信息存放到SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(AuthenticationToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
                 return success(accessToken);
             } else {
                 String msg = String.valueOf(map.get("message"));
@@ -341,8 +342,7 @@ public class LoginController extends BaseUIController {
         if(session.getAttribute("isInnerIp") != null){
             isInnerIp = (Boolean) session.getAttribute("isInnerIp");
         }
-
-        System.out.println("isInnerIp:" + isInnerIp);
+        //System.out.println("isInnerIp:" + isInnerIp);
         if(isInnerIp) {
             String url = browseClientUrl + "/common/login/signin?idCardNo=" + idCardNo;
             response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);

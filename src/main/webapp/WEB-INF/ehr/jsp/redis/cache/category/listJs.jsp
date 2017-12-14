@@ -34,6 +34,7 @@
                 {display: '操作', name: 'operator', width: '15%', minWidth: 120, align: 'center',
                     render: function (row) {
                         var html = '';
+                        html += '<sec:authorize url="/redis/cache/category/authorizationList"><a class="label_a f-ml10" title="应用授权" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:cache:category:authorizationList", row.code) + '">应用授权</a></sec:authorize>';
                         html += '<sec:authorize url="/redis/cache/category/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "redis:cache:category:detail", row.id, 'modify') + '"></a></sec:authorize>';
                         html += '<sec:authorize url="/redis/cache/category/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "redis:cache:category:delete", row.id) + '"></a></sec:authorize>';
                         return html;
@@ -48,6 +49,13 @@
     }
 
     function bindEvents() {
+        // 应用授权
+        $.subscribe('redis:cache:category:authorizationList', function (event, categoryCode) {
+            var url = '${contextRoot}/redis/cache/authorization/index?';
+            $("#contentPage").empty();
+            $("#contentPage").load(url,{categoryCode: categoryCode});
+        });
+
         // 新增/修改
         $.subscribe('redis:cache:category:detail', function (event, id, mode) {
             var title = '新增缓存分类';

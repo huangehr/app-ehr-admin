@@ -3,8 +3,8 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <div class="m-form-inline">
-    <div class="m-form-group f-mt10">
-        <div class="m-form-control f-fs12">
+    <div class="m-form-group f-mt10 f-mb10">
+        <div class="m-form-control">
             <input type="text" id="searchContent" placeholder="请输入缓存分类编码或名称">
         </div>
 

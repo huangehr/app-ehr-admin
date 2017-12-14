@@ -3,7 +3,6 @@
 
 <div id="redisCacheCategoryForm" class="m-form-inline f-mt20" data-role-form>
     <input type="hidden" id="id" data-attr-scan="id">
-    <input type="hidden" id="createDate" data-attr-scan="createDate">
 
     <div class="m-form-group">
         <label>缓存分类名称：</label>
@@ -15,7 +14,7 @@
     <div class="m-form-group">
         <label>缓存分类编码：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-30 required ajax"
+            <input type="text" class="f-w240 max-length-30 required ajax validate-alpha-underline"
                    id="code" data-attr-scan="code">
         </div>
     </div>
