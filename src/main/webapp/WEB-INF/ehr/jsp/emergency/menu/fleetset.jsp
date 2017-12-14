@@ -11,20 +11,20 @@
         </div>
         <div id="standby_grid"></div>
     </div>
-    <div class='div_Bottom' >
-        <div class="sm_box inlineBloock"></div>
-        <div class="standbyText inlineBloock">
-            频率设置
-        </div>
-        <div class="contain_save">
-            <div class="sm_contain_save">
-                <input type="text">
-                <input type="button" value="保存">
-                <input type="button" value="取消" style="margin-left: 20px;border: none;background: #f1f5f7;">
-            </div>
-            <div class="sm_contain_text">
-                手机app定位时间间隔，单位秒，只能输入自然数
-            </div>
-        </div>
-    </div>
+    <%--<div class='div_Bottom' >--%>
+        <%--<div class="sm_box inlineBloock"></div>--%>
+        <%--<div class="standbyText inlineBloock">--%>
+            <%--频率设置--%>
+        <%--</div>--%>
+        <%--<div class="contain_save">--%>
+            <%--<div class="sm_contain_save">--%>
+                <%--<input type="text">--%>
+                <%--<input type="button" value="保存">--%>
+                <%--<input type="button" value="取消" style="margin-left: 20px;border: none;background: #f1f5f7;">--%>
+            <%--</div>--%>
+            <%--<div class="sm_contain_text">--%>
+                <%--手机app定位时间间隔，单位秒，只能输入自然数--%>
+            <%--</div>--%>
+        <%--</div>--%>
+    <%--</div>--%>
 </div>
