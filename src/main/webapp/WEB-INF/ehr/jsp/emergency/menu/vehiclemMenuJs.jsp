@@ -49,6 +49,7 @@
             $uploader:$('#div_file_picker'),
             $imageShow: $("#div_file_list"),
             $div_doctor_img_upload:$('#div_doctor_img_upload'),
+            $location:null,
 
             init:function () {
                 var self  = this;
@@ -57,9 +58,9 @@
                 self.loadSelData();
                 if (id!='-1'){//不等于-1 从编辑按钮过来的弹窗
                     self.$div_doctor_img_upload.empty()
-                    this.getInfo(this.setInfo, this);
+                    this.getInfo(this.setInfo, this)
                 }
-                //初始化上传头像chajia
+                //初始化上传头像
                 self.$uploader.instance = self.$uploader.webupload({
                     method:'POST',
                     server: "${contextRoot}/ambulance/save",
@@ -82,9 +83,8 @@
                     }
                 });
             },
-
             //加载默认筛选调条件(归属地点的接口)
-            loadSelData:function () {
+            loadSelData:function (p) {
                 var self = this;
                 self.loadReportMonitorTypeDate().then(function (res) {
                     if(res.successFlg){
@@ -105,6 +105,12 @@
                         var aaa = '';
                         $.each(d, function (k, obj) {
                             obj.flag && (aaa += (obj.id + ';'));
+                        })
+                        $.each(d, function (k, v) {
+
+                            if(p == v.id){
+                                self.$area.attr("placeholder",v.initAddress)
+                            }
                         })
                         self.$area.liger().selectValue(aaa);
                     }else {
@@ -130,10 +136,12 @@
                 });
             },
             setInfo: function (res, me) {
-                console.log(res)
+                var self = this;
                 initList = res.obj;
                 me.$license_Plate_input.val(initList.id);
                 me.$personnel_phone_input.val(initList.phone);
+                me.$location = initList.location;
+                self.loadSelData(me.$location);
                 if (initList.status == 'wait') {
                     me.$inpStatus.eq(0).ligerRadio("setValue",'1');
                     me.$inpStatus.eq(1).ligerRadio("setValue",'');
@@ -174,7 +182,6 @@
                         var $license_Plate_input = self.$license_Plate_input.val();
                         var $personnel_phone_input = self.$personnel_phone_input.val();
                         var $inpStatus =  $('input[name=inp_status]:checked').val();
-                        var $area = self.$area.val();
                         self.ambulance ={
                             "img": null,
                             "id": $license_Plate_input,
@@ -193,6 +200,8 @@
 
                             },
                             success:function (data) {
+                                console.log(data)
+                                debugger
                                 if(data.successFlg){
                                     closeMenuInfoDialog(function () {
                                         $.Notice.success('更新成功');
@@ -283,8 +292,6 @@
             }
         }
         /* *************************** 模块初始化结束 ***************************** */
-
-        /* ******************Dialog页面回调接口****************************** */
 
 
         /* *************************** 页面初始化 **************************** */
