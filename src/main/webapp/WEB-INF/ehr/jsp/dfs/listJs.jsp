@@ -13,7 +13,8 @@
     function init() {
         initWidget();
         bindEvents();
-//        initChart();
+        initPublicUrl();
+        initChart();
     }
 
     function initWidget() {
@@ -22,6 +23,7 @@
 
         grid = $("#grid").ligerGrid($.LigerGridEx.config({
             url: '${contextRoot}/fastDfs/search',
+            height: '600px',
             columns: [
                 {display: 'ID', name: 'id', hide: true},
                 {display: '文件编号', name: 'sn', width: '10%', isAllowHide: false, align: 'left'},
@@ -50,135 +52,29 @@
             reloadGrid();
         });
 
-        // 下载
-        $.subscribe('fastDfs:download', function (event, path, name) {
-            var loading = $.ligerDialog.waitting("正在下载...");
-            dataModel.updateRemote('${contextRoot}/fastDfs/download', {
-                data: {path: path},
-                success: function (data) {
-                    if (data.successFlg) {
-                        var a = document.createElement('a');
-                        a.href = data.obj;
-                        a.download = name;
-                        $('#searchForm').append(a);
-                        a.click();
-                        $(a).remove();
-                    } else {
-                        $.Notice.error(data.errorMsg);
-                    }
-                },
-                error: function () {
-                    $.Notice.error('下载发生异常');
-                },
-                complete: function () {
-                    loading.close();
+        // 修改域名
+        $('#modifyPublicUrl').on('click', function () {
+            var oldUrl = $('#defaultPublicUrl').html();
+            $.ligerDialog.prompt('修改下载域名', oldUrl, false, function(flag, value) {
+                if(flag) {
+                    $('#defaultPublicUrl').html(value);
                 }
             });
         });
-    }
 
-    function initChart() {
-        // 缓存分类内存比率统计
-        dataModel.fetchRemote('${contextRoot}/redis/cache/statistics/getCategoryMemory', {
-            success: function(data) {
-                if (data.successFlg) {
-                    var categoryMemoryRateChart = echarts.init(document.getElementById('categoryMemoryRate'));
-                    categoryMemoryRateChart.setOption({
-                        title : {
-                            text: '缓存分类的Redis内存占比',
-                            subtext: '单位：字节（bytes）',
-                            x:'center'
-                        },
-                        tooltip : {
-                            trigger: 'item',
-                            formatter: "{b} : {c} ({d}%)"
-                        },
-                        /*legend: {
-                            type: 'scroll',
-                            orient: 'vertical',
-                            right: 10,
-                            top: 20,
-                            bottom: 20,
-                            data: data.obj.categoryNameList
-                        },*/
-                        series : [
-                            {
-                                type: 'pie',
-                                radius : '55%',
-                                center: ['50%', '60%'],
-                                data: data.obj.categoryMemoryList,
-                                itemStyle: {
-                                    emphasis: {
-                                        shadowBlur: 10,
-                                        shadowOffsetX: 0,
-                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                                    }
-                                }
-                            }
-                        ]
-                    });
-                } else {
-                    $.Notice.error(data.errorMsg);
-                }
-            },
-            error: function() {
-                $.Notice.error('加载分类内存占比图表数据发生异常！');
-            }
-        });
+        // 下载
+        $.subscribe('fastDfs:download', function (event, path, name) {
+            var loading = $.ligerDialog.waitting("正在下载...");
 
-        // 缓存个数统计
-        dataModel.fetchRemote('${contextRoot}/redis/cache/statistics/getCategoryKeys', {
-            success: function(data) {
-                if (data.successFlg) {
-                    var cacheKeysChart = echarts.init(document.getElementById('cacheKeys'));
-                    cacheKeysChart.setOption({
-                        title: {
-                            text: '分类缓存数量',
-                            x:'center'
-                        },
-                        color: ['#3398DB'],
-                        tooltip : {
-                            trigger: 'axis',
-                            axisPointer : {
-                                type : 'shadow'
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis : [
-                            {
-                                type : 'category',
-                                data : data.obj.categoryNameList,
-                                axisTick: {
-                                    alignWithLabel: true
-                                }
-                            }
-                        ],
-                        yAxis : [
-                            {
-                                type : 'value'
-                            }
-                        ],
-                        series : [
-                            {
-                                name:'缓存数量',
-                                type:'bar',
-                                barWidth: '60%',
-                                data: data.obj.categoryNumList
-                            }
-                        ]
-                    });
-                } else {
-                    $.Notice.error(data.errorMsg);
-                }
-            },
-            error: function() {
-                $.Notice.error('加载缓存数量图表数据发生异常！');
-            }
+            var publicUrl = $('#defaultPublicUrl').html();
+            var a = document.createElement('a');
+            a.href = publicUrl + '/' + path.replace(":", "/");
+            a.download = name;
+            $('#searchForm').append(a);
+            a.click();
+            $(a).remove();
+
+            loading.close();
         });
     }
 
@@ -188,6 +84,189 @@
             name: $("#searchName").val()
         };
         $.Util.reloadGrid.call(grid, '${contextRoot}/fastDfs/search', params);
+    }
+
+    function initPublicUrl() {
+        dataModel.updateRemote('${contextRoot}/fastDfs/getPublicUrl', {
+            success: function (data) {
+                if (data.successFlg) {
+                    $('#defaultPublicUrl').html(data.detailModelList[0]);
+                } else {
+                    $.Notice.error('获取下载域名失败。');
+                }
+            },
+            error: function () {
+                $.Notice.error('设置下载域名发生异常');
+            }
+        });
+    }
+
+    function initChart() {
+        dataModel.fetchRemote('${contextRoot}/fastDfs/getServersStatus', {
+            success: function(data) {
+                if (data.successFlg) {
+                    var totalStatus = [], serverNameList = [], serverUsedStatusList = [], serverFreeStatusList = [];
+                    for(var i = 0; i < data.detailModelList.length; i++) {
+                        var item = data.detailModelList[i];
+                        var total = parseFloat(item.total);
+                        var free = parseFloat(item.free);
+                        var used = total - free;
+                        if(item.server === 'all') {
+                            totalStatus.push({ name: '已用空间', value: used});
+                            totalStatus.push({ name: '可用空间', value: free});
+                        } else {
+                            serverNameList.push(item.server);
+                            serverUsedStatusList.push(used);
+                            serverFreeStatusList.push(free);
+                        }
+                    }
+
+                    var totalChart = echarts.init(document.getElementById('total'));
+                    totalChart.setOption({
+                        title : {
+                            text: '总体情况',
+                            x:'center'
+                        },
+                        tooltip : {
+                            trigger: 'item'
+                        },
+                        series : [
+                            {
+                                type: 'pie',
+                                radius : '55%',
+                                center: ['50%', '50%'],
+                                data: totalStatus
+                            }
+                        ]
+                    });
+
+                    var serviceListChart = echarts.init(document.getElementById('serviceList'));
+                    var serviceListChartOption = {
+                        title: {
+                            text: '服务器情况',
+                            subtext: '总数：' + serverNameList.length,
+                            x:'center'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            },
+                            formatter: '{b}<br/>{a0}: {c0} G<br/>{a1}: {c1} G'
+                        },
+                        legend: {
+                            show: false,
+                            selectedMode: false,
+                            data: ['已用空间', '可用空间']
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                axisLabel: {
+                                    interval: 0
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        color: '#333333',
+                                        width: 1
+                                    }
+                                },
+                                data: serverNameList
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                show: false,
+                                type: 'value',
+                                boundaryGap: [0, 0.1]
+                            }
+                        ],
+                        dataZoom : {
+                            show: true,
+                            height: 15,
+                            start : 0,
+                            end : 20,
+                            zoomLock: false
+                        },
+                        series: [
+                            {
+                                name: '已用空间',
+                                type: 'bar',
+                                stack: 'sum',
+                                barWidth: '70',
+                                barCategoryGap: '50%',
+                                itemStyle: {
+                                    normal: {
+                                        color: function(params) {
+                                            if (params.dataIndex != -1) {
+                                                var itemData = params.series.data[params.dataIndex];
+                                                var rate = itemData / (serviceListChartOption.series[1].data[params.dataIndex] + itemData);
+                                                if (rate >= 0.9) {
+                                                    return '#CD0000';
+                                                } else if (rate >= 0.7) {
+                                                    return '#EEEE00';
+                                                } else if (rate < 0.7) {
+                                                    return '#00CD00';
+                                                }
+                                            }
+                                        },
+                                        barBorderWidth: 0,
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: true,
+                                            position: 'insideTop',
+                                             formatter: function(params) {
+                                                 for (var i = 0, l = serviceListChartOption.xAxis[0].data.length; i < l; i++) {
+                                                     if (serviceListChartOption.xAxis[0].data[i] == params.name) {
+                                                         return (params.value / (serviceListChartOption.series[1].data[i] + params.value) * 100).toFixed(2) + '%';
+                                                     }
+                                                 }
+                                             }
+                                        }
+                                    }
+                                },
+                                data: serverUsedStatusList
+                            },
+                            {
+                                name: '可用空间',
+                                type: 'bar',
+                                stack: 'sum',
+                                barWidth: '70',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#fff',
+                                        barBorderColor: '#ccc',
+                                        barBorderWidth: 1,
+                                        barBorderRadius: 0,
+                                        label: {
+                                            show: false,
+                                            position: 'top',
+                                            formatter: function(params) {
+                                                for (var i = 0, l = serviceListChartOption.xAxis[0].data.length; i < l; i++) {
+                                                    if (serviceListChartOption.xAxis[0].data[i] == params.name) {
+                                                        return (serviceListChartOption.series[0].data[i] + params.value) + 'G';
+                                                    }
+                                                }
+                                            },
+                                            textStyle: {
+                                                color: 'black'
+                                            }
+                                        }
+                                    }
+                                },
+                                data: serverFreeStatusList
+                            }
+                        ]
+                    };
+                    serviceListChart.setOption(serviceListChartOption);
+                } else {
+                    $.Notice.error('获取文件服务器状态数据失败');
+                }
+            },
+            error: function() {
+                $.Notice.error('获取文件服务器状态数据发生异常！');
+            }
+        });
     }
 
 </script>

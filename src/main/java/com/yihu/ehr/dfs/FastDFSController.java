@@ -4,7 +4,6 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
-import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -33,8 +32,6 @@ public class FastDFSController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
-    @Value("${fast-dfs.public-server}")
-    private String fastDfsPublicServer;
 
     @RequestMapping("/index")
     public String index(Model model) {
@@ -81,15 +78,23 @@ public class FastDFSController extends BaseUIController {
         }
     }
 
-    @RequestMapping("/download")
+    @RequestMapping("/getPublicUrl")
     @ResponseBody
-    public Object download(String path) {
-        Envelop envelop = new Envelop();
+    public Object getPublicUrl(String path) {
         try {
-            path = path.replace(":", "/");
-            envelop.setObj(fastDfsPublicServer + "/" + path);
-            envelop.setSuccessFlg(true);
-            return envelop;
+            return HttpClientUtil.doGet(comUrl + "/fastDfs/getPublicUrl", username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(FastDFSController.class).error(e.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
+    @RequestMapping("/getServersStatus")
+    @ResponseBody
+    public Object getServersStatus(String path) {
+        try {
+            return HttpClientUtil.doGet(comUrl + "/fastDfs/status", username, password);
         } catch (Exception e) {
             e.printStackTrace();
             LogService.getLogger(FastDFSController.class).error(e.getMessage());
