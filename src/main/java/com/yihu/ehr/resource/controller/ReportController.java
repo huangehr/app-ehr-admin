@@ -478,7 +478,6 @@ public class ReportController extends BaseUIController {
                 }
             }
             resultMap.put("viewInfos", viewInfos);
-
             envelop.setObj(resultMap);
             envelop.setSuccessFlg(true);
             return envelop;
