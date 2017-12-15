@@ -63,8 +63,8 @@ public class ScheduleController extends BaseUIController {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/schedule/list";
             params.put("filters", filters);
-            params.put("fields", fields);
-            params.put("sorts", sorts);
+            //params.put("fields", fields);
+            //params.put("sorts", sorts);
             params.put("page", page);
             params.put("size", size);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -240,8 +240,11 @@ public class ScheduleController extends BaseUIController {
     }
 
     @RequestMapping(value = "getPage")
-    public String getPage(Model model,String id){
+    public String getPage(Model model,String id, String main,String carId,String date){
         model.addAttribute("id",id);
+        model.addAttribute("date",date);
+        model.addAttribute("carId",carId);
+        model.addAttribute("main",main);
         return  "/emergency/menu/schinfo";
     }
 

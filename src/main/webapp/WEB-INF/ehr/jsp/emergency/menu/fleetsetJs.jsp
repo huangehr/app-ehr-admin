@@ -60,7 +60,6 @@
                             allowHideColumn: false,
                             enabledEdit: true,
                             clickToEdit: false,
-                            height:"75%",
                         }));
                         this.bindEvents();
                         // 自适应宽度

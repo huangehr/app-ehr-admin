@@ -10,7 +10,7 @@
     <div class="switch f-h50  f-mr10">
         <div class="text">
             <span>排班管理></span>
-            <span>2017年11月排班表</span>
+            <span id="time"></span>
         </div>
         <div id="Schedule"></div>
     </div>

@@ -112,8 +112,8 @@
         })
     })(jQuery,window)
 
-    function getUrl() {
-        $('#contentPage').empty();
-        $('#contentPage').load('${contextRoot}/organization/initial');
-    }
+    <%--function getUrl() {--%>
+        <%--$('#contentPage').empty();--%>
+        <%--$('#contentPage').load('${contextRoot}/organization/initial');--%>
+    <%--}--%>
 </script>

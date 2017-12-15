@@ -19,6 +19,20 @@
                 obj.init()
                 obj.bindEvent();
             }
+            var urls = {
+                gotoImportLs: "${contextRoot}/doctorImport/gotoImportLs"
+            }
+            function onUploadSuccess(g, result){
+                if(result){
+                    console.log(result)
+//                    openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
+                }
+                else{
+
+                    $.Notice.success("导入成功！");
+                }
+            }
+            $('#importbutton').uploadFile({url: "${contextRoot}/schedule/import",onUploadSuccess: onUploadSuccess});
 
             /* *************************** 函数定义结束******************************* */
             obj = {
@@ -26,31 +40,27 @@
                 $importbutton : $('#importbutton'),
                 $cenclebutton : $('#cenclebutton'),
                 $div_btn:$('.div_btn'),
-                $uploader:$('#div_file_picker'),
+//                $uploader:$('#div_file_picker'),
                 $div_download:$('.div_download'),
                 $fileShow:$('#thelist'),
-
-                urls : {
-                    gotoImportLs: "${contextRoot}/schedule/gotoImportLs"
-                },
                 init:function () {
                     var self = this;
                     //实例化选择文件
-                    self.$uploader.instance = self.$uploader.webupload({});
-
-                    self.$uploader.instance.on( 'fileQueued', function( file ) {
-                        self.$fileShow.attr('id',file.id);
-                        self.$fileShow.val(file.name+'导入...')
-                    });
-                    self.$importbutton.uploadFile({url: "${contextRoot}/schedule/import",onUploadSuccess: self.onUploadSuccess});
+//                    self.$uploader.instance = self.$uploader.webupload({});
+//
+//                    self.$uploader.instance.on( 'fileQueued', function( file ) {
+//                        self.$fileShow.attr('id',file.id);
+//                        self.$fileShow.val(file.name+'导入...')
+//                    });
                 },
 
                 onUploadSuccess :function (g, result){
                     var self = this;
                     debugger;
                     if(result){
-                        $.Notice.error(result.errorMsg);
-
+                        console.log(self)
+                        console.log(g)
+                        openDialog(self.urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
                     }
                     else{
                         var waittingDialog = $.ligerDialog.waitting('导入成功,请稍候...');

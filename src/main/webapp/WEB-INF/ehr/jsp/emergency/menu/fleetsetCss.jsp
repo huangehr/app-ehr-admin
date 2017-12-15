@@ -28,7 +28,7 @@
     }
     .div_Bottom{
         height: 180px;
-       margin-top: 20px;
+        margin-top: 20px;
         padding-top: 15px;
         padding-left: 10px;
         padding-right: 10px;
