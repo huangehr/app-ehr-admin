@@ -616,23 +616,25 @@
                                     } else {
                                         //指标统计
                                         for (var i = 0, len = sd.length; i < len; i++) {
+                                            debugger
                                             var data = sd[i].data,
                                                 name = '';
-                                            if (data.level == 1) {
-                                                name = data.name;
-                                                for (var l = 0, len = sd.length; l < len; l++) {
-                                                    var chilData = sd[l].data;
-                                                    if (chilData.level == 2 && data.id == chilData.quota_type) {
-                                                        md.push({
-                                                            resourceId: '',
-                                                            quotaTypeName: name,
-                                                            quotaChart: 1,
-                                                            quotaCode: chilData.code,
-                                                            quotaId: chilData.id
-                                                        });
-                                                    }
-                                                }
-                                            }else {
+//                                            if (data.level == 0 || data.level == 1) {
+//                                                name = data.name;
+//                                                for (var l = 0, len = sd.length; l < len; l++) {
+//                                                    var chilData = sd[l].data;
+//                                                    if (chilData.level == 2 && data.id == chilData.quota_type) {
+//                                                        md.push({
+//                                                            resourceId: '',
+//                                                            quotaTypeName: name,
+//                                                            quotaChart: 1,
+//                                                            quotaCode: chilData.code,
+//                                                            quotaId: chilData.id
+//                                                        });
+//                                                    }
+//                                                }
+//                                            } else
+                                            if (data.level == 2) {
                                                 var chilData = data;
                                                 name = data.name;
                                                 md.push({
