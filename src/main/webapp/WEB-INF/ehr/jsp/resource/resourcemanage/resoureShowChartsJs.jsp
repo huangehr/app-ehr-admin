@@ -1,10 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<script src="${contextRoot}/develop/lib/plugin/echarts/3.0/js/echarts.min.js"></script>
 <script>
     $(function () {
         var inf = ['${contextRoot}/resource/resourceManage/resourceUpDown'];
-
         var showCharts = {
             id: '${id}',
             dataModel: $.DataModel.init(),
@@ -155,8 +153,7 @@
             initChart: function (option) {
                 var me = this;
                 me.myChart = echarts.init(me.chart);
-                me.myChart.setOption(option);
-                me.myChart.on('click', function (param) {
+                function eConsole(param) {
                     var num = 0;
                     _.each(me.nrsAvalon.dimensionMap, function (o , k) {
                         if (!o.isShow) {
@@ -168,7 +165,9 @@
                         me.nrsAvalon.isSel = true;
                         me.nrsAvalon.downClass = 'active';
                     }
-                });
+                }
+                me.myChart.on('click', eConsole);
+                me.myChart.setOption(option);
             },
             reloadChart: function (opt) {
                 this.myChart.clear();
