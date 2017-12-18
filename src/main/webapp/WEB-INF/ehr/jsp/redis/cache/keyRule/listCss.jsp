@@ -5,4 +5,7 @@
     .m-form-inline .m-form-group .m-form-control.m-form-control-fr {
         float: right;
     }
+    #contentPage {
+        overflow: scroll;
+    }
 </style>
