@@ -35,7 +35,7 @@ public class FastDFSController extends BaseUIController {
 
     @RequestMapping("/index")
     public String index(Model model) {
-        model.addAttribute("contentPage", "dfs/list");
+        model.addAttribute("contentPage", "/dfs/fast-dfs/list");
         return "pageView";
     }
 
