@@ -32,7 +32,7 @@
                             <div class="inlineBlock boxText">
                                 <p  ms-text="item.id"></p>
                                 <p>归属地：<a  ms-text="item.orgName"></a></p>
-                                <p>所属片区：<a ms-text="item.phone"></a></p>
+                                <p>手机号码：<a ms-text="item.phone"></a></p>
                                 <p>状态：<a ms-text="item.status"style="color: #35afe1"></a></p>
                             </div>
                             <sec:authorize url="/government/editMenu">

@@ -51,7 +51,7 @@
                         url: '${contextRoot}/ambulance/list',
                         data:{
                             page:pn,
-                            size:"1"
+                            size:"15"
                         },
                         dataType:"json",
                         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -83,9 +83,9 @@
                     var self = this;
                     var searchNm = $("#searchNm").val();
                     var values = {
-                        filters: searchNm,
+                        filters: "id=" + searchNm,
                         page:1,
-                        size:1
+                        size:15
                     };
                     vm.data = [];
                     $.ajax({

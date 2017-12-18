@@ -38,7 +38,8 @@
                     'echarts/chart/bar',
                     'echarts/chart/line',
                     'echarts/chart/pie',
-                    'echarts/chart/map'
+                    'echarts/chart/map',
+                    'echarts/chart/radar',
                 ],
                 function (echarts) {
                     var TVS = {
@@ -138,7 +139,8 @@
                                         text:['High','Low'],
                                         realtime: false,
                                         calculable : true,
-                                        color: ['orangered','yellow']
+                                        color: ['orangered','yellow'],
+                                        show: false
                                     },
                                     series : [
                                         {
@@ -260,11 +262,11 @@
                                     option = JSON.parse(res.detailModelList[0].option);
                                     xyChange = TVS.chart.attr('data-xy-change');
                                     color = TVS.chart.attr('data-color');
-                                    if (xyChange == 'true') {
-                                        var x = option.xAxis, y = option.yAxis;
-                                        option.yAxis = x;
-                                        option.xAxis = y;
-                                    }
+//                                    if (xyChange == 'true') {
+//                                        var x = option.xAxis, y = option.yAxis;
+//                                        option.yAxis = x;
+//                                        option.xAxis = y;
+//                                    }
                                     if (color && color != '') {
                                         option.color = color.split(',');
                                     }
