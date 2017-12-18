@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -59,9 +60,9 @@ public class AmbulanceController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/list";
-//            params.put("filters", filters);
-//            params.put("fields", fields);
-//            params.put("sorts", sorts);
+            if(filters != null && !"id=".equals(filters)) {
+                params.put("filters", filters);
+            }
             params.put("page", page);
             params.put("size", size);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -145,7 +146,8 @@ public class AmbulanceController extends BaseUIController {
     @ResponseBody
     public Envelop save(
             @ApiParam(name = "ambulance", value = "救护车")
-            @RequestParam(value = "ambulance", required = false) String ambulance) {
+            @RequestParam(value = "ambulance", required = false) String ambulance,
+            HttpServletRequest request) {
         Envelop envelop = new Envelop();
         try {
             if(StringUtils.isEmpty(ambulance)) {
@@ -153,7 +155,10 @@ public class AmbulanceController extends BaseUIController {
             }
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/save";
-            params.put("ambulance", ambulance);
+            Map<String, Object> ambulanceMap = objectMapper.readValue(ambulance, Map.class);
+            HttpSession session = request.getSession();
+            ambulanceMap.put("creator", session.getAttribute("userId"));
+            params.put("ambulance", objectMapper.writeValueAsString(ambulanceMap));
             String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
@@ -169,12 +174,16 @@ public class AmbulanceController extends BaseUIController {
     @ResponseBody
     public Envelop update(
             @ApiParam(name = "attendance", value = "救护车")
-            @RequestParam(value = "ambulance") String ambulance) {
+            @RequestParam(value = "ambulance") String ambulance,
+            HttpServletRequest request) {
         Envelop envelop = new Envelop();
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/update";
-            params.put("ambulance", ambulance);
+            Map<String, Object> ambulanceMap = objectMapper.readValue(ambulance, Map.class);
+            HttpSession session = request.getSession();
+            ambulanceMap.put("modifier", session.getAttribute("userId"));
+            params.put("ambulance", objectMapper.writeValueAsString(ambulanceMap));
             String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
