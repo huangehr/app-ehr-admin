@@ -29,6 +29,7 @@
 
         grid = $("#grid").ligerGrid($.LigerGridEx.config({
             url: '${contextRoot}/redis/cache/keyRule/search',
+            height: '600px',
             columns: [
                 {display: 'ID', name: 'id', hide: true},
                 {display: '缓存Key规则名称', name: 'name', width: '15%', isAllowHide: false, align: 'left'},
