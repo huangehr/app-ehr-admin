@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,14 +58,19 @@ public class LocationController extends BaseUIController {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation("保存单条记录")
+    @ResponseBody
     public Envelop save(
             @ApiParam(name = "location", value = "待命地点")
-            @RequestParam(value = "location") String location){
+            @RequestParam(value = "location") String location,
+            HttpServletRequest request){
         Envelop envelop = new Envelop();
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/location/save";
-            params.put("location", location);
+            Map<String, Object> locationMap = objectMapper.readValue(location, Map.class);
+            HttpSession session = request.getSession();
+            locationMap.put("creator", session.getAttribute("userId"));
+            params.put("location", objectMapper.writeValueAsString(locationMap));
             String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
