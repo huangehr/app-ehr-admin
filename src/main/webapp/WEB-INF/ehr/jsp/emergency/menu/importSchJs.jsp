@@ -89,7 +89,7 @@
                     })
 
                     obj.$div_download.click(function () {
-                        alert(123)
+                        window.location.href = '${contextRoot}/schedule/downloadTemplate';
                     })
                     //关闭dailog的方法
                     obj.$cenclebutton.click(function(){

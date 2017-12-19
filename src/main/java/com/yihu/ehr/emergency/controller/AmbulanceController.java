@@ -158,6 +158,7 @@ public class AmbulanceController extends BaseUIController {
             Map<String, Object> ambulanceMap = objectMapper.readValue(ambulance, Map.class);
             HttpSession session = request.getSession();
             ambulanceMap.put("creator", session.getAttribute("userId"));
+            ambulanceMap.put("status", 0);
             params.put("ambulance", objectMapper.writeValueAsString(ambulanceMap));
             String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
