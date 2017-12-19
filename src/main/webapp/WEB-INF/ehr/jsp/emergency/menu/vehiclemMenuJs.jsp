@@ -107,7 +107,6 @@
                             obj.flag && (aaa += (obj.id + ';'));
                         })
                         $.each(d, function (k, v) {
-
                             if(p == v.id){
                                 self.$area.attr("placeholder",v.initAddress)
                             }
@@ -182,11 +181,13 @@
                         var $license_Plate_input = self.$license_Plate_input.val();
                         var $personnel_phone_input = self.$personnel_phone_input.val();
                         var $inpStatus =  $('input[name=inp_status]:checked').val();
+                        var $id = self.$area.ligerGetComboBoxManager().getValue();
                         self.ambulance ={
                             "img": null,
                             "id": $license_Plate_input,
                             "phone": $personnel_phone_input,
-                            "status": $inpStatus
+                            "status": $inpStatus,
+                            "location":$id
                         };
                         parameter = JSON.stringify(self.ambulance);
                         $.ajax({
@@ -218,12 +219,15 @@
                         var $license_Plate_input = self.$license_Plate_input.val();
                         var $personnel_phone_input = self.$personnel_phone_input.val();
                         var $inpStatus =  $('input[name=inp_status]:checked').val();
-                        var $area = self.$area.val();
+                        var $id = self.$area.ligerGetComboBoxManager().getValue();
+                        console.log($id);
+                        debugger
                         self.ambulance ={
                             "img": null,
                             "id": $license_Plate_input,
                             "phone": $personnel_phone_input,
-                            "status": $inpStatus
+                            "status": $inpStatus,
+                            "location":$id
                         };
                         parameter = JSON.stringify(self.ambulance);
                         self.global = parameter;
