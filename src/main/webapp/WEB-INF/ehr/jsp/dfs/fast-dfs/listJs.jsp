@@ -128,7 +128,8 @@
                             x:'center'
                         },
                         tooltip : {
-                            trigger: 'item'
+                            trigger: 'item',
+                            formatter: '{b}: {c} G'
                         },
                         series : [
                             {
