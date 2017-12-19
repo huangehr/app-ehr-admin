@@ -59,9 +59,7 @@
                         },
                         success:function (data) {
                             if(data.successFlg){
-                                console.log(data)
                                 var detailModelList = data.detailModelList;
-                                console.log(detailModelList)
                                 if (detailModelList && detailModelList.length>0 ){
                                     vm.data = detailModelList;
                                 }else {
@@ -100,9 +98,9 @@
                             if(data.successFlg){
                                 //清空分页
                                 self.$pageUl.empty();
-                                console.log(data)
+
                                 var detailModelList = data.detailModelList;
-                                console.log(detailModelList)
+
                                 if (detailModelList && detailModelList.length>0 ){
                                     vm.data = detailModelList;
                                 }else {
@@ -127,7 +125,6 @@
                         else {
                             title = '新增菜单';
                         }
-                        console.log(id)
                         obj.dictInfoDialog = $.ligerDialog.open({
                             height: 480,
                             width: 500,
@@ -144,7 +141,6 @@
                     //删除操作
                     $(".delete").click(function () {
                         var that = $(this)
-                        console.log(that)
                         var id = that.attr('id')
                         $.ajax({
                             type:"POST",
