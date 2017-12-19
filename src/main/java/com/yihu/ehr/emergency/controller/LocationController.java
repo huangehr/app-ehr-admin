@@ -81,14 +81,19 @@ public class LocationController extends BaseUIController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ApiOperation("更新单条记录")
+    @ResponseBody
     public Envelop update(
             @ApiParam(name = "location", value = "排班")
-            @RequestParam(value = "location") String location){
+            @RequestParam(value = "location") String location,
+            HttpServletRequest request){
         Envelop envelop = new Envelop();
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/location/update";
-            params.put("location", location);
+            Map<String, Object> locationMap = objectMapper.readValue(location, Map.class);
+            HttpSession session = request.getSession();
+            locationMap.put("modifier", session.getAttribute("userId"));
+            params.put("location", objectMapper.writeValueAsString(locationMap));
             String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
