@@ -7,17 +7,6 @@
     .flex{
         display: flex;
     }
-    .title_Bk {
-        padding: 10px;
-        height: 40px;
-        background: #29A2DB;
-        position: relative;
-        text-align: left;
-        font-size: 14px;
-        font-weight: bold;
-        color: #ffffff;
-    }
-
     .close_Dialogue {
         height: 24px;
         width: 24px;
@@ -39,50 +28,7 @@
         font-weight: bold;
         border-bottom: 1px solid #E8ECEB;
     }
-    .head_portrait{
-        position: absolute;
-        top: 100px;
-    }
-    .head_Text,.head_Img,.head_Explain{
-        height: 100px;
-    }
-    .head_Text{
-        font-size: 14px;
-        height: 100px;
-        line-height: 100px;
-        font-weight: bold;
-    }
-    .head_Img{
-        margin-left: 30px;
-        width: 100px;
-        background: #E6E6E6;
-        position: relative;
-        background: url(${staticRoot}/images/jiuhuche.jpg) no-repeat;
-        background-size: contain;
-    }
-    #div_file_picker{
-        width: 100%;
-        height: 100%;
-
-    }
-    .webuploader-pick{
-        width: 100%;
-        height: 100%;
-        background: url(${staticRoot}/images/icon_jiahao.png) no-repeat center;
-    }
-    .head_Explain{
-        width: 250px;
-        margin-left: 20px;
-        color: #909090;
-        font-size: 12px;
-    }
-    .license_plate_number{
-        font-size: 14px;
-        position: absolute;
-        top: 215px;
-    }
     #license_Plate_input{
-        text-align: center;
         margin-left: 30px;
         height: 26px;
         border: 1px solid #E8ECEB;
@@ -93,26 +39,27 @@
     input[type=radio]{
         margin-left: 15px;
     }
-    .personnel_phone{
-        font-size: 14px;
-        position: absolute;
-        top: 255px;
-    }
     .personnel_phone>input{
-        text-align: center;
         height: 26px;
         border: 1px solid #E8ECEB;
         margin-left: 30px;
     }
-    .Ascription{
-        font-size: 14px;
-        position: absolute;
-        top: 290px;
+    .Ascription>input{
+        height: 26px;
+        border: 1px solid #E8ECEB;
+        margin-left: 30px;
     }
-    .Ascription>div{
-        width: 380px;
-        height: 28px;
-        display: inline-block;
+    .area>input{
+        height: 26px;
+        border: 1px solid #E8ECEB;
+        margin-left: 30px;
+    }
+    .divInput{
+        width: 300px;
+        /*margin-top: 50px;*/
+        /*position: relative;*/
+        /*left: 100px;*/
+        margin: 40px auto;
     }
     /*样式重置*/
     .l-text {
@@ -121,8 +68,6 @@
         line-height: 30px;
         margin-left: 30px;
     }
-
-
     .operation{
         position: absolute;
         top: 345px;

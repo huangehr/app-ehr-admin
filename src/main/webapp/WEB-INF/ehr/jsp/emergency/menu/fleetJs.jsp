@@ -32,7 +32,7 @@
                 $searchNm: $('#searchNm'),
                 dataCount:null,
                 $change:$(".change"),//编辑
-                $be_On_duty:$(".be_On_duty"),//值班
+                $be_On_change:$(".be_On_change"),//值班
                 $delete:$(".delete"),//删除
                 $temp:$(".temp"),//ul 容器
                 $pageUl : $(".fenye"),
@@ -51,7 +51,7 @@
                         url: '${contextRoot}/ambulance/list',
                         data:{
                             page:pn,
-                            size:"15"
+                            size:"6"
                         },
                         dataType:"json",
                         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -83,7 +83,7 @@
                     var values = {
                         filters: "id=" + searchNm,
                         page:1,
-                        size:15
+                        size:6
                     };
                     vm.data = [];
                     $.ajax({
@@ -120,10 +120,10 @@
                     $.subscribe('urgentcommand:vehiclemMenu:open', function (event, id, mode) {
                         var title = '';
                         if (mode == 'modify') {
-                            title = '修改菜单';
+                            title = '修改车辆';
                         }
                         else {
-                            title = '新增菜单';
+                            title = '新增车辆';
                         }
                         obj.dictInfoDialog = $.ligerDialog.open({
                             height: 480,
@@ -142,30 +142,95 @@
                     $(".delete").click(function () {
                         var that = $(this)
                         var id = that.attr('id')
-                        $.ajax({
-                            type:"POST",
-                            url: '${contextRoot}/ambulance/delete',
-                            data:{
-                                ids:id
-                            },
-                            dataType:"json",
-                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(id)
+                        $.ligerDialog.confirm('确认删除？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                            if (yes) {
+                                $.ajax({
+                                    type:"POST",
+                                    url: '${contextRoot}/ambulance/delete',
+                                    data:{
+                                        ids:id
+                                    },
+                                    dataType:"json",
+                                    error: function(XMLHttpRequest, textStatus, errorThrown) {
 
-                            },
-                            success:function (data) {
-                                if(data.successFlg){
-                                    that.parents("li").remove();
-                                }else {
-                                    $.Notice.error(data.errorMsg);
-                                }
+                                    },
+                                    success:function (data) {
+                                        if(data.successFlg){
+                                            that.parents("li").remove();
+                                        }else {
+                                            $.Notice.error(data.errorMsg);
+                                        }
+                                    }
+                                })
                             }
-                        })
+                        });
                     });
+
+                    //值班操作/休息点击事件
+                    $(".be_On_change").click(function () {
+                        var that = $(this);
+                        var code = that.attr('data-code');
+                        var id = that.attr('id');
+                        if(code==1){
+                            $.ligerDialog.confirm('确认更改？<br>如果有正在执行的任务会变成意外终止，否则请点击取消。', function (yes) {
+                                if (yes) {
+                                    $.ajax({
+                                        type:"POST",
+                                        url: '${contextRoot}/ambulance/updateStatus',
+                                        data:{
+                                            carId:id,
+                                            status:code
+                                        },
+                                        dataType:"json",
+                                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                                        },
+                                        success:function (data) {
+                                            if(data.successFlg){
+                                                that.val("值班")
+                                                $('.status a').html('休息')
+                                                $('.be_On_change').attr("data-code",0)
+                                                $.Notice.success("操作成功");
+                                            }else {
+                                                $.Notice.error(data.errorMsg);
+                                            }
+                                        }
+                                    })
+                                }
+                            });
+
+                        }else {
+                            $.ajax({
+                                type:"POST",
+                                url: '${contextRoot}/ambulance/updateStatus',
+                                data:{
+                                    carId:id,
+                                    status:code
+                                },
+                                dataType:"json",
+                                error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                                },
+                                success:function (data) {
+                                    if(data.successFlg){
+                                        that.val("休息")
+                                        $('.status a').html('待命中')
+                                        $('.be_On_change').attr("data-code",1)
+                                        $.Notice.success("操作成功");
+                                    }else {
+                                        $.Notice.error(data.errorMsg);
+                                    }
+                                }
+                            })
+                        }
+                    })
+
                 },
 //                翻页
                 getPage:function (pn) {
                     var  self = this;
-                    var pageSize = 1; //每页显示条数
+                    var pageSize = 6; //每页显示条数
                     var pageCount = Math.ceil(self.dataCount / pageSize); //总页数
                     if(pn == 0 || pn > pageCount) {
                         return;

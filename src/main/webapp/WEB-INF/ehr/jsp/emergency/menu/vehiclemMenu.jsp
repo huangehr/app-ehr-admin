@@ -12,10 +12,10 @@
     <div class="base_Info">
         <p>基本信息</p>
         <div class="head_portrait flex">
-            <div class="inlinebBlock head_Text">头&nbsp;&nbsp;像</div>
+            <div class="inlinebBlock head_Text">头&#12288;&#12288;像</div>
             <div class="inlinebBlock head_Img u-upload alone f-ib f-tac f-vam u-upload-img" id="div_doctor_img_upload" data-alone-file=true>
-                <div id="div_file_list" class="uploader-list"></div>
-                <div  id="div_file_picker"></div>
+                <%--<div id="div_file_list" class="uploader-list"></div>--%>
+                <%--<div  id="div_file_picker"></div>--%>
             </div>
             <%--<div id="div_doctor_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>--%>
                 <%--<!--用来存放item-->--%>
@@ -28,9 +28,9 @@
         <div class="license_plate_number">
             <label>车 &nbsp;牌&nbsp;号</label>
             <input type="text"id="license_Plate_input" />
-            <label>状&nbsp;态</label>
-            <input type="radio"name="inp_status" value="1" /><span>值班</span>
-            <input type="radio"name="inp_status" value="0"/><span>休息</span>
+            <%--<label>状&nbsp;态</label>--%>
+            <%--<input type="radio"name="inp_status" value="1" /><span>值班</span>--%>
+            <%--<input type="radio"name="inp_status" value="0"/><span>休息</span>--%>
         </div>
         <div class="personnel_phone">
             <label>随车手机</label>

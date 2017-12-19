@@ -75,7 +75,15 @@
                                 {display: '日期', name: 'date', width: '20%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '归属地点', name: 'location', width: '20%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '车牌号码', name: 'carId', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"}},
-                                {display: '主/付班', name: 'main', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"}},
+                                {display: '主/付班', name: 'main', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"},
+                                    render: function (row) {
+                                        if (row.main == 'true') {
+                                            return "主";
+                                        } else {
+                                            return "付";
+                                        }
+
+                                    }},
                                 {display: '司机', name: 'driver', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '医生', name: 'doctor', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '护士', name: 'nurse', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"}},
@@ -103,6 +111,7 @@
                             allowHideColumn: false,
                             enabledEdit: true,
                             clickToEdit: false,
+                            rownumbers:false,
                             onAfterShowData: function(s) {
                                 console.log(s)
                                 setTimeout(function() {
@@ -143,6 +152,7 @@
                 endEdit:function () {
                     var row = obj.grid.getSelectedRow();
                     obj.grid.endEdit(row);
+
                 },
                 bindEvents:function () {
                     var self = this;
@@ -151,6 +161,7 @@
                     })
                     $.subscribe('scheDetailsJs:scheInfo:lock',function (event,id) {
                         self.endEdit();
+
                     })
                     $.subscribe('scheDetailsJs:scheInfo:edit',function (event,scheduleIds,date,carId,main) {
                         console.log(scheduleIds)

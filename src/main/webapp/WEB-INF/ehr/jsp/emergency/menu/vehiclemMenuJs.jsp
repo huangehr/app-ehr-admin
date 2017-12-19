@@ -72,9 +72,9 @@
                     },
                     auto: false,
                 });
-
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     if(!resp.successFlg){
+                        debugger
                         console.log(resp)
                         $.Notice.error(resp.errorMsg);
                     }
@@ -98,20 +98,22 @@
                             width: '240',
                             valueField: 'id',
                             textField: 'initAddress',
-                            isMultiSelect: true,
                             valueFieldID: 'ids',
                             dataParmName: 'detailModelList'
                         });
-                        var aaa = '';
-                        $.each(d, function (k, obj) {
-                            obj.flag && (aaa += (obj.id + ';'));
-                        })
+//                        var aaa = '';
+//                        $.each(d, function (k, obj) {
+//                            obj.flag && (aaa += (obj.id + ';'));
+//                        })
+//                        self.$area.liger().selectValue(aaa);
+
+                        console.log(p)
                         $.each(d, function (k, v) {
+
                             if(p == v.id){
                                 self.$area.attr("placeholder",v.initAddress)
                             }
                         })
-                        self.$area.liger().selectValue(aaa);
                     }else {
                         self.$area.ligerComboBox({width: '240'});
                     }
@@ -137,10 +139,11 @@
             setInfo: function (res, me) {
                 var self = this;
                 initList = res.obj;
+                me.$license_Plate_input.attr("disabled",'disabled')
                 me.$license_Plate_input.val(initList.id);
                 me.$personnel_phone_input.val(initList.phone);
                 me.$location = initList.location;
-                self.loadSelData(me.$location);
+                me.loadSelData(me.$location);
                 if (initList.status == 'wait') {
                     me.$inpStatus.eq(0).ligerRadio("setValue",'1');
                     me.$inpStatus.eq(1).ligerRadio("setValue",'');
@@ -176,6 +179,7 @@
             bindEvents:function () {
                 var self = this;
                 var parameter = null;
+
                 menuInfo.$updateBtn.click(function () {
                     if(id!='-1'){//不等于-1 从编辑按钮过来的
                         var $license_Plate_input = self.$license_Plate_input.val();
@@ -187,7 +191,7 @@
                             "id": $license_Plate_input,
                             "phone": $personnel_phone_input,
                             "status": $inpStatus,
-                            "location":$id
+                            "location":$id||self.$location
                         };
                         parameter = JSON.stringify(self.ambulance);
                         $.ajax({
@@ -215,13 +219,11 @@
                             }
                         })
 
-                    }else {
+                    }else {// 从新增按钮过来的
                         var $license_Plate_input = self.$license_Plate_input.val();
                         var $personnel_phone_input = self.$personnel_phone_input.val();
                         var $inpStatus =  $('input[name=inp_status]:checked').val();
                         var $id = self.$area.ligerGetComboBoxManager().getValue();
-                        console.log($id);
-                        debugger
                         self.ambulance ={
                             "img": null,
                             "id": $license_Plate_input,
@@ -261,7 +263,7 @@
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
                             if (image) {
-                                upload.options.formData.ambulance = encodeURIComponent(JSON.stringify(parameter));
+                                upload.options.formData.ambulance = JSON.stringify(parameter);
                                 upload.upload();
                             } else {
                                 update(parameter);
