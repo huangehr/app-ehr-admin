@@ -5,9 +5,9 @@
 <%@ include file="schinfoCss.jsp" %>
 
 <div class="containBox">
-    <div class="div_title">
-        排班信息
-    </div>
+    <%--<div class="div_title">--%>
+        <%--排班信息--%>
+    <%--</div>--%>
 
     <div class="base_info" ms-controller="avacontroller">
         <div class=" basis">

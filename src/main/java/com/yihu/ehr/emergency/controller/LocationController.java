@@ -120,4 +120,10 @@ public class LocationController extends BaseUIController {
         }
         return envelop;
     }
+
+    @RequestMapping(value = "getPage")
+    public String getPage(){
+        return  "/emergency/menu/addMenu";
+    }
+
 }

@@ -3,17 +3,17 @@
 
 <style>
     .containBox {
-        width: 1408px;
-        height: 950px;
+        width: 1015px;
+        height: 890px;
     }
 
-    .div_title {
-        color: #30A9DE;
-        font-size: 16px;
-        padding-top: 30px;
-        padding-left: 60px;
-        background-position: 1374px 20px;
-    }
+    /*.div_title {*/
+        /*color: #30A9DE;*/
+        /*font-size: 16px;*/
+        /*padding-top: 30px;*/
+        /*padding-left: 60px;*/
+        /*background-position: 1374px 20px;*/
+    /*}*/
 
     .base_info {
         padding-left: 130px;
@@ -40,7 +40,9 @@
     .basis>div:first-child {
         padding-top: 15px;
     }
-
+    .sex{
+        width: 135px;
+    }
     .edio_btn {
         width: 250px;
         margin: 10px auto;

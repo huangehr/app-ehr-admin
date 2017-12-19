@@ -33,7 +33,11 @@
                                 <p  ms-text="item.id"></p>
                                 <p>归属地：<a  ms-text="item.orgName"></a></p>
                                 <p>手机号码：<a ms-text="item.phone"></a></p>
-                                <p>状态：<a ms-text="item.status"style="color: #35afe1"></a></p>
+                                <p ms-if="item.status=='wait'" class="status">状态：<a style="color: #35afe1">待命中</a></p>
+                                <p ms-if="item.status=='onWay'" class="status">状态：<a style="color: #35afe1">前往中</a></p>
+                                <p ms-if="item.status=='arrival'" class="status">状态：<a style="color: #35afe1">抵达</a></p>
+                                <p ms-if="item.status=='back'" class="status">状态：<a style="color: #35afe1">返程中</a></p>
+                                <p ms-if="item.status=='down'" class="status">状态：<a style="color: #35afe1">休息</a></p>
                             </div>
                             <sec:authorize url="/government/editMenu">
                             <div class="inlineBlock change"ms-click="jumpMenu(item.id)">
@@ -41,7 +45,8 @@
                             </sec:authorize>
                         </div>
                         <div class="edit">
-                            <input class="btn  be_On_duty" type="button" value="值班">
+                            <input class="btn  be_On_change" type="button" value="休息" data-code="1" ms-if="item.status!='down'" ms-attr-id="item.id">
+                            <input class="btn  be_On_change" type="button" value="值班" data-code="0" ms-if="item.status=='down'" ms-attr-id="item.id">
                             <input class="btn  delete" type="button" value="删除" ms-attr-id="item.id">
                         </div>
                     </li>

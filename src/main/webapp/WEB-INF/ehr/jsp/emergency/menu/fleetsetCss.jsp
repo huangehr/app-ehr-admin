@@ -26,6 +26,19 @@
         top:-5px;
         left: 10px;
     }
+    .addBtn{
+        position: relative;
+        top:-5px;
+        left: 900px;
+        width: 88px;
+        height: 34px;
+        background: #2D9BD2;
+        line-height: 34px;
+        color: #fff;
+        text-align: center;
+        border-radius: 3px;
+        cursor: pointer;
+    }
     .div_Bottom{
         height: 180px;
         margin-top: 20px;

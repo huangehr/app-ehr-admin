@@ -45,8 +45,9 @@
     .backroundImg{
         width: 140px;
         height: 140px;
-        background: url(${staticRoot}/images/bk_mpv.jpg) no-repeat;
-        background-size: 140px 140px;
+        background: url(${staticRoot}/images/jiuhuche.jpg) no-repeat;
+        /*background-size: 140px 140px;*/
+        background-size: contain;
     }
     .boxText{
         margin-left: 30px;
@@ -77,7 +78,7 @@
         background: #F1F5F8;
         position: relative;
     }
-    .be_On_duty{
+    .be_On_change{
        position: absolute;
         top: 10px;
         right: 128px;
