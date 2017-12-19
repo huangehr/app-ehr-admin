@@ -433,7 +433,7 @@ public class ScheduleController extends BaseUIController {
             list.add(values);
             map.put("values", objectMapper.writeValueAsString(list));
             String resultStr = "";
-            resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/IdOrPhoneExistence", map, username, password);
+            resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/idOrPhoneExistence", map, username, password);
             Set<String> set=objectMapper.readValue(resultStr, new TypeReference<Set<String>>() {});
             if(null!=set&&set.size()>0){
                 //返回成功 表示库里存在该车牌号
