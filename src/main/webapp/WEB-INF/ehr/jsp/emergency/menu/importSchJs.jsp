@@ -89,7 +89,7 @@
                     })
 
                     obj.$div_download.click(function () {
-                        window.location.href = '${contextRoot}/schedule/downloadTemplate';
+                        window.location.href = "<%=request.getContextPath()%>/template/排班表.xls";
                     })
                     //关闭dailog的方法
                     obj.$cenclebutton.click(function(){
