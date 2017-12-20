@@ -16,16 +16,18 @@
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
-                obj.init()
+//                obj.init()
                 obj.bindEvent();
             }
             var urls = {
-                gotoImportLs: "${contextRoot}/doctorImport/gotoImportLs"
+                gotoImportLs: "${contextRoot}/schedule/gotoImportLs"
             }
             function onUploadSuccess(g, result){
+                debugger
                 if(result){
-                    console.log(result)
-//                    openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
+                    closeDialog();
+                    debugger
+                    openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
                 }
                 else{
 
@@ -43,45 +45,42 @@
 //                $uploader:$('#div_file_picker'),
                 $div_download:$('.div_download'),
                 $fileShow:$('#thelist'),
-                init:function () {
-                    var self = this;
-                    //实例化选择文件
-//                    self.$uploader.instance = self.$uploader.webupload({});
-//
-//                    self.$uploader.instance.on( 'fileQueued', function( file ) {
-//                        self.$fileShow.attr('id',file.id);
-//                        self.$fileShow.val(file.name+'导入...')
-//                    });
-                },
+                <%--init:function () {--%>
+                    <%--var self = this;--%>
+                    <%--//实例化选择文件--%>
+<%--//                    self.$uploader.instance = self.$uploader.webupload({});--%>
+<%--//--%>
+<%--//                    self.$uploader.instance.on( 'fileQueued', function( file ) {--%>
+<%--//                        self.$fileShow.attr('id',file.id);--%>
+<%--//                        self.$fileShow.val(file.name+'导入...')--%>
+<%--//                    });--%>
+                <%--},--%>
 
-                onUploadSuccess :function (g, result){
-                    var self = this;
-                    debugger;
-                    if(result){
-                        console.log(self)
-                        console.log(g)
-                        openDialog(self.urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
-                    }
-                    else{
-                        var dataModel = $.DataModel.init();//ajax 初始化
-                        dataModel.updateRemote("${contextRoot}/ambulance/save", {
-                            data: {ambulance: addModel},
-                            type:"POST",
-                            success: function (data) {
-                                if (data.successFlg){
-//                                页面回调
-                                    closeMenuInfoDialog(function () {
-                                        $.Notice.success('成功');
-                                    });
-                                } else {
-                                    closeMenuInfoDialog(function () {
-                                        $.Notice.error(data.errorMsg);
-                                    });
-                                }
-                            }
-                        })
-                    }
-            },
+                <%--onUploadSuccess :function (g, result){--%>
+                    <%--var self = this;--%>
+                    <%--if(result){--%>
+                        <%--openDialog(self.urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});--%>
+                    <%--}--%>
+                    <%--else{--%>
+                        <%--var dataModel = $.DataModel.init();//ajax 初始化--%>
+                        <%--dataModel.updateRemote("${contextRoot}/ambulance/save", {--%>
+                            <%--data: {ambulance: addModel},--%>
+                            <%--type:"POST",--%>
+                            <%--success: function (data) {--%>
+                                <%--if (data.successFlg){--%>
+<%--//                                页面回调--%>
+                                    <%--closeMenuInfoDialog(function () {--%>
+                                        <%--$.Notice.success('成功');--%>
+                                    <%--});--%>
+                                <%--} else {--%>
+                                    <%--closeMenuInfoDialog(function () {--%>
+                                        <%--$.Notice.error(data.errorMsg);--%>
+                                    <%--});--%>
+                                <%--}--%>
+                            <%--}--%>
+                        <%--})--%>
+                    <%--}--%>
+            <%--},--%>
 
                 bindEvent:function () {
                     var self = this;

@@ -113,7 +113,7 @@
                             success:function (data) {
                                 if(data.successFlg){
                                     self.endEdit();
-                                    $.Notice.success('编辑成功');
+                                    $.Notice.success('新增成功');
                                 }else {
                                     $.Notice.error(data.errorMsg);
                                 }
