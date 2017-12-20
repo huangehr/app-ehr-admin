@@ -1,6 +1,9 @@
 package com.yihu.ehr.quota.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.standard.datasset.DataSetModel;
+import com.yihu.ehr.agModel.standard.datasset.MetaDataModel;
 import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
@@ -8,8 +11,15 @@ import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.std.model.DataSetMsg;
+import com.yihu.ehr.std.model.MetaDataMsg;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.excel.AExcelReader;
+import com.yihu.ehr.util.excel.TemPath;
+import com.yihu.ehr.util.excel.read.DataSetMsgReader;
+import com.yihu.ehr.util.excel.read.DataSetMsgWriter;
+import com.yihu.ehr.util.excel.read.TjQuotaMsgReader;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -24,14 +34,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017/6/13.
@@ -577,6 +587,196 @@ public class TjQuotaController extends BaseUIController {
             return result;
         }
         return resultStr;
+    }
+
+    /**
+     * 指标文件导入
+     * @param file
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    private static final String parentFile = "tjQuotaDataSet";
+    @RequestMapping(value = "import")
+    @ResponseBody
+    public void importData(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        try {
+            UserDetailModel user = getCurrentUserRedis(request);
+            writerResponse(response, 1 + "", "l_upd_progress");
+            request.setCharacterEncoding("UTF-8");
+            AExcelReader excelReader = new TjQuotaMsgReader();
+            excelReader.read(file.getInputStream());
+            List<DataSetMsg> errorLs = excelReader.getErrorLs();
+            List<DataSetMsg> correctLs = excelReader.getCorrectLs();
+            writerResponse(response, 35+"", "l_upd_progress");
+
+            List saveLs = validate(response, excelReader, errorLs, correctLs);
+            writerResponse(response, 55+"", "l_upd_progress");
+
+            Map rs = new HashMap<>();
+            if(errorLs.size()>0){
+                String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
+                new DataSetMsgWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
+                rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
+            }
+            writerResponse(response, 65 + "", "l_upd_progress");
+
+            if(saveLs.size()>0)
+//                saveData(toJson(saveLs), version);
+            if(errorLs.size()==0)
+                writerResponse(response, 100 + ",'suc'", "l_upd_progress");
+            else
+                writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            writerResponse(response, "-1", "l_upd_progress");
+        }
+    }
+
+    protected void writerResponse(HttpServletResponse response, String body, String client_method) throws IOException {
+        StringBuffer sb = new StringBuffer();
+        sb.append("<script type=\"text/javascript\">//<![CDATA[\n");
+        sb.append("     parent.").append(client_method).append("(").append(body).append(");\n");
+        sb.append("//]]></script>");
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.addHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache,no-store,must-revalidate");
+        response.setHeader("Cache-Control", "pre-check=0,post-check=0");
+        response.setDateHeader("Expires", 0);
+        response.getWriter().write(sb.toString());
+        response.flushBuffer();
+    }
+
+    private List validate( HttpServletResponse response, AExcelReader excelReader,
+                          List<DataSetMsg> errorLs, List<DataSetMsg> correctLs) throws Exception {
+        List saveLs = new ArrayList<>();
+
+        Set<String> codes = findExistCode(excelReader.getRepeat().get("code"));
+//            Map<String, String> stdSources = findStdSources(excelReader.getRepeat().get("referenceCode").toString().replace("[", "").replace("]", "").replace(" ", ""));
+        Map<String, String> stdSources = null;
+//        Map<String, String> dicts = findStdDict(version);
+        String columnTypes = "VARCHAR,INT,FLOAT,DOUBLE,CHAR,TEXT,DATE,DATETIME,NUMERIC,TINYINT";
+        writerResponse(response, 45+"", "l_upd_progress");
+        DataSetMsg model;
+        boolean valid;
+        String sourceId;
+
+        for(int i=0; i<errorLs.size(); i++){
+            model = errorLs.get(i);
+            if(codes.contains(model.getCode())){
+                model.addErrorMsg("code", "该标识已存在！");
+            }
+//            validateMeta(model, columnTypes, dicts) ;
+        }
+
+        for(int i=0; i<correctLs.size(); i++){
+            valid = true;
+            model = correctLs.get(i);
+            if(codes.contains(model.getCode())){
+                model.addErrorMsg("code", "该标识已存在！");
+                valid = false;
+            }
+//                if(!StringUtils.isEmpty(model.getReferenceCode())){
+//                    if((sourceId = stdSources.get(model.getReferenceCode())) == null){
+//                        model.addErrorMsg("referenceCode", "该参考来源不存在！");
+//                        valid = false;
+//                    }else
+//                        model.setReferenceId(sourceId);
+//                }
+
+//            valid = valid & validateMeta(model, columnTypes, dicts) ;
+//            if(valid)
+//                saveLs.add(correctLs.get(i));
+//            else
+//                errorLs.add(model);
+
+        }
+        return saveLs;
+    }
+
+    private boolean validateMeta(DataSetMsg model, String columnTypes, Map<String, String> dicts) throws Exception {
+        List<MetaDataMsg> children = model.getChildren();
+
+        boolean valid= true;
+        String dictId;
+        for(MetaDataMsg meta : children){
+            if(!StringUtils.isEmpty(meta.getDictCode())){
+                if((dictId=dicts.get(meta.getDictCode())) == null){
+                    valid = false;
+                    meta.addErrorMsg("dictCode", "该术语范围值不存在");
+                }else
+                    meta.setDictId(dictId);
+            }
+
+            if(!StringUtils.isEmpty(meta.getColumnType()) && columnTypes.indexOf(meta.getColumnType())==-1){
+                meta.addErrorMsg("columnType", "只能是["+ columnTypes +"]里的值！");
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+    private Set<String> findExistCode(Set<String> codes) throws Exception {
+
+        Map<String,Object> conditionMap = new HashMap<>();
+        conditionMap.put("codes", codes.toString().replace(" ", "").replace("[", "").replace("]", ""));
+        conditionMap.put("size", codes.size() + "");
+        String rs = HttpClientUtil.doGet(comUrl + "/data_set/codes/existence", conditionMap);
+        return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
+    }
+
+    //数据集数据元整体入库
+    private Envelop saveData(DataSetModel dataSet, List<MetaDataModel> metaDataList, String versionCode){
+        Envelop ret = new Envelop();
+        String url = "/data_set";
+        Map<String,Object> params = new HashMap<>();
+        params.put("version_code",versionCode);
+        long dataSetId;
+        DataSetModel dataSetModel=null;
+        List<MetaDataModel> metaDataModels = new ArrayList<>();
+        try {
+            //数据集入库
+            String jsonDataNew = toJson(dataSet);
+            params.put("json_data",jsonDataNew);
+            String envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            Envelop envelop = getEnvelop(envelopStrNew);
+            if (envelop.isSuccessFlg()){
+                dataSetModel = getEnvelopModel(envelop.getObj(),DataSetModel.class);
+                dataSetId = dataSetModel.getId();
+                //数据元入库
+                url = "/meta_data";
+                params.remove("version_code");
+                params.put("version",versionCode);
+                if (metaDataList.size()>0){
+                    for (MetaDataModel metaData : metaDataList) {
+                        metaData.setDataSetId(dataSetId);
+                        params.remove("json_data");
+                        params.put("json_data",toJson(metaData));
+                        envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
+                        envelop = getEnvelop(envelopStrNew);
+                        //新增成功后的数据元集合
+                        if (envelop.isSuccessFlg()) {
+                            MetaDataModel metaDataModel = getEnvelopModel(envelop.getObj(),MetaDataModel.class);
+                            metaDataModels.add(metaDataModel);
+                        }
+                    }
+                }
+
+            }
+            //返回信息
+            ret.setSuccessFlg(true);
+            ret.setObj(dataSetModel);
+            ret.setDetailModelList(metaDataModels);
+            return ret;
+        } catch (Exception e) {
+            e.printStackTrace();
+            ret.setSuccessFlg(false);
+            return ret;
+        }
     }
 
 }
