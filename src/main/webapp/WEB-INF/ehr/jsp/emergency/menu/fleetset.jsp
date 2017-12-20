@@ -9,6 +9,7 @@
         <div class="standbyText inlineBloock">
             待命地点设置
         </div>
+        <div class="addBtn inlineBloock">新增</div>
         <div id="standby_grid"></div>
     </div>
     <%--<div class='div_Bottom' >--%>

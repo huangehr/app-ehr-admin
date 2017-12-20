@@ -158,6 +158,7 @@ public class AmbulanceController extends BaseUIController {
             Map<String, Object> ambulanceMap = objectMapper.readValue(ambulance, Map.class);
             HttpSession session = request.getSession();
             ambulanceMap.put("creator", session.getAttribute("userId"));
+            ambulanceMap.put("status", 0);
             params.put("ambulance", objectMapper.writeValueAsString(ambulanceMap));
             String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
@@ -390,7 +391,7 @@ public class AmbulanceController extends BaseUIController {
         conditionMap.add("type", type);
         conditionMap.add("values", values);
         RestTemplates template = new RestTemplates();
-        String rs = template.doPost(comUrl + "/ambulance/IdOrPhoneExistence", conditionMap);
+        String rs = template.doPost(comUrl + "/ambulance/idOrPhoneExistence", conditionMap);
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
     }
 
@@ -524,7 +525,7 @@ public class AmbulanceController extends BaseUIController {
             list.add(values);
             map.put("values", objectMapper.writeValueAsString(list));
             String resultStr = "";
-            resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/IdOrPhoneExistence", map, username, password);
+            resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/idOrPhoneExistence", map, username, password);
             Set<String> set=objectMapper.readValue(resultStr, new TypeReference<Set<String>>() {});
             if(null!=set&&set.size()>0){
                 //返回成功 表示库里存在该车牌号或者随车号码

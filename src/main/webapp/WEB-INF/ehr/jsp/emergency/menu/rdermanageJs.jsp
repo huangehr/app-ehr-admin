@@ -44,6 +44,7 @@
                             validate: true,
                             unSetValidateAttr: false,
                             allowHideColumn: false,
+                            rownumbers:false,
                             onSuccess: function(data) {
                                 var list = []
                                 for(var i=0, length = data.detailModelList.length; i < length; i++) {
@@ -101,7 +102,7 @@
             win.closeMenuInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
-                    obj.reloadData();
+                    obj.reloadGrid();
                 }
                 obj.detailDialog.close();
             };

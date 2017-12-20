@@ -637,5 +637,38 @@ public class ResourceManageController extends BaseUIController {
         }
     }
 
+    @RequestMapping("/getQuotaByResourceId")
+    @ResponseBody
+    public Object getQuotaByResourceId(String resourceId){
+        Envelop envelop = new Envelop();
+        String url = "/resourceQuota/getQuotaByResourceId";
+        Map<String,Object> params = new HashMap<>();
+        params.put("resourceId",resourceId);
+        try{
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 
+    @RequestMapping(value = "/updateResourceQuota", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object updateResourceQuota(String jsonModel){
+        Envelop envelop = new Envelop();
+        String url = "/resourceQuota/updateResourceQuota";
+        RestTemplates templates = new RestTemplates();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("model", jsonModel);
+        try{
+            String resultStr = templates.doPost(comUrl + url, params);
+            return resultStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 }

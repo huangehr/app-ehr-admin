@@ -29,9 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -136,6 +135,25 @@ public class ScheduleController extends BaseUIController {
             LogService.getLogger(ScheduleController.class).error(e.getMessage());
         }
         return envelop;
+    }
+
+    @RequestMapping(value = "/downloadTemplate", method = RequestMethod.GET)
+    @ApiOperation("获取下载模板")
+    public void download(HttpServletResponse response, HttpServletRequest request) throws IOException {
+        String path = request.getServletContext().getRealPath("/") + "template/排班表.xls";
+        File file = new File(path);
+        response.setHeader("content-type", "application/octet-stream");
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(file.getName(), "UTF-8"));
+        FileInputStream inputStream = new FileInputStream(path);
+        OutputStream outputStream = response.getOutputStream();
+        byte buffer[] = new byte[1024];
+        int len = 0;
+        while((len = inputStream.read(buffer))>0){
+            outputStream.write(buffer, 0, len);
+        }
+        inputStream.close();
+        outputStream.close();
     }
 
     @RequestMapping(value = "/initial", method = RequestMethod.GET)
@@ -302,7 +320,7 @@ public class ScheduleController extends BaseUIController {
         conditionMap.add("type", type);
         conditionMap.add("values", values);
         RestTemplates template = new RestTemplates();
-        String rs = template.doPost(comUrl + "/ambulance/IdOrPhoneExistence", conditionMap);
+        String rs = template.doPost(comUrl + "/ambulance/idOrPhoneExistence", conditionMap);
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
     }
 
@@ -415,7 +433,7 @@ public class ScheduleController extends BaseUIController {
             list.add(values);
             map.put("values", objectMapper.writeValueAsString(list));
             String resultStr = "";
-            resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/IdOrPhoneExistence", map, username, password);
+            resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/idOrPhoneExistence", map, username, password);
             Set<String> set=objectMapper.readValue(resultStr, new TypeReference<Set<String>>() {});
             if(null!=set&&set.size()>0){
                 //返回成功 表示库里存在该车牌号
