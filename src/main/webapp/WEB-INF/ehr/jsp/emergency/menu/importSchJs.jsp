@@ -63,19 +63,20 @@
                         openDialog(self.urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
                     }
                     else{
-                        var waittingDialog = $.ligerDialog.waitting('导入成功,请稍候...');
                         var dataModel = $.DataModel.init();//ajax 初始化
                         dataModel.updateRemote("${contextRoot}/ambulance/save", {
                             data: {ambulance: addModel},
                             type:"POST",
                             success: function (data) {
-                                waittingDialog.close();
                                 if (data.successFlg){
 //                                页面回调
-                                    debugger
+                                    closeMenuInfoDialog(function () {
+                                        $.Notice.success('成功');
+                                    });
                                 } else {
-                                    waittingDialog.close();
-                                    $.Notice.error(data.errorMsg);
+                                    closeMenuInfoDialog(function () {
+                                        $.Notice.error(data.errorMsg);
+                                    });
                                 }
                             }
                         })

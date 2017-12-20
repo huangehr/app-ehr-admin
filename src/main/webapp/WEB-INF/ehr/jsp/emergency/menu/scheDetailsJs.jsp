@@ -90,9 +90,10 @@
                                 {display: '操作', name: 'operation', width: '10%', isAllowHide: false, align: 'center',
                                     render: function (row, rowindex, value) {
                                         var html = '';
+                                        var rowJson = JSON.stringify(row).replace(/"/g,'&quot;');
                                         if (!row._editing)
                                         {
-                                            html += '<a class="grid_towrite" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:open") + '"></a>';
+                                            html += '<a class="grid_towrite" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:open",row.id,rowJson) +'"></a>';
                                             html += '<a class="grid_detail" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit",row.scheduleIds,row.date,row.carId,row.main) + '">'+'</a>';
 
                                         }
@@ -146,8 +147,8 @@
                     Util.reloadGrid.call(this.grid, '${contextRoot}/schedule/level', values, curPage);
                 },
                 beginEdit:function () {
-                    var row = obj.grid.getSelectedRow();
-                    obj.grid.beginEdit(row);
+//                    var row = obj.grid.getSelectedRow();
+//                    obj.grid.beginEdit(row);
                 },
                 endEdit:function () {
                     var row = obj.grid.getSelectedRow();
@@ -156,8 +157,10 @@
                 },
                 bindEvents:function () {
                     var self = this;
-                    $.subscribe('scheDetailsJs:scheInfo:open',function (event,id) {
-                        self.beginEdit();
+                    $.subscribe('scheDetailsJs:scheInfo:open',function (event, id, row) {
+
+                        var thisRow = JSON.parse(row);
+                        obj.grid.beginEdit(thisRow);
                     })
                     $.subscribe('scheDetailsJs:scheInfo:lock',function (event,id) {
                         self.endEdit();
