@@ -118,9 +118,9 @@
                             console.log(list)
                             $.ajax({
                                 type:"POST",
-                                url: '${contextRoot}/schedule/update',
+                                url: '${contextRoot}/schedule/bathUpdate',
                                 data:{
-                                    schedule:JSON.stringify(list)
+                                    schedules:JSON.stringify(list)
                                 },
                                 error: function(XMLHttpRequest, textStatus, errorThrown) {
 
