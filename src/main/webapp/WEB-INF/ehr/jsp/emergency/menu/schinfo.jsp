@@ -118,12 +118,10 @@
                 <%--</div>--%>
             <%--</div>--%>
         <%--</div>--%>
-        <div class=" basis">
             <div class="edio_btn">
                 <input type="button" value="编辑"  id="edit"/>
                 <input type="button" value="关闭" id = "cancel"/>
             </div>
-        </div>
     </div>
 </div>
 <%@ include file="schinfoJs.jsp" %>
