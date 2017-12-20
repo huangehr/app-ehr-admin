@@ -102,7 +102,7 @@
             win.closeMenuInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
-                    obj.reloadData();
+                    obj.reloadGrid();
                 }
                 obj.detailDialog.close();
             };

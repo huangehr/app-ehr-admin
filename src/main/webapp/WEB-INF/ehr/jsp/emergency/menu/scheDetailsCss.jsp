@@ -18,4 +18,9 @@
         line-height: 50px;
         border-bottom: 1px solid #F2F4F4;
     }
+
+    /*样式重置*/
+    .l-grid-body{
+        overflow-y: scroll !important;
+    }
 </style>
