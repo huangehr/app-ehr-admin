@@ -40,11 +40,12 @@
                                 {display: '所属片区', name: 'district', width: '30%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '操作', name: 'operator', width: '10%', align: 'center',render: function (row, rowindex, value) {
                                     var html = '';
+                                    var rowJson = JSON.stringify(row).replace(/"/g,'&quot;');
                                     if (!row._editing)
                                     {
-                                        html += '<a class="grid_edit" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id) + '"></a>';
+                                        html += '<a class="grid_edit" data-row="' + JSON.stringify(row) + '" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:appInfo:open", row.id, rowJson) + '"></a>';
                                         html += '<a class="grid_delete" style="width:30px" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "app:appInfo:delete", row.id) + '">'+'</a>';
-
+//
                                     }
                                     else
                                     {
@@ -77,8 +78,8 @@
                     Util.reloadGrid.call(this.grid, '${contextRoot}/location/list', values, curPage);
                 },
                 beginEdit:function () {
-                    var row = dictMaster.grid.getSelectedRow();
-                    dictMaster.grid.beginEdit(row);
+//                    var row = dictMaster.grid.getSelectedRow();
+//                    dictMaster.grid.beginEdit(row);
                 },
                 endEdit:function () {
                     var row = dictMaster.grid.getSelectedRow();
@@ -86,8 +87,9 @@
                 },
                 bindEvents:function () {
                     var self = this;
-                    $.subscribe('app:appInfo:open',function(event, id){
-                        self.beginEdit();
+                    $.subscribe('app:appInfo:open',function(event, id, row){
+                        var thisRow = JSON.parse(row);
+                        dictMaster.grid.beginEdit(thisRow);
                     });
                     $.subscribe('app:appInfo:keep',function(event, id,initAddress,initLatitude,initLongitude,district){
                         var turn = {

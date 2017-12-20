@@ -78,4 +78,9 @@
         font-size: 12px;
         color: #B2B4B4;
     }
+    /*样式重置*/
+
+    .l-frozen .l-grid2 .l-grid-body {
+        overflow-y: scroll!important;
+    }
 </style>
