@@ -25,9 +25,12 @@
     .f-fr{float:right !important;}
     #div_relLoad_data{
         width: auto;
-        height: 400px;
+        height: auto;
         border: 1px solid #EBEEEE;
         overflow-y: scroll;
+    }
+    #div_relLoad_data >ul{
+        height:auto;
     }
     #div_relLoad_data >ul>li{
         width: 480px;
@@ -115,4 +118,9 @@
     .numb{width: 26px;}
     .choose{border:1px solid #357973!important;}
     .choose a{color: #357973!important;}
+
+    #contentPage{
+        overflow: scroll !important;
+        padding-bottom: 100px;
+    }
 </style>
