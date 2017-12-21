@@ -7,10 +7,10 @@
         $(function () {
             var grid;
             var urls = {
-                list: '${contextRoot}/scheduleImport/importLs',
-                idOrPhoneIsExistence: "${contextRoot}/scheduleImport/idOrPhoneIsExistence",
-                batchSave: "${contextRoot}/scheduleImport/batchSave",
-                downLoad: "${contextRoot}/scheduleImport/downLoadErrInfo",
+                list: '${contextRoot}/schedule/importLs',
+                idOrPhoneIsExistence: "${contextRoot}/schedule/idOrPhoneIsExistence",
+                batchSave: "${contextRoot}/schedule/batchSave",
+                downLoad: "${contextRoot}/schedule/downLoadErrInfo",
             }
             var files = ${files};
             var mode = 'eFile';

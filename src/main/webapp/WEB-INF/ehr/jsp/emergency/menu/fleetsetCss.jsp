@@ -27,9 +27,9 @@
         left: 10px;
     }
     .addBtn{
-        position: relative;
-        top:-5px;
-        left: 900px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
         width: 88px;
         height: 34px;
         background: #2D9BD2;

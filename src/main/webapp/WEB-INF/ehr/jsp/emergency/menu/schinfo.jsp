@@ -39,10 +39,10 @@
                 <div class="kid_ particular">
                     <span class="span_left">性&#12288;&#12288;别</span><span class="span_right"><select class="sex" ms-attr-id="item.id" name="gender"><option grade="1" value="1">男</option><option grade="2" value="2">女</option></select></span>
                 </div>
-                <div class="kid_ particular" ms-if="item.id ==1||item.id ==4">
+                <div class="kid_ particular">
                     <span class="span_left">工&#12288;&#12288;号</span><span class="span_right"><input disabled="disabled" ms-attr-value="item.dutyNum" class="mayEdit" name="dutyNum"></span>
                 </div>
-                <div class="kid_ particular" ms-if="item.id ==1||item.id ==4">
+                <div class="kid_ particular">
                     <span class="span_left" >手机号码</span><span class="span_right"><input disabled="disabled" ms-attr-value="item.dutyPhone" class="mayEdit" name="dutyPhone"></span>
                 </div>
             </form>

@@ -74,8 +74,6 @@
                 });
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     if(!resp.successFlg){
-                        debugger
-                        console.log(resp)
                         $.Notice.error(resp.errorMsg);
                     }
                     else{
@@ -273,18 +271,19 @@
 
                 });
                 function update(addModel) {
-                    var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/ambulance/save", {
                         data: {ambulance: addModel},
                         type:"POST",
                         success: function (data) {
-                            waittingDialog.close();
                             if (data.successFlg){
 //                                页面回调
                                 debugger
+                                closeMenuInfoDialog(function () {
+                                    $.Notice.success('新增成功');
+                                })
                             } else {
-                                waittingDialog.close();
+                                debugger
                                 $.Notice.error(data.errorMsg);
                             }
                         }
