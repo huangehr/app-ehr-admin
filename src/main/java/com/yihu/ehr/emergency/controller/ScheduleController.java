@@ -112,6 +112,25 @@ public class ScheduleController extends BaseUIController {
         return envelop;
     }
 
+    @RequestMapping(value = "/bathUpdate", method = RequestMethod.POST)
+    @ApiOperation("更新多条记录")
+    @ResponseBody
+    public Envelop bathUpdate(
+            @ApiParam(name = "schedules", value = "排班")
+            @RequestParam(value = "schedules") String schedules){
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            String url = "/schedule/bathUpdate";
+            params.put("schedules", schedules);
+            String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        }catch (Exception e){
+            LogService.getLogger(ScheduleController.class).error(e.getMessage());
+        }
+        return envelop;
+    }
+
     @RequestMapping(value = "/level", method = RequestMethod.GET)
     @ApiOperation("获取排班层级列表（年-月-日）")
     @ResponseBody
