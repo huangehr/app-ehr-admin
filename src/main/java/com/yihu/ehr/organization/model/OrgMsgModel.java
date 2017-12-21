@@ -1,4 +1,4 @@
-package com.yihu.ehr.organization.controller.model;
+package com.yihu.ehr.organization.model;
 
 import com.yihu.ehr.util.excel.ExcelUtil;
 import com.yihu.ehr.util.excel.Validation;
@@ -6,7 +6,6 @@ import com.yihu.ehr.util.excel.annotation.Location;
 import com.yihu.ehr.util.excel.annotation.Row;
 import com.yihu.ehr.util.excel.annotation.Title;
 import com.yihu.ehr.util.excel.annotation.ValidRepeat;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 

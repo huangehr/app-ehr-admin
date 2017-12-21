@@ -1,8 +1,7 @@
-package com.yihu.ehr.organization.controller.service;
+package com.yihu.ehr.organization.service;
 
 import com.yihu.ehr.adapter.service.ExtendService;
-import com.yihu.ehr.organization.controller.model.OrgMsgModel;
-import com.yihu.ehr.user.controller.model.OrgDeptMsgModel;
+import com.yihu.ehr.organization.model.OrgMsgModel;
 import org.springframework.stereotype.Service;
 
 /**
