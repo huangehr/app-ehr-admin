@@ -30,8 +30,20 @@ public class DataSetMsgReader extends AExcelReader {
                 correct = true;
                 if ((rows = sheet.getRows()) == 0) continue;
                 p = new DataSetMsg();
-                p.setName(getCellCont(sheet, 0, 1));
-                p.setCode(getCellCont(sheet, 1, 1));
+                if(null != getCellCont(sheet, 0, 1)){
+                    //replaceBlank去除空格、回车、换行、制表符
+                    p.setName(replaceBlank(getCellCont(sheet, 0, 1)));
+                }else{
+                    p.setName(getCellCont(sheet, 0, 1));
+                }
+
+                if(null != getCellCont(sheet, 1, 1)){
+                    //去除空格、回车、换行、制表符
+                    p.setCode(replaceBlank(getCellCont(sheet, 1, 1)));
+                }else{
+                    p.setCode(getCellCont(sheet, 1, 1));
+                }
+
                 p.setReferenceCode(getCellCont(sheet, 2, 1));
                 p.setSummary(getCellCont(sheet, 3, 1));
                 p.setExcelSeq(j);
@@ -44,14 +56,58 @@ public class DataSetMsgReader extends AExcelReader {
                 for (int i = 5; i < rows; i++) {
                     child = new MetaDataMsg();
                     child.setDataSetCode(p.getCode());
-                    child.setInnerCode(getCellCont(sheet, i, 1));
-                    child.setCode(getCellCont(sheet, i, 2));
-                    child.setName(getCellCont(sheet, i, 3));
+
+                    //内部标识
+                    if(null != getCellCont(sheet, i, 1)){
+                        //去除空格、回车、换行、制表符
+                        child.setInnerCode(replaceBlank(getCellCont(sheet, i, 1)));
+                    }else{
+                        child.setInnerCode(getCellCont(sheet, i, 1));
+                    }
+
+                    //数据元编码
+                    if(null != getCellCont(sheet, i, 2)){
+                        //去除空格、回车、换行、制表符
+                        child.setCode(replaceBlank(getCellCont(sheet, i, 2)));
+                    }else{
+                        child.setCode(getCellCont(sheet, i, 2));
+                    }
+
+                    //数据元名称
+                    if(null != getCellCont(sheet, i, 3)){
+                        //去除空格、回车、换行、制表符
+                        child.setName(replaceBlank(getCellCont(sheet, i, 3)));
+                    }else{
+                        child.setName(getCellCont(sheet, i, 3));
+                    }
+
                     child.setDefinition(getCellCont(sheet, i, 4));
-                    child.setType(getCellCont(sheet, i, 5));
+
+                    //数据类型
+                    if(null != getCellCont(sheet, i, 5)){
+                        //去除空格、回车、换行、制表符
+                        child.setType(replaceBlank(getCellCont(sheet, i, 5)));
+                    }else{
+                        child.setType(getCellCont(sheet, i, 5));
+                    }
+
                     child.setFormat(getCellCont(sheet, i, 6));
-                    child.setDictCode(getCellCont(sheet, i, 7));
-                    child.setColumnName(getCellCont(sheet, i, 8));
+                    //术语范围值
+                    if(null != getCellCont(sheet, i, 7)){
+                        //去除空格、回车、换行、制表符
+                        child.setDictCode(replaceBlank(getCellCont(sheet, i, 7)));
+                    }else{
+                        child.setDictCode(getCellCont(sheet, i, 7));
+                    }
+
+                    //列名
+                    if(null != getCellCont(sheet, i, 8)){
+                        //去除空格、回车、换行、制表符
+                        child.setColumnName(replaceBlank(getCellCont(sheet, i, 8)));
+                    }else{
+                        child.setColumnName(getCellCont(sheet, i, 8));
+                    }
+
                     child.setColumnType(getCellCont(sheet, i, 9));
                     child.setColumnLength(getCellCont(sheet, i, 10));
                     child.setPrimaryKey(getCellCont(sheet, i, 11));

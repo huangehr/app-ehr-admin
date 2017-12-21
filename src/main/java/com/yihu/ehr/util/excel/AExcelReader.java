@@ -6,6 +6,8 @@ import jxl.Workbook;
 import java.io.File;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author lincl
@@ -25,6 +27,17 @@ public abstract class AExcelReader {
 
     public void read(InputStream is) throws Exception {
         read(Workbook.getWorkbook(is));
+    }
+
+    public static String replaceBlank(String str) {
+        String dest = "";
+        if (str!=null) {
+            //去除字符串中的空格、回车、换行符、制表符
+            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+            Matcher m = p.matcher(str);
+            dest = m.replaceAll("");
+        }
+        return dest;
     }
 
     protected String getCellCont(Sheet sheet, int row, int col){
