@@ -55,7 +55,7 @@
                 title = '修改机构类型';
             }
             detailDialog = $.ligerDialog.open({
-                height: 560,
+                height: 460,
                 width: 480,
                 title: title,
                 url: '${contextRoot}/org/typeCategory/detail',
