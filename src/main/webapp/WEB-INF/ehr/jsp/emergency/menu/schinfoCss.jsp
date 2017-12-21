@@ -3,8 +3,8 @@
 
 <style>
     .containBox {
-        width: 1015px;
-        height: 890px;
+        width: 960px;
+        height: 830px;
     }
 
     /*.div_title {*/

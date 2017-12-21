@@ -97,12 +97,14 @@
                         success:function (data){
                             if(data.successFlg){
                                 //清空分页
-                                self.$pageUl.empty();
 
                                 var detailModelList = data.detailModelList;
 
-                                if (detailModelList && detailModelList.length>0 ){
+                                if (detailModelList && detailModelList.length>0){
                                     vm.data = detailModelList;
+                                    if(detailModelList.length==1){
+                                        self.$pageUl.empty();
+                                    }
                                 }else {
                                     $.Notice.success('暂无数据');
                                 }
