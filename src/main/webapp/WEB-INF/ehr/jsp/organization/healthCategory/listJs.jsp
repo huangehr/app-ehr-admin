@@ -24,17 +24,17 @@
         });
 
         grid = $("#grid").ligerGrid($.LigerGridEx.config({
-            url: '${contextRoot}/org/typeCategory/search',
+            url: '${contextRoot}/org/healthCategory/search',
             columns: [
                 {display: 'ID', name: 'id', hide: true},
-                {display: '机构类型名称', name: 'name', width: '40%', isAllowHide: false, align: 'left'},
-                {display: '机构类型编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
+                {display: '卫生机构类别名称', name: 'name', width: '40%', isAllowHide: false, align: 'left'},
+                {display: '卫生机构类别编码', name: 'code', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '30%', isAllowHide: false, align: 'left'},
                 {display: '操作', name: 'operator', width: '10%', minWidth: 120, align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/org/typeCategory/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "org:typeCategory:detail", row.id, 'modify') + '"></a></sec:authorize>';
-                        html += '<sec:authorize url="/org/typeCategory/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "org:typeCategory:delete", row.id) + '"></a></sec:authorize>';
+                        html += '<sec:authorize url="/org/healthCategory/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "org:healthCategory:detail", row.id, 'modify') + '"></a></sec:authorize>';
+                        html += '<sec:authorize url="/org/healthCategory/delete"><a class="grid_delete" title="删除" href="javascript:void(0)"  onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "org:healthCategory:delete", row.id) + '"></a></sec:authorize>';
                         return html;
                     }
                 }
@@ -49,16 +49,16 @@
 
     function bindEvents() {
         // 新增/修改
-        $.subscribe('org:typeCategory:detail', function (event, id, mode) {
-            var title = '新增机构类型';
+        $.subscribe('org:healthCategory:detail', function (event, id, mode) {
+            var title = '新增卫生机构类别';
             if (mode == 'modify') {
-                title = '修改机构类型';
+                title = '修改卫生机构类别';
             }
             detailDialog = $.ligerDialog.open({
                 height: 460,
                 width: 480,
                 title: title,
-                url: '${contextRoot}/org/typeCategory/detail',
+                url: '${contextRoot}/org/healthCategory/detail',
                 urlParms: {
                     id: id,
                     mode: mode
@@ -69,11 +69,11 @@
         });
 
         // 删除
-        $.subscribe('org:typeCategory:delete', function (event, id) {
+        $.subscribe('org:healthCategory:delete', function (event, id) {
             $.Notice.confirm('确认要删除所选数据及其子数据吗？', function (r) {
                 if (r) {
                     var loading = $.ligerDialog.waitting("正在删除数据...");
-                    dataModel.updateRemote('${contextRoot}/org/typeCategory/delete', {
+                    dataModel.updateRemote('${contextRoot}/org/healthCategory/delete', {
                         data: {id: parseInt(id)},
                         success: function (data) {
                             if (data.successFlg) {
@@ -97,7 +97,7 @@
 
     function reloadGrid() {
         var params = {searchContent: $('#searchContent').val()};
-        $.Util.reloadGrid.call(grid, '${contextRoot}/org/typeCategory/search', params);
+        $.Util.reloadGrid.call(grid, '${contextRoot}/org/healthCategory/search', params);
     }
 
     /*-- 与明细 Dialog 页面间回调的函数 --*/
