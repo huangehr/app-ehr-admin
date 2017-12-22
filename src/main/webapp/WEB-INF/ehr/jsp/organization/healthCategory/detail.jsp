@@ -5,14 +5,14 @@
     <input type="hidden" id="id" data-attr-scan="id">
 
     <div class="m-form-group">
-        <label>机构类型名称：</label>
+        <label>卫生机构类别名称：</label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" class="f-w240 max-length-50 required ajax"
                    id="name" data-attr-scan="name">
         </div>
     </div>
     <div class="m-form-group">
-        <label>机构类型编码：</label>
+        <label>卫生机构类别编码：</label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" class="f-w240 max-length-100 required ajax"
                    id="code" data-attr-scan="code">
