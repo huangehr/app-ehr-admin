@@ -2,7 +2,7 @@ package com.yihu.ehr.organization.controller;
 
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
-import com.yihu.ehr.model.org.MOrgTypeCategory;
+import com.yihu.ehr.model.org.MOrgHealthCategory;
 import com.yihu.ehr.resource.controller.ReportCategoryController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 机构类型管理 controller
+ * 卫生机构类别 controller
  *
  * @author 张进军
  * @date 2017/12/21 12:00
  */
 @Controller
-@RequestMapping("/org/typeCategory")
-public class OrgTypeCategoryController extends BaseUIController {
+@RequestMapping("/org/healthCategory")
+public class OrgHealthCategoryController extends BaseUIController {
 
     @Value("${service-gateway.username}")
     private String username;
@@ -38,7 +38,7 @@ public class OrgTypeCategoryController extends BaseUIController {
 
     @RequestMapping("/index")
     public String index(Model model) {
-        model.addAttribute("contentPage", "organization/typeCategory/list");
+        model.addAttribute("contentPage", "organization/healthCategory/list");
         return "pageView";
     }
 
@@ -47,24 +47,24 @@ public class OrgTypeCategoryController extends BaseUIController {
      */
     @RequestMapping(value = "/detail")
     public String detail(Model model, Integer id) {
-        Object detailModel = new MOrgTypeCategory();
+        Object detailModel = new MOrgHealthCategory();
         try {
             if (id != null) {
-                String url = comUrl + ServiceApi.Org.TypeCategory.Prefix + id;
+                String url = comUrl + ServiceApi.Org.HealthCategory.Prefix + id;
                 String result = HttpClientUtil.doGet(url, username, password);
                 detailModel = objectMapper.readValue(result, Envelop.class).getObj();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgTypeCategoryController.class).error(e.getMessage());
+            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
         }
         model.addAttribute("detailModel", toJson(detailModel));
-        model.addAttribute("contentPage", "organization/typeCategory/detail");
+        model.addAttribute("contentPage", "organization/healthCategory/detail");
         return "simpleView";
     }
 
     /**
-     * 根据条件，获取机构类型（树形结构）
+     * 根据条件，获取卫生机构类别（树形结构）
      */
     @RequestMapping("/search")
     @ResponseBody
@@ -74,22 +74,22 @@ public class OrgTypeCategoryController extends BaseUIController {
         params.put("codeName", searchContent);
 
         try {
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Org.TypeCategory.Search, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Org.HealthCategory.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgTypeCategoryController.class).error(e.getMessage());
+            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
 
     /**
-     * 获取机构类型下拉框数据
+     * 获取卫生机构类别下拉框数据
      */
     @RequestMapping("/getComboTreeData")
     @ResponseBody
     public Object getComboTreeData() {
         try {
-            String envelopJsonStr = HttpClientUtil.doGet(comUrl + ServiceApi.Org.TypeCategory.FindAll, username, password);
+            String envelopJsonStr = HttpClientUtil.doGet(comUrl + ServiceApi.Org.HealthCategory.FindAll, username, password);
             List<Object> data = toModel(envelopJsonStr, Envelop.class).getDetailModelList();
             return toJson(data);
         } catch (Exception ex) {
@@ -108,31 +108,31 @@ public class OrgTypeCategoryController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
 
         try {
-            MOrgTypeCategory model = objectMapper.readValue(data, MOrgTypeCategory.class);
+            MOrgHealthCategory model = objectMapper.readValue(data, MOrgHealthCategory.class);
             if (StringUtils.isEmpty(model.getCode())) {
-                return failed("机构类型编码不能为空！");
+                return failed("卫生机构类别编码不能为空！");
             }
 
             if (model.getId() == null) {
                 // 新增
                 params.put("entityJson", data);
-                return HttpClientUtil.doPost(comUrl + ServiceApi.Org.TypeCategory.Save, params, username, password);
+                return HttpClientUtil.doPost(comUrl + ServiceApi.Org.HealthCategory.Save, params, username, password);
             } else {
                 // 修改
-                String urlGet = comUrl + ServiceApi.Org.TypeCategory.Prefix + model.getId();
+                String urlGet = comUrl + ServiceApi.Org.HealthCategory.Prefix + model.getId();
                 String envelopGetStr = HttpClientUtil.doGet(urlGet, username, password);
                 Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
 
-                MOrgTypeCategory updateModel = getEnvelopModel(envelopGet.getObj(), MOrgTypeCategory.class);
+                MOrgHealthCategory updateModel = getEnvelopModel(envelopGet.getObj(), MOrgHealthCategory.class);
                 updateModel.setName(model.getName());
                 updateModel.setRemark(model.getRemark());
 
                 params.put("entityJson", objectMapper.writeValueAsString(updateModel));
-                return HttpClientUtil.doPut(comUrl + ServiceApi.Org.TypeCategory.Save, params, username, password);
+                return HttpClientUtil.doPut(comUrl + ServiceApi.Org.HealthCategory.Save, params, username, password);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgTypeCategoryController.class).error(e.getMessage());
+            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
@@ -146,16 +146,16 @@ public class OrgTypeCategoryController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("id", id);
-            return HttpClientUtil.doDelete(comUrl + ServiceApi.Org.TypeCategory.Delete, params, username, password);
+            return HttpClientUtil.doDelete(comUrl + ServiceApi.Org.HealthCategory.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgTypeCategoryController.class).error(e.getMessage());
+            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
 
     /**
-     * 验证机构类型编码是否唯一
+     * 验证卫生机构类别编码是否唯一
      */
     @RequestMapping("/isUniqueCode")
     @ResponseBody
@@ -165,16 +165,16 @@ public class OrgTypeCategoryController extends BaseUIController {
         try {
             params.put("id", id);
             params.put("code", code);
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Org.TypeCategory.IsUniqueCode, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Org.HealthCategory.IsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgTypeCategoryController.class).error(e.getMessage());
+            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }
 
     /**
-     * 验证机构类型名是否唯一
+     * 验证卫生机构类别名是否唯一
      */
     @RequestMapping("/isUniqueName")
     @ResponseBody
@@ -184,10 +184,10 @@ public class OrgTypeCategoryController extends BaseUIController {
         try {
             params.put("id", id);
             params.put("name", name);
-            return HttpClientUtil.doGet(comUrl + ServiceApi.Org.TypeCategory.IsUniqueName, params, username, password);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Org.HealthCategory.IsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgTypeCategoryController.class).error(e.getMessage());
+            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
             return failed(ErrorCode.SystemError.toString());
         }
     }

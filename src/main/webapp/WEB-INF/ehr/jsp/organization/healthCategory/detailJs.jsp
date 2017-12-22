@@ -24,7 +24,7 @@
             treeLeafOnly: false,
             tree: {
                 ajaxType: 'get',
-                url: '${contextRoot}/org/typeCategory/getComboTreeData',
+                url: '${contextRoot}/org/healthCategory/getComboTreeData',
                 idFieldName :'id',
                 parentIDFieldName :'pid',
                 parentIcon: '',
@@ -52,7 +52,7 @@
             if (!validator.validate()) { return; }
 
             var loading = $.ligerDialog.waitting("正在保存数据...");
-            dataModel.fetchRemote("${contextRoot}/org/typeCategory/save", {
+            dataModel.fetchRemote("${contextRoot}/org/healthCategory/save", {
                 type: 'post',
                 data: {data: JSON.stringify($form.Fields.getValues())},
                 success: function (data) {
@@ -93,14 +93,14 @@
                     case 'code':
                         var code = $("#code").val();
                         if(!$.Util.isStrEquals(code, detailModel.code)) {
-                            var ulr = "${contextRoot}/org/typeCategory/isUniqueCode";
+                            var ulr = "${contextRoot}/org/healthCategory/isUniqueCode";
                             return $.Util.validateByAjax(ulr, {id: id, code: code});
                         }
                         break;
                     case 'name':
                         var name = $("#name").val();
                         if(!$.Util.isStrEquals(name, detailModel.name)) {
-                            var ulr = "${contextRoot}/org/typeCategory/isUniqueName";
+                            var ulr = "${contextRoot}/org/healthCategory/isUniqueName";
                             return $.Util.validateByAjax(ulr, {id: id, name: name});
                         }
                         break;
