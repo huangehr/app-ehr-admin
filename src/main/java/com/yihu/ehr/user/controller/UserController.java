@@ -108,7 +108,7 @@ public class UserController extends BaseUIController {
                 params.put("filters", filters);
             }
             List<String> userOrgList  = getUserOrgSaasListRedis(request);
-            if (null != userOrgList && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
+            if (null != userOrgList && userOrgList.size() > 0 && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
                 envelop.setSuccessFlg(true);
                 return envelop;
             } else if (null != userOrgList && userOrgList.size() > 0) {
