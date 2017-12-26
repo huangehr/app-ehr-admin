@@ -35,7 +35,7 @@
                 <div class="nav ">
                     <ul>
                         <li id="cDropDown" ms-attr="{key:nowDimension[0]}"><a href="#" ms-text="getFirstVal()"></a></li>
-                        <li ms-for="($index, item) in downKeyArr"><a href="#" ms-text="dimensionMap[item].value" ms-click="cLink(dimensionMap[item].key, $index)"></a> </li>
+                        <li ms-for="($index, item) in downKeyArr">&gt;<a href="#" ms-text="dimensionMap[item].value" ms-click="cLink(dimensionMap[item].key, $index)"></a> </li>
                     </ul>
                 </div>
             </div>

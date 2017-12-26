@@ -113,7 +113,7 @@ public class ScheduleController extends BaseUIController {
     }
 
     @RequestMapping(value = "/bathUpdate", method = RequestMethod.POST)
-    @ApiOperation("更新单条记录，只允许更新时间和状态")
+    @ApiOperation("更新多条记录")
     @ResponseBody
     public Envelop bathUpdate(
             @ApiParam(name = "schedules", value = "排班")

@@ -1,7 +1,6 @@
 package com.yihu.ehr.util.excel.read;
 
-import com.yihu.ehr.organization.controller.model.OrgMsgModel;
-import com.yihu.ehr.user.controller.model.OrgDeptMsgModel;
+import com.yihu.ehr.organization.model.OrgMsgModel;
 import com.yihu.ehr.util.excel.AExcelReader;
 import jxl.Sheet;
 import jxl.Workbook;

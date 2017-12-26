@@ -63,7 +63,7 @@
                                 debugger
                                 closeMenuInfoDialog(function () {
 
-                                    $.Notice.success('更新成功');
+                                    $.Notice.success('新增成功');
                                 });
                             }else {
                                 closeMenuInfoDialog(function () {

@@ -125,12 +125,13 @@ public class MetaDataMsg extends ExcelUtil implements Validation {
         }
 
         if(StringUtils.isEmpty(nullable)){
-            nullable = "0";
+            //该数据不填，默认为可以为空  nullable = "1"
+            nullable = "1";
         }
 
         if(!nullable.equals("0") && !nullable.equals("1")){
             rs = 0;
-            addErrorMsg("nullable", "只允许输入0或1， 不填默认为0");
+            addErrorMsg("nullable", "只允许输入0或1， 不填默认为1");
         }else if(primaryKey.equals("1") && nullable.equals(primaryKey)){
             addErrorMsg("nullable", "主键不允许为空");
         }
