@@ -4,7 +4,7 @@
 <style>
     .containBox {
         width: 960px;
-        height: 830px;
+        /*height: 830px;*/
     }
 
     /*.div_title {*/
@@ -23,6 +23,10 @@
     .main_info {
         padding-bottom: 20px;
         border-bottom: 2px solid #EDF0F0;
+    }
+    .main_info>a{
+        text-decoration: none;
+        color: #333333
     }
 
     .main_info_kid {

@@ -96,8 +96,6 @@
                         },
                         success:function (data){
                             if(data.successFlg){
-                                //清空分页
-
                                 var detailModelList = data.detailModelList;
 
                                 if (detailModelList && detailModelList.length>0){
@@ -160,6 +158,8 @@
                                     success:function (data) {
                                         if(data.successFlg){
                                             that.parents("li").remove();
+                                            self.reloadData();
+
                                         }else {
                                             $.Notice.error(data.errorMsg);
                                         }
