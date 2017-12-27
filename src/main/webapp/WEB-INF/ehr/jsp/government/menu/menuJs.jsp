@@ -41,7 +41,7 @@
                                 name: ""
                             },
                             columns: [
-                                {display: 'id', name: 'id', width: '0.1%', hide: false},
+                                {display: 'id', name: 'id', width: '0.1%', hide: true},
                                 {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '名称', name: 'name', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '链接地址', name: 'url', width: '15%', isAllowHide: false, align: 'left'},
