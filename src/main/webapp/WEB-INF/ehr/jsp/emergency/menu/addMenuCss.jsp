@@ -72,7 +72,7 @@
         position: absolute;
         top: 345px;
         width: 220px;
-        transform: translateX(121px);
+        transform: translateX(40px);
     }
     .operation input{
         width: 88px;

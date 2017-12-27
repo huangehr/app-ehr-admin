@@ -28,9 +28,9 @@
         </div>
         <div class=" basis" ms-repeat-item="data">
             <div class="main_info">
-                <a ms-if="item.id == 1">医生信息</a>
-                <a ms-if="item.id == 4">护士信息</a>
-                <a ms-if="item.id == 5">司机信息</a>
+                <a ms-if="item.dutyRole == '医生'">医生信息</a>
+                <a ms-if="item.dutyRole == '护士'">护士信息</a>
+                <a ms-if="item.dutyRole == '司机'">司机信息</a>
             </div>
             <form class="main_info_kid" ms-attr-id="'form'+item.id">
                 <div class="kid_ particular">

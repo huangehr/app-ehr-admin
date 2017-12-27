@@ -172,8 +172,8 @@
                         console.log(carId)
                         console.log(main)
                         obj.detailDialog = $.ligerDialog.open({
-                            height: 800,
-                            width: 1000,
+                            height: 'auto',
+                            width: 'auto',
                             title: '排班信息',
                             url: '${contextRoot}/schedule/getPage',
                             urlParms: {
