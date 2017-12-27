@@ -147,7 +147,7 @@
                     self.$addBtn.click(function () {
                         dictMaster.dictInfoDialog = $.ligerDialog.open({
                             height: 480,
-                            width: 500,
+                            width: 340,
                             title:"新增",
                             url: '${contextRoot}/location/getPage',
                             isHidden: false,
