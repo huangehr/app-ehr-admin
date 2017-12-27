@@ -108,7 +108,8 @@ public class UserController extends BaseUIController {
                 params.put("filters", filters);
             }
             List<String> userOrgList  = getUserOrgSaasListRedis(request);
-            if (null != userOrgList && "-NoneOrg".equalsIgnoreCase(userOrgList.get(0))) {
+            boolean isAccessAll = getIsAccessAllRedis(request);
+            if (!isAccessAll && null == userOrgList) {
                 envelop.setSuccessFlg(true);
                 return envelop;
             } else if (null != userOrgList && userOrgList.size() > 0) {
@@ -121,7 +122,7 @@ public class UserController extends BaseUIController {
             return resultStr;
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg(e.getMessage());
             return envelop;
         }
 
