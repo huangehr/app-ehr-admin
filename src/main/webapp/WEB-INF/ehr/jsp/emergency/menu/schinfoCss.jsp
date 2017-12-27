@@ -3,7 +3,7 @@
 
 <style>
     .containBox {
-        width: 960px;
+        width: 600px;
         /*height: 830px;*/
     }
 
@@ -49,7 +49,9 @@
     }
     .edio_btn {
         width: 250px;
-        margin: 10px auto;
+        margin: 30px auto;
+        position: relative;
+        right: 80px;
     }
 
     .edio_btn>input {
