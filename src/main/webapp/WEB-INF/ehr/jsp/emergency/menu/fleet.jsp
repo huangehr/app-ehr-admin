@@ -131,13 +131,14 @@
                     <%--</div>--%>
                     <%--</li>--%>
                 </ul>
-            </div>
-            <%--分页--%>
-            <div class="fydiv">
-                <ul class="fenye">
+                <%--分页--%>
+                <div class="fydiv">
+                    <ul class="fenye">
 
-                </ul>
+                    </ul>
+                </div>
             </div>
+
         </div>
 
     </div>

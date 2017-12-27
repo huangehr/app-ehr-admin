@@ -216,7 +216,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2InnerUrl: http://10.176.97.10:10260/
-  oauth2OuterUrl: http://171.35.109.46:10260/  #上饶-认证外网
+  oauth2OuterUrl: http://171.35.109.35:1235/  #上饶-认证外网
 service-gateway:
   username: user
   password: eureka

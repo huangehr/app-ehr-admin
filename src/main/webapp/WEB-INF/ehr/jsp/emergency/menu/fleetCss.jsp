@@ -27,7 +27,6 @@
         width: auto;
         height: auto;
         border: 1px solid #EBEEEE;
-        overflow-y: scroll;
     }
     #div_relLoad_data >ul{
         height:auto;
@@ -36,7 +35,7 @@
         width: 480px;
         height: 230px;
         border: 1px solid #EEF1F0;
-        float: left;
+        display: inline-block;
         margin: 20px 40px 40px 20px;
     }
     .info{

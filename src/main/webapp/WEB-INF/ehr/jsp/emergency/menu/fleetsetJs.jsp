@@ -113,7 +113,7 @@
                             success:function (data) {
                                 if(data.successFlg){
                                     self.endEdit();
-                                    $.Notice.success('新增成功');
+                                    $.Notice.success('更新成功');
                                 }else {
                                     $.Notice.error(data.errorMsg);
                                 }
@@ -147,7 +147,7 @@
                     self.$addBtn.click(function () {
                         dictMaster.dictInfoDialog = $.ligerDialog.open({
                             height: 480,
-                            width: 500,
+                            width: 340,
                             title:"新增",
                             url: '${contextRoot}/location/getPage',
                             isHidden: false,
