@@ -113,7 +113,6 @@
                             success:function (data) {
                                 if(data.successFlg){
                                     self.endEdit();
-                                    dictMaster.reloadGrid();
                                     $.Notice.success('更新成功');
                                 }else {
                                     $.Notice.error(data.errorMsg);
