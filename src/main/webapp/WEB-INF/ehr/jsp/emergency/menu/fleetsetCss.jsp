@@ -83,4 +83,15 @@
     .l-frozen .l-grid2 .l-grid-body {
         overflow-y: scroll!important;
     }
+
+    .j-text-wrapper{
+        height: 40px !important;
+    }
+    .l-text-field{
+        height: 40px !important;
+        line-height: 40px !important;
+        font: 12px \5b8b\4f53,Sim sun,"宋体";
+        color: #333;
+        outline: 0;
+    }
 </style>

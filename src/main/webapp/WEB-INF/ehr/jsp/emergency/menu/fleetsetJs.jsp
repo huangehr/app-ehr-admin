@@ -29,7 +29,7 @@
                             url:  '${contextRoot}/location/list',
                             parms: {
                                page:1,
-                               size:100
+                               size:15
                             },
                             method:'GET',
                             columns: [
@@ -73,7 +73,7 @@
                 reloadGrid: function (curPage) {
                     var values = {
                         page:1,
-                        size:100
+                        size:15
                     };
                     Util.reloadGrid.call(this.grid, '${contextRoot}/location/list', values, curPage);
                 },
@@ -113,6 +113,7 @@
                             success:function (data) {
                                 if(data.successFlg){
                                     self.endEdit();
+                                    dictMaster.reloadGrid();
                                     $.Notice.success('更新成功');
                                 }else {
                                     $.Notice.error(data.errorMsg);
@@ -166,6 +167,7 @@
             win.closeMenuInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
+                    debugger
                     dictMaster.reloadGrid();
                 }
                 dictMaster.dictInfoDialog.close();
