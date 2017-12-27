@@ -60,9 +60,7 @@
                         },
                         success:function (data) {
                             if(data.successFlg){
-                                debugger
                                 closeMenuInfoDialog(function () {
-
                                     $.Notice.success('新增成功');
                                 });
                             }else {
