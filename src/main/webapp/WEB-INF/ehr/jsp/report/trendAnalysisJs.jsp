@@ -57,9 +57,9 @@
                     });
                     self.$element.show();
                     self.$element.attrScan();
-//                   setTimeout(function(){
-//                       self.$element.Fields.location.setValue(["福建省", "厦门市", "", ""]);
-//                   },500);
+                   setTimeout(function(){
+                       self.$element.Fields.location.setValue(["江西省", "上饶市", "", ""]);
+                   },500);
                     self.bindEvents();
                     self.getQcOverAllIntegrity();//所有指标统计结果查询,初始化查询
                 },

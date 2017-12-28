@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!-- ####### Title设置 ####### -->
-<div class="div-title"><%--<span class="span-location">${orgName}</span>--%>趋势分析数据</div>
+<div class="div-title"><span class="span-location">${orgName}</span>趋势分析数据</div>
 <input value="${location}" class="f-dn" id="inp_location"/>
 <input value="${startTime}" class="f-dn" id="inp_startTime"/>
 <input value="${endTime}" class="f-dn" id="inp_endTime"/>
