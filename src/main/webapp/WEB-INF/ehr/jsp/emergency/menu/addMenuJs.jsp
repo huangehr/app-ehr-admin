@@ -65,7 +65,6 @@
                                 });
                             }else {
                                 closeMenuInfoDialog(function () {
-                                    debugger
                                     window.top.$.Notice.error(data.errorMsg);
                                 });
                             }
