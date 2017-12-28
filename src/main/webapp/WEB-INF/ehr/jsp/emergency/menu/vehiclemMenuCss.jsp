@@ -158,4 +158,14 @@
         background: none;
         position: absolute;
     }
+    .m-form-control.essential:after {
+        display: block;
+        content: '*';
+        color: #FF0000;
+        position: absolute;
+        top: 0;
+        right: 90px;
+        height: 30px;
+        line-height: 34px;
+    }
 </style>
