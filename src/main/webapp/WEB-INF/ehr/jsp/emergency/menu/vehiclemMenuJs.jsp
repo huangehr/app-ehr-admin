@@ -98,7 +98,7 @@
                             textField: 'initAddress',
                             valueFieldID: 'ids',
                             dataParmName: 'detailModelList',
-                            isMultiSelect: true
+                            isMultiSelect: false
                         });
 //                        var aaa = '';
 //                        $.each(d, function (k, obj) {
