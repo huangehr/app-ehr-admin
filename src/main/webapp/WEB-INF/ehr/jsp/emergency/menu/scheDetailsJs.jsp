@@ -67,7 +67,7 @@
                             parms: {
                                 date:date,
                                 page:1,
-                                size:100
+                                size:15
                             },
                             method:'GET',
                             columns: [
@@ -142,7 +142,7 @@
                     var values = {
                         date:date,
                         page:1,
-                        size:100
+                        size:15
                     }
                     Util.reloadGrid.call(this.grid, '${contextRoot}/schedule/level', values, curPage);
                 },
@@ -158,13 +158,12 @@
                 bindEvents:function () {
                     var self = this;
                     $.subscribe('scheDetailsJs:scheInfo:open',function (event, id, row) {
-
                         var thisRow = JSON.parse(row);
                         obj.grid.beginEdit(thisRow);
+
                     })
                     $.subscribe('scheDetailsJs:scheInfo:lock',function (event,id) {
                         self.endEdit();
-
                     })
                     $.subscribe('scheDetailsJs:scheInfo:edit',function (event,scheduleIds,date,carId,main) {
                         console.log(scheduleIds)
