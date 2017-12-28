@@ -67,7 +67,7 @@
                             parms: {
                                 date:date,
                                 page:1,
-                                size:15
+                                size:100
                             },
                             method:'GET',
                             columns: [
@@ -108,6 +108,8 @@
                                 },
                             ],
                             validate: true,
+                            pageSize:15,
+                            dataAction:'local',
                             unSetValidateAttr: false,
                             allowHideColumn: false,
                             enabledEdit: true,
@@ -142,7 +144,7 @@
                     var values = {
                         date:date,
                         page:1,
-                        size:15
+                        size:100
                     }
                     Util.reloadGrid.call(this.grid, '${contextRoot}/schedule/level', values, curPage);
                 },

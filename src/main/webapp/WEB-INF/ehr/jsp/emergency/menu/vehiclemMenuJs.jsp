@@ -87,6 +87,7 @@
                 self.loadReportMonitorTypeDate().then(function (res) {
                     if(res.successFlg){
                         var d = res.detailModelList;
+                        console.log(d)
                         //下拉插件初始化
                         self.$area.ligerComboBox({
                             url: '${contextRoot}/location/list',
@@ -97,7 +98,8 @@
                             valueField: 'id',
                             textField: 'initAddress',
                             valueFieldID: 'ids',
-                            dataParmName: 'detailModelList'
+                            dataParmName: 'detailModelList',
+                            isMultiSelect: true
                         });
 //                        var aaa = '';
 //                        $.each(d, function (k, obj) {
@@ -105,11 +107,12 @@
 //                        })
 //                        self.$area.liger().selectValue(aaa);
 
-                        console.log(p)
                         $.each(d, function (k, v) {
-
+                            console.log(v);
                             if(p == v.id){
-                                self.$area.attr("placeholder",v.initAddress)
+//                                console.log(v.id);
+//                                self.$area.attr("placeholder",v.initAddress)
+                                self.$area.liger().selectValue(v.id);
                             }
                         })
                     }else {
@@ -128,7 +131,6 @@
                         data: d,
                         type: 'GET',
                         success: function (data) {
-                            console.log(data)
                             resolve(data);
                         }
                     });
@@ -206,7 +208,6 @@
 
                                 },
                                 success:function (data) {
-                                    console.log(data)
                                     if(data.successFlg){
                                         closeMenuInfoDialog(function () {
                                             $.Notice.success('更新成功');
@@ -340,7 +341,6 @@
             },
             //正则表达式筛选手机号码
             checkMobile:function (sMobile){
-                console.log(sMobile)
                 var result = false;
                 if(!((/^1[3|4|5|8][0-9]\d{8}$/).test(sMobile))){
                     debugger

@@ -10,7 +10,8 @@
         // 通用工具类库
         var Util = $.Util;
 
-        // 页面主模块，变量
+        // 页面主模块，全局变量
+
 
         /* ************************** 变量定义结束 ******************************** */
 
@@ -32,8 +33,6 @@
             $personnel_phone_input :$('#personnel_phone_input'),
             $inpMonitorType :$('#inpMonitorType'),
             $areaType :$('#areaType'),
-
-
             bindEvents:function () {
                 var self = this;
                 self.$div_update_btn.click(function () {
@@ -41,36 +40,54 @@
                     var longitude = self.$personnel_phone_input.val();
                     var latitude = self.$inpMonitorType.val();
                     var area = self.$areaType.val();
-                    var trun = {
-                        district:area,
-                        initAddress:place,
-                        initLatitude:latitude,
-                        initLongitude:longitude
+                    if(place==''){
+                        $.Notice.error('地点不能为空');
+                        return;
                     }
-                    var parameter = JSON.stringify(trun);
-                    $.ajax({
-                        type:"POST",
-                        url: '${contextRoot}/location/save',
-                        data:{
-                            location:parameter
-                        },
-                        dataType:"json",
-                        error: function(XMLHttpRequest, textStatus, errorThrown) {
-
-                        },
-                        success:function (data) {
-                            if(data.successFlg){
-                                closeMenuInfoDialog(function () {
-                                    $.Notice.success('新增成功');
-                                });
-                            }else {
-                                closeMenuInfoDialog(function () {
-                                    debugger
-                                    window.top.$.Notice.error(data.errorMsg);
-                                });
-                            }
+                    if(longitude==''){
+                        $.Notice.error('经度不能为空');
+                        return;
+                    }
+                    if(latitude==''){
+                        $.Notice.error('纬度不能为空');
+                        return;
+                    }
+                    if(area==''){
+                        $.Notice.error('所属片区不能为空');
+                        return;
+                    }else {
+                        var trun = {
+                            district:area,
+                            initAddress:place,
+                            initLatitude:latitude,
+                            initLongitude:longitude
                         }
-                    })
+                        var parameter = JSON.stringify(trun);
+                        $.ajax({
+                            type:"POST",
+                            url: '${contextRoot}/location/save',
+                            data:{
+                                location:parameter
+                            },
+                            dataType:"json",
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+
+                            },
+                            success:function (data) {
+                                if(data.successFlg){
+                                    closeMenuInfoDialog(function () {
+                                        $.Notice.success('新增成功');
+                                    });
+                                }else {
+                                    closeMenuInfoDialog(function () {
+                                        debugger
+                                        window.top.$.Notice.error(data.errorMsg);
+                                    });
+                                }
+                            }
+                        })
+                    }
+
                 });
                 //关闭dailog的方法
                 self.$div_cancel_btn.click(function(){
