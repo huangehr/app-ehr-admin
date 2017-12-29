@@ -87,7 +87,6 @@
                 self.loadReportMonitorTypeDate().then(function (res) {
                     if(res.successFlg){
                         var d = res.detailModelList;
-                        console.log(d)
                         //下拉插件初始化
                         self.$area.ligerComboBox({
                             url: '${contextRoot}/location/list',
@@ -99,7 +98,7 @@
                             textField: 'initAddress',
                             valueFieldID: 'ids',
                             dataParmName: 'detailModelList',
-                            isMultiSelect: true
+                            isMultiSelect: false
                         });
 //                        var aaa = '';
 //                        $.each(d, function (k, obj) {
@@ -108,7 +107,6 @@
 //                        self.$area.liger().selectValue(aaa);
 
                         $.each(d, function (k, v) {
-                            console.log(v);
                             if(p == v.id){
 //                                console.log(v.id);
 //                                self.$area.attr("placeholder",v.initAddress)
@@ -188,6 +186,8 @@
                         var $personnel_phone_input = self.$personnel_phone_input.val();
                         var $inpStatus =  $('input[name=inp_status]:checked').val();
                         var $id = self.$area.ligerGetComboBoxManager().getValue();
+                        var judge = false;
+                        var judgePhone = self.checkMobile($personnel_phone_input);
                         self.ambulance ={
                             "img": null,
                             "id": $license_Plate_input,
@@ -196,7 +196,8 @@
                             "location":$id||self.$location
                         };
                         parameter = JSON.stringify(self.ambulance);
-                        if(resultTwo){
+                        if(judgePhone){
+                            debugger
                             $.ajax({
                                 type:"POST",
                                 url: '${contextRoot}/ambulance/update',
@@ -342,7 +343,8 @@
             //正则表达式筛选手机号码
             checkMobile:function (sMobile){
                 var result = false;
-                if(!((/^1[3|4|5|8][0-9]\d{8}$/).test(sMobile))){
+
+                if(!((/^1[3|4|5|8][0-9]\d{4,8}$/).test(sMobile))){
                     debugger
                     result = false;
                 }else {

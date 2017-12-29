@@ -122,4 +122,19 @@
         overflow: scroll !important;
         padding-bottom: 100px;
     }
+    .changeGray{
+        -webkit-filter: grayscale(100%);
+        -moz-filter: grayscale(100%);
+        -ms-filter: grayscale(100%);
+        -o-filter: grayscale(100%);
+        filter: grayscale(100%);
+        width: 21px;
+        height: 21px;
+        position: absolute;
+        right:10px;
+        top:10px;
+        background: url(${staticRoot}/images/icon_bianji.png) no-repeat;
+        background-size: contain;
+        filter: gray;
+    }
 </style>
