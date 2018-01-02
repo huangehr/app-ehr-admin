@@ -36,7 +36,7 @@
                                 {display: '操作', name: 'operation', width: '50%', isAllowHide: false, align: 'center',
                                     render:function (row) {
                                         var html = '';
-                                        html += '<a style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "Scheduling:SchedulingInfo:open", row.yearMonth) + '">查看排班情况</a>'
+                                        html += '<a style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "Scheduling:SchedulingInfo:open", row.yearMonth) + '">查看排版情况</a>'
                                         return html;
                                     }
                                 },
