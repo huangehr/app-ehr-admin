@@ -35,8 +35,8 @@
                             columns: [
                                 {display: 'id', name: 'id', width: '0.1%', hide: true},
                                 {display: '地点', name: 'initAddress', width: '30%', isAllowHide: false, align: 'center',editor:{type:"text"}},
-                                {display: '经度', name: 'initLatitude', width: '15%', isAllowHide: false, align: 'center',editor:{type:"text"}},
-                                {display: '纬度', name: 'initLongitude', width: '15%', isAllowHide: false, align: 'center',editor:{type:"text"}},
+                                {display: '经度', name: 'initLongitude', width: '15%', isAllowHide: false, align: 'center',editor:{type:"text"}},
+                                {display: '纬度', name: 'initLatitude', width: '15%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '所属片区', name: 'district', width: '30%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '操作', name: 'operator', width: '10%', align: 'center',render: function (row, rowindex, value) {
                                     var html = '';
