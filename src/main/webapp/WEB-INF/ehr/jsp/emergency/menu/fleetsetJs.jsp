@@ -29,7 +29,7 @@
                             url:  '${contextRoot}/location/list',
                             parms: {
                                page:1,
-                               size:15
+                               size:100
                             },
                             method:'GET',
                             columns: [
@@ -59,10 +59,12 @@
                                 }
                             ],
                             validate: true,
+                            pageSize:15,
+                            dataAction:'local',
                             unSetValidateAttr: false,
                             allowHideColumn: false,
                             enabledEdit: true,
-                            clickToEdit: false,
+                            clickToEdit: false
                         }));
                         this.bindEvents();
                         // 自适应宽度
@@ -73,7 +75,7 @@
                 reloadGrid: function (curPage) {
                     var values = {
                         page:1,
-                        size:15
+                        size:100
                     };
                     Util.reloadGrid.call(this.grid, '${contextRoot}/location/list', values, curPage);
                 },
@@ -113,7 +115,6 @@
                             success:function (data) {
                                 if(data.successFlg){
                                     self.endEdit();
-                                    dictMaster.reloadGrid();
                                     $.Notice.success('更新成功');
                                 }else {
                                     $.Notice.error(data.errorMsg);

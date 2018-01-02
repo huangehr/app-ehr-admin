@@ -108,6 +108,8 @@
                                 },
                             ],
                             validate: true,
+                            pageSize:15,
+                            dataAction:'local',
                             unSetValidateAttr: false,
                             allowHideColumn: false,
                             enabledEdit: true,
@@ -158,13 +160,12 @@
                 bindEvents:function () {
                     var self = this;
                     $.subscribe('scheDetailsJs:scheInfo:open',function (event, id, row) {
-
                         var thisRow = JSON.parse(row);
                         obj.grid.beginEdit(thisRow);
+
                     })
                     $.subscribe('scheDetailsJs:scheInfo:lock',function (event,id) {
                         self.endEdit();
-
                     })
                     $.subscribe('scheDetailsJs:scheInfo:edit',function (event,scheduleIds,date,carId,main) {
                         console.log(scheduleIds)
