@@ -109,7 +109,9 @@
                     patientRetrieve.$searchBtn.click(function () {
                         dictMaster.reloadGrid();
                     });
-
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
                 }
             };
 

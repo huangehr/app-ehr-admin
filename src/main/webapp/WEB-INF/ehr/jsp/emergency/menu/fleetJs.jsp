@@ -63,7 +63,7 @@
                                 if (detailModelList && detailModelList.length>0 ){
                                     vm.data = detailModelList;
                                 }else {
-                                    $.Notice.success('暂无数据');
+                                    parent._LIGERDIALOG.success('暂无数据');
                                 }
                                 //绘制页码
                                 self.dataCount = data.totalCount;
@@ -71,7 +71,7 @@
                                 //绑定事件
                                 self.bindEvents()
                             }else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         }
                     })
@@ -104,12 +104,12 @@
                                         self.$pageUl.empty();
                                     }
                                 }else {
-                                    $.Notice.success('暂无数据');
+                                    parent._LIGERDIALOG.success('暂无数据');
                                 }
 
                                 self.bindEvents()
                             }else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         }
                     })
@@ -125,7 +125,7 @@
                         else {
                             title = '新增车辆';
                         }
-                        obj.dictInfoDialog = $.ligerDialog.open({
+                        obj.dictInfoDialog = parent._LIGERDIALOG.open({
                             height: 480,
                             width: 500,
                             title: title,
@@ -143,7 +143,7 @@
                         var that = $(this)
                         var id = that.attr('id')
                         console.log(id)
-                        $.ligerDialog.confirm('确认删除？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                        parent._LIGERDIALOG.confirm('确认删除？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                             if (yes) {
                                 $.ajax({
                                     type:"POST",
@@ -161,7 +161,7 @@
                                             self.reloadData();
 
                                         }else {
-                                            $.Notice.error(data.errorMsg);
+                                            parent._LIGERDIALOG.error(data.errorMsg);
                                         }
                                     }
                                 })
@@ -175,7 +175,7 @@
                         var code = that.attr('data-code');
                         var id = that.attr('id');
                         if(code==1){
-                            $.ligerDialog.confirm('确认更改？<br>如果有正在执行的任务会变成意外终止，否则请点击取消。', function (yes) {
+                            parent._LIGERDIALOG.confirm('确认更改？<br>如果有正在执行的任务会变成意外终止，否则请点击取消。', function (yes) {
                                 if (yes) {
                                     $.ajax({
                                         type:"POST",
@@ -193,9 +193,9 @@
                                                 that.val("值班")
                                                 $('.status a').html('休息')
                                                 $('.be_On_change').attr("data-code",0)
-                                                $.Notice.success("操作成功");
+                                                parent._LIGERDIALOG.success("操作成功");
                                             }else {
-                                                $.Notice.error(data.errorMsg);
+                                                parent._LIGERDIALOG.error(data.errorMsg);
                                             }
                                         }
                                     })
@@ -219,9 +219,9 @@
                                         that.val("休息")
                                         $('.status a').html('待命中')
                                         $('.be_On_change').attr("data-code",1)
-                                        $.Notice.success("操作成功");
+                                        parent._LIGERDIALOG.success("操作成功");
                                     }else {
-                                        $.Notice.error(data.errorMsg);
+                                        parent._LIGERDIALOG.error(data.errorMsg);
                                     }
                                 }
                             })
@@ -285,12 +285,12 @@
             pageInit();
             (function ($,win) {
                 /* ******************Dialog页面回调接口****************************** */
-                win.closeDialog = function (type, msg) {
+                win.parent.closeDialog = function (type, msg) {
                     obj.dictInfoDialog.close();
                     if (msg)
-                        $.Notice.success(msg);
+                        parent._LIGERDIALOG.success(msg);
                 };
-                win.closeMenuInfoDialog = function (callback) {
+                win.parent.closeMenuInfoDialog = function (callback) {
                     if(callback){
                         callback.call(win);
                         obj.reloadData();

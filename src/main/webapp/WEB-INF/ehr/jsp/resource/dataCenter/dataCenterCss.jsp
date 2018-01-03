@@ -10,7 +10,7 @@
 <style>
     body {background-color: #f1f3f6;}
     body,html{height: 100%}
-
+    .mCSB_inside > .mCSB_container{margin: 0}
     .c-h-100{height: 100%;}
     .c-w-100{width: 100%;}
     .c-w-40{width:40%;}

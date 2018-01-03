@@ -14,7 +14,7 @@
     });
 
     function init() {
-        resize();
+//        resize();
         initWidget();
         bindEvents();
     }
@@ -98,13 +98,13 @@
     }
 
     function bindEvents() {
-        $(window).bind('resize', function() {
-            resize();
-        });
+//        $(window).bind('resize', function() {
+//            resize();
+//        });
 
         // 视图配置
         $.subscribe('resource:report:setting', function (event, id) {
-            detailDialog = $.ligerDialog.open({
+            detailDialog = parent._LIGERDIALOG.open({
                 height: 700,
                 width: 800,
                 title: '报表视图配置',
@@ -118,8 +118,8 @@
 
         // 模板视图配置
         $.subscribe('resource:report:tmpViewSetting', function (event, id, code) {
-            var wait = $.Notice.waitting("请稍后...");
-            tmpSettingDialog = $.ligerDialog.open({
+            var wait = parent._LIGERDIALOG.waitting("请稍后...");
+            tmpSettingDialog = parent._LIGERDIALOG.open({
                 height: 700,
                 width: 1000,
                 title: '模板视图配置',
@@ -147,27 +147,27 @@
         });
         uploader.on('success', function (file, data, b) {
             if (data.successFlg)
-                $.Notice.success('导入成功');
+                parent._LIGERDIALOG.success('导入成功');
             else if (data.errorMsg)
-                $.Notice.error(data.errorMsg);
+                parent._LIGERDIALOG.error(data.errorMsg);
             else
-                $.Notice.error('导入失败');
+                parent._LIGERDIALOG.error('导入失败');
         });
         uploader.on('error', function (file, data) {
             if (file == 'Q_TYPE_DENIED')
-                $.Notice.error('请上传html的非空文件！');
+                parent._LIGERDIALOG.error('请上传html的非空文件！');
             else
-                $.Notice.error('导入失败');
+                parent._LIGERDIALOG.error('导入失败');
         });
 
         // 预览
         $.subscribe('resource:report:preview', function (event, code, templatePath) {
             if(!templatePath) {
-                $.Notice.warn('请先导入报表模版！');
+                parent._LIGERDIALOG.warn('请先导入报表模版！');
                 return;
             }
 
-            detailDialog = $.ligerDialog.open({
+            detailDialog = parent._LIGERDIALOG.open({
                 height: 700,
                 width: 1100,
                 title: '报表预览',
@@ -184,7 +184,7 @@
             if (mode == 'modify') {
                 title = '修改资源报表';
             }
-            detailDialog = $.ligerDialog.open({
+            detailDialog = parent._LIGERDIALOG.open({
                 height: 560,
                 width: 480,
                 title: title,
@@ -200,21 +200,21 @@
 
         // 删除
         $.subscribe('resource:report:delete', function (event, id) {
-            $.Notice.confirm('确认要删除所选数据吗？', function (r) {
+            parent._LIGERDIALOG.confirm('确认要删除所选数据吗？', function (r) {
                 if (r) {
-                    var loading = $.ligerDialog.waitting("正在删除数据...");
+                    var loading = parent._LIGERDIALOG.waitting("正在删除数据...");
                     dataModel.updateRemote('${contextRoot}/resource/report/delete', {
                         data: {id: parseInt(id)},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('删除成功！');
+                                parent._LIGERDIALOG.success('删除成功！');
                                 reloadGrid();
                             } else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         },
                         error: function () {
-                            $.Notice.error('删除发生异常');
+                            parent._LIGERDIALOG.error('删除发生异常');
                         },
                         complete: function () {
                             loading.close();
@@ -233,30 +233,18 @@
         };
         $.Util.reloadGrid.call(grid, '${contextRoot}/resource/report/search', params, currentPage);
     }
-
-    // 自适应调整页面宽高
-    function resize() {
-        var contentW = $('.container').width();
-        //浏览器窗口高度-固定的（健康之路图标+位置）:128-20px包裹上下padding
-        var contentH = $(window).height()-128-20;
-        var leftW = $('#treeWrapper').width();
-        $('.container').height(contentH);
-        $('#treeContainer').height(contentH-50);
-        $('#gridWrapper').width(contentW-leftW-35);
-    }
-
     /*-- 与 Dialog 页面间回调的函数 --*/
-    window.reloadMasterGrid = function() {
+    window.parent.reloadMasterGrid = function() {
         reloadGrid();
     };
-    window.closeDetailDialog = function (type, msg) {
+    window.parent.closeDetailDialog = function (type, msg) {
         detailDialog.close();
-        msg && $.Notice.success(msg);
+        msg && parent._LIGERDIALOG.success(msg);
     };
-    window.closeTmpSettingDialogDialog = function (type, msg) {
+    window.parent.closeTmpSettingDialogDialog = function (type, msg) {
         tmpSettingDialog.close();
         tmpSettingDialog = null;
-        msg && $.Notice.success(msg);
+        msg && parent._LIGERDIALOG.success(msg);
     };
 
 </script>

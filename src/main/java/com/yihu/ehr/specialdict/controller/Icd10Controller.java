@@ -60,7 +60,7 @@ public class Icd10Controller extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
 

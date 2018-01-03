@@ -60,7 +60,7 @@ public class OrgHealthCategoryController extends BaseUIController {
         }
         model.addAttribute("detailModel", toJson(detailModel));
         model.addAttribute("contentPage", "organization/healthCategory/detail");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**

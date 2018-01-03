@@ -49,7 +49,7 @@
                 if(result)
                     openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
                 else
-                    $.Notice.success("导入成功！");
+                    parent._LIGERDIALOG.success("导入成功！");
             }
             $('#upd').uploadFile({url: "${contextRoot}/doctorImport/import", onUploadSuccess: onUploadSuccess});
 
@@ -128,8 +128,8 @@
                        unSetValidateAttr: false,
                        onDblClickRow : function (row){
                            var mode = 'view';
-                           var wait = $.Notice.waitting("请稍后...");
-                           var rowDialog = $.ligerDialog.open({
+                           var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                           var rowDialog = parent._LIGERDIALOG.open({
                                height: 620,
                                width: 760,
                                isDrag:true,
@@ -168,8 +168,8 @@
 
                     //新增医生信息
                     retrieve.$newDoctor.click(function(){
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.addDoctorInfoDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.addDoctorInfoDialog = parent._LIGERDIALOG.open({
                             height: 590,
                             width: 820,
                             title: '新增医生信息',
@@ -179,15 +179,17 @@
                             onLoaded:function() {
                                 wait.close(),
                                 self.addDoctorInfoDialog.show()
-                            }
+                            },
+                            opener: true,
+                            load:true
                         })
                         self.addDoctorInfoDialog.hide();
                     });
                     //修改医生信息
                     $.subscribe('doctor:doctorInfoModifyDialog:open', function (event, doctorId, mode) {
                         var mode = 'modify';
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.doctorInfoDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.doctorInfoDialog = parent._LIGERDIALOG.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
@@ -211,18 +213,18 @@
                     });
                     //修改医生状态(生/失效)
                     $.subscribe('doctor:doctorInfoModifyDialog:failure', function (event, doctorId,status,msg) {
-                        $.ligerDialog.confirm('是否对该医生进行'+msg+'操作', function (yes) {
+                        parent._LIGERDIALOG.confirm('是否对该医生进行'+msg+'操作', function (yes) {
                             if (yes) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.createRemote('${contextRoot}/doctor/updDoctorStatus', {
                                     data: {doctorId: doctorId,status:status},
                                     success: function (data) {
                                         if (data.successFlg) {
-//                                            $.Notice.success('修改成功');
+//                                            parent._LIGERDIALOG.success('修改成功');
                                             isFirstPage = false;
                                             master.reloadGrid();
                                         } else {
-//                                            $.Notice.error('修改失败');
+//                                            parent._LIGERDIALOG.error('修改失败');
                                         }
                                     }
                                 });
@@ -231,7 +233,7 @@
                     });
                     //删除医生
                     $.subscribe('doctor:doctorInfoModifyDialog:del', function (event, doctorId) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
                             if(yes){
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote("${contextRoot}/doctor/deleteDoctor",{
@@ -239,11 +241,11 @@
                                     async:true,
                                     success: function(data) {
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功。');
+                                            parent._LIGERDIALOG.success('删除成功。');
                                             isFirstPage = false;
                                             master.reloadGrid();
                                         }else{
-                                            $.Notice.error('删除失败。');
+                                            parent._LIGERDIALOG.error('删除失败。');
                                         }
                                     }
                                 });
@@ -255,10 +257,10 @@
             };
 
             /* ************************* Dialog页面回调接口 ************************** */
-            win.reloadMasterUpdateGrid = function () {
+            win.parent.reloadMasterUpdateGrid = function () {
                 master.reloadGrid();
             };
-            win.closeAddDoctorInfoDialog = function (callback) {
+            win.parent.closeAddDoctorInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
@@ -266,7 +268,7 @@
                 }
                 master.addDoctorInfoDialog.close();
             };
-            win.closeDoctorInfoDialog = function (callback) {
+            win.parent.closeDoctorInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
@@ -274,8 +276,8 @@
                 }
                 master.doctorInfoDialog.close();
             };
-            win.showAddSuccPop = function () {
-                $.Notice.success('医生新增成功');
+            win.parent.showAddSuccPop = function () {
+                parent._LIGERDIALOG.success('医生新增成功');
             };
             /* ************************* Dialog页面回调接口结束 ************************** */
             /* *************************** 页面初始化 **************************** */

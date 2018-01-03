@@ -30,7 +30,6 @@
 
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
-				resizeContent();
 				retrieve.init();
 				master.init();
 			}
@@ -85,7 +84,7 @@
 					});
 
 					<%--this.$search.customCombo('${contextRoot}/deptMember/getOrgList');--%>
-                    this.$searchNmLeft.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
+                    this.$searchNmLeft.ligerTextBox({width:220,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
                         self.getResourceBrowseTree();
                     }});
 					this.$searchNm.ligerTextBox({width:240,value:searchParams.resourceSearchNm,isSearch: true, search: function () {
@@ -155,8 +154,8 @@
 							{name: 'id', hide: true, isAllowHide: false},
 							{display: '姓名', name: 'userName', width: '15%', align: 'left'},
 							{display: '职务', name: 'dutyName', width: '15%', align: 'left'},
-							{display: '部门', name: 'deptName', width: '15%', align: 'left'},
-							{display: '描述', name: 'remark', width: '23%', align: 'left'},
+							{display: '部门', name: 'deptName', width: '20%', align: 'left'},
+							{display: '描述', name: 'remark', width: '30%', align: 'left'},
 							{display: '操作', name: 'operator', width: '20%', render: function (row) {
 								var html = '';
 								html += '<sec:authorize url="/upAndDownMember/deleteUpAndDownDelMember"><a class="grid_delete" title="删除" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "deptMember:deptMemberDialog:del", row.id) + '"></a></sec:authorize>';
@@ -203,11 +202,11 @@
 					$.subscribe("rs:info:open",function(event,resourceId,mode,categoryId,categoryOrgId,categoryName){
 						var title = "";
 						if(categoryId == ''|| categoryId==undefined ){
-							$.Notice.error('请在左边选中一个成员');
+                            parent._LIGERDIALOG.error('请在左边选中一个成员');
 							return ;
 						}
 						if(mode == "newDown"){title = "新增下级成员";}
-						master.rsInfoDialog = $.ligerDialog.open({
+						master.rsInfoDialog = parent._LIGERDIALOG.open({
 							height:220,
 							width:450,
 							title:title,
@@ -226,7 +225,7 @@
 
 
 					$.subscribe('deptMember:deptMemberDialog:del',function(event,id){
-						$.ligerDialog.confirm("确认删除该条信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
+                        parent._LIGERDIALOG.confirm("确认删除该条信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
 							if(yes){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote("${contextRoot}/upAndDownMember/deleteOrgDeptMember",{
@@ -234,12 +233,13 @@
 									async:true,
 									success: function(data) {
 										if(data.successFlg){
-											$.Notice.success('删除成功',function () {
+                                            parent._LIGERDIALOG.success('删除成功',function () {
 												master.reloadGrid();
+                                                typeTree.reload();
 												return true;
 											});
 										}else{
-											$.Notice.error('删除失败');
+											parent._LIGERDIALOG.error('删除失败');
 											return false;
 										}
 									}
@@ -252,19 +252,7 @@
 			};
 			/* ************************* 模块初始化结束 ************************** */
 			/* ************************* dialog回调函数 ************************** */
-			var resizeContent = function(){
-				var contentW = $('#div_content').width();
-				//浏览器窗口高度-固定的（健康之路图标+位置）128-20px包裹上下padding
-				var contentH = $(window).height()-128-20;
-				var leftW = $('#div_left').width();
-				$('#div_content').height(contentH);
-				//减50px的检索条件div高度
-				$('#div_tree').height(contentH-50);
-				$('#div_right').width(contentW-leftW-20);
-			};
-			$(window).bind('resize', function() {
-				resizeContent();
-			});
+//
 
 			//新增修改所属成员类别为默认时，只刷新右侧列表；有修改所属成员类别时，左侧树重新定位，刷新右侧列表
 			win.reloadMasterUpdateGrid = function (categoryIdNew) {
@@ -274,8 +262,10 @@
 				}
                 retrieve.getResourceBrowseTree();
 			};
-			win.closeRsInfoDialog = function (callback) {
+			win.parent.closeRsInfoDialog = function (callback) {
 				isFirstPage = false;
+                master.reloadGrid();
+                typeTree.reload();
 				master.rsInfoDialog.close();
 			};
 			//新增、修改（成员分类有修改情况）定位

@@ -140,7 +140,7 @@
 							if (data.successFlg) {
 								reloadMasterUpdateGrid(deptId);
 								$.Notice.success('操作成功');
-								win.closeRsInfoDialog();
+								closeRsInfoDialog();
 							} else {
 								$.Notice.error(data.errorMsg);
 							}
@@ -149,7 +149,7 @@
 				}
 
 				this.$btnCancel.click(function () {
-					win.closeRsInfoDialog();
+					closeRsInfoDialog();
 				});
 			}
 		};

@@ -73,7 +73,7 @@ public class ReportController extends BaseUIController {
         }
         model.addAttribute("detailModel", toJson(detailModel));
         model.addAttribute("contentPage", "resource/report/detail");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -105,7 +105,7 @@ public class ReportController extends BaseUIController {
         model.addAttribute("id", id);
         model.addAttribute("code", code);
         model.addAttribute("contentPage", "resource/report/tmpViewSetting");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**

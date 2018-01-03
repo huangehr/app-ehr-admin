@@ -42,7 +42,7 @@ public class ZhiBiaoConfigController extends BaseUIController {
     public String dataSourceDialog(Model model,String id) {
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "/report/zhibiaoconfig/dataSourceDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -54,7 +54,7 @@ public class ZhiBiaoConfigController extends BaseUIController {
     public String dataStorageDialog(Model model,String id) {
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "/report/zhibiaoconfig/dataStorageDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -66,7 +66,7 @@ public class ZhiBiaoConfigController extends BaseUIController {
     public String addWeiDuDialog(Model model,String id) {
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "/report/zhibiaoconfig/weiDuDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -78,7 +78,7 @@ public class ZhiBiaoConfigController extends BaseUIController {
     public String xiWeiDuDialog(Model model,String id) {
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "/report/zhibiaoconfig/xiWeiDuDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
 

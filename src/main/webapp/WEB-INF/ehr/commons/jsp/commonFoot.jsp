@@ -55,6 +55,7 @@
 <script src="${staticRoot}/lib/plugin/scrollbar/jquery.mCustomScrollbar.js"></script>
 <script src="${staticRoot}/lib/plugin/upload/webuploader.js"></script>
 <script src="${staticRoot}/lib/plugin/upload/upload.js"></script>
+<script src="${staticRoot}/lib/plugin/underscore/underscore.js"></script>
 
 <script src="${staticRoot}/lib/ligerui/custom/ligerGridEx.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/customCombo.js"></script>

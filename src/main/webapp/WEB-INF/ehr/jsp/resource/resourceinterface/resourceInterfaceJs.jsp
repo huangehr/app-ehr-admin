@@ -94,7 +94,7 @@
 					});
 					$.subscribe("interface:infoDialog:open",function(events,id,mode){
 						var title = '';
-						var wait = $.Notice.waitting("请稍后...");
+						var wait = parent._LIGERDIALOG.waitting("请稍后...");
 						if(mode == 'modify'){
 							title = '修改视图接口';
 						}else if(mode == 'new'){
@@ -102,7 +102,7 @@
 						}else{
 							title = '查看视图接口';
 						};
-						master.infoDialog = $.ligerDialog.open({
+						master.infoDialog = parent._LIGERDIALOG.open({
 							height: 660,
 							width: 600,
 							title: title,
@@ -123,7 +123,7 @@
 					});
 
 					$.subscribe('interface:confirmDialog:del', function (event, id) {
-						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+						parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
 							if(yes){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote("${contextRoot}/resource/resourceInterface/delete",{
@@ -131,11 +131,11 @@
 									async:true,
 									success: function(data) {
 										if(data.successFlg){
-											$.Notice.success('删除成功。');
+											parent._LIGERDIALOG.success('删除成功。');
 											isFirstPage = false;
 											master.reloadGrid();
 										}else{
-											$.Notice.error('删除失败。');
+											parent._LIGERDIALOG.error('删除失败。');
 										}
 									}
 								});
@@ -146,10 +146,10 @@
 			};
 			/* ************************* 模块初始化结束 ************************** */
 			/* ************************* Dialog页面回调接口 ************************** */
-			win.reloadMasterUpdateGrid = function () {
+			win.parent.reloadMasterUpdateGrid = function () {
 				master.reloadGrid();
 			};
-			win.closeInterfaceInfoDialog = function () {
+			win.parent.closeInterfaceInfoDialog = function () {
 				master.infoDialog.close();
 			};
 			/* ************************* Dialog页面回调接口结束 ************************** */

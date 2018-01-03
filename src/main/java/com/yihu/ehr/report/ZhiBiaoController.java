@@ -44,7 +44,7 @@ public class ZhiBiaoController extends BaseUIController {
     public String zhiBiaoDetail(Model model,String quotaCode) {
         model.addAttribute("quotaCode", quotaCode);
         model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoDetail");
-        return "simpleView";
+        return "emptyView";
     }
 
 
@@ -58,7 +58,7 @@ public class ZhiBiaoController extends BaseUIController {
         model.addAttribute("quotaCode", quotaCode);
         model.addAttribute("quotaName", quotaName);
         model.addAttribute("contentPage", "/report/zhibiao/zhiBiaoChartConfigure");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**

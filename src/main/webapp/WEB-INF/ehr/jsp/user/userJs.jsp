@@ -143,8 +143,8 @@
                         unSetValidateAttr: false,
                         onDblClickRow : function (row){
                             var mode = 'view';
-                            var wait = $.Notice.waitting("请稍后...");
-                            var rowDialog = $.ligerDialog.open({
+                            var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                            var rowDialog = parent._LIGERDIALOG.open({
                                 height: 620,
                                 width: 600,
                                 isDrag:true,
@@ -184,8 +184,8 @@
                     });
                     //修改用户信息
                     $.subscribe('user:userInfoModifyDialog:open', function (event, userId, mode) {
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.userInfoDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.userInfoDialog = parent._LIGERDIALOG.open({
                             //  关闭对话框时销毁对话框
                             title:'修改基本信息',
                             height: 620,
@@ -209,7 +209,7 @@
                     });
                     //新增用户
                     retrieve.$newRecordBtn.click(function () {
-                        self.addUserInfoDialog = $.ligerDialog.open({
+                        self.addUserInfoDialog = parent._LIGERDIALOG.open({
                             height: 620,
                             width: 600,
                             title: '新增用户信息',
@@ -218,18 +218,18 @@
                     });
                     //修改用户状态(生/失效)
                     $.subscribe('user:userInfoModifyDialog:failure', function (event, userId,activated,msg) {
-                        $.ligerDialog.confirm('是否对该用户进行'+msg+'操作', function (yes) {
+                        parent._LIGERDIALOG.confirm('是否对该用户进行'+msg+'操作', function (yes) {
                             if (yes) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/user/activityUser', {
                                     data: {userId: userId,activated:activated},
                                     success: function (data) {
                                         if (data.successFlg) {
-//                                            $.Notice.success('修改成功');
+//                                            parent._LIGERDIALOG.success('修改成功');
                                             isFirstPage = false;
                                             master.reloadGrid();
                                         } else {
-//                                            $.Notice.error('修改失败');
+//                                            parent._LIGERDIALOG.error('修改失败');
                                         }
                                     }
                                 });
@@ -238,7 +238,7 @@
                     });
                     //删除用户
                     $.subscribe('user:userInfoDialog:del', function (event, userId, activityFlg) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
                             if(yes){
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote("${contextRoot}/user/deleteUser",{
@@ -246,11 +246,11 @@
                                     async:true,
                                     success: function(data) {
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功。');
+                                            parent._LIGERDIALOG.success('删除成功。');
                                             isFirstPage = false;
                                             master.reloadGrid();
                                         }else{
-                                            $.Notice.error('删除失败。');
+                                            parent._LIGERDIALOG.error('删除失败。');
                                         }
                                     }
                                 });
@@ -266,7 +266,7 @@
                             async:false,
                             success: function(data) {
                                 if(data){
-                                    self.userInfoDialog = $.ligerDialog.open({
+                                    self.userInfoDialog = parent._LIGERDIALOG.open({
                                         title:'查看权限',
                                         height: 650,
                                         width: 600,
@@ -279,7 +279,7 @@
                                         }
                                     });
                                 }else{
-                                    $.Notice.error('该用户无任何应用的授权信息。');
+                                    parent._LIGERDIALOG.error('该用户无任何应用的授权信息。');
                                 }
                             }
                         });
@@ -290,10 +290,10 @@
             /* ************************* 模块初始化结束 ************************** */
 
             /* ************************* Dialog页面回调接口 ************************** */
-            win.reloadMasterUpdateGrid = function () {
+            win.parent.reloadMasterUpdateGrid = win.reloadMasterUpdateGrid = function () {
                 master.reloadGrid();
             };
-            win.closeUserInfoDialog = function (callback) {
+            win.parent.closeUserInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
@@ -301,7 +301,7 @@
                 }
                 master.userInfoDialog.close();
             };
-            win.closeAddUserInfoDialog = function (callback) {
+            win.parent.closeAddUserInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);

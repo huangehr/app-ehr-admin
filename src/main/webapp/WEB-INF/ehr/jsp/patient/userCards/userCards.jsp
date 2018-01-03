@@ -43,8 +43,7 @@
         </div>
 
     </div>
+    <!--###### 查询明细列表 ######-->
+    <div id="div_userCards_info_grid" ></div>
 </div>
-
-<!--###### 查询明细列表 ######-->
-<div id="div_userCards_info_grid" ></div>
 </div>

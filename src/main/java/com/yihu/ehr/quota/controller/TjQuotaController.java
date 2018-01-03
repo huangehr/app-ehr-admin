@@ -369,7 +369,7 @@ public class TjQuotaController extends BaseUIController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "pageView";
+        return "emptyView";
     }
 
 
@@ -423,7 +423,7 @@ public class TjQuotaController extends BaseUIController {
         model.addAttribute("quotaCode", quotaCode);
         model.addAttribute("quotaType", quotaType);
         model.addAttribute("name", name);
-        return "pageView";
+        return "emptyView";
     }
 
     /**

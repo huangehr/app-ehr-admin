@@ -32,7 +32,7 @@ public class ResourceConfigurationController extends BaseUIController {
     public String resourceConfigurationInitial(Model model,String dataModel) {
         model.addAttribute("contentPage", "/resource/resourceconfiguration/resourceConfiguration");
         model.addAttribute("dataModel",dataModel);
-        return "pageView";
+        return "emptyView";
     }
 
     @RequestMapping("searchResourceConfiguration")

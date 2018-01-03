@@ -155,7 +155,7 @@
         bottom: 0;
         /*border: 1px solid #e1e1e1;*/
         background: none;
-        overflow: auto;
+        overflow: hidden;
     }
     .select-con{
         width: 100%;
@@ -262,7 +262,7 @@
         line-height: 22px;
     }
     .tree-con-zhcx{
-        height: 89%;
+        height: calc(100% - 51px);
         overflow: auto;
     }
     .l-panel td{
@@ -272,6 +272,9 @@
     .l-tree{
         background: none !important;
         /*overflow: auto!important;*/
+    }
+    .mCSB_inside > .mCSB_container{
+        margin: 0;
     }
 </style>
 

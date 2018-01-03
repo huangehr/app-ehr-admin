@@ -91,7 +91,7 @@ public class ReportController extends BaseUIController {
         model.addAttribute("startTime",startTime);
         model.addAttribute("endTime",endTime);
         model.addAttribute("contentPage", "/report/analysisList");
-        return "pageView";
+        return "emptyView";
     }
 
     /**

@@ -63,7 +63,7 @@ public class UserRolesController extends BaseUIController {
         model.addAttribute("contentPage", "user/roles/rolesBatchAddDialog");
         model.addAttribute("appId",appId);
         Envelop envelop = new Envelop();
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("/rolesInfoInitial")
@@ -86,7 +86,7 @@ public class UserRolesController extends BaseUIController {
                 model.addAttribute("envelop", en);
             }
         }
-        return "simpleView";
+        return "emptyView";
     }
     //角色组增改
     @RequestMapping("/update")
@@ -319,7 +319,7 @@ public class UserRolesController extends BaseUIController {
         String dialogUrl = dialogType.equals("users")?"user/roles/rolesUsers":"user/roles/rolesOrg";
         model.addAttribute("obj", obj);
         model.addAttribute("contentPage", dialogUrl);
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("/configDialog")
@@ -327,7 +327,7 @@ public class UserRolesController extends BaseUIController {
         String dialogUrl = dialogType.equals("users")?"user/roles/rolesUsers":"user/roles/rolesFeature";
         model.addAttribute("obj", obj);
         model.addAttribute("contentPage", dialogUrl);
-        return "simpleView";
+        return "emptyView";
     }
 
     //用户角色组添加人员
@@ -578,7 +578,7 @@ public class UserRolesController extends BaseUIController {
     public String resourceInitial(Model model, String backParams){
         model.addAttribute("backParams",backParams);
         model.addAttribute("contentPage", "user/roles/resource");
-        return "pageView";
+        return "emptyView";
     }
 
     //获取角色组已授权资源ids集合
@@ -786,7 +786,7 @@ public class UserRolesController extends BaseUIController {
         model.addAttribute("dataModel",dataModel);
         model.addAttribute("rolesRsId",getRolesResId(rolesId,resourceId));
         model.addAttribute("contentPage", "user/roles/resourceManage");
-        return "pageView";
+        return "emptyView";
     }
     //获取角色组-资源关联关系id
     public String getRolesResId(String rolesId,String resourceId) {
@@ -819,7 +819,7 @@ public class UserRolesController extends BaseUIController {
     public String rfConfig(String id, Model model) {
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "user/roles/rfConfig");
-        return "pageView";
+        return "emptyView";
     }
 
     //资源报表分类树数据-获取所有分类及对应的资源的不分页方法

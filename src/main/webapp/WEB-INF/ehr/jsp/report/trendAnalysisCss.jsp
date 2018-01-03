@@ -3,7 +3,7 @@
 
 <style>
     .l-layout-content{overflow: auto;}
-    #btn_detail{ background: #4DB2EE; width: 98px !important; height: 34px; line-height: 34px;}
+    /*#btn_detail{ background: #FF9966;!* width: 98px !important; height: 34px; line-height: 34px;*!}*/
     .m-form-inline .m-form-group label{ width: 110px;float: left; }
     .m-form-inline .m-form-group{padding-bottom: 0;}
     .m-form-inline .m-form-group .m-form-control.m-form-control-fr{float: right}
@@ -36,4 +36,6 @@
     #chart-main{width: 100%;height: 250px;position: relative;z-index: 10;}
     .div-organization{position: relative;}
     .m-combo-dropdown{width:200px;}
+    .m-form-inline .m-form-group label{padding-left: 0;}
+    .m-form-inline .m-form-group .l-text-wrapper{padding-right: 0;}
 </style>

@@ -88,7 +88,7 @@
     .s-con{
         display: inline-block;
         overflow: hidden;
-        height: 45px;
+        height: 35px;
         position: relative;
     }
     .s-con .l-text{
@@ -102,11 +102,17 @@
         margin-right: 10px!important;
     }
     #div_right{
-        margin-left: 10px;
         position: absolute;
-        left: 328px;
+        left: 330px;
         right: 10px;
-        top: 50px;
-        bottom: 9px;
+        top: 40px;
+        bottom: 0px;
+    }
+    #div_left{
+        width: 320px;
+        position: absolute;
+        left: 0;
+        top: 40px;
+        bottom: 0;
     }
 </style>
