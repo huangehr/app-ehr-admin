@@ -23,17 +23,23 @@
     </definition>
     <!--项目-->
     <!-- 项目 -->
-    <definition name="pageView"  template="/WEB-INF/ehr/commons/jsp/simpleLayout.jsp">
-        <!--template="/WEB-INF/ehr/commons/jsp/frameLayout.jsp"-->
-        <!--<put-attribute name="layoutCss" value="/WEB-INF/ehr/commons/jsp/frameLayoutCss.jsp" />-->
-        <!--<put-attribute name="layoutJs" value="/WEB-INF/ehr/commons/jsp/frameLayoutJs.jsp" />-->
+    <definition name="pageView" template="/WEB-INF/ehr/commons/jsp/simpleLayout.jsp">
+        <put-attribute name="header" value="/WEB-INF/ehr/commons/jsp/commonHead.jsp" />
+        <put-attribute name="pageCss" expression="/WEB-INF/ehr/jsp/${contentPage}Css.jsp" />
+        <put-attribute name="contentPage" expression="/WEB-INF/ehr/jsp/${contentPage}.jsp" />
+        <put-attribute name="footer" value="/WEB-INF/ehr/commons/jsp/commonFoot.jsp" />
+        <put-attribute name="pageJs" expression="/WEB-INF/ehr/jsp/${contentPage}Js.jsp" />
+    </definition>
+    <!--项目-->
+    <!-- 项目 -->
+    <definition name="emptyView" template="/WEB-INF/ehr/commons/jsp/emptyLayout.jsp">
         <put-attribute name="pageCss" expression="/WEB-INF/ehr/jsp/${contentPage}Css.jsp" />
         <put-attribute name="contentPage" expression="/WEB-INF/ehr/jsp/${contentPage}.jsp" />
         <put-attribute name="pageJs" expression="/WEB-INF/ehr/jsp/${contentPage}Js.jsp" />
     </definition>
     <!--项目-->
     <!-- 项目 -->
-    <definition name="simpleView"  template="/WEB-INF/ehr/commons/jsp/simpleLayout.jsp">
+    <definition name="simpleView"  template="/WEB-INF/ehr/commons/jsp/emptyLayout.jsp">
         <put-attribute name="pageCss" expression="/WEB-INF/ehr/jsp/${contentPage}Css.jsp" />
         <put-attribute name="contentPage" expression="/WEB-INF/ehr/jsp/${contentPage}.jsp" />
         <put-attribute name="pageJs" expression="/WEB-INF/ehr/jsp/${contentPage}Js.jsp" />

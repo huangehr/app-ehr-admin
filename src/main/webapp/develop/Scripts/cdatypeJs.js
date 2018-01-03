@@ -1,7 +1,7 @@
 /**
  * Created by AndyCai on 2015/12/14.
  */
-
+var parentDilog = frameElement.dialog;
 var cdaType = {};
 
 cdaType.list = {
@@ -341,7 +341,7 @@ cdaType.attr = {
                     if (_res.successFlg) {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                            parent.cdaType.list.dialog_cdatype_detail.close();
+                            parentDilog.close();
                         }, null);
                     }
                     else {
@@ -359,7 +359,7 @@ cdaType.attr = {
             cdaType.attr.save();
         });
         $("#btn_close").click(function () {
-            parent.cdaType.list.dialog_cdatype_detail.close();
+            parentDilog.close();
         });
     }
 }

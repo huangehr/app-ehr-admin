@@ -36,13 +36,12 @@
                 if(result)
                     openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
                 else
-                    $.Notice.success("导入成功！");
+                    parent._LIGERDIALOG.success("导入成功！");
             }
 
             $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess, str: '导入部门'});
 			/* *************************** 函数定义 ******************************* */
 			function pageInit() {
-				resizeContent();
 				retrieve.init();
 				master.init();
 			}
@@ -215,7 +214,7 @@
 						data: {id: id, status: status},
 						success: function (data) {
 							if (data.successFlg) {
-								$.Notice.success('操作成功。');
+								parent._LIGERDIALOG.success('操作成功。');
 								master.reloadGrid();
 							}
 						}
@@ -243,11 +242,11 @@
                         if(mode == "new"){
                             title = "分配部门人员";
                             if(categoryId == ''){
-                                $.Notice.error('请在左边选中一个部门');
+                                parent._LIGERDIALOG.error('请在左边选中一个部门');
                                 return ;
                             }
                         }
-                        master.rsInfoDialog = $.ligerDialog.open({
+                        master.rsInfoDialog = parent._LIGERDIALOG.open({
                             height:400,
                             width:500,
                             title:title,
@@ -275,11 +274,11 @@
 						if(mode == "new"){
 							title = "新增机构成员";
 							if(categoryId == ''){
-								$.Notice.error('请在左边选中一个部门');
+								parent._LIGERDIALOG.error('请在左边选中一个部门');
 								return ;
 							}
 						}
-						master.rsInfoDialog = $.ligerDialog.open({
+						master.rsInfoDialog = parent._LIGERDIALOG.open({
 							height:400,
 							width:500,
 							title:title,
@@ -295,7 +294,7 @@
 					});
 
 					$.subscribe('deptMember:deptMemberDialog:del',function(event,id){
-						$.ligerDialog.confirm("确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
+                        parent._LIGERDIALOG.confirm("确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。", function (yes) {
 							if(yes){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote("${contextRoot}/deptMember/deleteOrgDeptMember",{
@@ -303,11 +302,11 @@
 									async:true,
 									success: function(data) {
 										if(data.successFlg){
-											$.Notice.success('删除成功。');
+											parent._LIGERDIALOG.success('删除成功。');
 											isFirstPage = false;
 											master.reloadGrid();
 										}else{
-											$.Notice.error(data.errorMsg);
+											parent._LIGERDIALOG.error(data.errorMsg);
 										}
 									}
 								});
@@ -319,29 +318,15 @@
 			};
 			/* ************************* 模块初始化结束 ************************** */
 			/* ************************* dialog回调函数 ************************** */
-			var resizeContent = function(){
-				var contentW = $('#div_content').width();
-				//浏览器窗口高度-固定的（健康之路图标+位置）128-20px包裹上下padding
-				var contentH = $(window).height()-128-20;
-				var leftW = $('#div_left').width();
-				$('#div_content').height(contentH);
-				//减50px的检索条件div高度
-				$('#div_tree').height(contentH-50);
-				$('#div_right').width(contentW-leftW-20);
-			};
-			$(window).bind('resize', function() {
-				resizeContent();
-			});
-
 			//新增修改所属成员类别为默认时，只刷新右侧列表；有修改所属成员类别时，左侧树重新定位，刷新右侧列表
-			win.reloadMasterUpdateGrid = function (categoryIdNew) {
+			win.parent.reloadMasterUpdateGrid = function (categoryIdNew) {
 				if(!categoryIdNew){
 					master.reloadGrid();
 					return
 				}
 				treeNodeInit(categoryIdNew);
 			};
-			win.closeRsInfoDialog = function (callback) {
+			win.parent.closeRsInfoDialog = function (callback) {
 				isFirstPage = false;
 				master.rsInfoDialog.close();
                 master.rsInfoDialog = null;
@@ -378,11 +363,11 @@
 								name = me.$popWim.find('.name').val(),
 								code = me.$popWim.find('.code').val();
 						if(name =='' || name == undefined){
-							$.Notice.error('名称不能为空');
+							parent._LIGERDIALOG.error('名称不能为空');
 							return false;
 						}
 						if(code =='' || code == undefined){
-							$.Notice.error('编码不能为空');
+							parent._LIGERDIALOG.error('编码不能为空');
 							return false;
 						}
 						var params = {id:id,mode:'new',code:code,name:name,oldName:"",orgId:orgId};
@@ -406,17 +391,17 @@
 							 params = {id:id,mode:'new',orgDeptJsonDate:orgDeptJsonDate};
 						}
 
-                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                        var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
                             waittingDialog.close();
 								if(data.successFlg){
-									$.Notice.success('添加成功',function () {
+									parent._LIGERDIALOG.success('添加成功',function () {
 										me.removePopWin(me);
 										pageInit();
 										return true;
 									});
 								}else{
-									$.Notice.error(data.errorMsg);
+									parent._LIGERDIALOG.error(data.errorMsg);
 									return false;
 								}
 							}
@@ -495,7 +480,7 @@
 								name = me.$popWim.find('.name').val();
 
 						if(name =='' || name == undefined){
-							$.Notice.error('名称不能为空');
+							parent._LIGERDIALOG.error('名称不能为空');
 							return false;
 						}
 						var params = {id:id,mode:'modify',code:'',name:name,oldName:oldName,orgId:orgId};
@@ -529,17 +514,17 @@
 							params = {id:id,mode:'modify',orgDeptJsonDate:orgDeptJsonDate};
 						}
 
-                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                        var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
                             waittingDialog.close();
 								if(data.successFlg){
-									$.Notice.success('修改成功',function () {
+									parent._LIGERDIALOG.success('修改成功',function () {
 										pageInit();
 										me.removePopWin(me);
 										return true;
 									});
 								}else{
-									$.Notice.error(data.errorMsg);
+									parent._LIGERDIALOG.error(data.errorMsg);
 									return false;
 								}
 							}
@@ -641,17 +626,17 @@
 				setDelFun: function ( id, me) {
 					var url = '';
 
-                    $.Notice.error('确定要删除吗?',function () {
+                    parent._LIGERDIALOG.error('确定要删除吗?',function () {
                         var url = "${contextRoot}/deptMember/delOrgDept";
                         me.res( url,{orgDeptId:id},
                                 function (data) {
                                     if(data.successFlg){
-                                        $.Notice.success('删除成功',function () {
+                                        parent._LIGERDIALOG.success('删除成功',function () {
                                             pageInit();
                                             return true;
                                         });
                                     }else{
-										$.Notice.error(data.errorMsg);
+										parent._LIGERDIALOG.error(data.errorMsg);
                                         return false;
                                     }
                                 }
@@ -667,12 +652,12 @@
 							},
 							function (data) {
 								if(data.successFlg){
-									$.Notice.success('操作成功',function () {
+									parent._LIGERDIALOG.success('操作成功',function () {
 										pageInit();
 										return true;
 									});
 								}else{
-									$.Notice.error('操作失败');
+									parent._LIGERDIALOG.error('操作失败');
 									return false;
 								}
 							}
@@ -687,12 +672,12 @@
 							},
 							function (data) {
 								if(data.successFlg){
-									$.Notice.success('操作成功',function () {
+									parent._LIGERDIALOG.success('操作成功',function () {
 										pageInit();
 										return true;
 									});
 								}else{
-									$.Notice.error('操作失败');
+									parent._LIGERDIALOG.error('操作失败');
 									return false;
 								}
 							}
@@ -711,15 +696,15 @@
 							code = me.$popWim.find('.code').val(),
 							orgId = $('#h_org_id').val();
 						if(name =='' || name == undefined){
-							$.Notice.error('名称不能为空');
+							parent._LIGERDIALOG.error('名称不能为空');
 							return false;
 						}
 						if(code =='' || code == undefined){
-							$.Notice.error('编码不能为空');
+							parent._LIGERDIALOG.error('编码不能为空');
 							return false;
 						}
 //						if(orgId =='' || orgId == undefined){
-//							$.Notice.error('机构不能为空');
+//							parent._LIGERDIALOG.error('机构不能为空');
 //							return false;
 //						}
 						var params = {id:id,mode:'addRoot',code:code,name:name,oldName:'',orgId:orgId};
@@ -742,17 +727,17 @@
 								deptDetail:{name:name,phone:deptPhone,displayStatus:displayStatus,gloryId:glory,orgId:$("#h_org_id").val(),introduction:introduction,place:place,pyCode:pyCode}});
 							params = {id:orgId,mode:'addRoot',orgDeptJsonDate:orgDeptJsonDate};
 						}
-                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                        var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
 						me.res( url,params,function (data) {
                             waittingDialog.close();
 									if(data.successFlg){
-										$.Notice.success('操作成功',function () {
+										parent._LIGERDIALOG.success('操作成功',function () {
                                             me.removePopWin(me);
 											pageInit();
 											return true;
 										});
 									}else{
-										$.Notice.error(data.errorMsg);
+										parent._LIGERDIALOG.error(data.errorMsg);
 										return false;
 									}
 								}

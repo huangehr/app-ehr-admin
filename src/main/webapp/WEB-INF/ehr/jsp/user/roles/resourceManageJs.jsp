@@ -15,10 +15,10 @@
 			var rolesBackId = dataModel.rolesId;
 			var rolesRsId = '${rolesRsId}';
 			var initSub = function (){
-				$('#btn_back').click(function(){
-					$('#contentPage').empty();
-					$('#contentPage').load('${contextRoot}/userRoles/resource/initial?backParams='+JSON.stringify(dataModel.backParams));
-				});
+				<%--$('#btn_back').click(function(){--%>
+					<%--$('#contentPage').empty();--%>
+					<%--$('#contentPage').load('${contextRoot}/userRoles/resource/initial?backParams='+JSON.stringify(dataModel.backParams));--%>
+				<%--});--%>
 				$('#resource_name').val(dataModel.resourceName);
 				$('#resource_code').val(dataModel.code);
 				$('#resource_sub').val(dataModel.resourceSub);
@@ -39,6 +39,12 @@
 					m.rendGrid();
 					m.publishFunc();
 					em.find(rolesBackId, rolesRsId);
+
+
+                    $(document).on('click', '.go-back', function (e) {
+                        e.stopPropagation();
+                        $("#contentPage").empty().load('${contextRoot}/userRoles/resource/initial?backParams='+JSON.stringify(dataModel.backParams));
+                    });
 				},
 
 				//初始化工具栏
@@ -49,12 +55,12 @@
 						if(type==1){
 							rows = g.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn("请选择数据！");
+								parent._LIGERDIALOG.warn("请选择数据！");
 								return;
 							}
 						}else{
 							if((rows = g.getData()).length==0){
-								$.Notice.warn("没有数据！");
+								parent._LIGERDIALOG.warn("没有数据！");
 								return;
 							}
 						}
@@ -75,24 +81,24 @@
 
 
 
-						var dialog = $.ligerDialog.waitting('正在处理中,请稍候...');
+						var dialog = parent._LIGERDIALOG.waitting('正在处理中,请稍候...');
 						var dataModel = $.DataModel.init();
 						dataModel.updateRemote(m.urls.lock, {
 							data: {data: JSON.stringify(data), valid: isLock, type: type},
 							success: function (data) {
 								if (data.successFlg) {
-									$.Notice.success('操作成功！');
+									parent._LIGERDIALOG.success('操作成功！');
                                     m.rendGrid();
                                     m.find();
                                 } else {
-									$.Notice.error(data.errorMsg);
+									parent._LIGERDIALOG.error(data.errorMsg);
 								}
 							},
 							complete: function () {
 								dialog.close();
 							},
 							error: function(){
-								$.Notice.error('请求错误！');
+								parent._LIGERDIALOG.error('请求错误！');
 							}
 						});
 					}
@@ -141,7 +147,6 @@
 				},
 				//操作栏渲染器
 				opratorRender: function (row){
-					debugger;
 					var vo = [
 						{type: 'edit', clkFun: "$.publish('grant:meta:modify',['"+ row['id'] +"', '"+ row['rolesResourceId'] +"', '"+ row['resourceMetadataId'] +"', '"+ row['rolesId'] +"', 'modify'])"}
 					];
@@ -149,7 +154,6 @@
 				},
 				//修改、新增点击事件
 				gotoModify : function (event, id, rolesResId, resMetaId, rolesId, mode) {
-					debugger;
 					id = id || '';
 					curOprator = em;
 					var params = {id: id, mode: mode, rolesResId: rolesResId, resMetaId: resMetaId, rolesId: rolesId};
@@ -163,17 +167,16 @@
                 },
 				//公开方法
 				publishFunc : function (){
-					debugger;
 					var m = em;
 					$.subscribe('grant:meta:modify', m.gotoModify);
 				}
 			}
 			em.init();
 
-			win.closeDialog = function (msg) {
+			win.parent.closeDialog = function (msg) {
 				openedDialog.close();
 				if(msg){
-					$.Notice.success(msg);
+					parent._LIGERDIALOG.success(msg);
 					curOprator.find();
 				}
 			}

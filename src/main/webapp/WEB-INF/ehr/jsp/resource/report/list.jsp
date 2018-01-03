@@ -2,7 +2,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
-<div class="container">
+<div id="div_wrapper">
     <div id="treeWrapper" class="m-form-inline">
         <div class="m-form-group f-mt10">
             <div class="m-form-control f-fs12">
@@ -10,7 +10,7 @@
             </div>
         </div>
 
-        <div id="treeContainer">
+        <div id="treeContainer" style="height: calc(100% - 40px)">
             <div id="tree"></div>
         </div>
     </div>

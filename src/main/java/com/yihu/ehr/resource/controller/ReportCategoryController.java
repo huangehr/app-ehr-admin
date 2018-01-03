@@ -73,7 +73,7 @@ public class ReportCategoryController extends BaseUIController {
         model.addAttribute("obj", result);
         model.addAttribute("id", id);
         model.addAttribute("contentPage", "resource/reportCategory/appConfig");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping(value = "detail")
@@ -91,7 +91,7 @@ public class ReportCategoryController extends BaseUIController {
         }
         model.addAttribute("detailModel", toJson(detailModel));
         model.addAttribute("contentPage", "resource/reportCategory/detail");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**

@@ -26,7 +26,7 @@
 <div id="div_wrapper">
   <!-- ####### 指标分类浏览树 ####### -->
   <div id="div_content" class="f-ww contentH">
-    <div id="div_left" class="f-w240 f-bd f-of-hd" style="position: relative;">
+    <div id="div_left" class="f-w240 f-bd f-of-hd">
       <div style="position: absolute;left: 10px;top: 6px;">指标分类</div>
       <!--指标分类浏览树-->
       <div id="div_tree" class="f-w230 f-pt30">

@@ -350,7 +350,6 @@
 
                 //修改用户的点击事件
                 this.$updateUserDtn.click(function () {
-                    debugger
                     var userImgHtml = self.$imageShow.children().length;
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
@@ -410,7 +409,6 @@
                 });
 
                 function updateUser(userModel) {
-                    debugger
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUser", {

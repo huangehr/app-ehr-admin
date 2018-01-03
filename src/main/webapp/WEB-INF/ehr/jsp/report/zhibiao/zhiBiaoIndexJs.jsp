@@ -26,10 +26,15 @@
                 pageSize:rsPageParams&&rsPageParams.pageSize || 15,
             }
 
+            //添加碎片
+            function appendNav(str, url, data) {
+                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").empty().load(url,data);
+            }
 
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
-                resizeContent();
                 retrieve.init();
                 dictMaster.init();
             }
@@ -123,7 +128,6 @@
                 grid: null,
                 $searchNm: $('#searchNm'),
                 init: function () {
-                    debugger
                     var self = this;
                     this.$searchNm.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
@@ -217,7 +221,7 @@
                             title = '新增指标';
                         }
                         isSaveSelectStatus = true;
-                        dictMaster.dictInfoDialog = $.ligerDialog.open({
+                        dictMaster.dictInfoDialog = parent._LIGERDIALOG.open({
                             height: 650,
                             width: 480,
                             title: title,
@@ -233,17 +237,17 @@
 
                     $.subscribe('zhibiao:zhiBiaoGrid:delete', function (event, id) {
 
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/tjQuota/deleteTjDataSave', {
                                     data: {tjQuotaId: parseInt(id)},
                                     success: function (data) {
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功！');
+                                            parent._LIGERDIALOG.success('删除成功！');
                                             dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
                                         }else{
-                                            $.Notice.error(data.errorMsg);
+                                            parent._LIGERDIALOG.error(data.errorMsg);
                                         }
 
 
@@ -254,7 +258,7 @@
                     });
 
                     $.subscribe('zhibiao:weidu:config', function (event, code) {
-                        dictMaster.detailDialog = $.ligerDialog.open({
+                        dictMaster.detailDialog = parent._LIGERDIALOG.open({
                             title:'维度配置',
                             height: 625,
                             width: 800,
@@ -272,7 +276,7 @@
                     });
                     
                     $.subscribe('zhibiao:tubiao:config', function (event, code, name) {
-                        dictMaster.chartConfigDialog = $.ligerDialog.open({
+                        dictMaster.chartConfigDialog = parent._LIGERDIALOG.open({
                             title:'图表配置',
                             height: 700,
                             width: 700,
@@ -291,9 +295,9 @@
                     })
 
                     $.subscribe('zhibiao:execu', function (event, id, quotaCode) {
-                        $.Notice.confirm('确认要执行所选指标？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要执行所选指标？', function (r) {
                             if (r) {
-                                var loading = $.ligerDialog.waitting("正在执行,需要点时间请稍后...");
+                                var loading = parent._LIGERDIALOG.waitting("正在执行,需要点时间请稍后...");
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/tjQuota/hasConfigDimension', {
                                     data: {quotaCode: quotaCode},
@@ -303,15 +307,15 @@
                                                 data: {tjQuotaId: parseInt(id)},
                                                 success: function (data) {
                                                     if(data.successFlg){
-                                                        $.Notice.success('执行成功！');
+                                                        parent._LIGERDIALOG.success('执行成功！');
                                                     }else{
-                                                        $.Notice.error(data.errorMsg);
+                                                        parent._LIGERDIALOG.error(data.errorMsg);
                                                     }
                                                     loading.close();
                                                 }
                                             });
                                         }else{
-                                            $.Notice.error("请先在维度配置中配置主维度");
+                                            parent._LIGERDIALOG.error("请先在维度配置中配置主维度");
                                         }
                                     }
                                 });
@@ -327,8 +331,7 @@
                             quotaType: quotaType,
                             name: searchVal
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, urlParms);
+                        appendNav('结果查询', url, urlParms)
                     });
 
                     $.subscribe('zhibiao:log:quotaLog', function (event, quotaCode) {
@@ -338,40 +341,25 @@
                             quotaType: quotaType,
                             name: searchVal
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, urlParms);
+                        appendNav('日志查询', url, urlParms)
                     });
 
                 }
             };
             /* ************************* 模块初始化结束 ************************** */
             /* ************************* dialog回调函数 ************************** */
-            var resizeContent = function(){
-                var contentW = $('#div_content').width();
-                //浏览器窗口高度-固定的（健康之路图标+位置）128-20px包裹上下padding
-                var contentH = $(window).height()-128-20;
-                var leftW = $('#div_left').width();
-                $('#div_content').height(contentH);
-                //减50px的检索条件div高度
-                $('#div_tree').height(contentH-50);
-                $('#div_right').width(contentW-leftW-20);
-            };
-            $(window).bind('resize', function() {
-                resizeContent();
-            });
+
 
             //新增修改所属成员类别为默认时，只刷新右侧列表；有修改所属成员类别时，左侧树重新定位，刷新右侧列表
-            win.reloadMasterUpdateGrid = function () {
-
-                    dictMaster.reloadGrid();
-
+            win.parent.reloadMasterUpdateGrid = function () {
+                dictMaster.reloadGrid();
             };
-            win.closeDictInfoDialog = function (callback) {
+            win.parent.closeDictInfoDialog = function (callback) {
                 isFirstPage = false;
                 dictMaster.dictInfoDialog.close();
             };
             //新增、修改（成员分类有修改情况）定位
-            win.locationTree = function(callbackParams){
+            win.parent.locationTree = function(callbackParams){
                 if(!callbackParams){
                     dictMaster.reloadGrid();
                     return
@@ -389,25 +377,25 @@
 
             }
 
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = function () {
                 dictMaster.reloadGrid();
             };
-            win.closeDialog = function (type, msg) {
+            win.parent.closeDialog = function (type, msg) {
                 dictMaster.dictInfoDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
 
-            win.closeChartConfigDialog = function () {
+            win.parent.closeChartConfigDialog = function () {
                 dictMaster.chartConfigDialog.close();
-                $.Notice.success('保存成功！');
+                parent._LIGERDIALOG.success('保存成功！');
             }
 
-            win.closeConfigDialog = function () {
+            win.parent.closeConfigDialog = function () {
                 dictMaster.chartConfigDialog.close();
             }
 
-            win.closeZhiBiaoInfoDialog = function (callback) {
+            win.parent.closeZhiBiaoInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     dictMaster.reloadGrid();

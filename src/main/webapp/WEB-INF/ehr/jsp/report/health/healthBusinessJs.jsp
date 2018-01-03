@@ -93,7 +93,7 @@
                         else {
                             title = '新增指标分类';
                         }
-                        dictMaster.dictInfoDialog = $.ligerDialog.open({
+                        dictMaster.dictInfoDialog = parent._LIGERDIALOG.open({
                             height: 400,
                             width: 480,
                             title: title,
@@ -109,18 +109,17 @@
 
                     $.subscribe('health:healthBusinessInfo:delete', function (event, id) {
 
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/quota/deleteQuotaCategory', {
                                     data: {id: parseInt(id)},
                                     success: function (data) {
-                                        debugger
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功！');
+                                            parent._LIGERDIALOG.success('删除成功！');
                                             dictMaster.reloadGrid(Util.checkCurPage.call(dictMaster.grid, 1));
                                         }else{
-                                            $.Notice.error(data.errorMsg);
+                                            parent._LIGERDIALOG.error(data.errorMsg);
                                         }
                                     }
                                 });
@@ -132,15 +131,15 @@
             };
 
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = function () {
                 dictMaster.reloadGrid();
             };
-            win.closeDialog = function (type, msg) {
+            win.parent.closeDialog = function (type, msg) {
                 dictMaster.dictInfoDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
-            win.closeZhiBiaoInfoDialog = function (callback) {
+            win.parent.closeZhiBiaoInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     dictMaster.reloadGrid();

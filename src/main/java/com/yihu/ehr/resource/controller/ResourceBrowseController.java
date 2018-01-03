@@ -93,7 +93,7 @@ public class ResourceBrowseController extends BaseUIController {
         model.addAttribute("metadatas", metadatas);
         model.addAttribute("type", type);
         model.addAttribute("contentPage", "/resource/browse/customQueryDialogView");
-        return "pageView";
+        return "generalView";
     }
 
     @RequestMapping("/initial")

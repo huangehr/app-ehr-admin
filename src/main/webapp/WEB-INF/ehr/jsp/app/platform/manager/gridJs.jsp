@@ -1,8 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
-<script src="${contextRoot}/develop/source/toolBar.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script>
 
@@ -11,7 +9,7 @@
             var Util = $.Util;
             var openedDialog, curOprator;
             var p = '${dataModel}'.split(",");
-            var contentH = $('.l-layout-center').height();
+//            var contentH = $('.l-layout-center').height();
 
             var urls = {
                 gotoModify: '${contextRoot}/app/feature/gotoModify',
@@ -49,7 +47,7 @@
                         rownumbers: false,
                         allowAdjustColWidth: false,
                         usePager: false,
-                        height: contentH - 12,
+                        height: '100%',
                         tree: {columnId: 'name', parentIDFieldName:'parentId'},
                         url: urls.tree,
                         parms: {appId: p[0], appName: p[1]},
@@ -131,6 +129,7 @@
                         {display: '操作', name: 'operator', width: '15%', render: m.opratorRender}];
 
                     m.grid = initGrid($('#rightGrid'), urls.list, {}, columns, {
+                        height: '96%',
                         delayLoad: true,
                         rownumbers: true,
                         usePager: false,
@@ -163,21 +162,21 @@
                         em.params = {frm: frm,  rowId: rowId}
                         params = {id: id, mode: mode, rowId: rowId}
                     }
-                    em.dialog = openedDialog = openDialog(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 660, params);
+                    em.dialog = openedDialog = parent._OPENDIALOG(urls.gotoModify, mode=='new'?'新增': mode=='modify'? '修改': '查看', 480, 660, params);
                 },
                 del: function (event, id, frm, rowId, parentId, type, url) {
 
                     function del(){
-                        $.ligerDialog.confirm("确定删除?", function (yes) {
+                        parent._LIGERDIALOG.confirm("确定删除?", function (yes) {
                             if (yes){
-                                var dialog = $.ligerDialog.waitting('正在处理中,请稍候...');
+                                var dialog = parent._LIGERDIALOG.waitting('正在处理中,请稍候...');
                                 var dataModel = $.DataModel.init();
                                 var extParms = {url: url};
                                 dataModel.updateRemote(urls.del, {
                                     data: {ids: id, idField: "id", type: "uniq", extParms: JSON.stringify(extParms)},
                                     success: function (data) {
                                         if (data.successFlg) {
-                                            $.Notice.success('删除成功！');
+                                            parent._LIGERDIALOG.success('删除成功！');
                                             if(frm==0)
                                                 master.tree.remove(master.tree.getRow(rowId));
                                             else{
@@ -193,11 +192,11 @@
                                                 }
                                             }
                                         } else {
-                                            $.Notice.error(data.errorMsg);
+                                            parent._LIGERDIALOG.error(data.errorMsg);
                                         }
                                     },
                                     complete: function () {dialog.close();},
-                                    error: function(){$.Notice.error('请求错误！');}
+                                    error: function(){parent._LIGERDIALOG.error('请求错误！');}
                                 });
                             }
                         });
@@ -210,12 +209,12 @@
                                 if(!data.obj)
                                     del();
                                 else
-                                    $.Notice.error("该删除项存在子项，请先删除子项！");
+                                    parent._LIGERDIALOG.error("该删除项存在子项，请先删除子项！");
                             } else {
-                                $.Notice.error("验证错误！");
+                                parent._LIGERDIALOG.error("验证错误！");
                             }
                         },
-                        error: function(){$.Notice.error('请求出错！');}
+                        error: function(){parent._LIGERDIALOG.error('请求出错！');}
                     });
                 },
                 //查询列表方法
@@ -235,27 +234,13 @@
                     $.subscribe('app:plf:man:del', m.del);
                 }
             }
-
-            var resizeContent = function () {
-                var contentW = $('#grid_content').width();
-                var leftW = $('#div_left').width();
-                $('#div_right').width(contentW - leftW - 20);
-
-                $('#treeMenuWrap').height(contentH - 104);
-                $('#treeMenu').height(contentH - 64);
-            };
-
-            resizeContent();
-            //窗体改变大小事件
-            $(window).bind('resize', resizeContent);
-
             em.init();
             master.init();
 
-            win.closeDialog = function (msg, data) {
-                openedDialog.close();
+            win.parent.closeDialog = function (msg, data) {
+                em.dialog.close();
                 if (msg) {
-                    $.Notice.success(msg);
+                    win.parent._LIGERDIALOG.success(msg);
                     if(em.params.frm==0){
                         if(em.params.upType==2){
                             em.grid.appendRow(data.obj);
@@ -271,7 +256,7 @@
                 }
             }
 
-            win.getEditParms = function () {
+            win.parent.getEditParms = function () {
                 return em.params;
             }
         });

@@ -69,7 +69,7 @@ public class DoctorController extends BaseUIController {
     @RequestMapping("addDoctorInfoDialog")
     public String addUser(Model model) {
         model.addAttribute("contentPage", "user/doctor/addDoctorInfoDialog");
-        return "generalView";
+        return "emptyView";
     }
     /**
      * 选择机构部门
@@ -81,7 +81,7 @@ public class DoctorController extends BaseUIController {
         model.addAttribute("idCardNo", idCardNo);
         model.addAttribute("type", type);
         model.addAttribute("contentPage", "user/doctor/selectOrgDept");
-        return "generalView";
+        return "emptyView";
     }
     /**
      * 查找医生
@@ -338,7 +338,7 @@ public class DoctorController extends BaseUIController {
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/doctor/doctorInfoDialog");
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());

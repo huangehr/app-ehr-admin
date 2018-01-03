@@ -53,7 +53,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
     public String gotoList(Model model, String dataModel){
         model.addAttribute("dataModel",dataModel);
         model.addAttribute("contentPage", this.listUrl);
-        return "pageView";
+        return "emptyView";
     }
 
 
@@ -84,7 +84,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
             model.addAttribute("myFlag",myFlag);
             model.addAttribute("contentPage", getModeUrl(mode));
             model.addAttribute("staged", params.get("staged"));
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();

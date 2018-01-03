@@ -115,15 +115,15 @@
                             success:function (data) {
                                 if(data.successFlg){
                                     self.endEdit();
-                                    $.Notice.success('更新成功');
+                                    parent._LIGERDIALOG.success('更新成功');
                                 }else {
-                                    $.Notice.error(data.errorMsg);
+                                    parent._LIGERDIALOG.error(data.errorMsg);
                                 }
                             }
                         })
                     });
                     $.subscribe('app:appInfo:delete',function(event,appId){
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                             if (yes) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.fetchRemote('${contextRoot}/location/delete', {
@@ -134,10 +134,10 @@
                                     },
                                     success: function (data) {
                                         if (data.successFlg) {
-                                            $.Notice.success('操作成功。');
+                                            parent._LIGERDIALOG.success('操作成功。');
                                             dictMaster.reloadGrid();
                                         } else {
-                                            window.top.$.Notice.error(data.errorMsg)
+                                            parent._LIGERDIALOG.error(data.errorMsg)
                                         }
                                     }
                                 });
@@ -147,7 +147,7 @@
 
                     //新增按钮
                     self.$addBtn.click(function () {
-                        dictMaster.dictInfoDialog = $.ligerDialog.open({
+                        dictMaster.dictInfoDialog = parent._LIGERDIALOG.open({
                             height: 480,
                             width: 340,
                             title:"新增",
@@ -160,12 +160,12 @@
                 }
             };
             /* ******************Dialog页面回调接口****************************** */
-            win.closeDialog = function (type, msg) {
+            win.parent.closeDialog = function (type, msg) {
                 dictMaster.dictInfoDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
-            win.closeMenuInfoDialog = function (callback) {
+            win.parent.closeMenuInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     debugger

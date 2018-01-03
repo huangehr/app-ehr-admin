@@ -284,7 +284,7 @@
                     } else {
                         title = '修改字典'
                     }
-                    systemDictUpdateDialog = $.ligerDialog.open({
+                    systemDictUpdateDialog = parent._LIGERDIALOG.open({
                         title: title,
                         width: 416,
                         height: 200,
@@ -329,16 +329,16 @@
                                 data = {dictId: systemDictId, name: systemName};
                             }
                             var dataModel = $.DataModel.init();
-                            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                            var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
                             dataModel.createRemote(systemDictUpdateUrl, {
                                 data: data,
                                 success: function (data) {
                                     waittingDialog.close();
                                     if (data.successFlg) {
-                                        $.Notice.success('更新成功');
+                                        parent._LIGERDIALOG.success('更新成功');
                                         self.searchSystemDict();
                                     } else {
-                                        $.Notice.error("更新失败");
+                                        parent._LIGERDIALOG.error("更新失败");
                                     }
                                     systemDictUpdateDialog.close();
                                 }
@@ -351,7 +351,7 @@
                 },
                 addSystemEntityDialog: function () {
                     var self = this;
-                    addSystemDictEntityDialog = $.ligerDialog.open({
+                    addSystemDictEntityDialog = parent._LIGERDIALOG.open({
                         title: '新增字典详情',
                         width: 416,
                         height: 250,
@@ -373,16 +373,16 @@
                                 catalog = catalog.replace('，',',');
                             }
                             var dataModel = $.DataModel.init();
-                            var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                            var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
                             dataModel.updateRemote('${contextRoot}/dict/createDictEntry', {
                                 data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
                                 success: function (data) {
                                     waittingDialog.close();
                                     if (data.successFlg) {
-                                        $.Notice.success('保存成功');
+                                        parent._LIGERDIALOG.success('保存成功');
                                         master.searchSystemDictEntity(master.$systemDictId.val());
                                     } else {
-                                        $.Notice.error(data.errorMsg);
+                                        parent._LIGERDIALOG.error(data.errorMsg);
                                     }
                                     addSystemDictEntityDialog.close();
                                 }
@@ -394,7 +394,7 @@
                 updateSystemEntityDialog: function () {
 
                     var self = this;
-                    updateSystemDictEntityDialog = $.ligerDialog.open({
+                    updateSystemDictEntityDialog = parent._LIGERDIALOG.open({
                         title: '修改字典详情',
                         width: 416,
                         height: 250,
@@ -418,10 +418,10 @@
                                 data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
                                 success: function (data) {
                                     if (data.successFlg) {
-                                        $.Notice.success('更新成功');
+                                        parent._LIGERDIALOG.success('更新成功');
                                         master.searchSystemDictEntity(master.$systemDictId.val());
                                     } else {
-                                        $.Notice.error('更新失败');
+                                        parent._LIGERDIALOG.error('更新失败');
                                     }
                                     updateSystemDictEntityDialog.close();
                                 }
@@ -438,14 +438,14 @@
                     } else {
                         data = {dictId: dictId, code: code}
                     }
-                    $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                    parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                         if (yes) {
                             var dataModel = $.DataModel.init();
                             dataModel.updateRemote(deleteUrl, {
                                 data: data,
                                 success: function (data) {
                                     if (data.successFlg) {
-                                        $.Notice.success('删除成功');
+                                        parent._LIGERDIALOG.success('删除成功');
                                         if (type=='Dict') {
                                             self.searchSystemDict("", Util.checkCurPage.call(systemDictInfoGrid, 1));
                                         }else if (type=='DictEntry') {
@@ -453,7 +453,7 @@
                                         }
 
                                     } else {
-                                        $.Notice.error('删除失败');
+                                        parent._LIGERDIALOG.error('删除失败');
                                     }
                                 }
                             });

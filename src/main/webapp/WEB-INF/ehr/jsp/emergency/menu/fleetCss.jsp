@@ -24,8 +24,12 @@
     .label_a{line-height: 40px;}
     .f-fr{float:right !important;}
     #div_relLoad_data{
-        width: auto;
-        height: auto;
+        position: absolute;
+        top: 57px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: auto;
         border: 1px solid #EBEEEE;
     }
     #div_relLoad_data >ul{
@@ -119,7 +123,7 @@
     .choose a{color: #357973!important;}
 
     #contentPage{
-        overflow: scroll !important;
+        /*overflow: scroll !important;*/
         padding-bottom: 100px;
     }
     .changeGray{

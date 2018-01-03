@@ -2,9 +2,8 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <script type="text/javascript">
-
     (function ($, win) {
-        $(function () {
+//        $(function () {
             /* ************************** 变量定义 ******************************** */
             var versionNum = $('#inp_searchVersion_val').val();
             // 通用工具类库
@@ -220,6 +219,6 @@
             pageInit();
 
             /* ************************* 页面初始化结束 ************************** */
-        });
+//        });
     })(jQuery, window);
 </script>

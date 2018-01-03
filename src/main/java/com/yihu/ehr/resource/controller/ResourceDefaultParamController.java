@@ -39,7 +39,7 @@ public class ResourceDefaultParamController extends BaseUIController {
         model.addAttribute("contentPage","/resource/rsdefaultparam/defaultParam");
         model.addAttribute("resourcesId",resourcesId);
         model.addAttribute("resourcesCode",resourcesCode);
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("/infoInitial")
@@ -55,7 +55,7 @@ public class ResourceDefaultParamController extends BaseUIController {
             en = objectMapper.writeValueAsString(envelop);
             if(StringUtils.equals(mode,"new")){
                 model.addAttribute("info", en);
-                return "simpleView";
+                return "emptyView";
             }
             String url = "/resources/param/"+id;
             String envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
@@ -64,7 +64,7 @@ public class ResourceDefaultParamController extends BaseUIController {
             LogService.getLogger(ResourceDefaultParamModel.class).error(ex.getMessage());
             model.addAttribute("info", en);
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     //新增、修改

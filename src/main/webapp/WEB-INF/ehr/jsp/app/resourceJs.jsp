@@ -73,8 +73,8 @@
 					this.initAppMsg();
 				},
 				initAppMsg: function () {
-					this.$appName.val(backParams.appName);
-					this.$catalogName.val(backParams.catalogName);
+					this.$appName.html(backParams.appName);
+					this.$catalogName.html(backParams.catalogName);
 				}
 			};
 			retrieve = {
@@ -225,7 +225,7 @@
 						if(!ids){
 							var rows = master.resourceInfoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要授权给应用的视图！');
+								parent._LIGERDIALOG.warn('请选择要授权给应用的视图！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -236,11 +236,11 @@
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 							if(Util.isStrEmpty(ids)){
-								$.Notice.warn( '所选视图都已授权！');
+								parent._LIGERDIALOG.warn( '所选视图都已授权！');
 								return;
 							}
 						}
-						$.Notice.confirm('确认要授权所选视图？', function (r) {
+						parent._LIGERDIALOG.confirm('确认要授权所选视图？', function (r) {
 							if(r){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/app/resource/grant',{
@@ -249,11 +249,11 @@
 										if(data.successFlg){
 											appRsIds = [];
 											isFirstPage = false;
-											$.Notice.success( '授权成功！');
+											parent._LIGERDIALOG.success( '授权成功！');
 											master.loadResourceIds();
 											master.reloadGrid();
 										}else{
-											$.Notice.error('授权失败！');
+											parent._LIGERDIALOG.error('授权失败！');
 										}
 									}
 								});
@@ -269,7 +269,7 @@
 						if(!ids){
 							var rows = master.resourceInfoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要删除的授权视图！');
+								parent._LIGERDIALOG.warn('请选择要删除的授权视图！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -280,11 +280,11 @@
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 							if(Util.isStrEmpty(ids)){
-								$.Notice.warn('所选视图都未授权！');
+								parent._LIGERDIALOG.warn('所选视图都未授权！');
 								return;
 							}
 						}
-						$.Notice.confirm('确认要取消授权所选视图？', function (r) {
+						parent._LIGERDIALOG.confirm('确认要取消授权所选视图？', function (r) {
 							if(r){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/app/resource/cancel',{
@@ -293,11 +293,11 @@
 										if(data.successFlg){
 											appRsIds = [];
 											isFirstPage = false;
-											$.Notice.success( '取消授权成功！');
+											parent._LIGERDIALOG.success( '取消授权成功！');
 											master.loadResourceIds();
 											master.reloadGrid();
 										}else{
-											$.Notice.error('取消授权失败！');
+                                            parent._LIGERDIALOG.error('取消授权失败！');
 										}
 									}
 								});
@@ -322,18 +322,6 @@
 					});
 				},
 			};
-			var resizeContent = function(){
-				var contentW = $('#div_content').width();
-				var leftW = $('#div_left').width();
-				//浏览器窗口高度-固定的（健康之路图标+位置）128-10px包裹padding-返回上一层div高度
-				var contentH = $(window).height()-128-10-50;
-				$('#div_content').height(contentH);
-				//减50px的检索条件div高度
-				$('#div_tree').height(contentH-50);
-				$('#div_right').width(contentW-leftW-20);
-			};
-			resizeContent();
-			$(window).bind('resize', resizeContent);
 			win.reloadMasterUpdateGrid = function () {
 				master.reloadGrid();
 			};

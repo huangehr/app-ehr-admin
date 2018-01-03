@@ -92,7 +92,6 @@
             },
             //获取健康档案图表
             loadArcCB: function (res, me) {
-                debugger
                 if (res.successFlg) {
                     var d = res.detailModelList && res.detailModelList[0].dataModels,
                             obj = res.obj;
@@ -702,11 +701,12 @@
                             },
                             axisTick: {show:false},
                             axisLabel: {
+                                rotate:-40,
                                 interval:0,
                                 formatter : function(params){
                                     var newParamsName = "";
                                     var paramsNameNumber = params.length;
-                                    var provideNumber = 4;
+                                    var provideNumber = 10;
                                     var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
                                     if (paramsNameNumber > provideNumber) {
                                         for (var p = 0; p < rowNumber; p++) {

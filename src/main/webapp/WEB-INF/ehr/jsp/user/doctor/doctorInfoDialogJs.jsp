@@ -215,8 +215,8 @@
                 self.$divBtnShow.onclick = function () {
                     var wait = $.Notice.waitting("请稍后...");
                     win.orgDeptDio = win.$.ligerDialog.open({
-                        height: 590,
-                        width: 600,
+                        height: 620,
+                        width: 780,
                         title: '选择机构部门',
                         url: '${contextRoot}/doctor/selectOrgDept',
                         urlParms: {
@@ -228,7 +228,8 @@
                         onLoaded:function() {
                             wait.close();
                             win.orgDeptDio.show();
-                        }
+                        },
+                        load: true
                     });
                     win.orgDeptDio.hide();
                 }

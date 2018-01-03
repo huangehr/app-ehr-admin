@@ -1,5 +1,6 @@
 var cateType = {};
 
+var parentDilog = frameElement.dialog;
 cateType.list = {
     _url: $("#hd_url").val(),
     top: null,
@@ -95,27 +96,6 @@ cateType.list = {
         this.expandcateType();
         window.grid = u.grid;
     },
-
-    // expandcateType: function () {
-    //
-    //     var cateTypePid = sessionStorage.getItem('cateTypePid');
-    //     if ($.Util.isStrEmpty(cateTypePid)){
-    //         return;
-    //     }
-    //     var Pid = $("#" + cateTypePid).attr('pid');
-    //     var clickEle = $($($("#" + cateTypePid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
-    //     if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
-    //         clickEle[clickEle.length-1].click();
-    //     }
-    //     while (Pid) {
-    //         clickEle = $($($("#" + Pid).parents('tr').children('td')[0]).find('.l-grid-tree-space'));
-    //         if (!$.Util.isStrEquals($(clickEle[clickEle.length-1]).attr('class').indexOf('l-grid-tree-link-close'), -1)) {
-    //             clickEle[clickEle.length-1].click();
-    //         }
-    //         Pid = $("#" + Pid).attr('pid');
-    //     }
-    //     sessionStorage.removeItem('cateTypePid');
-    // },
     expandcateType: function () {
         var Pid = sessionStorage.getItem('cateTypePid');
         if ($.Util.isStrEmpty(Pid)) return;
@@ -316,7 +296,6 @@ cateType.attr = {
         var id = $("#hdId").val();
         cateType.attr.type_form.attrScan();
         var dataJson = cateType.attr.type_form.Fields;
-        debugger
         var saveJson = {};
         saveJson.id = id;
         saveJson.pid = dataJson.pid.getValue();
@@ -338,7 +317,7 @@ cateType.attr = {
                         var cateTypePid = dataJson.pid.getValue();
                         sessionStorage.setItem("cateTypePid", cateTypePid);
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
-                            parent.cateType.list.dialog_cateType_detail.close();
+                            parentDilog.close();
                         }, null);
                     }
                     else {
@@ -356,7 +335,7 @@ cateType.attr = {
             cateType.attr.save();
         });
         $("#btn_close").click(function () {
-            parent.cateType.list.dialog_cateType_detail.close();
+            parentDilog.close();
         });
     }
 }

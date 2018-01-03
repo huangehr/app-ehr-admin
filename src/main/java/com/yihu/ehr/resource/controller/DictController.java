@@ -14,6 +14,7 @@ import com.yihu.ehr.util.excel.read.RsDictionaryMsgWriter;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,6 +63,12 @@ public class DictController extends ExtendController<DictService> {
         headerMap.put(0, "代码");
         headerMap.put(1, "名称");
         headerMap.put(2, "说明");
+    }
+
+    @RequestMapping("dctInitial")
+    public String gridInitial(Model model) {
+        model.addAttribute("contentPage","/resource/dict/grid");
+        return "pageView";
     }
 
     @Override
