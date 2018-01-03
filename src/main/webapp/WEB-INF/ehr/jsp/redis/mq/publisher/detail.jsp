@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="m-form-group">
-        <label>应用ID：</label>
+        <label>微服务ID：</label>
         <div class="l-text-wrapper m-form-control essential">
             <input type="text" class="f-w240 max-length-30 required"
                    id="appId" data-attr-scan="appId">
