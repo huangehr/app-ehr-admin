@@ -184,4 +184,24 @@ public class RedisCacheKeyRuleController extends BaseUIController {
         }
     }
 
+    /**
+     * 验证类似的缓存Key规则表达式是否已经存在
+     */
+    @RequestMapping("/isUniqueExpression")
+    @ResponseBody
+    public Object isUniqueExpression(Integer id, String categoryCode, String expression) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        try {
+            params.put("id", id);
+            params.put("categoryCode", categoryCode);
+            params.put("expression", expression);
+            return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheKeyRule.IsUniqueExpression, params, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
+            return failed(ErrorCode.SystemError.toString());
+        }
+    }
+
 }
