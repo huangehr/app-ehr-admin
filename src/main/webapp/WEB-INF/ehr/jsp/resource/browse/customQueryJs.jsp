@@ -650,8 +650,12 @@
                                     }
 
                                     var wait = $.Notice.waitting("请稍后...");
+                                    var height = 550;
+                                    if (me.type == 1) {
+                                        height = 600;
+                                    }
                                     rsInfoDialog = $.ligerDialog.open({
-                                        height:550,
+                                        height:height,
                                         width:500,
                                         title:'新增视图',
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
