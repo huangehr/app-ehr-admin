@@ -39,6 +39,12 @@
 			<%--<input type="radio" value="2" name="dataSource" data-attr-scan/>指标统计--%>
 		</div>
 	</div>
+	<div id="dataShowType" class="m-form-group" style="display: none;">
+		<label>数据展示类型<spring:message code="spe.colon"/></label>
+		<div class="m-form-control l-text-wrapper essential" style="padding-right: 0">
+			<input type="text" id="echartType" class="required useTitle f-h28 f-w240 validate-special-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="echartType">
+		</div>
+	</div>
 	<div class="m-form-group">
 		<label>访问方式<spring:message code="spe.colon"/></label>
 		<div class="u-checkbox-wrap m-form-control">

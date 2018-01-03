@@ -506,12 +506,16 @@
                     //视图管理
                     $.subscribe("rs:info:open",function(event, resourceId, mode, categoryId, name, dataSource){
                         var title = "";
+                        var height = 550;
                         var wait = $.Notice.waitting("请稍后...");
                         if(mode == "modify"){title = "修改视图";}
                         if(mode == "view"){title = "查看视图";}
                         if(mode == "new"){title = "新增视图";}
+                        if (dataSource == 2) {
+                            height = 600;
+                        }
                         rsInfoDialog = $.ligerDialog.open({
-                            height:550,
+                            height:height,
                             width:500,
                             title:title,
                             url:'${contextRoot}/resource/resourceManage/infoInitial',
