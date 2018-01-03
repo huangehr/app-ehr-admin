@@ -29,7 +29,7 @@
             urlParms: { categoryCode: categoryCode },
             columns: [
                 {display: 'ID', name: 'id', hide: true},
-                {display: '应用ID', name: 'appId', width: '10%', isAllowHide: false, align: 'left'},
+                {display: '微服务ID', name: 'appId', width: '10%', isAllowHide: false, align: 'left'},
                 {display: '授权码', name: 'authorizedCode', width: '25%', isAllowHide: false, align: 'left'},
                 {display: '修改时间', name: 'modifyDate', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},
