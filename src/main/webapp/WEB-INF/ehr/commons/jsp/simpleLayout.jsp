@@ -52,13 +52,14 @@
                 position: relative;
             }
             #contentPage{
-                height: calc(100% - 40px);
+                /*height: calc(100% - 40px);*/
+                height: 100%;
                 padding: 10px 10px;
             }
         </style>
 </head>
 <body style="overflow: hidden">
-    <div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb">
+    <div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb" style="display: none">
         位置：<span id="navLink"></span>
     </div>
     <div data-content-page style="" id="contentPage">
