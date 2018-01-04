@@ -28,12 +28,12 @@
             url: '${contextRoot}/redis/cache/authorization/search',
             urlParms: { categoryCode: categoryCode },
             columns: [
-                {display: 'ID', name: 'id', hide: true},
-                {display: '微服务ID', name: 'appId', width: '10%', isAllowHide: false, align: 'left'},
+                {display: 'ID', name: 'id', hide: true, width:'0'},
+                {display: '微服务ID', name: 'appId', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '授权码', name: 'authorizedCode', width: '25%', isAllowHide: false, align: 'left'},
                 {display: '修改时间', name: 'modifyDate', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},
-                {display: '操作', name: 'operator', minWidth: 120, align: 'center',
+                {display: '操作', name: 'operator', width: '20%', align: 'center',
                     render: function (row) {
                         var html = '';
                         html += '<sec:authorize url="/redis/cache/authorization/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "redis:cache:authorization:detail", row.id, 'modify') + '"></a></sec:authorize>';
