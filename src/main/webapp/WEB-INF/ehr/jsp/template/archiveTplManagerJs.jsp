@@ -20,6 +20,7 @@
             var retrieve = null;
             var master = null;
             var dataModel = '${dataModel}';
+            debugger
             var staged;
             try {
                 dataModel = eval('(' + dataModel + ')');
@@ -146,7 +147,7 @@
 
                                 var html = ''
                                     <sec:authorize url="/template/updateCopy">
-                                    + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'copy') + '">复制</a>';
+                                    + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "tpl:tplInfo:open", row.id, 'copy', row.cdaVersion) + '">复制</a>';
                                 </sec:authorize>
 
                                 return html;
@@ -161,7 +162,7 @@
                                 render: function (row) {
                                     var html = ''
                                         <sec:authorize url="/template/update">
-                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "tpl:tplInfo:open", row.id, 'modify') + '">修改</a>';
+                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "tpl:tplInfo:open", row.id, 'modify', row.cdaVersion) + '">修改</a>';
                                     </sec:authorize>
                                     return html;
                                 }
@@ -214,7 +215,7 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    $.subscribe('tpl:tplInfo:open', function (event, id, mode) {
+                    $.subscribe('tpl:tplInfo:open', function (event, id, mode, verId) {
                         var urlParms = {};
                         if (!Util.isStrEmpty(id))
                             urlParms['id'] = id;
@@ -236,6 +237,11 @@
                             isSaveSelectStatus = true;
                             title = '修改模板';
                         }
+                        urlParms['orgCode'] = dataModel.orgCode;
+                        urlParms['versionNum'] = $('#inp_searchVersion').val();
+                        urlParms['versionCode'] = $('#inp_searchVersion_val').val();
+
+
                         self.archiveTplInfoDialog = parent._LIGERDIALOG.open({
                             height: 370,
                             width: 450,
