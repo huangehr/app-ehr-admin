@@ -61,7 +61,7 @@ public class DrugDictController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(DrugDictController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("/drugs")

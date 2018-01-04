@@ -14,7 +14,7 @@
 
         var addDoctorInfo = null;
 
-        var dialog = frameElement.dialog;
+        var dialog = null;
 
         var source;
 		var trees;
@@ -88,7 +88,7 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('新增成功');
-                        win.parent.closeAddDoctorInfoDialog();
+                        closeAddDoctorInfoDialog();
                 });
             },
             initForm: function () {
@@ -255,7 +255,7 @@
                             if (data.successFlg) {
                                 win.parent.reloadMasterUpdateGrid();
                                 win.parent.showAddSuccPop();
-                                win.parent.closeAddDoctorInfoDialog();
+                                closeAddDoctorInfoDialog();
                             } else {
                                 waittingDialog.close();
                                 $.Notice.error(data.errorMsg);
@@ -265,14 +265,14 @@
                 }
 
                 self.$cancelBtn.click(function () {
-                    win.parent.closeAddDoctorInfoDialog();
+                    closeAddDoctorInfoDialog();
                 });
 
 
                 self.$divBtnShow.onclick = function () {
                     var wait = $.Notice.waitting("请稍后...");
-                    win.parent.orgDeptDio = win.parent.$.ligerDialog.open({
-                        height: 590,
+                    win.orgDeptDio = $.ligerDialog.open({
+                        height: 620,
                         width: 600,
                         title: '选择机构部门',
                         url: '${contextRoot}/doctor/selectOrgDept',
@@ -283,10 +283,11 @@
                         show: false,
                         onLoaded:function() {
                             wait.close();
-                            win.parent.orgDeptDio.show();
-                        }
+                            win.orgDeptDio.show();
+                        },
+                        load:true
                     });
-                    win.parent.orgDeptDio.hide();
+                    win.orgDeptDio.hide();
                 }
             }
         };

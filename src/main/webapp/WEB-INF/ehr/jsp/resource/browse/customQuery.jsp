@@ -1,24 +1,24 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<link rel="stylesheet" href="${staticRoot}/common/reset.css">
-<link rel="stylesheet" href="${staticRoot}/lib/bootstrap/css/bootstrap.css">
-<link rel="stylesheet" href="${staticRoot}/common/font-awesome.css">
-<link rel="stylesheet" href="${staticRoot}/common/function.css">
-<link rel="stylesheet" href="${staticRoot}/common/unit.css">
-<link rel="stylesheet" href="${staticRoot}/common/skin.css">
-<link rel="stylesheet" href="${staticRoot}/common/cyc-menu.css">
-<link rel="stylesheet" href="${staticRoot}/common/cyc-linkage.css">
+<%--<link rel="stylesheet" href="${staticRoot}/common/reset.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/lib/bootstrap/css/bootstrap.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/common/font-awesome.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/common/function.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/common/unit.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/common/skin.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/common/cyc-menu.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/common/cyc-linkage.css">--%>
 
-<link rel="stylesheet" href="${staticRoot}/lib/plugin/tips/tips.css">
-<link rel="stylesheet" href="${staticRoot}/lib/ligerui/skins/Aqua/css/ligerui-all.css">
-<link rel="stylesheet" href="${staticRoot}/lib/ligerui/skins/Gray2014/css/all.css">
-<link rel="stylesheet" href="${staticRoot}/lib/plugin/scrollbar/jquery.mCustomScrollbar.css">
-<link rel="stylesheet" href="${staticRoot}/lib/plugin/combo/comboDropdown.css">
+<%--<link rel="stylesheet" href="${staticRoot}/lib/plugin/tips/tips.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/lib/ligerui/skins/Aqua/css/ligerui-all.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/lib/ligerui/skins/Gray2014/css/all.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/lib/plugin/scrollbar/jquery.mCustomScrollbar.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/lib/plugin/combo/comboDropdown.css">--%>
 
-<link rel="stylesheet" href="${staticRoot}/lib/ligerui/skins/custom/css/all.css">
-<link rel="stylesheet" href="${staticRoot}/common/cover.css">
-<link rel="stylesheet" href="${staticRoot}/lib/plugin/combo/comboDropdown.css">
+<%--<link rel="stylesheet" href="${staticRoot}/lib/ligerui/skins/custom/css/all.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/common/cover.css">--%>
+<%--<link rel="stylesheet" href="${staticRoot}/lib/plugin/combo/comboDropdown.css">--%>
 
 <div class="query-main">
     <%--按钮组--%>
@@ -102,56 +102,56 @@
     </div>
 </script>
 
-<script src="${staticRoot}/lib/jquery/jquery-1.9.1.js"></script>
-<script src="${staticRoot}/module/cookie.js"></script>
-<script src="${staticRoot}/module/util.js"></script>
-<script src="${staticRoot}/module/juicer.js"></script>
-<script src="${staticRoot}/module/pubsub.js"></script>
-<script src="${staticRoot}/module/sessionOut.js"></script>
-<script src="${staticRoot}/module/ajax.js"></script>
-<script src="${staticRoot}/module/baseObject.js"></script>
-<script src="${staticRoot}/module/dataModel.js"></script>
-<script src="${staticRoot}/module/pinyin.js"></script>
-<script src="${staticRoot}/lib/plugin/formEx/attrscan.js"></script>
-<script src="${staticRoot}/lib/plugin/formEx/readonly.js"></script>
-<script src="${staticRoot}/lib/bootstrap/js/bootstrap.js"></script>
-<script src="${staticRoot}/lib/ligerui/core/base.js"></script>
+<%--<script src="${staticRoot}/lib/jquery/jquery-1.9.1.js"></script>--%>
+<%--<script src="${staticRoot}/module/cookie.js"></script>--%>
+<%--<script src="${staticRoot}/module/util.js"></script>--%>
+<%--<script src="${staticRoot}/module/juicer.js"></script>--%>
+<%--<script src="${staticRoot}/module/pubsub.js"></script>--%>
+<%--<script src="${staticRoot}/module/sessionOut.js"></script>--%>
+<%--<script src="${staticRoot}/module/ajax.js"></script>--%>
+<%--<script src="${staticRoot}/module/baseObject.js"></script>--%>
+<%--<script src="${staticRoot}/module/dataModel.js"></script>--%>
+<%--<script src="${staticRoot}/module/pinyin.js"></script>--%>
+<%--<script src="${staticRoot}/lib/plugin/formEx/attrscan.js"></script>--%>
+<%--<script src="${staticRoot}/lib/plugin/formEx/readonly.js"></script>--%>
+<%--<script src="${staticRoot}/lib/bootstrap/js/bootstrap.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/core/base.js"></script>--%>
 
-<script src="${staticRoot}/lib/plugin/tips/tips.js"></script>
-<script src="${staticRoot}/lib/plugin/validate/jValidate.js"></script>
-<script src="${staticRoot}/lib/plugin/validation/jquery.validate.min.js"></script>
-<script src="${staticRoot}/lib/plugin/validation/jquery.metadata.js"></script>
-<script src="${staticRoot}/lib/plugin/validation/messages_cn.js"></script>
+<%--<script src="${staticRoot}/lib/plugin/tips/tips.js"></script>--%>
+<%--<script src="${staticRoot}/lib/plugin/validate/jValidate.js"></script>--%>
+<%--<script src="${staticRoot}/lib/plugin/validation/jquery.validate.min.js"></script>--%>
+<%--<script src="${staticRoot}/lib/plugin/validation/jquery.metadata.js"></script>--%>
+<%--<script src="${staticRoot}/lib/plugin/validation/messages_cn.js"></script>--%>
 
-<script src="${staticRoot}/lib/ligerui/plugins/ligerLayout.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerDrag.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerResizable.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerDialog.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerGrid.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerTree.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerButton.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerCheckBox.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerCheckBoxList.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerComboBox.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerListBox.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerTextBox.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerDateEditor.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerForm.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/customTree.js"></script>
-<script src="${staticRoot}/lib/ligerui/plugins/ligerRadio.js"></script>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerLayout.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerDrag.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerResizable.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerDialog.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerGrid.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerTree.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerButton.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerCheckBox.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerCheckBoxList.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerComboBox.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerListBox.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerTextBox.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerDateEditor.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerForm.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/customTree.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/plugins/ligerRadio.js"></script>--%>
 
-<script src="${staticRoot}/lib/plugin/notice/topNotice.js"></script>
-<script src="${staticRoot}/lib/plugin/combo/addressDropdown.js"></script>
+<%--<script src="${staticRoot}/lib/plugin/notice/topNotice.js"></script>--%>
+<%--<script src="${staticRoot}/lib/plugin/combo/addressDropdown.js"></script>--%>
 
-<script src="${staticRoot}/lib/plugin/scrollbar/jquery.mousewheel.min.js"></script>
-<script src="${staticRoot}/lib/plugin/scrollbar/jquery.mCustomScrollbar.js"></script>
+<%--<script src="${staticRoot}/lib/plugin/scrollbar/jquery.mousewheel.min.js"></script>--%>
+<%--<script src="${staticRoot}/lib/plugin/scrollbar/jquery.mCustomScrollbar.js"></script>--%>
 
-<script src="${staticRoot}/lib/ligerui/custom/ligerGridEx.js"></script>
-<script src="${staticRoot}/lib/ligerui/custom/customCombo.js"></script>
-<script src="${staticRoot}/lib/ligerui/custom/cyc-menu.js"></script>
-<script src="${staticRoot}/lib/ligerui/custom/cyc-linkage.js"></script>
-<script src="${staticRoot}/lib/ligerui/custom/cyc-big.js"></script>
-<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
+<%--<script src="${staticRoot}/lib/ligerui/custom/ligerGridEx.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/custom/customCombo.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/custom/cyc-menu.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/custom/cyc-linkage.js"></script>--%>
+<%--<script src="${staticRoot}/lib/ligerui/custom/cyc-big.js"></script>--%>
+<%--<script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>--%>
 
 
 

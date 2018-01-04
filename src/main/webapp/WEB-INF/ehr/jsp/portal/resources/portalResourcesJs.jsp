@@ -101,7 +101,7 @@
 
                     //新增资源信息
                     retrieve.$newPortalResources.click(function(){
-                        self.addResourcesInfoDialog = $.ligerDialog.open({
+                        self.addResourcesInfoDialog = parent._LIGERDIALOG.open({
                             height: 470,
                             width: 600,
                             title: '新增资源信息',
@@ -111,8 +111,8 @@
 
                     //修改资源信息
                     $.subscribe('portalResources:ResourcesInfoModifyDialog:open', function (event, portalResourcesId, mode) {
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.ResourcesInfoDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.ResourcesInfoDialog = parent._LIGERDIALOG.open({
                             //  关闭对话框时销毁对话框
                             isHidden: false,
                             title:'修改基本信息',
@@ -136,7 +136,7 @@
                     });
                     //删除资源
                     $.subscribe('portalResources:ResourcesInfoModifyDialog:del', function (event, portalResourcesId) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。',function(yes){
                             if(yes){
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote("${contextRoot}/portalResources/deletePortalResources",{
@@ -144,11 +144,11 @@
                                     async:true,
                                     success: function(data) {
                                         if(data.successFlg){
-                                            $.Notice.success('删除成功。');
+                                            parent._LIGERDIALOG.success('删除成功。');
                                             isFirstPage = false;
                                             master.reloadGrid();
                                         }else{
-                                            $.Notice.error('删除失败。');
+                                            parent._LIGERDIALOG.error('删除失败。');
                                         }
                                     }
                                 });
@@ -161,10 +161,10 @@
             };
 
             /* ************************* Dialog页面回调接口 ************************** */
-            win.reloadMasterUpdateGrid = function () {
+            win.parent.reloadMasterUpdateGrid = win.reloadMasterUpdateGrid = function () {
                 master.reloadGrid();
             };
-            win.closeAddPortalResourcesInfoDialog = function (callback) {
+            win.parent.closeAddPortalResourcesInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);
@@ -172,7 +172,7 @@
                 }
                 master.addResourcesInfoDialog.close();
             };
-            win.closeResourcesInfoDialog = function (callback) {
+            win.parent.closeResourcesInfoDialog = function (callback) {
                 isFirstPage = false;
                 if(callback){
                     callback.call(win);

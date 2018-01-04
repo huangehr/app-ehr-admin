@@ -106,7 +106,7 @@ public class LogController extends BaseUIController {
             model.addAttribute("logData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "log/logInfo");
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());

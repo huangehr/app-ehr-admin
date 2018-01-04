@@ -109,7 +109,7 @@
 						}else{
 							title = '新增字典项'
 						};
-						self.infoDialog = $.ligerDialog.open({
+						self.infoDialog = parent._LIGERDIALOG.open({
 							height:600,
 							width:500,
 							title:title,
@@ -132,7 +132,7 @@
 						if(!ids){
 							var rows = infoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要删除的数据行！');
+                                parent._LIGERDIALOG.warn('请选择要删除的数据行！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -140,17 +140,17 @@
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 						}
-						$.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
 							if(r){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/specialdict/drug/deletes',{
 									data:{ids:ids},
 									success:function(data){
 										if(data.successFlg){
-											$.Notice.success( '删除成功！');
+                                            parent._LIGERDIALOG.success( '删除成功！');
 											masters.reloadGrid();
 										}else{
-											$.Notice.error(data.errorMsg);
+                                            parent._LIGERDIALOG.error(data.errorMsg);
 										}
 									}
 								});
@@ -160,10 +160,10 @@
 				},
 			};
 			/* ************************* Dialog页面回调接口 ************************** */
-			win.reloadDrugInfoGrid = function () {
+			win.parent.reloadDrugInfoGrid = function () {
 				masters.reloadGrid();
 			};
-			win.closeDrugInfoDialog = function (callback) {
+			win.parent.closeDrugInfoDialog = function (callback) {
 				masters.infoDialog.close();
 			};
 			/* ************************* Dialog页面回调接口结束 ************************** */

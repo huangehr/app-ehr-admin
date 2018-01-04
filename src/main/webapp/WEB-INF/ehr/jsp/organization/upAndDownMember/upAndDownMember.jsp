@@ -19,10 +19,9 @@
 <div class="f-dn" data-head-title="true">下级成员添加</div>
 <div id="div_wrapper">
 
-    <div id="conditionArea" class="f-ml10" >
+    <div id="conditionArea" class="" >
         <div class="body-head f-h40" align="left">
-            <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb">返回上一层 </a>
-            <span class="f-ml20 f-fwb">上下级关系管理</span>
+            <span class="f-fwb">上下级关系管理</span>
             <span class="f-ml20">机构全称：</span><input value="${orgName}" class="f-fwb f-mt10" readonly id="h_org_name"/>
             <span class="f-ml20">机构代码：</span><input value="${orgCode}" class="f-mt10" readonly id="h_org_code"/>
         </div>
@@ -30,16 +29,12 @@
     <!-- ####### 查询条件部分 ####### -->
     <div id="div_content" class="f-ww contentH">
 
-        <div id="div_left" class="f-w240 f-bd f-of-hd">
-            <%--<div class="f-mt10 f-mb10 f-ml10 f-w200">--%>
-              <%--<input type="text" id="inp_search" data-type="select"  placeholder="请选择机构" class="f-ml10 f-h28"/>--%>
-                <%--<div id="btn_search" class="l-button u-btn u-btn-primary f-ib f-vam" >--%>
-                    <%--<span><spring:message code="btn.search"/></span>--%>
-                <%--</div>--%>
-            <%--</div>--%>
+        <div id="div_left" class="f-of-hd">
             <!--成员浏览树-->
-            <input type="text" id="inp_searchNm_left" placeholder="请输入成员名称" class="f-ml10 f-h28 f-w240"
+            <div class="search-inp">
+                <input type="text" id="inp_searchNm_left" placeholder="请输入成员名称" class="f-ml10 f-h28 f-w240"
                        data-attr-scan="searchNmLeft"/>
+            </div>
             <div id="div_tree" class="f-w230">
                 <div id="div_resource_browse_tree"></div>
             </div>

@@ -64,7 +64,7 @@ public class HealthProblemDictController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
 

@@ -5,7 +5,7 @@
 <div class="m-form-inline">
     <div id="conditionArea" class="f-mb10 f-mr10" align="right">
         <div class="body-head f-h30" align="left">
-            <a id="btn_back" class="f-fwb">返回上一层 </a>
+            <%--<a id="btn_back" class="f-fwb">返回上一层 </a>--%>
             <span class="f-ml20">缓存分类编码：${categoryCode}</span>
         </div>
     </div>

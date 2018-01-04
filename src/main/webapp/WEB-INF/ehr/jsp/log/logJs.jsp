@@ -79,8 +79,8 @@
 
             function openWin(id, type) {
                 var title = "日志详情";
-                var wait = $.Notice.waitting("请稍后...");
-                logInfo = $.ligerDialog.open({
+                var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                logInfo = parent._LIGERDIALOG.open({
                     height:550,
                     width:500,
                     title:title,

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/static-dev/base/avalon/avalon2.js"></script>
 <script>
     $(function () {
         var inf = ['${contextRoot}/resource/resourceManage/resourceUpDown'];
@@ -22,6 +23,7 @@
             },
             initAvalon: function () {
                 var me = this;
+                debugger
                 me.nrsAvalon = avalon.define({
                     $id: 'nrsApp',
                     downClass: '',

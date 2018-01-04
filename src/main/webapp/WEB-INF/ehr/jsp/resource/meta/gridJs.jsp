@@ -23,7 +23,7 @@
             var gotoModify = function (event, id, mode) {
                 mode = mode || 'new';
                 id = id || '';
-                editDialog = openDialog(urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode});
+                editDialog = parent._OPENDIALOG(urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode});
             }
 
 
@@ -48,9 +48,9 @@
 
                 function onUploadSuccess(g, result){
                     if(result)
-                        openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
+                        parent._OPENDIALOG(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
                     else
-                        $.Notice.success("导入成功！");
+                        parent._LIGERDIALOG.success("导入成功！");
                 }
 
                 $('#upd').uploadFile({url: "${contextRoot}/resource/meta/import", onUploadSuccess: onUploadSuccess});
@@ -136,11 +136,11 @@
                 $.subscribe('meta:active', active);
             };
 
-            win.closeDialog = function(msg){
+            win.parent.closeDialog = function(msg){
                 if(editDialog){
                     editDialog.close();
                     if(msg){
-                        $.Notice.success(msg);
+                        parent._LIGERDIALOG.success(msg);
                         find();
                     }
                 }

@@ -18,7 +18,12 @@
             function pageInit() {
                 retrieve.init();
             }
-
+//添加碎片
+            function appendNav(str, url, data) {
+                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").empty().load(url,data);
+            }
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
                 $element: $('.m-retrieve-area'),
@@ -98,17 +103,17 @@
                     var self = this;
                     self.$searchBtn.click(function () {
                         if(self.$startDate.val()==""){
-                            $.Notice.error('请选择查询的开始时间');
+                            parent._LIGERDIALOG.error('请选择查询的开始时间');
                             return false;
                         }
                         if(self.$endDate.val()==""){
-                            $.Notice.error('请选择查询的结束时间');
+                            parent._LIGERDIALOG.error('请选择查询的结束时间');
                             return false;
                         }
                         var orgAddress = retrieve.$element.Fields.location.getValue();
                         var orgName = orgAddress.names.toString().replace(/,/g,'');
                         if(orgName==""){
-                            $.Notice.error('请选择地区');
+                            parent._LIGERDIALOG.error('请选择地区');
                             return false;
 //                            orgName = "福建省厦门市";
 //                            location = "350200";
@@ -131,26 +136,31 @@
                     //趋势分析详情
                     retrieve.$addDetail.click(function () {
                         if(self.$startDate.val()==""){
-                            $.Notice.error('请选择查询的开始时间');
+                            parent._LIGERDIALOG.error('请选择查询的开始时间');
                             return false;
                         }
                         if(self.$endDate.val()==""){
-                            $.Notice.error('请选择查询的结束时间');
+                            parent._LIGERDIALOG.error('请选择查询的结束时间');
                             return false;
                         }
                         var orgAddress = retrieve.$element.Fields.location.getValue();
                         var orgName = orgAddress.names.toString().replace(/,/g,'');
                         if(orgName==""){
-                            $.Notice.error('请选择地区');
+                            parent._LIGERDIALOG.error('请选择地区');
                             return false;
                         }
                         var url = '${contextRoot}/report/analysisList?location='+location+'&orgName='+$(".span-location").html()+'&startTime='+self.$startDate.val()+'&endTime='+self.$endDate.val();
                         if($("#inp_thirdParty").val()=="true"){//第三方跳转过来的
                             url = '${contextRoot}/report/outAnalysisList?location='+location+'&orgName='+$(".span-location").html()+'&startTime='+self.$startDate.val()+'&endTime='+self.$endDate.val();
                         }
-                        $("div[data-content-page]").load(url);
+                        appendNav('趋势分析详情', url, '');
+
+//                        $("div[data-content-page]").load(url);
                     });
 
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
                     $(".div-head").on("click",".div-item",function(){
                         var quotaId = $(this).attr("data-quotaId");
                         $(".div-head").find(".div-item").removeClass("active");
@@ -161,7 +171,7 @@
                     //左切换
                     $(".div-zuoqiehuan").on("click",function(){
                         if(currentIndex==0 || chartData==null){
-                            $.Notice.success('暂无更多数据');
+                            parent._LIGERDIALOG.success('暂无更多数据');
                             return false;
                         }
                         currentIndex--;
@@ -170,7 +180,7 @@
                     //右切换
                     $(".div-youqiehuan").on("click",function(){
                         if((chartData!=null && currentIndex==(Object.keys(chartData.eventTimeData).length-1)) || chartData==null){
-                            $.Notice.success('暂无更多数据');
+                            parent._LIGERDIALOG.success('暂无更多数据');
                             return false;
                         }
                         currentIndex++;

@@ -41,7 +41,7 @@
 
     </div>
     <!--######日志表#结束######-->
-</div>
-<div id="div_log_info_dialog">
+    <div id="div_log_info_dialog">
 
+    </div>
 </div>

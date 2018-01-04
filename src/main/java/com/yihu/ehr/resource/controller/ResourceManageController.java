@@ -87,7 +87,7 @@ public class ResourceManageController extends BaseUIController {
     public String resourceConfigue(Model model, String id){
         model.addAttribute("resourceId", id);
         model.addAttribute("contentPage","/resource/resourcemanage/resoureConfigure");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -554,7 +554,7 @@ public class ResourceManageController extends BaseUIController {
         model.addAttribute("id", id);
         model.addAttribute("chartInfoModel", objectMapper.writeValueAsString(chartInfoModel));
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
-        return "simpleView";
+        return "generalView";
     }
 
     /**

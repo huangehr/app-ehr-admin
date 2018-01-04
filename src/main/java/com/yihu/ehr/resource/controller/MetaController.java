@@ -53,6 +53,12 @@ public class MetaController extends ExtendController<MetaService> {
         comboKv.put("domain", "domain");
     }
 
+    @RequestMapping("dataInitial")
+    public String gridInitial(Model model) {
+        model.addAttribute("contentPage","/resource/meta/grid");
+        return "pageView";
+    }
+
     @RequestMapping("/gotoImportLs")
     public String gotoImportLs(Model model, String result){
         try {

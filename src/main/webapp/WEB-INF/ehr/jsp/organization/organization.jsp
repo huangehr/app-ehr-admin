@@ -12,10 +12,6 @@
 
 <!-- ####### 页面部分 ####### -->
 <div id="div_wrapper">
-    <!--<div class="alert-warning">
-        <i class="icon-warring"></i>
-        <p>说明：双击列表单行，可查看机构详情。</p>
-    </div>-->
     <!-- ####### 查询条件部分 ####### -->
     <div class="m-retrieve-area f-dn f-pr m-form-inline" data-role-form>
         <div class="m-form-group f-mt10">
@@ -54,7 +50,7 @@
                 <sec:authorize url="/ehr/organization/template">
                     <div id="div_down_orgDept" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
                         <a href="<%=request.getContextPath()%>/template/机构导入模板.xls"
-                           style="color: #fff">
+                           style="color: #fff;display: block">
                             下载机构模版
                         </a>
                     </div>

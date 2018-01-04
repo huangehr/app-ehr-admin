@@ -57,7 +57,7 @@ public class ResourceInterfaceController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("/searchRsInterfaces")

@@ -159,7 +159,6 @@
                             cd = [];
                         if (checkData.length > 0) {
                             $.each(checkData, function (k, obj) {
-                                debugger
                                 var $target = $(obj.target),
                                     level = $target.attr('outlinelevel');
                                 if (level == '1') {
@@ -178,11 +177,11 @@
                                 }
                             });
                         }
-                        w.parent.orgDeptDio.hide();
-                        w.parent.ORGDEPTVAL = cd;
+                        w.orgDeptDio.close();
+                        w.ORGDEPTVAL = cd;
                     });
                     me.$selCloseBtn.on('click', function () {
-                        w.parent.orgDeptDio.hide();
+                        w.orgDeptDio.close();
                     });
                 },
                 render: function(tmpl, data, cb){

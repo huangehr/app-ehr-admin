@@ -176,7 +176,7 @@
                             if (data.successFlg) {
 //                                reloadMasterUpdateGrid(categoryIdNew);
                                 $.Notice.success('操作成功');
-                                win.closeRsInfoDialog();
+                                win.parent.closeRsInfoDialog();
                             } else {
                                 $.Notice.error('操作失败！');
                             }
@@ -185,7 +185,7 @@
                 }
 
                 this.$btnCancel.click(function () {
-                    win.closeRsInfoDialog();
+                    win.parent.closeRsInfoDialog();
                 });
             }
         };

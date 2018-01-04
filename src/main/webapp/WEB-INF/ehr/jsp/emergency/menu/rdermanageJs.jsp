@@ -8,6 +8,12 @@
             var Util = $.Util;
             var obj = null;
 
+            //添加碎片
+            function appendNav(str, url, data) {
+                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").empty().load(url,data);
+            }
             /* *************************** 函数定义 ******************************* */
             function pageInit() {
                 obj.init();
@@ -36,7 +42,7 @@
                                 {display: '操作', name: 'operation', width: '50%', isAllowHide: false, align: 'center',
                                     render:function (row) {
                                         var html = '';
-                                        html += '<a style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "Scheduling:SchedulingInfo:open", row.yearMonth) + '">查看排版情况</a>'
+                                        html += '<a style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "Scheduling:SchedulingInfo:open", row.yearMonth) + '">查看排班情况</a>'
                                         return html;
                                     }
                                 },
@@ -69,23 +75,25 @@
                 bindEvents:function () {
                     var self = this;
                     $.subscribe('urgentcommand:importSch:open', function (event) {
-                        obj.detailDialog = $.ligerDialog.open({
+                        obj.detailDialog = parent._LIGERDIALOG.open({
                             height: 400,
                             width: 512,
                             title: '导入排班',
                             url: '${contextRoot}/schedule/getImport',
                             urlParms: {},
                             isHidden: false,
-                            opener: true,
-                            load: true
+//                            opener: true,
+//                            load: true
                         });
                     })
                     $.subscribe('Scheduling:SchedulingInfo:open',function(event, yearMonth){
                         var url = '${contextRoot}/schedule/initial?date='+yearMonth;
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url);
+                        appendNav('排班情况', url, '')
                     });
 
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
 
 
 
@@ -94,12 +102,12 @@
 
             /* ******************Dialog页面回调接口****************************** */
 
-            win.closeDialog = function (type, msg) {
+            win.parent.closeDialog = function (type, msg) {
                 obj.detailDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
-            win.closeMenuInfoDialog = function (callback) {
+            win.parent.closeMenuInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     obj.reloadGrid();

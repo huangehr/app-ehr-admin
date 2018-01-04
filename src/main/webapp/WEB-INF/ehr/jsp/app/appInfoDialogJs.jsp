@@ -160,10 +160,9 @@
                                     wait.close();
                                     if (data.successFlg) {
                                         $.Notice.success('新增成功！');
-                                        closeDialog(function () {
-                                        });
+                                        closeDialog();
                                     } else {
-                                        window.top.$.Notice.error(data.errorMsg);
+                                        $.Notice.error(data.errorMsg);
                                     }
                                 }});
                         }else{
@@ -178,7 +177,7 @@
                                        closeDialog(function () {
                                         });
                                     } else {
-                                        window.top.$.Notice.error(data.errorMsg);
+                                        $.Notice.error(data.errorMsg);
                                     }
                                 }});
                         }

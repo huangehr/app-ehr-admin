@@ -71,7 +71,7 @@ public class UserCardsController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(UserCardsController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -209,7 +209,7 @@ public class UserCardsController extends BaseUIController {
         model.addAttribute("auditStatus",auditStatus);
         model.addAttribute("userCards",userCardsModel);
         model.addAttribute("contentPage", "/patient/userCards/userCardsDetail");
-        return "simpleView";
+        return "emptyView";
     }
 
 
@@ -331,7 +331,7 @@ public class UserCardsController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(UserCardsController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     /**

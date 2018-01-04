@@ -10,11 +10,6 @@
 <input value="${endTime}" class="f-dn" id="inp_endTime"/>
 <input value="${thirdParty}" class="f-dn" id="inp_thirdParty"/>
 <!-- ####### 页面部分 ####### -->
-<a id="btn_back" href="#" class="f-fwb" style="position: absolute; top: 30px;">返回上一层 </a>
-<div class="adpater-plan-modal">
-      <%--<div class="body-head" align="left" style="margin-left: 10px; margin-top: 10px">--%>
-        <%--<a id="btn_back" class="f-fwb">返回上一层 </a>--%>
-      <%--</div>--%>
   <!-- ####### 查询条件部分 ####### -->
   <div class="m-retrieve-area f-dn f-pr m-form-inline condition" data-role-form>
     <div class="m-form-group f-mt10">
