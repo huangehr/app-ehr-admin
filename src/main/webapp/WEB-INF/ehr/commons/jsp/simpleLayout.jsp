@@ -38,6 +38,27 @@
                 cursor: pointer;
                 background: url(${staticRoot}/images/app/shanchu01_btn.png) center no-repeat;
             }
+            .grid_hold{
+                display:inline-block;
+                width: 40px;
+                height: 40px;
+                cursor:pointer;
+                background: url(${staticRoot}/images/app/icon_baocun.png) center no-repeat;
+            }
+            .grid_towrite{
+                display:inline-block;
+                width: 40px;
+                height: 40px;
+                cursor:pointer;
+                background: url(${staticRoot}/images/app/icon_bianji.png) center no-repeat;
+            }
+            .grid_detail{
+                display:inline-block;
+                width: 40px;
+                height: 40px;
+                cursor:pointer;
+                background: url(${staticRoot}/images/app/icon_xiangqing.png) center no-repeat;
+            }
             a{
                 vertical-align: middle;
             }
