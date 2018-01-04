@@ -18,8 +18,8 @@
       <div id="entryRetrieve" class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" style="padding-bottom: 100px;display:block;border-bottom: 0">
         <div class="pop_tab">
           <ul>
-            <li class="cur">主维度</li>
-            <li>细维度</li>
+            <li class="cur">默认维度</li>
+            <li>可选维度</li>
           </ul>
         </div>
 
