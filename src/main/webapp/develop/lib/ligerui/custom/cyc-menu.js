@@ -6,6 +6,7 @@
  * */
 $(function(){
     /*总支撑左侧导航*/
+    var isTrigger = false;
     var MenuId = sessionStorage.getItem("MenuId");//获取MenuId
     $.extend({MenuInit:function(obj,data){
         $(obj).InitHmtl(obj,data);
@@ -93,16 +94,24 @@ $(function(){
                         if ($ifram[0].attachEvent){
                             $ifram[0].attachEvent("onload", function(){
                                 var cw = $ifram.prop('contentWindow');//window
-                                cw.postMessage(titArr, '*');
+                                // cw.postMessage(titArr, '*');
+                                cw.postMessage([title], '*');
                             });
                         } else {
                             $ifram[0].onload = function(e){
                                 var cw = $ifram.prop('contentWindow');//window
-                                cw.postMessage(titArr, '*');
+                                // cw.postMessage(titArr, '*');
+                                cw.postMessage([title], '*');
                             };
                         }
                     }});
                     sessionStorage.setItem("MenuId", thatId);
+                    if (!isTrigger) {
+                        var $ul = $that.closest('ul');
+                        $ul.parent().parent().prev().trigger('click');
+                        $ul.prev().trigger('click');
+                        isTrigger = true;
+                    }
                 } else {
                     if ($that.hasClass('active')) {
                         $that.removeClass('active');

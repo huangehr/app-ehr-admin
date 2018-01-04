@@ -30,8 +30,10 @@
             //添加碎片
             function appendNav(str, url, data) {
                 $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
-                $('#div_nav_breadcrumb_bar').append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
-                $("#contentPage").empty().load(url,data);
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
             }
 			/* *************************** 标准字典模块初始化 ***************************** */
 			retrieve = {
