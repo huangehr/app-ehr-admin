@@ -515,8 +515,6 @@
                             height = 600;
                         }
                         rsInfoDialog = parent._LIGERDIALOG.open({
-                            height:550,
-                        rsInfoDialog = $.ligerDialog.open({
                             height:height,
                             width:500,
                             title:title,
