@@ -20,7 +20,7 @@ import java.util.Set;
  * @created 2017/12/19
  */
 @Sheet( name = "name")
-@Title(names = "{'编码', '名称', '指标类型', '执行方式', '对象类', '数据源', '源配置', '数据存储库', '存储配置', '存储方式', '备注'}")
+@Title(names = "{'编码', '名称', '指标类型', '执行方式', '对象类', '数据源', '数据源配置', '数据存储库', '存储配置', '存储方式', '备注'}")
 public class TjQuotaMsg extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
@@ -30,26 +30,32 @@ public class TjQuotaMsg extends ExcelUtil implements Validation {
     private String name; //指标名称  验证是否重复
     @Location(x=2)
     @ValidRepeat
-    private String quotaType;//指标类型 指标分类中查找
+    private String quotaType;//指标类型 根据指标名称在分类中查找指标分类id
     @Location(x=3)
-    @ValidRepeat
-    private String execType="1";//执行方式 1- 立即执行 2- 周期执行
-    private String cron="0 0/0 * * * ?"; //cron表达式  单次执行 0 0/0 * * * ?
+    private String execType="1";//执行方式 1- 立即执行 2- 周期执行 默认立即执行
+    private String cron="0 0/0 * * * ?"; //cron表达式  单次执行 0 0/0 * * * ?  默认立即执行的表达式
     @Location(x=4)
     @ValidRepeat
     private String jobClazz;//任务类  加法  com.yihu.quota.job.EsQuotaJob / 除法 com.yihu.quota.job.EsQuotaPercentJob
+    @Location(x=5)
+    private String quotaDataSource;//数据源
+    @Location(x=6)
+    private String quotaDataSourceConfigJson;//数据源配置
+    @Location(x=7)
+    private String quotaDataSave;//数据存储
+    @Location(x=8)
+    private String quotaDataSaveConfigJson;//数据存储配置
     private String createTime;
     private String createUser;
     private String createUserName;
     private String status="1";//1: 正常 0：不可用  -1删除
     @Location(x=9)
-    @ValidRepeat
-    private String dataLevel;//存储方式 1 数据全量 2数据增量
+    private String dataLevel="1";//存储方式 1 数据全量 2数据增量
     @Location(x=10)
     private String remark;//备注
     private String metadataCode;//数据元code
-    private TjQuotaDataSaveMsg quotaDataSave = new TjQuotaDataSaveMsg();
-    private TjQuotaDataSourceMsg quotaDataSource = new TjQuotaDataSourceMsg();
+
+
 
     @Override
     public int validate(Map<String, Set> repeatMap) throws Exception {
@@ -179,19 +185,35 @@ public class TjQuotaMsg extends ExcelUtil implements Validation {
         this.metadataCode = metadataCode;
     }
 
-    public TjQuotaDataSaveMsg getQuotaDataSave() {
-        return quotaDataSave;
-    }
-
-    public void setQuotaDataSave(TjQuotaDataSaveMsg quotaDataSave) {
-        this.quotaDataSave = quotaDataSave;
-    }
-
-    public TjQuotaDataSourceMsg getQuotaDataSource() {
+    public String getQuotaDataSource() {
         return quotaDataSource;
     }
 
-    public void setQuotaDataSource(TjQuotaDataSourceMsg quotaDataSource) {
+    public void setQuotaDataSource(String quotaDataSource) {
         this.quotaDataSource = quotaDataSource;
+    }
+
+    public String getQuotaDataSourceConfigJson() {
+        return quotaDataSourceConfigJson;
+    }
+
+    public void setQuotaDataSourceConfigJson(String quotaDataSourceConfigJson) {
+        this.quotaDataSourceConfigJson = quotaDataSourceConfigJson;
+    }
+
+    public String getQuotaDataSave() {
+        return quotaDataSave;
+    }
+
+    public void setQuotaDataSave(String quotaDataSave) {
+        this.quotaDataSave = quotaDataSave;
+    }
+
+    public String getQuotaDataSaveConfigJson() {
+        return quotaDataSaveConfigJson;
+    }
+
+    public void setQuotaDataSaveConfigJson(String quotaDataSaveConfigJson) {
+        this.quotaDataSaveConfigJson = quotaDataSaveConfigJson;
     }
 }

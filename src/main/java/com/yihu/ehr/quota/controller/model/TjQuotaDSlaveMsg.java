@@ -21,17 +21,16 @@ import java.util.Set;
 @Row
 public class TjQuotaDSlaveMsg extends ExcelUtil implements Validation {
 
-    @Location(x=1)
+    @Location(x=0)
     String quotaCode;  //关联 tj_quota code
-    @Location(x=2)
+    @Location(x=1)
     String slaveCode; //关联细维度表 jt_dimension_slave的code
-    @Location(x=3)
+    @Location(x=2)
     String dictSql;//与系统字典关联的sql code
-    @Location(x=4)
+    @Location(x=3)
     String keyVal;//指标对应对象的key值
-    @Location(x=5)
+    @Location(x=4)
     String sort;//纬度顺序
-    String name;            //细纬度名称
 
     @Override
     public int validate(Map<String, Set> repeatMap) {
@@ -43,19 +42,6 @@ public class TjQuotaDSlaveMsg extends ExcelUtil implements Validation {
         if(StringUtils.isEmpty(slaveCode)){
             rs = 0;
             addErrorMsg("slaveCode", "细维度编码不能为空！" );
-        }
-        if(StringUtils.isEmpty(name)){
-            rs = 0;
-            addErrorMsg("name", "细维度名称不能为空！" );
-        }
-        if(!repeatMap.get("slaveCode").add(slaveCode)){
-            rs = 0;
-            addErrorMsg("slaveCode", "细维度编码重复！" );
-        }
-
-        if(!repeatMap.get("name").add(name)){
-            rs = 0;
-            addErrorMsg("name", "细维度名称重复！" );
         }
         return rs;
     }
@@ -100,11 +86,4 @@ public class TjQuotaDSlaveMsg extends ExcelUtil implements Validation {
         this.sort = sort;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
