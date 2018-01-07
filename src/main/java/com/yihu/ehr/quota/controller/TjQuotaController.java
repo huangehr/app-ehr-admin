@@ -2,27 +2,18 @@ package com.yihu.ehr.quota.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.xml.internal.fastinfoset.stax.events.Util;
-import com.yihu.ehr.agModel.standard.datasset.DataSetModel;
-import com.yihu.ehr.agModel.standard.datasset.MetaDataModel;
 import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.quota.controller.model.TjQuotaDMainMsg;
 import com.yihu.ehr.quota.controller.model.TjQuotaDSlaveMsg;
 import com.yihu.ehr.quota.controller.model.TjQuotaMsg;
-import com.yihu.ehr.std.model.DataSetMsg;
-import com.yihu.ehr.std.model.MetaDataMsg;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.excel.AExcelReader;
 import com.yihu.ehr.util.excel.TemPath;
-import com.yihu.ehr.util.excel.read.DataSetMsgReader;
-import com.yihu.ehr.util.excel.read.DataSetMsgWriter;
 import com.yihu.ehr.util.excel.read.TjQuotaMsgReader;
 import com.yihu.ehr.util.excel.read.TjQuotaMsgWriter;
 import com.yihu.ehr.util.log.LogService;
@@ -43,8 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
@@ -870,6 +860,46 @@ public class TjQuotaController extends BaseUIController {
             e.printStackTrace();
             ret.setSuccessFlg(false);
             return ret;
+        }
+    }
+
+
+    @RequestMapping("/downLoadErrInfo")
+    public void downLoadErrInfo(String f, String datePath,  HttpServletResponse response) throws IOException {
+
+        try{
+            f = datePath + TemPath.separator + f;
+            downLoadFile(TemPath.getFullPath(f, parentFile), response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void downLoadFile(String filePath,  HttpServletResponse response) throws IOException {
+
+        InputStream fis=null;
+        OutputStream toClient = null;
+        try{
+            File file = new File( filePath );
+            fis = new BufferedInputStream(new FileInputStream(file));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+
+            response.reset();
+            response.setContentType("octets/stream");
+            response.addHeader("Content-Length", "" + file.length());
+            response.addHeader("Content-Disposition", "attachment; filename="
+                    + new String(file.getName().getBytes("gb2312"), "ISO8859-1"));
+
+            toClient = new BufferedOutputStream(response.getOutputStream());
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(fis!=null) fis.close();
+            if(toClient!=null) toClient.close();
         }
     }
 
