@@ -32,6 +32,8 @@ public class TjQuotaDMainMsg extends ExcelUtil implements Validation {
     @Override
     public int validate(Map<String, Set> repeatMap) {
         int rs = 1;
+        repeatMap.get("quotaCode").add(quotaCode);
+        repeatMap.get("mainCode").add(mainCode);
         if(StringUtils.isEmpty(quotaCode)){
             rs = 0;
             addErrorMsg("quotaCode", "指标代码不能为空！" );

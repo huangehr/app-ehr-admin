@@ -607,14 +607,14 @@ public class TjQuotaController extends BaseUIController {
             List<TjQuotaMsg> errorLs = excelReader.getErrorLs();
             List<TjQuotaMsg> correctLs = excelReader.getCorrectLs();
             //主维度
-            List<TjQuotaDMainMsg> quotaMainErrorLs = excelReader.getErrorLs();
-            List<TjQuotaDMainMsg> quotaMainCorrectLs = excelReader.getCorrectLs();
+            List<TjQuotaDMainMsg> quotaMainErrorLs = excelReader.getQuotaMainErrorLs();
+            List<TjQuotaDMainMsg> quotaMainCorrectLs = excelReader.getQuotaMainCorrectLs();
             //细维度
-            List<TjQuotaDSlaveMsg> quotaSlaveErrorLs = excelReader.getErrorLs();
-            List<TjQuotaDSlaveMsg> quotaSlaveCorrectLs = excelReader.getCorrectLs();
+            List<TjQuotaDSlaveMsg> quotaSlaveErrorLs = excelReader.getQuotaSlaveErrorLs();
+            List<TjQuotaDSlaveMsg> quotaSlaveCorrectLs = excelReader.getQuotaSlaveCorrectLs();
             writerResponse(response, 35+"", "l_upd_progress");
 
-            Map<String,Object> LsMap = validate(excelReader, errorLs, correctLs, quotaMainErrorLs, quotaMainCorrectLs, quotaSlaveErrorLs, quotaSlaveCorrectLs);
+            Map<String,Object> LsMap = validate(user,excelReader, errorLs, correctLs, quotaMainErrorLs, quotaMainCorrectLs, quotaSlaveErrorLs, quotaSlaveCorrectLs);
             writerResponse(response, 55+"", "l_upd_progress");
 
             Map rs = new HashMap<>();
@@ -666,7 +666,7 @@ public class TjQuotaController extends BaseUIController {
      * @return
      * @throws Exception
      */
-    private Map<String,Object> validate(TjQuotaMsgReader excelReader,
+    private Map<String,Object> validate(UserDetailModel user,TjQuotaMsgReader excelReader,
                           List<TjQuotaMsg> errorLs, List<TjQuotaMsg> correctLs ,
                            List<TjQuotaDMainMsg>  quotaMainErrorLs ,List<TjQuotaDMainMsg>  quotaMainCorrectLs ,
                            List<TjQuotaDSlaveMsg>  quotaSlaveErrorLs ,List<TjQuotaDSlaveMsg>  quotaSlaveCorrectLs) throws Exception {
@@ -680,9 +680,9 @@ public class TjQuotaController extends BaseUIController {
         //根据指标类型名称获取指标类型id
         Map<String,String> quotaTypes = findExistQuotaType(excelReader.getRepeat().get("quotaType"));
         //判断主维度编码是否存在
-        Set<String> mainCodes = findExistCodeOrName("mainCode",excelReader.getRepeat().get("mainCode"));
+        Set<String> mainCodes = findExistCodeOrName("mainCode",excelReader.getQuotaMainRepeat().get("mainCode"));
         //判断细维度编码是否存在
-        Set<String> slaveCodes = findExistCodeOrName("slaveCode",excelReader.getRepeat().get("slaveCode"));
+        Set<String> slaveCodes = findExistCodeOrName("slaveCode",excelReader.getQuotaSlaveRepeat().get("slaveCode"));
 
         TjQuotaMsg model;
         TjQuotaDMainMsg TjQuotaDMainModel;
@@ -736,29 +736,43 @@ public class TjQuotaController extends BaseUIController {
             if(quotaCodes.contains(model.getCode())){
                 model.addErrorMsg("code", "该指标编码已存在！");
                 valid = false;
-                errorLs.add(model);
+            }else{
+                model.setCreateUser(user.getId());
+                model.setCreateUserName(user.getRealName());
             }
 
             //验证指标名称是否存在
             if(quotaNames.contains(model.getName())){
                 model.addErrorMsg("name", "该指标名称已存在！");
                 valid = false;
-                errorLs.add(model);
             }
 
             //根据指标类型名称获取指标类型id
             if(null == quotaTypes.get(model.getQuotaType())){
                 model.addErrorMsg("quotaType","该指标类型不存在！");
                 valid = false;
-                errorLs.add(model);
             }else{
                 model.setQuotaType(quotaTypes.get(model.getQuotaType()));
+            }
+            //指标错误信息
+            if(!valid){
+                errorLs.add(model);
             }
 
             //判断主维度编码是否存在
             if(!( mainCodes.contains(TjQuotaDMainModel.getMainCode()))){
                 TjQuotaDMainModel.addErrorMsg("mainCode","该主维度编码不存在！");
                 valid = false;
+            }
+
+            //判断主维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
+            if(!(quotaCodes.contains(TjQuotaDMainModel.getQuotaCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDMainModel.getQuotaCode()))){
+                TjQuotaDMainModel.addErrorMsg("quotaCode", "该主维度的指标编码不存在！");
+                valid = false;
+            }
+
+            //主维度错误信息
+            if(!valid){
                 quotaMainErrorLs.add(TjQuotaDMainModel);
             }
 
@@ -766,19 +780,16 @@ public class TjQuotaController extends BaseUIController {
             if(!(slaveCodes.contains(TjQuotaDSlaveModel.getSlaveCode()))){
                 TjQuotaDSlaveModel.addErrorMsg("slaveCode","该细维度编码不存在！");
                 valid = false;
-                quotaSlaveErrorLs.add(TjQuotaDSlaveModel);
             }
 
-            //判断主维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
-            if(!(quotaCodes.contains(TjQuotaDMainModel.getMainCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDMainModel.getMainCode()))){
-                TjQuotaDMainModel.addErrorMsg("quotaCode", "该主维度的指标编码不存在！");
-                valid = false;
-                quotaMainErrorLs.add(TjQuotaDMainModel);
-            }
             //判断细维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
-            if(!(quotaCodes.contains(TjQuotaDSlaveModel.getSlaveCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDSlaveModel.getSlaveCode()))){
+            if(!(quotaCodes.contains(TjQuotaDSlaveModel.getQuotaCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDSlaveModel.getQuotaCode()))){
                 TjQuotaDSlaveModel.addErrorMsg("quotaCode", "该细维度的指标编码不存在！");
                 valid = false;
+            }
+
+            //细维度错误信息
+            if(!valid){
                 quotaSlaveErrorLs.add(TjQuotaDSlaveModel);
             }
 
@@ -790,9 +801,11 @@ public class TjQuotaController extends BaseUIController {
             }
         }
         Map<String,Object> map = new HashMap<>();
-        map.put("saveLs",saveLs);
-        map.put("quotaMainLs",quotaMainLs);
-        map.put("quotaSlaveLs",quotaSlaveLs);
+        if(null != saveLs && saveLs.size()>0){
+            map.put("saveLs",saveLs);
+            map.put("quotaMainLs",quotaMainLs);
+            map.put("quotaSlaveLs",quotaSlaveLs);
+        }
         return map;
     }
 
@@ -809,18 +822,22 @@ public class TjQuotaController extends BaseUIController {
         String rs ="";
         //获取存在的主维度
         if(!StringUtils.isEmpty(name) && name.equals("mainCode")){
-            conditionMap.put("mainCode", codes);
-            rs = HttpClientUtil.doGet(comUrl + "/quota/TjDimensionMainIsExist", conditionMap);
-
+            if(null != codes && codes.size()>0){
+                conditionMap.put("mainCode", toJson(codes));
+                rs = HttpClientUtil.doPost(comUrl + "/quota/TjDimensionMainIsExist", conditionMap);
+            }
         }else if(!StringUtils.isEmpty(name) && name.equals("slaveCode")){
             //获取存在的细维度
-            conditionMap.put("slaveCode", codes);
-            rs = HttpClientUtil.doGet(comUrl + "/quota/TjDimensionSlaveIsExist", conditionMap);
-
+            if(null != codes && codes.size()>0) {
+                conditionMap.put("slaveCode", toJson(codes));
+                rs = HttpClientUtil.doPost(comUrl + "/quota/TjDimensionSlaveIsExist", conditionMap);
+            }
         }else{
-            conditionMap.put("type",name);
-            conditionMap.put("json", codes);
-            rs = HttpClientUtil.doGet(comUrl + "/quota/type_isExist", conditionMap);
+            if(null != codes && codes.size()>0) {
+                conditionMap.put("type", name);
+                conditionMap.put("json", toJson(codes));
+                rs = HttpClientUtil.doPost(comUrl + "/quota/type_isExist", conditionMap);
+            }
         }
 
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
@@ -834,10 +851,16 @@ public class TjQuotaController extends BaseUIController {
      */
     private Map<String,String> findExistQuotaType(Set<String> names) throws Exception {
         Map map = new HashMap<>();
-        map.put("name", names);
         String resultStr = "";
-        resultStr = HttpClientUtil.doPost(comUrl + "/quotaCategory/getQuotaCategoryByName", map, username, password);
-        Map<String,String>  quotaCategoryMap=objectMapper.readValue(resultStr, new TypeReference<Map<String,String>>() {});
+        if(null != names && names.size()>0){
+            map.put("name", toJson(names));
+            resultStr = HttpClientUtil.doPost(comUrl + "/quotaCategory/getQuotaCategoryByName", map, username, password);
+        }
+        Envelop envelopAddr = objectMapper.readValue(resultStr,Envelop.class);
+        Map<String,String>  quotaCategoryMap = new HashMap<>();
+        if(null != envelopAddr && null != envelopAddr.getObj()){
+            quotaCategoryMap=objectMapper.readValue(toJson(envelopAddr.getObj()) , new TypeReference<Map<String,String>>() {});
+        }
         return quotaCategoryMap;
     }
 
@@ -848,11 +871,10 @@ public class TjQuotaController extends BaseUIController {
      */
     private Envelop saveData(Map<String,Object> lsMap){
         Envelop ret = new Envelop();
-        String url = "/tjQuota/batch";
-        Map<String,Object> params = new HashMap<>();
+        Map map = new HashMap<>();
         try {
-            params.put("lsMap",lsMap);
-            String envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
+            map.put("lsMap",toJson(lsMap));
+            String envelopStrNew = HttpClientUtil.doPost(comUrl + "/tjQuota/batch",map,username,password);
             Envelop envelop = getEnvelop(envelopStrNew);
             ret.setSuccessFlg(true);
             return ret;

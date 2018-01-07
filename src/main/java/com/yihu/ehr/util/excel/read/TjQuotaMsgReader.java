@@ -17,17 +17,16 @@ public class TjQuotaMsgReader extends AExcelReader {
     //细维度
     protected List quotaSlaveErrorLs = new ArrayList<>();
     protected List quotaSlaveCorrectLs = new ArrayList<>();
+    //主维度
+    protected Map<String, Set>  quotaMainRepeat = new HashMap<>();;
+    //细维度
+    protected Map<String, Set> quotaSlaveRepeat = new HashMap<>();;
 
     public void read(Workbook rwb) throws Exception {
         try {
             Sheet[] sheets = rwb.getSheets();
             boolean correct;
             int j = 0, rows;
-            //主维度
-            Map<String, Set>  quotaMainRepeat;
-            //细维度
-            Map<String, Set> quotaSlaveRepeat;
-
             //指标
             TjQuotaMsg quota;
             //主维度
@@ -38,6 +37,7 @@ public class TjQuotaMsgReader extends AExcelReader {
             getRepeat().put("code", new HashSet<>());//指标编码
             getRepeat().put("name", new HashSet<>());//指标名称
             getRepeat().put("quotaType", new HashSet<>());//指标类型
+
             for(int k=0;k<sheets.length;k++){
                 Sheet  sheet=null;
                 //指标sheet页
@@ -129,7 +129,6 @@ public class TjQuotaMsgReader extends AExcelReader {
                     for (int i = 1; i < rows; i++, j++) {
                         quotaMainMsg = new TjQuotaDMainMsg();
                         //主维度
-                        quotaMainRepeat = new HashMap<>();
                         quotaMainRepeat.put("quotaCode", new HashSet<>());
                         quotaMainRepeat.put("mainCode", new HashSet<>());
                         quotaMainMsg.setQuotaCode(getCellCont(sheet, i, 0));
@@ -154,7 +153,6 @@ public class TjQuotaMsgReader extends AExcelReader {
                     for (int i = 1; i < rows; i++, j++) {
                         //细维度
                         quotaSlaveMsg = new TjQuotaDSlaveMsg();
-                        quotaSlaveRepeat = new HashMap<>();
                         quotaSlaveRepeat.put("quotaCode", new HashSet<>());
                         quotaSlaveRepeat.put("slaveCode", new HashSet<>());
                         quotaSlaveMsg.setQuotaCode(getCellCont(sheet, i, 0));
@@ -210,5 +208,21 @@ public class TjQuotaMsgReader extends AExcelReader {
 
     public void setQuotaSlaveCorrectLs(List quotaSlaveCorrectLs) {
         this.quotaSlaveCorrectLs = quotaSlaveCorrectLs;
+    }
+
+    public Map<String, Set> getQuotaMainRepeat() {
+        return quotaMainRepeat;
+    }
+
+    public void setQuotaMainRepeat(Map<String, Set> quotaMainRepeat) {
+        this.quotaMainRepeat = quotaMainRepeat;
+    }
+
+    public Map<String, Set> getQuotaSlaveRepeat() {
+        return quotaSlaveRepeat;
+    }
+
+    public void setQuotaSlaveRepeat(Map<String, Set> quotaSlaveRepeat) {
+        this.quotaSlaveRepeat = quotaSlaveRepeat;
     }
 }

@@ -49,71 +49,78 @@ public class TjQuotaMsgWriter {
             WritableSheet ws;
             int i = 1;
             //指标
-            for (TjQuotaMsg m : (List<TjQuotaMsg>) ls) {
+            if(null != ls && ls.size()>0) {
                 ws = wwb.createSheet("指标", 0);
-                addHeader(ws);
-                addCell(ws, i, 0, m.getCode(), m.findErrorMsg("code"));
-                addCell(ws, i, 1, m.getName(), m.findErrorMsg("name"));
-                addCell(ws, i, 2, m.getQuotaType(), m.findErrorMsg("quotaType"));
-                //1- 立即执行 2- 周期执行
-                if(null != m.getExecType() && "1".equals(m.getExecType())){
-                    addCell(ws, i, 3,"立即执行", m.findErrorMsg("execType"));
-                }else{
-                    addCell(ws, i, 3,"周期执行", m.findErrorMsg("execType"));
+                for (TjQuotaMsg m : (List<TjQuotaMsg>) ls) {
+                    addHeader(ws);
+                    addCell(ws, i, 0, m.getCode(), m.findErrorMsg("code"));
+                    addCell(ws, i, 1, m.getName(), m.findErrorMsg("name"));
+                    addCell(ws, i, 2, m.getQuotaType(), m.findErrorMsg("quotaType"));
+                    //1- 立即执行 2- 周期执行
+                    if (null != m.getExecType() && "1".equals(m.getExecType())) {
+                        addCell(ws, i, 3, "立即执行", m.findErrorMsg("execType"));
+                    } else {
+                        addCell(ws, i, 3, "周期执行", m.findErrorMsg("execType"));
+                    }
+
+                    //加法  com.yihu.quota.job.EsQuotaJob / 除法 com.yihu.quota.job.EsQuotaPercentJob
+                    if (null != m.getJobClazz() && "com.yihu.quota.job.EsQuotaJob".equals(m.getJobClazz())) {
+                        addCell(ws, i, 4, "加法对象类", m.findErrorMsg("jobClazz"));
+                    } else {
+                        addCell(ws, i, 4, "除法对象类", m.findErrorMsg("jobClazz"));
+                    }
+
+                    // 1= ElasticSearch;2=Solr;3=MySQL
+                    if (null != m.getQuotaDataSource() && "1".equals(m.getQuotaDataSource())) {
+                        addCell(ws, i, 5, "ElasticSearch", m.findErrorMsg("quotaDataSource"));
+                    } else if (null != m.getQuotaDataSource() && "2".equals(m.getQuotaDataSource())) {
+                        addCell(ws, i, 5, "Solr", m.findErrorMsg("quotaDataSource"));
+                    } else {
+                        addCell(ws, i, 5, "MySQL", m.findErrorMsg("quotaDataSource"));
+                    }
+
+                    addCell(ws, i, 6, m.getQuotaDataSourceConfigJson(), m.findErrorMsg("quotaDataSourceConfigJson"));
+
+                    // 1= ElasticSearch；2=MySQL
+                    if (null != m.getQuotaDataSave() && "1".equals(m.getQuotaDataSave())) {
+                        addCell(ws, i, 7, "ElasticSearch", m.findErrorMsg("quotaDataSave"));
+                    } else {
+                        addCell(ws, i, 7, "MySQL", m.findErrorMsg("quotaDataSave"));
+                    }
+
+                    addCell(ws, i, 8, m.getQuotaDataSaveConfigJson(), m.findErrorMsg("quotaDataSaveConfigJson"));
+                    addCell(ws, i, 9, m.getDataLevel(), m.findErrorMsg("dataLevel"));
+                    addCell(ws, i, 10, m.getRemark(), m.findErrorMsg("remark"));
+
+                    i++;
                 }
-
-                //加法  com.yihu.quota.job.EsQuotaJob / 除法 com.yihu.quota.job.EsQuotaPercentJob
-                if(null != m.getJobClazz() && "com.yihu.quota.job.EsQuotaJob".equals(m.getJobClazz())){
-                    addCell(ws, i, 4,"加法对象类", m.findErrorMsg("jobClazz"));
-                }else{
-                    addCell(ws, i, 4, "除法对象类", m.findErrorMsg("jobClazz"));
-                }
-
-               // 1= ElasticSearch;2=Solr;3=MySQL
-                if(null != m.getQuotaDataSource() && "1".equals(m.getQuotaDataSource())){
-                    addCell(ws, i, 5, "ElasticSearch", m.findErrorMsg("quotaDataSource"));
-                }else if(null != m.getQuotaDataSource() && "2".equals(m.getQuotaDataSource())){
-                    addCell(ws, i, 5, "Solr", m.findErrorMsg("quotaDataSource"));
-                }else{
-                    addCell(ws, i, 5, "MySQL", m.findErrorMsg("quotaDataSource"));
-                }
-
-                addCell(ws, i, 6, m.getQuotaDataSourceConfigJson(), m.findErrorMsg("quotaDataSourceConfigJson"));
-
-                // 1= ElasticSearch；2=MySQL
-                if(null != m.getQuotaDataSave() && "1".equals(m.getQuotaDataSave())){
-                    addCell(ws, i, 7, "ElasticSearch", m.findErrorMsg("quotaDataSave"));
-                }else{
-                    addCell(ws, i, 7, "MySQL", m.findErrorMsg("quotaDataSave"));
-                }
-
-                addCell(ws, i, 8, m.getQuotaDataSaveConfigJson(), m.findErrorMsg("quotaDataSaveConfigJson"));
-                addCell(ws, i, 9, m.getDataLevel(), m.findErrorMsg("dataLevel"));
-                addCell(ws, i, 10, m.getRemark(), m.findErrorMsg("remark"));
-
-                i++;
             }
             //主维度
-            for (TjQuotaDMainMsg m : (List<TjQuotaDMainMsg>) ls) {
+            if(null != quotaMainErrorLs && quotaMainErrorLs.size()>0) {
                 ws = wwb.createSheet("主维度", 1);
-                addMainHeader(ws);
-                addCell(ws, i, 0, m.getQuotaCode(), m.findErrorMsg("quotaCode"));
-                addCell(ws, i, 1, m.getMainCode(), m.findErrorMsg("mainCode"));
-                addCell(ws, i, 2, m.getDictSql(), m.findErrorMsg("dictSql"));
-                addCell(ws, i, 3, m.getKeyVal(), m.findErrorMsg("keyVal"));
-                i++;
+                for (TjQuotaDMainMsg m : (List<TjQuotaDMainMsg>) quotaMainErrorLs) {
+                    addMainHeader(ws);
+                    addCell(ws, i, 0, m.getQuotaCode(), m.findErrorMsg("quotaCode"));
+                    addCell(ws, i, 1, m.getMainCode(), m.findErrorMsg("mainCode"));
+                    addCell(ws, i, 2, m.getDictSql(), m.findErrorMsg("dictSql"));
+                    addCell(ws, i, 3, m.getKeyVal(), m.findErrorMsg("keyVal"));
+                    i++;
+                }
             }
             //细维度
-            for (TjQuotaDSlaveMsg m : (List<TjQuotaDSlaveMsg>) ls) {
+            if(null != quotaSlaveErrorLs && quotaSlaveErrorLs.size()>0){
                 ws = wwb.createSheet("细维度", 2);
-                addSlaveHeader(ws);
-                addCell(ws, i, 0, m.getQuotaCode(), m.findErrorMsg("quotaCode"));
-                addCell(ws, i, 1, m.getSlaveCode(), m.findErrorMsg("slaveCode"));
-                addCell(ws, i, 2, m.getDictSql(), m.findErrorMsg("dictSql"));
-                addCell(ws, i, 3, m.getKeyVal(), m.findErrorMsg("keyVal"));
-                addCell(ws, i, 4, m.getSort(), m.findErrorMsg("sort"));
-                i++;
+                for (TjQuotaDSlaveMsg m : (List<TjQuotaDSlaveMsg>) quotaSlaveErrorLs) {
+                    addSlaveHeader(ws);
+                    addCell(ws, i, 0, m.getQuotaCode(), m.findErrorMsg("quotaCode"));
+                    addCell(ws, i, 1, m.getSlaveCode(), m.findErrorMsg("slaveCode"));
+                    addCell(ws, i, 2, m.getDictSql(), m.findErrorMsg("dictSql"));
+                    addCell(ws, i, 3, m.getKeyVal(), m.findErrorMsg("keyVal"));
+                    addCell(ws, i, 4, m.getSort(), m.findErrorMsg("sort"));
+                    i++;
+                }
             }
+
             wwb.write();
             wwb.close();
         } catch (IOException e) {

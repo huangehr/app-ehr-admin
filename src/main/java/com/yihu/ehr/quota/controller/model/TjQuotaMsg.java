@@ -25,17 +25,19 @@ public class TjQuotaMsg extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
     private String code; //业务code  验证是否重复
+
     @Location(x=1)
     @ValidRepeat
     private String name; //指标名称  验证是否重复
+
     @Location(x=2)
     @ValidRepeat
     private String quotaType;//指标类型 根据指标名称在分类中查找指标分类id
+
     @Location(x=3)
     private String execType="1";//执行方式 1- 立即执行 2- 周期执行 默认立即执行
     private String cron="0 0/0 * * * ?"; //cron表达式  单次执行 0 0/0 * * * ?  默认立即执行的表达式
     @Location(x=4)
-    @ValidRepeat
     private String jobClazz;//任务类  加法  com.yihu.quota.job.EsQuotaJob / 除法 com.yihu.quota.job.EsQuotaPercentJob
     @Location(x=5)
     private String quotaDataSource;//数据源
@@ -77,6 +79,11 @@ public class TjQuotaMsg extends ExcelUtil implements Validation {
         if(!repeatMap.get("name").add(name)){
             rs = 0;
             addErrorMsg("name", "指标名称重复！" );
+        }
+        repeatMap.get("quotaType").add(quotaType);
+        if(StringUtils.isEmpty(quotaType)){
+            rs = 0;
+            addErrorMsg("quotaType", "指标类型不能为空！" );
         }
         return rs;
     }
