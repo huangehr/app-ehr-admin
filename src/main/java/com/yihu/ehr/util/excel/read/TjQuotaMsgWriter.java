@@ -98,6 +98,7 @@ public class TjQuotaMsgWriter {
             //主维度
             if(null != quotaMainErrorLs && quotaMainErrorLs.size()>0) {
                 ws = wwb.createSheet("主维度", 1);
+                i = 1;
                 for (TjQuotaDMainMsg m : (List<TjQuotaDMainMsg>) quotaMainErrorLs) {
                     addMainHeader(ws);
                     addCell(ws, i, 0, m.getQuotaCode(), m.findErrorMsg("quotaCode"));
@@ -110,6 +111,7 @@ public class TjQuotaMsgWriter {
             //细维度
             if(null != quotaSlaveErrorLs && quotaSlaveErrorLs.size()>0){
                 ws = wwb.createSheet("细维度", 2);
+                i = 1;
                 for (TjQuotaDSlaveMsg m : (List<TjQuotaDSlaveMsg>) quotaSlaveErrorLs) {
                     addSlaveHeader(ws);
                     addCell(ws, i, 0, m.getQuotaCode(), m.findErrorMsg("quotaCode"));
