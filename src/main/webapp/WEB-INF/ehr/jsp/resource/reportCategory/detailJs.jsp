@@ -34,7 +34,6 @@
             }
         });
         $('#remark').ligerTextBox({width: 240, height: 150});
-
         if(detailModel.id) {
             codeTb.setDisabled(true);
         }
@@ -44,7 +43,7 @@
             id: detailModel.id,
             code: detailModel.code,
             name: detailModel.name,
-            pid: detailModel.pid,
+            pid: detailModel.pid != 0 ? detailModel.pid : null,
             remark: detailModel.remark
         });
     }
@@ -104,7 +103,7 @@
                         var name = $("#name").val();
                         if(!$.Util.isStrEquals(name, detailModel.name)) {
                             var ulr = "${contextRoot}/resource/reportCategory/isUniqueName";
-                            return $.Util.validateByAjax(ulr, {id: id, name: name});
+                            return $.Util.validateByAjax(ulr, {id: $("#pid_val").val().trim() == "" ? 0 : $("#pid_val").val().trim(), name: name});
                         }
                         break;
                 }
