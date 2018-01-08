@@ -736,11 +736,7 @@ public class TjQuotaController extends BaseUIController {
             if(quotaCodes.contains(model.getCode())){
                 model.addErrorMsg("code", "该指标编码已存在！");
                 valid = false;
-            }else{
-                model.setCreateUser(user.getId());
-                model.setCreateUserName(user.getRealName());
             }
-
             //验证指标名称是否存在
             if(quotaNames.contains(model.getName())){
                 model.addErrorMsg("name", "该指标名称已存在！");
@@ -751,13 +747,14 @@ public class TjQuotaController extends BaseUIController {
             if(null == quotaTypes.get(model.getQuotaType())){
                 model.addErrorMsg("quotaType","该指标类型不存在！");
                 valid = false;
-            }else{
-                model.setQuotaType(quotaTypes.get(model.getQuotaType()));
             }
             //指标错误信息
             if(!valid){
-                model.setQuotaType(model.getQuotaType());
                 errorLs.add(model);
+            }else{
+                model.setQuotaType(quotaTypes.get(model.getQuotaType()));
+                model.setCreateUser(user.getId());
+                model.setCreateUserName(user.getRealName());
             }
 
             //判断主维度编码是否存在
@@ -876,8 +873,9 @@ public class TjQuotaController extends BaseUIController {
         try {
             map.put("lsMap",toJson(lsMap));
             String envelopStrNew = HttpClientUtil.doPost(comUrl + "/tjQuota/batch",map,username,password);
-            Envelop envelop = getEnvelop(envelopStrNew);
-            ret.setSuccessFlg(true);
+            if(null != envelopStrNew){
+                ret.setSuccessFlg(true);
+            }
             return ret;
         } catch (Exception e) {
             e.printStackTrace();
