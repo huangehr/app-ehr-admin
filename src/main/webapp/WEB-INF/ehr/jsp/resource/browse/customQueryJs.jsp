@@ -645,12 +645,16 @@
                                     }
 
                                     var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                                    var height = 550;
+                                    if (me.type == 1) {
+                                        height = 600;
+                                    }
                                     rsInfoDialog = parent._LIGERDIALOG.open({
-                                        height:550,
+                                        height:height,
                                         width:500,
                                         title:'新增视图',
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
-                                        resType: 'POST',
+//                                        resType: 'POST',
                                         urlParms:{
                                             queryCondition: qc,
                                             type: me.type,

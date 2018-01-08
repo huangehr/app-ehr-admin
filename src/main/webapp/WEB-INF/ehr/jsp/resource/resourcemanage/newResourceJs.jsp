@@ -507,11 +507,15 @@
                     $.subscribe("rs:info:open",function(event, resourceId, mode, categoryId, name, dataSource){
                         var title = "";
                         var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        var height = 550;
                         if(mode == "modify"){title = "修改视图";}
                         if(mode == "view"){title = "查看视图";}
                         if(mode == "new"){title = "新增视图";}
+                        if (dataSource == 2) {
+                            height = 600;
+                        }
                         rsInfoDialog = parent._LIGERDIALOG.open({
-                            height:550,
+                            height:height,
                             width:500,
                             title:title,
                             url:'${contextRoot}/resource/resourceManage/infoInitial',

@@ -48,12 +48,21 @@
         grid.adjustToWidth();
     }
 
+    //添加碎片
+    function appendNav(str, url, data) {
+        $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+        $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+        $("#contentPage").css({
+            'height': 'calc(100% - 40px)'
+        }).empty().load(url,data);
+    }
     function bindEvents() {
         // 应用授权
         $.subscribe('redis:cache:category:authorizationList', function (event, categoryCode) {
             var url = '${contextRoot}/redis/cache/authorization/index?';
-            $("#contentPage").empty();
-            $("#contentPage").load(url,{categoryCode: categoryCode});
+            appendNav('应用授权', url, {categoryCode: categoryCode});
+//            $("#contentPage").empty();
+//            $("#contentPage").load(url,{categoryCode: categoryCode});
         });
 
         // 新增/修改
@@ -76,6 +85,9 @@
             });
         });
 
+        $(document).on('click', '.go-back', function () {
+            window.location.reload();
+        });
         // 删除
         $.subscribe('redis:cache:category:delete', function (event, id) {
             parent._LIGERDIALOG .confirm('确认要删除所选数据吗？', function (r) {

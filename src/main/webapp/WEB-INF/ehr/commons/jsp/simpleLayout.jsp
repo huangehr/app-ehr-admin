@@ -38,6 +38,27 @@
                 cursor: pointer;
                 background: url(${staticRoot}/images/app/shanchu01_btn.png) center no-repeat;
             }
+            .grid_hold{
+                display:inline-block;
+                width: 40px;
+                height: 40px;
+                cursor:pointer;
+                background: url(${staticRoot}/images/app/icon_baocun.png) center no-repeat;
+            }
+            .grid_towrite{
+                display:inline-block;
+                width: 40px;
+                height: 40px;
+                cursor:pointer;
+                background: url(${staticRoot}/images/app/icon_bianji.png) center no-repeat;
+            }
+            .grid_detail{
+                display:inline-block;
+                width: 40px;
+                height: 40px;
+                cursor:pointer;
+                background: url(${staticRoot}/images/app/icon_xiangqing.png) center no-repeat;
+            }
             a{
                 vertical-align: middle;
             }
@@ -52,13 +73,14 @@
                 position: relative;
             }
             #contentPage{
-                height: calc(100% - 40px);
+                /*height: calc(100% - 40px);*/
+                height: 100%;
                 padding: 10px 10px;
             }
         </style>
 </head>
 <body style="overflow: hidden">
-    <div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb">
+    <div id="div_nav_breadcrumb_bar" class="u-nav-breadcrumb f-pl10 s-bc5 f-fwb" style="display: none">
         位置：<span id="navLink"></span>
     </div>
     <div data-content-page style="" id="contentPage">

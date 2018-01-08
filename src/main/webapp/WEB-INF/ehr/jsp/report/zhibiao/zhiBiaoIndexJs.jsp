@@ -158,7 +158,8 @@
                             },
                             columns: [
                                 {display: 'id', name: 'id', width: '0.1%', hide: true},
-                                {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
+                                {display: '编码', name: 'code', width: '13%', isAllowHide: false, align: 'left'},
+                                {display: '名称', name: 'name', width: '17%', isAllowHide: false, align: 'left'},
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
