@@ -16,6 +16,7 @@ import com.yihu.ehr.util.service.GetInfoService;
 import com.yihu.ehr.util.url.URLQueryBuilder;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -222,8 +223,10 @@ public class AppController extends BaseUIController {
                 appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
                 String icon = appDetailModel.getIcon();
-                icon = icon.substring(icon.indexOf("group1"), icon.length()).replace("group1/", "group1:");
-                appUpdate.setIcon(icon);
+                if(!StringUtils.isEmpty(icon)){
+                    icon = icon.substring(icon.indexOf("group1"), icon.length()).replace("group1/", "group1:");
+                    appUpdate.setIcon(icon);
+                }
                 appUpdate.setReleaseFlag(appDetailModel.getReleaseFlag());
                 appUpdate.setManageType(appDetailModel.getManageType());
                 appUpdate.setSourceType(appDetailModel.getSourceType());
