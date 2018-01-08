@@ -756,6 +756,7 @@ public class TjQuotaController extends BaseUIController {
             }
             //指标错误信息
             if(!valid){
+                model.setQuotaType(model.getQuotaType());
                 errorLs.add(model);
             }
 
