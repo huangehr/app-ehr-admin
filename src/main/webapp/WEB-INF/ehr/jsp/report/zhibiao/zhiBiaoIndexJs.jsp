@@ -3,6 +3,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script src="${contextRoot}/develop/lib/ligerui/custom/searchTree.js"></script>
 <script src="${contextRoot}/develop/lib/plugin/mousepop/mouse_pop.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script>
     (function ($, win) {
         $(function () {
@@ -439,16 +440,9 @@
             }
         }
 
-//        function onDlgClose() {
-//            var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
-//           set.list.getSetList(versionCode, 1);
-//        }
-
         $('#upd').uploadFile({
             url: "${contextRoot}/tjQuota/import",
             onUploadSuccess: onUploadSuccess
         });
-
-//        set.list.init();
     })
 </script>

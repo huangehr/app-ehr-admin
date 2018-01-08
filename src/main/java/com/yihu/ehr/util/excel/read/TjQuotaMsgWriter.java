@@ -89,7 +89,12 @@ public class TjQuotaMsgWriter {
                     }
 
                     addCell(ws, i, 8, m.getQuotaDataSaveConfigJson(), m.findErrorMsg("quotaDataSaveConfigJson"));
-                    addCell(ws, i, 9, m.getDataLevel(), m.findErrorMsg("dataLevel"));
+                    //存储方式   1 数据全量 2数据增量
+                    if("1".equals(m.getDataLevel())){
+                        addCell(ws, i, 9,"全量", m.findErrorMsg("dataLevel"));
+                    }else{
+                        addCell(ws, i, 9, "增量", m.findErrorMsg("dataLevel"));
+                    }
                     addCell(ws, i, 10, m.getRemark(), m.findErrorMsg("remark"));
 
                     i++;
