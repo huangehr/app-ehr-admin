@@ -7,6 +7,9 @@
     (function ($, win) {
         $(function () {
             /* ************************** 变量定义 ******************************** */
+            var urls = {
+                gotoImportLs: "${contextRoot}/tjQuota/import"
+            }
             var Util = $.Util;
             var retrieve = null;
             var isFirstPage = true;
@@ -51,6 +54,15 @@
                 dictMaster.resourceInfoGrid.loadData(true);
                 isFirstPage = true;
             };
+
+            <%--function onUploadSuccess(g, result){--%>
+                <%--debugger;--%>
+                <%--if(result)--%>
+                    <%--openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});--%>
+                <%--else--%>
+                    <%--parent._LIGERDIALOG.success("导入成功！");--%>
+            <%--}--%>
+            <%--$('#upd').uploadFile({url: "${contextRoot}/tjQuota/import", onUploadSuccess: onUploadSuccess});--%>
 
             //由跳转页面返回成员注册页面时的页面初始化-------------
             function treeNodeInit (id){
@@ -411,4 +423,32 @@
 
         });
     })(jQuery, window);
+
+    $(function () {
+
+        function onUploadSuccess(g, result) {
+            if (result == 'suc')
+                parent._LIGERDIALOG.success("导入成功");
+            else {
+                result = eval('(' + result + ')')
+                var url = "${contextRoot}/tjQuota/downLoadErrInfo?f=" + result.eFile[1] + "&datePath=" + result.eFile[0];
+                parent._LIGERDIALOG.open({
+                    height: 80,
+                    content: "请下载&nbsp;<a target='diframe' href='" + url + "'>导入失败信息</a><iframe id='diframe' name='diframe'> </iframe>",
+                });
+            }
+        }
+
+//        function onDlgClose() {
+//            var versionCode = $("#cdaVersion").ligerGetComboBoxManager().getValue();
+//           set.list.getSetList(versionCode, 1);
+//        }
+
+        $('#upd').uploadFile({
+            url: "${contextRoot}/tjQuota/import",
+            onUploadSuccess: onUploadSuccess
+        });
+
+//        set.list.init();
+    })
 </script>

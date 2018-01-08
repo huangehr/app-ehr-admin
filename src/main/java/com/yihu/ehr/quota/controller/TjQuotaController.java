@@ -2,24 +2,20 @@ package com.yihu.ehr.quota.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.agModel.standard.datasset.DataSetModel;
-import com.yihu.ehr.agModel.standard.datasset.MetaDataModel;
 import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.std.model.DataSetMsg;
-import com.yihu.ehr.std.model.MetaDataMsg;
+import com.yihu.ehr.quota.controller.model.TjQuotaDMainMsg;
+import com.yihu.ehr.quota.controller.model.TjQuotaDSlaveMsg;
+import com.yihu.ehr.quota.controller.model.TjQuotaMsg;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.excel.AExcelReader;
 import com.yihu.ehr.util.excel.TemPath;
-import com.yihu.ehr.util.excel.read.DataSetMsgReader;
-import com.yihu.ehr.util.excel.read.DataSetMsgWriter;
 import com.yihu.ehr.util.excel.read.TjQuotaMsgReader;
+import com.yihu.ehr.util.excel.read.TjQuotaMsgWriter;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -38,8 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLDecoder;
 import java.util.*;
 
@@ -606,25 +601,33 @@ public class TjQuotaController extends BaseUIController {
             UserDetailModel user = getCurrentUserRedis(request);
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
-            AExcelReader excelReader = new TjQuotaMsgReader();
+            TjQuotaMsgReader excelReader = new TjQuotaMsgReader();
             excelReader.read(file.getInputStream());
-            List<DataSetMsg> errorLs = excelReader.getErrorLs();
-            List<DataSetMsg> correctLs = excelReader.getCorrectLs();
+            //指标
+            List<TjQuotaMsg> errorLs = excelReader.getErrorLs();
+            List<TjQuotaMsg> correctLs = excelReader.getCorrectLs();
+            //主维度
+            List<TjQuotaDMainMsg> quotaMainErrorLs = excelReader.getQuotaMainErrorLs();
+            List<TjQuotaDMainMsg> quotaMainCorrectLs = excelReader.getQuotaMainCorrectLs();
+            //细维度
+            List<TjQuotaDSlaveMsg> quotaSlaveErrorLs = excelReader.getQuotaSlaveErrorLs();
+            List<TjQuotaDSlaveMsg> quotaSlaveCorrectLs = excelReader.getQuotaSlaveCorrectLs();
             writerResponse(response, 35+"", "l_upd_progress");
 
-            List saveLs = validate(response, excelReader, errorLs, correctLs);
+            Map<String,Object> LsMap = validate(user,excelReader, errorLs, correctLs, quotaMainErrorLs, quotaMainCorrectLs, quotaSlaveErrorLs, quotaSlaveCorrectLs);
             writerResponse(response, 55+"", "l_upd_progress");
 
             Map rs = new HashMap<>();
-            if(errorLs.size()>0){
+            //输出错误信息
+            if(errorLs.size()>0 || quotaMainErrorLs.size()>0 || quotaSlaveErrorLs.size()>0){
                 String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".xls");
-                new DataSetMsgWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
+                new TjQuotaMsgWriter().write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs, quotaMainErrorLs, quotaSlaveErrorLs);
                 rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
             }
             writerResponse(response, 65 + "", "l_upd_progress");
 
-            if(saveLs.size()>0)
-//                saveData(toJson(saveLs), version);
+            if(LsMap.size()>0)
+                saveData(LsMap);
             if(errorLs.size()==0)
                 writerResponse(response, 100 + ",'suc'", "l_upd_progress");
             else
@@ -651,131 +654,274 @@ public class TjQuotaController extends BaseUIController {
         response.flushBuffer();
     }
 
-    private List validate( HttpServletResponse response, AExcelReader excelReader,
-                          List<DataSetMsg> errorLs, List<DataSetMsg> correctLs) throws Exception {
+    /**
+     * 验证指标编码、名称、指标分类、主维度、细维度
+     * @param excelReader   待验证的数据
+     * @param errorLs       指标错误数据
+     * @param correctLs     指标正常数据
+     * @param quotaMainErrorLs 主维度错误数据
+     * @param quotaMainCorrectLs    主维度正常数据
+     * @param quotaSlaveErrorLs 细维度错误数据
+     * @param quotaSlaveCorrectLs 细维度正常数据
+     * @return
+     * @throws Exception
+     */
+    private Map<String,Object> validate(UserDetailModel user,TjQuotaMsgReader excelReader,
+                          List<TjQuotaMsg> errorLs, List<TjQuotaMsg> correctLs ,
+                           List<TjQuotaDMainMsg>  quotaMainErrorLs ,List<TjQuotaDMainMsg>  quotaMainCorrectLs ,
+                           List<TjQuotaDSlaveMsg>  quotaSlaveErrorLs ,List<TjQuotaDSlaveMsg>  quotaSlaveCorrectLs) throws Exception {
         List saveLs = new ArrayList<>();
+        List quotaMainLs = new ArrayList<>();
+        List quotaSlaveLs = new ArrayList<>();
+        //验证指标编码是否存在
+        Set<String> quotaCodes = findExistCodeOrName("code",excelReader.getRepeat().get("code"));
+        //验证指标名称是否存在
+        Set<String> quotaNames = findExistCodeOrName("name",excelReader.getRepeat().get("name"));
+        //根据指标类型名称获取指标类型id
+        Map<String,String> quotaTypes = findExistQuotaType(excelReader.getRepeat().get("quotaType"));
+        //判断主维度编码是否存在
+        Set<String> mainCodes = findExistCodeOrName("mainCode",excelReader.getQuotaMainRepeat().get("mainCode"));
+        //判断细维度编码是否存在
+        Set<String> slaveCodes = findExistCodeOrName("slaveCode",excelReader.getQuotaSlaveRepeat().get("slaveCode"));
 
-        Set<String> codes = findExistCode(excelReader.getRepeat().get("code"));
-//            Map<String, String> stdSources = findStdSources(excelReader.getRepeat().get("referenceCode").toString().replace("[", "").replace("]", "").replace(" ", ""));
-        Map<String, String> stdSources = null;
-//        Map<String, String> dicts = findStdDict(version);
-        String columnTypes = "VARCHAR,INT,FLOAT,DOUBLE,CHAR,TEXT,DATE,DATETIME,NUMERIC,TINYINT";
-        writerResponse(response, 45+"", "l_upd_progress");
-        DataSetMsg model;
+        TjQuotaMsg model;
+        TjQuotaDMainMsg TjQuotaDMainModel;
+        TjQuotaDSlaveMsg TjQuotaDSlaveModel;
         boolean valid;
-        String sourceId;
-
         for(int i=0; i<errorLs.size(); i++){
             model = errorLs.get(i);
-            if(codes.contains(model.getCode())){
-                model.addErrorMsg("code", "该标识已存在！");
+            TjQuotaDMainModel = quotaMainErrorLs.get(i);
+            TjQuotaDSlaveModel = quotaSlaveErrorLs.get(i);
+            //验证指标编码是否存在
+            if(quotaCodes.contains(model.getCode())){
+                model.addErrorMsg("code", "该指标编码已存在！");
             }
-//            validateMeta(model, columnTypes, dicts) ;
+
+            //验证指标名称是否存在
+            if(quotaNames.contains(model.getName())){
+                model.addErrorMsg("name", "该指标名称已存在！");
+            }
+
+            //根据指标类型名称获取指标类型id
+            if(null == quotaTypes.get(model.getQuotaType())){
+                model.addErrorMsg("quotaType","该指标类型不存在！");
+            }
+
+            //判断主维度编码是否存在
+            if( mainCodes.contains(TjQuotaDMainModel.getMainCode())){
+                TjQuotaDMainModel.addErrorMsg("mainCode","该主维度编码不存在！");
+            }
+
+            //判断细维度编码是否存在
+            if(slaveCodes.contains(TjQuotaDSlaveModel.getSlaveCode())){
+                TjQuotaDSlaveModel.addErrorMsg("slaveCode","该细维度编码不存在！");
+            }
+
+            //判断主维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
+            if(!(quotaCodes.contains(TjQuotaDMainModel.getMainCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDMainModel.getMainCode()))){
+                TjQuotaDMainModel.addErrorMsg("quotaCode", "该主维度的指标编码不存在！");
+            }
+            //判断细维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
+            if(!(quotaCodes.contains(TjQuotaDSlaveModel.getSlaveCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDSlaveModel.getSlaveCode()))){
+                TjQuotaDSlaveModel.addErrorMsg("quotaCode", "该细维度的指标编码不存在！");
+            }
         }
 
         for(int i=0; i<correctLs.size(); i++){
             valid = true;
             model = correctLs.get(i);
-            if(codes.contains(model.getCode())){
-                model.addErrorMsg("code", "该标识已存在！");
+            TjQuotaDMainModel = quotaMainCorrectLs.get(i);
+            TjQuotaDSlaveModel = quotaSlaveCorrectLs.get(i);
+            //验证指标编码是否存在
+            if(quotaCodes.contains(model.getCode())){
+                model.addErrorMsg("code", "该指标编码已存在！");
+                valid = false;
+            }else{
+                model.setCreateUser(user.getId());
+                model.setCreateUserName(user.getRealName());
+            }
+
+            //验证指标名称是否存在
+            if(quotaNames.contains(model.getName())){
+                model.addErrorMsg("name", "该指标名称已存在！");
                 valid = false;
             }
-//                if(!StringUtils.isEmpty(model.getReferenceCode())){
-//                    if((sourceId = stdSources.get(model.getReferenceCode())) == null){
-//                        model.addErrorMsg("referenceCode", "该参考来源不存在！");
-//                        valid = false;
-//                    }else
-//                        model.setReferenceId(sourceId);
-//                }
 
-//            valid = valid & validateMeta(model, columnTypes, dicts) ;
-//            if(valid)
-//                saveLs.add(correctLs.get(i));
-//            else
-//                errorLs.add(model);
-
-        }
-        return saveLs;
-    }
-
-    private boolean validateMeta(DataSetMsg model, String columnTypes, Map<String, String> dicts) throws Exception {
-        List<MetaDataMsg> children = model.getChildren();
-
-        boolean valid= true;
-        String dictId;
-        for(MetaDataMsg meta : children){
-            if(!StringUtils.isEmpty(meta.getDictCode())){
-                if((dictId=dicts.get(meta.getDictCode())) == null){
-                    valid = false;
-                    meta.addErrorMsg("dictCode", "该术语范围值不存在");
-                }else
-                    meta.setDictId(dictId);
+            //根据指标类型名称获取指标类型id
+            if(null == quotaTypes.get(model.getQuotaType())){
+                model.addErrorMsg("quotaType","该指标类型不存在！");
+                valid = false;
+            }else{
+                model.setQuotaType(quotaTypes.get(model.getQuotaType()));
+            }
+            //指标错误信息
+            if(!valid){
+                errorLs.add(model);
             }
 
-            if(!StringUtils.isEmpty(meta.getColumnType()) && columnTypes.indexOf(meta.getColumnType())==-1){
-                meta.addErrorMsg("columnType", "只能是["+ columnTypes +"]里的值！");
+            //判断主维度编码是否存在
+            if(!( mainCodes.contains(TjQuotaDMainModel.getMainCode()))){
+                TjQuotaDMainModel.addErrorMsg("mainCode","该主维度编码不存在！");
                 valid = false;
             }
+
+            //判断主维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
+            if(!(quotaCodes.contains(TjQuotaDMainModel.getQuotaCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDMainModel.getQuotaCode()))){
+                TjQuotaDMainModel.addErrorMsg("quotaCode", "该主维度的指标编码不存在！");
+                valid = false;
+            }
+
+            //主维度错误信息
+            if(!valid){
+                quotaMainErrorLs.add(TjQuotaDMainModel);
+            }
+
+            //判断细维度编码是否存在
+            if(!(slaveCodes.contains(TjQuotaDSlaveModel.getSlaveCode()))){
+                TjQuotaDSlaveModel.addErrorMsg("slaveCode","该细维度编码不存在！");
+                valid = false;
+            }
+
+            //判断细维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
+            if(!(quotaCodes.contains(TjQuotaDSlaveModel.getQuotaCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDSlaveModel.getQuotaCode()))){
+                TjQuotaDSlaveModel.addErrorMsg("quotaCode", "该细维度的指标编码不存在！");
+                valid = false;
+            }
+
+            //细维度错误信息
+            if(!valid){
+                quotaSlaveErrorLs.add(TjQuotaDSlaveModel);
+            }
+
+            if(valid) {
+                saveLs.add(correctLs.get(i));
+                quotaMainLs.add(quotaMainCorrectLs.get(i));
+                quotaSlaveLs.add(quotaSlaveCorrectLs.get(i));
+
+            }
         }
-        return valid;
+        Map<String,Object> map = new HashMap<>();
+        if(null != saveLs && saveLs.size()>0){
+            map.put("saveLs",saveLs);
+            map.put("quotaMainLs",quotaMainLs);
+            map.put("quotaSlaveLs",quotaSlaveLs);
+        }
+        return map;
     }
 
-    private Set<String> findExistCode(Set<String> codes) throws Exception {
+    /**
+     * 获取已经存在的指标编码/指标名称
+     * @param name  检索字段名称
+     * @param codes 检索列表
+     * @return
+     * @throws Exception
+     */
+    private Set<String> findExistCodeOrName(String name,Set<String> codes) throws Exception {
 
         Map<String,Object> conditionMap = new HashMap<>();
-        conditionMap.put("codes", codes.toString().replace(" ", "").replace("[", "").replace("]", ""));
-        conditionMap.put("size", codes.size() + "");
-        String rs = HttpClientUtil.doGet(comUrl + "/data_set/codes/existence", conditionMap);
+        String rs ="";
+        //获取存在的主维度
+        if(!StringUtils.isEmpty(name) && name.equals("mainCode")){
+            if(null != codes && codes.size()>0){
+                conditionMap.put("mainCode", toJson(codes));
+                rs = HttpClientUtil.doPost(comUrl + "/quota/TjDimensionMainIsExist", conditionMap);
+            }
+        }else if(!StringUtils.isEmpty(name) && name.equals("slaveCode")){
+            //获取存在的细维度
+            if(null != codes && codes.size()>0) {
+                conditionMap.put("slaveCode", toJson(codes));
+                rs = HttpClientUtil.doPost(comUrl + "/quota/TjDimensionSlaveIsExist", conditionMap);
+            }
+        }else{
+            if(null != codes && codes.size()>0) {
+                conditionMap.put("type", name);
+                conditionMap.put("json", toJson(codes));
+                rs = HttpClientUtil.doPost(comUrl + "/quota/type_isExist", conditionMap);
+            }
+        }
+
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
     }
 
-    //数据集数据元整体入库
-    private Envelop saveData(DataSetModel dataSet, List<MetaDataModel> metaDataList, String versionCode){
-        Envelop ret = new Envelop();
-        String url = "/data_set";
-        Map<String,Object> params = new HashMap<>();
-        params.put("version_code",versionCode);
-        long dataSetId;
-        DataSetModel dataSetModel=null;
-        List<MetaDataModel> metaDataModels = new ArrayList<>();
-        try {
-            //数据集入库
-            String jsonDataNew = toJson(dataSet);
-            params.put("json_data",jsonDataNew);
-            String envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
-            Envelop envelop = getEnvelop(envelopStrNew);
-            if (envelop.isSuccessFlg()){
-                dataSetModel = getEnvelopModel(envelop.getObj(),DataSetModel.class);
-                dataSetId = dataSetModel.getId();
-                //数据元入库
-                url = "/meta_data";
-                params.remove("version_code");
-                params.put("version",versionCode);
-                if (metaDataList.size()>0){
-                    for (MetaDataModel metaData : metaDataList) {
-                        metaData.setDataSetId(dataSetId);
-                        params.remove("json_data");
-                        params.put("json_data",toJson(metaData));
-                        envelopStrNew = HttpClientUtil.doPost(comUrl+url,params,username,password);
-                        envelop = getEnvelop(envelopStrNew);
-                        //新增成功后的数据元集合
-                        if (envelop.isSuccessFlg()) {
-                            MetaDataModel metaDataModel = getEnvelopModel(envelop.getObj(),MetaDataModel.class);
-                            metaDataModels.add(metaDataModel);
-                        }
-                    }
-                }
+    /**
+     * 根据指标分类的名称获取指标id和name
+     * @param names 指标分类名称
+     * @return
+     * @throws Exception
+     */
+    private Map<String,String> findExistQuotaType(Set<String> names) throws Exception {
+        Map map = new HashMap<>();
+        String resultStr = "";
+        if(null != names && names.size()>0){
+            map.put("name", toJson(names));
+            resultStr = HttpClientUtil.doPost(comUrl + "/quotaCategory/getQuotaCategoryByName", map, username, password);
+        }
+        Envelop envelopAddr = objectMapper.readValue(resultStr,Envelop.class);
+        Map<String,String>  quotaCategoryMap = new HashMap<>();
+        if(null != envelopAddr && null != envelopAddr.getObj()){
+            quotaCategoryMap=objectMapper.readValue(toJson(envelopAddr.getObj()) , new TypeReference<Map<String,String>>() {});
+        }
+        return quotaCategoryMap;
+    }
 
-            }
-            //返回信息
+    /**
+     * 指标、数据源、数据存储、主维度、细维度整体入库
+     * @param lsMap  saveLs、quotaMainLs、quotaSlaveLs
+     * @return
+     */
+    private Envelop saveData(Map<String,Object> lsMap){
+        Envelop ret = new Envelop();
+        Map map = new HashMap<>();
+        try {
+            map.put("lsMap",toJson(lsMap));
+            String envelopStrNew = HttpClientUtil.doPost(comUrl + "/tjQuota/batch",map,username,password);
+            Envelop envelop = getEnvelop(envelopStrNew);
             ret.setSuccessFlg(true);
-            ret.setObj(dataSetModel);
-            ret.setDetailModelList(metaDataModels);
             return ret;
         } catch (Exception e) {
             e.printStackTrace();
             ret.setSuccessFlg(false);
             return ret;
+        }
+    }
+
+
+    @RequestMapping("/downLoadErrInfo")
+    public void downLoadErrInfo(String f, String datePath,  HttpServletResponse response) throws IOException {
+
+        try{
+            f = datePath + TemPath.separator + f;
+            downLoadFile(TemPath.getFullPath(f, parentFile), response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void downLoadFile(String filePath,  HttpServletResponse response) throws IOException {
+
+        InputStream fis=null;
+        OutputStream toClient = null;
+        try{
+            File file = new File( filePath );
+            fis = new BufferedInputStream(new FileInputStream(file));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+
+            response.reset();
+            response.setContentType("octets/stream");
+            response.addHeader("Content-Length", "" + file.length());
+            response.addHeader("Content-Disposition", "attachment; filename="
+                    + new String(file.getName().getBytes("gb2312"), "ISO8859-1"));
+
+            toClient = new BufferedOutputStream(response.getOutputStream());
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(fis!=null) fis.close();
+            if(toClient!=null) toClient.close();
         }
     }
 
