@@ -38,6 +38,12 @@ public class TjQuotaMsgReader extends AExcelReader {
             getRepeat().put("name", new HashSet<>());//指标名称
             getRepeat().put("quotaType", new HashSet<>());//指标类型
 
+            quotaMainRepeat.put("quotaCode", new HashSet<>());
+            quotaMainRepeat.put("mainCode", new HashSet<>());
+
+            quotaSlaveRepeat.put("quotaCode", new HashSet<>());
+            quotaSlaveRepeat.put("slaveCode", new HashSet<>());
+
             for(int k=0;k<sheets.length;k++){
                 Sheet  sheet=null;
                 //指标sheet页
@@ -128,6 +134,7 @@ public class TjQuotaMsgReader extends AExcelReader {
                     }
                 }
                 //主维度sheet页
+
                 if(k==1){
                     sheet=sheets[1];
                     correct = true;
@@ -135,8 +142,7 @@ public class TjQuotaMsgReader extends AExcelReader {
                     for (int i = 1; i < rows; i++, j++) {
                         quotaMainMsg = new TjQuotaDMainMsg();
                         //主维度
-                        quotaMainRepeat.put("quotaCode", new HashSet<>());
-                        quotaMainRepeat.put("mainCode", new HashSet<>());
+
                         if(null != getCellCont(sheet, i, 0) && !"".equals(getCellCont(sheet, i, 0))){
                             quotaMainMsg.setQuotaCode(replaceBlank(getCellCont(sheet, i, 0)));
                         }
@@ -158,6 +164,7 @@ public class TjQuotaMsgReader extends AExcelReader {
                     }
                 }
                 //细维度sheet页
+
                 if(k==2){
                     sheet=sheets[2];
                     correct = true;
@@ -165,8 +172,6 @@ public class TjQuotaMsgReader extends AExcelReader {
                     for (int i = 1; i < rows; i++, j++) {
                         //细维度
                         quotaSlaveMsg = new TjQuotaDSlaveMsg();
-                        quotaSlaveRepeat.put("quotaCode", new HashSet<>());
-                        quotaSlaveRepeat.put("slaveCode", new HashSet<>());
                         if(null != getCellCont(sheet, i, 0) && !"".equals(getCellCont(sheet, i, 0))){
                             quotaSlaveMsg.setQuotaCode(replaceBlank(getCellCont(sheet, i, 0)));
                         }
