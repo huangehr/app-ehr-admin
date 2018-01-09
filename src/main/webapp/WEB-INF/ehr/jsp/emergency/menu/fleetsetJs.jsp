@@ -167,8 +167,7 @@
             };
             win.parent.closeMenuInfoDialog = function (callback) {
                 if(callback){
-                    callback.call(win);
-                    debugger
+                    callback.call();
                     dictMaster.reloadGrid();
                 }
                 dictMaster.dictInfoDialog.close();
