@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -49,6 +50,17 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
                 "/template/archiveTplManager",       //列表页面url
                 "/template/archiveTplDialog"      //编辑页面url
         );
+    }
+
+    /**
+     *数据存储
+     * @param model
+     * @return
+     */
+    @RequestMapping("/archiveTplManager/initial")
+    public String initial(Model model) {
+        model.addAttribute("contentPage", "/template/archiveTplManager");
+        return "pageView";
     }
 
     @RequestMapping("/getCDAListByVersionAndKey")
