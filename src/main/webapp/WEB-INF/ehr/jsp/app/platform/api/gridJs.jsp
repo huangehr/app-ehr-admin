@@ -112,6 +112,7 @@
                             }
                         ],
                         onSelectRow: function (rowData, rowId, rowObj) {
+                            debugger
                             sessionStorage.setItem("appApiTreeSelId", rowData.id);
                             em.find(rowData.id);
                         },
