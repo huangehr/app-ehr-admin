@@ -27,3 +27,16 @@ input[type=text]::-ms-clear { display: none; }
 a:active,a:visited,a:focus{
     /*color: #333!important;*/
 }
+.grid_edit{
+    height: 30px!important;
+}
+.grid_delete{
+    height: 30px!important;
+}
+.image-create{
+    margin: 0!important;
+    background-position: center!important;
+}
+.row-icon{
+    margin-top: 8px!important;
+}
