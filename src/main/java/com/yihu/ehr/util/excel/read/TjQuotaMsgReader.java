@@ -38,6 +38,12 @@ public class TjQuotaMsgReader extends AExcelReader {
             getRepeat().put("name", new HashSet<>());//指标名称
             getRepeat().put("quotaType", new HashSet<>());//指标类型
 
+            quotaMainRepeat.put("quotaCode", new HashSet<>());
+            quotaMainRepeat.put("mainCode", new HashSet<>());
+
+            quotaSlaveRepeat.put("quotaCode", new HashSet<>());
+            quotaSlaveRepeat.put("slaveCode", new HashSet<>());
+
             for(int k=0;k<sheets.length;k++){
                 Sheet  sheet=null;
                 //指标sheet页
@@ -47,12 +53,18 @@ public class TjQuotaMsgReader extends AExcelReader {
                     if ((rows = sheet.getRows()) == 0) continue;
                     for (int i = 1; i < rows; i++, j++) {
                         quota = new TjQuotaMsg();
-                        quota.setCode(getCellCont(sheet, i, 0));
-                        quota.setName(getCellCont(sheet, i, 1));
-                        quota.setQuotaType(getCellCont(sheet, i, 2));
+                        if(null != getCellCont(sheet, i, 0) && !"".equals(getCellCont(sheet, i, 0))){
+                            quota.setCode(replaceBlank(getCellCont(sheet, i, 0)));
+                        }
+                        if(null != getCellCont(sheet, i, 1) && !"".equals(getCellCont(sheet, i, 1))){
+                            quota.setName(replaceBlank(getCellCont(sheet, i, 1)));
+                        }
+                        if(null != getCellCont(sheet, i, 2) && !"".equals(getCellCont(sheet, i, 2))){
+                            quota.setQuotaType(replaceBlank(getCellCont(sheet, i, 2)));
+                        }
                         // 1- 立即执行 2- 周期执行
                         if(null != getCellCont(sheet, i, 3)){
-                            if("立即执行".equals(getCellCont(sheet, i, 3).trim())){
+                            if("立即执行".equals(replaceBlank(getCellCont(sheet, i, 3).trim()))){
                                 quota.setExecType("1");
                             }else {
                                 quota.setExecType("2");
@@ -61,7 +73,7 @@ public class TjQuotaMsgReader extends AExcelReader {
 
                         if(null != getCellCont(sheet, i, 4)){
                             // 加法  com.yihu.quota.job.EsQuotaJob / 除法 com.yihu.quota.job.EsQuotaPercentJob
-                            if("加法对象类".equals(getCellCont(sheet, i, 4).trim())){
+                            if("加法对象类".equals(replaceBlank(getCellCont(sheet, i, 4).trim()))){
                                 quota.setJobClazz("com.yihu.quota.job.EsQuotaJob");
                             }else {
                                 quota.setJobClazz("com.yihu.quota.job.EsQuotaPercentJob");
@@ -69,9 +81,9 @@ public class TjQuotaMsgReader extends AExcelReader {
                         }
                         //数据源 参考表tj_data_source
                         if(null != getCellCont(sheet, i, 5)){
-                            if("ElasticSearch".equals(getCellCont(sheet, i, 5).toString())){
+                            if("ElasticSearch".equals(replaceBlank(getCellCont(sheet, i, 5).toString()))){
                                 quota.setQuotaDataSource("1");
-                            }else if("Solr".equals(getCellCont(sheet, i, 5).toString())){
+                            }else if("Solr".equals(replaceBlank(getCellCont(sheet, i, 5).toString()))){
                                 quota.setQuotaDataSource("2");
                             }else{
                                 //mysql
@@ -86,7 +98,7 @@ public class TjQuotaMsgReader extends AExcelReader {
 
                         //数据存储
                         if(null != getCellCont(sheet, i, 7)){
-                            if("ElasticSearch".equals(getCellCont(sheet, i, 7).toString())){
+                            if("ElasticSearch".equals(replaceBlank(getCellCont(sheet, i, 7).toString()))){
                                 quota.setQuotaDataSave("1");
                             }else {
                                 //mysql
@@ -100,7 +112,7 @@ public class TjQuotaMsgReader extends AExcelReader {
 
                         if(null != getCellCont(sheet, i, 9)){
                             // 1 数据全量 2数据增量
-                            if("全量".equals(getCellCont(sheet, i, 9).trim())){
+                            if("全量".equals(replaceBlank(getCellCont(sheet, i, 9).trim()))){
                                 quota.setDataLevel("1");
                             }else{
                                 quota.setDataLevel("2");
@@ -122,6 +134,7 @@ public class TjQuotaMsgReader extends AExcelReader {
                     }
                 }
                 //主维度sheet页
+
                 if(k==1){
                     sheet=sheets[1];
                     correct = true;
@@ -129,12 +142,17 @@ public class TjQuotaMsgReader extends AExcelReader {
                     for (int i = 1; i < rows; i++, j++) {
                         quotaMainMsg = new TjQuotaDMainMsg();
                         //主维度
-                        quotaMainRepeat.put("quotaCode", new HashSet<>());
-                        quotaMainRepeat.put("mainCode", new HashSet<>());
-                        quotaMainMsg.setQuotaCode(getCellCont(sheet, i, 0));
-                        quotaMainMsg.setMainCode(getCellCont(sheet, i, 1));
+
+                        if(null != getCellCont(sheet, i, 0) && !"".equals(getCellCont(sheet, i, 0))){
+                            quotaMainMsg.setQuotaCode(replaceBlank(getCellCont(sheet, i, 0)));
+                        }
+                        if(null != getCellCont(sheet, i, 1) && !"".equals(getCellCont(sheet, i, 1))){
+                            quotaMainMsg.setMainCode(replaceBlank(getCellCont(sheet, i, 1)));
+                        }
                         quotaMainMsg.setDictSql(getCellCont(sheet, i, 2));
-                        quotaMainMsg.setKeyVal(getCellCont(sheet, i, 3));
+                        if(null != getCellCont(sheet, i, 3) && !"".equals(getCellCont(sheet, i, 3))){
+                            quotaMainMsg.setKeyVal(replaceBlank(getCellCont(sheet, i, 3)));
+                        }
                         if (quotaMainMsg.validate(quotaMainRepeat) == 0) {
                             correct = false;
                         }
@@ -146,6 +164,7 @@ public class TjQuotaMsgReader extends AExcelReader {
                     }
                 }
                 //细维度sheet页
+
                 if(k==2){
                     sheet=sheets[2];
                     correct = true;
@@ -153,13 +172,19 @@ public class TjQuotaMsgReader extends AExcelReader {
                     for (int i = 1; i < rows; i++, j++) {
                         //细维度
                         quotaSlaveMsg = new TjQuotaDSlaveMsg();
-                        quotaSlaveRepeat.put("quotaCode", new HashSet<>());
-                        quotaSlaveRepeat.put("slaveCode", new HashSet<>());
-                        quotaSlaveMsg.setQuotaCode(getCellCont(sheet, i, 0));
-                        quotaSlaveMsg.setSlaveCode(getCellCont(sheet, i, 1));
+                        if(null != getCellCont(sheet, i, 0) && !"".equals(getCellCont(sheet, i, 0))){
+                            quotaSlaveMsg.setQuotaCode(replaceBlank(getCellCont(sheet, i, 0)));
+                        }
+                        if(null != getCellCont(sheet, i, 1) && !"".equals(getCellCont(sheet, i, 1))){
+                            quotaSlaveMsg.setSlaveCode(replaceBlank(getCellCont(sheet, i, 1)));
+                        }
                         quotaSlaveMsg.setDictSql(getCellCont(sheet, i, 2));
-                        quotaSlaveMsg.setKeyVal(getCellCont(sheet, i, 3));
-                        quotaSlaveMsg.setSort(getCellCont(sheet, i, 4));
+                        if(null != getCellCont(sheet, i, 3) && !"".equals(getCellCont(sheet, i, 3))){
+                            quotaSlaveMsg.setKeyVal(replaceBlank(getCellCont(sheet, i, 3)));
+                        }
+                        if(null != getCellCont(sheet, i, 4) && !"".equals(getCellCont(sheet, i, 4))){
+                            quotaSlaveMsg.setSort(replaceBlank(getCellCont(sheet, i, 4)));
+                        }
                         if (quotaSlaveMsg.validate(quotaSlaveRepeat) == 0) {
                             correct = false;
                         }

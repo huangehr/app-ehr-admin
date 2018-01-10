@@ -697,10 +697,10 @@ public class TjQuotaController extends BaseUIController {
                 model.addErrorMsg("code", "该指标编码已存在！");
             }
 
-            //验证指标名称是否存在
-            if(quotaNames.contains(model.getName())){
-                model.addErrorMsg("name", "该指标名称已存在！");
-            }
+//            //验证指标名称是否存在
+//            if(quotaNames.contains(model.getName())){
+//                model.addErrorMsg("name", "该指标名称已存在！");
+//            }
 
             //根据指标类型名称获取指标类型id
             if(null == quotaTypes.get(model.getQuotaType())){
@@ -730,18 +730,16 @@ public class TjQuotaController extends BaseUIController {
         for(int i=0; i<correctLs.size(); i++){
             valid = true;
             model = correctLs.get(i);
-            TjQuotaDMainModel = quotaMainCorrectLs.get(i);
-            TjQuotaDSlaveModel = quotaSlaveCorrectLs.get(i);
             //验证指标编码是否存在
             if(quotaCodes.contains(model.getCode())){
                 model.addErrorMsg("code", "该指标编码已存在！");
                 valid = false;
             }
-            //验证指标名称是否存在
-            if(quotaNames.contains(model.getName())){
-                model.addErrorMsg("name", "该指标名称已存在！");
-                valid = false;
-            }
+//            //验证指标名称是否存在
+//            if(quotaNames.contains(model.getName())){
+//                model.addErrorMsg("name", "该指标名称已存在！");
+//                valid = false;
+//            }
 
             //根据指标类型名称获取指标类型id
             if(null == quotaTypes.get(model.getQuotaType())){
@@ -757,45 +755,55 @@ public class TjQuotaController extends BaseUIController {
                 model.setCreateUserName(user.getRealName());
             }
 
+            if(valid) {
+                saveLs.add(correctLs.get(i));
+            }
+        }
+        //主维度
+        for(int i=0; i<quotaMainCorrectLs.size(); i++){
+            valid = true;
+            TjQuotaDMainModel = quotaMainCorrectLs.get(i);
+
             //判断主维度编码是否存在
             if(!( mainCodes.contains(TjQuotaDMainModel.getMainCode()))){
                 TjQuotaDMainModel.addErrorMsg("mainCode","该主维度编码不存在！");
                 valid = false;
             }
-
             //判断主维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
             if(!(quotaCodes.contains(TjQuotaDMainModel.getQuotaCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDMainModel.getQuotaCode()))){
                 TjQuotaDMainModel.addErrorMsg("quotaCode", "该主维度的指标编码不存在！");
                 valid = false;
             }
-
             //主维度错误信息
             if(!valid){
                 quotaMainErrorLs.add(TjQuotaDMainModel);
             }
 
+            if(valid) {
+                quotaMainLs.add(quotaMainCorrectLs.get(i));
+            }
+        }
+        //细维度
+        for(int i=0; i<quotaSlaveCorrectLs.size(); i++){
+            valid = true;
+            TjQuotaDSlaveModel = quotaSlaveCorrectLs.get(i);
             //判断细维度编码是否存在
             if(!(slaveCodes.contains(TjQuotaDSlaveModel.getSlaveCode()))){
                 TjQuotaDSlaveModel.addErrorMsg("slaveCode","该细维度编码不存在！");
                 valid = false;
             }
-
             //判断细维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
             if(!(quotaCodes.contains(TjQuotaDSlaveModel.getQuotaCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDSlaveModel.getQuotaCode()))){
                 TjQuotaDSlaveModel.addErrorMsg("quotaCode", "该细维度的指标编码不存在！");
                 valid = false;
             }
-
             //细维度错误信息
             if(!valid){
                 quotaSlaveErrorLs.add(TjQuotaDSlaveModel);
             }
 
             if(valid) {
-                saveLs.add(correctLs.get(i));
-                quotaMainLs.add(quotaMainCorrectLs.get(i));
                 quotaSlaveLs.add(quotaSlaveCorrectLs.get(i));
-
             }
         }
         Map<String,Object> map = new HashMap<>();
