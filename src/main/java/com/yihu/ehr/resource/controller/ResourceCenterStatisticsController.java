@@ -122,7 +122,7 @@ public class ResourceCenterStatisticsController extends BaseUIController{
     }
 
     /**
-     * 全员人口个案库 - 新增情况
+     * 全员人口个案库 - 信息分布
      * @return
      */
     @ResponseBody
