@@ -77,6 +77,7 @@
                                 {display: '城市', name: 'cityName', width: '5%', isAllowHide: false, align: 'left'},
                                 {display: '区县', name: 'townName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '机构名称', name: 'orgName', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '机构类型名称', name: 'orgHealthCategoryName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '团队名称', name: 'teamName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '年份', name: 'yearName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: slaveKey1Name, name: 'slaveKey1Name', width: '10%', hide: (!!!slaveKey1Name), align: 'left'},
