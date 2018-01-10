@@ -155,7 +155,7 @@ public class LoginController extends BaseUIController {
             String response = HttpClientUtil.doPost(authorize + "/oauth/validToken", params);
             Map<String, Object> map = objectMapper.readValue(response, Map.class);
             if ((Boolean) map.get("successFlg")) {
-                AccessToken accessToken = objectMapper.readValue(objectMapper.writeValueAsString(map.get("data")), AccessToken.class);
+                AccessToken accessToken = objectMapper.readValue(response, AccessToken.class);
                 String loginName = accessToken.getUser();
                 //验证通过。赋值session中的用户信息
                 String userInfo = HttpClientUtil.doGet(comUrl + "/users/" + loginName, params);
@@ -343,10 +343,10 @@ public class LoginController extends BaseUIController {
         //System.out.println("isInnerIp:" + isInnerIp);
         if(isInnerIp) {
             String url = browseClientUrl + "/common/login/signin?idCardNo=" + idCardNo;
-            response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
+            response.sendRedirect(authorize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
         }else {
             String url = browseClientOutSizeUrl + "/common/login/signin?idCardNo=" + idCardNo;
-            response.sendRedirect(oauth2OutSize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
+            response.sendRedirect(oauth2OutSize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
         }
     }
 
@@ -780,25 +780,19 @@ public class LoginController extends BaseUIController {
      * 通过用户名密码获取token
      */
     private AccessToken getAccessToken(String userName, String password, String clientId) {
-        String result = "";
-        AccessToken accessToken = new AccessToken();
         try {
             Map<String, Object> params = new HashMap<>();
-            params.put("userName", userName);
+            params.put("grant_type", "password");
+            params.put("client_id", clientId);
+            params.put("username", userName);
             params.put("password", password);
-            params.put("clientId", clientId);
-            result = HttpClientUtil.doPost(authorize + "oauth/accessToken", params);
-            Map<String, Object> resultMap = objectMapper.readValue(result, Map.class);
-            if ((boolean) resultMap.get("successFlg")) {
-                String data = objectMapper.writeValueAsString(resultMap.get("data"));
-                accessToken = objectMapper.readValue(data, AccessToken.class);
-            } else {
-                return null;
-            }
+            String result = HttpClientUtil.doPost(authorize + "oauth/accessToken", params);
+            AccessToken accessToken = objectMapper.readValue(result, AccessToken.class);
+            return accessToken;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return accessToken;
     }
 
     private List<AppFeatureModel> getUserFeatures(String userId) throws Exception {
