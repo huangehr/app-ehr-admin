@@ -122,6 +122,27 @@ public class ResourceCenterStatisticsController extends BaseUIController{
     }
 
     /**
+     * 全员人口个案库 - 信息分布
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/getInfoDistribution")
+    public Envelop getInfoDistribution() {
+        Envelop envelop = new Envelop();
+        String url = "/resource/center/getInfoDistribution";
+        try {
+            String resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+            return envelop;
+        }catch (Exception e) {
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    /**
      * 全员人口个案库 - 新增情况
      * @return
      */
