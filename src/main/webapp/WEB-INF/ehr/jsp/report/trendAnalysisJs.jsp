@@ -159,7 +159,10 @@
 
 //                        $("div[data-content-page]").load(url);
                     });
-
+                    $('#goAC').on('click', function () {
+                        var url = '${contextRoot}/report/acquisitionConditionSign';
+                        parent._SHOWTAB({name: '采集监管', url: url});
+                    });
                     $(document).on('click', '.go-back', function () {
                         win.location.reload();
                     });
