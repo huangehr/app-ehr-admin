@@ -140,6 +140,7 @@
                 dictInfoDialog: null,
                 detailDialog:null,
                 chartConfigDialog: null,
+                extractDialog: null,
                 grid: null,
                 $searchNm: $('#searchNm'),
                 init: function () {
@@ -166,52 +167,42 @@
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
-                                {display: '状态', name: 'status', width: '5%', render: function (row) {
-                                    var sta = row.status,
-                                        str = '';
-                                    if (sta == '-1') {
-                                        str = '已删除'
-                                    }else if (sta == '0') {
-                                        str = '不可用'
-                                    }else if (sta == '1') {
-                                        str = '正常'
+                                {display: '状态', name: 'status', width: '5%', isAllowHide: false, align: 'center', render: function (row) {
+                                        var sta = row.status,
+                                            str = '';
+                                        if (sta == '-1') {
+                                            str = '已删除'
+                                        }else if (sta == '0') {
+                                            str = '不可用'
+                                        }else if (sta == '1') {
+                                            str = '正常'
+                                        }
+                                        return str;
                                     }
-                                    return str;
-                                }, isAllowHide: false, align: 'center'},
+                                },
                                 {display: '存储方式', name: 'dataLevelName', width: '9%', isAllowHide: false, align: 'left'},
-                                {
-                                    display: '操作', name: 'operator', minWidth: 400, align: 'center',render: function (row) {
-
-                                    var html = '';
-                                    html += '<sec:authorize url="/tjQuota/updateDimensionTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/updateChartTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:tubiao:config", row.code, row.name) + '">图表配置</a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/updateTjQuota"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
-                                   if(row.status != -1){
-                                       html += '<sec:authorize url="/tjQuota/deleteTjQuota"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
-                                       html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">任务执行</a></sec:authorize>';
-                                   }
-                                    html += '<sec:authorize url="/tjQuota/queryTjQuotaResult"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:result:selectResult", row.id,row.code) + '">结果查询</a></sec:authorize>';
-                                    html += '<sec:authorize url="/tjQuota/queryTjQuotaLog"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
-                                    return html;
-                                }
+                                {display: '操作', name: 'operator', minWidth: 400, align: 'center',render: function (row) {
+                                        var html = '';
+                                        html += '<sec:authorize url="/tjQuota/updateDimensionTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
+                                        html += '<sec:authorize url="/tjQuota/updateChartTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:tubiao:config", row.code, row.name) + '">图表配置</a></sec:authorize>';
+                                        html += '<sec:authorize url="/tjQuota/updateTjQuota"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
+                                        if(row.status != -1){
+                                            html += '<sec:authorize url="/tjQuota/deleteTjQuota"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
+                                            if(row.isInitExec == 0){
+                                                html += '<sec:authorize url="/tjQuota/firstExecuteQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:firstExecuteQuota", row.id, row.code) + '">初始执行</a></sec:authorize>';
+                                            } else {
+                                                html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">执行指标</a></sec:authorize>';
+                                            }
+                                        }
+                                        html += '<sec:authorize url="/tjQuota/queryTjQuotaResult"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:result:selectResult", row.id,row.code) + '">结果查询</a></sec:authorize>';
+                                        html += '<sec:authorize url="/tjQuota/queryTjQuotaLog"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
+                                        return html;
+                                    }
                                 }
                             ],
-                            //enabledEdit: true,
                             validate: true,
                             unSetValidateAttr: false,
-                            allowHideColumn: false,
-                            onBeforeShowData: function (data) {
-
-                            },
-                            onAfterShowData: function (data) {
-
-                            },
-                            onSelectRow: function (row) {
-//
-                            },
-                            onDblClickRow: function (row) {
-
-                            }
+                            allowHideColumn: false
                         }));
                         this.bindEvents();
                         // 自适应宽度
@@ -252,7 +243,6 @@
                     });
 
                     $.subscribe('zhibiao:zhiBiaoGrid:delete', function (event, id) {
-
                         parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
@@ -265,8 +255,6 @@
                                         }else{
                                             parent._LIGERDIALOG.error(data.errorMsg);
                                         }
-
-
                                     }
                                 });
                             }
@@ -284,13 +272,10 @@
                             load: true,
                             urlParms: {
                                 quotaCode:code.trim()
-                            },
-                            onLoaded:function() {
-
                             }
                         });
                     });
-                    
+
                     $.subscribe('zhibiao:tubiao:config', function (event, code, name) {
                         dictMaster.chartConfigDialog = parent._LIGERDIALOG.open({
                             title:'图表配置',
@@ -303,23 +288,21 @@
                             urlParms: {
                                 quotaCode:code.trim(),
                                 quotaName: name.trim()
-                            },
-                            onLoaded:function() {
-
                             }
                         });
-                    })
+                    });
 
-                    $.subscribe('zhibiao:execu', function (event, id, quotaCode) {
-                        parent._LIGERDIALOG.confirm('确认要执行所选指标？', function (r) {
+                    // 初始执行指标
+                    $.subscribe('zhibiao:firstExecuteQuota', function (event, id, quotaCode) {
+                        parent._LIGERDIALOG.confirm('确认要初始执行所选指标吗？', function (r) {
                             if (r) {
-                                var loading = parent._LIGERDIALOG.waitting("正在执行,需要点时间请稍后...");
+                                var loading = parent._LIGERDIALOG.waitting("正在执行,需要点时间，请稍后...");
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/tjQuota/hasConfigDimension', {
                                     data: {quotaCode: quotaCode},
                                     success: function (data) {
                                         if(data){
-                                            dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
+                                            dataModel.updateRemote('${contextRoot}/tjQuota/firstExecuteQuota', {
                                                 data: {tjQuotaId: parseInt(id)},
                                                 success: function (data) {
                                                     if(data.successFlg){
@@ -337,6 +320,74 @@
                                 });
                             }
                         })
+                    });
+
+                    // 执行指标
+                    $.subscribe('zhibiao:execu', function (event, id, quotaCode) {
+                        var htmlStr =
+                                '<div id="extractForm" data-role-form>' +
+                                    '<div class="m-form-group f-ml5 f-mr5">' +
+                                        '<div class="l-text-wrapper m-form-control essential">' +
+                                            '<input type="text" id="extractStartTime" data-attr-scan="extractStartTime" class="required" placeholder="起始日期">' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="m-form-group f-ml5 f-mr5 f-mt10">' +
+                                        '<div class="l-text-wrapper m-form-control essential">' +
+                                            '<input type="text" id="extractEndTime" data-attr-scan="extractEndTime" class="required" placeholder="截止日期">' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="m-form-group f-mt10 f-fr">' +
+                                        '<div id="executeGoOn" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10">' +
+                                            '<span>继续</span>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>';
+                        dictMaster.extractDialog = parent._LIGERDIALOG.open({
+                            title: '填写日期',
+                            content: htmlStr,
+                            loadSuccess: function ($dlDom) {
+                                parent.startDateDom = $dlDom.find('#extractStartTime').ligerDateEditor({format: "yyyy-MM-dd"});
+                                parent.endDateDom = $dlDom.find('#extractEndTime').ligerDateEditor({format: "yyyy-MM-dd"});
+                                parent.validator = new parent.$.jValidation.Validation($dlDom.find('#extractForm'), {immediate: true});
+
+                                $dlDom.find('#executeGoOn').on('click', function (e) {
+                                    if (!parent.validator.validate()) { return; }
+
+                                    dictMaster.extractDialog.close();
+                                    parent._LIGERDIALOG.confirm('确认要执行所选指标？', function (r) {
+                                        if (r) {
+                                            var loading = parent._LIGERDIALOG.waitting("正在执行,需要点时间，请稍后...");
+                                            var dataModel = $.DataModel.init();
+                                            dataModel.updateRemote('${contextRoot}/tjQuota/hasConfigDimension', {
+                                                data: { quotaCode: quotaCode },
+                                                success: function (data) {
+                                                    if(data){
+                                                        dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
+                                                            data: {
+                                                                tjQuotaId: parseInt(id),
+                                                                startDate: parent.startDateDom.getValue(),
+                                                                endDate: parent.endDateDom.getValue()
+                                                            },
+                                                            success: function (data) {
+                                                                if(data.successFlg){
+                                                                    parent._LIGERDIALOG.success('执行成功！');
+                                                                }else{
+                                                                    parent._LIGERDIALOG.error(data.errorMsg);
+                                                                }
+                                                                loading.close();
+                                                            }
+                                                        });
+                                                    }else{
+                                                        parent._LIGERDIALOG.error("请先在维度配置中配置主维度");
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+
                     });
 
                     $.subscribe('zhibiao:result:selectResult', function (event, id,quotaCode) {
