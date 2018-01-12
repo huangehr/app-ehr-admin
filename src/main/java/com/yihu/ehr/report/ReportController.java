@@ -80,6 +80,17 @@ public class ReportController extends BaseUIController {
     }
 
     /**
+     * 采集状况页
+     * @param model
+     * @return
+     */
+    @RequestMapping("acquisitionConditionSign")
+    public String acquisitionConditionSign(Model model) {
+        model.addAttribute("contentPage", "/report/acquisitionConditionSign");
+        return "emptyView";
+    }
+
+    /**
      * 分析列表页面
      * @param model
      * @return

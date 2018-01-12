@@ -123,7 +123,7 @@
                             {display: '操作时间', name: 'time', width: '15%'},
                             {display: '响应Code', name: 'responseCode', width: '15%'},
                             {display: '操作', name: 'response', minWidth: 100,render: function (row) {
-                                var html = '<a class="label_a" title="查看详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "log:info:show", row.code, row.logType) + '">查看详情</a>';
+                                var html = '<a class="label_a" title="查看详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "log:info:show", row.id, row.logType) + '">查看详情</a>';
                                 return html;
                             }}
                         ],

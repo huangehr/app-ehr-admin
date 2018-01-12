@@ -33,7 +33,11 @@
       <div class="m-form-control m-form-control-fr">
         <!--按钮:新增 <spring:message code="btn.create"/>-->
         <div id="btn_detail" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-mr10" >
-          <span> 趋势分析详情</span>
+          <span>趋势分析详情</span>
+        </div>
+
+        <div id="goAC" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-mr10" >
+          <span>采集监管</span>
         </div>
       </div>
 
