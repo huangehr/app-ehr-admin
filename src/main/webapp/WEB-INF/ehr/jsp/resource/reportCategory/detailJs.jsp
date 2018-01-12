@@ -20,7 +20,7 @@
     function initForm() {
         var codeTb = $('#code').ligerTextBox({width: 240});
         $('#name').ligerTextBox({width: 240});
-        $("#pid").ligerComboBox({
+        var lingerPid = $("#pid").ligerComboBox({
             treeLeafOnly: false,
             tree: {
                 ajaxType: 'get',
@@ -37,13 +37,12 @@
         if(detailModel.id) {
             codeTb.setDisabled(true);
         }
-
         $form.attrScan();
         $form.Fields.fillValues({
             id: detailModel.id,
             code: detailModel.code,
             name: detailModel.name,
-            pid: detailModel.pid != 0 ? detailModel.pid : null,
+            pid: detailModel.pid,
             remark: detailModel.remark
         });
     }
