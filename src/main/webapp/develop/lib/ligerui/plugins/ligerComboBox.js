@@ -1502,7 +1502,7 @@
             }
             else
             {
-                g.inputText.val(newText);
+                g.inputText.val(newText == 'null' ? '' : newText);
             }
             if (g.select)
             {
