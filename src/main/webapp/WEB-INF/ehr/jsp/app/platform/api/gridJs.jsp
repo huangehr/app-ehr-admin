@@ -143,7 +143,10 @@
                     }));
                 }
             }
-
+            $('#btn_add').on('click', function () {
+                var params = {mode: 'new', appId: p};
+                em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify, '新增', 480, 650, params);
+            });
 
             var em = {
                 grid: undefined, dialog: undefined, params: {},
@@ -309,7 +312,15 @@
                 em.dialog.close();
                 if (msg)
                     win.parent._LIGERDIALOG.success(msg);
-
+                var vo = [
+                    {name: 'name', logic: '?'},
+                    {name: 'openLevel', logic: '='},
+                    {name: 'appId', logic: '='}];
+                var $form = $('#r_searchForm');
+                $form.attrScan();
+                sessionStorage.setItem("appApiEm", JSON.stringify($form.Fields.getValues()));
+                var params = {filters: covertFilters(vo, $form), page: 1, rows: 999};
+                reloadGrid(em.grid, 1, params);
 //                if(data){
 //                    if(em.params.frm==0){
 //                        if(data.obj.type==1){

@@ -43,6 +43,11 @@
                         <input type="text" id="r_search_open_lv"  placeholder="开放程度" data-type="select" data-attr-scan="openLevel">
                     </div>
 
+                    <div class="m-form-control m-form-control-fr" style="margin-left: 10px">
+                        <div id="btn_add" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+                            <span ><spring:message code="btn.create"/></span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
