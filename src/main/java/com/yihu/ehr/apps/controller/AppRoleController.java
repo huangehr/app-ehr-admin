@@ -92,7 +92,7 @@ public class AppRoleController extends BaseUIController {
         }
         model.addAttribute("Dialogtype", type);
         model.addAttribute("contentPage", contentPage);
-        return "pageView";
+        return "emptyView";
     }
 
     @RequestMapping("/searchAppRole")
