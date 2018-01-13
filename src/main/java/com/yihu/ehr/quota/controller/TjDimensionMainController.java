@@ -260,14 +260,14 @@ public class TjDimensionMainController extends BaseUIController {
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuffer mainFilter = new StringBuffer("status=1");
         if (!StringUtils.isEmpty(quotaCode)) {
             params.put("filter", "quotaCode=" + quotaCode);
         }
         if (!StringUtils.isEmpty(name)) {
-            stringBuffer.append("name?" + name + " g1;code?" + name + " g1;");
+            mainFilter.append("name?" + name + " g1;code?" + name + " g1;");
         }
-        String filters = stringBuffer.toString();
+        String filters = mainFilter.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
