@@ -326,14 +326,15 @@
                     $.subscribe('zhibiao:execu', function (event, id, quotaCode) {
                         var htmlStr =
                                 '<div id="extractForm" data-role-form>' +
+                                    '<div class="f-mb5 f-ml5" style="color: #FF0000;">执行的是基础指标，不填起止日期，则默认统计昨天的。</div>' +
                                     '<div class="m-form-group f-ml5 f-mr5">' +
-                                        '<div class="l-text-wrapper m-form-control essential">' +
-                                            '<input type="text" id="extractStartTime" data-attr-scan="extractStartTime" class="required" placeholder="起始日期">' +
+                                        '<div class="l-text-wrapper m-form-control">' +
+                                            '<input type="text" id="extractStartTime" data-attr-scan="extractStartTime" placeholder="起始日期">' +
                                         '</div>' +
                                     '</div>' +
                                     '<div class="m-form-group f-ml5 f-mr5 f-mt10">' +
-                                        '<div class="l-text-wrapper m-form-control essential">' +
-                                            '<input type="text" id="extractEndTime" data-attr-scan="extractEndTime" class="required" placeholder="截止日期">' +
+                                        '<div class="l-text-wrapper m-form-control">' +
+                                            '<input type="text" id="extractEndTime" data-attr-scan="extractEndTime" placeholder="截止日期">' +
                                         '</div>' +
                                     '</div>' +
                                     '<div class="m-form-group f-mt10 f-fr">' +
