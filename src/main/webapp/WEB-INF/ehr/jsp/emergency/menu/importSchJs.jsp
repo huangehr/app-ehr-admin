@@ -38,7 +38,6 @@
 
             /* *************************** 函数定义结束******************************* */
             obj = {
-                detailDialog:null,
                 $importbutton : $('#importbutton'),
                 $cenclebutton : $('#cenclebutton'),
                 $div_btn:$('.div_btn'),
