@@ -92,7 +92,7 @@
                     })
                     //关闭dailog的方法
                     obj.$cenclebutton.click(function(){
-                        closeDialog();
+                        parent.closeDialog();
                     })
                 }
             }
