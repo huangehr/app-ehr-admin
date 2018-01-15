@@ -416,7 +416,7 @@
                                         data: {
                                             tjQuotaId: id,
                                             startDate: startDate,
-                                            endDate: startDate
+                                            endDate: endDate
                                         },
                                         success: function (data) {
                                             if(data.successFlg){
