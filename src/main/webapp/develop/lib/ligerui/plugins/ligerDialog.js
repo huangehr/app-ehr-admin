@@ -146,6 +146,7 @@
                 g.dialog.addClass("l-dialog-win");
 
             }
+            p.loadSuccess && p.loadSuccess.call(this, g.dialog);
             if (p.cls) g.dialog.addClass(p.cls);
             if (p.id) g.dialog.attr("id", p.id);
 

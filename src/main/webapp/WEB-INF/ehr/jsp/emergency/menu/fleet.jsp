@@ -26,7 +26,7 @@
             </div>
             <div id="div_relLoad_data" ms-controller="avacontroller" >
                 <ul class="temp">
-                    <li ms-repeat-item="data">
+                    <li ms-repeat-item="data"> 
                         <div class="info">
                             <div class="inlineBlock backroundImg"></div>
                             <div class="inlineBlock boxText">

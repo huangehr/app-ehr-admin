@@ -49,17 +49,18 @@
 						var d = res.obj;
 						var mechanisms = [];
 						for (var i = 0, len = d.length; i < len; i++) {
-							mechanisms.push({
-								text: d[i].fullName,
-								id: d[i].orgCode
-							});
+                            if (d[i].fullName != null) {
+                                mechanisms.push(d[i]);
+                            }
 						}
-						me.$inpMechanism.ligerComboBox({
+						var imC = me.$inpMechanism.ligerComboBox({
 							isShowCheckBox: true,
 							width: '240',
 							data: mechanisms,
 							isMultiSelect: true,
-							valueFieldID: 'orgCodes'
+                            textField: 'fullName',
+                            valueField: 'orgCode',
+							valueFieldID: 'orgCode'
 						});
 					} else {
 						me.$inpMechanism.ligerComboBox({width: '240'});

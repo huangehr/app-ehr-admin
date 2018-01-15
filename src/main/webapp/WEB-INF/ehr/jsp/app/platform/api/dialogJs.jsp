@@ -14,31 +14,35 @@
         }
         var model = ${model};
         var mode = '${mode}';
+        var appId = '${appId}';
+        if (appId != '') {
+            $('#appId').val(appId);
+        }
         var extParms = getEditParms();//其他信息
         var hasChildType;
         var getChild = function (){
             if(mode=='modify' || mode=='view' || extParms.upType==-1)
                 return;
-            $.ajax({
-                url: urls.list,
-                async: false,
-                data:{page: 1, rows: 1, filters: "parentId="+ extParms.upId},
-                success: function (data) {
-                    data = eval('('+ data +')');
-                    if(!data.successFlg){
-                        $.Notice.error("数据请求错误，请刷新页面或联系管理员！");
-                        throw new Error("数据请求错误，请刷新页面或联系管理员！");
-                        return;
-                    }
-                    if(data.detailModelList.length>0){
-                        hasChildType = data.detailModelList[0].type;
-                    }
-                },
-                error: function () {
-                    $.Notice.error("链接请求错误，请刷新页面或联系管理员！");
-                    throw new Error("链接请求错误，请刷新页面或联系管理员！");
-                }
-            })
+//            $.ajax({
+//                url: urls.list,
+//                async: false,
+//                data:{page: 1, rows: 1, filters: "parentId="+ extParms.upId},
+//                success: function (data) {
+//                    data = eval('('+ data +')');
+//                    if(!data.successFlg){
+//                        $.Notice.error("数据请求错误，请刷新页面或联系管理员！");
+//                        throw new Error("数据请求错误，请刷新页面或联系管理员！");
+//                        return;
+//                    }
+//                    if(data.detailModelList.length>0){
+//                        hasChildType = data.detailModelList[0].type;
+//                    }
+//                },
+//                error: function () {
+//                    $.Notice.error("链接请求错误，请刷新页面或联系管理员！");
+//                    throw new Error("链接请求错误，请刷新页面或联系管理员！");
+//                }
+//            })
         }();
 
         var $form =  $("#infoForm");
@@ -48,7 +52,7 @@
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
                 if(field=='ipt_api_name' && val!=model.name){
-                    return uniqValid4List(urls.existence, "name="+val+" g1;parentId="+ model.parentId, "该应用代码已存在！");
+                    return uniqValid4List(urls.existence, "name="+val+" g1;parentId=0", "该应用代码已存在！");
                 }
             });
 
@@ -106,7 +110,7 @@
                 {type: 'select', id: 'ipt_api_method', dictId: 45},
                 {type: 'text', id: 'ipt_api_methodName'}
             ];
-
+debugger
             if(extParms.upType==-1 || model.type==2)
                 appCombo = $('#ipt_api_name').customCombo(
                         urls.appCombo, {fields: 'id,name', filters: 'sourceType=1'}, function (id, name) {
@@ -161,7 +165,7 @@
         var init = function () {
             if(mode=='new'){
                 model.parentId = extParms.upId;
-                model.appId = extParms.appId;
+                model.appId = appId;
             }
             initForm();
             initBtn();

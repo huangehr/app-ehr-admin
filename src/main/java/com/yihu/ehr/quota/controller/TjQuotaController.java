@@ -13,6 +13,7 @@ import com.yihu.ehr.quota.controller.model.TjQuotaDSlaveMsg;
 import com.yihu.ehr.quota.controller.model.TjQuotaMsg;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.excel.TemPath;
 import com.yihu.ehr.util.excel.read.TjQuotaMsgReader;
 import com.yihu.ehr.util.excel.read.TjQuotaMsgWriter;
@@ -298,23 +299,41 @@ public class TjQuotaController extends BaseUIController {
         return  false;
     }
 
-
-
     /**
-     * 指标执行
-     * @param tjQuotaId
-     * @return
+     * 初始执行(全量统计)
      */
-    @RequestMapping("execuQuota")
+    @RequestMapping("firstExecuteQuota")
     @ResponseBody
-    public Object execuQuota(Long tjQuotaId) {
-        String url = "/job/execuJob";
-        String resultStr = "";
+    public Object firstExecuteQuota(Long tjQuotaId) {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("id", tjQuotaId);
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            String url = "/job/firstExecuteQuota";
+            String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
+            envelop = objectMapper.readValue(resultStr,Envelop.class);
+            return envelop;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
+
+    /**
+     * 执行指标（增量统计）
+     */
+    @RequestMapping("execuQuota")
+    @ResponseBody
+    public Object execuQuota(Long tjQuotaId, Date startDate, Date endDate) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", tjQuotaId);
+        params.put("startDate", DateUtil.formatDate(startDate, DateUtil.utcDateTimePattern));
+        params.put("endDate", DateUtil.formatDate(endDate, DateUtil.utcDateTimePattern));
+        try {
+            String url = "/job/execuJob";
+            String resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = objectMapper.readValue(resultStr,Envelop.class);
             return envelop;
         } catch (Exception e) {

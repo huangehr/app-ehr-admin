@@ -191,7 +191,7 @@
                                         success:function (data) {
                                             if(data.successFlg){
                                                 that.val("值班")
-                                                $('.status a').html('休息')
+                                                that.parents('li').find('a').html('休息')
                                                 $('.be_On_change').attr("data-code",0);
                                                 $('#editState').removeClass('changeGray');
                                                 $('#editState').attr("ms-click","jumpMenu(item.id)");
@@ -219,7 +219,7 @@
                                 success:function (data) {
                                     if(data.successFlg){
                                         that.val("休息");
-                                        $('.status a').html('待命中');
+                                        that.parents('li').find('a').html('待命中')
                                         $('.be_On_change').attr("data-code",1);
                                         $('#editState').removeClass('changeGray');
                                         $('#editState').attr("ms-click","jumpMenu(item.id)");

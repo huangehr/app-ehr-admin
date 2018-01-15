@@ -12,6 +12,7 @@
             var Util = $.Util;
             var openedDialog;
             var p = '${dataModel}';
+            $('#parentId').val(p);
             var contentH = $('.l-layout-center').height();
             var parms = {"appId":p};
             var urls = {
@@ -22,6 +23,8 @@
                 apiEdit: "${contextRoot}/app/api/edit",
                 existence: "${contextRoot}/app/api/existence"
             };
+
+            
 			var initSub = function () {
                 $('#btn_back').click(function () {
                     $('#contentPage').empty();
@@ -78,7 +81,7 @@
                         rownumbers: false,
                         allowAdjustColWidth: false,
                         usePager: false,
-                        height: '100%',
+//                        height: '100%',
                         tree: {columnId: 'name'},
                         url: urls.tree,
                         parms: parms,
@@ -140,7 +143,10 @@
                     }));
                 }
             }
-
+            $('#btn_add').on('click', function () {
+                var params = {mode: 'new', appId: p};
+                em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify, '新增', 480, 650, params);
+            });
 
             var em = {
                 grid: undefined, dialog: undefined, params: {},
@@ -169,8 +175,16 @@
                         {display: '开放程度', name: 'openLevelName', width: '10%', align: 'left'},
                         {display: '操作', name: 'operator', width: '20%', render: m.opratorRender}];
 
-                    m.grid = initGrid($('#rightGrid'), urls.list, {}, columns, {
-                        delayLoad: true,
+                    var vo = [
+                        {name: 'name', logic: '?'},
+                        {name: 'openLevel', logic: '='},
+                        {name: 'appId', logic: '='}];
+                    var $form = $('#r_searchForm');
+                    $form.attrScan();
+                    sessionStorage.setItem("appApiEm", JSON.stringify($form.Fields.getValues()));
+                    var params = {filters: covertFilters(vo, $form), page: 1, rows: 999};
+                    m.grid = initGrid($('#rightGrid'), urls.list, params, columns, {
+//                        delayLoad: true,
                         rownumbers: true,
                         usePager: false,
                         heightDiff: 20,
@@ -198,12 +212,12 @@
                 },
                 //修改、新增点击事件
                 gotoModify: function (event, id, mode, type, frm, rowId, appId) {
-                    if(type==1){
-                        var obj = em.grid.getRow(rowId);
-                        var url = urls.apiEdit + '?treePid=1&treeId=11&mode='+ mode;
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, obj);
-                    }else{
+//                    if(type==1){
+//                        var obj = em.grid.getRow(rowId);
+//                        var url = urls.apiEdit + '?treePid=1&treeId=11&mode='+ mode;
+//                        $("#contentPage").empty();
+//                        $("#contentPage").load(url, obj);
+//                    }else{
                         var params;
                         if(mode == 'new'){
                             em.params = {upType: type, upId: id, frm: frm, rowId: rowId, appId: appId}
@@ -214,7 +228,7 @@
                         }
                         em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify,
                                 mode == 'new'?'新增': mode == 'modify'? '修改': '查看', 480, 650, params);
-                    }
+//                    }
                 },
                 del: function (event, id, frm, rowId, parentId, type) {
 
@@ -229,20 +243,20 @@
                                         dialog.close();
                                         if (data.successFlg) {
                                             win.parent._LIGERDIALOG.success('删除成功！');
-                                            if(frm==0)
-                                                master.tree.remove(master.tree.getRow(rowId));
-                                            else{
-                                                if(type==1){
-                                                    em.grid.remove(em.grid.getRow( rowId ));
-                                                }else{
-                                                    var cell = $('#t_'+ id, $('#treeMenu')).parent().parent().parent().parent();
-                                                    var treeRowId = $(cell).attr('id').split('|')[2];
-                                                    master.tree.remove( master.tree.getRow( treeRowId ) );
-                                                    cell = $('#t_'+ parentId, $('#treeMenu')).parent().parent().parent().parent();
-                                                    treeRowId = $(cell).attr('id').split('|')[2];
-                                                    master.tree.select( master.tree.getRow( treeRowId ) );
-                                                }
-                                            }
+//                                            if(frm==0)
+//                                                master.tree.remove(master.tree.getRow(rowId));
+//                                            else{
+//                                                if(type==1){
+//                                                    em.grid.remove(em.grid.getRow( rowId ));
+//                                                }else{
+//                                                    var cell = $('#t_'+ id, $('#treeMenu')).parent().parent().parent().parent();
+//                                                    var treeRowId = $(cell).attr('id').split('|')[2];
+//                                                    master.tree.remove( master.tree.getRow( treeRowId ) );
+//                                                    cell = $('#t_'+ parentId, $('#treeMenu')).parent().parent().parent().parent();
+//                                                    treeRowId = $(cell).attr('id').split('|')[2];
+//                                                    master.tree.select( master.tree.getRow( treeRowId ) );
+//                                                }
+//                                            }
                                         } else {
                                             win.parent._LIGERDIALOG.error(data.errorMsg);
                                         }
@@ -276,7 +290,7 @@
                     var vo = [
                         {name: 'name', logic: '?'},
                         {name: 'openLevel', logic: '='},
-                        {name: 'parentId', logic: '='}];
+                        {name: 'appId', logic: '='}];
                     var $form = $('#r_searchForm');
                     $form.attrScan();
                     sessionStorage.setItem("appApiEm", JSON.stringify($form.Fields.getValues()));
@@ -292,31 +306,39 @@
 
 
             em.init();
-            master.init();
+//            master.init();
 
             win.parent.closeDialog = function (msg, data) {
                 em.dialog.close();
                 if (msg)
                     win.parent._LIGERDIALOG.success(msg);
-
-                if(data){
-                    if(em.params.frm==0){
-                        if(data.obj.type==1){
-                            em.grid.appendRow(data.obj);
-                        }else{
-                            var parent = master.tree.getRow(em.params.rowId);
-                            master.tree.appendRow(data.obj, parent);
-                            master.tree.select(parent);
-                        }
-                    }else{
-                        var rowDom = em.grid.getRow(em.params.rowId);
-                        em.grid.updateRow(rowDom, data.obj);
-                        if(data.obj.type!=1){
-                            rowDom = master.tree.getRow($('#t_'+ data.obj.id, $('#treeMenu')).parent().parent().parent().parent().attr('id').split('|')[2]);
-                            master.tree.updateRow(rowDom, data.obj);
-                        }
-                    }
-                }
+                var vo = [
+                    {name: 'name', logic: '?'},
+                    {name: 'openLevel', logic: '='},
+                    {name: 'appId', logic: '='}];
+                var $form = $('#r_searchForm');
+                $form.attrScan();
+                sessionStorage.setItem("appApiEm", JSON.stringify($form.Fields.getValues()));
+                var params = {filters: covertFilters(vo, $form), page: 1, rows: 999};
+                reloadGrid(em.grid, 1, params);
+//                if(data){
+//                    if(em.params.frm==0){
+//                        if(data.obj.type==1){
+//                            em.grid.appendRow(data.obj);
+//                        }else{
+//                            var parent = master.tree.getRow(em.params.rowId);
+//                            master.tree.appendRow(data.obj, parent);
+//                            master.tree.select(parent);
+//                        }
+//                    }else{
+//                        var rowDom = em.grid.getRow(em.params.rowId);
+//                        em.grid.updateRow(rowDom, data.obj);
+//                        if(data.obj.type!=1){
+//                            rowDom = master.tree.getRow($('#t_'+ data.obj.id, $('#treeMenu')).parent().parent().parent().parent().attr('id').split('|')[2]);
+//                            master.tree.updateRow(rowDom, data.obj);
+//                        }
+//                    }
+//                }
             }
 
             win.parent.getEditParms = function () {

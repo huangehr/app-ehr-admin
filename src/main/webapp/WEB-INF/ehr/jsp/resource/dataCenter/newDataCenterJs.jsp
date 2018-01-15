@@ -486,23 +486,38 @@
                 ),reqFun(int[12], null,//健康档案分布情况
                     function (res) {
                         if (res.successFlg) {
+                            var legendArr = [],
+                                    data = [];
+                            $.each(res.detailModelList, function (k, o) {
+                                legendArr.push(o.name);
+                                data.push({
+                                    name: o.name,
+                                    type:'bar',
+                                    stack:"sum",
+                                    data: o.yData
+                                })
+                            });
                             var option = {
                                 tooltip : {
                                     trigger: 'axis',
-                                    formatter: function (params){
-                                        return params[0]['1'] + '（岁）：\n\n' + params[0]['2'] + '（人）';
-                                    }
+//                                    formatter: function (params){
+//                                        return params[0]['1'] + '（岁）：\n\n' + params[0]['2'] + '（人）';
+//                                    }
+                                },
+                                legend: {
+                                    y : 'bottom',
+                                    data: legendArr
                                 },
                                 grid: {
                                     x: 80,
-                                    x2: 40,
+                                    x2: 50,
                                     y: 30,
-                                    y2: 60
+                                    y2: 70
                                 },
                                 xAxis : [
                                     {
                                         type : 'category',
-                                        name: "x",
+                                        name: "x（岁）",
                                         data : res.detailModelList[0].xData,
                                         axisLabel: {
                                             rotate: -40,
@@ -524,11 +539,7 @@
 //                                            }
                                     }
                                 ],
-                                series : [{
-                                    name: '健康档案分布情况',
-                                    type:'bar',
-                                    data: res.detailModelList[0].yData
-                                }]
+                                series : data
                             };
                             var myChart = echarts.init(chartArr[7]);
                             myChart.setOption(option);
@@ -667,20 +678,20 @@
                                     }
                                 ],
                                 color: ['#2ea7dd'],
-//                                dataZoom: {
-//                                    show: true,
-//                                    realtime: true,
-//                                    x: 10,
-//                                    fillerColor: '#bcbcbc',
-//                                    handleColor: '#bcbcbc',
-//                                    dataBackgroundColor: '#eee',
-//                                    orient:'vertical',
-//                                    showDetail: false,
-//                                    height: 200,
-//                                    width: 10,
-//                                    start: 0,
-//                                    end: 100
-//                                },
+                                dataZoom: {
+                                    show: true,
+                                    realtime: true,
+                                    x: 10,
+                                    fillerColor: '#bcbcbc',
+                                    handleColor: '#bcbcbc',
+                                    dataBackgroundColor: '#eee',
+                                    orient:'vertical',
+                                    showDetail: false,
+                                    height: 200,
+                                    width: 10,
+                                    start: 0,
+                                    end: 70
+                                },
                                 grid: {
                                     x: 150,
                                     x2: 30,
@@ -730,20 +741,20 @@
                                     }
                                 ],
                                 color: ['#2ea7dd'],
-//                                dataZoom: {
-//                                    show: true,
-//                                    realtime: true,
-//                                    x: 10,
-//                                    fillerColor: '#bcbcbc',
-//                                    handleColor: '#bcbcbc',
-//                                    dataBackgroundColor: '#eee',
-//                                    orient:'vertical',
-//                                    showDetail: false,
-//                                    height: 200,
-//                                    width: 10,
-//                                    start: 0,
-//                                    end: 100
-//                                },
+                                dataZoom: {
+                                    show: true,
+                                    realtime: true,
+                                    x: 10,
+                                    fillerColor: '#bcbcbc',
+                                    handleColor: '#bcbcbc',
+                                    dataBackgroundColor: '#eee',
+                                    orient:'vertical',
+                                    showDetail: false,
+                                    height: 200,
+                                    width: 10,
+                                    start: 0,
+                                    end: 70
+                                },
                                 grid: {
                                     x: 150,
                                     x2: 30,
