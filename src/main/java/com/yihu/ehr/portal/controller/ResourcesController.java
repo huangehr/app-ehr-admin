@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.portal.PortalResourcesModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.user.controller.UserController;
@@ -125,7 +126,7 @@ public class ResourcesController extends BaseUIController {
         System.out.println();
         ObjectMapper mapper = new ObjectMapper();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = getCurrentUserRedis(request);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(portalResourcesModelJsonData, "UTF-8").split(";");
         PortalResourcesModel detailModel = toModel(strings[0], PortalResourcesModel.class);

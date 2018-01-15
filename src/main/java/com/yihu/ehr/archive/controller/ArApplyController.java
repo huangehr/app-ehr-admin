@@ -2,6 +2,7 @@ package com.yihu.ehr.archive.controller;
 
 import com.yihu.ehr.agModel.patient.ArApplyModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -239,7 +240,7 @@ public class ArApplyController extends BaseUIController {
         String resultStr = "";
         try {
             String url = "/patientArchive/manager/verify";
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             Map<String, Object> params = new HashMap<>();
             params.put("id", applyId);
             params.put("status", status);

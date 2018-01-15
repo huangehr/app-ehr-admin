@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -525,7 +526,7 @@ public class ResourceIntegratedController extends BaseUIController {
         boolean flag = false;
         try {
             Map<String, Object> params = new HashMap<>();
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             params.put("userId", StringUtils.isEmpty(userDetailModel) ? "" : userDetailModel.getId());
             String result = HttpClientUtil.doGet(comUrl + "/roles/role_feature/hasPermission", params, username, password);
             if ("true".equals(result)) {

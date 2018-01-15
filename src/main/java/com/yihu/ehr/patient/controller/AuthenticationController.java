@@ -2,6 +2,7 @@ package com.yihu.ehr.patient.controller;
 
 import com.yihu.ehr.agModel.patient.AuthenticationModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -112,7 +113,7 @@ public class AuthenticationController extends BaseUIController {
     public Object updateStatus(String id,String status,HttpServletRequest request){
         Envelop envelop = new Envelop();
         try{
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String urlGet = "/patient/Authentication/"+id;
             String envelopStrGet = HttpClientUtil.doGet(comUrl+urlGet,username,password);
             envelop = getEnvelop(envelopStrGet);

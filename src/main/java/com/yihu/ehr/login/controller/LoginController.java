@@ -6,12 +6,14 @@ import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.user.AccessToken;
 import com.yihu.ehr.agModel.user.RoleOrgModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.model.common.ObjectResult;
 import com.yihu.ehr.model.geography.MGeographyDict;
 import com.yihu.ehr.model.org.MOrganization;
 import com.yihu.ehr.model.resource.MRsRolesResource;
@@ -162,9 +164,19 @@ public class LoginController extends BaseUIController {
                 Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
                 String ex = this.objectMapper.writeValueAsString(envelop.getObj());
                 UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+                //存储基本信息
+                UsersModel usersModel = new UsersModel();
+                usersModel.setId(userDetailModel.getId());
+                usersModel.setRealName(userDetailModel.getRealName());
+                usersModel.setEmail(userDetailModel.getEmail());
+                usersModel.setOrganizationCode(userDetailModel.getOrganization());
+                usersModel.setTelephone(userDetailModel.getTelephone());
+                usersModel.setLoginCode(userDetailModel.getLoginCode());
+                usersModel.setUserType(userDetailModel.getUserType());
+                usersModel.setActivated(userDetailModel.getActivated());
+                usersModel.setLastLoginTime(userDetailModel.getLastLoginTime());
                 // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
-                model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
-
+                model.addAttribute(SessionAttributeKeys.CurrentUser, usersModel);
                 HttpSession session = request.getSession();
                 //增加超级管理员信息
                 if(loginName.equals(permissionsInfo)) {
@@ -175,12 +187,12 @@ public class LoginController extends BaseUIController {
                 session.setAttribute("isLogin", true);
                 session.setAttribute("token", accessToken);
                 session.setAttribute("loginName", loginName);
-                session.setAttribute("userId", userDetailModel.getId());
+                session.setAttribute("userId", usersModel.getId());
                 session.setAttribute("clientId", clientId);
                 //获取用户的角色，机构，视图 等权限
-                initUserRolePermissions(userDetailModel, loginName, request);
+                initUserRolePermissions(usersModel.getId(), loginName, request);
                 //获取用户角色信息
-                List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
+                List<AppFeatureModel> features = getUserFeatures(usersModel.getId());
                 Collection<GrantedAuthority> gas = new ArrayList<>();
                 if (features != null) {
                     for (AppFeatureModel feature : features) {
@@ -205,18 +217,19 @@ public class LoginController extends BaseUIController {
 
     @RequestMapping(value = "/validate", method = RequestMethod.POST)
     public String loginValid(Model model, String userName, String password, HttpServletRequest request) {
-        String url = "/users/verification/" + userName;
-        String resultStr = "";
-        Map<String, Object> params = new HashMap<>();
-        params.put("psw", password);
+        String resultStr;
+        Map<String, Object> params = new HashMap<>(2);
+        params.put("username", userName);
+        params.put("password", password);
+        String url = "/portal/login";
         try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, this.password);
             Envelop envelop = getEnvelop(resultStr);
-            UserDetailModel userDetailModel = getEnvelopModel(envelop.getObj(), UserDetailModel.class);
             //判断用户是否登入成功
             if (envelop.isSuccessFlg()) {
+                UsersModel usersModel = getEnvelopModel(envelop.getObj(), UsersModel.class);
                 //获取用户的角色，机构，视图 等权限
-                initUserRolePermissions(userDetailModel, userName, request);
+                initUserRolePermissions(usersModel.getId(), userName, request);
                 //增加超级管理员信息
                 HttpSession session = request.getSession();
                 if(userName.equals(permissionsInfo)) {
@@ -226,7 +239,7 @@ public class LoginController extends BaseUIController {
                 }
                 String lastLoginTime = null;
                 //判断用户是否失效
-                if (!userDetailModel.getActivated()) {
+                if (!usersModel.isActivated()) {
                     model.addAttribute("userName", userName);
                     model.addAttribute("successFlg", false);
                     model.addAttribute("failMsg", "该用户已失效，请联系系统管理员重新生效。");
@@ -234,7 +247,7 @@ public class LoginController extends BaseUIController {
                     return "generalView";
                 }
                 //判断用户密码是否初始密码
-                model.addAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                model.addAttribute(SessionAttributeKeys.CurrentUser, usersModel);
 
                 if (password.equals("123456")) {
                     session.setAttribute("defaultPassWord", true);
@@ -246,9 +259,8 @@ public class LoginController extends BaseUIController {
                     SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
                     Date date = new Date();
                     String now = sdf.format(date);
-                    if (userDetailModel.getLastLoginTime() != null) {
-                        Date dateLogin = DateTimeUtils.utcDateTimeParse(userDetailModel.getLastLoginTime());
-                        lastLoginTime = dateLogin == null ? "" : DateTimeUtil.simpleDateTimeFormat(dateLogin);
+                    if (usersModel.getLastLoginTime() != null) {
+                        lastLoginTime = usersModel.getLastLoginTime();
                     } else {
                         lastLoginTime = now;
                     }
@@ -256,14 +268,14 @@ public class LoginController extends BaseUIController {
                     session.setAttribute("last_login_time", lastLoginTime);
 
                     //update lastLoginTime
-                    userDetailModel.setLastLoginTime(DateTimeUtils.utcDateTimeFormat(date));
+                    usersModel.setLastLoginTime(DateTimeUtils.utcDateTimeFormat(date));
                     MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
-                    conditionMap.add("user_json_data", toJson(userDetailModel));
-                    session.setAttribute("loginCode", userDetailModel.getLoginCode());
-                    session.setAttribute("userId", userDetailModel.getId());
+                    conditionMap.add("user_json_data", toJson(usersModel));
+                    session.setAttribute("loginCode", usersModel.getLoginCode());
+                    session.setAttribute("userId", usersModel.getId());
 
                     //获取用户角色信息
-                    List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
+                    List<AppFeatureModel> features = getUserFeatures(usersModel.getId());
                     Collection<GrantedAuthority> gas = new ArrayList<>();
                     if (features != null) {
                         for (AppFeatureModel feature : features) {
@@ -531,11 +543,11 @@ public class LoginController extends BaseUIController {
 
     /**
      * 获取用户的角色，机构，视图 等权限
-     * @param userDetailModel
+     * @param userId
      * @param request
      * @throws Exception
      */
-    public void initUserRolePermissions(UserDetailModel userDetailModel, String loginCode, HttpServletRequest request) throws Exception {
+    public void initUserRolePermissions(String userId, String loginCode, HttpServletRequest request) throws Exception {
         String loginName = loginCode;
         HttpSession session = request.getSession();
         if(loginCode.equals(permissionsInfo)){
@@ -547,7 +559,7 @@ public class LoginController extends BaseUIController {
             //获取用户角色
             String roleStr = "";
             List<String> roleList = new ArrayList<>();
-            roleStr =  gerUserRoles(userDetailModel.getId());
+            roleStr =  gerUserRoles(userId);
             if( !StringUtils.isEmpty(roleStr)){
                 roleList =  Arrays.asList(roleStr.split(","));
                 session.setAttribute(AuthorityKey.UserRoles, roleList);

@@ -3,6 +3,7 @@ package com.yihu.ehr.std.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.standard.cdatype.CdaTypeDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -48,7 +49,7 @@ public class CdaTypeController extends BaseUIController {
 
     @RequestMapping("typeupdate")
     public String typeupdate(Model model,HttpServletRequest request) throws IOException {
-        UserDetailModel user = getCurrentUserRedis(request);
+        UsersModel user = getCurrentUserRedis(request);
         model.addAttribute("UserId", user.getId());
         model.addAttribute("contentPage", "std/cdaType/CdaTypeDetail");
         return "generalView";
@@ -157,7 +158,7 @@ public class CdaTypeController extends BaseUIController {
         try {
             envelop.setSuccessFlg(false);
             String url = "/cda_types";
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String createUserId = userDetailModel.getId();
             CdaTypeDetailModel detailModel = objectMapper.readValue(dataJson,CdaTypeDetailModel.class);
             if(StringUtils.isEmpty(detailModel.getCode())){
