@@ -310,6 +310,7 @@
                                                         parent._LIGERDIALOG.error(data.errorMsg);
                                                     }
                                                     loading.close();
+                                                    dictMaster.reloadGrid();
                                                 },
                                                 error: function () {
                                                     parent._LIGERDIALOG.error('初始执行指标发生异常。');
