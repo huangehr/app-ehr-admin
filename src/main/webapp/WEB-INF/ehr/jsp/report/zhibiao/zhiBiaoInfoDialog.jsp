@@ -129,7 +129,7 @@
                 <input type="radio" value="2" name="dataLevel" data-attr-scan>增量
             </div>
         </div>--%>
-        <div class="m-form-group f-mb30">
+        <div class="m-form-group f-mt5 f-mb30">
             <label>备注：</label>
             <div class="l-text-wrapper m-form-control">
                 <textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="remark" ></textarea>
