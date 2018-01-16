@@ -409,8 +409,6 @@ public class TjQuotaController extends BaseUIController {
                                     String startTime, String endTime, String orgName,
                                     String province, String city, String district,String res, HttpServletRequest request) {
         Envelop result = new Envelop();
-        System.out.print(tjQuotaId);
-        System.out.print(res);
         String resultStr = "";
         String url = "/tj/tjGetQuotaResult";
         try {
