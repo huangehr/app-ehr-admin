@@ -6,6 +6,7 @@ import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.quota.controller.model.TjQuotaDMainMsg;
@@ -130,7 +131,7 @@ public class TjQuotaController extends BaseUIController {
         String url = "/tj/addTjQuota/";
         String resultStr = "";
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = getCurrentUserRedis(request);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(tjQuotaModelJsonData, "UTF-8").split(";");
         TjQuotaModel detailModel = toModel(strings[0], TjQuotaModel.class);
@@ -634,7 +635,7 @@ public class TjQuotaController extends BaseUIController {
     public void importData(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         try {
-            UserDetailModel user = getCurrentUserRedis(request);
+            UsersModel user = getCurrentUserRedis(request);
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
             TjQuotaMsgReader excelReader = new TjQuotaMsgReader();
@@ -703,10 +704,10 @@ public class TjQuotaController extends BaseUIController {
      * @return
      * @throws Exception
      */
-    private Map<String, Object> validate(UserDetailModel user, TjQuotaMsgReader excelReader,
-                                         List<TjQuotaMsg> errorLs, List<TjQuotaMsg> correctLs,
-                                         List<TjQuotaDMainMsg> quotaMainErrorLs, List<TjQuotaDMainMsg> quotaMainCorrectLs,
-                                         List<TjQuotaDSlaveMsg> quotaSlaveErrorLs, List<TjQuotaDSlaveMsg> quotaSlaveCorrectLs) throws Exception {
+    private Map<String,Object> validate(UsersModel user,TjQuotaMsgReader excelReader,
+                          List<TjQuotaMsg> errorLs, List<TjQuotaMsg> correctLs ,
+                           List<TjQuotaDMainMsg>  quotaMainErrorLs ,List<TjQuotaDMainMsg>  quotaMainCorrectLs ,
+                           List<TjQuotaDSlaveMsg>  quotaSlaveErrorLs ,List<TjQuotaDSlaveMsg>  quotaSlaveCorrectLs) throws Exception {
         List saveLs = new ArrayList<>();
         List quotaMainLs = new ArrayList<>();
         List quotaSlaveLs = new ArrayList<>();

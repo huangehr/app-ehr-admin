@@ -9,6 +9,7 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -64,7 +65,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = getCurrentUserRedis(request);
+        UsersModel user = getCurrentUserRedis(request);
         try {
            writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");

@@ -2,6 +2,7 @@ package com.yihu.ehr.login.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -39,7 +40,7 @@ public class IndexController extends BaseUIController {
     @RequestMapping(value = "")
     public String init(Model model, HttpServletRequest request) throws Exception {
         String clientId = (String)request.getSession().getAttribute("clientId");
-        UserDetailModel userDetailModel = getCurrentUserRedis(request);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         Map<String, Object> params = new HashMap<>();
         if (StringUtils.isNotEmpty(clientId)) {
             // 从总支撑门户过来，会附带 appId 参数

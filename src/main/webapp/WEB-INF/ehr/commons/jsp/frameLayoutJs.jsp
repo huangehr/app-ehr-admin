@@ -16,7 +16,7 @@
         if (e.data == 'callChild') {
             parentOrder = e.data
         } else {
-            alert('未定义的消息');
+//            alert('未定义的消息');
         }
     }, false);
 
