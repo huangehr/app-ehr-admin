@@ -7,46 +7,6 @@
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
 
 <script type="text/javascript">
-
-    var parentOrder = '';
-    var ha = window.location.hash;
-    var host = '${host}';
-
-    window.addEventListener('message', function(e){
-        if (e.data == 'callChild') {
-            parentOrder = e.data
-        } else {
-            alert('未定义的消息');
-        }
-    }, false);
-
-
-
-    function getHost() {
-        var num = 0,
-            str = '';
-        if (host.indexOf('http://') >= 0) {
-            num = ('http://').length;
-        }
-        if (host.indexOf('https://') >= 0) {
-            num = ('https://').length;
-        }
-        str= host.substring(num, host.indexOf('/', num));
-        return str;
-    }
-    function bingConChangeEvent(t) {
-        var $formLogin = $(t).find('#form_login');
-        if ($formLogin.length > 0) {
-            if(ha.indexOf("#signin")>=0) {
-                window.parent.postMessage({
-                    msg: 'loadLogin'
-                }, '*');
-//                top.location = 'http://' + getHost() + '/login';
-            } else {
-                window.location.reload('${contextRoot}/ehr/login');
-            }
-        }
-    }
     $(function () {
 
         /* ************************** 变量定义 ******************************** */
