@@ -15,7 +15,7 @@
         }
         var model = ${model};
         var mode = '${mode}';
-        var appId = '${appId}';
+        debugger
         var paramTypes = ${paramTypes}.detailModelList;
         var paramTypeMap = ls2map(paramTypes, 'code', 'value');
         var dataTypes = ${dataTypes}.detailModelList;
@@ -23,17 +23,25 @@
         var requiredTypes = ${requiredTypes}.detailModelList;
         var requiredTypeMap = ls2map(requiredTypes, 'code', 'value');
         //添加碎片
-        function appendNav(str, url, data) {
-            $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">API管理</span></span>');
-//            $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+        function appendNav() {
+            $('#navLink').html('应用信息<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">API管理</span></span>');
+            $('.go-back').remove();
+            $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
             $("#contentPage").css({
                 'height': 'calc(100% - 40px)'
             }).empty().load('${contextRoot}/app/api/initial',{
                 'dataModel': model.appId
             });
         }
+
+        $(document).on('click', '.go-backa', function (e) {
+            $('.go-backa').remove();
+            appendNav()
+        });
         function back(){
-            window.location.reload();
+            $('.go-backa').remove();
+            appendNav()
+//            window.location.reload();
             <%--$('#contentPage').empty();--%>
             <%--$('#contentPage').load('${contextRoot}/app/api/initial', {dataModel: 1});--%>
         }
@@ -62,7 +70,6 @@
                 dataType: 'json',
                 success: function (res) {
                     if (res.successFlg) {
-                        debugger
                         model = res.detailModelList[0];
                     }
                 }
@@ -173,15 +180,16 @@
                         waittingDialog.close();
                         if (data.successFlg) {
                             win.parent._LIGERDIALOG.success('保存成功');
-                            parent._LIGERDIALOG.confirm("保存成功, 是否继续新增？", function (y) {
-                                <%--if(y){--%>
-                                    <%--model = {id: 0, appId: model.appId, type: "1", name: "", description:"",auditLevel:"", method: "", methodName: "",--%>
-                                        <%--activityType:"",openLevel:"",parameterDemo:"",responseDemo:"", version: "", protocol: "", parentId: model.parentId};--%>
-                                    <%--mode = 'new';--%>
-                                    <%--reInit();--%>
-                                <%--}else--%>
-                                    <%--back();--%>
-                            });
+                            back();
+                            <%--parent._LIGERDIALOG.confirm("保存成功, 是否继续新增？", function (y) {--%>
+                                <%--&lt;%&ndash;if(y){&ndash;%&gt;--%>
+                                    <%--&lt;%&ndash;model = {id: 0, appId: model.appId, type: "1", name: "", description:"",auditLevel:"", method: "", methodName: "",&ndash;%&gt;--%>
+                                        <%--&lt;%&ndash;activityType:"",openLevel:"",parameterDemo:"",responseDemo:"", version: "", protocol: "", parentId: model.parentId};&ndash;%&gt;--%>
+                                    <%--&lt;%&ndash;mode = 'new';&ndash;%&gt;--%>
+                                    <%--&lt;%&ndash;reInit();&ndash;%&gt;--%>
+                                <%--&lt;%&ndash;}else&ndash;%&gt;--%>
+                                    <%--&lt;%&ndash;back();&ndash;%&gt;--%>
+                            <%--});--%>
                         } else {
                             if (data.errorMsg)
                                 parent._LIGERDIALOG.error(data.errorMsg);

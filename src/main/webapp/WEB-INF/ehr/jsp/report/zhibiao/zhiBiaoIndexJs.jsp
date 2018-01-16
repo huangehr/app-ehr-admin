@@ -186,11 +186,15 @@
                                         html += '<sec:authorize url="/tjQuota/updateTjQuota"><a class="grid_edit" style="margin-left:10px;" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:zhiBiaoInfo:open", row.id, 'modify') + '"></a></sec:authorize>';
                                         if(row.status != -1){
                                             html += '<sec:authorize url="/tjQuota/deleteTjQuota"><a class="grid_delete" style="margin-left:0px;" title="删除" href="javascript:void(0)"  onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:zhiBiaoGrid:delete", row.id) + '"></a></sec:authorize>';
-                                            if(row.isInitExec == 0){
-                                                html += '<sec:authorize url="/tjQuota/firstExecuteQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:firstExecuteQuota", row.id, row.code) + '">初始执行</a></sec:authorize>';
-                                            } else {
-                                                html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "zhibiao:execu", row.id, row.code, row.execType) + '">执行指标</a></sec:authorize>';
-                                            }
+                                            /*
+                                            由于初始执行是全量统计，数据量太大很耗时，故指定时间范围做增量统计比较妥当。
+                                            暂定隐藏【初始执行】按钮。 -- 张进军 2018.1.16
+                                            */
+                                            <%--if(row.isInitExec == 0){--%>
+                                                <%--html += '<sec:authorize url="/tjQuota/firstExecuteQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:firstExecuteQuota", row.id, row.code) + '">初始执行</a></sec:authorize>';--%>
+                                            <%--} else {--%>
+                                            html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "zhibiao:execu", row.id, row.code, row.execType) + '">执行指标</a></sec:authorize>';
+//                                            }
                                         }
                                         html += '<sec:authorize url="/tjQuota/queryTjQuotaResult"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:result:selectResult", row.id,row.code) + '">结果查询</a></sec:authorize>';
                                         html += '<sec:authorize url="/tjQuota/queryTjQuotaLog"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
