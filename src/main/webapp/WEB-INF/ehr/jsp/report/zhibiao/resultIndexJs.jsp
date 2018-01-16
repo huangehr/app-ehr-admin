@@ -26,8 +26,11 @@
                 $searchBtn: $('#btn_search'),
                 $orgName: $('#inp_org_name'),
                 $location: $("#inp_location"),
+                $select:$('#select'),
                 $starTime: $('#inp_start_time'),
                 $endTime: $('#inp_end_time'),
+                //创建变量
+                $selectChnage:null,
                 init: function () {
                     this.$element.show();
                     this.$starTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
@@ -38,6 +41,23 @@
                         {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
                         {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}
                     ]});
+                    this.$select.ligerComboBox({
+                        width : 200,
+                        data: [
+                            { text: '全部', id: 'qb' },
+                            { text: '统计值大于0', id: '>0' }
+                        ],
+                        value:"qb",
+                        initIsTriggerEvent: false,
+                        onSelected: function (value ,text)
+                        {
+                            if(text=='统计值大于0'){
+                                patientRetrieve.$selectChnage = value;
+                            }
+
+                        }
+
+                    });
                     this.$orgName.ligerTextBox({width: 140 });
                     this.bindEvents();
                     this.$element.show();
@@ -68,7 +88,7 @@
                                 orgName: '',
                                 location: '',
                                 startTime: '',
-                                endTime: ''
+                                endTime: '',
                             },
                             columns: [
                                 {display: '指标编码', name: 'quotaCode', width: '10%', isAllowHide: false, align: 'left'},
@@ -95,13 +115,15 @@
                     }
                 },
                 reloadGrid: function (curPage) {
+                    console.log(patientRetrieve.$selectChnage)
                     patientRetrieve.$element.attrScan();
 //                    var values = patientRetrieve.$element.Fields.getValues();
                     var address = patientRetrieve.$element.Fields.location.getValue();
                     var values = $.extend({}, patientRetrieve.$element.Fields.getValues(),
                             {province: (address.names[0] == null ? '' : address.names[0])},
                             {city: (address.names[1] == null ? '' : address.names[1])},
-                            {district: (address.names[2] == null ? '' : address.names[2])});
+                            {district: (address.names[2] == null ? '' : address.names[2])},
+                            {res:patientRetrieve.$selectChnage});
                     Util.reloadGrid.call(this.grid, '${contextRoot}/tjQuota/selectQuotaResult', values, curPage);
                 },
                 bindEvents: function () {
