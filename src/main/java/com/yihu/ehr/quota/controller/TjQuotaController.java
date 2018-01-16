@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
