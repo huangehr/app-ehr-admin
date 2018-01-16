@@ -224,7 +224,7 @@
                             params = {mode: mode}
                         }else{
                             em.params = {frm: frm,  rowId: rowId}
-                            params = {id: id, mode: mode, rowId: rowId}
+                            params = {id: id, mode: mode, rowId: rowId,appId: p}
                         }
                         em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify,
                                 mode == 'new'?'新增': mode == 'modify'? '修改': '查看', 480, 650, params);
@@ -243,6 +243,7 @@
                                         dialog.close();
                                         if (data.successFlg) {
                                             win.parent._LIGERDIALOG.success('删除成功！');
+                                            em.find();
 //                                            if(frm==0)
 //                                                master.tree.remove(master.tree.getRow(rowId));
 //                                            else{
@@ -340,7 +341,9 @@
 //                    }
 //                }
             }
-
+            win.parent.$NAVLINK = $('#navLink');
+            win.parent.$DIVNB = $('#div_nav_breadcrumb_bar');
+            win.parent.$CON = $('#contentPage');
             win.parent.getEditParms = function () {
                 return em.params;
             }
