@@ -45,6 +45,14 @@
 //            })
         }();
 
+        //添加碎片
+        function appendNav(str, url, data) {
+            $NAVLINK.append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+//            $DIVNB.show().html('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+            $CON.css({
+                'height': 'calc(100% - 40px)'
+            }).empty().load(url,data);
+        }
         var $form =  $("#infoForm");
         var validator;
         function initValidation(){
@@ -75,31 +83,32 @@
                                 default: newData = data;
                             }
                             this.setData(newData);
-                            this.selectItemByIndex(0);
+                            this.selectItemByIndex(1);
+                            this.setDisabled(true);
                         }
                     }, onSelected: function (v, t) {
                         var version = $('#ipt_api_version').ligerGetTextBoxManager();
                         var protocol = $('#ipt_api_protocol').ligerGetCheckBoxManager();
                         var method = $('#ipt_api_method').ligerGetCheckBoxManager();
                         var methodName = $('#ipt_api_methodName').ligerGetTextBoxManager();
-                        if(v==1){
-                                $('.apiProto').addClass("essential").find('input').addClass('required');
-                                version.setEnabled(true);
-                                protocol.setEnabled(true);
-                                method.setEnabled(true);
-                                methodName.setEnabled(true);
-                        } else{
-                            $('.apiProto').removeClass("essential").find('input').removeClass('required');
-                            version.setDisabled(true);
-                            protocol.setDisabled(true);
-                            method.setDisabled(true);
-                            methodName.setDisabled(true);
-                            version.setValue('');
-                            protocol.setValue('');
-                            method.setValue('');
-                            methodName.setValue('');
-                        }
-                        validator.reset();
+//                        if(v==1){
+//                                $('.apiProto').addClass("essential").find('input').addClass('required');
+//                                version.setEnabled(true);
+//                                protocol.setEnabled(true);
+//                                method.setEnabled(true);
+//                                methodName.setEnabled(true);
+//                        } else{
+//                            $('.apiProto').removeClass("essential").find('input').removeClass('required');
+//                            version.setDisabled(true);
+//                            protocol.setDisabled(true);
+//                            method.setDisabled(true);
+//                            methodName.setDisabled(true);
+//                            version.setValue('');
+//                            protocol.setValue('');
+//                            method.setValue('');
+//                            methodName.setValue('');
+//                        }
+//                        validator.reset();
                     }
                 }},
                 {type: 'select', id: 'ipt_api_openLevel', dictId: 40, opts:{initVal: mode=='new'? '1': undefined}},
@@ -110,7 +119,6 @@
                 {type: 'select', id: 'ipt_api_method', dictId: 45},
                 {type: 'text', id: 'ipt_api_methodName'}
             ];
-debugger
             if(extParms.upType==-1 || model.type==2)
                 appCombo = $('#ipt_api_name').customCombo(
                         urls.appCombo, {fields: 'id,name', filters: 'sourceType=1'}, function (id, name) {
@@ -145,10 +153,11 @@ debugger
                         if(data.obj.type==1){
                             $.Notice.confirm("保存成功，是否继续编辑接口详细信息？", function (y) {
                                 if(y){
-                                    var url = urls.apiEdit + '?treePid=1&treeId=11&mode=modify';
+                                    var url = urls.apiEdit + '?mode=' + mode;
                                     closeDialog();
-                                    $("#contentPage").empty();
-                                    $("#contentPage").load(url, data.obj);
+                                    appendNav('API接口详细信息', url, data.obj);
+//                                    $("#contentPage").empty();
+//                                    $("#contentPage").load(url, data.obj);
                                 }else
                                     closeDialog(undefined, data);
                             })

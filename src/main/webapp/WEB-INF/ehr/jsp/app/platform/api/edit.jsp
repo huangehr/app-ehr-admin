@@ -2,11 +2,11 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<div id="infoContent" style=" border: 1px solid rgb(214, 214, 214); overflow: auto" data-role-form>
+<div id="infoContent" data-role-form>
 
-  <div class="body-head" align="left" style="margin-left: 10px; margin-top: 10px">
-    <a id="btn_back" class="f-fwb">返回上一层 </a>
-  </div>
+  <%--<div class="body-head" align="left" style="margin-left: 10px; margin-top: 10px">--%>
+    <%--<a id="btn_back" class="f-fwb">返回上一层 </a>--%>
+  <%--</div>--%>
 
   <!-- 基础信息-->
   <div id="apiForm" style="height: 270px;" class="m-form-inline"  >
@@ -111,14 +111,14 @@
   </div>
 
   <!-- 请求参数 -->
-  <div style="margin: 10px">
+  <div style="margin-bottom: 10px">
     <div class="req-parms-title">请求参数</div>
     <div id="parmsForm" class="m-retrieve-area f-h50 f-pr m-form-inline" style="line-height: 50px;border-left: 1px solid #ccc; border-right: 1px solid #ccc"></div>
     <div id="parmsGrid" ></div>
   </div>
 
   <!-- 参数示例 -->
-  <div style="margin: 10px">
+  <div style="margin-bottom: 10px">
     <div class="req-parms-title">参数示例</div>
     <div>
       <textarea id="ipt_parms" data-attr-scan="parameterDemo" style="height: 200px; width: 100%"
@@ -127,14 +127,14 @@
   </div>
 
   <!-- 返回值 -->
-  <div style="margin: 10px">
+  <div style="margin-bottom: 10px">
     <div class="req-parms-title">返回值</div>
     <div id="responseForm" class="m-retrieve-area f-h50 f-pr m-form-inline" style="line-height: 50px; border-left: 1px solid #ccc; border-right: 1px solid #ccc"></div>
     <div id="responseGrid" ></div>
   </div>
 
   <!-- 参数示例 -->
-  <div style="margin: 10px">
+  <div style="margin-bottom: 10px">
     <div class="req-parms-title">返回值示例</div>
     <div>
       <textarea id="ipt_res_val" data-attr-scan="responseDemo" style="height: 200px; width: 100%"
