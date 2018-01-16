@@ -29,7 +29,10 @@
             <!--下拉框-->
             <input type="text" id="inp_location" data-type="comboSelect" data-attr-scan="location"/>
           </div>
-
+          <div class="m-form-control f-ml10 f-mb10">
+            <!--下拉框-->
+            <input type="text" id="select" />
+          </div>
           <div class="m-form-control f-ml10 f-mb10">
             <sec:authorize url="/quota/searchResult">
               <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
