@@ -118,23 +118,18 @@
                 <textarea type="text" id="inp_dataStorage_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> ></textarea>
             </div>
         </div>
-        <div class="m-form-group ">
+        <%--
+        基础指标，初始执行为全量统计，之后都是增量统计；二次指标在基础指标基础上进行统计。故 DataLevel 字段已没用。
+        -- 张进军  2018.1.16
+        --%>
+        <%--<div class="m-form-group ">
             <label>存储方式：</label>
-
             <div class="u-checkbox-wrap m-form-control ">
                 <input type="radio" value="1" name="dataLevel" data-attr-scan>全量
                 <input type="radio" value="2" name="dataLevel" data-attr-scan>增量
             </div>
-        </div>
-        <%--<div class="m-form-group ">--%>
-            <%--<label>状态：</label>--%>
-            <%--<div class="u-checkbox-wrap m-form-control ">--%>
-                <%--<input type="radio" value="1" name="status" data-attr-scan>正常--%>
-                <%--<input type="radio" value="-1" name="status" data-attr-scan>删除--%>
-                <%--<input type="radio" value="0" name="status" data-attr-scan>不可用--%>
-            <%--</div>--%>
-        <%--</div>--%>
-        <div class="m-form-group f-mb30">
+        </div>--%>
+        <div class="m-form-group f-mt5 f-mb30">
             <label>备注：</label>
             <div class="l-text-wrapper m-form-control">
                 <textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="remark" ></textarea>
