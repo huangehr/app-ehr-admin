@@ -69,9 +69,16 @@
     .hr-body{
         min-height: 100%;
         background: #e9f2f8;
+        padding-top: calc(13.728vh + 45px);
     }
     .tmp-top{
-        padding: 15px;
+        /*padding: 15px;*/
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        z-index: 5;
+        border-bottom: 1px solid #f0f0f0;
     }
     .top-list{
         background: #fff;

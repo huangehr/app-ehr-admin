@@ -3,6 +3,7 @@ package com.yihu.ehr.organization.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
@@ -52,7 +53,7 @@ public class OrgImportController extends ExtendController<OrgService> {
     @ResponseBody
     public void importOrgMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = getCurrentUserRedis(request);
+        UsersModel user = getCurrentUserRedis(request);
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");

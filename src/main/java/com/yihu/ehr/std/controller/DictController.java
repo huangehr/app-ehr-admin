@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.standard.dict.DictEntryModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.std.model.DictionaryMsg;
@@ -152,7 +153,7 @@ public class DictController  extends BaseUIController {
         Envelop result = new Envelop();
         String resultStr = "";
         try{
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String userId = userDetailModel.getId().toString();
             if (StringUtils.isEmpty(cdaVersion)) {
                 result.setSuccessFlg(false);
@@ -909,7 +910,7 @@ public class DictController  extends BaseUIController {
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = getCurrentUserRedis(request);
+        UsersModel user = getCurrentUserRedis(request);
         try {
             String version = request.getParameter("version");
             if(StringUtils.isBlank(version)){

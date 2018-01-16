@@ -3,6 +3,7 @@ package com.yihu.ehr.specialdict.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.DrugDictModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -128,7 +129,7 @@ public class DrugDictController extends BaseUIController {
         envelop.setSuccessFlg(false);
         String url = "/dict/drug";
         try{
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             DrugDictModel model = objectMapper.readValue(dictJson,DrugDictModel.class);
             if("new".equals(mode)){
                 model.setCreateUser(userDetailModel.getId());

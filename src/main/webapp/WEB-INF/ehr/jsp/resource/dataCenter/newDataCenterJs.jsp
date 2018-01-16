@@ -74,7 +74,7 @@
             ),reqFun(int[1], null,//医疗资源建档数
                 function (res) {
                     if (res.successFlg) {
-                        me.byNum = res.obj;
+                        me.mbNum = res.obj;
                     }
                 }
             ),reqFun(int[2], null,//健康档案建档数
@@ -437,7 +437,7 @@
                                     },
                                     legend: {
                                         orient: 'vertical',
-                                        x: 'right',
+                                        x: '70%',
                                         y: 'center',
                                         data: legendArr
                                     },

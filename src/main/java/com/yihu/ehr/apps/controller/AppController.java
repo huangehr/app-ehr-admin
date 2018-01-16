@@ -5,6 +5,7 @@ import com.yihu.ehr.agModel.app.AppDetailModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.resource.RsAppResourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.resource.MRsAppResource;
@@ -173,7 +174,7 @@ public class AppController extends BaseUIController {
         MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
         try {
             //不能用 @ModelAttribute(SessionAttributeKeys.CurrentUser)获取，会与AppDetailModel中的id属性有冲突
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             appDetailModel.setCreator(userDetailModel.getId());
             conditionMap.add("app", toJson(appDetailModel));
             RestTemplates template = new RestTemplates();

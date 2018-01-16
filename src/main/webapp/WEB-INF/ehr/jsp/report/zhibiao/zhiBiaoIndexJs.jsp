@@ -59,7 +59,6 @@
             };
 
             <%--function onUploadSuccess(g, result){--%>
-                <%--debugger;--%>
                 <%--if(result)--%>
                     <%--openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});--%>
                 <%--else--%>
@@ -191,7 +190,7 @@
                                             if(row.isInitExec == 0){
                                                 html += '<sec:authorize url="/tjQuota/firstExecuteQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:firstExecuteQuota", row.id, row.code) + '">初始执行</a></sec:authorize>';
                                             } else {
-                                                html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:execu", row.id, row.code) + '">执行指标</a></sec:authorize>';
+                                                html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "zhibiao:execu", row.id, row.code, row.execType) + '">执行指标</a></sec:authorize>';
                                             }
                                         }
                                         html += '<sec:authorize url="/tjQuota/queryTjQuotaResult"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:result:selectResult", row.id,row.code) + '">结果查询</a></sec:authorize>';
@@ -311,11 +310,21 @@
                                                         parent._LIGERDIALOG.error(data.errorMsg);
                                                     }
                                                     loading.close();
+                                                    dictMaster.reloadGrid();
+                                                },
+                                                error: function () {
+                                                    parent._LIGERDIALOG.error('初始执行指标发生异常。');
+                                                    loading.close();
                                                 }
                                             });
                                         }else{
                                             parent._LIGERDIALOG.error("请先在维度配置中配置主维度");
+                                            loading.close();
                                         }
+                                    },
+                                    error: function () {
+                                        parent._LIGERDIALOG.error("验证指标主维度发生异常。");
+                                        loading.close();
                                     }
                                 });
                             }
@@ -323,71 +332,50 @@
                     });
 
                     // 执行指标
-                    $.subscribe('zhibiao:execu', function (event, id, quotaCode) {
-                        var htmlStr =
-                                '<div id="extractForm" data-role-form>' +
-                                    '<div class="m-form-group f-ml5 f-mr5">' +
-                                        '<div class="l-text-wrapper m-form-control essential">' +
-                                            '<input type="text" id="extractStartTime" data-attr-scan="extractStartTime" class="required" placeholder="起始日期">' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<div class="m-form-group f-ml5 f-mr5 f-mt10">' +
-                                        '<div class="l-text-wrapper m-form-control essential">' +
-                                            '<input type="text" id="extractEndTime" data-attr-scan="extractEndTime" class="required" placeholder="截止日期">' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<div class="m-form-group f-mt10 f-fr">' +
-                                        '<div id="executeGoOn" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10">' +
-                                            '<span>继续</span>' +
-                                        '</div>' +
-                                    '</div>' +
-                                '</div>';
-                        dictMaster.extractDialog = parent._LIGERDIALOG.open({
-                            title: '填写日期',
-                            content: htmlStr,
-                            loadSuccess: function ($dlDom) {
-                                parent.startDateDom = $dlDom.find('#extractStartTime').ligerDateEditor({format: "yyyy-MM-dd"});
-                                parent.endDateDom = $dlDom.find('#extractEndTime').ligerDateEditor({format: "yyyy-MM-dd"});
-                                parent.validator = new parent.$.jValidation.Validation($dlDom.find('#extractForm'), {immediate: true});
+                    $.subscribe('zhibiao:execu', function (event, id, quotaCode, execType) {
+                        if (execType === '2') { // 周期执行
+                            executeQuota(id, quotaCode);
+                        } else { // 单次执行
+                            var htmlStr =
+                                    '<div id="extractForm" data-role-form>' +
+                                    '   <div class="f-mb5 f-ml5" style="color: #FF0000;">执行的是基础指标，不填起止日期，则默认统计昨天的。</div>' +
+                                    '   <div class="m-form-group f-ml5 f-mr5">' +
+                                    '       <div class="l-text-wrapper m-form-control">' +
+                                    '           <input type="text" id="extractStartTime" data-attr-scan="extractStartTime" placeholder="起始日期">' +
+                                    '       </div>' +
+                                    '   </div>' +
+                                    '   <div class="m-form-group f-ml5 f-mr5 f-mt10">' +
+                                    '       <div class="l-text-wrapper m-form-control">' +
+                                    '           <input type="text" id="extractEndTime" data-attr-scan="extractEndTime" placeholder="截止日期">' +
+                                    '       </div>' +
+                                    '   </div>' +
+                                    '   <div class="m-form-group f-mt10 f-fr">' +
+                                    '       <div id="executeGoOn" class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10">' +
+                                    '           <span>继续</span>' +
+                                    '       </div>' +
+                                    '   </div>' +
+                                    '</div>';
+                            dictMaster.extractDialog = parent._LIGERDIALOG.open({
+                                title: '填写日期',
+                                content: htmlStr,
+                                loadSuccess: function ($dlDom) {
+                                    parent.startDateDom = $dlDom.find('#extractStartTime').ligerDateEditor({format: "yyyy-MM-dd"});
+                                    parent.endDateDom = $dlDom.find('#extractEndTime').ligerDateEditor({format: "yyyy-MM-dd"});
+                                    parent.validator = new parent.$.jValidation.Validation($dlDom.find('#extractForm'), {immediate: true});
 
-                                $dlDom.find('#executeGoOn').on('click', function (e) {
-                                    if (!parent.validator.validate()) { return; }
-
-                                    dictMaster.extractDialog.close();
-                                    parent._LIGERDIALOG.confirm('确认要执行所选指标？', function (r) {
-                                        if (r) {
-                                            var loading = parent._LIGERDIALOG.waitting("正在执行,需要点时间，请稍后...");
-                                            var dataModel = $.DataModel.init();
-                                            dataModel.updateRemote('${contextRoot}/tjQuota/hasConfigDimension', {
-                                                data: { quotaCode: quotaCode },
-                                                success: function (data) {
-                                                    if(data){
-                                                        dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
-                                                            data: {
-                                                                tjQuotaId: parseInt(id),
-                                                                startDate: parent.startDateDom.getValue(),
-                                                                endDate: parent.endDateDom.getValue()
-                                                            },
-                                                            success: function (data) {
-                                                                if(data.successFlg){
-                                                                    parent._LIGERDIALOG.success('执行成功！');
-                                                                }else{
-                                                                    parent._LIGERDIALOG.error(data.errorMsg);
-                                                                }
-                                                                loading.close();
-                                                            }
-                                                        });
-                                                    }else{
-                                                        parent._LIGERDIALOG.error("请先在维度配置中配置主维度");
-                                                    }
-                                                }
-                                            });
+                                    $dlDom.find('#executeGoOn').on('click', function (e) {
+                                        if (!parent.validator.validate()) {
+                                            return;
                                         }
-                                    });
-                                });
-                            }
-                        });
 
+                                        dictMaster.extractDialog.close();
+                                        var startDate = parent.startDateDom.getFormatDate(parent.startDateDom.getValue());
+                                        var endDate = parent.endDateDom.getFormatDate(parent.endDateDom.getValue());
+                                        executeQuota(id, quotaCode, startDate, endDate);
+                                    });
+                                }
+                            });
+                        }
                     });
 
                     $.subscribe('zhibiao:result:selectResult', function (event, id,quotaCode) {
@@ -414,6 +402,50 @@
                 }
             };
             /* ************************* 模块初始化结束 ************************** */
+
+            // 执行指标
+            function executeQuota (id, quotaCode, startDate, endDate) {
+                parent._LIGERDIALOG.confirm('确认要执行所选指标吗？', function (r) {
+                    if (r) {
+                        var loading = parent._LIGERDIALOG.waitting("正在执行,需要点时间，请稍后...");
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote('${contextRoot}/tjQuota/hasConfigDimension', {
+                            data: { quotaCode: quotaCode },
+                            success: function (data) {
+                                if(data){
+                                    dataModel.updateRemote('${contextRoot}/tjQuota/execuQuota', {
+                                        data: {
+                                            tjQuotaId: id,
+                                            startDate: startDate,
+                                            endDate: endDate
+                                        },
+                                        success: function (data) {
+                                            if(data.successFlg){
+                                                parent._LIGERDIALOG.success('执行成功！');
+                                            }else{
+                                                parent._LIGERDIALOG.error(data.errorMsg);
+                                            }
+                                            loading.close();
+                                        },
+                                        error: function (data) {
+                                            parent._LIGERDIALOG.error('执行指标发生异常。');
+                                            loading.close();
+                                        }
+                                    });
+                                }else{
+                                    parent._LIGERDIALOG.error("请先在维度配置中配置主维度");
+                                    loading.close();
+                                }
+                            },
+                            error: function () {
+                                parent._LIGERDIALOG.error("验证指标主维度发生异常。");
+                                loading.close();
+                            }
+                        });
+                    }
+                });
+            }
+
             /* ************************* dialog回调函数 ************************** */
 
 

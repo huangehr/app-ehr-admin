@@ -53,7 +53,7 @@ public class AppApiController extends ExtendController<AppApiService> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "pageView";
+        return "emptyView";
     }
 
     @RequestMapping("/tree")
