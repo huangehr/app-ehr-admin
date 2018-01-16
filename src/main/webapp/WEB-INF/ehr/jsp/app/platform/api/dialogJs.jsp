@@ -155,7 +155,7 @@
                                 if(y){
                                     var url = urls.apiEdit + '?mode=' + mode;
                                     closeDialog();
-                                    appendNav('API接口详细信息', url, data.obj);
+                                    appendNav('新增API详细信息', url, data.obj);
 //                                    $("#contentPage").empty();
 //                                    $("#contentPage").load(url, data.obj);
                                 }else
