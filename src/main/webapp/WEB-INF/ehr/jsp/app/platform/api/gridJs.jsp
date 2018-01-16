@@ -31,123 +31,133 @@
                     $('#contentPage').load('${contextRoot}/app/initial', {dataModel: 1});
                 });
             }();
-            function searchParent(searchDoms){
-                var parent = [], p = null;
-                $.each(searchDoms, function (i, v) {
-                    $(v).removeClass('l-grid-row-hide');
-                    if(( p = master.tree.getParent( v )))
-                        parent.push(master.tree.getRowObj(p));
-                })
-                if(parent.length>0)
-                    searchParent(parent);
-            }
-            var master = {
-                tree: undefined,
-                dialog: undefined,
-                init: function () {
-                    var m = this;
-                    m.filters();
-                    m.rendTreeGrid();
-                },
-                searchFun: function (t) {
+//            function searchParent(searchDoms){
+//                var parent = [], p = null;
+//                $.each(searchDoms, function (i, v) {
+//                    $(v).removeClass('l-grid-row-hide');
+//                    if(( p = master.tree.getParent( v )))
+//                        parent.push(master.tree.getRowObj(p));
+//                })
+//                if(parent.length>0)
+//                    searchParent(parent);
+//            }
+            <%--var master = {--%>
+                <%--tree: undefined,--%>
+                <%--dialog: undefined,--%>
+                <%--init: function () {--%>
+                    <%--var m = this;--%>
+                    <%--m.filters();--%>
+                    <%--m.rendTreeGrid();--%>
+                <%--},--%>
+                <%--searchFun: function (t) {--%>
 
-                    var name = $('#l_search_name').val();
-                    sessionStorage.setItem("appApiTreeParm", name);
+                    <%--var name = $('#l_search_name').val();--%>
+                    <%--sessionStorage.setItem("appApiTreeParm", name);--%>
 
-                    var treeDom = master.tree.grid;
-                    var allrow =  $('.l-grid-row', treeDom);
-                    if(name==''){
-                        allrow.removeClass('l-grid-row-hide');
-                        allrow.show();
-                        $('.l-grid-body.l-grid-body2.l-scroll', treeDom).height($('.l-grid-row:visible', treeDom).length * 41);
-                    }else{
-                        master.tree.expandAll();
-                        allrow.addClass('l-grid-row-hide');
+                    <%--var treeDom = master.tree.grid;--%>
+                    <%--var allrow =  $('.l-grid-row', treeDom);--%>
+                    <%--if(name==''){--%>
+                        <%--allrow.removeClass('l-grid-row-hide');--%>
+                        <%--allrow.show();--%>
+                        <%--$('.l-grid-body.l-grid-body2.l-scroll', treeDom).height($('.l-grid-row:visible', treeDom).length * 41);--%>
+                    <%--}else{--%>
+                        <%--master.tree.expandAll();--%>
+                        <%--allrow.addClass('l-grid-row-hide');--%>
 
-                        var searchDoms = $('.l-grid-row-cell-inner[title*="'+ name +'"]', treeDom).parent().parent();
-                        searchParent(searchDoms);
-                    }
-                    if(!t){
-                        $('.l-grid-body-inner', $('#rightGrid')).empty();
-                        $('.l-grid-body.l-grid-body1', $('#rightGrid')).empty();
-                    }
-                },
-                filters: function(){
-                    var vo = [{type: 'text', id: 'l_search_name', searchFun: master.searchFun}];
-                    initFormFields(vo, $('.l-tools'));
-                },
-                rendTreeGrid: function () {
-                    this.tree = $("#treeMenu").ligerGrid($.LigerGridEx.config({
-                        rownumbers: false,
-                        allowAdjustColWidth: false,
-                        usePager: false,
-//                        height: '100%',
-                        tree: {columnId: 'name'},
-                        url: urls.tree,
-                        parms: parms,
-                        columns: [
-                            {
-                                display: '组织结构名称', name: 'name', id: 'name', align: 'left', width: '290',
-                                render: function (row) {
-                                    var iconName = "";
-                                    switch (parseInt(row.type)){
-                                        case -1: iconName= '1ji_icon'; break;
-                                        case 0: iconName= '3ji_icon'; break;
-                                        case 2: iconName= '2ji_icon'; break;
-                                        default : iconName= '3ji_icon';
-                                    }
-                                    return '<img src="${contextRoot}/develop/images/'+ iconName +'.png" class="row-icon">'
-                                            +'<div id="t_'+ row.id +'">'+ row.name +'</div>';
-                                }
-                            },
-                            {
-                                display: '操作', name: 'operator', align: 'left', width: '70', render: function (row) {
-                                    var html =
-                                            '<sec:authorize url="/app/api/create"><a class="image-create" href="#" title="新增" ' +
-                                            'onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}', '{5}', '{6}'])", "app:plf:api:modify", row.id, 'new', row.type, 0, row.__id, row.appId) + '"></a></sec:authorize>';
+                        <%--var searchDoms = $('.l-grid-row-cell-inner[title*="'+ name +'"]', treeDom).parent().parent();--%>
+                        <%--searchParent(searchDoms);--%>
+                    <%--}--%>
+                    <%--if(!t){--%>
+                        <%--$('.l-grid-body-inner', $('#rightGrid')).empty();--%>
+                        <%--$('.l-grid-body.l-grid-body1', $('#rightGrid')).empty();--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--filters: function(){--%>
+                    <%--var vo = [{type: 'text', id: 'l_search_name', searchFun: master.searchFun}];--%>
+                    <%--initFormFields(vo, $('.l-tools'));--%>
+                <%--},--%>
+                <%--rendTreeGrid: function () {--%>
+                    <%--this.tree = $("#treeMenu").ligerGrid($.LigerGridEx.config({--%>
+                        <%--rownumbers: false,--%>
+                        <%--allowAdjustColWidth: false,--%>
+                        <%--usePager: false,--%>
+<%--//                        height: '100%',--%>
+                        <%--tree: {columnId: 'name'},--%>
+                        <%--url: urls.tree,--%>
+                        <%--parms: parms,--%>
+                        <%--columns: [--%>
+                            <%--{--%>
+                                <%--display: '组织结构名称', name: 'name', id: 'name', align: 'left', width: '290',--%>
+                                <%--render: function (row) {--%>
+                                    <%--var iconName = "";--%>
+                                    <%--switch (parseInt(row.type)){--%>
+                                        <%--case -1: iconName= '1ji_icon'; break;--%>
+                                        <%--case 0: iconName= '3ji_icon'; break;--%>
+                                        <%--case 2: iconName= '2ji_icon'; break;--%>
+                                        <%--default : iconName= '3ji_icon';--%>
+                                    <%--}--%>
+                                    <%--return '<img src="${contextRoot}/develop/images/'+ iconName +'.png" class="row-icon">'--%>
+                                            <%--+'<div id="t_'+ row.id +'">'+ row.name +'</div>';--%>
+                                <%--}--%>
+                            <%--},--%>
+                            <%--{--%>
+                                <%--display: '操作', name: 'operator', align: 'left', width: '70', render: function (row) {--%>
+                                    <%--var html =--%>
+                                            <%--'<sec:authorize url="/app/api/create"><a class="image-create" href="#" title="新增" ' +--%>
+                                            <%--'onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}', '{5}', '{6}'])", "app:plf:api:modify", row.id, 'new', row.type, 0, row.__id, row.appId) + '"></a></sec:authorize>';--%>
 
-                                    if(row.id>0){
-                                        html +=  '<sec:authorize url="/app/api/delete"><a class="grid_delete" href="#" style="width: 30px; margin-left:4px" title="删除" ' +
-                                                'onclick="javascript:' + Util.format("$.publish('{0}',['{1}', '{2}', '{3}'])", "app:plf:api:del", row.id, 0, row.__id) + '"></a></sec:authorize>';
-                                    }
-                                    return html;
-                                }
-                            }
-                        ],
-                        onSelectRow: function (rowData, rowId, rowObj) {
-                            debugger
-                            sessionStorage.setItem("appApiTreeSelId", rowData.id);
-                            em.find(rowData.id);
-                        },
-                        onDblClickRow: function (rowData, rowId, rowObj) {
-                            if( rowData.id &&  rowData.id>0)
-                                em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
-                        },
-                        onAfterShowData: function () {
-                            if(p==1){
-                                var appApiEm = sessionStorage.getItem("appApiEm");
-                                if(appApiEm){
-                                    appApiEm = eval('('+appApiEm +')');
-                                    fillForm(appApiEm, $('#r_searchForm'));
-                                }
+                                    <%--if(row.id>0){--%>
+                                        <%--html +=  '<sec:authorize url="/app/api/delete"><a class="grid_delete" href="#" style="width: 30px; margin-left:4px" title="删除" ' +--%>
+                                                <%--'onclick="javascript:' + Util.format("$.publish('{0}',['{1}', '{2}', '{3}'])", "app:plf:api:del", row.id, 0, row.__id) + '"></a></sec:authorize>';--%>
+                                    <%--}--%>
+                                    <%--return html;--%>
+                                <%--}--%>
+                            <%--}--%>
+                        <%--],--%>
+                        <%--onSelectRow: function (rowData, rowId, rowObj) {--%>
+                            <%--debugger--%>
+                            <%--sessionStorage.setItem("appApiTreeSelId", rowData.id);--%>
+                            <%--em.find(rowData.id);--%>
+                        <%--},--%>
+                        <%--onDblClickRow: function (rowData, rowId, rowObj) {--%>
+                            <%--if( rowData.id &&  rowData.id>0)--%>
+                                <%--em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);--%>
+                        <%--},--%>
+                        <%--onAfterShowData: function () {--%>
+                            <%--if(p==1){--%>
+                                <%--var appApiEm = sessionStorage.getItem("appApiEm");--%>
+                                <%--if(appApiEm){--%>
+                                    <%--appApiEm = eval('('+appApiEm +')');--%>
+                                    <%--fillForm(appApiEm, $('#r_searchForm'));--%>
+                                <%--}--%>
 
-                                $('#l_search_name').val(sessionStorage.getItem("appApiTreeParm") || '');
-                                master.searchFun(1);
-                                var selId = sessionStorage.getItem("appApiTreeSelId");
-                                if(selId){
-                                    var rowDom = $('#t_'+selId, master.tree.tree).parent().parent().parent().parent().parent();
-                                    master.tree.select(rowDom.attr('id').split('|')[2]);
-                                }
-                            }
-                        }
-                    }));
-                }
-            }
+                                <%--$('#l_search_name').val(sessionStorage.getItem("appApiTreeParm") || '');--%>
+                                <%--master.searchFun(1);--%>
+                                <%--var selId = sessionStorage.getItem("appApiTreeSelId");--%>
+                                <%--if(selId){--%>
+                                    <%--var rowDom = $('#t_'+selId, master.tree.tree).parent().parent().parent().parent().parent();--%>
+                                    <%--master.tree.select(rowDom.attr('id').split('|')[2]);--%>
+                                <%--}--%>
+                            <%--}--%>
+                        <%--}--%>
+                    <%--}));--%>
+                <%--}--%>
+            <%--}--%>
             $('#btn_add').on('click', function () {
+                $('.go-back').remove();
                 var params = {mode: 'new', appId: p};
                 em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify, '新增', 480, 650, params);
             });
 
+            //添加碎片
+            function appendNav(str, url, data) {
+                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-backa"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
+            }
             var em = {
                 grid: undefined, dialog: undefined, params: {},
                 //初始化
@@ -191,17 +201,19 @@
                         checkbox: false,
                         onDblClickRow: function (rowData, rowId, rowObj) {
                             if( rowData.id &&  rowData.id>0)
-                                em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId);
+                                var rowStr = JSON.stringify(rowData).replace(/\"/g,'&quto;');
+                                em.gotoModify(undefined, rowData.id, 'view', rowData.type, 0, rowId, rowStr);
                         }
                     });
                 },
                 //操作栏渲染器
                 opratorRender: function (row) {
+                    var rowStr = JSON.stringify(row).replace(/\"/g,'&quto;');
                     var vo = [
 						<sec:authorize url="/app/api/update">
                         {
                             type: 'edit',
-                            clkFun: "$.publish('app:plf:api:modify',['" + row['id'] + "', 'modify', '" + row['type'] + "', '1', '"+ row.__id +"'])"
+                            clkFun: "$.publish('app:plf:api:modify',['" + row['id'] + "', 'modify', '" + row['type'] + "', '1', '"+ row.__id +"', '" + rowStr + "'])"
                         },
 						</sec:authorize>
 						<sec:authorize url="/app/api/delete">
@@ -212,22 +224,26 @@
                 },
                 //修改、新增点击事件
                 gotoModify: function (event, id, mode, type, frm, rowId, appId) {
+                    $('.go-back').remove();
+                    var str = mode == 'new'?'新增': mode == 'modify'? '修改': '查看',
+                        row = JSON.parse(appId.replace(/&quto;/g,'\"'));
+                    appendNav(str + 'API详细信息', urls.apiEdit + '?mode=' + mode, row);
 //                    if(type==1){
 //                        var obj = em.grid.getRow(rowId);
 //                        var url = urls.apiEdit + '?treePid=1&treeId=11&mode='+ mode;
 //                        $("#contentPage").empty();
 //                        $("#contentPage").load(url, obj);
 //                    }else{
-                        var params;
-                        if(mode == 'new'){
-                            em.params = {upType: type, upId: id, frm: frm, rowId: rowId, appId: appId}
-                            params = {mode: mode}
-                        }else{
-                            em.params = {frm: frm,  rowId: rowId}
-                            params = {id: id, mode: mode, rowId: rowId,appId: p}
-                        }
-                        em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify,
-                                mode == 'new'?'新增': mode == 'modify'? '修改': '查看', 480, 650, params);
+//                        var params;
+//                        if(mode == 'new'){
+//                            em.params = {upType: type, upId: id, frm: frm, rowId: rowId, appId: appId}
+//                            params = {mode: mode}
+//                        }else{
+//                            em.params = {frm: frm,  rowId: rowId}
+//                            params = {id: id, mode: mode, rowId: rowId,appId: p}
+////                        }
+//                        em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify,
+//                                mode == 'new'?'新增': mode == 'modify'? '修改': '查看', 480, 650, params);
 //                    }
                 },
                 del: function (event, id, frm, rowId, parentId, type) {
