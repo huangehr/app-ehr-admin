@@ -421,7 +421,8 @@ public class TjQuotaController extends BaseUIController {
             filters.put("province", province);
             filters.put("city", city);
             filters.put("district", district);
-            filters.put("result", res);
+             // 结果大于0
+            // filters.put("result", res);
             Map<String, Object> params = new HashMap<>();
             List<String> userOrgList = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
