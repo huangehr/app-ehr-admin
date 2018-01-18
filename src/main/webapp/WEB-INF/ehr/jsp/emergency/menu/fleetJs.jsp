@@ -191,8 +191,10 @@
                                         success:function (data) {
                                             if(data.successFlg){
                                                 that.val("值班")
-                                                $('.status a').html('休息')
-                                                $('.be_On_change').attr("data-code",0)
+                                                that.parents('li').find('a').html('休息')
+                                                $('.be_On_change').attr("data-code",0);
+                                                $('#editState').attr("ms-click","jumpMenu(item.id)");
+                                                that.parents('li').find('#editState').removeClass('changeGray');
                                                 parent._LIGERDIALOG.success("操作成功");
                                             }else {
                                                 parent._LIGERDIALOG.error(data.errorMsg);
@@ -216,9 +218,9 @@
                                 },
                                 success:function (data) {
                                     if(data.successFlg){
-                                        that.val("休息")
-                                        $('.status a').html('待命中')
-                                        $('.be_On_change').attr("data-code",1)
+                                        that.val("休息");
+                                        that.parents('li').find('a').html('待命中')
+                                        $('.be_On_change').attr("data-code",1);
                                         parent._LIGERDIALOG.success("操作成功");
                                     }else {
                                         parent._LIGERDIALOG.error(data.errorMsg);

@@ -3,6 +3,7 @@ package com.yihu.ehr.specialdict.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.IndicatorsDictModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -141,7 +142,7 @@ public class IndicatorDictController extends BaseUIController {
         Envelop envelop = new Envelop();
         try{
             envelop.setSuccessFlg(false);
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String url = "/dict/indicator";
             IndicatorsDictModel model = objectMapper.readValue(dictJson, IndicatorsDictModel.class);
             if(StringUtils.isEmpty(model.getCode())){

@@ -75,9 +75,15 @@ public class ResourceBrowseController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/comprehensiveQuery")
+    public String comprehensiveQuery(Model model) {
+        model.addAttribute("contentPage", "/resource/browse/comprehensiveQuery");
+        return "pageView";
+    }
+
     @RequestMapping("/dataCenter")
     public String dataCenter(Model model) {
-        model.addAttribute("contentPage", "/resource/dataCenter/dataCenter");
+        model.addAttribute("contentPage", "/resource/dataCenter/newDataCenter");
         return "pageView";
     }
 

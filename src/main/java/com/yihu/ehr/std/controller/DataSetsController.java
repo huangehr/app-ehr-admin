@@ -7,6 +7,7 @@ import com.yihu.ehr.agModel.standard.datasset.MetaDataModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
 import com.yihu.ehr.agModel.standard.standardsource.StdSourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -1063,7 +1064,7 @@ public class DataSetsController extends BaseUIController {
                            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         try {
-            UserDetailModel user = getCurrentUserRedis(request);
+            UsersModel user = getCurrentUserRedis(request);
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
             AExcelReader excelReader = new DataSetMsgReader();

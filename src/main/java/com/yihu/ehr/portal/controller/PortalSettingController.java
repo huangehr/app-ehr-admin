@@ -3,6 +3,7 @@ package com.yihu.ehr.portal.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.portal.PortalSettingModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -112,7 +113,6 @@ public class PortalSettingController extends BaseUIController {
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(portalSettingModelJsonData, "UTF-8").split(";");
         PortalSettingModel detailModel = toModel(strings[0], PortalSettingModel.class);

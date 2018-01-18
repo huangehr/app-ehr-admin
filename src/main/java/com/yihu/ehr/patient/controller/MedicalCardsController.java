@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.agModel.patient.MedicalCardsModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -137,7 +138,7 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
 
         String resultStr = "";
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = getCurrentUserRedis(request);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         MedicalCardsModel detailModel = objectMapper.readValue(medicalCardsModelJsonData, MedicalCardsModel.class);
         RestTemplates templates = new RestTemplates();
@@ -246,7 +247,7 @@ public class MedicalCardsController  extends ExtendController<MedicalCardsServic
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         try {
-            UserDetailModel user = getCurrentUserRedis(request);
+            UsersModel user = getCurrentUserRedis(request);
             writerResponse(response, 1+"", "l_upd_progress");//进度条
             request.setCharacterEncoding("UTF-8");
             AExcelReader excelReader = new RsMedicalCardModelReader();

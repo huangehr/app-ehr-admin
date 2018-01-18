@@ -20,7 +20,7 @@ import java.util.Set;
  */
 @Row
 public class TjQuotaDMainMsg extends ExcelUtil implements Validation {
-
+    @Location(x=0)
     String quotaCode;  //关联 tj_quota code
     @Location(x=1)
     String mainCode; //关联主维度表 jt_dimension_main 的code
@@ -28,11 +28,12 @@ public class TjQuotaDMainMsg extends ExcelUtil implements Validation {
     String dictSql;//与系统字典关联的sql code
     @Location(x=3)
     String keyVal;// 指标对应对象的key值
-    String name;            //主纬度名称
 
     @Override
     public int validate(Map<String, Set> repeatMap) {
         int rs = 1;
+        repeatMap.get("quotaCode").add(quotaCode);
+        repeatMap.get("mainCode").add(mainCode);
         if(StringUtils.isEmpty(quotaCode)){
             rs = 0;
             addErrorMsg("quotaCode", "指标代码不能为空！" );
@@ -40,19 +41,6 @@ public class TjQuotaDMainMsg extends ExcelUtil implements Validation {
         if(StringUtils.isEmpty(mainCode)){
             rs = 0;
             addErrorMsg("mainCode", "主维度编码不能为空！" );
-        }
-        if(StringUtils.isEmpty(name)){
-            rs = 0;
-            addErrorMsg("name", "主维度名称不能为空！" );
-        }
-        if(!repeatMap.get("mainCode").add(mainCode)){
-            rs = 0;
-            addErrorMsg("mainCode", "主维度编码重复！" );
-        }
-
-        if(!repeatMap.get("name").add(name)){
-            rs = 0;
-            addErrorMsg("name", "主维度名称重复！" );
         }
         return rs;
     }
@@ -89,11 +77,4 @@ public class TjQuotaDMainMsg extends ExcelUtil implements Validation {
         this.keyVal = keyVal;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

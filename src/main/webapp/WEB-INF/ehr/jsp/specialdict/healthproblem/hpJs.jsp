@@ -169,8 +169,8 @@
 								hpId:id
 							},
 							isHidden: false,
-							opener: true,
-							load:true
+//							opener: true,
+//							load:true
 						});
 					});
 				},

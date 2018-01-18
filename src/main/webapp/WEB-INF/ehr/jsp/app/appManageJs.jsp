@@ -291,7 +291,7 @@
                         }
                         appendNav("API管理", url, data);
                     });
-                    
+
                     $(document).on('click', '.go-back', function () {
                         win.location.reload();
                     });
