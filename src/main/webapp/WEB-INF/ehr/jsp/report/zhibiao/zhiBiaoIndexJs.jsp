@@ -160,13 +160,26 @@
                                 quotaType : quotaType
                             },
                             columns: [
-                                {display: 'id', name: 'id', width: '0.1%', hide: true},
-                                {display: '编码', name: 'code', width: '13%', isAllowHide: false, align: 'left'},
-                                {display: '名称', name: 'name', width: '17%', isAllowHide: false, align: 'left'},
+                                {display: 'id', name: 'id', hide: true},
+                                {display: '编码', name: 'code', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '名称', name: 'name', width: '20%', isAllowHide: false, align: 'left'},
+                                {display: '统计方式', name: 'resultGetType', width: '7%', isAllowHide: false, align: 'center',
+                                    render: function (row) {
+                                        var value = row.resultGetType,
+                                                name = '';
+                                        if (value === '1') {
+                                            name = '基础统计'
+                                        }else if (value === '2') {
+                                            name = '二次统计'
+                                        }
+                                        return name;
+                                    }
+                                },
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '执行时间', name: 'execTime', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '执行方式', name: 'execTypeName', width: '5%', isAllowHide: false, align: 'left'},
-                                {display: '状态', name: 'status', width: '5%', isAllowHide: false, align: 'center', render: function (row) {
+                                {display: '执行时间', name: 'execTime', width: '14%', isAllowHide: false, align: 'left'},
+                                {display: '执行方式', name: 'execTypeName', width: '7%', isAllowHide: false, align: 'center'},
+                                {display: '状态', name: 'status', width: '5%', isAllowHide: false, align: 'center',
+                                    render: function (row) {
                                         var sta = row.status,
                                             str = '';
                                         if (sta == '-1') {
@@ -179,7 +192,8 @@
                                         return str;
                                     }
                                 },
-                                {display: '操作', name: 'operator', minWidth: 400, align: 'center',render: function (row) {
+                                {display: '操作', name: 'operator', minWidth: 400, align: 'center',
+                                    render: function (row) {
                                         var html = '';
                                         html += '<sec:authorize url="/tjQuota/updateDimensionTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
                                         html += '<sec:authorize url="/tjQuota/updateChartTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:tubiao:config", row.code, row.name) + '">图表配置</a></sec:authorize>';

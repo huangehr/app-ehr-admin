@@ -2,6 +2,7 @@ package com.yihu.ehr.emergency.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.emergency.model.ScheduleMsgModel;
 import com.yihu.ehr.emergency.model.ScheduleMsgModelReader;
@@ -205,7 +206,7 @@ public class ScheduleController extends BaseUIController {
     @RequestMapping(value = "import")
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserDetailModel user = (UserDetailModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel user = (UsersModel) request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
