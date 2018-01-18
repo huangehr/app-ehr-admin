@@ -145,4 +145,56 @@ public class ResourcesStatisticsController extends BaseUIController {
     }
 
 
+    @RequestMapping(value = "/stasticReport/getArchiveReportAll", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "获取一段时间内数据解析情况", notes = "获取一段时间内数据解析情况")
+    public Result getArchiveReport1(String startDate,String endDate) {
+        String url = "/stasticReport/getArchiveReportAll";
+        String resultStr = "";
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return toModel(resultStr, ListResult.class);
+        } catch (Exception e) {
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/stasticReport/getRecieveOrgCount", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "根据接收日期统计各个医院的数据解析情况", notes = "根据接收日期统计各个医院的数据解析情况")
+    public Result getRecieveOrgCount(String date) {
+        String url = "/stasticReport/getRecieveOrgCount";
+        String resultStr = "";
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("date", date);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return toModel(resultStr, ListResult.class);
+        } catch (Exception e) {
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/stasticReport/getArchivesInc", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "获取某天数据新增情况", notes = "获取某天数据新增情况")
+    public Result getArchivesInc(String date, String orgCode) {
+        String url = "/stasticReport/getArchivesInc";
+        String resultStr = "";
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("date", date);
+            params.put("orgCode", orgCode);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return toModel(resultStr, ListResult.class);
+        } catch (Exception e) {
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+        }
+        return null;
+    }
 }
