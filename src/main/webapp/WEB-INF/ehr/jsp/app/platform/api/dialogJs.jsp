@@ -48,7 +48,7 @@
         //添加碎片
         function appendNav(str, url, data) {
             $NAVLINK.append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
-//            $DIVNB.show().html('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+            $DIVNB.show().append('<div class="btn btn-default go-backa"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
             $CON.css({
                 'height': 'calc(100% - 40px)'
             }).empty().load(url,data);
@@ -155,6 +155,7 @@
                                 if(y){
                                     var url = urls.apiEdit + '?mode=' + mode;
                                     closeDialog();
+                                    $GB.remove();
                                     appendNav('新增API详细信息', url, data.obj);
 //                                    $("#contentPage").empty();
 //                                    $("#contentPage").load(url, data.obj);

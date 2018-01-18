@@ -176,6 +176,11 @@
                         var result = new jValidation.ajax.Result();
                         var orgCode = self.$orgCode.val();
                         if(!/^[a-z0-9A-Z]+[-]*[a-z0-9A-Z]+$/.test(orgCode)){
+                            if (orgCode.length < 2) {
+                                result.setResult(false);
+                                result.setErrorMsg("至少需要两个字符或者数字");
+                                return result;
+                            }
                             result.setResult(true);
                             return result;
                         }
