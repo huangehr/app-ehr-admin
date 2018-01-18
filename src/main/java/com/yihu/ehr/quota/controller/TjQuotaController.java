@@ -144,6 +144,7 @@ public class TjQuotaController extends BaseUIController {
                 if (envelop.isSuccessFlg()) {
                     TjQuotaModel updateTjQuota = getEnvelopModel(envelop.getObj(), TjQuotaModel.class);
 
+                    updateTjQuota.setResultGetType(detailModel.getResultGetType());
                     updateTjQuota.setCode(detailModel.getCode());
                     updateTjQuota.setName(detailModel.getName());
                     updateTjQuota.setCron(detailModel.getCron());

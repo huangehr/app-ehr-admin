@@ -107,14 +107,14 @@
         <div class="m-form-group f-mt5">
             <label>数据存储：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control">
                 <input type="text" id="inp_data_storage" class="required ajax useTitle" placeholder="请选择数据存储" data-type="select"  required-title=<spring:message code="lbl.must.input"/>>
             </div>
         </div>
         <div class="m-form-group" id="div_dataStorage_json">
             <label>存储配置：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control">
                 <textarea type="text" id="inp_dataStorage_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> ></textarea>
             </div>
         </div>
@@ -129,6 +129,14 @@
                 <input type="radio" value="2" name="dataLevel" data-attr-scan>增量
             </div>
         </div>--%>
+        <%-- 基础指标数据保存到es库的指标 ，直接从库中获取， 其他二次统计的到的 二次统计获取 --%>
+        <div class="m-form-group ">
+            <label>结果获取方式：</label>
+            <div class="u-checkbox-wrap m-form-control ">
+                <input type="radio" value="1" name="resultGetType" data-attr-scan>直接从统计库中获取
+                <input type="radio" value="2" name="resultGetType" data-attr-scan>二次统计获取
+            </div>
+        </div>
         <div class="m-form-group f-mt5 f-mb30">
             <label>备注：</label>
             <div class="l-text-wrapper m-form-control">
