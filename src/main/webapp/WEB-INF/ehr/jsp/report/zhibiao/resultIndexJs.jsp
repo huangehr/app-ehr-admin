@@ -33,8 +33,8 @@
                 $selectChnage:null,
                 init: function () {
                     this.$element.show();
-                    this.$starTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
-                    this.$endTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
+                    this.$starTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
+                    this.$endTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
 
                     this.$location.addressDropdown({tabsData:[
                         {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
@@ -42,7 +42,7 @@
                         {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}
                     ]});
                     this.$select.ligerComboBox({
-                        width : 200,
+                        width : 150,
                         data: [
                             { text: '全部', id: 'qb' },
                             { text: '统计值大于0', id: '>0' }
