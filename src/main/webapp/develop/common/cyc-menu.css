@@ -21,20 +21,25 @@
 .menucyc li a.on i.a7{background-image:url(../images/icon-16.png)}
 .menucyc li i.a8{background-image:url(../images/icon_pz.png)}
 .menucyc li i.me{background-image:url(../images/Ins_icon.png); margin:0 0 0 25px; width:25px;}
+.menucyc li i.none-icon,.menucyc li i.last-icon{background: none}
+.menucyc li i.last-icon{width: 50px;}
 .menucyc li a.on i.me{background-image:url(../images/Ins_icon_pre.png);}
-
+.menucyc a:active,.menucyc a:focus{color: #666!important;}
 .menucyc li>ul>li>ul >li > a >i.me{margin:0 0 0 50px;background: url(../images/dot.png) no-repeat center center;}
 .menucyc li.first-tit i{ background-image:url(../images/icon_Menu.png)}
-.menucyc a{ width:100%;display:block;height:30px; color:#323232; font-size:12px}
-.menucyc a.menu-tit1{ color:#666666; font-size:15px;}
+.menucyc a{ width:100%;display:block;height:30px; color:#666; font-size:12px;font-weight: 600;position: relative}
+.menucyc a:hover{color:#666;}
+.menucyc a.three{font-weight: 400}
+.menucyc a.menu-tit1{ color:#666666; font-size:14px;font-weight: 600}
 .menucyc a.menu-tit2{ background:#f0f9fd; color:#323232;}
-.menucyc a.on{ background:#4DB2EE; color:#fff;}
+/*.menucyc a.on{ background:#4DB2EE; color:#fff;}*/
+.menucyc a.on,.menucyc a.on:hover,.menucyc a.on:focus,.menucyc a.on:active{ color:#2d9bd2!important;}
 .menucyc li ul{ display:block; width:100%}
 .menucyc li{ position:relative; width:100%; display:block;line-height:30px; background:#f6f9fa; }
-.menucyc li .menu-tit1{border-bottom:#e8e8e8 1px solid}
+/*.menucyc li .menu-tit1{border-bottom:#e8e8e8 1px solid}*/
 /*.menucyc >li>ul>li>ul>li:hover >ul{ display:block;}*/
-.menucyc >li >ul> li>a.on,
-.menucyc >li >ul> li >ul> li>a.on { background: none; color:#4DB2EE;}
+/*.menucyc >li >ul> li>a.on,*/
+/*.menucyc >li >ul> li >ul> li>a.on { background: none; color:#4DB2EE;}*/
 .menucyc >li >ul> li >ul> li>a.on i.me{background: url(../images/dot_hover.png) no-repeat center center;}
 /*第四级*/
 .menucyc >li>ul>li>ul>li ul{ position:absolute;left:199px; font-size:12px;top:-1px; background:#f0f9fd;border: 1px #b9c8d2 solid;}
@@ -45,3 +50,20 @@
 
 .l-layout-drophandle-left{ display:none!important;}
 /*.menucyc ul{  width:190px;position:absolute; border:1px #ddd solid;left:190px;top:-1px; display:none; }*/
+
+
+.menucyc a.last-a{font-weight: 400}
+
+.menucyc >li >ul> li>a.on.no-child, .menucyc >li >ul> li >ul> li>a.on.last-a{background: #2d9bd2;color: #fff!important;}
+
+.first-a > .icon-jt{width:12px;height:12px;background: url(../images/jiantou_shou_icon.png) center no-repeat;display: inline-block!important;position: absolute;top: 9px;right: 20px}
+.first-a.active > .icon-jt{width:12px;height:12px;background: url(../images/jiantou_shou_icon.png) center no-repeat;display: inline-block!important;position: absolute;top: 9px;right: 20px;transform: rotate(90deg);}
+
+.menucyc a.on .icon-jt{background: url(../images/jiantou_zhan_icon.png) center no-repeat;transform: rotate(-90deg);}
+.menucyc a.on.active .icon-jt{background: url(../images/jiantou_zhan_icon.png) center no-repeat;    transform: rotate(0deg);}
+
+.menucyc li a i.has-icon{background-image:url(../images/jiantou_shou_icon.png);background-repeat: no-repeat;background-position: 70% 50%;}
+.menucyc li a.active i.has-icon{background-image:url(../images/jiantou_shou_icon.png);background-repeat: no-repeat;background-position: 49% 30%;transform: rotate(90deg);}
+
+.menucyc li a.on i.has-icon{background-image:url(../images/jiantou_zhan_icon.png);background-repeat: no-repeat;background-position: 49% 70%;transform: rotate(-90deg);}
+.menucyc li a.on.active i.has-icon{background-image:url(../images/jiantou_zhan_icon.png);background-repeat: no-repeat;background-position: 70% 50%;transform: rotate(00deg);}

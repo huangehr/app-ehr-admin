@@ -242,15 +242,16 @@
                         var thisResourceId = '';
                         var reqUrl = '${contextRoot}/resource/resourceManage/addResourceQuota';
                         var divItem = $("#div_main_relation").find(".div-item");
-                        var num = 0;
+                        var lineOrbar = 0;
+                        var pie = 0;
                         var lineOrBarFlag = true;
                         var pieFlag = true;
                         $.each(divItem,function(key,value){
                             var qchart = $(value).attr("data-qchart");
                             if(lineOrBarFlag && (qchart == 1 || qchart == 2)){
-                                num = num + 1;
+                                lineOrbar = 1;
                             }else if(pieFlag && qchart == 3){
-                                num = num + 1;
+                                pie = 1;
                             }
                             var ob = {
                                 quotaId:$(value).attr("data-id"),
@@ -261,7 +262,7 @@
                             }
                             saveData.push(ob);
                         });
-                        if(num >1){
+                        if(lineOrbar + pie >1){
                             wait.close();
                             $.Notice.error('所选的指标展示图表类型不一致，目前支持同一种图表类型组合以及柱状+线型组合，其他组合暂不支持');
                             return;

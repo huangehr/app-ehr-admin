@@ -5,11 +5,6 @@
 <div class="f-dn" data-head-title="true"><spring:message code="title.app.manage"/></div>
 <!-- ####### 页面部分 ####### -->
 <div id="div_wrapper" >
-    <div id="conditionArea" class="f-ml10" >
-        <div class="body-head f-h40" align="left">
-            <a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/zhibiao/initial?quotaTypeNo=${quotaType}&name=${name}');"  class="f-fwb">返回上一层 </a>
-        </div>
-    </div>
     <!-- ####### 查询条件部分 ####### -->
     <div class="m-retrieve-area f-h50 f-dn f-pr m-form-inline" data-role-form>
         <div class="m-form-group f-mt10">
@@ -20,7 +15,7 @@
             <div class="m-form-control">
                 <input type="text" id="inp_start_time" class="f-h28 f-w160" placeholder="任务开始时间"  data-attr-scan="startTime">
             </div>
-            <div class="m-form-control" style="margin-top: -15px;font-weight:bold;font-size:35px;"> ~ </div>
+            <div class="m-form-control" style="margin-top: -2px;font-weight:bold;font-size:22px;vertical-align: middle;margin-right: 10px;display: inline-block;"> ~ </div>
             <div class="m-form-control">
                 <input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="任务结束时间" data-attr-scan="endTime">
             </div>
@@ -36,7 +31,6 @@
         </div>
     </div>
 
-</div>
-
-<div id="div_quotaLog_grid" >
+    <div id="div_quotaLog_grid" >
+    </div>
 </div>

@@ -49,7 +49,7 @@
        <%-- 系统字典的新增和修改--%>
         <div id="div_updateSystemDictDialog" class="u-public-manage m-form-inline">
             <div class="m-form-group">
-                <label>字典名称：</label>
+                <label style="width: 99px;">字典名称：</label>
                 <div class="l-text-wrapper m-form-control essential">
                     <input type="text" id="inp_systemDictName" class="required useTitle ajax max-length-50" required-title=<spring:message code="lbl.must.input"/> />
                 </div>
@@ -61,7 +61,7 @@
                     <input type="text" id="inp_systemDictReference" class="required useTitle" data-attr-scan=""/>
                 </div>
             </div>
-            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_addSystemDict_btn">
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_addSystemDict_btn" style="display: block;margin: 0 auto">
                 <span>确认</span>
             </div>
         </div>
@@ -69,30 +69,30 @@
         <%--系统字典详情的新增--%>
         <div id="div_add_systemDictEntityDialog" class="u-public-manage m-form-inline">
             <div class="m-form-group">
-                <label>字典编码:</label>
+                <label style="width: 99px;">字典编码:</label>
                 <div class="l-text-wrapper m-form-control essential">
                     <input type="text" id="inp_systemDictEntity_code" class="required useTitle max-length-30" required-title=<spring:message code="lbl.must.input"/>  />
                 </div>
             </div>
             <div class="m-form-group">
-                <label>字典值:</label>
+                <label style="width: 99px;">字典值:</label>
                 <div class="l-text-wrapper m-form-control essential">
                     <input type="text" id="inp_systemDictEntity_value" class="required useTitle max-length-100" required-title=<spring:message code="lbl.must.input"/> />
                 </div>
             </div>
             <div class="m-form-group" style="display: none">
-                <label>序号:</label>
+                <label style="width: 99px;">序号:</label>
                 <div class="l-text-wrapper m-form-control">
                     <input type="text" id="inp_systemDictEntity_sort" class="max-length-11 validate-digits" />
                 </div>
             </div>
             <div class="m-form-group">
-                <label>分类:</label>
+                <label style="width: 99px;">分类:</label>
                 <div class="l-text-wrapper m-form-control">
                     <input type="text" id="inp_systemDictEntity_catalog" class="max-length-32 validate-logic-conditions" />
                 </div>
             </div>
-            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_addSystemDictEntity_btn" >
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_addSystemDictEntity_btn"  style="display: block;margin: 0 auto">
                 <span>确认</span>
             </div>
         </div>
@@ -100,30 +100,30 @@
         <%--系统字典详情的修改--%>
         <div id="div_update_systemDictEntityDialog" class="u-public-manage m-form-inline">
             <div class="m-form-group m-form-readonly">
-                <label>字典编码:</label>
+                <label style="width: 99px;">字典编码:</label>
                 <div class="l-text-wrapper m-form-control essential">
                     <input type="text" id="inp_update_systemDictEntity_code" class="required useTitle" data-attr-scan="code" required-title=<spring:message code="lbl.must.input"/> />
                 </div>
             </div>
             <div class="m-form-group">
-                <label>字典值:</label>
+                <label style="width: 99px;">字典值:</label>
                 <div class="l-text-wrapper m-form-control essential">
                     <input type="text" id="inp_update_systemDictEntity_value" class="required useTitle" data-attr-scan="value" required-title=<spring:message code="lbl.must.input"/>  />
                 </div>
             </div>
             <div class="m-form-group" style="display: none">
-                <label>序号:</label>
+                <label style="width: 99px;">序号:</label>
                 <div class="l-text-wrapper m-form-control">
                     <input type="text" id="inp_update_systemDictEntity_sort" class="validate-digits" data-attr-scan="sort"  />
                 </div>
             </div>
             <div class="m-form-group">
-                <label>分类:</label>
+                <label style="width: 99px;">分类:</label>
                 <div class="l-text-wrapper m-form-control">
                     <input type="text" id="inp_update_systemDictEntity_catalog" data-attr-scan="catalog" class="validate-logic-conditions"  />
                 </div>
             </div>
-            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_update_SystemDictEntity_btn">
+            <div class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-t30" id="div_update_SystemDictEntity_btn" style="display: block;margin: 0 auto">
                 <span>确认</span>
             </div>
         </div>

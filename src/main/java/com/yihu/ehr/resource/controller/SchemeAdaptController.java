@@ -102,7 +102,7 @@ public class SchemeAdaptController extends BaseUIController {
             model.addAttribute("info", StringUtils.isEmpty(resultStr)?toJson(result):resultStr);
             model.addAttribute("mode",mode);
             model.addAttribute("contentPage","/resource/adaptview/schemeAdaptDialog");
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
             result.setSuccessFlg(false);
             result.setErrorMsg(ErrorCode.SystemError.toString());

@@ -5,8 +5,8 @@
 <div class="m-form-inline">
     <div id="conditionArea" class="f-mb10 f-mr10" align="right">
         <div class="body-head f-h30" align="left">
-            <a id="btn_back" class="f-fwb">返回上一层 </a>
-            <span class="f-ml20">消息队列编码：${channel}</span>
+            <%--<a id="btn_back" class="f-fwb">返回上一层 </a>--%>
+            <span>消息队列编码：${channel}</span>
         </div>
     </div>
 

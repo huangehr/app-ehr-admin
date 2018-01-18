@@ -105,7 +105,7 @@ public class DictController  extends BaseUIController {
         model.addAttribute("mode",mode);
         model.addAttribute("staged",staged);
         model.addAttribute("contentPage","/std/dict/stdDictInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("template/dictEntryInfo")
@@ -138,7 +138,7 @@ public class DictController  extends BaseUIController {
         model.addAttribute("mode",mode);
         model.addAttribute("staged",staged);
         model.addAttribute("contentPage","/std/dict/dictEntryInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**

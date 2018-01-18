@@ -101,9 +101,6 @@
                             me.loadTree();
                         }
                     });
-                    me.$queryConc.mCustomScrollbar({
-                        axis: "y"
-                    });
                     me.$startDate.ligerDateEditor({
                         width: 180
                     });
@@ -228,7 +225,6 @@
                             }
                         },
                         onSuccess: function (data) {
-                            console.log('a');
                             var detailModelList = data.detailModelList,
                                     dmList = [];
                             if (detailModelList) {
@@ -255,7 +251,7 @@
                                 me.leftTree.setData(dmList);
                             } else {
                                 if (num == 0) {
-                                    $.Notice.error('暂无数据');
+                                    parent._LIGERDIALOG.error('暂无数据');
                                 }
                                 num++;
                             }
@@ -449,7 +445,7 @@
                                     }
                                 }
                             } else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         }
                     });
@@ -577,14 +573,14 @@
                                 var rowData = me.resourceInfoGrid.data.detailModelList;
                                 me.outExcel(rowData, me.resourceInfoGrid.currentData.pageSize);
                             } else {
-                                $.Notice.error('请先选择数据！');
+                                parent._LIGERDIALOG.error('请先选择数据！');
                             }
                         } else {
                             var zbd = me.zbGrid.getData();
                             if (zbd && zbd.length > 0) {
                                 me.outZBWxcel();
                             } else {
-                                $.Notice.error('请先选择数据！');
+                                parent._LIGERDIALOG.error('请先选择数据！');
                             }
                         }
                     });
@@ -592,10 +588,10 @@
                         var sd = me.selectData,
                             qc = me.queryCondition;
                         if (sd.length <= 0) {
-                            $.Notice.error('请先选择数据');
+                            parent._LIGERDIALOG.error('请先选择数据');
                             return;
                         }
-                        $.ligerDialog.confirm("确认是否生成视图？", function (yes) {
+                        parent._LIGERDIALOG.confirm("确认是否生成视图？", function (yes) {
                             var md = [];
                             if(yes){
                                 if (sd.length > 0) {
@@ -618,21 +614,22 @@
                                         for (var i = 0, len = sd.length; i < len; i++) {
                                             var data = sd[i].data,
                                                 name = '';
-                                            if (data.level == 1) {
-                                                name = data.name;
-                                                for (var l = 0, len = sd.length; l < len; l++) {
-                                                    var chilData = sd[l].data;
-                                                    if (chilData.level == 2 && data.id == chilData.quota_type) {
-                                                        md.push({
-                                                            resourceId: '',
-                                                            quotaTypeName: name,
-                                                            quotaChart: 1,
-                                                            quotaCode: chilData.code,
-                                                            quotaId: chilData.id
-                                                        });
-                                                    }
-                                                }
-                                            }else {
+//                                            if (data.level == 0 || data.level == 1) {
+//                                                name = data.name;
+//                                                for (var l = 0, len = sd.length; l < len; l++) {
+//                                                    var chilData = sd[l].data;
+//                                                    if (chilData.level == 2 && data.id == chilData.quota_type) {
+//                                                        md.push({
+//                                                            resourceId: '',
+//                                                            quotaTypeName: name,
+//                                                            quotaChart: 1,
+//                                                            quotaCode: chilData.code,
+//                                                            quotaId: chilData.id
+//                                                        });
+//                                                    }
+//                                                }
+//                                            } else
+                                            if (data.level == 2) {
                                                 var chilData = data;
                                                 name = data.name;
                                                 md.push({
@@ -647,19 +644,23 @@
                                         qc = JSON.stringify({});
                                     }
 
-                                    var wait = $.Notice.waitting("请稍后...");
-                                    rsInfoDialog = $.ligerDialog.open({
-                                        height:550,
+                                    var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                                    var height = 550;
+                                    if (me.type == 1) {
+                                        height = 600;
+                                    }
+                                    rsInfoDialog = parent._LIGERDIALOG.open({
+                                        height:height,
                                         width:500,
                                         title:'新增视图',
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
-                                        resType: 'POST',
+//                                        resType: 'POST',
                                         urlParms:{
                                             queryCondition: qc,
                                             type: me.type,
                                             metadatas: JSON.stringify(md)
                                         },
-                                        load:true,
+//                                        load:true,
                                         show:false,
                                         isHidden:false,
                                         onLoaded:function(){
@@ -765,7 +766,7 @@
                 //导出档案数据excel
                 outExcel: function (rowData, size) {
 //                    if (rowData.length <= 0) {
-//                        $.Notice.error('请先选择数据');
+//                        parent._LIGERDIALOG.error('请先选择数据');
 //                        return;
 //                    }
                     var columnNames = this.resourceInfoGrid.columns;
@@ -843,7 +844,7 @@
                 }
             };
             cunQue.init();
-            win.closeRsInfoDialog = function (callback) {
+            win.parent.closeRsInfoDialog = function (callback) {
                 rsInfoDialog.close();
             };
         });

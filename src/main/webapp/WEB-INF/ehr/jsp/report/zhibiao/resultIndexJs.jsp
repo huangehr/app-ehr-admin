@@ -78,6 +78,7 @@
                                 {display: '区县', name: 'townName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '机构名称', name: 'orgName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '团队名称', name: 'teamName', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '年份', name: 'yearName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: slaveKey1Name, name: 'slaveKey1Name', width: '10%', hide: (!!!slaveKey1Name), align: 'left'},
                                 {display: slaveKey2Name, name: 'slaveKey2Name', width: '10%', hide: (!!!slaveKey2Name), align: 'left'},
                                 {display: slaveKey3Name, name: 'slaveKey3Name', width: '10%', hide: (!!!slaveKey3Name), align: 'left'},
@@ -108,7 +109,9 @@
                     patientRetrieve.$searchBtn.click(function () {
                         dictMaster.reloadGrid();
                     });
-
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
                 }
             };
 

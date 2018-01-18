@@ -77,7 +77,7 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('新增成功');
-                    win.parent.closeAddUserInfoDialog(function () {
+                    win.closeAddUserInfoDialog(function () {
                         });
                 });
 
@@ -189,7 +189,6 @@
             },
 
             bindEvents: function () {
-                debugger
                 var self = this;
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
@@ -224,7 +223,6 @@
                 });
                 //唯一性验证--账号/身份证号(字段名、输入值、提示信息）  ---新增用户手机号验证
                 function checkDataSourceName(type, inputValue, errorMsg) {
-                    debugger
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
                     dataModel.fetchRemote("${contextRoot}/user/existence", {
@@ -362,11 +360,11 @@
                         success: function (data) {
                             if (data.successFlg) {
                                 $.Notice.success('新增成功');
-                                win.parent.closeAddUserInfoDialog(function () {
+                                win.closeAddUserInfoDialog(function () {
                                    $.Notice.success('新增成功');
                                 });
                             } else {
-                                window.top.$.Notice.error(data.errorMsg);
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })

@@ -80,9 +80,13 @@
                         });
                         var aaa = '';
                         $.each(d, function (k, obj) {
+                            console.log(obj)
+                            console.log(obj.id)
                             obj.flag && (aaa += (obj.id + ';'));
                         })
+                        console.log(aaa)
                         me.$inpMonitorType.liger().selectValue(aaa);
+
                     } else {
                         me.$inpMonitorType.ligerComboBox({width: '240'});
                     }

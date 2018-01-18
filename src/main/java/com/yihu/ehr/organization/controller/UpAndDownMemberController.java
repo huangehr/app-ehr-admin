@@ -49,7 +49,7 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
         model.addAttribute("orgName",orgName);
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage", "/organization/upAndDownMember/upAndDownMember");
-        return "pageView";
+        return "emptyView";
     }
 
     //成员上下级树目录数据
@@ -126,7 +126,7 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
         model.addAttribute("categoryOrgId",categoryOrgId);
         model.addAttribute("categoryName",categoryName);
         model.addAttribute("contentPage","/organization/upAndDownMember/upAndDownMemberInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     //更新

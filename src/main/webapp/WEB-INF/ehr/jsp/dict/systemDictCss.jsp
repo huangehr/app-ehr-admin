@@ -10,4 +10,11 @@
         float: right;
         margin-right: 52px;
     }
+    .m-form-inline .m-form-group label{
+        width: 99px;
+    }
+    #div_update_SystemDictEntity_btn{
+        margin: 0 auto;
+        display: block;
+    }
 </style>

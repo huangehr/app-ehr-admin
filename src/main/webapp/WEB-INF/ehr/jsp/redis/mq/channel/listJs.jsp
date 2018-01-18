@@ -16,6 +16,14 @@
         bindEvents();
     }
 
+    //添加碎片
+    function appendNav(str, url, data) {
+        $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+        $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+        $("#contentPage").css({
+            'height': 'calc(100% - 40px)'
+        }).empty().load(url,data);
+    }
     function initWidget() {
         $('#searchContent').ligerTextBox({
             width: 200, isSearch: true, search: function () {
@@ -56,15 +64,13 @@
         // 发布者
         $.subscribe('redis:mq:channel:publisherList', function (event, channel) {
             var url = '${contextRoot}/redis/mq/publisher/index?';
-            $("#contentPage").empty();
-            $("#contentPage").load(url,{channel: channel});
+            appendNav("发布者", url, {channel: channel});
         });
 
         // 订阅者
         $.subscribe('redis:mq:channel:subscriberList', function (event, channel) {
             var url = '${contextRoot}/redis/mq/subscriber/index?';
-            $("#contentPage").empty();
-            $("#contentPage").load(url,{channel: channel});
+            appendNav("订阅者", url, {channel: channel});
         });
 
         // 新增/修改
@@ -73,7 +79,7 @@
             if (mode == 'modify') {
                 title = '修改消息队列';
             }
-            detailDialog = $.ligerDialog.open({
+            detailDialog = parent._LIGERDIALOG.open({
                 height: 560,
                 width: 480,
                 title: title,
@@ -87,23 +93,26 @@
             });
         });
 
+        $(document).on('click', '.go-back', function () {
+            window.location.reload();
+        });
         // 删除
         $.subscribe('redis:mq:channel:delete', function (event, id) {
-            $.Notice.confirm('确认要删除所选数据吗？', function (r) {
+            parent._LIGERDIALOG.confirm('确认要删除所选数据吗？', function (r) {
                 if (r) {
-                    var loading = $.ligerDialog.waitting("正在删除数据...");
+                    var loading = parent._LIGERDIALOG.waitting("正在删除数据...");
                     dataModel.updateRemote('${contextRoot}/redis/mq/channel/delete', {
                         data: {id: parseInt(id)},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('删除成功！');
+                                parent._LIGERDIALOG.success('删除成功！');
                                 reloadGrid();
                             } else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         },
                         error: function () {
-                            $.Notice.error('删除发生异常');
+                            parent._LIGERDIALOG.error('删除发生异常');
                         },
                         complete: function () {
                             loading.close();
@@ -120,12 +129,12 @@
     }
 
     /*-- 与明细 Dialog 页面间回调的函数 --*/
-    window.reloadMasterGrid = function() {
+    window.parent.reloadMasterGrid = window.reloadMasterGrid = function() {
         reloadGrid();
     };
-    window.closeDetailDialog = function (type, msg) {
+    window.parent.closeDetailDialog = function (type, msg) {
         detailDialog.close();
-        msg && $.Notice.success(msg);
+        msg && parent._LIGERDIALOG.success(msg);
     };
 
 </script>

@@ -101,14 +101,14 @@ public class OrganizationController extends BaseUIController {
         model.addAttribute("mode", mode);
         model.addAttribute("envelop", resultStr);
         model.addAttribute("contentPage", "organization/organizationInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("dialog/create")
     public String createInitial(Model model, String mode) {
         model.addAttribute("mode", mode);
         model.addAttribute("contentPage", "organization/orgCreateDialog");
-        return "generalView";
+        return "emptyView";
     }
 
     @RequestMapping("dialog/orgDataGrant")
@@ -117,7 +117,7 @@ public class OrganizationController extends BaseUIController {
         model.addAttribute("orgTypeName", orgTypeName);
         model.addAttribute("fullName", fullName);
         model.addAttribute("contentPage", "organization/orgGrantInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping(value = "searchOrgs", produces = "text/html;charset=UTF-8")

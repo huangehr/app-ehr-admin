@@ -87,7 +87,7 @@ public class ResourceManageController extends BaseUIController {
     public String resourceConfigue(Model model, String id){
         model.addAttribute("resourceId", id);
         model.addAttribute("contentPage","/resource/resourcemanage/resoureConfigure");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -542,12 +542,7 @@ public class ResourceManageController extends BaseUIController {
             params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();
            if( !StringUtils.isEmpty(quotaFilter) ){
-               String filter[] = quotaFilter.split(";");
-               for(int i=0;i<filter.length;i++){
-                   String [] val = filter[i].split("=");
-                   quotaFilterMap.put(val[0].toString(),val[1].toString());
-               }
-               params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
+               params.put("quotaFilter", quotaFilter);
            }
             resultStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
             Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
@@ -559,7 +554,7 @@ public class ResourceManageController extends BaseUIController {
         model.addAttribute("id", id);
         model.addAttribute("chartInfoModel", objectMapper.writeValueAsString(chartInfoModel));
         model.addAttribute("contentPage","/resource/resourcemanage/resoureShowCharts");
-        return "simpleView";
+        return "generalView";
     }
 
     /**
@@ -583,12 +578,7 @@ public class ResourceManageController extends BaseUIController {
             params.put("userOrgList", userOrgList);
             Map<String, Object> quotaFilterMap = new HashMap<>();
             if( !StringUtils.isEmpty(quotaFilter) ){
-                String filter[] = quotaFilter.split(";");
-                for(int i=0;i<filter.length;i++){
-                    String [] val = filter[i].split("=");
-                    quotaFilterMap.put(val[0].toString(),val[1].toString());
-                }
-                params.put("quotaFilter", objectMapper.writeValueAsString(quotaFilterMap));
+                params.put("quotaFilter", quotaFilter);
             }
             resultStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
             Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
@@ -647,5 +637,38 @@ public class ResourceManageController extends BaseUIController {
         }
     }
 
+    @RequestMapping("/getQuotaByResourceId")
+    @ResponseBody
+    public Object getQuotaByResourceId(String resourceId){
+        Envelop envelop = new Envelop();
+        String url = "/resourceQuota/getQuotaByResourceId";
+        Map<String,Object> params = new HashMap<>();
+        params.put("resourceId",resourceId);
+        try{
+            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return envelopStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 
+    @RequestMapping(value = "/updateResourceQuota", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object updateResourceQuota(String jsonModel){
+        Envelop envelop = new Envelop();
+        String url = "/resourceQuota/updateResourceQuota";
+        RestTemplates templates = new RestTemplates();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("model", jsonModel);
+        try{
+            String resultStr = templates.doPost(comUrl + url, params);
+            return resultStr;
+        }catch (Exception ex){
+            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return envelop;
+        }
+    }
 }

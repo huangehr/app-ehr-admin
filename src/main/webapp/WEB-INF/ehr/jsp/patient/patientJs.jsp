@@ -63,18 +63,6 @@
                             value: '女'
                         }]
                     });
-//                    this.$jg.ligerComboBox({
-//                        valueField: 'code',
-//                        textField: 'value',
-////                        width: '100',
-//                        data:[{
-//                            code: '0',
-//                            value: 'xxx'
-//                        },{
-//                            code: '1',
-//                            value: 'yyy'
-//                        }]
-//                    });
                     this.$starTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime:true});
                     this.$endTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime:true});
 
@@ -88,11 +76,6 @@
                 },
                 bindEvents: function () {
                     var self = this;
-//                    self.$searchBtn.click(function () {
-//                        debugger
-//                        patientMaster.grid.options.newPage = 1;
-//                        patientMaster.reloadGrid();
-//                    });
                 }
             };
 
@@ -191,8 +174,8 @@
                 },
                 showUserInfo: function (id,userId) {
                     var wait=null;
-                    wait = $.Notice.waitting('正在加载中...');
-                    var dialog = $.ligerDialog.open({
+                    wait = parent._LIGERDIALOG.waitting('正在加载中...');
+                    var dialog = parent._LIGERDIALOG.open({
                         title:'居民信息详情',
                         height: 625,
                         width: 600,
@@ -238,8 +221,8 @@
 
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){
-                        var wait =  $.Notice.waitting("正在加载...");
-                        patientDialog = $.ligerDialog.open({
+                        var wait =  parent._LIGERDIALOG.waitting("正在加载...");
+                        patientDialog = parent._LIGERDIALOG.open({
                             isHidden:false,
                             title:'新增居民信息',
                             width:600,
@@ -260,8 +243,8 @@
                     });
                     //修改人口信息
                   $.subscribe('patient:patientInfoModifyDialog:open',function(event,idCardNo,userId){
-                      var wait =  $.Notice.waitting("正在加载...");
-                      patientDialog = $.ligerDialog.open({
+                      var wait =  parent._LIGERDIALOG.waitting("正在加载...");
+                      patientDialog = parent._LIGERDIALOG.open({
                             isHidden:false,
                             title:'修改居民信息',
                             width:600,
@@ -284,18 +267,18 @@
                     });
                     //删除人口信息
                     $.subscribe('patient:patientInfoModifyDialog:delete', function (event, idCardNo) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                             if (yes) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote('${contextRoot}/patient/deletePatient', {
                                     data: {idCardNo: idCardNo},
                                     success: function (data) {
                                         if (data.successFlg) {
-                                            //$.Notice.open({type: 'success', msg: '删除成功！'});
-                                            $.Notice.success('操作成功。');
+                                            //parent._LIGERDIALOG.open({type: 'success', msg: '删除成功！'});
+                                            parent._LIGERDIALOG.success('操作成功。');
                                             patientMaster.reloadGrid();
                                         } else {
-                                            $.Notice.open({type: 'error', msg: '操作失败。'});
+                                            parent._LIGERDIALOG.open({type: 'error', msg: '操作失败。'});
                                         }
                                     }
                                 });
@@ -314,11 +297,11 @@
                                 if (data.successFlg) {
                                     window.open('${contextRoot}/login/broswerSignin?idCardNo='+idCardNo,'_blank');
                                 } else {
-                                    $.Notice.success('该居民无档案信息');
+                                    parent._LIGERDIALOG.success('该居民无档案信息');
                                 }
                             },
                             error: function (e) {
-                                $.Notice.error('出错了');
+                                parent._LIGERDIALOG.error('出错了');
                             }
                         });
                     })
@@ -326,10 +309,10 @@
             };
 
             /* ************************* Dialog页面回调接口 ************************** */
-            win.patientDialogRefresh = function () {
+            win.parent.patientDialogRefresh = win.patientDialogRefresh = function () {
                 patientMaster.reloadGrid();
             };
-            win.patientDialogClose = function () {
+            win.parent.patientDialogClose = function () {
                 patientDialog.close();
                 patientMaster.reloadGrid();
             };

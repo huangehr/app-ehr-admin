@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
+import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
@@ -67,7 +69,7 @@ public class DoctorController extends BaseUIController {
     @RequestMapping("addDoctorInfoDialog")
     public String addUser(Model model) {
         model.addAttribute("contentPage", "user/doctor/addDoctorInfoDialog");
-        return "generalView";
+        return "emptyView";
     }
     /**
      * 选择机构部门
@@ -79,7 +81,7 @@ public class DoctorController extends BaseUIController {
         model.addAttribute("idCardNo", idCardNo);
         model.addAttribute("type", type);
         model.addAttribute("contentPage", "user/doctor/selectOrgDept");
-        return "generalView";
+        return "emptyView";
     }
     /**
      * 查找医生
@@ -104,9 +106,13 @@ public class DoctorController extends BaseUIController {
 
         try {
             List<String> userOrgList  = getUserOrgSaasListRedis(request);
-            if (null != userOrgList && AuthorityKey.NoUserOrgSaas.equalsIgnoreCase(userOrgList.get(0))) {
-                result.setSuccessFlg(true);
-                return result;
+            if (null != userOrgList && userOrgList.size() > 0 && AuthorityKey.NoUserOrgSaas.equalsIgnoreCase(userOrgList.get(0))) {
+                UserDetailModel user = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+                if (null == user) {
+                    result.setSuccessFlg(true);
+                    return result;
+                }
+                stringBuffer.append("idCardNo=" + user.getIdCardNo() + ";");
             } else if (null != userOrgList && userOrgList.size() > 0) {
                 String orgCode = String.join(",", userOrgList);
                 params.put("orgCode", orgCode);
@@ -332,7 +338,7 @@ public class DoctorController extends BaseUIController {
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/doctor/doctorInfoDialog");
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(ErrorCode.SystemError.toString());

@@ -28,10 +28,7 @@ import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.yihu.ehr.util.HttpClientUtil.doGet;
 
@@ -76,7 +73,7 @@ public class ReportController extends BaseUIController {
         }
         model.addAttribute("detailModel", toJson(detailModel));
         model.addAttribute("contentPage", "resource/report/detail");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -108,7 +105,7 @@ public class ReportController extends BaseUIController {
         model.addAttribute("id", id);
         model.addAttribute("code", code);
         model.addAttribute("contentPage", "resource/report/tmpViewSetting");
-        return "simpleView";
+        return "emptyView";
     }
 
     /**
@@ -464,6 +461,8 @@ public class ReportController extends BaseUIController {
                     params.put("resourceId", view.getResourceId());
                     List<String> userOrgList  = getUserOrgSaasListRedis(request);
                     params.put("userOrgList", userOrgList);
+                    params.put("quotaFilter", "");
+                    params.put("dimension", "");
                     String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
                     Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
                     String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
@@ -479,7 +478,6 @@ public class ReportController extends BaseUIController {
                 }
             }
             resultMap.put("viewInfos", viewInfos);
-
             envelop.setObj(resultMap);
             envelop.setSuccessFlg(true);
             return envelop;

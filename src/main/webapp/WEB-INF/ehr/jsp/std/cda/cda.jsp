@@ -12,25 +12,21 @@
 <div class="f-dn" data-head-title="true">CDA文件管理</div>
 <div id="div_wrapper" style="height: 100%;">
     <div id="conditionArea" class="f-mb10" align="right" style="margin-right: 10px;">
-
-                <%--<select id="cdaVersion" class="inputwidth f-w200">--%>
-                <%--</select>--%>
-                <input type="text" data-type="select" id="cdaVersion" data-attr-scan="version" style="height: 27px;">
-
+        <input type="text" data-type="select" id="cdaVersion" data-attr-scan="version" style="height: 27px;">
     </div>
     <!--######CDA信息表######-->
-    <div id="div_left" style=" width:320px;float: left;">
-        <div id="div_left_tree" style=" width:318px;border: 1px solid #D6D6D6; overflow: auto;">
+    <div id="div_left">
+        <div id="div_left_tree" style=" width:318px;height:100%;border: 1px solid #D6D6D6; overflow: auto;">
             <div id="div_typeTree" style=" width:316px;">
 
             </div>
         </div>
     </div>
-    <div id="div_right" style="float: left; margin-left: 10px;">
+    <div id="div_right">
         <div class="m-retrieve-area f-dn f-pr"
              style="display:block;border: 1px solid #D6D6D6;border-bottom: 0px;overflow: hidden;">
             <ul>
-                <li class=" f-mt15">
+                <li class=" f-mt10">
                     <div class="s-con">
                         <span class="f-mt5 f-fs14 f-ml10" style="display: inline-block">
                            <strong style="font-weight: bolder;">CDA:</strong>

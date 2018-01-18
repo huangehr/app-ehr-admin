@@ -81,7 +81,7 @@ public class AppController extends BaseUIController {
         model.addAttribute("model", toJson(app));
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","/app/appInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("initial")
@@ -273,7 +273,7 @@ public class AppController extends BaseUIController {
     public String resourceInitial(Model model, String backParams){
         model.addAttribute("backParams",backParams);
         model.addAttribute("contentPage", "/app/resource");
-        return "pageView";
+        return "emptyView";
     }
 
     //获取app已授权资源ids集合

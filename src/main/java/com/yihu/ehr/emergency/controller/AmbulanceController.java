@@ -21,11 +21,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -58,9 +60,9 @@ public class AmbulanceController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/list";
-//            params.put("filters", filters);
-//            params.put("fields", fields);
-//            params.put("sorts", sorts);
+            if(filters != null && !"id=".equals(filters)) {
+                params.put("filters", filters);
+            }
             params.put("page", page);
             params.put("size", size);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -144,12 +146,20 @@ public class AmbulanceController extends BaseUIController {
     @ResponseBody
     public Envelop save(
             @ApiParam(name = "ambulance", value = "救护车")
-            @RequestParam(value = "ambulance") String ambulance) {
+            @RequestParam(value = "ambulance", required = false) String ambulance,
+            HttpServletRequest request) {
         Envelop envelop = new Envelop();
         try {
+            if(StringUtils.isEmpty(ambulance)) {
+                return envelop;
+            }
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/save";
-            params.put("ambulance", ambulance);
+            Map<String, Object> ambulanceMap = objectMapper.readValue(ambulance, Map.class);
+            HttpSession session = request.getSession();
+            ambulanceMap.put("creator", session.getAttribute("userId"));
+            ambulanceMap.put("status", 0);
+            params.put("ambulance", objectMapper.writeValueAsString(ambulanceMap));
             String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
@@ -165,12 +175,16 @@ public class AmbulanceController extends BaseUIController {
     @ResponseBody
     public Envelop update(
             @ApiParam(name = "attendance", value = "救护车")
-            @RequestParam(value = "ambulance") String ambulance) {
+            @RequestParam(value = "ambulance") String ambulance,
+            HttpServletRequest request) {
         Envelop envelop = new Envelop();
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/update";
-            params.put("ambulance", ambulance);
+            Map<String, Object> ambulanceMap = objectMapper.readValue(ambulance, Map.class);
+            HttpSession session = request.getSession();
+            ambulanceMap.put("modifier", session.getAttribute("userId"));
+            params.put("ambulance", objectMapper.writeValueAsString(ambulanceMap));
             String envelopStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
@@ -298,18 +312,18 @@ public class AmbulanceController extends BaseUIController {
 
     @RequestMapping("/initialization")
     public String initialization(Model model){
-        model.addAttribute("contentPage", "/urgentcommand/fleet");
+        model.addAttribute("contentPage", "/emergency/menu/fleet");
         return "pageView";
     }
     @RequestMapping("/intercalatesupervise")
     public String intercalatesupervise(Model model){
-        model.addAttribute("contentPage", "/urgentcommand/fleetset");
+        model.addAttribute("contentPage", "/emergency/menu/fleetset");
         return "pageView";
     }
 
     @RequestMapping("/sortmanage")
     public String sortmanage(Model model){
-        model.addAttribute("contentPage", "/urgentcommand/rdermanage");
+        model.addAttribute("contentPage", "/emergency/menu/rdermanage");
         return "pageView";
     }
 
@@ -320,7 +334,7 @@ public class AmbulanceController extends BaseUIController {
         } else {
             model.addAttribute("id",id);
         }
-        return  "/urgentcommand/vehiclemMenu";
+        return  "/emergency/menu/vehiclemMenu";
     }
 
     @RequestMapping("/importLs")
@@ -377,7 +391,7 @@ public class AmbulanceController extends BaseUIController {
         conditionMap.add("type", type);
         conditionMap.add("values", values);
         RestTemplates template = new RestTemplates();
-        String rs = template.doPost(comUrl + "/ambulance/IdOrPhoneExistence", conditionMap);
+        String rs = template.doPost(comUrl + "/ambulance/idOrPhoneExistence", conditionMap);
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {});
     }
 
@@ -511,7 +525,7 @@ public class AmbulanceController extends BaseUIController {
             list.add(values);
             map.put("values", objectMapper.writeValueAsString(list));
             String resultStr = "";
-            resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/IdOrPhoneExistence", map, username, password);
+            resultStr = HttpClientUtil.doPost(comUrl + "/ambulance/idOrPhoneExistence", map, username, password);
             Set<String> set=objectMapper.readValue(resultStr, new TypeReference<Set<String>>() {});
             if(null!=set&&set.size()>0){
                 //返回成功 表示库里存在该车牌号或者随车号码

@@ -66,7 +66,6 @@
 					if(validator.validate() == false){
 						return
 					}
-debugger;
 					var values = self.$form.Fields.getValues();
 					var userId = values.userId;
 					if(userId == categoryIdOld){
@@ -90,7 +89,7 @@ debugger;
 							if (data.successFlg) {
 								reloadMasterUpdateGrid(categoryIdOld);
 								$.Notice.success('添加成功');
-								win.closeRsInfoDialog();
+								closeRsInfoDialog();
 							} else {
 								$.Notice.error(data.errorMsg);
 							}
@@ -99,7 +98,7 @@ debugger;
 				}
 
 				this.$btnCancel.click(function () {
-					win.closeRsInfoDialog();
+					closeRsInfoDialog();
 				});
 			}
 		};

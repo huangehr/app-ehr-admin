@@ -36,6 +36,8 @@
             $description: $("#inp_description"),
             $btnSave: $("#btn_save"),
             $btnCancel: $("#btn_cancel"),
+            $echartType: $("#echartType"),
+
 
             init: function () {
                 this.initForm();
@@ -59,7 +61,16 @@
                 }
                 lr1.setDisabled();
                 lr2.setDisabled();
-
+                this.$echartType.ligerComboBox({
+                    data: [
+                        {text:"普通图表", id:"common"},
+                        {text:"雷达图", id:"radar"},
+                        {text:"旭日图", id:"nestedPie"}
+                    ]
+                });
+                if (type && type == 1) {
+                    $("#dataShowType").show();
+                }
                 this.$form.attrScan();
                 this.$form.show();
             },
@@ -125,6 +136,9 @@
                         return
                     }
                     var values = self.$form.Fields.getValues();
+                    if (type && type == 1) {
+                        values.echartType = $("#echartType_val").val().trim();
+                    }
                     var categoryId = values.categoryId;
 //                    if(Util.isStrEquals(categoryIdOld,categoryId)){
 //                        update(values)
@@ -162,7 +176,7 @@
                             if (data.successFlg) {
 //                                reloadMasterUpdateGrid(categoryIdNew);
                                 $.Notice.success('操作成功');
-                                win.closeRsInfoDialog();
+                                win.parent.closeRsInfoDialog();
                             } else {
                                 $.Notice.error('操作失败！');
                             }
@@ -171,7 +185,7 @@
                 }
 
                 this.$btnCancel.click(function () {
-                    win.closeRsInfoDialog();
+                    win.parent.closeRsInfoDialog();
                 });
             }
         };

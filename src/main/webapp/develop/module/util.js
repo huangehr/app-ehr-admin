@@ -431,8 +431,28 @@
                     this.setOptions({parms: params});
                     this.loadData(true);
                 }
-            }
+            },
             //add by lincl end, 2016-5-10
+            validateByAjax: function(url, params) { // add by ZhangJinJun 2017-11-28
+                var result = new $.jValidation.ajax.Result();
+                var dataModel = $.DataModel.init();
+                dataModel.fetchRemote(url, {
+                    data: params,
+                    async: false,
+                    success: function (data) {
+                        if (data.successFlg) {
+                            result.setResult(true);
+                        } else {
+                            result.setResult(false);
+                            result.setErrorMsg(data.errorMsg);
+                        }
+                    },
+                    error: function () {
+                        $.Notice.error('验证发生异常');
+                    }
+                });
+                return result;
+            }
         }
     });
 })(jQuery, window);

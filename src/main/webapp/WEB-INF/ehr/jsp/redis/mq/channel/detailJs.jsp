@@ -25,6 +25,7 @@
 
         if(detailModel.id) {
             channelTb.setDisabled(true);
+            channelTb.setReadonly(true);
         }
 
         $form.attrScan();
@@ -79,41 +80,19 @@
                         var channel = $("#channel").val();
                         if(!$.Util.isStrEquals(channel, detailModel.channel)) {
                             var ulr = "${contextRoot}/redis/mq/channel/isUniqueChannel";
-                            return validateByAjax(ulr, {id: id, channel: channel});
+                            return $.Util.validateByAjax(ulr, {id: id, channel: channel});
                         }
                         break;
                     case 'channelName':
                         var channelName = $("#channelName").val();
                         if(!$.Util.isStrEquals(channelName, detailModel.channelName)) {
                             var ulr = "${contextRoot}/redis/mq/channel/isUniqueChannelName";
-                            return validateByAjax(ulr, {id: id, channelName: channelName});
+                            return $.Util.validateByAjax(ulr, {id: id, channelName: channelName});
                         }
                         break;
                 }
             }
         });
-    }
-
-    // 通过 jValidation 进行异步验证
-    function validateByAjax(url, params) {
-        var result = new $.jValidation.ajax.Result();
-        var dataModel = $.DataModel.init();
-        dataModel.fetchRemote(url, {
-            data: params,
-            async: false,
-            success: function (data) {
-                if (data.successFlg) {
-                    result.setResult(true);
-                } else {
-                    result.setResult(false);
-                    result.setErrorMsg(data.errorMsg);
-                }
-            },
-            error: function () {
-                $.Notice.error('验证发生异常');
-            }
-        });
-        return result;
     }
 
 </script>

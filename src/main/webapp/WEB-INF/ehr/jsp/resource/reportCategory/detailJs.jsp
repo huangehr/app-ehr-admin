@@ -34,7 +34,6 @@
             }
         });
         $('#remark').ligerTextBox({width: 240, height: 150});
-
         if(detailModel.id) {
             codeTb.setDisabled(true);
         }
@@ -44,7 +43,7 @@
             id: detailModel.id,
             code: detailModel.code,
             name: detailModel.name,
-            pid: detailModel.pid,
+            pid: detailModel.pid != 0 ? detailModel.pid : null,
             remark: detailModel.remark
         });
     }
@@ -97,41 +96,19 @@
                         var code = $("#code").val();
                         if(!$.Util.isStrEquals(code, detailModel.code)) {
                             var ulr = "${contextRoot}/resource/reportCategory/isUniqueCode";
-                            return validateByAjax(ulr, {id: id, code: code});
+                            return $.Util.validateByAjax(ulr, {id: id, code: code});
                         }
                         break;
                     case 'name':
                         var name = $("#name").val();
                         if(!$.Util.isStrEquals(name, detailModel.name)) {
                             var ulr = "${contextRoot}/resource/reportCategory/isUniqueName";
-                            return validateByAjax(ulr, {id: id, name: name});
+                            return $.Util.validateByAjax(ulr, {id: $("#pid_val").val().trim() == "" ? 0 : $("#pid_val").val().trim(), name: name});
                         }
                         break;
                 }
             }
         });
-    }
-
-    // 通过 jValidation 进行异步验证
-    function validateByAjax(url, params) {
-        var result = new $.jValidation.ajax.Result();
-        var dataModel = $.DataModel.init();
-        dataModel.fetchRemote(url, {
-            data: params,
-            async: false,
-            success: function (data) {
-                if (data.successFlg) {
-                    result.setResult(true);
-                } else {
-                    result.setResult(false);
-                    result.setErrorMsg(data.errorMsg);
-                }
-            },
-            error: function () {
-                $.Notice.error('验证发生异常');
-            }
-        });
-        return result;
     }
 
 </script>

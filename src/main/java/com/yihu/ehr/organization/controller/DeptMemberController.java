@@ -48,7 +48,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         model.addAttribute("mode",mode);
         model.addAttribute("orgType",orgType);
         model.addAttribute("contentPage", "/organization/deptMember/deptMember");
-        return "pageView";
+        return "emptyView";
     }
 
     //部门树目录数据-获取所有分类的不分页方法
@@ -143,7 +143,7 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }catch (Exception ex){
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
     //更新
@@ -662,6 +662,6 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }catch (Exception ex){
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 }

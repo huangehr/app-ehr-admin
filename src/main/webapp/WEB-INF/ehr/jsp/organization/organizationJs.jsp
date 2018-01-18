@@ -30,6 +30,14 @@
                 this.grid.loadData(true);
             }
 
+            //添加碎片
+            function appendNav(str, url, data) {
+                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
+            }
             function onUploadSuccess(g, result){
                 if(result)
                     openDialog("${contextRoot}/orgImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
@@ -99,11 +107,16 @@
                         master.reloadGrid();
                     });
                     self.$newRecordBtn.click(function () {
-                        self.addOrgInfoDialog = $.ligerDialog.open({
+                        self.addOrgInfoDialog = parent._LIGERDIALOG.open({
                             height: 580,
                             width: 1050,
                             title: '新增机构信息',
-                            url: '${contextRoot}/organization/dialog/create'
+                            url: '${contextRoot}/organization/dialog/create',
+                            isHidden: false,
+                            opener: true,
+                            load:true,
+                            isDrag:true,
+                            show:false,
                         })
                     });
                 }
@@ -167,8 +180,8 @@
                         unSetValidateAttr: false,
                         onDblClickRow: function (row) {
                             var mode = 'view';
-                            var wait = $.Notice.waitting("请稍后...");
-                            row.orgInfoDialog = $.ligerDialog.open({
+                            var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                            row.orgInfoDialog = parent._LIGERDIALOG.open({
                                 height: 600,
                                 width: 1050,
                                 title: '机构基本信息',
@@ -219,10 +232,10 @@
                         data: {orgCode: orgCode},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('操作成功。');
+                                parent._LIGERDIALOG.success('操作成功。');
                                 master.reloadGrid();
                             } else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         }
                     });
@@ -231,8 +244,8 @@
                     var self = this;
                     $.subscribe('org:orgInfoDialog:modify', function (event, orgCode, mode) {
                         var title = '修改机构信息';
-                        var wait = $.Notice.waitting("请稍后...");
-                        self.orgInfoDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        self.orgInfoDialog = parent._LIGERDIALOG.open({
                             isHidden: false,
                             height: 600,
                             width: 1050,
@@ -252,7 +265,7 @@
                         self.orgInfoDialog.hide();
                     });
                     $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg,msg) {
-                        $.ligerDialog.confirm('是否对该机构进行'+msg+'操作', function (yes) {
+                        parent._LIGERDIALOG.confirm('是否对该机构进行'+msg+'操作', function (yes) {
                             if (yes) {
                                 self.activity(orgCode, activityFlg);
                             }
@@ -260,7 +273,7 @@
 
                     });
                     $.subscribe('org:orgInfoDialog:del', function (event, orgCode, activityFlg) {
-                        $.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+                        parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
                             if (yes) {
                                 self.delRecord(orgCode);
                             }
@@ -274,8 +287,7 @@
                             orgType: orgType,
                             orgName: orgName
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, {'dataModel': JSON.stringify(orgData)});
+                        appendNav("模板配置", url, {'dataModel': JSON.stringify(orgData)});
                     });
                     $.subscribe('org:orgInfoDialog:deptMember', function (event, orgCode, orgId, orgName,orgType) {
                         var url = '${contextRoot}/deptMember/initialDeptMember';
@@ -286,8 +298,7 @@
                             orgName: orgName,
                             orgType:orgType
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, orgData);
+                        appendNav("部门管理", url, orgData);
                     });
                     //视图授权页面跳转
                     $.subscribe('org:resource:list', function (event, orgCode, orgId,orgName) {
@@ -304,6 +315,9 @@
                         $("#contentPage").load(url,{backParams:JSON.stringify(data)});
                     });
 
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
                     $.subscribe('org:orgInfoDialog:upAndDownMember', function (event, orgCode, orgId, orgName) {
                         var url = '${contextRoot}/upAndDownMember/initialUpAndDownMember';
                         var orgData = {
@@ -311,8 +325,7 @@
                             orgId: orgId,
                             orgName: orgName
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url, orgData);
+                        appendNav("人员关系", url, orgData);
                     });
                 }
             };
@@ -321,13 +334,13 @@
             win.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function () {
+            win.parent.closeDialog = function () {
                 master.orgInfoDialog.close();
             };
-            win.showAddOrgInfoDialogSuccPop = function () {
-                $.Notice.success('保存成功');
-            };
-            win.closeAddOrgInfoDialog = function (callback) {
+//            win.parent.showAddOrgInfoDialogSuccPop = function () {
+//                parent._LIGERDIALOG.success('保存成功');
+//            };
+            win.parent.closeAddOrgInfoDialog = function (callback) {
                 if (callback) {
                     callback.call(win);
                     master.reloadGrid();

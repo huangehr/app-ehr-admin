@@ -50,4 +50,26 @@
         margin-right: 10px;
         margin-left: 5px;
     }
+    #div_left{
+        width: 360px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+    }
+    #div_right{
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 370px;
+    }
+    #treeMenuWrap{
+        height: calc(100% - 50px);
+        overflow: hidden;
+        border: 1px solid rgb(214, 214, 214);
+    }
+    #treeMenu{
+        border: none;
+    }
 </style>

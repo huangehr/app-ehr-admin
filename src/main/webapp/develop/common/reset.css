@@ -25,5 +25,5 @@ article,aside,dialog,footer,header,section,footer,nav,figure,menu{ display:block
 /* 在IE10以上版本中，页面上的文本框控件在输入文字时候会被自动加上一个X,下面设置将其去除 */
 input[type=text]::-ms-clear { display: none; }
 a:active,a:visited,a:focus{
-    color: #333!important;
+    /*color: #333!important;*/
 }

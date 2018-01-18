@@ -3,16 +3,15 @@ package com.yihu.ehr.login.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
+import com.yihu.ehr.agModel.user.AccessToken;
 import com.yihu.ehr.agModel.user.RoleOrgModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.common.AccessToken;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.model.common.ListResult;
 import com.yihu.ehr.model.geography.MGeographyDict;
 import com.yihu.ehr.model.org.MOrganization;
 import com.yihu.ehr.model.resource.MRsRolesResource;
@@ -36,7 +35,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -76,9 +74,9 @@ public class LoginController extends BaseUIController {
     private String browseClientOutSizeUrl;
     @Value("${service-gateway.profileurl}")
     private String profileurl;
-    @Value("${app.oauth2authorize}")
+    @Value("${app.oauth2InnerUrl}")
     private String authorize;
-    @Value("${app.oauth2OutSize}")
+    @Value("${app.oauth2OuterUrl}")
     private String oauth2OutSize;
     @Value("${app.baseClientId}")
     private String baseClientId;
@@ -191,9 +189,10 @@ public class LoginController extends BaseUIController {
                     }
                 }
                 //生成认证token
-                Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
+                //Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(loginName, userDetailModel.getPassword(), gas);
                 //将信息存放到SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(AuthenticationToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
                 return success(accessToken);
             } else {
                 String msg = String.valueOf(map.get("message"));
@@ -341,8 +340,7 @@ public class LoginController extends BaseUIController {
         if(session.getAttribute("isInnerIp") != null){
             isInnerIp = (Boolean) session.getAttribute("isInnerIp");
         }
-
-        System.out.println("isInnerIp:" + isInnerIp);
+        //System.out.println("isInnerIp:" + isInnerIp);
         if(isInnerIp) {
             String url = browseClientUrl + "/common/login/signin?idCardNo=" + idCardNo;
             response.sendRedirect(authorize + "oauth/authorize?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);

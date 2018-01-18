@@ -61,7 +61,7 @@ public class IndicatorDictController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
         }
-        return "simpleView";
+        return "emptyView";
     }
 
 

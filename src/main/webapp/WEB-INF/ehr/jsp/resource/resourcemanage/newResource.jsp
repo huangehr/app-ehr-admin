@@ -9,7 +9,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <div class="f-dn" data-head-title="true">视图注册</div>
-<div id="div_wrapper" style="height: 96%;">
+<div id="div_wrapper">
 
     <div class="v-header">
         <div class="f-fl v-h-left f-pt5">
@@ -111,13 +111,12 @@
     </div>
 
     <!-- ####### 查询条件部分 ####### -->
-    <div id="div_content" class="f-ww contentH">
-        <div id="div_left" class="f-w240 f-bd f-of-hd">
+        <div id="div_left" class="f-w240 f-of-hd">
             <div class="f-mt10 f-mb10 f-ml10 f-w240">
                 <input type="text" id="inpSearch" placeholder="请输入视图分类名称" class="f-ml10 f-h28"/>
             </div>
             <!--资源浏览树-->
-            <div id="divTree" class="f-w230" style="height: 93%;">
+            <div id="divTree" class="f-w230" style="height: calc(100% - 50px);">
                 <ul id="treeDom" class="ztree" style="width: 100%;margin-right: 30px"></ul>
 
                 <ul id="treeDomZB" class="ztree" style="display: none"></ul>
@@ -132,5 +131,4 @@
                 <div id="divQutoResourceInfoGrid"></div>
             </div>
         </div>
-    </div>
 </div>

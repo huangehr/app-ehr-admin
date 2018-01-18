@@ -15,12 +15,6 @@
 					<div class="m-form-control f-fs12">
 						<input type="text" id="inp_search" placeholder="请输入应用名称">
 					</div>
-					<%--<div class="m-form-control f-ml20">--%>
-						<%--<!--搜索按钮-->--%>
-						<%--<div id="btn_app_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >--%>
-							<%--<span><spring:message code="btn.search"/></span>--%>
-						<%--</div>--%>
-					<%--</div>--%>
 				</div>
 			</div>
 			<div id="div_std_app_grid" ></div>

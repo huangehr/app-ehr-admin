@@ -50,7 +50,27 @@
 	.grid_edit:hover{
 		background: url(${staticRoot}/images/app/bianji_btn_pre.png) center no-repeat;
 	}
-
+    .grid_towrite{
+        display:inline-block;
+        width: 40px;
+        height: 40px;
+        cursor:pointer;
+        background: url(${staticRoot}/images/app/icon_bianji.png) center no-repeat;
+    }
+    .grid_detail{
+        display:inline-block;
+        width: 40px;
+        height: 40px;
+        cursor:pointer;
+        background: url(${staticRoot}/images/app/icon_xiangqing.png) center no-repeat;
+    }
+    .grid_hold{
+        display:inline-block;
+        width: 40px;
+        height: 40px;
+        cursor:pointer;
+        background: url(${staticRoot}/images/app/icon_baocun.png) center no-repeat;
+    }
 	.grid_delete{
 		display:inline-block;
 		width: 40px;
@@ -70,7 +90,6 @@
 		cursor:pointer;
 		background: url(${staticRoot}/images/app/suo01_btn.png) center no-repeat;
 	}
-
 	.grid_lock:hover{
 		background: url(${staticRoot}/images/app/suo_btn_pre.png) center no-repeat;
 	}
@@ -115,7 +134,6 @@
 		background-size:60px 20px;
 
 	}
-
 	.label_a{
 		vertical-align: top;
 		text-decoration: underline;
