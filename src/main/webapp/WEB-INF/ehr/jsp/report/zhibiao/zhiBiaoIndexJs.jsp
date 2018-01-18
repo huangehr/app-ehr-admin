@@ -310,7 +310,7 @@
                                                     if(data.successFlg){
                                                         parent._LIGERDIALOG.success('执行成功！');
                                                     }else{
-                                                        parent._LIGERDIALOG.error(data.errorMsg);
+                                                        parent._LIGERDIALOG.warn(data.errorMsg);
                                                     }
                                                     loading.close();
                                                     dictMaster.reloadGrid();
@@ -426,7 +426,7 @@
                                             if(data.successFlg){
                                                 parent._LIGERDIALOG.success('执行成功！');
                                             }else{
-                                                parent._LIGERDIALOG.error(data.errorMsg);
+                                                parent._LIGERDIALOG.warn(data.errorMsg);
                                             }
                                             loading.close();
                                         },

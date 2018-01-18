@@ -144,7 +144,6 @@
                 <%--}--%>
             <%--}--%>
             $('#btn_add').on('click', function () {
-                $('.go-back').remove();
                 var params = {mode: 'new', appId: p};
                 em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify, '新增', 480, 650, params);
             });
@@ -357,6 +356,7 @@
 //                    }
 //                }
             }
+            win.parent.$GB = $('.go-back');
             win.parent.$NAVLINK = $('#navLink');
             win.parent.$DIVNB = $('#div_nav_breadcrumb_bar');
             win.parent.$CON = $('#contentPage');
