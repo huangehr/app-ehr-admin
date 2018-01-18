@@ -46,6 +46,7 @@
             $inpDataStorage: $("#inp_data_storage"),
             $introduction:$("#inp_introduction"),
             $dataLevel: $('input[name="dataLevel"]', this.$form),
+            $resultGetType: $('input[name="resultGetType"]', this.$form),
             $status: $('input[name="status"]', this.$form),
             $jobType: $('input[name="jobType"]', this.$form),
             $intervalType: $('input[name="interval_type"]', this.$form),
@@ -97,6 +98,15 @@
                     me.$dataLevel.eq(1).ligerRadio("setValue",'');
                     me.$dataLevel.eq(2).ligerRadio("setValue",'3');
                 }
+                if (res.resultGetType == '1') {
+                    me.$resultGetType.eq(0).ligerRadio("setValue",'1');
+                    me.$resultGetType.eq(1).ligerRadio("setValue",'');
+                    me.$resultGetType.eq(2).ligerRadio("setValue",'');
+                }else if (res.resultGetType == '2') {
+                    me.$resultGetType.eq(0).ligerRadio("setValue",'');
+                    me.$resultGetType.eq(1).ligerRadio("setValue",'2');
+                    me.$resultGetType.eq(2).ligerRadio("setValue",'');
+                }
 
                 if (res.status == '1') {
                     me.$status.eq(0).ligerRadio("setValue",'1');
@@ -147,6 +157,7 @@
             initForm: function () {
                 var self = this;
                 self.$dataLevel.eq(0).attr("checked",'true');
+                self.$resultGetType.eq(0).attr("checked",'true');
                 self.$status.eq(0).attr("checked",'true');
                 self.$jobType.eq(0).attr("checked","true");
                 self.$monthDay.eq(0).attr("checked",'true');
@@ -206,6 +217,7 @@
                 self.$dataLevel.ligerRadio();
                 self.$status.ligerRadio();
                 self.$jobType.ligerRadio();
+                self.$resultGetType.ligerRadio();
                 self.$intervalType.ligerRadio();
                 self.$zhixingDate.ligerDateEditor({width:240,showTime: true,onChangeDate:function(val){
                     self.$zhixingDate.val(val+":00");
