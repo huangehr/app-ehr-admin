@@ -27,9 +27,11 @@
             $el3: document.getElementById("chart3"),
             $startDate:$("#inp_start_date"),
             $endDate:$("#inp_end_date"),
-            $date:$("#date"),
+            $date1:$("#date1"),
+            $date2:$("#date2"),
             $searchBtn: $('#btn_search'),
-            $search: $('#search'),
+            $searchBtn1: $('#btn_search1'),
+            $searchBtn2: $('#btn_search2'),
             $orgCode: $('#orgCode'),
             myCharts1: null,
             myCharts2: null,
@@ -48,17 +50,23 @@
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
                 }});
-                me.$date.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                me.$date1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$date2.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
                 }});
                 me.$startDate.ligerDateEditor("setValue",me.getSevenDays());
                 me.$endDate.ligerDateEditor("setValue",me.getCurrentDate());
-                me.$date.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$date1.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$date2.ligerDateEditor("setValue",me.getCurrentDate());
                 Promise.all([
                     me.getChart1(),
-                    me.getChart2(me.getCurrentDate()),
+                    me.getChart2(),
                     me.getChart3()
                 ]).then(function () {
                     me.bindEvents();
@@ -91,11 +99,11 @@
                     }
                 });
             },
-            getChart2: function (date) {
+            getChart2: function () {
                 var me = this;
                 me.myCharts2 = echarts.init(me.$el2);
                 me.myCharts2.showLoading();
-                this.getData(pi[1], {date:date}, function (res) {
+                this.getData(pi[1], {date:me.$date1.val()}, function (res) {
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart2(dataList);
@@ -106,7 +114,7 @@
                 var me = this;
                 me.myCharts3 = echarts.init(me.$el3);
                 me.myCharts3.showLoading();
-                this.getData(pi[2], {date: me.$date.val(),orgCode:  $("#orgCode").ligerGetComboBoxManager().getValue() }, function (res) {
+                this.getData(pi[2], {date: me.$date2.val(),orgCode:  $("#orgCode").ligerGetComboBoxManager().getValue() }, function (res) {
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart3(dataList);
@@ -241,7 +249,8 @@
                     ]
                 };
                 me.myCharts1.on('click', function(param) {
-                    me.getChart2(param.name);
+                    me.$date1.ligerDateEditor("setValue",param.name);
+                    me.getChart2();
                 });
                 me.myCharts1.hideLoading();
                 me.myCharts1.setOption(option);
@@ -625,8 +634,15 @@
                     }
                     me.getChart1();//所有指标统计结果查询,初始化查询
                 });
-                me.$search.click(function () {
-                    if(me.$date.val()==""){
+                me.$searchBtn1.click(function () {
+                    if(me.$date1.val()==""){
+                        parent._LIGERDIALOG.error('请选择查询日期');
+                        return false;
+                    }
+                    me.getChart2();//所有指标统计结果查询,初始化查询
+                });
+                me.$searchBtn2.click(function () {
+                    if(me.$date2.val()==""){
                         parent._LIGERDIALOG.error('请选择查询日期');
                         return false;
                     }

@@ -76,7 +76,7 @@
     .div-smtz-amount{color:#ffffff;margin: 0px 10px 0px 30px;font-size: 40px;}
     .c-fff{color:#fff;}
     .f-fs20{font-size:20px;}
-    .div-qyrkgak{/*margin-top: 20px;*/height: 700px;background: #ffffff;border: 1px solid #e1e1e1;}
+    .div-qyrkgak{/*margin-top: 20px;*/height: 750px;background: #ffffff;border: 1px solid #e1e1e1;}
     .div-qyrkgak-chart1{height: 350px;width: calc(30% - 21px);display: inline-block;position: relative;}
     #div_jkda_chart6{width: 60%;height: 100%;margin-right: 20%;margin-left: 20%;}
     #div_jkda_chart7{height: 350px;width: 40%;display: inline-block;}
