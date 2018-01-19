@@ -87,9 +87,9 @@
 						success: function(data) {
                             waittingDialog.close();
 							if (data.successFlg) {
+                                closeRsInfoDialog();
 								reloadMasterUpdateGrid(categoryIdOld);
 								$.Notice.success('添加成功');
-								closeRsInfoDialog();
 							} else {
 								$.Notice.error(data.errorMsg);
 							}

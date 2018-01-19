@@ -50,6 +50,11 @@ public class ReportController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/archivesReprot")
+    public String dataCenter(Model model) {
+        model.addAttribute("contentPage", "/report/archivesReport");
+        return "pageView";
+    }
     /**
      * 趋势分析页(对外）
      * @param model

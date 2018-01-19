@@ -453,6 +453,21 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
         }
     }
 
+    @RequestMapping("/getHospitalList")
+    @ResponseBody
+    public Object getHospitalList( String searchParm,int page, int rows) {
+        try {
+            String url = "/organizations";
+            PageParms pageParms = new PageParms(rows, page)
+                    .addLikeNotNull("fullName", searchParm).addEqual("orgType","Hospital");
+            String resultStr = service.doGet(comUrl + url, pageParms);
+            Envelop envelop = formatComboData(resultStr, "orgCode", "fullName");
+            return envelop;
+        } catch (Exception e) {
+            return systemError();
+        }
+    }
+
     @RequestMapping("/getOrgCodeAndNameList")
     @ResponseBody
     public Object getOrgCodeAndNameList( String searchParm,int page, int rows) {

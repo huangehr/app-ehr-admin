@@ -35,6 +35,7 @@
         }
 
         $(document).on('click', '.go-backa', function (e) {
+            debugger
             $('.go-backa').remove();
             appendNav()
         });

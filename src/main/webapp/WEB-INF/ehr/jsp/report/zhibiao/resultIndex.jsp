@@ -16,8 +16,8 @@
           <div class="m-form-control">
               <input type="text" id="inp_start_time" class="f-h28 f-w160" placeholder="起始时间"  data-attr-scan="startTime">
           </div>
-          <div class="m-form-control" style="margin-top: -2px;font-weight:bold;font-size:22px;vertical-align: middle;margin-right: 10px;display: inline-block;"> ~ </div>
-          <div class="m-form-control">
+          <div class="m-form-control" style="margin-top: -2px;font-weight:bold;font-size:22px;vertical-align: middle;margin-right: 10px;margin-left: 10px;display: inline-block;"> ~ </div>
+          <div class="m-form-control" style="margin-right: 10px">
               <input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="截止时间" data-attr-scan="endTime">
           </div>
 
