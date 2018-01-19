@@ -72,7 +72,7 @@
                         height:"450px",
                         parms: {
                             resourceId: resourceId,
-                            name:""
+                            nameOrCode:""
                         },
                         columns: [
                             {display: '指标分类', name: 'quotaTypeName', width: '25%', isAllowHide: false, align: 'left'},
@@ -226,7 +226,7 @@
                     var reqUrl = '${contextRoot}/resource/resourceManage/getResourceQuotaInfo';
                     var values = {
                         resourceId: resourceId,
-                        name:searchNmEntry
+                        nameOrCode:searchNmEntry
                     };
                     Util.reloadGrid.call(curGrid,reqUrl, values, 1);
                 },

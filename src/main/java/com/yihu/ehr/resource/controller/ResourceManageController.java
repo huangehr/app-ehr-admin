@@ -2,7 +2,6 @@ package com.yihu.ehr.resource.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
-import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
@@ -24,7 +23,10 @@ import org.springframework.web.client.RestClientException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller - 视图管理控制器
@@ -466,7 +468,7 @@ public class ResourceManageController extends BaseUIController {
 
     @RequestMapping("/getResourceQuotaInfo")
     @ResponseBody
-    public Object getResourceQuotaInfo(String resourceId, String name, int page, int rows){
+    public Object getResourceQuotaInfo(String resourceId, String nameOrCode, int page, int rows){
         String url = "/resources/getQuotaList";
         String resultStr = "";
         Envelop envelop = new Envelop();
@@ -474,8 +476,8 @@ public class ResourceManageController extends BaseUIController {
         if (!StringUtils.isEmpty(resourceId)) {
             params.put("filters", "resourceId=" + resourceId);
         }
-        if (!StringUtils.isEmpty(name)) {
-            params.put("quotaName", name);
+        if (!StringUtils.isEmpty(nameOrCode)) {
+            params.put("quotaNameOrCode", nameOrCode);
         }
         params.put("page", page);
         params.put("pageSize", rows);
