@@ -45,11 +45,30 @@
                 isFirstPage = true;
             }
             function onUploadSuccess(g, result){
-                debugger;
-                if(result)
-                    openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
-                else
+                if(result) {
+                    var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                    var rowDialog = parent._LIGERDIALOG.open({
+                        height: 640,
+                        width: 1000,
+                        isDrag: true,
+                        //isResize:true,
+                        title: '导入错误信息',
+                        url: urls.gotoImportLs,
+//                        load: true
+                        urlParms: {
+                            result: result
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded: function () {
+                            wait.close(),
+                                    rowDialog.show()
+                        }
+                    });
+                    rowDialog.hide();
+                } else {
                     parent._LIGERDIALOG.success("导入成功！");
+                }
             }
             $('#upd').uploadFile({url: "${contextRoot}/doctorImport/import", onUploadSuccess: onUploadSuccess});
 
