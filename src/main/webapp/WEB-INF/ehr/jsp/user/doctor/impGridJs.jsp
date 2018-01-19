@@ -132,10 +132,10 @@
                         return uniqValid(urls.userExistence, "email="+val, "该邮箱在账户表中已存在！");
                     }
                     if(field.indexOf('idCardNo')!=-1){
-                        return uniqValid(urls.doctorExistence, "id_card_no="+val, "该身份证号在医生表中已存在！");
+                        return uniqValid(urls.doctorExistence, "idCardNo="+val, "该身份证号在医生表中已存在！");
                     }
                     if(field.indexOf('idCardNo')!=-1){
-                        return uniqValid(urls.userExistence, "id_card_no="+val, "该身份证号在账户表中已存在！");
+                        return uniqValid(urls.userExistence, "idCardNo="+val, "该身份证号在账户表中已存在！");
                     }
                     if(field.indexOf('orgCode')!=-1){
                         debugger;
