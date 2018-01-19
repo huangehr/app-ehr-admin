@@ -410,8 +410,6 @@ public class TjQuotaController extends BaseUIController {
                                     String startTime, String endTime, String orgName,
                                     String province, String city, String district,String res, HttpServletRequest request) {
         Envelop result = new Envelop();
-        System.out.print(tjQuotaId);
-        System.out.print(res);
         String resultStr = "";
         String url = "/tj/tjGetQuotaResult";
         try {
@@ -422,7 +420,8 @@ public class TjQuotaController extends BaseUIController {
             filters.put("province", province);
             filters.put("city", city);
             filters.put("district", district);
-            filters.put("result", res);
+             // 结果大于0
+            // filters.put("result", res);
             Map<String, Object> params = new HashMap<>();
             List<String> userOrgList = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
