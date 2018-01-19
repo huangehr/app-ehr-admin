@@ -87,7 +87,6 @@
                                     if (chartTypeArr[i] == row.quotaChart) {
                                         c = 'selected';
                                     }
-//                                    debugger
                                     switch (chartTypeArr[i]) {
                                         case '1':
                                             html.push('<option value="1" ' + c + '>柱状图</option>');
@@ -97,6 +96,9 @@
                                             break;
                                         case '3':
                                             html.push('<option value="3" ' + c + '>饼状图</option>');
+                                            break;
+                                        case '4':
+                                            html.push('<option value="4" ' + c + '>二维表</option>');
                                             break;
                                     }
                                 }
@@ -204,6 +206,9 @@
                                         break;
                                     case 3:
                                         cName = '饼状图';
+                                        break;
+                                    case 4:
+                                        cName = '二维表';
                                         break;
                                 }
                                 resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName +'"  data-quotaCode="' + item.quotaCode + '" data-qchart="' + item.quotaChart + '" >'+
