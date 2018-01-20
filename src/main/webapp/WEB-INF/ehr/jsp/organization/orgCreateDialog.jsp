@@ -28,6 +28,10 @@
         opacity: 0;
         z-index: 999;
     }
+    .m-combo-tab.f-dn.on{
+        top: 35px;
+        bottom: auto;
+    }
 </style>
 
 

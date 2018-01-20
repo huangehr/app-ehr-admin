@@ -2,6 +2,7 @@ package com.yihu.ehr.std.controller;
 
 import com.yihu.ehr.agModel.standard.cdadocument.CDAModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -310,7 +311,7 @@ public class CdaController extends BaseUIController {
         Map<String,Object> params = new HashMap<>();
 
         cdaModel = toModel(cdaJson,CDAModel.class);
-        UserDetailModel userDetailModel = getCurrentUserRedis(request);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
 
         params.put("version",version);
 

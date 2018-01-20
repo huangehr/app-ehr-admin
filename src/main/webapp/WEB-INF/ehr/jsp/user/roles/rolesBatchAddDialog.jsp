@@ -22,8 +22,8 @@
 
 	<div class="m-form-group">
 		<label class="label_title" style="width:120px" for="inpMechanism">医疗机构: </label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inpMechanism" data-code="org_name" data-type="select" class="f-pr0 f-ml10 inp-reset div-table-colums "/>
+		<div class="l-text-wrapper m-form-control essential" style="padding-right: 0">
+			<input type="text" id="inpMechanism" data-code="org_name" data-type="select" class=""/>
 		</div>
 	</div>
 

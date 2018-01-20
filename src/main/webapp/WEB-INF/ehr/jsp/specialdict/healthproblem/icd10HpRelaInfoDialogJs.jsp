@@ -111,7 +111,7 @@
 						if(!ids){
 							var rows = icd10HpRelaIncludeInfoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要解除关联的数据行！');
+								parent._LIGERDIALOG.warn('请选择要解除关联的数据行！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -125,9 +125,9 @@
 							success: function(data){
 								if(data.successFlg){
 									masters.reloadGrid();
-									$.Notice.success('操作成功');
+									parent._LIGERDIALOG.success('操作成功');
 								}else{
-									$.Notice.error(data.errorMsg);
+									parent._LIGERDIALOG.error(data.errorMsg);
 								}
 							}
 						});
@@ -136,7 +136,7 @@
 					//弹出新增关联窗口
 					$("#btn_relation_new").click(function(){
 						var title = '诊断字典';
-						masters.createRelationDialog = $.ligerDialog.open({
+						masters.createRelationDialog = parent._LIGERDIALOG.open({
 							height:500,
 							width:700,
 							title:title,
@@ -145,8 +145,8 @@
 								hpId:hpId
 							},
 							isHidden: false,
-							opener: true,
-							load:true
+//							opener: true,
+//							load:true
 
 						});
 					});
@@ -160,13 +160,13 @@
 			};
 			/* ***************************页面回调接口************************ */
 			//关闭关联窗口，刷新页面
-			win.closeCreateRelationDialog = function(){
+            win.parent.closeCreateRelationDialog = win.closeCreateRelationDialog = function(){
 				masters.reloadGrid();
 				masters.createRelationDialog.close()
 			};
 
 			//关联窗口关闭后的回调函数
-			win.reloadRelationInfoDialog = function (callback) {
+			win.parent.reloadRelationInfoDialog = function (callback) {
 				masters.reloadGrid();
 				if(callback){
 					callback.call(win);

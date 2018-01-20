@@ -6,6 +6,7 @@ import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -404,14 +405,13 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("distributeKey")
     @ResponseBody
-    public Object distributeKey(String loginCode) {
-        String getUserUrl = "/users/key/"+loginCode;
+    public Object distributeKey(String loginCode, HttpServletRequest request) throws IOException{
+        String getUserUrl = "/user/key";
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-
-        params.put("loginCode", loginCode);
+        UsersModel user = getCurrentUserRedis(request);
+        params.put("userId", user.getId());
         try {
             resultStr = HttpClientUtil.doPut(comUrl + getUserUrl, params, username, password);
             if (!StringUtils.isEmpty(resultStr)) {

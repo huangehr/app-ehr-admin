@@ -9,6 +9,7 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -64,7 +65,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = getCurrentUserRedis(request);
+        UsersModel user = getCurrentUserRedis(request);
         try {
            writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
@@ -246,7 +247,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         if(userPhones.contains(model.getPhone())){
             //账户表中存在此电话号码，但不是此人的账户，则判断为该电话号码重复。
             if(!existFlag) {
-            model.addErrorMsg("phone", "该电话号码对应的账户已存在，请核对！");
+            model.addErrorMsg("phone", "该电话号码已被注册，请核对！");
             rs = 0;
             }
         }
@@ -265,10 +266,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         }
         //账户表
         if(userEmails.contains(model.getEmail())){
-            if(!existFlag) {
                 model.addErrorMsg("email", "该邮箱对应的账户已存在，请核对！");
                 rs = 0;
-            }
         }
         //机构不存在，报错
         if(StringUtils.isEmpty(orgId)){
@@ -341,13 +340,12 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     @RequestMapping("/batchSave")
     @ResponseBody
     public Object batchSave(String doctors, String eFile, String tFile, String datePath){
-
+        if(!StringUtils.isEmpty(doctors)&&!StringUtils.isEmpty(doctors.replaceAll("\\[|\\]",""))){
         try{
             eFile = datePath + TemPath.separator + eFile;
             File file = new File(TemPath.getFullPath(eFile, parentFile));
             List<DoctorMsgModel> all = (List<DoctorMsgModel>) ObjectFileRW.read(file);
             List<DoctorMsgModel> doctorMsgModels = objectMapper.readValue(doctors, new TypeReference<List<DoctorMsgModel>>() {});
-
 
             Map<String, Set> repeat = new HashMap<>();
             repeat.put("phone", new HashSet<String>());
@@ -394,6 +392,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             e.printStackTrace();
             return systemError();
         }
+        }
+        return success("");
     }
     @RequestMapping("/doctorIsExistence")
     @ResponseBody

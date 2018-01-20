@@ -5,6 +5,7 @@ import com.yihu.ehr.agModel.specialdict.Icd10DictModel;
 import com.yihu.ehr.agModel.specialdict.Icd10DrugRelationModel;
 import com.yihu.ehr.agModel.specialdict.Icd10IndicatorRelationModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -126,7 +127,7 @@ public class Icd10Controller extends BaseUIController {
         Envelop envelop = new Envelop();
         try{
             envelop.setSuccessFlg(false);
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String url = "/dict/icd10";
             Icd10DictModel model = objectMapper.readValue(icd10JsonData, Icd10DictModel.class);
             if(StringUtils.isEmpty(model.getCode())){
@@ -326,7 +327,7 @@ public class Icd10Controller extends BaseUIController {
     public Object createIcd10DrugRelations(Long icd10Id,String drugIds,HttpServletRequest request){
         Envelop envelop = new Envelop();
         try {
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String url = "/dict/icd10/drugs";
             if(icd10Id == null){
                 envelop.setErrorMsg("icd10字典id不能为空！");
@@ -566,7 +567,7 @@ public class Icd10Controller extends BaseUIController {
     public Object createIcd10IndicatorRelations(Long icd10Id,String indicatorIds,HttpServletRequest request){
         Envelop envelop = new Envelop();
         try {
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String url = "/dict/icd10/indicators";
             if(icd10Id == null){
                 envelop.setErrorMsg("icd10字典id不能为空！");

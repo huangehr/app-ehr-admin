@@ -16,8 +16,8 @@
           <div class="m-form-control">
               <input type="text" id="inp_start_time" class="f-h28 f-w160" placeholder="起始时间"  data-attr-scan="startTime">
           </div>
-          <div class="m-form-control" style="margin-top: -2px;font-weight:bold;font-size:22px;vertical-align: middle;margin-right: 10px;display: inline-block;"> ~ </div>
-          <div class="m-form-control">
+          <div class="m-form-control" style="margin-top: -2px;font-weight:bold;font-size:22px;vertical-align: middle;margin-right: 10px;margin-left: 10px;display: inline-block;"> ~ </div>
+          <div class="m-form-control" style="margin-right: 10px">
               <input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="截止时间" data-attr-scan="endTime">
           </div>
 
@@ -29,7 +29,10 @@
             <!--下拉框-->
             <input type="text" id="inp_location" data-type="comboSelect" data-attr-scan="location"/>
           </div>
-
+          <div class="m-form-control f-ml10 f-mb10">
+            <!--下拉框-->
+            <input type="text" id="select" />
+          </div>
           <div class="m-form-control f-ml10 f-mb10">
             <sec:authorize url="/quota/searchResult">
               <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">

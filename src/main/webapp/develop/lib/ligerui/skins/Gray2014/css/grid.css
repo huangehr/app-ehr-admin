@@ -147,8 +147,17 @@ padding-left: 15px;
 }
 .l-grid-row-cell-inner
 {
-    text-align:center; line-height: 40px; min-height:22px; _height:22px;
-    margin-left:3px; margin-right:3px; overflow:hidden;
+    /*text-align:center; line-height: 40px; min-height:22px; _height:22px;*/
+    /*margin-left:3px; margin-right:3px; overflow:hidden;*/
+
+    text-align: center;
+    line-height: 30px!important;
+    min-height: 30px!important;
+    height: 30px!important;
+    _height: 30px!important;
+    margin-left: 3px;
+    margin-right: 3px;
+    overflow: hidden;
 }
 .l-grid-row-cell-inner-fixedheight
 {
@@ -313,3 +322,10 @@ margin: 2px; margin-top:9px;
 .l-toolbar-item-hasicon{ padding-left:20px;}
 .l-toolbar-item-disable{cursor:default;}
 .l-toolbar-item-disable span{color: #A1A1A1;}
+
+.l-grid-row-cell-checkbox span{
+    margin-top: 8px!important;
+}
+.l-grid-tree-space{
+    margin-top: 5px!important;
+}

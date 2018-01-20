@@ -2,6 +2,7 @@ package com.yihu.ehr.emergency.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.emergency.model.AmbulanceMsgModel;
 import com.yihu.ehr.emergency.model.AmbulanceMsgModelReader;
 import com.yihu.ehr.emergency.model.AmbulanceMsgModelWriter;
@@ -241,7 +242,7 @@ public class AmbulanceController extends BaseUIController {
     @ResponseBody
     public void importMeta(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UserDetailModel user = getCurrentUserRedis(request);
+        UsersModel user = getCurrentUserRedis(request);
         try {
             writerResponse(response, 1+"", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");

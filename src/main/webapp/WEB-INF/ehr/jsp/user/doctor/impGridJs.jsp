@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
 <script>
 
     (function ($, win) {
@@ -100,7 +103,6 @@
             function onAfterShowData(data){
                 $('.l-grid-row-cell-inner').attr('title', '');
                 validator = initValidate($form, function (elm) {
-                    debugger;
                     var field = $(elm).attr('id');
                     var val = $('#' + field).val();
                     var oldVal = $(elm).attr('data-old-val');
@@ -132,10 +134,10 @@
                         return uniqValid(urls.userExistence, "email="+val, "该邮箱在账户表中已存在！");
                     }
                     if(field.indexOf('idCardNo')!=-1){
-                        return uniqValid(urls.doctorExistence, "id_card_no="+val, "该身份证号在医生表中已存在！");
+                        return uniqValid(urls.doctorExistence, "idCardNo="+val, "该身份证号在医生表中已存在！");
                     }
                     if(field.indexOf('idCardNo')!=-1){
-                        return uniqValid(urls.userExistence, "id_card_no="+val, "该身份证号在账户表中已存在！");
+                        return uniqValid(urls.userExistence, "idCardNo="+val, "该身份证号在账户表中已存在！");
                     }
                     if(field.indexOf('orgCode')!=-1){
                         debugger;

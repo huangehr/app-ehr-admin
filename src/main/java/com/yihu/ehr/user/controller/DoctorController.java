@@ -178,7 +178,10 @@ public class DoctorController extends BaseUIController {
         Envelop result = new Envelop();
         ObjectMapper mapper = new ObjectMapper();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        //% 在URL中是特殊字符，需要特殊转义一下
+        doctorModelJsonData = doctorModelJsonData.replaceAll("%(?![0-9a-fA-F]{2})", "%25");
         String[] strings = URLDecoder.decode(doctorModelJsonData, "UTF-8").split(";");
+
         jsonModel = URLDecoder.decode(jsonModel,"UTF-8");
         DoctorDetailModel doctorDetailModel = toModel(strings[0], DoctorDetailModel.class);
         RestTemplates templates = new RestTemplates();

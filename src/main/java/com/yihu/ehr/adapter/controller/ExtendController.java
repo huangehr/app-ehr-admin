@@ -58,7 +58,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
 
 
     @RequestMapping("/gotoModify")
-    public Object gotoModify(Model model, String id, String mode, String extParms, String myFlag, String versionNum, String versionCode, String orgCode){
+    public Object gotoModify(Model model, String id, String mode, String extParms, String myFlag, String versionNum, String versionCode, String appId, String orgCode){
         try {
             Envelop envelop = new Envelop();
 
@@ -80,6 +80,7 @@ public class ExtendController<T extends ExtendService> extends BaseUIController 
             plan = afterGotoModify(plan, params);
 
             model.addAttribute("model",toJson(plan));
+            model.addAttribute("appId",appId);
             model.addAttribute("mode",mode);
             model.addAttribute("myFlag",myFlag);
             model.addAttribute("orgCode", orgCode);

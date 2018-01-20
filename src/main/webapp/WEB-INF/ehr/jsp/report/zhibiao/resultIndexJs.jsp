@@ -26,18 +26,38 @@
                 $searchBtn: $('#btn_search'),
                 $orgName: $('#inp_org_name'),
                 $location: $("#inp_location"),
+                $select:$('#select'),
                 $starTime: $('#inp_start_time'),
                 $endTime: $('#inp_end_time'),
+                //创建变量
+                $selectChnage:null,
                 init: function () {
                     this.$element.show();
-                    this.$starTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
-                    this.$endTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:true});
+                    this.$starTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
+                    this.$endTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
 
                     this.$location.addressDropdown({tabsData:[
                         {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
                         {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
                         {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}
                     ]});
+                    this.$select.ligerComboBox({
+                        width : 150,
+                        data: [
+                            { text: '全部', id: 'qb' },
+                            { text: '统计值大于0', id: '>0' }
+                        ],
+                        value:"qb",
+                        initIsTriggerEvent: false,
+                        onSelected: function (value ,text)
+                        {
+                            if(text=='统计值大于0'){
+                                patientRetrieve.$selectChnage = value;
+                            }
+
+                        }
+
+                    });
                     this.$orgName.ligerTextBox({width: 140 });
                     this.bindEvents();
                     this.$element.show();
@@ -68,16 +88,17 @@
                                 orgName: '',
                                 location: '',
                                 startTime: '',
-                                endTime: ''
+                                endTime: '',
                             },
                             columns: [
                                 {display: '指标编码', name: 'quotaCode', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '统计时间', name: 'quotaDate', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '省份', name: 'provinceName', width: '5%', isAllowHide: false, align: 'left'},
-                                {display: '城市', name: 'cityName', width: '5%', isAllowHide: false, align: 'left'},
+//                                {display: '省份', name: 'provinceName', width: '5%', isAllowHide: false, align: 'left'},
+//                                {display: '城市', name: 'cityName', width: '5%', isAllowHide: false, align: 'left'},
                                 {display: '区县', name: 'townName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '机构名称', name: 'orgName', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '团队名称', name: 'teamName', width: '10%', isAllowHide: false, align: 'left'},
+                                {display: '机构类型名称', name: 'orgHealthCategoryName', width: '10%', isAllowHide: false, align: 'left'},
+//                                {display: '团队名称', name: 'teamName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '年份', name: 'yearName', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: slaveKey1Name, name: 'slaveKey1Name', width: '10%', hide: (!!!slaveKey1Name), align: 'left'},
                                 {display: slaveKey2Name, name: 'slaveKey2Name', width: '10%', hide: (!!!slaveKey2Name), align: 'left'},
@@ -95,13 +116,15 @@
                     }
                 },
                 reloadGrid: function (curPage) {
+                    console.log(patientRetrieve.$selectChnage)
                     patientRetrieve.$element.attrScan();
 //                    var values = patientRetrieve.$element.Fields.getValues();
                     var address = patientRetrieve.$element.Fields.location.getValue();
                     var values = $.extend({}, patientRetrieve.$element.Fields.getValues(),
                             {province: (address.names[0] == null ? '' : address.names[0])},
                             {city: (address.names[1] == null ? '' : address.names[1])},
-                            {district: (address.names[2] == null ? '' : address.names[2])});
+                            {district: (address.names[2] == null ? '' : address.names[2])},
+                            {res:patientRetrieve.$selectChnage});
                     Util.reloadGrid.call(this.grid, '${contextRoot}/tjQuota/selectQuotaResult', values, curPage);
                 },
                 bindEvents: function () {

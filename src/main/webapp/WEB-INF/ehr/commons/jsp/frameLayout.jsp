@@ -16,6 +16,11 @@
     <tiles:insertAttribute name="pageCss" ignore="true"/>
     <link rel="stylesheet" href="${staticRoot}/common/font-awesome.css">
     <link rel="stylesheet" href="${staticRoot}/common/style.min.css">
+        <style>
+            .menucyc >li>ul>li>ul>li ul{
+                border: none;
+            }
+        </style>
 </head>
 <body>
 <%--top--%>
