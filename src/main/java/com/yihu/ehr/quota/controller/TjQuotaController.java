@@ -95,7 +95,7 @@ public class TjQuotaController extends BaseUIController {
         params.put("filters", "");
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(name)) {
-            stringBuffer.append("name?" + name + " g1;code?" + name + " g1;");
+            stringBuffer.append("name?" + name.trim() + " g1;code?" + name.trim() + " g1;");
         }
         if (!StringUtils.isEmpty(quotaType)) {
             stringBuffer.append("quotaType=" + quotaType + ";");
@@ -369,7 +369,7 @@ public class TjQuotaController extends BaseUIController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "pageView";
+        return "emptyView";
     }
 
 
@@ -423,7 +423,7 @@ public class TjQuotaController extends BaseUIController {
         model.addAttribute("quotaCode", quotaCode);
         model.addAttribute("quotaType", quotaType);
         model.addAttribute("name", name);
-        return "pageView";
+        return "emptyView";
     }
 
     /**

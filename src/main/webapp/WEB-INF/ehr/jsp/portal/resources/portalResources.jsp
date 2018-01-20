@@ -34,8 +34,8 @@
     <div id="div_portalResources_info_grid">
 
     </div>
-    <!--######资源信息表#结束######-->
-</div>
-<div id="div_portalResources_info_dialog">
+    <div id="div_portalResources_info_dialog">
 
+    </div>
+    <!--######资源信息表#结束######-->
 </div>

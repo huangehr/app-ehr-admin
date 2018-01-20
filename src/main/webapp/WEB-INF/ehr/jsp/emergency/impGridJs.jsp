@@ -25,7 +25,7 @@
                         if($form.Fields)
                             $form.removeData('propMap');
                         $form.attrScan();
-                        var waitting = $.ligerDialog.waitting("正在保存中.....");
+                        var waitting = parent._LIGERDIALOG.waitting("正在保存中.....");
                         var formData = $form.Fields.getValues();
                         var model = [], f, m;
 
@@ -43,13 +43,13 @@
                             success: function (data) {
                                 waitting.close();
                                 if (data.successFlg) {
-                                    $.Notice.success("保存成功!");
+                                    parent._LIGERDIALOG.success("保存成功!");
                                     searchFun();
                                 } else {
                                     if (data.errorMsg)
-                                        $.Notice.error(data.errorMsg);
+                                        parent._LIGERDIALOG.error(data.errorMsg);
                                     else
-                                        $.Notice.error('保存失败！');
+                                        parent._LIGERDIALOG.error('保存失败！');
                                 }
                             },
                             error: function () {
@@ -57,7 +57,7 @@
                             }
                         });
                     }else {
-                        $.Notice.warn("还有错误数据未修改正确！");
+                        parent._LIGERDIALOG.warn("还有错误数据未修改正确！");
                     }
                 }
 

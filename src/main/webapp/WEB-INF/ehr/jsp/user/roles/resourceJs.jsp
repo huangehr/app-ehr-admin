@@ -20,6 +20,18 @@
 			//角色组已授权资源集合
 			var rolesRsIds = [];
 
+            //添加碎片
+            function appendNav(str, url, data) {
+                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').show();
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
+//
+//                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+//
+//                $("#contentPage").empty().load(url,data);
+            }
 			// 资源分类；资源明细检索信息，page，pageSize-------------------
 			var rolesRsPageParams = JSON.parse(sessionStorage.getItem('rolesRsPageParams'))
 			sessionStorage.removeItem('rolesRsPageParams');
@@ -311,7 +323,7 @@
 
 					//维度授权页面跳转
 					$.subscribe('roles:resourceManage:list', function (event,resourceId,code,resourceName,categoryName) {
-						debugger;
+                        var url = '${contextRoot}/userRoles/resourceManage/initial?rolesId='+rolesId+'&resourceId='+resourceId;
 						master.savePageParamsToSession();//页面数据保存sessionStorage
 						//跳转维度授权页面，带参数
 						var data = {
@@ -322,23 +334,10 @@
 							'resourceSub':categoryName,
 							'backParams':backParams,//资源页面顶roles信息
 						}
-						$("#contentPage").empty();
-						$("#contentPage").load('${contextRoot}/userRoles/resourceManage/initial?rolesId='+rolesId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});
+                        appendNav('维度授权', url, {dataModel:JSON.stringify(data)});
 					});
 				},
 			};
-			var resizeContent = function(){
-				var contentW = $('#div_content').width();
-				var leftW = $('#div_left').width();
-				//浏览器窗口高度-固定的（健康之路图标+位置）128-10px包裹padding-返回上一层div高度
-				var contentH = $(window).height()-128-10-50;
-				$('#div_content').height(contentH);
-				//减50px的检索条件div高度
-				$('#div_tree').height(contentH-50);
-				$('#div_right').width(contentW-leftW-20);
-			};
-			resizeContent();
-			$(window).bind('resize', resizeContent);
 			win.reloadMasterUpdateGrid = function () {
 				master.reloadGrid();
 			};

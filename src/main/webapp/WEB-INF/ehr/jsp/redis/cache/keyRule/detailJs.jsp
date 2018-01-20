@@ -103,6 +103,14 @@
                             return $.Util.validateByAjax(ulr, {id: id, code: code});
                         }
                         break;
+                    case 'expression':
+                        var categoryCode = $("#categoryCode").ligerComboBox().getValue();
+                        var expression = $("#expression").val();
+                        if(!$.Util.isStrEquals(expression, detailModel.expression)) {
+                            var ulr = "${contextRoot}/redis/cache/keyRule/isUniqueExpression";
+                            return $.Util.validateByAjax(ulr, {id: id, categoryCode: categoryCode, expression: expression});
+                        }
+                        break;
                 }
             }
         });

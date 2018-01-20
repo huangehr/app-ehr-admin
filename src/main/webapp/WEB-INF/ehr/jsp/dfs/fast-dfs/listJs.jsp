@@ -55,7 +55,7 @@
         // 修改域名
         $('#modifyPublicUrl').on('click', function () {
             var oldUrl = $('#defaultPublicUrl').html();
-            $.ligerDialog.prompt('修改下载域名', oldUrl, false, function(flag, value) {
+            parent._LIGERDIALOG.prompt('修改下载域名', oldUrl, false, function(flag, value) {
                 if(flag) {
                     $('#defaultPublicUrl').html(value);
                 }
@@ -64,7 +64,7 @@
 
         // 下载
         $.subscribe('fastDfs:download', function (event, path, name) {
-            var loading = $.ligerDialog.waitting("正在下载...");
+            var loading = parent._LIGERDIALOG.waitting("正在下载...");
 
             var publicUrl = $('#defaultPublicUrl').html();
             var a = document.createElement('a');
@@ -92,11 +92,11 @@
                 if (data.successFlg) {
                     $('#defaultPublicUrl').html(data.detailModelList[0]);
                 } else {
-                    $.Notice.error('获取下载域名失败。');
+                    parent._LIGERDIALOG.error('获取下载域名失败。');
                 }
             },
             error: function () {
-                $.Notice.error('设置下载域名发生异常');
+                parent._LIGERDIALOG.error('设置下载域名发生异常');
             }
         });
     }
@@ -261,11 +261,11 @@
                     };
                     serviceListChart.setOption(serviceListChartOption);
                 } else {
-                    $.Notice.error('获取文件服务器状态数据失败');
+                    parent._LIGERDIALOG.error('获取文件服务器状态数据失败');
                 }
             },
             error: function() {
-                $.Notice.error('获取文件服务器状态数据发生异常！');
+                parent._LIGERDIALOG.error('获取文件服务器状态数据发生异常！');
             }
         });
     }

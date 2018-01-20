@@ -37,7 +37,7 @@
                 {display: '缓存分类', name: 'categoryName', width: '15%', isAllowHide: false, align: 'left'},
                 {display: 'Key规则表达式', name: 'expression', width: '20%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '15%', isAllowHide: false, align: 'left'},
-                {display: '操作', name: 'operator', minWidth: 120, align: 'center',
+                {display: '操作', name: 'operator', width: '20%', align: 'center',
                     render: function (row) {
                         var html = '';
                         html += '<sec:authorize url="/redis/cache/keyRule/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "redis:cache:keyRule:detail", row.id, 'modify') + '"></a></sec:authorize>';
@@ -65,7 +65,7 @@
             if (mode == 'modify') {
                 title = '修改缓存Key规则';
             }
-            detailDialog = $.ligerDialog.open({
+            detailDialog = parent._LIGERDIALOG .open({
                 height: 490,
                 width: 480,
                 title: title,
@@ -80,21 +80,21 @@
 
         // 删除
         $.subscribe('redis:cache:keyRule:delete', function (event, id) {
-            $.Notice.confirm('删除后不能通过该缓存Key规则操作缓存，确认要删除吗？', function (r) {
+            parent._LIGERDIALOG .confirm('删除后不能通过该缓存Key规则操作缓存，确认要删除吗？', function (r) {
                 if (r) {
-                    var loading = $.ligerDialog.waitting("正在删除数据...");
+                    var loading = parent._LIGERDIALOG .waitting("正在删除数据...");
                     dataModel.updateRemote('${contextRoot}/redis/cache/keyRule/delete', {
                         data: {id: parseInt(id)},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('删除成功！');
+                                parent._LIGERDIALOG .success('删除成功！');
                                 reloadGrid();
                             } else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG .error(data.errorMsg);
                             }
                         },
                         error: function () {
-                            $.Notice.error('删除发生异常');
+                            parent._LIGERDIALOG .error('删除发生异常');
                         },
                         complete: function () {
                             loading.close();
@@ -147,11 +147,11 @@
                         ]
                     });
                 } else {
-                    $.Notice.error(data.errorMsg);
+                    parent._LIGERDIALOG .error(data.errorMsg);
                 }
             },
             error: function() {
-                $.Notice.error('加载分类内存占比图表数据发生异常！');
+                parent._LIGERDIALOG .error('加载分类内存占比图表数据发生异常！');
             }
         });
 
@@ -202,11 +202,11 @@
                         ]
                     });
                 } else {
-                    $.Notice.error(data.errorMsg);
+                    parent._LIGERDIALOG .error(data.errorMsg);
                 }
             },
             error: function() {
-                $.Notice.error('加载缓存数量图表数据发生异常！');
+                parent._LIGERDIALOG .error('加载缓存数量图表数据发生异常！');
             }
         });
     }
@@ -220,12 +220,12 @@
     }
 
     /*-- 与明细 Dialog 页面间回调的函数 --*/
-    window.reloadMasterGrid = function() {
+    window.parent.reloadMasterGrid = window.reloadMasterGrid = function() {
         reloadGrid();
     };
-    window.closeDetailDialog = function (type, msg) {
+    window.parent.closeDetailDialog = function (type, msg) {
         detailDialog.close();
-        msg && $.Notice.success(msg);
+        msg && parent._LIGERDIALOG .success(msg);
     };
 
 </script>

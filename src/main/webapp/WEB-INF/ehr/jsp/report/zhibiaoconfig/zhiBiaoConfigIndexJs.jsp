@@ -358,7 +358,7 @@
                         else {
                             title = '新增'+titleName;
                         }
-                        entryMater.entryInfoDialog = $.ligerDialog.open({
+                            entryMater.entryInfoDialog = parent._LIGERDIALOG.open({
                             height: 480,
                             width: 480,
                             title: title,
@@ -389,13 +389,13 @@
                             requestUrl = '${contextRoot}/tjDimensionSlave/deleteTjDimensionSlave';
                             reqParams = {tjDimensionSlaveId:id};
                         }
-                        $.Notice.confirm('确认要删除所选数据？', function (r) {
+                        parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
                             if (r) {
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote(requestUrl, {
                                     data: reqParams,
                                     success: function (data) {
-                                        $.Notice.success('删除成功！');
+                                        parent._LIGERDIALOG.success('删除成功！');
                                         entryMater.reloadGrid();
                                     }
                                 });
@@ -408,23 +408,23 @@
                 }
             };
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadEntryMasterGrid = function () {
+            win.parent.reloadEntryMasterGrid = function () {
                 entryMater.reloadGrid();
             };
-            win.closeAddWeiduInfoDialog = function (callback) {
+            win.parent.closeAddWeiduInfoDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     entryMater.reloadGrid();
                 }
                 entryMater.entryInfoDialog.close();
             };
-            win.closeDialog = function (type, msg) {
+            win.parent.closeDialog = function (type, msg) {
                 if (type == 'right')
                     entryMater.closeDl();
                 else
                     entryMater.entryInfoDialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    parent._LIGERDIALOG.success(msg);
             };
             /* *************************** 页面功能 **************************** */
             pageInit();

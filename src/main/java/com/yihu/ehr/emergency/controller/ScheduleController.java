@@ -199,7 +199,7 @@ public class ScheduleController extends BaseUIController {
          */
         //model.addAttribute("date", date);
         model.addAttribute("contentPage","/emergency/menu/scheDetails");
-        return "pageView";
+        return "emptyView";
     }
 
     @RequestMapping(value = "import")

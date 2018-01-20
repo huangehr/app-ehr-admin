@@ -82,7 +82,7 @@
                         master.reloadGrid();
                     });
                     self.$newRecordBtn.click(function () {
-                        self.addOrgInfoDialog = $.ligerDialog.open({
+                        self.addOrgInfoDialog = parent._LIGERDIALOG.open({
                             height: 580,
                             width: 1050,
                             title: '新增机构信息',
@@ -146,7 +146,7 @@
                         onDblClickRow: function (row) {
                             var mode = 'view';
                             var wait = $.Notice.waitting("请稍后...");
-                            row.orgInfoDialog = $.ligerDialog.open({
+                            row.orgInfoDialog = parent._LIGERDIALOG.open({
                                 height: 600,
                                 width: 1050,
                                 title: '机构基本信息',
@@ -208,7 +208,7 @@
                 bindEvents: function () {
                     var self = this;
                     $.subscribe('org:orgInfoDialog:activityFlg', function (event, orgCode, activityFlg,msg) {
-                        $.ligerDialog.confirm('是否对该机构进行'+msg+'操作', function (yes) {
+                        parent._LIGERDIALOG.confirm('是否对该机构进行'+msg+'操作', function (yes) {
                             if (yes) {
                                 self.activity(orgCode, activityFlg);
                             }
@@ -216,7 +216,7 @@
 
                     });
                     $.subscribe('org:orgInfoDialog:orgDataGrant', function (event, orgCode, orgTypeName, fullName) {
-                        self.orgDataGrantDialog= $.ligerDialog.open({
+                        self.orgDataGrantDialog= parent._LIGERDIALOG.open({
                             height: 600,
                             width: 800,
                             title: "机构数据授权",
@@ -235,10 +235,10 @@
             };
 
             /* ************************* Dialog页面回调接口 ************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = win.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function () {
+            win.parent.closeDialog = function () {
                 master.orgInfoDialog.close();
             };
 

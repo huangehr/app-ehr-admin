@@ -42,6 +42,14 @@
 				this.grid.loadData(true);
 				isFirstPage = true;
 			}
+			//添加碎片
+			function appendNav(str, url, data) {
+                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
+            }
 
             /* *************************** 模块初始化 ***************************** */
             retrieve = {
@@ -189,12 +197,12 @@
 						isFirstPage = false;
                         var title = '';
                         var wait=null;
-                        wait = $.Notice.waitting('正在加载中...');
+                        wait = parent._LIGERDIALOG.waitting('正在加载中...');
 
                         if(mode == 'modify'){title = '修改应用信息';};
 						if(mode == 'new'){title = '新增应用信息';};
 						if(mode == 'view'){title = '查看应用信息';}
-                        master.appInfoDialog = $.ligerDialog.open({
+                        master.appInfoDialog = parent._LIGERDIALOG.open({
                             height:530,
                             width: 850,
                             title : title,
@@ -219,17 +227,17 @@
 					//删除
 					$.subscribe('app:appInfo:delete',function(event,appId){
 						isFirstPage = false;
-						$.ligerDialog.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+						parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
 							if (yes) {
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/app/deleteApp', {
 									data: {appId: appId},
 									success: function (data) {
 										if (data.successFlg) {
-											$.Notice.success('操作成功。');
+                                            parent._LIGERDIALOG.success('操作成功。');
 											master.reloadGrid();
 										} else {
-											$.Notice.open({type: 'error', msg: '操作失败。'});
+                                            parent._LIGERDIALOG.open({type: 'error', msg: '操作失败。'});
 										}
 									}
 								});
@@ -255,9 +263,7 @@
                     });
 					//资源授权页面跳转
 					$.subscribe('app:resource:list', function (event, appId,name,catalogName) {
-
 						master.savePageParamsToSession();
-
 						var data = {
 							'appId':appId,
 							'appName':name,
@@ -265,9 +271,8 @@
 							'categoryIds':'',
 							'sourceFilter':'',
 						}
-						var url = '${contextRoot}/app/resource/initial?';
-						$("#contentPage").empty();
-						$("#contentPage").load(url,{backParams:JSON.stringify(data)});
+						var url = '${contextRoot}/app/resource/initial';
+                        appendNav("视图授权", url, {backParams:JSON.stringify(data)});
 					});
                     //功能管理
                     $.subscribe('app:platform:manager', function (event, appId,name) {
@@ -275,8 +280,7 @@
                             'dataModel':appId+","+name
                         }
                         var url = '${contextRoot}/app/feature/initial';
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url,data);
+                        appendNav("功能管理", url, data);
                     });
 
                     //API管理
@@ -285,22 +289,25 @@
                         var data = {
                             'dataModel':appId
                         }
-                        $("#contentPage").empty();
-                        $("#contentPage").load(url,data);
+                        appendNav("API管理", url, data);
                     });
-
+                    
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
 
                 },
             };
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function (callback) {
+            win.parent.closeDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     master.reloadGrid();
                 }
+                master.reloadGrid();
                 master.appInfoDialog.close();
             };
             /* *************************** 页面功能 **************************** */

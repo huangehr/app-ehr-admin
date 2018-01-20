@@ -59,10 +59,10 @@
                             columns: [
 //                                {display: '区域代码', name: 'saasId', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '指标编码', name: 'quotaCode', width: '20%', isAllowHide: false, align: 'left'},
-                                {display: '开始执行时间', name: 'startTime', width: '15%', isAllowHide: false, align: 'left'},
-                                {display: '结束时间', name: 'endTime', width: '15%', isAllowHide: false, align: 'left'},
+                                {display: '开始执行时间', name: 'startTime', width: '20%', isAllowHide: false, align: 'left'},
+                                {display: '结束时间', name: 'endTime', width: '20%', isAllowHide: false, align: 'left'},
                                 {display: '任务执行情况', name: 'content', width: '20%', isAllowHide: false, align: 'left'},
-                                {display: '结果', name: 'statusName', width: '10%', isAllowHide: false, align: 'left'}
+                                {display: '结果', name: 'statusName', width: '20%', isAllowHide: false, align: 'left'}
                             ],
                             validate: true,
                             unSetValidateAttr: false,
@@ -85,7 +85,9 @@
                         dictMaster.grid.options.newPage = 1;
                         dictMaster.reloadGrid();
                     });
-
+                    $(document).on('click', '.go-back', function () {
+                        win.location.reload();
+                    });
                 }
             };
 

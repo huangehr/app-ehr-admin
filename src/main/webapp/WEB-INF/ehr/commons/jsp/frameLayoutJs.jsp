@@ -2,6 +2,9 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<script src="${staticRoot}/lib/contabs/contabs.min.js"></script>
+<script src="${staticRoot}/lib/contabs/showTabs.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
 
 <script type="text/javascript">
 
@@ -82,7 +85,7 @@
          */
         function pageInit() {
             mainLayout.init();
-            $.MenuInit(".l-layout-left",navMenu)
+            $.MenuInit(".l-layout-left",menuData)
             notice.init();
         }
         
@@ -118,55 +121,6 @@
                     allowLeftCollapse: false
                 });
                 this.$breadcrumbBar.show();
-
-                <%--this.$contentPage.on('change', function () {--%>
-                    <%--var $formLogin = $(this).find('#form_login');--%>
-                    <%--if ($formLogin.length > 0) {--%>
-                        <%--window.location.reload('${contextRoot}/ehr/login');--%>
-                    <%--}--%>
-                <%--});--%>
-            }
-        };
-
-        navMenu = {
-            // 导航菜单数据源
-            data: menuData,
-            // 一级菜单图标
-            level1Icons: ["icon_Reg.png", "icon_adm.png", "icon_adm.png", "icon_adm.png", "icon_adm.png", "icon_adm.png", "icon_adm.png"],
-            $tree: $('#ul_tree'),
-            treeMenu: null,
-            // 树形导航菜单一级子节点集
-            $level1Nodes: [],
-            // 树形导航菜单节点集
-            $treeNodes: $('li[outlinelevel]', this.$tree),
-            // 更新一级菜单图标
-            updateLevel1Icons: function () {
-                var self = this;
-                this.$level1Nodes.each(function (i) {
-                    $('>.l-body .l-box', this).css({
-                        background: 'url(${staticRoot}/images/' + self.level1Icons[i] + ') no-repeat 7px 12px'
-                    });
-                });
-            },
-            getBreadcrumbContent: function (nodeData) {
-                var self = this;
-                // 存放从一级菜单自当前菜单的导航菜单标题
-                var titles = [];
-                // 当前节点的父节点ID
-                var pid = nodeData.pid;
-                // 往前插入当前节点的节点文本
-                titles.unshift(nodeData.text);
-                while (pid > 0) {
-                    var parentNodeData = self.treeMenu.getDataByID(pid);
-                    titles.unshift(parentNodeData.text);
-                    pid = parentNodeData.pid;
-                }
-
-                return titles.join(' > ');
-            },
-            // 绑定事件
-            bindEvents: function () {
-
             }
         };
 
@@ -236,7 +190,13 @@
         /* *************************** 页面初始化 **************************** */
 
         pageInit();
-
+        window._LIGERDIALOG = $.ligerDialog;
+        window._OPENDIALOG = function (url, title, width, height, parms, opts) {
+            return openDialog(url, title, width, height, parms, opts)
+        };
+        window._UNIQDEL = function (gtGrid, findFunc, url, ids, code, idField, opration, warnMsg) {
+            uniqDel(gtGrid, findFunc, url, ids, code, idField, opration, warnMsg);
+        }
         /* ************************* 页面初始化结束 ************************** */
     });
 </script>

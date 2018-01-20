@@ -250,7 +250,7 @@
                         callback: {
                             beforeRemove: function (treeId, treeNode) {
                                 var msg = '确认删除该视图信息<br>如果是请点击确认按钮，否则请点击取消按钮？';
-                                $.ligerDialog.confirm(msg, function (yes) {
+                                parent._LIGERDIALOG.confirm(msg, function (yes) {
                                     if (yes) {
                                         var dataModel = $.DataModel.init();
                                         dataModel.updateRemote("${contextRoot}/resource/resourceManage/delete",{
@@ -258,11 +258,11 @@
                                             async:true,
                                             success: function(data) {
                                                 if(data.successFlg){
-                                                    $.Notice.success('删除成功。');
+                                                    parent._LIGERDIALOG.success('删除成功。');
                                                     var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
                                                     zTree.removeNode(treeNode);
                                                 }else{
-                                                    $.Notice.error(data.errorMsg);
+                                                    parent._LIGERDIALOG.error(data.errorMsg);
                                                 }
                                             }
                                         });
@@ -296,7 +296,7 @@
                             zTree.expandAll(true);
                         }
                     } else {
-                        $.Notice.error('数据获取失败');
+                        parent._LIGERDIALOG.error('数据获取失败');
                     }
                 },
                 addHoverDom: function (treeId, treeNode, me) {//树-添加节点
@@ -444,7 +444,7 @@
                                     }));
                                     me.qutoResourceInfoGrid.adjustToWidth();
                                 } else {
-                                    $.Notice.error(data.errorMsg);
+                                    parent._LIGERDIALOG.error(data.errorMsg);
                                 }
                             }
                         });
@@ -506,12 +506,16 @@
                     //视图管理
                     $.subscribe("rs:info:open",function(event, resourceId, mode, categoryId, name, dataSource){
                         var title = "";
-                        var wait = $.Notice.waitting("请稍后...");
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        var height = 550;
                         if(mode == "modify"){title = "修改视图";}
                         if(mode == "view"){title = "查看视图";}
                         if(mode == "new"){title = "新增视图";}
-                        rsInfoDialog = $.ligerDialog.open({
-                            height:550,
+                        if (dataSource == 2) {
+                            height = 600;
+                        }
+                        rsInfoDialog = parent._LIGERDIALOG.open({
+                            height:height,
                             width:500,
                             title:title,
                             url:'${contextRoot}/resource/resourceManage/infoInitial',
@@ -536,7 +540,7 @@
                     me.$norBtn.on('click', function () {
                         var resourcesId = me.daSelData.id,
                             resourcesCode = me.daSelData.code;
-                        rsParamDialog = $.ligerDialog.open({
+                        rsParamDialog = parent._LIGERDIALOG.open({
                             height:500,
                             width:600,
                             title:"配置默认参数",
@@ -550,7 +554,7 @@
                     });
                     //数据元配置
                     me.$dataBtn.on('click', function () {
-                        var wait = $.Notice.waitting("请稍后..."),
+                        var wait = parent._LIGERDIALOG.waitting("请稍后..."),
                             data = {
                                 'resourceId': me.daSelData.id,
                                 'resourceName': me.daSelData.name,
@@ -558,7 +562,7 @@
                                 'resourceCode': me.daSelData.code,
                                 'dataSource': me.daSelData.data_source
                             };
-                        dataElementDialog = $.ligerDialog.open({
+                        dataElementDialog = parent._LIGERDIALOG.open({
                             height: 700,
                             width: 800,
                             title: "数据元配置",
@@ -576,7 +580,7 @@
                     });
                     //授权
                     me.$autBtn.on('click', function () {
-                        var wait = $.Notice.waitting("请稍后..."),
+                        var wait = parent._LIGERDIALOG.waitting("请稍后..."),
                             data = {
                                 'resourceId': me.daSelData.id,
                                 'resourceName': me.daSelData.name,
@@ -584,7 +588,7 @@
                                 'resourceCode': me.daSelData.code,
                                 'dataSource': me.daSelData.data_source
                             };
-                        dataElementDialog = $.ligerDialog.open({
+                        dataElementDialog = parent._LIGERDIALOG.open({
                             height: 700,
                             width: 1000,
                             title: "授权",
@@ -604,8 +608,8 @@
                     //指标配置
                     me.$zbConfigBtn.on('click', function () {
                         var title = "指标配置";
-                        var wait = $.Notice.waitting("请稍后...");
-                        zhibaioConfigueDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        zhibaioConfigueDialog = parent._LIGERDIALOG.open({
                             height:700,
                             width:900,
                             title:title,
@@ -627,8 +631,8 @@
                     //指标预览
                     me.$zbShowBtn.on('click', function () {
                         var title = "指标预览";
-                        var wait = $.Notice.waitting("请稍后...");
-                        zhibaioShowDialog = $.ligerDialog.open({
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        zhibaioShowDialog = parent._LIGERDIALOG.open({
                             height:650,
                             width:800,
                             title:title,
@@ -639,7 +643,7 @@
                                 dimension: '',
                                 quotaFilter: ''
                             },
-                            load:true,
+                            load:false,
                             show:false,
                             isHidden:false,
                             onLoaded:function(){
@@ -699,13 +703,13 @@
                                 var rowData = me.resourceInfoGrid.data.detailModelList;
                                 me.outExcel(rowData, me.resourceInfoGrid.currentData.totalPage * me.resourceInfoGrid.currentData.pageSize, me.queryCondition);
                             } else {
-                                $.Notice.error('无数据');
+                                parent._LIGERDIALOG.error('无数据');
                             }
                         } else {
                             if (me.qutoResourceInfoGrid) {
                                 me.outZBWxcel();
                             } else {
-                                $.Notice.error('无数据');
+                                parent._LIGERDIALOG.error('无数据');
                             }
                         }
                     });
@@ -715,7 +719,7 @@
                             resourceId: me.type == 1 ? me.daSelData.id : me.zbSelData.id,
                             queryCondition: me.type == 1 ?  me.getQuerySearchData() : me.getZBSearchData()
                         };
-                        var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
+                        var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
                         me.dataModel.fetchRemote(infa.updateResourceQuery, {
                             data: {
                                 dataJson: JSON.stringify(qc)
@@ -725,9 +729,9 @@
                                 waittingDialog.close();
                                 me.$popMain.css('display', 'none');
                                 if (data.successFlg) {
-                                    $.Notice.success('更新成功');
+                                    parent._LIGERDIALOG.success('更新成功');
                                 } else {
-                                    $.Notice.error('更新失败');
+                                    parent._LIGERDIALOG.error('更新失败');
                                 }
                             }
                         });
@@ -739,7 +743,7 @@
                 },
                 outExcel: function (rowData, size,RSsearchParams) {
                     if (rowData.length <= 0) {
-                        $.Notice.error('无数据');
+                        parent._LIGERDIALOG.error('无数据');
                         return;
                     }
                     var columnNames = this.resourceInfoGrid.columns;
@@ -983,7 +987,7 @@
             };
             nr.init();
             //关闭视图管理窗口
-            w._closeRsInfoDialog = function (callback) {
+            w.parent._closeRsInfoDialog = function (callback) {
                 var zTree = $.fn.zTree.getZTreeObj(nr.type == 1 ? "treeDom" : "treeDomZB");
                 if (callback) {
                     if (nr.operation == 'add') {
@@ -1012,12 +1016,12 @@
                 rsInfoDialog.close();
             };
             //关闭数据元配置窗口
-            w._closeDataElementDialog = function () {
+            w.parent._closeDataElementDialog = function () {
                 var $selDom = $('#' + nr.daSelData.tId + '_span');
                 dataElementDialog.close();
                 $selDom.trigger('click');
             }
-            w.closeZhibaioConfigueDialog = function (callback) {
+            w.parent.closeZhibaioConfigueDialog = function (callback) {
                 zhibaioConfigueDialog.close();
             };
 

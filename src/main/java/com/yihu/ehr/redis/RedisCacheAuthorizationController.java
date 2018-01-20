@@ -38,7 +38,7 @@ public class RedisCacheAuthorizationController extends BaseUIController {
     public String index(Model model, String categoryCode) {
         model.addAttribute("categoryCode", categoryCode);
         model.addAttribute("contentPage", "redis/cache/authorization/list");
-        return "pageView";
+        return "emptyView";
     }
 
     /**

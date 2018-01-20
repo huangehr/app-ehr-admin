@@ -91,7 +91,7 @@
           root: 'detailModelList',
           pageSize:15,
           pagesizeParmName: 'rows',
-          heightDiff: -10,
+//          heightDiff: -10,
           headerRowHeight: 40,
           rowHeight: 40,
           editorTopDiff: 41,
@@ -123,7 +123,7 @@
     },
     showDialog: function (_tital, _url, _height, _width, callback) {
 
-      cdaType.list.dialog_cdatype_detail = $.ligerDialog.open({
+      cdaType.list.dialog_cdatype_detail = parent._LIGERDIALOG.open({
         title: _tital,
         url: _url,
         height: _height,
@@ -142,7 +142,7 @@
     },
     deleted: function (ids) {
       if (ids == null || ids == "") {
-        $.Notice.error("请先选择需要删除的数据!");
+          parent._LIGERDIALOG.error("请先选择需要删除的数据!");
         return;
       }
       //判断该cda类别或其子类别是否有关联的cda文档，---前提 没有批量删除功能
@@ -154,7 +154,7 @@
         success: function (data) {
           var _res = eval(data);
           if (_res.successFlg) {
-            $.Notice.error("该cda类别不能删除！当前类别或其子类别存在关联的cda文档！");
+              parent._LIGERDIALOG.error("该cda类别不能删除！当前类别或其子类别存在关联的cda文档！");
             return;
           }
           //先判断是否存在子集
@@ -183,7 +183,7 @@
       })
     },
     doDeleted: function (ids, _text) {
-      $.Notice.confirm(_text, function (confirm) {
+        parent._LIGERDIALOG.confirm(_text, function (confirm) {
         if (confirm) {
           $.ajax({
             url: cdaType.list._url + "/cdatype/delteCdaTypeInfo",
@@ -195,15 +195,15 @@
 
                 var _res = eval(data);
                 if (_res.successFlg) {
-                  $.Notice.success("删除成功!");
+                    parent._LIGERDIALOG.success("删除成功!");
                   cdaType.list.getTypeList();
                 }
                 else {
-                  $.Notice.error(_res.errorMsg);
+                    parent._LIGERDIALOG.error(_res.errorMsg);
                 }
               }
               else {
-                $.Notice.error('删除失败!');
+                  parent._LIGERDIALOG.error('删除失败!');
               }
             }
           })
@@ -227,7 +227,7 @@
           case 'btn_Delete_relation':
             var rows = cdaType.list.grid.getSelecteds();
             if (rows.length == 0) {
-              $.Notice.error("请选择要删除的内容！");
+                parent._LIGERDIALOG.error("请选择要删除的内容！");
               return;
             }
             else {
@@ -316,7 +316,7 @@
             cdaType.attr.getParentType(initValue, initText);
           }
           else {
-            $.Notice.error(result.errorMsg);
+              parent._LIGERDIALOG.error(result.errorMsg);
           }
         }
       })
@@ -349,16 +349,16 @@
             var _res = eval(data);
             if (_res.successFlg) {
               //alert($.i18n.prop('message.save.success'));
-              $.ligerDialog.alert("保存成功", "提示", "success", function () {
+                parent._LIGERDIALOG.alert("保存成功", "提示", "success", function () {
                 cdaType.list.dialog_cdatype_detail.close();
               }, null);
             }
             else {
-              $.Notice.error(_res.errorMsg);
+                parent._LIGERDIALOG.error(_res.errorMsg);
             }
           }
           else {
-            $.Notice.error("保存失败！")
+              parent._LIGERDIALOG.error("保存失败！")
           }
         }
       })

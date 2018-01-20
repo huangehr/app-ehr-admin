@@ -2,11 +2,12 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <script type="text/javascript">
-
     (function ($, win) {
-        $(function () {
+//        $(function () {
             /* ************************** 变量定义 ******************************** */
-            var versionNum = $('#inp_searchVersion_val').val();
+            var versionNum = '${versionNum}';
+            var versionCode = '${versionCode}';
+            var orgCode = '${orgCode}';
             // 通用工具类库
             var Util = $.Util;
 
@@ -81,7 +82,7 @@
 
 
                     this.initCombo(self.$dataset, urls.cdaDocument, {
-                        version: versionNum
+                        version: versionCode
                     });
 
                     this.$org.addressDropdown({
@@ -180,7 +181,9 @@
                             var TemplateModel = self.$form.Fields.getValues();
                             TemplateModel.organizationCode = TemplateModel.organizationCode.keys[2];
                             var dataModel = $.DataModel.init();
-
+                            TemplateModel['organizationCode'] = orgCode;
+                            TemplateModel.cdaVersion = versionCode;
+                            debugger
                             dataModel.createRemote(urls.update, {
                                 data: {
                                     id: TemplateModel.id,
@@ -220,6 +223,6 @@
             pageInit();
 
             /* ************************* 页面初始化结束 ************************** */
-        });
+//        });
     })(jQuery, window);
 </script>

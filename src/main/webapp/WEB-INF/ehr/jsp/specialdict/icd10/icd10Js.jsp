@@ -121,7 +121,7 @@
 						}else{
 							title = '新增字典项'
 						};
-						self.infoDialog = $.ligerDialog.open({
+						self.infoDialog = parent._LIGERDIALOG.open({
 							height:400,
 							width:500,
 							title:title,
@@ -143,7 +143,7 @@
 						if(!ids){
 							var rows = infoGrid.getSelectedRows();
 							if(rows.length==0){
-								$.Notice.warn('请选择要删除的数据行！');
+								parent._LIGERDIALOG.warn('请选择要删除的数据行！');
 								return;
 							}
 							for(var i=0;i<rows.length;i++){
@@ -151,17 +151,17 @@
 							}
 							ids = ids.length>0 ? ids.substring(1, ids.length) : ids ;
 						}
-						$.Notice.confirm('确认要删除所选数据？', function (r) {
+						parent._LIGERDIALOG.confirm('确认要删除所选数据？', function (r) {
 							if(r){
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/specialdict/icd10/deletes',{
 									data:{ids:ids},
 									success:function(data){
 										if(data.successFlg){
-											$.Notice.success( '删除成功！');
+											parent._LIGERDIALOG.success( '删除成功！');
 											masters.reloadGrid();
 										}else{
-											$.Notice.error(data.errorMsg);
+											parent._LIGERDIALOG.error(data.errorMsg);
 										}
 									}
 								});
@@ -172,7 +172,7 @@
 					//关联指标字典事件
 					$.subscribe('indicatorIcd10:grid:open',function(event,id){
 						var title = '关联指标';
-						self.icd10RelationInfoDialog = $.ligerDialog.open({
+						self.icd10RelationInfoDialog = parent._LIGERDIALOG.open({
 							height:500,
 							width:700,
 							title:title,
@@ -189,7 +189,7 @@
 					//关联药品字典事件
 					$.subscribe('drugIcd10:grid:open',function(event,id){
 						var title = '关联药品';
-						self.icd10RelationInfoDialog = $.ligerDialog.open({
+						self.icd10RelationInfoDialog = parent._LIGERDIALOG.open({
 							height:500,
 							width:700,
 							title:title,
@@ -205,13 +205,13 @@
 				}
 			};
 			/* ************************* Dialog页面回调接口 ************************** */
-			win.reloadIcd10InfoGrid = function () {
+			win.parent.reloadIcd10InfoGrid = function () {
 				masters.reloadGrid();
 			};
-			win.closeIcd10InfoDialog = function () {
+			win.parent.closeIcd10InfoDialog = function () {
 				masters.infoDialog.close();
 			};
-			win.closeIcd10RelationInfoDialog = function () {
+			win.parent.closeIcd10RelationInfoDialog = function () {
 				masters.icd10RelationInfoDialog.close();
 			};
 			/* ************************* Dialog页面回调接口结束 ************************** */

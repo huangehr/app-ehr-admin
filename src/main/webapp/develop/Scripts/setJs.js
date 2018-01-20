@@ -1,7 +1,7 @@
 /**
  * Created by AndyCai on 2015/11/25.
  */
-
+var parentDilog = frameElement.dialog;
 var Util = $.Util;
 var set = {};
 set.list = {
@@ -619,8 +619,8 @@ set.attr = {
                         //alert($.i18n.prop('message.save.success'));
                         $.ligerDialog.alert("保存成功", "提示", "success", function () {
                             debugger
-                            parent.set.list.isReload = true;
-                            parent.set.list.dialog_set_detail.close();
+                            // parent.set.list.isReload = true;
+                            parentDilog.close();
                         }, null);
                     }
                     else {
@@ -643,7 +643,7 @@ set.attr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.dialog_set_detail.close();
+            parentDilog.close();
         });
     }
 };
@@ -884,9 +884,8 @@ set.elementAttr = {
                     var _res = eval(data);
                     if (_res.successFlg) {
                         $.ligerDialog.alert("保存成功!", "提示", "success", function () {
-                            debugger
-                            parent.set.list.isReload = true;
-                            parent.set.list.dialog_set_detail.close();
+                            // parent.set.list.isReload = true;
+                            parentDilog.close();
                         }, null);
                     }
                     else {
@@ -936,7 +935,7 @@ set.elementAttr = {
             }
         });
         $("#btn_close").click(function () {
-            parent.set.list.dialog_set_detail.close();
+            parentDilog.close();
         });
         //给数据元主键和是否空值的选择
         $("#primaryKey").click(function () {

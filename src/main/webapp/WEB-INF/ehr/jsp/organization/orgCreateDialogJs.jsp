@@ -1,11 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<%--<script type="text/javascript" src="${contextRoot}/develop/webuploader/js/jquery.js"></script>--%>
 <script type="text/javascript" src="${contextRoot}/develop/webuploader/js/webuploader.js"></script>
 <link rel="stylesheet" type="text/css" href="${contextRoot}/develop/webuploader/js/webuploader.css" />
 <link rel="stylesheet" type="text/css" href="${contextRoot}/develop/webuploader/js/style.css" />
 <script type="text/javascript">
     (function ($, win) {
         /* ************************** 变量定义 ******************************** */
+//        $ = $.extend(parent.$,$);
         var Util = $.Util;
         var organizationInfo = null;
         var orgModel = null;
@@ -17,8 +19,7 @@
         var zxyDictId = 70;
         // 表单校验工具类
         var jValidation = $.jValidation;
-
-        var dialog = frameElement.dialog;
+        var dialog = null;
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -77,8 +78,7 @@
                 });
                 this.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     $.ligerDialog.alert("保存成功", function () {
-                        win.parent.showAddOrgInfoDialogSuccPop();
-                        win.parent.closeAddOrgInfoDialog(function () {
+                        parent.closeAddOrgInfoDialog(function () {
 
                         });
                     });
@@ -243,19 +243,6 @@
                                 updateOrg(orgModel,addressModel,'new');
                             }
                         }
-
-						<%--dataModel.createRemote("${contextRoot}/organization/updateOrg", {--%>
-							<%--data: {orgModel:JSON.stringify(orgModel),addressModel:JSON.stringify(addressModel),mode:"new"},--%>
-							<%--success: function (data) {--%>
-								<%--if(data.successFlg){--%>
-									<%--win.parent.closeAddOrgInfoDialog(function (){--%>
-										<%--win.parent.$.Notice.success('机构新增成功');--%>
-									<%--});--%>
-								<%--}else{--%>
-									<%--window.top.$.Notice.error(data.errorMsg);--%>
-								<%--}--%>
-							<%--}--%>
-						<%--})--%>
                     }else{
                         return;
                     }
@@ -281,25 +268,18 @@
                                 $('#logoUrl').val(returndata);
                                 self.$logoUrl.val(returndata);
                                 $.Notice.success('上传成功');
-//                                alert("上传成功");
                             }else{
-//                                alert("上传失败");
                                 $.Notice.error('上传失败');
                             }
                         },
                         error: function (returndata) {
-//                            alert("上传失败");
                             $.Notice.error('上传失败');
                         }
                     });
                 }
-
-
-
                 self.$cancelBtn.click(function(){
-                    dialog.close();
-                })
-
+                    parent.closeAddOrgInfoDialog();
+                });
                 function updateOrg(orgModel,addressModel,msg) {
                     var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var orgModel = JSON.stringify(orgModel);
@@ -310,19 +290,17 @@
                         success: function (data) {
                             wait.close();
                             uploader.options.successCallBack=function(){
-                                win.parent.showAddOrgInfoDialogSuccPop();
-                                win.parent.closeAddOrgInfoDialog(function () {
+                                parent.closeAddOrgInfoDialog(function () {
                                     $.Notice.success('保存成功！');
                                 });
-                            }
+                            };
                             uploader.options.formData.objectId = data.obj.orgCode;
                             if (data.successFlg) {
                                 if($(".filelist li").length>0) {
                                     uploader.options.server="${contextRoot}/file/upload/image";
                                     $(".uploadBtn").click();
                                 }else{
-                                    win.parent.showAddOrgInfoDialogSuccPop();
-                                    win.parent.closeAddOrgInfoDialog(function () {
+                                    parent.closeAddOrgInfoDialog(function () {
                                        $.Notice.success('保存成功！');
                                     });
                                 }

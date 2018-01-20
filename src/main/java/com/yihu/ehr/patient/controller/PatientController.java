@@ -78,7 +78,7 @@ public class PatientController extends BaseUIController {
                 model.addAttribute("patientDialogType", patientDialogType);
                 model.addAttribute("contentPage", "patient/patientInfoDialog");
 //                return "generalView";
-                return "simpleView";
+                return "emptyView";
             } else {
                 url = "/populations/";
                 //todo 该controller的download方法放后台处理
@@ -106,11 +106,11 @@ public class PatientController extends BaseUIController {
                         model.addAttribute("userId", userId);
                         model.addAttribute("contentPage", "patient/patientInfoDialog");
                         //return "generalView";
-                        return "simpleView";
+                        return "emptyView";
                     } else if (patientDialogType.equals("patientInfoMessage")) {
                         model.addAttribute("userId", userId);
                         model.addAttribute("contentPage", "patient/patientBasicInfoDialog");
-                        return "simpleView";
+                        return "emptyView";
                     }
                 } else {
                     return envelop.getErrorMsg();

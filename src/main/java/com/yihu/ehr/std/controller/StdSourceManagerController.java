@@ -61,7 +61,7 @@ public class StdSourceManagerController extends BaseUIController {
         model.addAttribute("envelop", StringUtils.isEmpty(envelopStr)?toJson(envelop):envelopStr);
         model.addAttribute("mode",mode);
         model.addAttribute("contentPage","/std/standardsource/stdInfoDialog");
-        return "simpleView";
+        return "emptyView";
     }
 
     @RequestMapping("searchStdSource")

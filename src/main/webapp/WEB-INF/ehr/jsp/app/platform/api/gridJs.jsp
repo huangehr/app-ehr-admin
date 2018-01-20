@@ -78,7 +78,7 @@
                         rownumbers: false,
                         allowAdjustColWidth: false,
                         usePager: false,
-                        height: contentH - 12,
+                        height: '100%',
                         tree: {columnId: 'name'},
                         url: urls.tree,
                         parms: parms,
@@ -211,22 +211,23 @@
                             em.params = {frm: frm,  rowId: rowId}
                             params = {id: id, mode: mode, rowId: rowId}
                         }
-                        em.dialog = openedDialog = openDialog(urls.gotoModify,
+                        em.dialog = openedDialog = win.parent._OPENDIALOG(urls.gotoModify,
                                 mode == 'new'?'新增': mode == 'modify'? '修改': '查看', 480, 650, params);
                     }
                 },
                 del: function (event, id, frm, rowId, parentId, type) {
 
                     function del(){
-                        $.ligerDialog.confirm("确定删除?", function (yes) {
+                        win.parent._LIGERDIALOG.confirm("确定删除?", function (yes) {
                             if (yes){
-                                var dialog = $.ligerDialog.waitting('正在处理中,请稍候...');
+                                var dialog = win.parent._LIGERDIALOG.waitting('正在处理中,请稍候...');
                                 var dataModel = $.DataModel.init();
                                 dataModel.updateRemote(urls.del, {
                                     data: {ids: id, idField: "id", type: "uniq"},
                                     success: function (data) {
+                                        dialog.close();
                                         if (data.successFlg) {
-                                            $.Notice.success('删除成功！');
+                                            win.parent._LIGERDIALOG.success('删除成功！');
                                             if(frm==0)
                                                 master.tree.remove(master.tree.getRow(rowId));
                                             else{
@@ -242,11 +243,11 @@
                                                 }
                                             }
                                         } else {
-                                            $.Notice.error(data.errorMsg);
+                                            win.parent._LIGERDIALOG.error(data.errorMsg);
                                         }
                                     },
-                                    complete: function () {dialog.close();},
-                                    error: function(){$.Notice.error('请求错误！');}
+                                    complete: function () {},
+                                    error: function(){win.parent._LIGERDIALOG.error('请求错误！');}
                                 });
                             }
                         });
@@ -259,12 +260,12 @@
                                 if(data.detailModelList.length==0)
                                     del();
                                 else
-                                    $.Notice.error("该删除项存在子项，请先删除子项！");
+                                    win.parent._LIGERDIALOG.error("该删除项存在子项，请先删除子项！");
                             } else {
-                                $.Notice.error("验证错误！");
+                                win.parent._LIGERDIALOG.error("验证错误！");
                             }
                         },
-                        error: function(){$.Notice.error('请求出错！');}
+                        error: function(){win.parent._LIGERDIALOG.error('请求出错！');}
                     });
                 },
                 //查询列表方法
@@ -288,25 +289,14 @@
                 }
             }
 
-            var resizeContent = function () {
-                var contentW = $('#grid_content').width();
-                var leftW = $('#div_left').width();
-                $('#div_right').width(contentW - leftW - 20);
-
-                $('#treeMenuWrap').height(contentH - 104);
-                $('#treeMenu').height(contentH - 64);
-            };
-            resizeContent();
-            //窗体改变大小事件
-            $(window).bind('resize', resizeContent);
 
             em.init();
             master.init();
 
-            win.closeDialog = function (msg, data) {
-                openedDialog.close();
+            win.parent.closeDialog = function (msg, data) {
+                em.dialog.close();
                 if (msg)
-                    $.Notice.success(msg);
+                    win.parent._LIGERDIALOG.success(msg);
 
                 if(data){
                     if(em.params.frm==0){
@@ -328,7 +318,7 @@
                 }
             }
 
-            win.getEditParms = function () {
+            win.parent.getEditParms = function () {
                 return em.params;
             }
         });

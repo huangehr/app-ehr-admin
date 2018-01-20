@@ -81,7 +81,7 @@
     /*样式重置*/
 
     .l-frozen .l-grid2 .l-grid-body {
-        overflow-y: scroll!important;
+        /*overflow-y: scroll!important;*/
     }
 
     .j-text-wrapper{

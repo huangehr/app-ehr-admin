@@ -79,30 +79,6 @@
 			</div>
 		</div>
 	</div>
-
-	<%--<div class="m-form-group">--%>
-		<%--<label>机构:</label>--%>
-		<%--<div class="l-text-wrapper m-form-control essential">--%>
-			<%--<input type="text" id="inp_org" data-type="select" class="required useTitle max-length-50"--%>
-				   <%--placeholder="请选择机构" data-attr-scan="inp_org"/>--%>
-		<%--</div>--%>
-		<%--<label><spring:message code="lbl.doctor.jxzc"/><spring:message code="spe.colon"/></label>--%>
-		<%--<div class="l-text-wrapper m-form-control">--%>
-			<%--<input type="text" id="inp_jxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="jxzc"/>--%>
-		<%--</div>--%>
-	<%--</div>--%>
-	<%--<div class="m-form-group">--%>
-		<%--<label>部门:</label>--%>
-		<%--<div class="l-text-wrapper m-form-control essential">--%>
-			<%--<input type="text" id="inp_dept" data-type="select" class="required useTitle max-length-50"--%>
-				   <%--placeholder="请选择部门" data-attr-scan="inp_dept"/>--%>
-		<%--</div>--%>
-		<%--<label><spring:message code="lbl.doctor.lczc"/><spring:message code="spe.colon"/></label>--%>
-		<%--<div class="l-text-wrapper m-form-control">--%>
-			<%--<input type="text" id="inp_lczc" class="useTitle max-length-50 validate-special-char" data-attr-scan="lczc"/>--%>
-		<%--</div>--%>
-	<%--</div>--%>
-
 	<div class="m-form-group">
 		<label><spring:message code="lbl.doctor.familyTel"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">

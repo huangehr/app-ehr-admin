@@ -28,12 +28,12 @@
             url: '${contextRoot}/redis/mq/publisher/search',
             urlParms: { channel: channel },
             columns: [
-                {display: 'ID', name: 'id', hide: true},
-                {display: '应用ID', name: 'appId', width: '10%', isAllowHide: false, align: 'left'},
+                {display: 'ID', name: 'id', hide: true, width: '0'},
+                {display: '微服务ID', name: 'appId', width: '10%', isAllowHide: false, align: 'left'},
                 {display: '授权码', name: 'authorizedCode', width: '25%', isAllowHide: false, align: 'left'},
                 {display: '创建日期', name: 'createDate', width: '15%', isAllowHide: false, align: 'left'},
                 {display: '备注', name: 'remark', width: '25%', isAllowHide: false, align: 'left'},
-                {display: '操作', name: 'operator', minWidth: 120, align: 'center',
+                {display: '操作', name: 'operator', width: '25%', align: 'center',
                     render: function (row) {
                         var html = '';
                         html += '<sec:authorize url="/redis/mq/publisher/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "redis:mq:publisher:detail", row.id, 'modify') + '"></a></sec:authorize>';
@@ -56,7 +56,7 @@
             if (mode == 'modify') {
                 title = '修改消息发布者';
             }
-            detailDialog = $.ligerDialog.open({
+            detailDialog = parent._LIGERDIALOG.open({
                 height: 450,
                 width: 480,
                 title: title,
@@ -72,21 +72,21 @@
 
         // 删除
         $.subscribe('redis:mq:publisher:delete', function (event, id) {
-            $.Notice.confirm('删除后该发布者将不能发布消息，确认要删除吗？', function (r) {
+            parent._LIGERDIALOG.confirm('删除后该发布者将不能发布消息，确认要删除吗？', function (r) {
                 if (r) {
-                    var loading = $.ligerDialog.waitting("正在删除数据...");
+                    var loading = parent._LIGERDIALOG.waitting("正在删除数据...");
                     dataModel.updateRemote('${contextRoot}/redis/mq/publisher/delete', {
                         data: {id: parseInt(id)},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('删除成功！');
+                                parent._LIGERDIALOG.success('删除成功！');
                                 reloadGrid();
                             } else {
-                                $.Notice.error(data.errorMsg);
+                                parent._LIGERDIALOG.error(data.errorMsg);
                             }
                         },
                         error: function () {
-                            $.Notice.error('删除发生异常');
+                            parent._LIGERDIALOG.error('删除发生异常');
                         },
                         complete: function () {
                             loading.close();
@@ -118,7 +118,7 @@
     };
     window.closeDetailDialog = function (type, msg) {
         detailDialog.close();
-        msg && $.Notice.success(msg);
+        msg && parent._LIGERDIALOG.success(msg);
     };
 
 </script>

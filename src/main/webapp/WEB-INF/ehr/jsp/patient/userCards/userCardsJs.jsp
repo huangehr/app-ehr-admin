@@ -147,10 +147,10 @@
                     $.subscribe('userCards:userCardsInfo:open',function(event,userCardsId,mode){
 						isFirstPage = false;
                         var title = '';
-                        var wait = $.Notice.waitting("请稍后...");
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
                         if(mode == 'modify'){title = '修改就诊卡信息';};
 						if(mode == 'new'){title = '新增用户就诊卡认证信息';};
-                        master.userCardsInfoDialog = $.ligerDialog.open({
+                        master.userCardsInfoDialog = parent._LIGERDIALOG.open({
                             height:540,
                             width: 550,
                             title : title,
@@ -176,11 +176,11 @@
                         isFirstPage = false;
                         var title = '用户认证详情';
                         var height = 400;
-                        var wait = $.Notice.waitting("请稍后...");
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
                         if(auditStatus == '0'){title = '用户认证审核';};
                         if(auditStatus == '1'){height=640;};
                         console.log(auditStatus);
-                        master.userCardsInfoDialog = $.ligerDialog.open({
+                        master.userCardsInfoDialog = parent._LIGERDIALOG.open({
                             height:height,
                             width: 950,
                             title : title,
@@ -204,10 +204,10 @@
                 },
             };
             /* ******************Dialog页面回调接口****************************** */
-            win.reloadMasterGrid = function () {
+            win.parent.reloadMasterGrid = win.reloadMasterGrid = function () {
                 master.reloadGrid();
             };
-            win.closeDialog = function (callback) {
+            win.parent.closeDialog = function (callback) {
                 if(callback){
                     callback.call(win);
                     master.reloadGrid();

@@ -140,9 +140,9 @@ function saveForm(opts){
                     parent.closeDialog("保存成功!", data);
             } else {
                 if (data.errorMsg)
-                    $.Notice.error(data.errorMsg);
+                    parent._LIGERDIALOG.error(data.errorMsg);
                 else
-                    $.Notice.error('出错了！');
+                    parent._LIGERDIALOG.error('出错了！');
             }
         },
         error: function () {

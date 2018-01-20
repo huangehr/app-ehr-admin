@@ -92,7 +92,6 @@
 						data: {name:value,resourceInterface:value},
 						async: false,
 						success: function (data) {
-							debugger
 							if (data.successFlg) {
 								result.setResult(false);
 								result.setErrorMsg(errorMsg);

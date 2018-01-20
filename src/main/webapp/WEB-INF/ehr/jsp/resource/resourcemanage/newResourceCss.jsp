@@ -16,13 +16,18 @@
     .f-db{display: inline-block}
     .tree_type{overflow: auto;}
     .f-w230{width: 230px;}
-    /*.contentH{height:780px }*/
-    .contentH{height:93%}
-    #div_left{ width:240px;float: left;height: 100%}
-    #div_right{/*float: left;width: 700px;margin-left: 10px*/    position: absolute;
+    #div_left{
+        width: 240px;
+        position: absolute;
+        top: 55px;
+        left: 0;
+        bottom: 0;
+        border: 1px solid #D6D6D6;
+    }
+    #div_right{position: absolute;
         left: 250px;
         right: 0;
-        top: 0;
+        top: 55px;
         bottom: 0;}
     .div_resource_browse_tree{width:890px; float:right;margin-left: 10px}
     .div-result-msg{width: 100%;height: auto; float: left;}
