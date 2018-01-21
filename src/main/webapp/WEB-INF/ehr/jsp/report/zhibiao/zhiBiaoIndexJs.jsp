@@ -192,7 +192,7 @@
                                         return str;
                                     }
                                 },
-                                {display: '操作', name: 'operator', minWidth: 400, align: 'center',
+                                {display: '操作', name: 'operator', minWidth: 400, align: 'left',
                                     render: function (row) {
                                         var html = '';
                                         html += '<sec:authorize url="/tjQuota/updateDimensionTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
