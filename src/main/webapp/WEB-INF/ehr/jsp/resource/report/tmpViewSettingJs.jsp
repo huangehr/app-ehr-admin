@@ -75,17 +75,20 @@
                                     me.$tmpCon.html(data.obj.templateContent);
 
                                     me.loadMap();
-                                    $.each(d , function (k, obj) {
-                                        var $dom = $('#' + obj.resourceId),
-                                                option = JSON.parse(obj.options[0].option);
-                                        me.rIdsAndQCode.push(obj.resourceId);
-                                        me.renderQuota($dom, option);
-                                    });
+
+                                    if ($('#specialDiv').length == 0) {
+                                        $.each(d , function (k, obj) {
+                                            var $dom = $('#' + obj.resourceId),
+                                                    option = JSON.parse(obj.options[0].option);
+                                            me.rIdsAndQCode.push(obj.resourceId);
+                                            me.renderQuota($dom, option);
+                                        });
+                                    }
                                     $quotaIds = $(document).find('#quotaIds');
                                     if ($quotaIds.length > 0) {
                                         quotaIds = ($quotaIds.val()).split(',')
                                     }
-
+debugger
                                     $.each(quotaIds, function (k, v) {
                                         var $dom = null;
                                         if (v != '') {
@@ -93,7 +96,6 @@
                                             me.rIdsAndQCode.push(v);
                                             if ($('#specialDiv').length > 0) {
                                                 var code = $dom.attr('data-code');
-                                                debugger
                                                 TVS.resData(url[3], {
                                                     resourcesCode: code,
                                                     page: 1,
@@ -238,7 +240,7 @@
                                     var tId = $(o).attr('id'),
                                             t = $(o).attr('data-type');
                                     if (tId) {
-                                        if (t == 2 || $('#specialDiv').length > 0) {
+                                        if (t == 2) {
                                             reportData.push({
                                                 id: '',
                                                 reportId: me.id,
@@ -246,6 +248,13 @@
                                             });
                                         } else if (t == 1) {
                                             quotaIds.push(tId);
+                                        }
+                                        if ($('#specialDiv').length > 0) {
+                                            reportData.push({
+                                                id: '',
+                                                reportId: me.id,
+                                                resourceId: tId
+                                            });
                                         }
                                     }
                                 });
