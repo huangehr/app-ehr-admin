@@ -3,7 +3,6 @@ package com.yihu.ehr.std.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.standard.dict.DictEntryModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -172,6 +171,9 @@ public class DictController  extends BaseUIController {
             }
             Map<String, Object> params = new HashMap<>();
             DictModel dictModel = new DictModel();
+            if(StringUtils.isNotBlank(dictId)){
+                dictModel.setId(Long.parseLong(dictId));
+            }
             dictModel.setId(Long.parseLong(dictId));
             dictModel.setCode(code);
             dictModel.setName(name);
