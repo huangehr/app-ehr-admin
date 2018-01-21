@@ -33,6 +33,13 @@
         </div>
     </div>
     <div class="m-form-group">
+        <label>报表展示类型：</label>
+        <div class="l-text-wrapper m-form-control essential">
+            <input type="text" data-type="select" class="required"
+                   id="showType" data-attr-scan="showType">
+        </div>
+    </div>
+    <div class="m-form-group">
         <label>说明：</label>
         <div class="m-form-control">
             <textarea rows="3" class="f-w240 max-length-255"
