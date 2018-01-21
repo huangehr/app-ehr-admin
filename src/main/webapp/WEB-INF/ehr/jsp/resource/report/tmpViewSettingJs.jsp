@@ -238,7 +238,7 @@
                                     var tId = $(o).attr('id'),
                                             t = $(o).attr('data-type');
                                     if (tId) {
-                                        if (t == 2) {
+                                        if (t == 2 || $('#specialDiv').length > 0) {
                                             reportData.push({
                                                 id: '',
                                                 reportId: me.id,
