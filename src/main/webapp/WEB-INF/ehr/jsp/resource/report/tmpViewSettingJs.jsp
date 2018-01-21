@@ -14,7 +14,8 @@
                 '${contextRoot}/resource/report/uploadTemplate',//保存模板
                 '${contextRoot}/resource/report/getTemplateData',//获取模板
                 '${contextRoot}/resourceBrowse/searchResourceData',//获取模板对应的数据
-                '${contextRoot}/resourceBrowse/getGridCloumnNames'//获取表头
+                '${contextRoot}/resourceBrowse/getGridCloumnNames',//获取表头
+                ''
         ];
         require.config({
             paths: {
@@ -72,6 +73,7 @@
                                     var d = data.obj.viewInfos, quotaIds = [], $quotaIds = null;
                                     me.$noneTmp.hide();
                                     me.$tmpCon.html(data.obj.templateContent);
+
                                     me.loadMap();
                                     $.each(d , function (k, obj) {
                                         var $dom = $('#' + obj.resourceId),
@@ -83,10 +85,32 @@
                                     if ($quotaIds.length > 0) {
                                         quotaIds = ($quotaIds.val()).split(',')
                                     }
+
                                     $.each(quotaIds, function (k, v) {
-                                        var $dom = $('#' + v);
-                                        me.rIdsAndQCode.push(v);
-                                        me.getResourceData(v, $dom, null, $dom.attr('data-name'));
+                                        var $dom = null;
+                                        if (v != '') {
+                                            $dom = $('#' + v);
+                                            me.rIdsAndQCode.push(v);
+                                            if ($('#specialDiv').length > 0) {
+                                                var code = $dom.attr('data-code');
+                                                debugger
+                                                TVS.resData(url[3], {
+                                                    resourcesCode: code,
+                                                    page: 1,
+                                                    rows: 500
+                                                }, function (res) {
+                                                    var speFunTmp = '', data = [];
+//                                                    if (res.successFlg) {
+                                                        data = res.detailModelList
+                                                        speFunTmp = $('#specialFunTmp').html();
+                                                        eval('(function (data) {'+ speFunTmp +'})(data)')
+                                                        $dom.parent().find('.c-title').html($dom.attr('data-name'));
+//                                                    }
+                                                });
+                                            } else {
+                                                me.getResourceData(v, $dom, null, $dom.attr('data-name'));
+                                            }
+                                        }
                                     })
                                 } else {
                                     me.$noneTmp.show();
@@ -359,14 +383,37 @@
                             });
                         }
                     };
-                    w.closeselViewDialog = function (msg, id, type, name) {
+                    w.closeselViewDialog = function (msg, id, type, name, code) {
                         selViewDialog.close();
                         msg && $.Notice.success(msg);
                         (id && type) && (function () {
-                            if (type == 1) {
-                                TVS.getResourceData(id, TVS.chart, 'change', name);
+                            if ($('#specialDiv').length > 0) {
+                                TVS.resData(url[3], {
+                                    resourcesCode: code,
+                                    page: 1,
+                                    rows: 500
+                                }, function (res) {
+                                    var speFunTmp = '', data = [];
+//                                    if (res.successFlg) {
+                                    var isT = TVS.checkIsExist(id);
+                                    if (!isT) return;
+                                    data = res.detailModelList;
+                                    speFunTmp = $('#specialFunTmp').html();
+                                    eval('(function (data) {'+ speFunTmp +'})(data)')
+                                    TVS.chart.parent().find('.c-title').html(name);
+                                    TVS.chart.attr('id', id);
+                                    TVS.chart.attr('data-name', name);
+                                    TVS.chart.attr('data-type', 1);
+                                    TVS.chart.attr('data-code', code);
+
+//                                    }
+                                });
                             } else {
-                                TVS.getChartData(id);
+                                if (type == 1) {
+                                    TVS.getResourceData(id, TVS.chart, 'change', name);
+                                } else {
+                                    TVS.getChartData(id);
+                                }
                             }
                         })()
                         w._ET = null;
