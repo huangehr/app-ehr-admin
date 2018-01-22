@@ -42,6 +42,12 @@
             valueField: 'code',
             textField: 'value'
         });
+        $("#showType").ligerComboBox({
+            data: [
+                {text:"图表", id:"1"},
+                {text:"二维表", id:"2"},
+            ]
+        });
         $('#remark').ligerTextBox({width: 240, height: 150});
         $('#templatePath').ligerTextBox({width: 240, disabled: true});
 
@@ -68,7 +74,8 @@
             reportCategoryId: detailModel.reportCategoryId,
             status: detailModel.status,
             remark: detailModel.remark,
-            templatePath: detailModel.templatePath
+            templatePath: detailModel.templatePath,
+            showType: detailModel.showType
         });
     }
 
