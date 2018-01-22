@@ -3,6 +3,7 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
+import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
@@ -10,6 +11,7 @@ import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.dict.controller.SystemDictController;
 import com.yihu.ehr.geography.controller.AddressController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -650,7 +652,14 @@ public class UserController extends BaseUIController {
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }*/
-        String url = "/geography_entries/pid/350200";
+       //根据系统字典id=125获取当前城市的行政区划
+        String dictId="125";
+        String reStr = searchDictEntryList(Long.parseLong(dictId),1,10);
+        if(StringUtils.isEmpty(reStr)){
+            //上饶市
+            reStr="361100";
+        }
+        String url = "/geography_entries/pid/"+reStr;
         String resultStr = "";
         Envelop result = new Envelop();
         try{
@@ -694,5 +703,41 @@ public class UserController extends BaseUIController {
         Envelop envelop = new Envelop();
         envelop = (Envelop)addressController.getOrgs("福建省", "厦门市");
         return envelop;
+    }
+
+    @RequestMapping("searchDictEntry")
+    @ResponseBody
+    public String searchDictEntryList(Long dictId, Integer page, Integer rows) {
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!org.springframework.util.StringUtils.isEmpty(dictId)) {
+            stringBuffer.append("dictId=" + dictId);
+        }
+        String filters = stringBuffer.toString();
+        params.put("filters", "");
+        if (!org.springframework.util.StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+
+        try {
+            String url ="/dictionaries/entries";
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            result = objectMapper.readValue(resultStr, Envelop.class);
+            SystemDictEntryModel systemDictEntryModel = new SystemDictEntryModel();
+            if(null != result.getDetailModelList() && result.getDetailModelList().size()>0){
+                systemDictEntryModel = getEnvelopModel(result.getDetailModelList().get(0),SystemDictEntryModel.class);
+            }
+            return systemDictEntryModel.getCode();
+        }catch (Exception ex){
+            LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return "查询字典项失败！";
+        }
     }
 }
