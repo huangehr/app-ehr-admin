@@ -700,8 +700,20 @@ public class UserController extends BaseUIController {
             result.setErrorMsg(ErrorCode.SystemError.toString());
             return result;
         }*/
+        //根据系统字典id=125获取当前城市的行政区划
+        String dictId="125";
+        String reStr = searchDictEntryList(Long.parseLong(dictId),1,10);
+        if(StringUtils.isEmpty(reStr)){
+            //上饶市
+            reStr="361100";
+        }
+        //根据当前城市的行政区划编码获取 下一级 AdressDictId
+        String str = getAdressDictChildByParent(Integer.valueOf(reStr));
         Envelop envelop = new Envelop();
-        envelop = (Envelop)addressController.getOrgs("福建省", "厦门市");
+        if(StringUtils.isNotEmpty(str)){
+            envelop = searchOrgs(str);
+            envelop.setObj(envelop.getDetailModelList());
+        }
         return envelop;
     }
 
@@ -740,4 +752,60 @@ public class UserController extends BaseUIController {
             return "查询字典项失败！";
         }
     }
+
+    /**
+     * 获取城市
+     * @param pid
+     * @return
+     */
+    public String getAdressDictChildByParent(Integer pid) {
+        String url = "/geography_entries/pid/";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("pid",pid);
+        try{
+            resultStr = HttpClientUtil.doGet(comUrl + url + pid, params, username, password);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            String str="";
+            if(null != envelop && envelop.getDetailModelList().size()>0){
+                for(Object object : envelop.getDetailModelList()){
+                    str = str + ((LinkedHashMap) object).get("id").toString()+",";
+                }
+               str = str.substring(0,str.length()-1)+"";
+            }
+            return str;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    public Envelop searchOrgs(String administrativeDivision) {
+        Envelop envelop = new Envelop();
+        try {
+            //分页查询机构列表
+            String url = "/organizations/combo";
+            String filters = "";
+            Map<String, Object> params = new HashMap<>();
+
+            if (!org.springframework.util.StringUtils.isEmpty(administrativeDivision)) {
+                filters += "administrativeDivision=" + administrativeDivision + ";";
+            }
+            params.put("fields", "");
+            params.put("filters", filters);
+            params.put("sorts", "-createDate");
+            params.put("size", 999);
+            params.put("page", 1);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = objectMapper.readValue(resultStr,Envelop.class);
+            envelop.setCurrPage(0);
+            return envelop;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+            return envelop;
+        }
+    }
+
 }
