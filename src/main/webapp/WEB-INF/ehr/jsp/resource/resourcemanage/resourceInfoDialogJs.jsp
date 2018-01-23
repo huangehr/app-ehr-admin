@@ -31,6 +31,8 @@
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
             $echartType: $("#echartType"),
+			$dimension: $("#dimension"),
+
 
 			init: function () {
 				this.initForm();
@@ -50,6 +52,7 @@
                         {text:"旭日图", id:"nestedPie"}
                     ]
                 });
+				this.$dimension.ligerTextBox({width:240});
 //				this.$dataSource.ligerRadio();
 //                this.$dataSource.ligerGetRadioManager().setDisabled();
 				var mode = '${mode}';
@@ -80,6 +83,7 @@
 						id:info.id,
 						code:info.code,
 						name:info.name,
+						dimension:info.dimension,
 						categoryId:'${name}',
 						rsInterface:info.rsInterface,
 						grantType:info.grantType,
