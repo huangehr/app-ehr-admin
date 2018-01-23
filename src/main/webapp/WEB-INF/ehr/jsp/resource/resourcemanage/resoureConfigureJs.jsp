@@ -72,7 +72,7 @@
                         height:"450px",
                         parms: {
                             resourceId: resourceId,
-                            name:""
+                            nameOrCode:""
                         },
                         columns: [
                             {display: '指标分类', name: 'quotaTypeName', width: '25%', isAllowHide: false, align: 'left'},
@@ -87,7 +87,6 @@
                                     if (chartTypeArr[i] == row.quotaChart) {
                                         c = 'selected';
                                     }
-//                                    debugger
                                     switch (chartTypeArr[i]) {
                                         case '1':
                                             html.push('<option value="1" ' + c + '>柱状图</option>');
@@ -97,6 +96,9 @@
                                             break;
                                         case '3':
                                             html.push('<option value="3" ' + c + '>饼状图</option>');
+                                            break;
+                                        case '4':
+                                            html.push('<option value="4" ' + c + '>二维表</option>');
                                             break;
                                     }
                                 }
@@ -205,6 +207,9 @@
                                     case 3:
                                         cName = '饼状图';
                                         break;
+                                    case 4:
+                                        cName = '二维表';
+                                        break;
                                 }
                                 resultHtml+='<div class="h-40 div-item" data-id="'+item.quotaId+'" data-code="'+mainCode+'"  data-name="' + item.quotaTypeName +'"  data-quotaCode="' + item.quotaCode + '" data-qchart="' + item.quotaChart + '" >'+
                                             '<div class="div-main-content" style="width: 22%;" title="' + item.quotaTypeName + '">'+ item.quotaTypeName +'</div>'+
@@ -226,7 +231,7 @@
                     var reqUrl = '${contextRoot}/resource/resourceManage/getResourceQuotaInfo';
                     var values = {
                         resourceId: resourceId,
-                        name:searchNmEntry
+                        nameOrCode:searchNmEntry
                     };
                     Util.reloadGrid.call(curGrid,reqUrl, values, 1);
                 },

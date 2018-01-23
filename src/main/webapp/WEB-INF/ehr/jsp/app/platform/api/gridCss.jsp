@@ -62,7 +62,7 @@
         top: 0;
         right: 0;
         bottom: 0;
-        left: 370px;
+        left: 0;
     }
     #treeMenuWrap{
         height: calc(100% - 50px);

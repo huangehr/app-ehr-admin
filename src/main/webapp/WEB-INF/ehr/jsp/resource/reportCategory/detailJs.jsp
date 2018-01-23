@@ -20,7 +20,7 @@
     function initForm() {
         var codeTb = $('#code').ligerTextBox({width: 240});
         $('#name').ligerTextBox({width: 240});
-        $("#pid").ligerComboBox({
+        var lingerPid = $("#pid").ligerComboBox({
             treeLeafOnly: false,
             tree: {
                 ajaxType: 'get',
@@ -34,11 +34,9 @@
             }
         });
         $('#remark').ligerTextBox({width: 240, height: 150});
-
         if(detailModel.id) {
             codeTb.setDisabled(true);
         }
-
         $form.attrScan();
         $form.Fields.fillValues({
             id: detailModel.id,
@@ -104,7 +102,7 @@
                         var name = $("#name").val();
                         if(!$.Util.isStrEquals(name, detailModel.name)) {
                             var ulr = "${contextRoot}/resource/reportCategory/isUniqueName";
-                            return $.Util.validateByAjax(ulr, {id: id, name: name});
+                            return $.Util.validateByAjax(ulr, {id: $("#pid_val").val().trim() == "" ? 0 : $("#pid_val").val().trim(), name: name});
                         }
                         break;
                 }

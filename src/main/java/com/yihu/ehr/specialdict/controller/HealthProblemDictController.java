@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.HealthProblemDictModel;
 import com.yihu.ehr.agModel.specialdict.HpIcd10RelationModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -128,7 +129,7 @@ public class HealthProblemDictController extends BaseUIController {
     public Object updateIcd10Dict(String dictJson,String mode,HttpServletRequest request){
         Envelop envelop = new Envelop();
         try{
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             envelop.setSuccessFlg(false);
             String url = "/dict/hp";
             HealthProblemDictModel model = objectMapper.readValue(dictJson, HealthProblemDictModel.class);
@@ -348,7 +349,7 @@ public class HealthProblemDictController extends BaseUIController {
     public Object createHpIcd10Relations(Long hpId,String icd10Ids,HttpServletRequest request){
         Envelop envelop = new Envelop();
         try {
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             String url = "/dict/hp/icd10s";
             if(StringUtils.isEmpty(icd10Ids)){
                 envelop.setErrorMsg("icd10字典id不能为空！");

@@ -26,7 +26,7 @@
             </div>
             <div id="div_relLoad_data" ms-controller="avacontroller" >
                 <ul class="temp">
-                    <li ms-repeat-item="data">
+                    <li ms-repeat-item="data"> 
                         <div class="info">
                             <div class="inlineBlock backroundImg"></div>
                             <div class="inlineBlock boxText">
@@ -40,9 +40,9 @@
                                 <p ms-if="item.status=='down'" class="status">状态：<a style="color: #35afe1">休息</a></p>
                             </div>
                             <sec:authorize url="/government/editMenu">
-                            <div ms-if="item.status!=='arrival' ||item.status !=='onWay'|| item.status!=='back'" class="inlineBlock change" ms-click="jumpMenu(item.id)">
+                            <div ms-if="item.status!=='arrival' ||item.status !=='onWay'|| item.status!=='back'" class="inlineBlock change"id="editState" ms-click="jumpMenu(item.id)" >
                             </div>
-                            <div ms-if="item.status=='arrival'|| item.status =='onWay'|| item.status=='back'" class="inlineBlock changeGray" >
+                            <div ms-if="item.status=='arrival'|| item.status =='onWay'|| item.status=='back'" class="inlineBlock changeGray" id="editState">
                             </div>
                             </sec:authorize>
                         </div>

@@ -5,6 +5,7 @@ import com.yihu.ehr.agModel.app.AppDetailModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.resource.RsAppResourceModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.resource.MRsAppResource;
@@ -16,6 +17,7 @@ import com.yihu.ehr.util.service.GetInfoService;
 import com.yihu.ehr.util.url.URLQueryBuilder;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -172,7 +174,7 @@ public class AppController extends BaseUIController {
         MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
         try {
             //不能用 @ModelAttribute(SessionAttributeKeys.CurrentUser)获取，会与AppDetailModel中的id属性有冲突
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             appDetailModel.setCreator(userDetailModel.getId());
             conditionMap.add("app", toJson(appDetailModel));
             RestTemplates template = new RestTemplates();
@@ -222,8 +224,10 @@ public class AppController extends BaseUIController {
                 appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
                 String icon = appDetailModel.getIcon();
-                icon = icon.substring(icon.indexOf("group1"), icon.length()).replace("group1/", "group1:");
-                appUpdate.setIcon(icon);
+                if(!StringUtils.isEmpty(icon)){
+                    icon = icon.substring(icon.indexOf("group1"), icon.length()).replace("group1/", "group1:");
+                    appUpdate.setIcon(icon);
+                }
                 appUpdate.setReleaseFlag(appDetailModel.getReleaseFlag());
                 appUpdate.setManageType(appDetailModel.getManageType());
                 appUpdate.setSourceType(appDetailModel.getSourceType());

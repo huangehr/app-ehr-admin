@@ -185,7 +185,7 @@
                 title = '修改资源报表';
             }
             detailDialog = parent._LIGERDIALOG.open({
-                height: 560,
+                height: 600,
                 width: 480,
                 title: title,
                 url: '${contextRoot}/resource/report/detail',

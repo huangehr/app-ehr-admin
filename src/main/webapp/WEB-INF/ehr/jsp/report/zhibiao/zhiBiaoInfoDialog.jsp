@@ -14,20 +14,27 @@
         </div>
         <div class="m-form-group ">
             <label>名称：</label>
-            <div class="l-text-wrapper m-form-control essential ">
+            <div class="l-text-wrapper m-form-control essential">
                 <input type="text" id="inp_name" class="required useTitle ajax" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
             </div>
         </div>
         <div class="m-form-group">
-            <label>指标类型：</label>
+            <label>指标分类：</label>
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_quota_type" class="required ajax useTitle" placeholder="请选择指标类型" data-type="select" data-attr-scan="quotaType" required-title=<spring:message code="lbl.must.input"/>>
+                <input type="text" id="inp_quota_type" class="required ajax useTitle" placeholder="请选择指标分类" data-type="select" data-attr-scan="quotaType" required-title=<spring:message code="lbl.must.input"/>>
+            </div>
+        </div>
+        <div class="m-form-group ">
+            <label>统计方式：</label>
+            <div class="u-checkbox-wrap m-form-control">
+                <input type="radio" value="1" name="resultGetType" data-attr-scan>基础统计
+                <input type="radio" value="2" name="resultGetType" data-attr-scan>二次统计
             </div>
         </div>
         <div class="m-form-group">
             <label>执行方式：</label>
             <div class="u-checkbox-wrap m-form-control">
-                <input type="radio" value="1" name="jobType">立即执行
+                <input type="radio" value="1" name="jobType">手动执行
                 <input type="radio" value="2" name="jobType">周期执行
             </div>
         </div>
@@ -107,34 +114,30 @@
         <div class="m-form-group f-mt5">
             <label>数据存储：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_data_storage" class="required ajax useTitle" placeholder="请选择数据存储" data-type="select"  required-title=<spring:message code="lbl.must.input"/>>
+            <div class="l-text-wrapper m-form-control">
+                <input type="text" id="inp_data_storage" class="useTitle" placeholder="二次统计时不填" data-type="select">
             </div>
         </div>
         <div class="m-form-group" id="div_dataStorage_json">
             <label>存储配置：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
-                <textarea type="text" id="inp_dataStorage_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> ></textarea>
+            <div class="l-text-wrapper m-form-control">
+                <textarea type="text" id="inp_dataStorage_json" class="useTitle validate-special-char" placeholder="二次统计时不填"></textarea>
             </div>
         </div>
-        <div class="m-form-group ">
+        <%--
+        基础指标，初始执行为全量统计，之后都是增量统计；二次指标在基础指标基础上进行统计。故 DataLevel 字段已没用。
+        -- 张进军  2018.1.16
+        --%>
+        <%--<div class="m-form-group ">
             <label>存储方式：</label>
-
             <div class="u-checkbox-wrap m-form-control ">
                 <input type="radio" value="1" name="dataLevel" data-attr-scan>全量
                 <input type="radio" value="2" name="dataLevel" data-attr-scan>增量
             </div>
-        </div>
-        <%--<div class="m-form-group ">--%>
-            <%--<label>状态：</label>--%>
-            <%--<div class="u-checkbox-wrap m-form-control ">--%>
-                <%--<input type="radio" value="1" name="status" data-attr-scan>正常--%>
-                <%--<input type="radio" value="-1" name="status" data-attr-scan>删除--%>
-                <%--<input type="radio" value="0" name="status" data-attr-scan>不可用--%>
-            <%--</div>--%>
-        <%--</div>--%>
-        <div class="m-form-group f-mb30">
+        </div>--%>
+        <%-- 基础指标数据保存到es库的指标 ，直接从库中获取， 其他二次统计的到的 二次统计获取 --%>
+        <div class="m-form-group f-mt5 f-mb30">
             <label>备注：</label>
             <div class="l-text-wrapper m-form-control">
                 <textarea id="inp_introduction" class="f-w240 description  max-length-256 validate-special-char" data-attr-scan="remark" ></textarea>

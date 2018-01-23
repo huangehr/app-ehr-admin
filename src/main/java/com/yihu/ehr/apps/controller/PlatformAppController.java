@@ -3,6 +3,7 @@ package com.yihu.ehr.apps.controller;
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.agModel.app.AppDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.apps.service.PlatformAppService;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.rest.Envelop;
@@ -40,7 +41,7 @@ public class PlatformAppController extends ExtendController<PlatformAppService> 
             Map<String, Object> params = new HashMap<>();
             String resultStr = "";
             if(StringUtils.isEmpty(appDetailModel.getId())){
-                UserDetailModel userDetailModel = getCurrentUserRedis(request);
+                UsersModel userDetailModel = getCurrentUserRedis(request);
                 appDetailModel.setCreator(userDetailModel.getId());
                 appDetailModel.setStatus("'Approved'");
                 appDetailModel.setSourceType(1);

@@ -49,17 +49,18 @@
 						var d = res.obj;
 						var mechanisms = [];
 						for (var i = 0, len = d.length; i < len; i++) {
-							mechanisms.push({
-								text: d[i].fullName,
-								id: d[i].orgCode
-							});
+                            if (d[i].fullName != null) {
+                                mechanisms.push(d[i]);
+                            }
 						}
-						me.$inpMechanism.ligerComboBox({
+						var imC = me.$inpMechanism.ligerComboBox({
 							isShowCheckBox: true,
 							width: '240',
 							data: mechanisms,
 							isMultiSelect: true,
-							valueFieldID: 'orgCodes'
+                            textField: 'fullName',
+                            valueField: 'orgCode',
+							valueFieldID: 'orgCode'
 						});
 					} else {
 						me.$inpMechanism.ligerComboBox({width: '240'});
@@ -109,7 +110,6 @@
 						onElementValidateForAjax: function (elm) {
 							var name = $("#inp_roles_name").val();
 							var orgCode = $("#orgCodes").val();
-							debugger
 							if(!Util.isStrEmpty(name) && !Util.isStrEmpty(orgCode)){
 								return checkUnique("${contextRoot}/userRoles/isNameExistence",appId,name,orgCode,"角色组名称已被使用！");
 							}
@@ -127,7 +127,8 @@
 				function update(values){
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var dataModel = $.DataModel.init();
-					var orgCodes = $("#orgCodes").val();
+//					var orgCodes = $("#orgCodes").val();
+                    var orgCodes  =  $('#inpMechanism').ligerGetComboBoxManager().getValue();
 					dataModel.updateRemote("${contextRoot}/userRoles/batchAdd", {
 						data:{dataJson:JSON.stringify(values),orgCodes:orgCodes},
 						success: function(data) {

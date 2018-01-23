@@ -50,6 +50,11 @@ public class ReportController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/archivesReprot")
+    public String dataCenter(Model model) {
+        model.addAttribute("contentPage", "/report/archivesReport");
+        return "pageView";
+    }
     /**
      * 趋势分析页(对外）
      * @param model
@@ -77,6 +82,17 @@ public class ReportController extends BaseUIController {
         model.addAttribute("endTime",endTime);
         model.addAttribute("contentPage", "/report/trendAnalysisDetail");
         return "pageView";
+    }
+
+    /**
+     * 采集状况页
+     * @param model
+     * @return
+     */
+    @RequestMapping("acquisitionConditionSign")
+    public String acquisitionConditionSign(Model model) {
+        model.addAttribute("contentPage", "/report/acquisitionConditionSign");
+        return "emptyView";
     }
 
     /**

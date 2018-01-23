@@ -3,6 +3,7 @@ package com.yihu.ehr.government.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.government.GovernmentMenuModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -88,7 +89,7 @@ public class GovernmentMenuController extends BaseUIController {
         String resultStr = "";
         try{
             GovernmentMenuModel governmentMenuModel = objectMapper.readValue(jsonDate, GovernmentMenuModel.class);
-            UserDetailModel userDetailModel = getCurrentUserRedis(request);
+            UsersModel userDetailModel = getCurrentUserRedis(request);
             Map<String,Object> params = new HashMap<>();
 
             if("new".equals(mode)){

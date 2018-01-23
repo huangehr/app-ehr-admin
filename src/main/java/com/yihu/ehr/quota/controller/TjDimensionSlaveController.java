@@ -3,6 +3,7 @@ package com.yihu.ehr.quota.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -99,7 +100,7 @@ public class TjDimensionSlaveController extends BaseUIController {
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = getCurrentUserRedis(request);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(tjDimensionSlaveModelJsonData, "UTF-8").split(";");
         TjDimensionSlaveModel detailModel = toModel(strings[0], TjDimensionSlaveModel.class);
@@ -260,14 +261,14 @@ public class TjDimensionSlaveController extends BaseUIController {
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuffer slaveFilter = new StringBuffer("status=1");
         if (!StringUtils.isEmpty(quotaCode)) {
             params.put("filter", "quotaCode=" + quotaCode);
         }
         if (!StringUtils.isEmpty(name)) {
-            stringBuffer.append("name?" + name + " g1;code?" + name + " g1;");
+            slaveFilter.append("name?" + name + " g1;code?" + name + " g1;");
         }
-        String filters = stringBuffer.toString();
+        String filters = slaveFilter.toString();
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }

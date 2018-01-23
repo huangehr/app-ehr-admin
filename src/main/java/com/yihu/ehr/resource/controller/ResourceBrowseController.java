@@ -75,9 +75,15 @@ public class ResourceBrowseController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("/comprehensiveQuery")
+    public String comprehensiveQuery(Model model) {
+        model.addAttribute("contentPage", "/resource/browse/comprehensiveQuery");
+        return "pageView";
+    }
+
     @RequestMapping("/dataCenter")
     public String dataCenter(Model model) {
-        model.addAttribute("contentPage", "/resource/dataCenter/dataCenter");
+        model.addAttribute("contentPage", "/resource/dataCenter/newDataCenter");
         return "pageView";
     }
 
@@ -290,17 +296,17 @@ public class ResourceBrowseController extends BaseUIController {
                 params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
                 params.put("areaCode", objectMapper.writeValueAsString(userAreaSaasList));
             }
-            Pattern pattern = Pattern.compile("\\[.+?\\]");
-            Matcher matcher = pattern.matcher(searchParams);
-            if(matcher.find()) {
-                if(searchParams.contains("{") || searchParams.contains("}")) {
-                    params.put("queryCondition", searchParams);
-                }else {
-                    params.put("queryCondition", "");
-                }
-            }else {
-                params.put("queryCondition", "");
-            }
+//            Pattern pattern = Pattern.compile("\\[.+?\\]");
+//            Matcher matcher = pattern.matcher(searchParams);
+//            if(matcher.find()) {
+//                if(searchParams.contains("{") || searchParams.contains("}")) {
+//                    params.put("queryCondition", searchParams);
+//                }else {
+//                    params.put("queryCondition", "");
+//                }
+//            }else {
+//                params.put("queryCondition", "");
+//            }
             params.put("page", page);
             params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -334,6 +340,7 @@ public class ResourceBrowseController extends BaseUIController {
                 finalList = resourceIntegratedController.changeIdCardNo(middleList, request);
             }
             envelop.setDetailModelList(finalList);
+            envelop.setSuccessFlg(true);
         } catch (Exception e) {
             e.printStackTrace();
             envelop.setSuccessFlg(false);

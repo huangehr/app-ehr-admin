@@ -275,6 +275,7 @@ public class ReportController extends BaseUIController {
                 updateModel.setStatus(model.getStatus());
                 updateModel.setRemark(model.getRemark());
                 updateModel.setTemplatePath(model.getTemplatePath());
+                updateModel.setShowType(model.getShowType());
 
                 params.put("rsReport", objectMapper.writeValueAsString(updateModel));
                 return HttpClientUtil.doPut(comUrl + ServiceApi.Resources.RsReportSave, params, username, password);

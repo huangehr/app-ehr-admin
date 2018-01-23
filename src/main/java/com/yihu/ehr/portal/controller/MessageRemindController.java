@@ -6,6 +6,7 @@ import com.yihu.ehr.adapter.service.OrgAdapterPlanService;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.portal.MessageRemindModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -114,7 +115,7 @@ public class MessageRemindController extends ExtendController<OrgAdapterPlanServ
         String resultStr = "";
         System.out.println();
         Envelop result = new Envelop();
-        UserDetailModel userDetailModel = getCurrentUserRedis(request);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         String[] strings = URLDecoder.decode(messageRemindModelJsonData, "UTF-8").split(";");
         MessageRemindModel detailModel = toModel(strings[0], MessageRemindModel.class);

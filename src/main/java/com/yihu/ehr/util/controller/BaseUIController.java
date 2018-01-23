@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
@@ -143,8 +144,8 @@ public class BaseUIController {
     }
 
 
-    public UserDetailModel getCurrentUserRedis(HttpServletRequest request) throws IOException {
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+    public UsersModel getCurrentUserRedis(HttpServletRequest request) throws IOException {
+        UsersModel userDetailModel = (UsersModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         return  userDetailModel;
     }
 
