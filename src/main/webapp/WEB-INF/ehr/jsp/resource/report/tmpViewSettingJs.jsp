@@ -73,9 +73,10 @@
                                     var d = data.obj.viewInfos, quotaIds = [], $quotaIds = null;
                                     me.$noneTmp.hide();
                                     me.$tmpCon.html(data.obj.templateContent);
-
+//                                    加载地图
                                     me.loadMap();
 
+                                    //加载图表
                                     if ($('#specialDiv').length == 0) {
                                         $.each(d , function (k, obj) {
                                             var $dom = $('#' + obj.resourceId),
@@ -88,27 +89,40 @@
                                     if ($quotaIds.length > 0) {
                                         quotaIds = ($quotaIds.val()).split(',')
                                     }
-debugger
+                                    //加载二维表视图
                                     $.each(quotaIds, function (k, v) {
                                         var $dom = null;
                                         if (v != '') {
                                             $dom = $('#' + v);
                                             me.rIdsAndQCode.push(v);
+                                            //特殊二维表模版
                                             if ($('#specialDiv').length > 0) {
-                                                var code = $dom.attr('data-code');
-                                                TVS.resData(url[3], {
-                                                    resourcesCode: code,
-                                                    page: 1,
-                                                    rows: 500
-                                                }, function (res) {
-                                                    var speFunTmp = '', data = [];
-//                                                    if (res.successFlg) {
-                                                        data = res.detailModelList
-                                                        speFunTmp = $('#specialFunTmp').html();
-                                                        eval('(function (data) {'+ speFunTmp +'})(data)')
-                                                        $dom.parent().find('.c-title').html($dom.attr('data-name'));
-//                                                    }
-                                                });
+                                                var speFunTmp = '', data = [], code = '', id= '';
+                                                speFunTmp = $('#specialFunTmp').html();
+                                                code = $dom.attr('data-code');
+                                                id = $dom.attr('data-id');
+                                                eval(speFunTmp);
+                                                gridObj && (function () {
+                                                    gridObj['parms'] = {
+                                                        resourcesCode: code,
+                                                        page: 1,
+                                                        rows: 500
+                                                    }
+                                                })();
+                                                TVS.renderResourceTable(id, (col || []), $dom, null, $dom.attr('data-name'), '2', (gridObj || {}), code);
+//                                                TVS.resData(url[3], {
+//                                                    resourcesCode: code,
+//                                                    page: 1,
+//                                                    rows: 500
+//                                                }, function (res) {
+//                                                    var speFunTmp = '', data = [];
+////                                                    if (res.successFlg) {
+//                                                        data = res.detailModelList
+//                                                        speFunTmp = $('#specialFunTmp').html();
+//                                                        eval('(function (data) {'+ speFunTmp +'})(data)')
+//                                                        $dom.parent().find('.c-title').html($dom.attr('data-name'));
+////                                                    }
+//                                                });
                                             } else {
                                                 me.getResourceData(v, $dom, null, $dom.attr('data-name'));
                                             }
@@ -140,6 +154,7 @@ debugger
                             });
                             selViewDialog.hide();
                         },
+                        //加载地图
                         loadMap: function () {
                             var me = this, $map = me.$tmpCon.find('[data-type=map]'), fileName = '', myChart = null;
                             if ($map.length > 0) {
@@ -249,6 +264,7 @@ debugger
                                         } else if (t == 1) {
                                             quotaIds.push(tId);
                                         }
+                                        //特殊二维表模版
                                         if ($('#specialDiv').length > 0) {
                                             reportData.push({
                                                 id: '',
@@ -316,6 +332,7 @@ debugger
                             delete opt.title;
                             myChart.setOption(opt);
                         },
+                        //获取表头
                         getResourceData: function (id, $dom, sta, name) {//档案数据
                             var me = this;
                             if (id != '') {
@@ -326,33 +343,41 @@ debugger
                                 });
                             }
                         },
-                        renderResourceTable: function (id, res, $dom, sta, name) {//档案数据表格渲染
-                            var col = [], isT = false;
+                        //加载表格
+                        renderResourceTable: function (id, res, $dom, sta, name, gridType, opt, code) {//档案数据表格渲染
+                            var col = [], isT = false, params = {};
                             if (sta == 'change') {//change: 视图替换   undefined: 第一次渲染视图
                                 isT = TVS.checkIsExist(id);
                                 if (!isT) return;
                             }
-                            if (res && res.length > 0) {
-                                col = defauleColumnModel;
-                                $.each(res, function (k, obj) {
-                                    col.push({display: obj.value, name: obj.code, width: 100});
-                                })
+                            if (!gridType) {
+                                if (res && res.length > 0) {
+                                    col = defauleColumnModel;
+                                    $.each(res, function (k, obj) {
+                                        col.push({display: obj.value, name: obj.code, width: 100});
+                                    })
+                                }
+                            } else {
+                                col = res;
                             }
-                            $dom.ligerGrid($.LigerGridEx.config({
+                            params = {
                                 url: url[3],
                                 height: $dom.height(),
                                 parms: {
                                     searchParams: '',
-                                    resourcesCode: id
+                                    resourcesCode: code || id
                                 },
                                 pageSize: 5,
                                 columns: col,
                                 checkbox: true
-                            }));
+                            };
+                            $dom.ligerGrid($.LigerGridEx.config($.extend({},params, opt || {})));
                             $dom.parent().find('.c-title').html(name);
                             $dom.attr('id', id);
                             $dom.attr('data-name', name);
                             $dom.attr('data-type', 1);
+
+                            code && $dom.attr('data-code', code);
                         },
                         checkIsExist: function (id) {//检测id
                             var oldResourceId = TVS.chart.attr('id'),
@@ -396,27 +421,42 @@ debugger
                         selViewDialog.close();
                         msg && $.Notice.success(msg);
                         (id && type) && (function () {
+                            //特殊二维表模版
                             if ($('#specialDiv').length > 0) {
-                                TVS.resData(url[3], {
-                                    resourcesCode: code,
-                                    page: 1,
-                                    rows: 500
-                                }, function (res) {
-                                    var speFunTmp = '', data = [];
-//                                    if (res.successFlg) {
-                                    var isT = TVS.checkIsExist(id);
-                                    if (!isT) return;
-                                    data = res.detailModelList;
-                                    speFunTmp = $('#specialFunTmp').html();
-                                    eval('(function (data) {'+ speFunTmp +'})(data)')
-                                    TVS.chart.parent().find('.c-title').html(name);
-                                    TVS.chart.attr('id', id);
-                                    TVS.chart.attr('data-name', name);
-                                    TVS.chart.attr('data-type', 1);
-                                    TVS.chart.attr('data-code', code);
+                                var speFunTmp = '', data = [];
+                                speFunTmp = $('#specialFunTmp').html();
+                                eval(speFunTmp);
+                                gridObj && (function () {
+                                    gridObj['parms'] = {
+                                        resourcesCode: code,
+                                        page: 1,
+                                        rows: 500
+                                    }
+                                })();
+                                TVS.renderResourceTable(id, (col || []), TVS.chart, 'change', name, '2', (gridObj || []), code);
 
-//                                    }
-                                });
+
+//                                TVS.resData(url[3], {
+//                                    resourcesCode: code,
+//                                    page: 1,
+//                                    rows: 500
+//                                }, function (res) {
+//                                    var speFunTmp = '', data = [], col = [];
+////                                    if (res.successFlg) {
+//                                    var isT = TVS.checkIsExist(id);
+//                                    if (!isT) return;
+//                                    data = res.detailModelList;
+//                                    speFunTmp = $('#specialFunTmp').html();
+////                                  eval('(function (data) {'+ speFunTmp +'})(data)')
+//                                    col = eval(speFunTmp);
+//                                    TVS.chart.parent().find('.c-title').html(name);
+//                                    TVS.chart.attr('id', id);
+//                                    TVS.chart.attr('data-name', name);
+//                                    TVS.chart.attr('data-type', 1);
+//                                    TVS.chart.attr('data-code', code);
+//
+////                                    }
+//                                });
                             } else {
                                 if (type == 1) {
                                     TVS.getResourceData(id, TVS.chart, 'change', name);
