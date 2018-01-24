@@ -111,7 +111,7 @@
     .m-form-inline .m-form-group{padding-bottom: 0;}
     .m-form-inline .m-form-group .m-form-control.m-form-control-fr{float: right}
     .div-title{margin: 10px 0px 20px;text-align: center;font-size: 20px;color: #666666;}
-    .div-head{height: 168px;margin: 20px 0px;}
+    .div-head{height: 169px;margin: 20px 0px;}
     .div-items{width: 48%;height: 100%;float: left;border: 1px solid #dddddd;cursor:pointer;}
     .div-items.active{border: 2px solid #4DB2EE;}
     .div-item-title{height: 40px;width: 100%;text-align: center;background: #f3f3f3;line-height: 40px;border-bottom:1px solid #dddddd;color:#bbbbbb;}
