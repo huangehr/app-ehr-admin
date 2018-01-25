@@ -47,7 +47,10 @@
                 this.$dataSource.ligerTextBox({width:240});
                 this.$echartType.ligerComboBox({
                     data: [
-                        {text:"普通图表", id:"common"},
+                        {text:"柱状图", id:"bar"},
+                        {text:"线形图", id:"line"},
+                        {text:"饼图", id:"pie"},
+                        {text:"二维表", id:"twoDimensional"},
                         {text:"雷达图", id:"radar"},
                         {text:"旭日图", id:"nestedPie"}
                     ]
