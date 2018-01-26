@@ -380,12 +380,14 @@
                         success: function (data) {
                             //添加档案数据基本信息表头
                             if (data.length > 0) {
-                                for (var j = 0, len = defauleColumnModel.length; j < len; j++) {
-                                    columnModel.push({
-                                        display: defauleColumnModel[j].name,
-                                        name: defauleColumnModel[j].key,
-                                        width: 100
-                                    });
+                                if(resourcesCode.indexOf('$')<0){
+                                    for (var j = 0, len = defauleColumnModel.length; j < len; j++) {
+                                        columnModel.push({
+                                            display: defauleColumnModel[j].name,
+                                            name: defauleColumnModel[j].key,
+                                            width: 100
+                                        });
+                                    }
                                 }
                             }
                             for (var i = 0; i < data.length; i++) {
