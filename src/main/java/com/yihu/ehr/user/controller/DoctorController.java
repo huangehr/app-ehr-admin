@@ -1,13 +1,12 @@
 package com.yihu.ehr.user.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -107,12 +106,18 @@ public class DoctorController extends BaseUIController {
         try {
             List<String> userOrgList  = getUserOrgSaasListRedis(request);
             if (null != userOrgList && userOrgList.size() > 0 && AuthorityKey.NoUserOrgSaas.equalsIgnoreCase(userOrgList.get(0))) {
-                UserDetailModel user = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+                UsersModel user = (UsersModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
                 if (null == user) {
                     result.setSuccessFlg(true);
                     return result;
                 }
-                stringBuffer.append("idCardNo=" + user.getIdCardNo() + ";");
+                Map<String, Object> userParam = new HashMap<>();
+                userParam.put("login_code", user.getLoginCode());
+                String userInfo = HttpClientUtil.doGet(comUrl + "/users/" + user.getLoginCode(), userParam);
+                Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
+                String ex = this.objectMapper.writeValueAsString(envelop.getObj());
+                UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+                stringBuffer.append("idCardNo=" +  userDetailModel.getIdCardNo() + ";");
             } else if (null != userOrgList && userOrgList.size() > 0) {
                 String orgCode = String.join(",", userOrgList);
                 params.put("orgCode", orgCode);

@@ -2,7 +2,7 @@ package com.yihu.ehr.std.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.standard.standardsource.StdSourceDetailModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -118,7 +118,7 @@ public class StdSourceManagerController extends BaseUIController {
 
     @RequestMapping("updateStdSource")
     @ResponseBody
-    public Object updateStdSource(String id,String code, String name, String type, String description,@ModelAttribute(SessionAttributeKeys.CurrentUser) UserDetailModel user) {
+    public Object updateStdSource(String id,String code, String name, String type, String description,@ModelAttribute(SessionAttributeKeys.CurrentUser) UsersModel user) {
         //新增、修改标准来源
         Envelop envelop = new Envelop();
         String envelopStr = "";

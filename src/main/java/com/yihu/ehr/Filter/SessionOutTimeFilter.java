@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.ContextAttributes;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -97,7 +98,18 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
                     Envelop envelop = (Envelop) this.objectMapper.readValue(resultStr, Envelop.class);
                     String ex = this.objectMapper.writeValueAsString(envelop.getObj());
                     UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
-                    request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, userDetailModel);
+                    //存储基本信息
+                    UsersModel usersModel = new UsersModel();
+                    usersModel.setId(userDetailModel.getId());
+                    usersModel.setRealName(userDetailModel.getRealName());
+                    usersModel.setEmail(userDetailModel.getEmail());
+                    usersModel.setOrganizationCode(userDetailModel.getOrganization());
+                    usersModel.setTelephone(userDetailModel.getTelephone());
+                    usersModel.setLoginCode(userDetailModel.getLoginCode());
+                    usersModel.setUserType(userDetailModel.getUserType());
+                    usersModel.setActivated(userDetailModel.getActivated());
+                    usersModel.setLastLoginTime(userDetailModel.getLastLoginTime());
+                    request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, usersModel);
 
                     //获取用户角色信息
                     List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());

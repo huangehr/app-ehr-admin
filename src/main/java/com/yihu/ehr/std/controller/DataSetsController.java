@@ -6,7 +6,6 @@ import com.yihu.ehr.agModel.standard.datasset.DataSetModel;
 import com.yihu.ehr.agModel.standard.datasset.MetaDataModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
 import com.yihu.ehr.agModel.standard.standardsource.StdSourceModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;

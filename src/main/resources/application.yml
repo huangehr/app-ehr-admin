@@ -3,6 +3,7 @@ server:
   port: 8090
   sessionTimeout:  30000000
 
+
 multipart:
   maxFileSize: 50Mb
   maxRequestSize: 50Mb
@@ -22,6 +23,9 @@ fast-dfs:
 
 permissions:
   info: admin
+
+logging:
+  level: debug
 
 ---
 spring:
