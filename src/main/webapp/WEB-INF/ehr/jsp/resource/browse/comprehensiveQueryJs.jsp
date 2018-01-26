@@ -505,10 +505,10 @@
                             return;
                         }
                         num++;
-                        parent._SHOWTAB({name: '新建查询'+num, url: '${contextRoot}/resourceIntegrated/goAddQueryPage', cb: function ($dom) {
-                            $dom[0].onload = function(e){
-                                window.GlobalEventBus.$emit("getAddQueryParam", {paramOne: JSON.stringify(paramOne), paramTwo: JSON.stringify(paramTwo), type: me.type, paramThree: paramThree})
-                            };
+                        parent._SHOWTAB({name: '新建查询' + num, url: '${contextRoot}/resourceIntegrated/goAddQueryPage', cb: function ($ifram) {
+                            $ifram[0].onload = function(e){
+                                parent.GlobalEventBus.$emit("getAddQueryParam", {paramOne: JSON.stringify(paramOne), paramTwo: JSON.stringify(paramTwo), type: me.type, paramThree: paramThree});
+                            }
                         }});
                     });
                 },
