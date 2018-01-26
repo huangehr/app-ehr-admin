@@ -8,7 +8,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-
+<%@ include file="addQueryCss.jsp" %>
 <div class="aq-main animated fadeInRight">
     <div class="aq-top">
         <div class="aq-tit"><span class="aq-tit-one">综合查询系统</span><apan class="aq-tit-two"> &nbsp;&gt;&nbsp; 新建查询</apan></div>
@@ -78,4 +78,5 @@
         <table class="aq-table" data-mobile-responsive="true"></table>
     </div>
 </div>
+<%@ include file="addQueryJS.jsp" %>
 
