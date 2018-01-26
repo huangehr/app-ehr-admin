@@ -363,7 +363,7 @@ public class ResourceBrowseController extends BaseUIController {
             envelop.setErrorMsg("该列数据已为详细数据");
             return envelop;
         }
-        String dictEntryUrl = "resources/ResourceBrowses/getResourceData";
+        String dictEntryUrl = "/resources/ResourceBrowses/getResourceSubData";
         Map<String, Object> params = new HashMap<>();
         params.put("rowKey", rowKey);
         params.put("version", version);
