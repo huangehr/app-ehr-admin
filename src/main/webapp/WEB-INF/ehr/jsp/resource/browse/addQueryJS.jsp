@@ -437,6 +437,7 @@
                 bindEvent: function () {
                     var  me = this;
                     me.$selBtn.on('click', function () {
+                        alert(123);
                         // $('#selSetBody').slideUp();
                         if (me.$selCon.css('display') == 'none') {
                             $(this).addClass('active');

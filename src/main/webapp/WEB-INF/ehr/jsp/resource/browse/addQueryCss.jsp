@@ -8,20 +8,13 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<link rel="stylesheet" type="text/css"
-      href="${contextRoot}/develop/lib/plugin/routine/animate.min.css" />
-<link rel="stylesheet" type="text/css"
-      href="${contextRoot}/develop/lib/plugin/routine/style.min862f.css" />
-<link rel="stylesheet" type="text/css"
-      href="${contextRoot}/develop/lib/plugin/routine/bootstrapStyle/bootstrapStyle.css" />
-<link rel="stylesheet" type="text/css"
-      href="${contextRoot}/develop/browser/lib/bootstrap/bootstrap-table.min.css" />
-<link rel="stylesheet" type="text/css"
-      href="${contextRoot}/develop/lib/plugin/routine/bootstrap.min14ed.css" />
-<link rel="stylesheet" type="text/css"
-      href="${contextRoot}/develop/lib/plugin/layer/skin/layer.css" />
-<link rel="stylesheet" type="text/css"
-      href="${contextRoot}/develop/lib/plugin/layui/css/layui.css" />
+<link rel="stylesheet" type="text/css"href="${contextRoot}/develop/lib/plugin/routine/animate.min.css" />
+<link rel="stylesheet" type="text/css"href="${contextRoot}/develop/lib/plugin/routine/style.min862f.css" />
+<link rel="stylesheet" type="text/css"href="${contextRoot}/develop/lib/plugin/routine/bootstrapStyle/bootstrapStyle.css" />
+<link rel="stylesheet" type="text/css"href="${contextRoot}/develop/browser/lib/bootstrap/bootstrap-table.min.css" />
+<link rel="stylesheet" type="text/css"href="${contextRoot}/develop/lib/plugin/routine/bootstrap.min14ed.css" />
+<link rel="stylesheet" type="text/css"href="${contextRoot}/develop/lib/plugin/layer/skin/layer.css" />
+<link rel="stylesheet" type="text/css"href="${contextRoot}/develop/lib/plugin/layui/css/layui.css" />
 <style>
     body{
         background: none;
