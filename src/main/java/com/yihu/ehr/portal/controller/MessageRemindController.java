@@ -5,7 +5,6 @@ import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.adapter.service.OrgAdapterPlanService;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.portal.MessageRemindModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;

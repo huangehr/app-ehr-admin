@@ -1,7 +1,6 @@
 package com.yihu.ehr.emergency.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.emergency.model.AmbulanceMsgModel;
 import com.yihu.ehr.emergency.model.AmbulanceMsgModelReader;

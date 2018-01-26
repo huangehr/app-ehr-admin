@@ -3,7 +3,6 @@ package com.yihu.ehr.std.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.standard.dict.DictEntryModel;
 import com.yihu.ehr.agModel.standard.dict.DictModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
