@@ -8,6 +8,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<script src="${contextRoot}/develop/lib/jquery/jquery-1.9.1.js"></script>
 <script src="${contextRoot}/develop/lib/plugin/es6Promise/es6-promise.js"></script>
 <script src="${contextRoot}/develop/lib/zTree/js/jquery.ztree.core.js"></script>
 <script src="${contextRoot}/develop/lib/zTree/js/jquery.ztree.core.js"></script>
@@ -20,8 +21,8 @@
 
 <script>
     (function ($,win) {
-
         $(function () {
+            debugger
             var paramOne = null,
                 paramTwo = '',
                 paramThree = '',
