@@ -41,8 +41,8 @@
                     this.loadRightTree();
                     this.bindEvent();
                     this.$selBottom.mCustomScrollbar({
-                        axis: "xy"
-                    });
+                        axis: "yx"
+                    }).mCustomScrollbar("scrollTo","left");
                     if (type == 'view') {
                         this.$selSaveBtn.hide();
                     }
