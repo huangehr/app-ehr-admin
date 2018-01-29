@@ -22,7 +22,6 @@
 <script>
     (function ($,win) {
         $(function () {
-            debugger
             var paramOne = null,
                 paramTwo = '',
                 paramThree = '',
@@ -334,9 +333,9 @@
                 },
 
                 //档案数据接口
-                <%--searchMetadataData: function () {//综合查询档案数据检索--%>
-                <%--return  '${contextRoot}/resourceIntegrated/searchMetadataData'--%>
-                <%--},--%>
+                searchMetadataData: function () {//综合查询档案数据检索
+                return  '${contextRoot}/resourceIntegrated/searchMetadataData'
+                },
                 createResourceTable: function (sp) {//档案数据
                     var me = this;
                     me.paramObj = JSON.parse(paramOne);
@@ -350,7 +349,7 @@
                     _.each(paramThree, function (obj) {
                         me.childParam.push(obj.code);
                     });
-                    me.initTable('${contextRoot}/resourceIntegrated/searchMetadataData', function(params){//传递参数（*）
+                    me.initTable(me.searchMetadataData(), function(params){//传递参数（*）
                         return me.getResParams('[]', params.pageSize, params.pageNumber);
                     }, me.columns);
                 },
@@ -438,7 +437,6 @@
                 bindEvent: function () {
                     var  me = this;
                     me.$selBtn.on('click', function () {
-                        alert(123);
                         // $('#selSetBody').slideUp();
                         if (me.$selCon.css('display') == 'none') {
                             $(this).addClass('active');
