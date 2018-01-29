@@ -44,4 +44,7 @@
         overflow: visible;
         left: 40px!important;
     }
+    .mCSB_dragger{
+        left: 0px !important;
+    }
 </style>
