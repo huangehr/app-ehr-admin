@@ -1,7 +1,6 @@
 package com.yihu.ehr.patient.controller;
 
 import com.yihu.ehr.agModel.patient.AuthenticationModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;

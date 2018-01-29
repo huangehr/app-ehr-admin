@@ -320,7 +320,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("resetPass")
     @ResponseBody
-    public Object resetPass(String userId,@ModelAttribute(SessionAttributeKeys.CurrentUser) UserDetailModel userDetailModel) {
+    public Object resetPass(String userId,@ModelAttribute(SessionAttributeKeys.CurrentUser) UsersModel userDetailModel) {
         String url = "/users/password/"+userId;
         String resultStr = "";
         Envelop result = new Envelop();
