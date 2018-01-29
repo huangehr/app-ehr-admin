@@ -2,7 +2,7 @@ package com.yihu.ehr.std.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.standard.standardversion.StdVersionModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -164,7 +164,7 @@ public class StdVersionController extends BaseUIController {
 
     @RequestMapping("addVersion")
     @ResponseBody
-    public Object addVersion(@ModelAttribute(SessionAttributeKeys.CurrentUser) UserDetailModel user){
+    public Object addVersion(@ModelAttribute(SessionAttributeKeys.CurrentUser) UsersModel user){
         Envelop envelop = new Envelop();
         String url = "/version";
         Map<String,Object> params = new HashMap<>();

@@ -1,6 +1,6 @@
 package com.yihu.ehr.util.service;
 
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -77,7 +77,7 @@ public class GetInfoService {
     private String getCurrentUserId() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         HttpSession session = request.getSession();
-        UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
+        UsersModel user = (UsersModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
         return user.getId();
     }
 

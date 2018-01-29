@@ -258,7 +258,7 @@
                                             async:true,
                                             success: function(data) {
                                                 if(data.successFlg){
-                                                    parent._LIGERDIALOG.success('删除成功。');
+                                                    parent._LIGERDIALOG.success('删除成功');
                                                     var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
                                                     zTree.removeNode(treeNode);
                                                 }else{
@@ -380,17 +380,26 @@
                         success: function (data) {
                             //添加档案数据基本信息表头
                             if (data.length > 0) {
-                                for (var j = 0, len = defauleColumnModel.length; j < len; j++) {
-                                    columnModel.push({
-                                        display: defauleColumnModel[j].name,
-                                        name: defauleColumnModel[j].key,
-                                        width: 100
-                                    });
+                                if(resourcesCode.indexOf('$')<0){
+                                    for (var j = 0, len = defauleColumnModel.length; j < len; j++) {
+                                        columnModel.push({
+                                            display: defauleColumnModel[j].name,
+                                            name: defauleColumnModel[j].key,
+                                            width: 100
+                                        });
+                                    }
                                 }
                             }
                             for (var i = 0; i < data.length; i++) {
                                 columnModel.push({display: data[i].value, name: data[i].code, width: 100});
                             }
+                        }
+                    });
+                    columnModel.push({
+                        display: '操作',
+                        width: 80,
+                        render: function (row) {
+                            return '<a href="#" data-key="'+ row.rowkey +'" data-version="' + row.cda_version + '" class="show-info">查看详情</a>'
                         }
                     });
                     return columnModel;
@@ -503,16 +512,68 @@
                         var thisType = $(this).val();
                         me.addChangeTypeFun(thisType);
                     });
+                    $(document).on('click', '.show-info', function () {
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        var k = $(this).attr('data-key'),
+                            v = $(this).attr('data-version');
+                        $.ajax({
+                            url: '${contextRoot}/resourceBrowse/searchResourceSubData',
+                            data: {
+                                rowKey: k,
+                                version: v
+                            },
+                            type: 'get',
+                            timeout:30000,
+                            error:function(){
+                                wait.close();
+                                parent._LIGERDIALOG.error('请求失败');
+                            },
+                            success: function (res) {
+                                wait.close()
+                                if(res.successFlg){
+                                    var htmlStr = '',
+                                        secondStr = '',
+                                        threeStr = '',
+                                        list = res.detailModelList,
+                                        num = list.length;
+                                    if(num>0){
+                                        for(var i=0;i<num;i++){
+                                            secondStr = ''
+                                            var keyArr = Object.keys(list[i]);
+                                            var val = list[i][keyArr[0]];
+                                            for(var j=0;j<val.data.length;j++){
+                                                threeStr = ''
+                                                for(var key in val.data[j]){
+                                                    threeStr += '<div style="padding: 0px 0px 10px 25px;"><span style="color:#333">'+key+'：</span>'+val.data[j][key]+'</div>'
+                                                }
+                                                secondStr += '<div>'+threeStr+'</div>'
+                                            }
+                                            htmlStr += '<div style="color:#333;margin-bottom:10px;font-size: 13px;font-weight: 600;padding-left:10px;">'+val.name+'</div><div>'+secondStr+'</div>'
+                                        }
+                                    }
+                                    parent._LIGERDIALOG.open({
+                                        title: '详情信息',
+                                        isResize: true,
+                                        width:500,
+                                        height:350,
+                                        content: htmlStr,
+                                    });
+                                }else{
+                                    parent._LIGERDIALOG.error('获取数据失败');
+                                }
+                            }
+                        })
+                    });
                     //视图管理
                     $.subscribe("rs:info:open",function(event, resourceId, mode, categoryId, name, dataSource){
                         var title = "";
                         var wait = parent._LIGERDIALOG.waitting("请稍后...");
-                        var height = 550;
+                        var height = 580;
                         if(mode == "modify"){title = "修改视图";}
                         if(mode == "view"){title = "查看视图";}
                         if(mode == "new"){title = "新增视图";}
                         if (dataSource == 2) {
-                            height = 600;
+                            height = 630;
                         }
                         rsInfoDialog = parent._LIGERDIALOG.open({
                             height:height,

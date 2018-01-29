@@ -194,15 +194,15 @@ public class UserRolesController extends BaseUIController {
 
 
     //角色组列表查询
-    @RequestMapping("/search")
     @ResponseBody
+    @RequestMapping("/search")
     public Object searchRoles(String searchNm, String appId, int page, int rows) {
         if(StringUtils.isEmpty(appId)){
             return failed("应用id不能为空！");
         }
         StringBuffer buffer = new StringBuffer();
         //buffer.append("type=1;appId="+appId+";");
-        buffer.append("appId="+appId+";");
+        buffer.append("appId=" + appId + ";type=1;");
         if (!StringUtils.isEmpty(searchNm)) {
             buffer.append("name?" + searchNm+" g0;code?"+searchNm+" g0");
         }
@@ -217,9 +217,9 @@ public class UserRolesController extends BaseUIController {
             String url = "/roles/roles";
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        } catch (Exception ex) {
-            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+        } catch (Exception e) {
+            LogService.getLogger(UserRolesController.class).error(e.getMessage());
+            return failed(e.getMessage());
         }
     }
 

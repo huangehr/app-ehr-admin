@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -343,6 +342,35 @@ public class ResourceBrowseController extends BaseUIController {
             envelop.setSuccessFlg(true);
         } catch (Exception e) {
             e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    /**
+     * 档案资源浏览细表数据
+     * @param rowKey
+     * @param version
+     * @return
+     */
+    @RequestMapping("/searchResourceSubData")
+    @ResponseBody
+    public Object getRsDictEntryList(String rowKey, String version) {
+        Envelop envelop = new Envelop();
+        if(rowKey.contains("$")) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("该列数据已为详细数据");
+            return envelop;
+        }
+        String dictEntryUrl = "/resources/ResourceBrowses/getResourceSubData";
+        Map<String, Object> params = new HashMap<>();
+        params.put("rowKey", rowKey);
+        params.put("version", version);
+        try {
+            String resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());
         }
