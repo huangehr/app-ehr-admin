@@ -17,7 +17,9 @@
         var pi = [
             '${contextRoot}/resourcesStatistics/stasticReport/getArchiveReportAll',
             '${contextRoot}/resourcesStatistics/stasticReport/getRecieveOrgCount',
-            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesInc'
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesInc',
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesFull',
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesTime'
         ];
 
         var mh = {
@@ -25,27 +27,62 @@
             $el1: document.getElementById("chart1"),
             $el2: document.getElementById("chart2"),
             $el3: document.getElementById("chart3"),
-            $startDate:$("#inp_start_date"),
-            $endDate:$("#inp_end_date"),
+            $el4: document.getElementById("chart4"),
+            $el5: document.getElementById("chart5"),
+            $startDate1:$("#start_date1"),
+            $endDate1:$("#end_date1"),
+            $startDate2:$("#start_date2"),
+            $endDate2:$("#end_date2"),
+            $startDate3:$("#start_date3"),
+            $endDate3:$("#end_date3"),
             $date1:$("#date1"),
             $date2:$("#date2"),
             $searchBtn: $('#btn_search'),
             $searchBtn1: $('#btn_search1'),
             $searchBtn2: $('#btn_search2'),
-            $orgCode: $('#orgCode'),
+            $searchBtn3: $('#btn_search3'),
+            $searchBtn4: $('#btn_search4'),
+            $orgCode1: $('#orgCode1'),
+            $orgCode2: $('#orgCode2'),
+            $orgCode3: $('#orgCode3'),
             myCharts1: null,
             myCharts2: null,
             myCharts3: null,
+            myCharts4: null,
+            myCharts5: null,
+            list4:[],
             init: function () {
                 var me = this;
                 var url = '${contextRoot}/deptMember/getHospitalList';
-                this.$orgCode.customCombo(url);
-                me.$startDate.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                this.$orgCode1.customCombo(url);
+                this.$orgCode2.customCombo(url);
+                this.$orgCode3.customCombo(url);
+                me.$startDate1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
                 }});
-                me.$endDate.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                me.$endDate1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$startDate2.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$endDate2.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$startDate3.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$endDate3.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
@@ -60,14 +97,20 @@
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
                 }});
-                me.$startDate.ligerDateEditor("setValue",me.getSevenDays());
-                me.$endDate.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$startDate1.ligerDateEditor("setValue",me.getSevenDays());
+                me.$endDate1.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$startDate2.ligerDateEditor("setValue",me.getSevenDays());
+                me.$endDate2.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$startDate3.ligerDateEditor("setValue",me.getSevenDays());
+                me.$endDate3.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date1.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date2.ligerDateEditor("setValue",me.getCurrentDate());
                 Promise.all([
                     me.getChart1(),
                     me.getChart2(),
-                    me.getChart3()
+                    me.getChart3(),
+                    me.getChart4(),
+                    me.getChart5()
                 ]).then(function () {
                     me.bindEvents();
                 });
@@ -92,7 +135,7 @@
                 var me = this;
                 me.myCharts1 = echarts.init(me.$el1);
                 me.myCharts1.showLoading();
-                this.getData(pi[0], {startDate: me.$startDate.val(),endDate:me.$endDate.val()}, function (res) {
+                this.getData(pi[0], {startDate: me.$startDate1.val(),endDate:me.$endDate1.val()}, function (res) {
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart1(dataList);
@@ -114,10 +157,55 @@
                 var me = this;
                 me.myCharts3 = echarts.init(me.$el3);
                 me.myCharts3.showLoading();
-                this.getData(pi[2], {date: me.$date2.val(),orgCode:  $("#orgCode").ligerGetComboBoxManager().getValue() }, function (res) {
+                this.getData(pi[2], {date: me.$date2.val(),orgCode:  $("#orgCode1").ligerGetComboBoxManager().getValue() }, function (res) {
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart3(dataList);
+                    }
+                });
+            },
+            getChart4: function () {
+                var me = this;
+                me.myCharts4 = echarts.init(me.$el4);
+                me.myCharts4.showLoading();
+                this.getData(pi[3], {startDate: me.$startDate2.val(),endDate:me.$endDate2.val(),orgCode:  $("#orgCode2").ligerGetComboBoxManager().getValue() }, function (res) {
+                    if (res.successFlg) {
+                        var dataList = res.detailModelList;
+                        list4=res.detailModelList;
+                        var obj = res.obj;
+                        $("#total").html(obj.total+"/"+obj.total_es);
+                        $("#total_rate").html(me.toDecimal(obj.total_rate)+"%");
+                        $("#oupatient_total").html(obj.oupatient_total+"/"+obj.oupatient_total_es);
+                        $("#oupatient_rate").html(me.toDecimal(obj.oupatient_rate)+"%");
+                        $("#inpatient_total").html(obj.inpatient_total+"/"+obj.inpatient_total_es);
+                        $("#inpatient_rate").html(me.toDecimal(obj.inpatient_rate)+"%");
+
+                        $("#total_sc").html(obj.total+"/"+obj.total_sc);
+                        $("#total_rate_sc").html(me.toDecimal(obj.total_rate_sc)+"%");
+                        $("#oupatient_total_sc").html(obj.oupatient_total+"/"+obj.oupatient_total_sc);
+                        $("#oupatient_rate_sc").html(me.toDecimal(obj.oupatient_rate_sc)+"%");
+                        $("#inpatient_total_sc").html(obj.inpatient_total+"/"+obj.inpatient_total_sc);
+                        $("#inpatient_rate_sc").html(me.toDecimal(obj.inpatient_rate_sc)+"%");
+                        console.info(obj);
+                        me.loadChart4(dataList);
+                    }
+                });
+            },
+            getChart5: function () {
+                var me = this;
+                me.myCharts5 = echarts.init(me.$el5);
+                me.myCharts5.showLoading();
+                this.getData(pi[4], {startDate: me.$startDate3.val(),endDate:me.$endDate3.val(),orgCode:  $("#orgCode3").ligerGetComboBoxManager().getValue() }, function (res) {
+                    if (res.successFlg) {
+                        var dataList = res.detailModelList;
+                        var obj = res.obj;
+                        $("#total_time").html(obj.total+"/"+obj.total_es);
+                        $("#total_rate_time").html(me.toDecimal(obj.total_rate)+"%");
+                        $("#oupatient_total_time").html(obj.oupatient_total+"/"+obj.oupatient_total_es);
+                        $("#oupatient_rate_time").html(me.toDecimal(obj.oupatient_rate)+"%");
+                        $("#inpatient_total_time").html(obj.inpatient_total+"/"+obj.inpatient_total_es);
+                        $("#inpatient_rate_time").html(me.toDecimal(obj.inpatient_rate)+"%");
+                        me.loadChart5(dataList);
                     }
                 });
             },
@@ -131,9 +219,9 @@
                     $.each(item1, function (key,value) {
                         xData.push(key);
                         $.each(value,function (id2,item2) {
-                            data1.push(me.toZore(item2.num1));
-                            data2.push(me.toZore(item2.num2));
-                            data3.push(item2.num3);
+                            data1.push(me.toZore(item2.waiting));
+                            data2.push(me.toZore(item2.successful));
+                            data3.push(item2.total);
                         });
                     });
                 });
@@ -228,7 +316,7 @@
                                     }
                                 }
                             },
-                            data:data1
+                            data:data2
                         },
                         {
                             name:'未解析',
@@ -244,7 +332,7 @@
                                     }
                                 }
                             },
-                            data:data2
+                            data:data1
                         }
                     ]
                 };
@@ -616,6 +704,286 @@
                 me.myCharts3.hideLoading();
                 me.myCharts3.setOption(option);
             },
+            loadChart4:function(data){
+                var me = this;
+                var xData=[];
+                var data1=[];
+                var data2=[];
+                var data3=[];
+                var data4=[];
+                var data5=[];
+                var data6=[];
+                $.each(data,function (id,item) {
+                    $.each(item, function (key,value) {
+                        xData.push(key);
+                        if($("#chart4-head .div-items.active").index()==0){
+                            data1.push(me.toDecimal(value.total_rate));
+                            data2.push(me.toDecimal(value.oupatient_rate));
+                            data3.push(me.toDecimal(value.inpatient_rate));
+                        }else{
+                            data1.push(me.toDecimal(value.total_rate_sc));
+                            data2.push(me.toDecimal(value.oupatient_rate_sc));
+                            data3.push(me.toDecimal(value.inpatient_rate_sc));
+                        }
+                    });
+                });
+                var option = {
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data:['就诊人次', '门诊人次','住院人次']
+                    },
+                    grid: {
+                        borderWidth:0,
+                        y2: 80
+                    },
+                    calculable : true,
+                    yAxis : [
+                        {
+                            type : 'value',
+                            min: 0,
+                            max: 100,
+                            boundaryGap : [0, 0.01],
+                            axisLine : {    // 轴线
+                                show: false,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick : {    // 轴标记
+                                show:false
+                            },
+                            splitLine : {
+                                show:true,
+                                lineStyle: {
+                                    color: '#dddddd',
+                                    type: 'dotted',
+                                    width: 2
+                                }
+                            },
+                            splitArea: {show:false},
+                            axisLabel: {
+                                show:true,
+                                formatter: '{value} %',
+                                textStyle:{
+                                color: '#909090',
+                                fontSize:14
+                            }}
+                        }
+                    ],
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : xData,
+                            axisLine : {    // 轴线
+                                show: true,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick: {show:false},
+                            splitArea: {show:false},
+                            splitLine: {show:false}
+                        }
+                    ],
+                    series : [
+                        {
+                            name: '就诊人次',
+                            type:'line',
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#FFBD5C',
+                                    lineStyle:{
+                                        color:'#FFBD5C'
+                                    }
+                                }
+                            },
+                            data: data1
+                        },
+                        {
+                            name:'门诊人次',
+                            type:'line',
+//                            barGap:2,
+//                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#44d4ca',
+                                    lineStyle:{
+                                        color:'#44d4ca'
+                                    }
+                                }
+                            },
+                            data:data2
+                        },
+                        {
+                            name:'住院人次',
+                            type:'line',
+//                            barGap:2,
+//                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#28a9e6',
+                                    lineStyle:{
+                                        color:'#28a9e6'
+                                    }
+                                }
+                            },
+                            data:data3
+                        }
+                    ]
+                };
+                me.myCharts4.hideLoading();
+                me.myCharts4.setOption(option);
+            },
+            loadChart5:function(data){
+                var me = this;
+                var xData=[];
+                var data1=[];
+                var data2=[];
+                var data3=[];
+                var data4=[];
+                var data5=[];
+                var data6=[];
+                $.each(data,function (id,item) {
+                    $.each(item, function (key,value) {
+                        xData.push(key);
+                        if($("#chart4-head .div-items.active").index()==0){
+                            data1.push(me.toDecimal(value.total_rate));
+                            data2.push(me.toDecimal(value.oupatient_rate));
+                            data3.push(me.toDecimal(value.inpatient_rate));
+                        }else{
+                            data1.push(me.toDecimal(value.total_rate_sc));
+                            data2.push(me.toDecimal(value.oupatient_rate_sc));
+                            data3.push(me.toDecimal(value.inpatient_rate_sc));
+                        }
+                    });
+                });
+                var option = {
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data:['就诊人次', '门诊人次','住院人次']
+                    },
+                    grid: {
+                        borderWidth:0,
+                        y2: 80
+                    },
+                    calculable : true,
+                    yAxis : [
+                        {
+                            type : 'value',
+                            min: 0,
+                            max: 100,
+                            boundaryGap : [0, 0.01],
+                            axisLine : {    // 轴线
+                                show: false,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick : {    // 轴标记
+                                show:false
+                            },
+                            splitLine : {
+                                show:true,
+                                lineStyle: {
+                                    color: '#dddddd',
+                                    type: 'dotted',
+                                    width: 2
+                                }
+                            },
+                            splitArea: {show:false},
+                            axisLabel: {
+                                show:true,
+                                formatter: '{value} %',
+                                textStyle:{
+                                color: '#909090',
+                                fontSize:14
+                            }}
+                        }
+                    ],
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : xData,
+                            axisLine : {    // 轴线
+                                show: true,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick: {show:false},
+                            splitArea: {show:false},
+                            splitLine: {show:false}
+                        }
+                    ],
+                    series : [
+                        {
+                            name: '就诊人次',
+                            type:'line',
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#FFBD5C',
+                                    lineStyle:{
+                                        color:'#FFBD5C'
+                                    }
+                                }
+                            },
+                            data: data1
+                        },
+                        {
+                            name:'门诊人次',
+                            type:'line',
+//                            barGap:2,
+//                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#44d4ca',
+                                    lineStyle:{
+                                        color:'#44d4ca'
+                                    }
+                                }
+                            },
+                            data:data2
+                        },
+                        {
+                            name:'住院人次',
+                            type:'line',
+//                            barGap:2,
+//                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#28a9e6',
+                                    lineStyle:{
+                                        color:'#28a9e6'
+                                    }
+                                }
+                            },
+                            data:data3
+                        }
+                    ]
+                };
+                me.myCharts5.hideLoading();
+                me.myCharts5.setOption(option);
+            },
             bindEvents: function () {
                 var me = this;
                 window.onresize = function () {
@@ -624,11 +992,11 @@
                     me.myCharts3.resize();
                 };
                 me.$searchBtn.click(function () {
-                    if(me.$startDate.val()==""){
+                    if(me.$startDate1.val()==""){
                         parent._LIGERDIALOG.error('请选择开始日期');
                         return false;
                     }
-                    if(me.$endDate.val()==""){
+                    if(me.$endDate1.val()==""){
                         parent._LIGERDIALOG.error('请选择结束日期');
                         return false;
                     }
@@ -647,6 +1015,35 @@
                         return false;
                     }
                     me.getChart3();//所有指标统计结果查询,初始化查询
+                });
+                me.$searchBtn3.click(function () {
+                    if(me.$startDate2.val()==""){
+                        parent._LIGERDIALOG.error('请选择开始日期');
+                        return false;
+                    }
+                    if(me.$endDate2.val()==""){
+                        parent._LIGERDIALOG.error('请选择结束日期');
+                        return false;
+                    }
+                    me.getChart4();//所有指标统计结果查询,初始化查询
+                });
+                me.$searchBtn4.click(function () {
+                    if(me.$startDate3.val()==""){
+                        parent._LIGERDIALOG.error('请选择开始日期');
+                        return false;
+                    }
+                    if(me.$endDate3.val()==""){
+                        parent._LIGERDIALOG.error('请选择结束日期');
+                        return false;
+                    }
+                    me.getChart5();//所有指标统计结果查询,初始化查询
+                });
+                $("#chart4-head .div-items").click(function () {
+                    if(!$(this).hasClass("active")){
+                        $(this).addClass("active");
+                        $(this).siblings().removeClass("active");
+                        me.loadChart4(list4);
+                    }
                 });
             },
             toZore: function (param) {
