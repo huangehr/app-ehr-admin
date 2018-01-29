@@ -39,12 +39,4 @@
         text-align: right;
         padding-top: 9px;
     }
-    /*样式重置*/
-    .mCSB_container_wrapper{
-        overflow: visible;
-        left: 40px!important;
-    }
-    .mCSB_dragger{
-        left: 0px !important;
-    }
 </style>
