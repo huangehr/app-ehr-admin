@@ -56,12 +56,12 @@
                 data: {data: JSON.stringify($form.Fields.getValues())},
                 success: function (data) {
                     if (data.successFlg) {
-                        if (detailModel.id) {
-                            window.closeDetailDialog('新增成功');
+                        if (!detailModel.id) {
+                            parent.closeDetailDialog('新增成功');
                         } else {
-                            window.closeDetailDialog('修改成功');
+                            parent.closeDetailDialog('修改成功');
                         }
-                        window.reloadMasterGrid();
+                        parent.reloadMasterGrid();
                     } else {
                         $.Notice.error(data.errorMsg);
                     }
@@ -77,7 +77,7 @@
 
         // 关闭
         $('#btnClose').click(function () {
-            window.closeDetailDialog();
+            parent.closeDetailDialog();
         })
     }
 

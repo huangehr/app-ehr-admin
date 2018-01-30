@@ -113,10 +113,10 @@
     }
 
     /*-- 与明细 Dialog 页面间回调的函数 --*/
-    window.reloadMasterGrid = function() {
+    window.parent.reloadMasterGrid = function() {
         reloadGrid();
     };
-    window.closeDetailDialog = function (type, msg) {
+    window.parent.closeDetailDialog = function (msg) {
         detailDialog.close();
         msg && parent._LIGERDIALOG.success(msg);
     };

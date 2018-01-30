@@ -442,7 +442,7 @@ public class PatientController extends BaseUIController {
         Envelop result = new Envelop();
         try {
             Map<String, Object> params = new HashMap<>();
-            String districtList = getInfoService.getDistrictList();
+//            String districtList = getInfoService.getDistrictList();
             params.put("search", searchNm.trim());
             params.put("gender", gender);
             params.put("page", page);
