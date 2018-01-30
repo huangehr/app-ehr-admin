@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<link rel="stylesheet" href="${staticRoot}/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css">
+<link rel="stylesheet" href="${staticRoot}/lib/bootstrap-select/css/bootstrap-select.css">
 <div id="editMain">
     <%--top--%>
     <div class="top-con">
