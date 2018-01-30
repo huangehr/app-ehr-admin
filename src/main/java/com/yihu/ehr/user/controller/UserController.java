@@ -3,12 +3,14 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
+import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.dict.controller.SystemDictController;
 import com.yihu.ehr.geography.controller.AddressController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -711,4 +713,96 @@ public class UserController extends BaseUIController {
         }
         return failed(httpResponse.getErrorMsg());
     }
+
+    @RequestMapping("searchDictEntry")
+    @ResponseBody
+    public String searchDictEntryList(Long dictId, Integer page, Integer rows) {
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!org.springframework.util.StringUtils.isEmpty(dictId)) {
+            stringBuffer.append("dictId=" + dictId);
+        }
+        String filters = stringBuffer.toString();
+        params.put("filters", "");
+        if (!org.springframework.util.StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        params.put("page", page);
+        params.put("size", rows);
+
+        try {
+            String url ="/dictionaries/entries";
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            result = objectMapper.readValue(resultStr, Envelop.class);
+            SystemDictEntryModel systemDictEntryModel = new SystemDictEntryModel();
+            if(null != result.getDetailModelList() && result.getDetailModelList().size()>0){
+                systemDictEntryModel = getEnvelopModel(result.getDetailModelList().get(0),SystemDictEntryModel.class);
+            }
+            return systemDictEntryModel.getCode();
+        }catch (Exception ex){
+            LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
+            result.setSuccessFlg(false);
+            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return "查询字典项失败！";
+        }
+    }
+
+    /**
+     * 获取城市
+     * @param pid
+     * @return
+     */
+    public String getAdressDictChildByParent(Integer pid) {
+        String url = "/geography_entries/pid/";
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("pid",pid);
+        try{
+            resultStr = HttpClientUtil.doGet(comUrl + url + pid, params, username, password);
+            ObjectMapper mapper = new ObjectMapper();
+            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
+            String str="";
+            if(null != envelop && envelop.getDetailModelList().size()>0){
+                for(Object object : envelop.getDetailModelList()){
+                    str = str + ((LinkedHashMap) object).get("id").toString()+",";
+                }
+               str = str.substring(0,str.length()-1)+"";
+            }
+            return str;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    public Envelop searchOrgs(String administrativeDivision) {
+        Envelop envelop = new Envelop();
+        try {
+            //分页查询机构列表
+            String url = "/organizations/combo";
+            String filters = "";
+            Map<String, Object> params = new HashMap<>();
+
+            if (!org.springframework.util.StringUtils.isEmpty(administrativeDivision)) {
+                filters += "administrativeDivision=" + administrativeDivision + ";";
+            }
+            params.put("fields", "");
+            params.put("filters", filters);
+            params.put("sorts", "-createDate");
+            params.put("size", 999);
+            params.put("page", 1);
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = objectMapper.readValue(resultStr,Envelop.class);
+            envelop.setCurrPage(0);
+            return envelop;
+        } catch (Exception e) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+            return envelop;
+        }
+    }
+
 }
