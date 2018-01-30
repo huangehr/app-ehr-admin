@@ -37,8 +37,9 @@
                     parent.closeDialog();
                 }
                 else{
-                    $.Notice.success("导入成功！");
-                    parent.closeDialog();
+                    $.Notice.success("导入成功！",function () {
+                        parent.closeMenuInfoDialog();
+                    });
                 }
             }
             $('#importbutton').uploadFile({url: "${contextRoot}/schedule/import",onUploadSuccess: onUploadSuccess});
