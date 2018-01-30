@@ -10,8 +10,8 @@
             vm = avalon.define({
                 $id:'avacontroller',
                 data:{},
-                jumpMenu:function (id) {
-                    $.publish('urgentcommand:vehiclemMenu:open',[id,'modify'])
+                jumpMenu:function (id,entityName) {
+                    $.publish('urgentcommand:vehiclemMenu:open',[id,entityName,'modify'])
                 }
             });
             function pageInit() {
@@ -117,7 +117,7 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    $.subscribe('urgentcommand:vehiclemMenu:open', function (event, id, mode) {
+                    $.subscribe('urgentcommand:vehiclemMenu:open', function (event, id,entityName, mode) {
                         var title = '';
                         if (mode == 'modify') {
                             title = '修改车辆';
@@ -131,7 +131,8 @@
                             title: title,
                             url: '${contextRoot}/ambulance/getPage',
                             urlParms: {
-                                id: id
+                                id: id,
+                                entityName:entityName
                             },
                             isHidden: false,
                             opener: true,

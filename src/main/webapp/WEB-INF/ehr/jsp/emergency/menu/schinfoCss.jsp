@@ -2,6 +2,13 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <style>
+    body{
+        overflow: scroll!important;
+    }
+    .l-dialog{
+        position: absolute;
+        top: 40px !important;
+    }
     .containBox {
         width: 600px;
         /*height: 830px;*/
