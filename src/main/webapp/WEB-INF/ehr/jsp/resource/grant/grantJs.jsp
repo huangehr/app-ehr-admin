@@ -106,6 +106,7 @@
                         orgTree = initTree(orgTreeDom,
                                 {
                                     btnClickToToggleOnly: false,
+                                    nodeWidth: 228,
                                     needCancel: false,
                                     data: data,
                                     selectable: function (e) { return e.level != 1;},
@@ -128,6 +129,7 @@
                 appTree = initTree(appTreeDom, {checkbox: true, url: url, allCheckDom: allChecked,
                     selectable: function () {return false;},
                     isSelectToChecked: true,
+                    nodeWidth: 226,
                     onBeforeShowData: function (data) {
                         data = data.detailModelList;
                         var chkLen = 0;
@@ -168,6 +170,7 @@
 
             checkedTree =initTree(checkedTreeDom, {
                 data: treeData,
+                nodeWidth: 446,
                 checkbox: true,
                 btnClickToToggleOnly: false,
                 selectable: function (e) {return false;},

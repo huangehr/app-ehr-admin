@@ -79,7 +79,7 @@
                         $.Notice.success('新增成功',function () {
                             dialog.close();
                         });
-                        win.parent.closeAddUserInfoDialog(function () {});//只做刷新列表
+                    win.parent.closeAddUserInfoDialog(function () {});//只做刷新列表
                 });
 
             },

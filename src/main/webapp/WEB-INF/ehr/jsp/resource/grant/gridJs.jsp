@@ -49,11 +49,11 @@
                 },
                 //初始化表格
                 rendTree : function(){
-
                     var m = master;
                     m.tree = initTree($("#treeMenu"),
                             {
                                 url:  m.urls.tree + "?resourceId="+resourceId,
+                                nodeWidth: 260,
                                 delay: true,
                                 renderAll: true,
                                 needCancel: false,
@@ -220,15 +220,13 @@
             }
 
             var resizeContent = function(){
-                debugger
                 var contentW = $('#grid_content').width();
                 var leftW = $('#div_left').width();
                 $('#div_right_g').width(contentW-leftW-50);
-
                 var contentH = $('.l-layout-center').height();
 //                $('#treeMenuWrap').height(contentH - 189);
                 $('#treeMenuWrap').height(499);
-            }();
+            };
 
             //窗体改变大小事件
             $(window).bind('resize', function() {
@@ -247,7 +245,6 @@
             }
 
             win.getTreeData = function () {
-
                 return cloneData(master.tree.getData()) || [];
             }
 
