@@ -64,7 +64,7 @@
 
         // 关闭
         $('#btnClose').click(function () {
-            window.closeDetailDialog();
+            parent.closeDetailDialog();
         })
     }
 
@@ -78,6 +78,7 @@
                 switch(elId) {
                     case 'appId':
                         var appId = $("#appId").val();
+                        var categoryCode = $("#categoryCode").val();
                         if(!$.Util.isStrEquals(appId, detailModel.appId)) {
                             var ulr = "${contextRoot}/redis/cache/authorization/isUniqueAppId";
                             return $.Util.validateByAjax(ulr, {id: id, categoryCode: categoryCode, appId: appId});
