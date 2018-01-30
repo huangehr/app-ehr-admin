@@ -250,13 +250,13 @@ public class OrgImportController extends ExtendController<OrgService> {
 
     @RequestMapping("/batchSave")
     @ResponseBody
-    public Object batchSave(String doctors, String eFile, String tFile, String datePath){
+    public Object batchSave(String orgs, String eFile, String tFile, String datePath){
         try{
-            if(!StringUtils.isEmpty(doctors)){
+            if(!StringUtils.isEmpty(orgs)&&!StringUtils.isEmpty(orgs.replaceAll("\\[|\\]",""))){
                 eFile = datePath + TemPath.separator + eFile;
                 File file = new File(TemPath.getFullPath(eFile, parentFile));
                 List<OrgMsgModel> all = (List<OrgMsgModel>) ObjectFileRW.read(file);
-                List<OrgMsgModel> orgMsgModels = objectMapper.readValue(doctors, new TypeReference<List<OrgMsgModel>>() {});
+                List<OrgMsgModel> orgMsgModels = objectMapper.readValue(orgs, new TypeReference<List<OrgMsgModel>>() {});
                 Map<String, Set> repeat = new HashMap<>();
                 repeat.put("orgCode", new HashSet<String>());
                 repeat.put("orgTypes", new HashSet<String>());
