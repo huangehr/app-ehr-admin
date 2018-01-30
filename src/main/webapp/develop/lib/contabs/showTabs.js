@@ -3,7 +3,7 @@
             return '<a href="#" class="active J_menuTab" data-id="'+ (id || url) +'">'+ name +' <i class="glyphicon glyphicon-remove"></i></a>';
         },
         getIframTmp = function (len, url, id) {
-            return $('<iframe class="J_iframe" name="iframe'+ len +'" src="'+ url +'" width="100%" height="100%" frameborder="0" data-id="'+ (id || url) +'" seamless>');
+            return $('<iframe class="J_iframe" method="post" name="iframe'+ len +'" src="'+ url +'" width="100%" height="100%" frameborder="0" data-id="'+ (id || url) +'" seamless>');
         };
 
     var showTab = function (opt) {

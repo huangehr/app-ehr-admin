@@ -50,7 +50,7 @@ public class ReportController extends BaseUIController {
         return "pageView";
     }
 
-    @RequestMapping("/archivesReprot")
+    @RequestMapping("/archivesReport")
     public String dataCenter(Model model) {
         model.addAttribute("contentPage", "/report/archivesReport");
         return "pageView";

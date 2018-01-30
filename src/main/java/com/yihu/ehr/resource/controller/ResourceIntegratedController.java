@@ -8,12 +8,14 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.operator.NumberUtil;
 import com.yihu.ehr.util.rest.Envelop;
+import io.swagger.annotations.ApiOperation;
 import jxl.Cell;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -301,6 +304,42 @@ public class ResourceIntegratedController extends BaseUIController {
     }
 
     /**
+     *  获取视图列表（不区分数据源）
+     *
+     * @param page
+     * @param size
+     * @param request
+     * @return
+     */
+    @RequestMapping("/getResourceList")
+    @ResponseBody
+    public Envelop getResourceList(int page, int size, HttpServletRequest request){
+        Envelop envelop = new Envelop();
+        String url = "/resources/page";
+        //从Session中获取用户的角色和和授权视图列表作为查询参数
+        HttpSession session = request.getSession();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            String userId = session.getAttribute("userId").toString();
+            params.put("page", page);
+            params.put("size", size);
+            params.put("userId", userId);
+            List<String> userResourceList = (List<String>)session.getAttribute(AuthorityKey.UserResource);
+            params.put("userResource", objectMapper.writeValueAsString(userResourceList));
+            String response = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = toModel(response, Envelop.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+            return envelop;
+        }
+        return envelop;
+    }
+
+
+
+    /**
      * 综合查询档案数据导出
      * @param request
      * @param response
@@ -568,5 +607,16 @@ public class ResourceIntegratedController extends BaseUIController {
             finalList.addAll(resultList);
             return finalList;
         }
+    }
+    /**
+     * 新建查询
+     *
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping("/goAddQueryPage")
+    public String browseCenter(Model model) {
+        model.addAttribute("contentPage", "/resource/browse/addQuery");
+        return "pageView";
     }
 }
