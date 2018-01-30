@@ -347,7 +347,7 @@ public class ResourceIntegratedController extends BaseUIController {
                 }
             }
             params.put("resourcesCode", resourcesCode);
-            params.put("metaData", metaData);
+            params.put("metaData", objectMapper.writeValueAsString(metaDataList));
             if(isAccessAll) {
                 params.put("orgCode", "*");
                 params.put("areaCode", "*");
@@ -366,8 +366,10 @@ public class ResourceIntegratedController extends BaseUIController {
              * 填充数据
              */
             sheet = inputData(sheet, dataList, cells);
+
             sheet.mergeCells(0, 2, 0, dataList.size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
+            sheet.removeRow(0);
             book.write();
             book.close();
             os.flush();
@@ -420,6 +422,7 @@ public class ResourceIntegratedController extends BaseUIController {
             sheet = inputData(sheet, envelop.getDetailModelList(), cells);
             sheet.mergeCells(0, 2, 0, envelop.getDetailModelList().size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
+            sheet.removeRow(0);
             book.write();
             book.close();
             os.flush();

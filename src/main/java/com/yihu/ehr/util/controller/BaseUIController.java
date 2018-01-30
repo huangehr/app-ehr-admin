@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.SessionAttributeKeys;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -176,6 +178,22 @@ public class BaseUIController {
             userResourceList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserResource);
         }
         return  userResourceList;
+    }
+
+    protected Integer getSystemSettingId() throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filters", "phoneticCode=XTSZ");
+        params.put("page", 1);
+        params.put("size", 15);
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + "/dictionaries", params, null);
+        if (httpResponse.isSuccessFlg()) {
+            Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList() != null) {
+                List<Map<String, Object>> systemDictModels = envelop.getDetailModelList();
+                return (Integer) systemDictModels.get(0).get("id");
+            }
+        }
+        return null;
     }
 
 }
