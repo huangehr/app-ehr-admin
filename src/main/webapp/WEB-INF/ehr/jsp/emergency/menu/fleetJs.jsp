@@ -10,8 +10,8 @@
             vm = avalon.define({
                 $id:'avacontroller',
                 data:{},
-                jumpMenu:function (id) {
-                    $.publish('urgentcommand:vehiclemMenu:open',[id,'modify'])
+                jumpMenu:function (id,entityName) {
+                    $.publish('urgentcommand:vehiclemMenu:open',[id,entityName,'modify'])
                 }
             });
             function pageInit() {
@@ -117,7 +117,7 @@
                 },
                 bindEvents: function () {
                     var self = this;
-                    $.subscribe('urgentcommand:vehiclemMenu:open', function (event, id, mode) {
+                    $.subscribe('urgentcommand:vehiclemMenu:open', function (event, id,entityName, mode) {
                         var title = '';
                         if (mode == 'modify') {
                             title = '修改车辆';
@@ -131,7 +131,8 @@
                             title: title,
                             url: '${contextRoot}/ambulance/getPage',
                             urlParms: {
-                                id: id
+                                id: id,
+                                entityName:entityName
                             },
                             isHidden: false,
                             opener: true,
@@ -191,7 +192,7 @@
                                         success:function (data) {
                                             if(data.successFlg){
                                                 that.val("值班")
-                                                that.parents('li').find('a').html('休息')
+                                                that.parents('li').find('.status a').html('休息')
                                                 $('.be_On_change').attr("data-code",0);
                                                 $('#editState').attr("ms-click","jumpMenu(item.id)");
                                                 that.parents('li').find('#editState').removeClass('changeGray');
@@ -219,7 +220,7 @@
                                 success:function (data) {
                                     if(data.successFlg){
                                         that.val("休息");
-                                        that.parents('li').find('a').html('待命中')
+                                        that.parents('li').find('.status a').html('待命中')
                                         $('.be_On_change').attr("data-code",1);
                                         parent._LIGERDIALOG.success("操作成功");
                                     }else {

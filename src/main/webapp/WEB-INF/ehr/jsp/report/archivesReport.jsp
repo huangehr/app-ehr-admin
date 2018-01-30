@@ -43,7 +43,42 @@
                         </div>
                     </div>
                     <div id="chart2" style="width: 100%;height: 350px;margin-top: 50px;"></div>
+
+                    <div class="m-form-inline condition" style="float: right;line-height: 30px;height: 30px;padding-right: 20px;">
+                        <div class="m-form-group f-mt10">
+                            <div class="m-form-control">
+                                <input type="text" id="date3" class="validate-date l-text-field validate-date"  placeholder="请选择查询日期"/>
+                            </div>
+                            <div class="l-text-wrapper m-form-control ">
+                                <input type="text" id="orgCode4"  data-type="select"  class="useTitle ajax"
+                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
+                            </div>
+                            <div class="m-form-control f-ml10">
+                                <!--按钮:查询-->
+                                <div id="btn_search5" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" style="margin-bottom: 1px">
+                                    <span><spring:message code="btn.search"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chart6" style="width: 50%;height: 300px;margin-top: 40px;float: left"></div>
+
+                    <div style="max-width: 48%;height: 280px;margin-top: 40px;float: left;overflow-y: auto;margin-right: 20px;">
+                        <table id="grid" style="display: none;">
+                            <thead>
+                            <tr>
+                                <th style="width: 50px;"></th>
+                                <th class="center">名称</th>
+                                <th class="center">总数</th>
+                                <th class="center">行数</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+
             </div>
 
             <div class="div-dzbl">

@@ -235,4 +235,22 @@ public class ResourcesStatisticsController extends BaseUIController {
         }
         return null;
     }
+
+    @RequestMapping(value = "/stasticReport/getDataSetCount", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "获取数据集数量", notes = "获取数据集数量")
+    public Result getDataSetCount(String date, String orgCode) {
+        String url = "/stasticReport/getDataSetCount";
+        String resultStr = "";
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("date", date);
+            params.put("orgCode", orgCode);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return toModel(resultStr, ListResult.class);
+        } catch (Exception e) {
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+        }
+        return null;
+    }
 }
