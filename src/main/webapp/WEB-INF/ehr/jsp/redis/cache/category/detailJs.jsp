@@ -63,7 +63,7 @@
 
         // 关闭
         $('#btnClose').click(function () {
-            window.closeDetailDialog();
+            parent.closeDetailDialog();
         })
     }
 
