@@ -19,7 +19,8 @@
             '${contextRoot}/resourcesStatistics/stasticReport/getRecieveOrgCount',
             '${contextRoot}/resourcesStatistics/stasticReport/getArchivesInc',
             '${contextRoot}/resourcesStatistics/stasticReport/getArchivesFull',
-            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesTime'
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesTime',
+            '${contextRoot}/resourcesStatistics/stasticReport/getDataSetCount'
         ];
 
         var mh = {
@@ -29,6 +30,7 @@
             $el3: document.getElementById("chart3"),
             $el4: document.getElementById("chart4"),
             $el5: document.getElementById("chart5"),
+            $el6: document.getElementById("chart6"),
             $startDate1:$("#start_date1"),
             $endDate1:$("#end_date1"),
             $startDate2:$("#start_date2"),
@@ -37,14 +39,17 @@
             $endDate3:$("#end_date3"),
             $date1:$("#date1"),
             $date2:$("#date2"),
+            $date3:$("#date3"),
             $searchBtn: $('#btn_search'),
             $searchBtn1: $('#btn_search1'),
             $searchBtn2: $('#btn_search2'),
             $searchBtn3: $('#btn_search3'),
             $searchBtn4: $('#btn_search4'),
+            $searchBtn5: $('#btn_search5'),
             $orgCode1: $('#orgCode1'),
             $orgCode2: $('#orgCode2'),
             $orgCode3: $('#orgCode3'),
+            $orgCode4: $('#orgCode4'),
             myCharts1: null,
             myCharts2: null,
             myCharts3: null,
@@ -57,6 +62,7 @@
                 this.$orgCode1.customCombo(url);
                 this.$orgCode2.customCombo(url);
                 this.$orgCode3.customCombo(url);
+                this.$orgCode4.customCombo(url);
                 me.$startDate1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
@@ -97,6 +103,11 @@
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
                 }});
+                me.$date3.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
                 me.$startDate1.ligerDateEditor("setValue",me.getSevenDays());
                 me.$endDate1.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$startDate2.ligerDateEditor("setValue",me.getSevenDays());
@@ -105,12 +116,14 @@
                 me.$endDate3.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date1.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date2.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$date3.ligerDateEditor("setValue",me.getCurrentDate());
                 Promise.all([
                     me.getChart1(),
                     me.getChart2(),
                     me.getChart3(),
                     me.getChart4(),
-                    me.getChart5()
+                    me.getChart5(),
+                    me.getChart6()
                 ]).then(function () {
                     me.bindEvents();
                 });
@@ -206,6 +219,17 @@
                         $("#inpatient_total_time").html(obj.inpatient_total+"/"+obj.inpatient_total_es);
                         $("#inpatient_rate_time").html(me.toDecimal(obj.inpatient_rate)+"%");
                         me.loadChart5(dataList);
+                    }
+                });
+            },
+            getChart6: function () {
+                var me = this;
+                me.myCharts6 = echarts.init(me.$el6);
+                me.myCharts6.showLoading();
+                this.getData(pi[5], {date: me.$date3.val(), orgCode: $("#orgCode4").ligerGetComboBoxManager().getValue() }, function (res) {
+                    if (res.successFlg) {
+                        var dataList = res.detailModelList;
+                        me.loadChart6(dataList);
                     }
                 });
             },
@@ -984,6 +1008,57 @@
                 me.myCharts5.hideLoading();
                 me.myCharts5.setOption(option);
             },
+            loadChart6:function(data){
+                var colors=["#EE9A13","#F8C400","#EFEE00","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78","#96C6EA","#BA72A4","#BBB4D6","#D9C7DF","#00AA90","#00AA90","#61BBA1","#7CC5B1","#E4EC65","#E3EF8D","#E6EA00","#D5649A","#DCA89A","#D4561B","#E2AA99","#138A6A","#739C5A","#3FB3B2","#B7DCB1","#F09B4A","#59BBD8","#76C5E6","#B4DEEC","#95D0DE","#B6DEDE","#A1A6A2","#E46713","#EE9A13","#F8C400","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78","#96C6EA","#BA72A4","#BBB4D6","#D9C7DF","#00AA90","#61BBA1","#7CC5B1","#E4EC65","#E3EF8D","#EDF4CA","#E6EA00","#D5649A","#DCA89A","#D4561B","#D66543","#E2AA99","#138A6A","#418F68","#739C5A","#389688","#3FB3B2","#B7DCB1","#F09B4A","#59BBD8","#76C5E6","#B4DEEC","#95D0DE","#B6DEDE","#A1A6A2"];
+                console.info(colors.length);
+                var me = this;
+                var list=[];
+                if (data!=null&&data.length>0){
+                    $("#grid").show();
+                }
+                var html=[];
+                $.each(data,function (id,item) {
+                    var obj = {};
+                    obj.value = item.row;
+                    obj.name = item.dataSet;
+                    list.push(obj);
+                   html.push('<tr>');
+                   html.push('<td align="center"><div style="background:'+colors[id]+';width:20px;height:10px;margin:5px auto;"></div></td>');
+                   html.push('<td>'+item.dataSet+'</td>');
+                   html.push('<td>'+item.count+'</td>');
+                   html.push('<td>'+item.row+'</td>');
+                   html.push( '</tr>');
+                });
+                $("#grid tbody").html(html.join(""));
+                var option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}<br/> {c} ({d}%)"
+                    },
+                    color: colors,
+                    series: [
+                        {
+                            type:'pie',
+                            radius: ['20%', '80%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:list
+                        }
+                    ]
+                };
+                me.myCharts6.hideLoading();
+                me.myCharts6.setOption(option);
+            },
             bindEvents: function () {
                 var me = this;
                 window.onresize = function () {
@@ -1037,6 +1112,13 @@
                         return false;
                     }
                     me.getChart5();//所有指标统计结果查询,初始化查询
+                });
+                me.$searchBtn5.click(function () {
+                    if(me.$date3.val()==""){
+                        parent._LIGERDIALOG.error('请选择开始日期');
+                        return false;
+                    }
+                    me.getChart6();//所有指标统计结果查询,初始化查询
                 });
                 $("#chart4-head .div-items").click(function () {
                     if(!$(this).hasClass("active")){
