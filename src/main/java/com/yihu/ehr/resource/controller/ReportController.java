@@ -432,50 +432,54 @@ public class ReportController extends BaseUIController {
             for (RsReportViewModel view : rsReportViewList) {
                 String resourceEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.Resources + "/" + view.getResourceId(), params, username, password);
                 RsResourcesModel rsResourcesModel = getEnvelopModel(objectMapper.readValue(resourceEnvelopStr, Envelop.class).getObj(), RsResourcesModel.class);
-                params.clear();
-                params.put("resourceId", view.getResourceId());
-                String queryEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.QueryByResourceId, params, username, password);
-                String queryStr = objectMapper.readValue(queryEnvelopStr, Envelop.class).getObj().toString();
-
-                Map<String, Object> viewInfo = new HashMap<>();
-                Map<String, Object> conditions = translateViewCondition(rsResourcesModel.getDataSource(), queryStr);
-                viewInfo.put("conditions", conditions); // 视图数据过滤条件。
-                List<Map<String, Object>> options = new ArrayList<>();
-                if (rsResourcesModel.getDataSource() == 1) {
-                    // 档案视图场合
-                    viewInfo.put("type", "record");
-                    viewInfo.put("resourceCode", rsResourcesModel.getCode());
-                    viewInfo.put("searchParams", queryStr);
-                    // 获取展示的列名
-                    params.clear();
-                    params.put("resourcesCode", rsResourcesModel.getCode());
-                    params.put("roleId", roleId);
-                    String rowsEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.ResourceBrowseResourceMetadata, params, username, password);
-                    List columns = objectMapper.readValue(rowsEnvelopStr, Envelop.class).getDetailModelList();
-                    viewInfo.put("columns", columns);
-                    viewInfos.add(viewInfo);
-                } else if (rsResourcesModel.getDataSource() == 2) {
-                    // 指标视图场合
-                    viewInfo.put("type", "quota");
-                    viewInfo.put("resourceId", view.getResourceId());
+                if( rsResourcesModel.getEchartType().equals("twoDimensional")){//特殊二维表报表
+                    //数据另外查询
+                }else {
                     params.clear();
                     params.put("resourceId", view.getResourceId());
-                    List<String> userOrgList  = getUserOrgSaasListRedis(request);
-                    params.put("userOrgList", userOrgList);
-                    params.put("quotaFilter", "");
-                    params.put("dimension", "");
-                    String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
-                    Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
-                    String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
-                    MChartInfoModel chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
-                    Map<String, Object> option = new HashMap<>();
-                    option.put("resourceCode", chartInfoModel.getResourceCode());
-                    option.put("resourceId", chartInfoModel.getResourceId());
-                    option.put("dimensionList", chartInfoModel.getDimensionMap());
-                    option.put("option", chartInfoModel.getOption());
-                    options.add(option);
-                    viewInfo.put("options", options); // 视图包含的指标echart图形的option。
-                    viewInfos.add(viewInfo);
+                    String queryEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.QueryByResourceId, params, username, password);
+                    String queryStr = objectMapper.readValue(queryEnvelopStr, Envelop.class).getObj().toString();
+
+                    Map<String, Object> viewInfo = new HashMap<>();
+                    Map<String, Object> conditions = translateViewCondition(rsResourcesModel.getDataSource(), queryStr);
+                    viewInfo.put("conditions", conditions); // 视图数据过滤条件。
+                    List<Map<String, Object>> options = new ArrayList<>();
+                    if (rsResourcesModel.getDataSource() == 1) {
+                        // 档案视图场合
+                        viewInfo.put("type", "record");
+                        viewInfo.put("resourceCode", rsResourcesModel.getCode());
+                        viewInfo.put("searchParams", queryStr);
+                        // 获取展示的列名
+                        params.clear();
+                        params.put("resourcesCode", rsResourcesModel.getCode());
+                        params.put("roleId", roleId);
+                        String rowsEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.ResourceBrowseResourceMetadata, params, username, password);
+                        List columns = objectMapper.readValue(rowsEnvelopStr, Envelop.class).getDetailModelList();
+                        viewInfo.put("columns", columns);
+                        viewInfos.add(viewInfo);
+                    } else if (rsResourcesModel.getDataSource() == 2) {
+                        // 指标视图场合
+                        viewInfo.put("type", "quota");
+                        viewInfo.put("resourceId", view.getResourceId());
+                        params.clear();
+                        params.put("resourceId", view.getResourceId());
+                        List<String> userOrgList  = getUserOrgSaasListRedis(request);
+                        params.put("userOrgList", userOrgList);
+                        params.put("quotaFilter", "");
+                        params.put("dimension", "");
+                        String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
+                        Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
+                        String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());
+                        MChartInfoModel chartInfoModel = objectMapper.readValue(s,MChartInfoModel.class);
+                        Map<String, Object> option = new HashMap<>();
+                        option.put("resourceCode", chartInfoModel.getResourceCode());
+                        option.put("resourceId", chartInfoModel.getResourceId());
+                        option.put("dimensionList", chartInfoModel.getDimensionMap());
+                        option.put("option", chartInfoModel.getOption());
+                        options.add(option);
+                        viewInfo.put("options", options); // 视图包含的指标echart图形的option。
+                        viewInfos.add(viewInfo);
+                    }
                 }
             }
             resultMap.put("viewInfos", viewInfos);
