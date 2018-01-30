@@ -169,7 +169,7 @@
 
             detailDialog = parent._LIGERDIALOG.open({
                 height: 700,
-                width: 1100,
+                width: 1200,
                 title: '报表预览',
                 url: '${contextRoot}/resource/report/preview',
                 urlParms: {code: code},
