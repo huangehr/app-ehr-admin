@@ -116,7 +116,7 @@
     window.parent.reloadMasterGrid = window.reloadMasterGrid = function() {
         reloadGrid();
     };
-    window.parent.closeDetailDialog = function (type, msg) {
+    window.parent.closeDetailDialog = function (msg) {
         detailDialog.close();
         msg && parent._LIGERDIALOG.success(msg);
     };

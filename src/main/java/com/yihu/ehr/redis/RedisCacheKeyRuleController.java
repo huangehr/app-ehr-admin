@@ -71,7 +71,7 @@ public class RedisCacheKeyRuleController extends BaseUIController {
         StringBuffer filters = new StringBuffer();
 
         if (!StringUtils.isEmpty(searchContent)) {
-            filters.append("code?" + searchContent + ";name?" + searchContent + ";");
+            filters.append("code?" + searchContent + " gl;name?" + searchContent + " gl;");
         }
         if (!StringUtils.isEmpty(categoryCode)) {
             filters.append("categoryCode=" + categoryCode + ";");
