@@ -173,13 +173,9 @@
                         self.endEdit();
                     })
                     $.subscribe('scheDetailsJs:scheInfo:edit',function (event,scheduleIds,date,carId,main) {
-                        console.log(scheduleIds)
-                        console.log(date)
-                        console.log(carId)
-                        console.log(main)
                         obj.detailDialog = $.ligerDialog.open({
                             height: 'auto',
-                            width: 'auto',
+                            width: 800,
                             title: '排班信息',
                             url: '${contextRoot}/schedule/getPage',
                             urlParms: {
