@@ -240,7 +240,7 @@
                 var contentW = $('.div-resource-configuration').width();
                 var leftW = $('.f-bd-configuration').width();
                 $('.f-bd-configurationtest').width(contentW - leftW - 20);
-            }();
+            };
             $(window).bind('resize', function () {
                 resizeContent();
             });

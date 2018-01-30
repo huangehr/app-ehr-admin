@@ -328,11 +328,16 @@ public class AmbulanceController extends BaseUIController {
     }
 
     @RequestMapping(value = "getPage")
-    public String getPage(Model model,String id){
-        if (id == "") {
+    public String getPage(Model model,String id, String entityName){
+        if (id == "" ) {
             model.addAttribute("id","-1");
         } else {
             model.addAttribute("id",id);
+        }
+        if (entityName == "" ) {
+            model.addAttribute("entityName", "-1");
+        } else {
+            model.addAttribute("entityName", entityName);
         }
         return  "/emergency/menu/vehiclemMenu";
     }

@@ -650,7 +650,7 @@
                                 'dataSource': me.daSelData.data_source
                             };
                         dataElementDialog = parent._LIGERDIALOG.open({
-                            height: 700,
+                            height: 650,
                             width: 1000,
                             title: "授权",
                             url: switchUrl.grantUrl,
