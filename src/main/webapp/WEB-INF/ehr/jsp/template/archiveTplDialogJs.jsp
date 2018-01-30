@@ -181,7 +181,7 @@
                             var TemplateModel = self.$form.Fields.getValues();
                             TemplateModel.organizationCode = TemplateModel.organizationCode.keys[2];
                             var dataModel = $.DataModel.init();
-                            TemplateModel['organizationCode'] = orgCode;
+                            TemplateModel['organizationCode'] = TemplateModel.organizationCode;
                             TemplateModel.cdaVersion = versionCode;
                             debugger
                             dataModel.createRemote(urls.update, {

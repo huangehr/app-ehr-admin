@@ -19,6 +19,7 @@
         var jValidation = $.jValidation;  // 表单校验工具类
         var dataModel = $.DataModel.init();
         var id = '${id}';
+        var entityName = '${entityName}';
         var parentSelectedVal = "";
         var validator = null;
 
@@ -40,6 +41,7 @@
             $license_Plate_input :$('#license_Plate_input'),
             $inpStatus: $('input[name="inp_status"]', this.$new_Dialogue),
             $personnel_phone_input :$('#personnel_phone_input'),
+            $codingInput:$('#codingInput'),
             $area:$('#inpMonitorType'),
             $updateBtn:$("#div_update_btn"),
             $cancelBtn:$("#div_cancel_btn"),
@@ -137,9 +139,12 @@
             setInfo: function (res, me) {
                 var self = this;
                 initList = res.obj;
+                console.log(initList);
+                debugger
                 me.$license_Plate_input.attr("disabled",'disabled')
                 me.$license_Plate_input.val(initList.id);
                 me.$personnel_phone_input.val(initList.phone);
+                me.$codingInput.val(initList.entityName);
                 me.$location = initList.location;
                 me.loadSelData(me.$location);
                 if (initList.status == 'wait') {
@@ -184,6 +189,7 @@
                     if(id!='-1'){//不等于-1 从编辑按钮过来的
                         var $license_Plate_input = self.$license_Plate_input.val();
                         var $personnel_phone_input = self.$personnel_phone_input.val();
+                        var $codingInput = self.$codingInput.val();
                         var $inpStatus =  $('input[name=inp_status]:checked').val();
                         var $id = self.$area.ligerGetComboBoxManager().getValue();
                         var judge = false;
@@ -192,12 +198,12 @@
                             "img": null,
                             "id": $license_Plate_input,
                             "phone": $personnel_phone_input,
+                            "entityName":$codingInput,
                             "status": $inpStatus,
                             "location":$id||self.$location
                         };
                         parameter = JSON.stringify(self.ambulance);
                         if(judgePhone){
-                            debugger
                             $.ajax({
                                 type:"POST",
                                 url: '${contextRoot}/ambulance/update',

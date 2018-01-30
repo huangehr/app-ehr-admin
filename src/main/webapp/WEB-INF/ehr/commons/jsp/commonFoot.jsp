@@ -62,6 +62,7 @@
 <script src="${staticRoot}/lib/ligerui/custom/cyc-menu.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/cyc-linkage.js"></script>
 <script src="${staticRoot}/lib/ligerui/custom/cyc-big.js"></script>
+<script src="${staticRoot}/source/vue.js"></script>
 
 <script src="${staticRoot}/lib/ligerui/custom/jquery.mousewheel.js"></script>
 <script src="${staticRoot}/lib/plugin/echarts/2.2.7/js/echarts-all.js"></script>

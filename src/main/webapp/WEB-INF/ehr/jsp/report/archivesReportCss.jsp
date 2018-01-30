@@ -76,7 +76,7 @@
     .div-smtz-amount{color:#ffffff;margin: 0px 10px 0px 30px;font-size: 40px;}
     .c-fff{color:#fff;}
     .f-fs20{font-size:20px;}
-    .div-qyrkgak{/*margin-top: 20px;*/height: 750px;background: #ffffff;border: 1px solid #e1e1e1;}
+    .div-qyrkgak{/*margin-top: 20px;*/height: 1150px;background: #ffffff;border: 1px solid #e1e1e1;}
     .div-qyrkgak-chart1{height: 350px;width: calc(30% - 21px);display: inline-block;position: relative;}
     #div_jkda_chart6{width: 60%;height: 100%;margin-right: 20%;margin-left: 20%;}
     #div_jkda_chart7{height: 350px;width: 40%;display: inline-block;}
@@ -171,4 +171,32 @@
     .div-youqiehuan:active,.div-youqiehuan:hover{background: url(${staticRoot}/images/youqiehuan_btn_pre.png) no-repeat;cursor: pointer}
     #chart-main{width: 100%;height: 250px;position: relative;z-index: 10;}
     .div-organization{position: relative;}
+    #grid {
+        border-collapse: collapse;
+        table-layout:fixed;
+        width: 100%;
+        border: 1px solid #d5d5d5;
+    }
+
+    #grid tbody tr:nth-child(odd) {
+        background-color: #fff;
+    }
+
+    #grid tr{
+        border-bottom: 1px solid #ececec;
+        background-color: #f7f7f7;
+    }
+    #grid td {
+        border: 1px solid #ddd;
+        padding:8px 6px;
+        font-size: 12px;
+        word-wrap: break-word;
+    }
+
+    #grid th {
+        border: 1px solid #ddd;
+        padding:8px 6px;
+        font-size: 12px;
+        font-weight: bold;
+    }
 </style>
