@@ -307,7 +307,7 @@
                     callback.call(win);
                     master.reloadGrid();
                 }
-                master.addUserInfoDialog.close();
+//                master.addUserInfoDialog.close();
             };
 
 

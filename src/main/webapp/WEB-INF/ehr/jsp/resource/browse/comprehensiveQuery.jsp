@@ -54,7 +54,7 @@
             <div class="iq-char-list">
                 <div class="iq-char-item" v-for="item in qrList" :data-id="item.id" v-on:click="goInfo(item.id, item.code, item.dataSource, item.name)">
                     <a href="#" class="iq-close" v-on:click="del(item.id)"></a>
-                    <img src="../images/PxBkCook_03.png" alt="">
+                    <img src="${staticRoot}/images/PxBkCook_03.png" alt="">
                     <p class="img-tit" v-text="item.name"></p>
                 </div>
             </div>

@@ -76,9 +76,10 @@
                     if(!resp.successFlg)
                         $.Notice.error(resp.errorMsg);
                     else
-                        $.Notice.success('新增成功');
-                    win.closeAddUserInfoDialog(function () {
+                        $.Notice.success('新增成功',function () {
+                            dialog.close();
                         });
+                    win.parent.closeAddUserInfoDialog(function () {});//只做刷新列表
                 });
 
             },
@@ -359,10 +360,10 @@
                         data: {userModelJsonData: userModelJsonData},
                         success: function (data) {
                             if (data.successFlg) {
-                                $.Notice.success('新增成功');
-                                win.closeAddUserInfoDialog(function () {
-                                   $.Notice.success('新增成功');
+                                $.Notice.success('新增成功',function () {
+                                    dialog.close();
                                 });
+                                win.parent.closeAddUserInfoDialog(function () {});//只做刷新列表
                             } else {
                                 $.Notice.error(data.errorMsg);
                             }
