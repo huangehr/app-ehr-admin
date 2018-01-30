@@ -36,7 +36,7 @@
 
                         var dataModel = $.DataModel.init();
                         dataModel.createRemote(urls.batchSave, {
-                            data: {doctors: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
+                            data: {orgs: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
                             success: function (data) {
                                 waitting.close();
                                 if (data.successFlg) {
