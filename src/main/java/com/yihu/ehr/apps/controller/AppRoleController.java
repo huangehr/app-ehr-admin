@@ -268,7 +268,14 @@ public class AppRoleController extends BaseUIController {
     @ResponseBody
     public String searchAppInsert(String searchNm,String gridType,String appRoleId,int page, int rows){
         Map<String, Object> params = new HashMap<>();
-        String url = gridType.equals("appInsertGrid")?"/apps":ServiceApi.Roles.RoleApps;
+        String url = "";
+        if (gridType.equals("appInsertGrid")) {
+            url = "/apps";
+            params.put("sort", "");
+        } else {
+            url = ServiceApi.Roles.RoleApps;
+            params.put("sorts", "");
+        }
         String resultStr = "";
         String filters = "";
         if (gridType.equals("appInsertGrid")){
@@ -278,7 +285,6 @@ public class AppRoleController extends BaseUIController {
         }
         params.put("filters", filters);
         params.put("fields", "");
-        params.put("sort", "");
         params.put("page", page);
         params.put("size", rows);
         try {
