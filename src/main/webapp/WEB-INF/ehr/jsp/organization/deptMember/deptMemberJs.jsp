@@ -703,10 +703,6 @@
 							parent._LIGERDIALOG.error('编码不能为空');
 							return false;
 						}
-//						if(orgId =='' || orgId == undefined){
-//							parent._LIGERDIALOG.error('机构不能为空');
-//							return false;
-//						}
 						var params = {id:id,mode:'addRoot',code:code,name:name,oldName:'',orgId:orgId};
 						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
@@ -744,6 +740,7 @@
 						);
 						return true;
                     },{title:'添加根部门'});
+
 					if( $("#h_org_type").val()=="Hospital"){//如果机构类型为医院，则添加上述信息
 						var html = [
 							'<div class="pop-form">',
