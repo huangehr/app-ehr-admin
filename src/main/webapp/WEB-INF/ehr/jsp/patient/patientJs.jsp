@@ -273,6 +273,7 @@
                                 dataModel.updateRemote('${contextRoot}/patient/deletePatient', {
                                     data: {idCardNo: idCardNo},
                                     success: function (data) {
+                                        debugger
                                         if (data.successFlg) {
                                             parent._LIGERDIALOG.success('操作成功。');
                                             patientMaster.reloadGrid();
