@@ -580,7 +580,7 @@ public class LoginController extends BaseUIController {
                 //获取角色视图
                 List<String> rolesResourceIdList =  new ArrayList<>();
                 List<MRsRolesResource> rolesResourceList = new ArrayList<>();
-                gerRolesResource(roleList, rolesResourceList);
+                gerRolesResource(userId, roleList, rolesResourceList);
                 if(rolesResourceList !=null && rolesResourceList.size() >0){
                     for(MRsRolesResource rsRolesResource : rolesResourceList){
                         rolesResourceIdList.add(rsRolesResource.getResourceId());
@@ -669,12 +669,13 @@ public class LoginController extends BaseUIController {
      * @param rolesResourceList
      * @return
      */
-    public List<MRsRolesResource> gerRolesResource(List<String> roleList,List<MRsRolesResource> rolesResourceList){
+    public List<MRsRolesResource> gerRolesResource(String userId, List<String> roleList, List<MRsRolesResource> rolesResourceList){
         for(String roleId : roleList){
             try {
                 String url = ServiceApi.Resources.GetRolesGrantResources;
                 Map<String,Object> params = new HashMap<>();
                 params.put("rolesId",roleId);
+                params.put("userId", userId);
                 String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
                 Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
                 if (envelop.isSuccessFlg() && null != envelop.getDetailModelList() && envelop.getDetailModelList().size() > 0 ) {
@@ -687,6 +688,7 @@ public class LoginController extends BaseUIController {
                     }
                 }
             } catch (Exception ex) {
+                ex.printStackTrace();
                 LogService.getLogger(LoginController.class).error(ex.getMessage());
             }
         }

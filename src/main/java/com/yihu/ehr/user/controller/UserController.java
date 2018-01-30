@@ -8,13 +8,14 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
-import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.dict.controller.SystemDictController;
 import com.yihu.ehr.geography.controller.AddressController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -30,8 +31,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -322,7 +321,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping("resetPass")
     @ResponseBody
-    public Object resetPass(String userId,@ModelAttribute(SessionAttributeKeys.CurrentUser) UserDetailModel userDetailModel) {
+    public Object resetPass(String userId,@ModelAttribute(SessionAttributeKeys.CurrentUser) UsersModel userDetailModel) {
         String url = "/users/password/"+userId;
         String resultStr = "";
         Envelop result = new Envelop();
@@ -633,88 +632,86 @@ public class UserController extends BaseUIController {
         return false;
     }
 
+    /**
+     * 通过系统设置字典获取准确的位置信息
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/getDistrictByUserId")
     @ResponseBody
-    public Object getDistrictByUserId() {
-       /* HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session = request.getSession();
-        UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/getDistrictByUserId";
-        String resultStr = "";
-        Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId",user.getId());
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
-        }*/
-       //根据系统字典id=125获取当前城市的行政区划
-        String dictId="125";
-        String reStr = searchDictEntryList(Long.parseLong(dictId),1,10);
-        if(StringUtils.isEmpty(reStr)){
-            //上饶市
-            reStr="361100";
+    public Envelop getDistrictByUserId() throws Exception {
+        Integer systemSettingId = getSystemSettingId();
+        if (null == systemSettingId) {
+            return failed("获取系统设置信息失败");
         }
-        String url = "/geography_entries/pid/"+reStr;
-        String resultStr = "";
-        Envelop result = new Envelop();
-        try{
-            resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
-            ObjectMapper mapper = new ObjectMapper();
-            Envelop envelop = mapper.readValue(resultStr, Envelop.class);
-            if (envelop.isSuccessFlg()) {
-                result.setObj(envelop.getDetailModelList());
-                result.setSuccessFlg(true);
-                return result;
-            }else{
-                result.setSuccessFlg(false);
-                return result;
+        String currentCityUrl = "/dictionaries/entries";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filters", "dictId=" + systemSettingId + ";code=CITY");
+        params.put("page", 1);
+        params.put("size", 1);
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + currentCityUrl,  params, null);
+        if(httpResponse.isSuccessFlg()) {
+            Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
+                List<Map<String, Object>> systemDictEntryModelList = envelop.getDetailModelList();
+                String cityId = systemDictEntryModelList.get(0).get("value").toString();
+                String url = "/geography_entries/pid/" + cityId;
+                Envelop result = new Envelop();
+                HttpResponse httpResponse1 = HttpUtils.doGet(comUrl + url, null);
+                if (httpResponse1.isSuccessFlg()) {
+                    Envelop envelop2 = objectMapper.readValue(httpResponse1.getContent(), Envelop.class);
+                    if (envelop2.isSuccessFlg()) {
+                        result.setSuccessFlg(true);
+                        result.setObj(envelop2.getDetailModelList());
+                        return result;
+                    }else{
+                        return  failed(envelop.getErrorMsg());
+                    }
+                }else {
+                    failed(httpResponse1.getErrorMsg());
+                }
+            }else {
+                return failed(envelop.getErrorMsg());
             }
-        } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
         }
+        return failed(httpResponse.getErrorMsg());
     }
+
 
     @RequestMapping(value = "/getOrgByUserId")
     @ResponseBody
-    public Object getOrgByUserId() {
-        /*HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        HttpSession session = request.getSession();
-        UserDetailModel user = (UserDetailModel)session.getAttribute(SessionAttributeKeys.CurrentUser);
-        String url = "/getOrgByUserId";
-        String resultStr = "";
-        Envelop result = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId",user.getId());
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
-        }*/
-        //根据系统字典id=125获取当前城市的行政区划
-        String dictId="125";
-        String reStr = searchDictEntryList(Long.parseLong(dictId),1,10);
-        if(StringUtils.isEmpty(reStr)){
-            //上饶市
-            reStr="361100";
+    public Envelop getOrgByUserId() throws Exception {
+        Integer systemSettingId = getSystemSettingId();
+        if (null == systemSettingId) {
+            return failed("获取系统设置信息失败");
         }
-        //根据当前城市的行政区划编码获取 下一级 AdressDictId
-        String str = getAdressDictChildByParent(Integer.valueOf(reStr));
-        Envelop envelop = new Envelop();
-        if(StringUtils.isNotEmpty(str)){
-            envelop = searchOrgs(str);
-            envelop.setObj(envelop.getDetailModelList());
+        String currentCityUrl = "/dictionaries/entries";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filters", "dictId=" + systemSettingId + ";code=CITY");
+        params.put("page", 1);
+        params.put("size", 1);
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + currentCityUrl,  params, null);
+        if(httpResponse.isSuccessFlg()) {
+            Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
+                List<Map<String, Object>> systemDictEntryModelList = envelop.getDetailModelList();
+                String cityId = systemDictEntryModelList.get(0).get("value").toString();
+                params.clear();
+                params.put("pid", cityId);
+                String orgUrl = "/organizations/getOrgListByAddressPid";
+                HttpResponse httpResponse1 = HttpUtils.doGet(comUrl + orgUrl, params);
+                if (httpResponse1.isSuccessFlg()) {
+                    Envelop envelop2 = objectMapper.readValue(httpResponse1.getContent(), Envelop.class);
+                    envelop2.setObj(envelop2.getDetailModelList());
+                    return envelop2;
+                }else {
+                    return failed(httpResponse1.getErrorMsg());
+                }
+            }else {
+                return failed(envelop.getErrorMsg());
+            }
         }
-        return envelop;
+        return failed(httpResponse.getErrorMsg());
     }
 
     @RequestMapping("searchDictEntry")

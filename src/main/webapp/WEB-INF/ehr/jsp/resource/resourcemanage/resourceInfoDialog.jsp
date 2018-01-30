@@ -45,6 +45,14 @@
 			<input type="text" id="echartType" class="required useTitle f-h28 f-w240 validate-special-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="echartType">
 		</div>
 	</div>
+
+	<div class="m-form-group">
+		<label>数据查询维度<spring:message code="spe.colon"/></label>
+		<div class="m-form-control l-text-wrapper">
+			<input id="inp_dimension" class="useTitle ajax validate-special-char f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dimension"/>
+		</div>
+	</div>
+
 	<div class="m-form-group">
 		<label>访问方式<spring:message code="spe.colon"/></label>
 		<div class="u-checkbox-wrap m-form-control">

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.thirdpartystandard.OrgDictDetailModel;
 import com.yihu.ehr.agModel.thirdpartystandard.OrgDictEntryDetailModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -523,8 +523,8 @@ public class OrgDictController {
         return objectMapper.writeValueAsString(obj);
     }
 
-    private UserDetailModel getCurUser(HttpServletRequest request){
-        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+    private UsersModel getCurUser(HttpServletRequest request){
+        UsersModel userDetailModel = (UsersModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         return userDetailModel;
     }
 }

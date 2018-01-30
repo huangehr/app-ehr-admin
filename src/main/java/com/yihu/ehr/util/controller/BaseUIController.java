@@ -1,26 +1,16 @@
 package com.yihu.ehr.util.controller;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
-import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.rest.Envelop;
-import org.apache.catalina.Session;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -188,6 +178,22 @@ public class BaseUIController {
             userResourceList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserResource);
         }
         return  userResourceList;
+    }
+
+    protected Integer getSystemSettingId() throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("filters", "phoneticCode=XTSZ");
+        params.put("page", 1);
+        params.put("size", 15);
+        HttpResponse httpResponse = HttpUtils.doGet(comUrl + "/dictionaries", params, null);
+        if (httpResponse.isSuccessFlg()) {
+            Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList() != null) {
+                List<Map<String, Object>> systemDictModels = envelop.getDetailModelList();
+                return (Integer) systemDictModels.get(0).get("id");
+            }
+        }
+        return null;
     }
 
 }

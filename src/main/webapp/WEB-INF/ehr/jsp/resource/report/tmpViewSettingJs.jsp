@@ -1,7 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<%--<script src="${staticRoot}/lib/plugin/echarts/3.0/js/echarts.min.js"></script>--%>
+<script src="${staticRoot}/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="${staticRoot}/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+<script src="${staticRoot}/lib/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="${staticRoot}/lib/bootstrap-select/js/bootstrap-select.min.js"></script>
+<script src="${staticRoot}/lib/bootstrap-select/js/i18n/defaults-zh_CN.min.js"></script>
 <script src="${staticRoot}/lib/plugin/echarts/2.2.7/js/echarts.js"></script>
 <script src="${staticRoot}/lib/plugin/echarts/3.0/map/js/china.js"></script>
 <script src="${staticRoot}/lib/plugin/editTmp/editTmp.js"></script>
@@ -73,14 +77,20 @@
                                     var d = data.obj.viewInfos, quotaIds = [], $quotaIds = null;
                                     me.$noneTmp.hide();
                                     me.$tmpCon.html(data.obj.templateContent);
-
+                                    //查找js&&渲染
+                                    me.findJs();
+//                                    加载地图
                                     me.loadMap();
-
+                                    //查找空间&&渲染
+                                    me.findFormCrl();
+                                    //加载图表
                                     if ($('#specialDiv').length == 0) {
                                         $.each(d , function (k, obj) {
                                             var $dom = $('#' + obj.resourceId),
-                                                    option = JSON.parse(obj.options[0].option);
+                                                option = [];
                                             me.rIdsAndQCode.push(obj.resourceId);
+
+                                            option = TVS.resetOption($dom, JSON.parse(obj.options[0].option));
                                             me.renderQuota($dom, option);
                                         });
                                     }
@@ -88,27 +98,27 @@
                                     if ($quotaIds.length > 0) {
                                         quotaIds = ($quotaIds.val()).split(',')
                                     }
-debugger
+                                    //加载二维表视图
                                     $.each(quotaIds, function (k, v) {
                                         var $dom = null;
                                         if (v != '') {
                                             $dom = $('#' + v);
                                             me.rIdsAndQCode.push(v);
+                                            //特殊二维表模版
                                             if ($('#specialDiv').length > 0) {
-                                                var code = $dom.attr('data-code');
-                                                TVS.resData(url[3], {
-                                                    resourcesCode: code,
-                                                    page: 1,
-                                                    rows: 500
-                                                }, function (res) {
-                                                    var speFunTmp = '', data = [];
-//                                                    if (res.successFlg) {
-                                                        data = res.detailModelList
-                                                        speFunTmp = $('#specialFunTmp').html();
-                                                        eval('(function (data) {'+ speFunTmp +'})(data)')
-                                                        $dom.parent().find('.c-title').html($dom.attr('data-name'));
-//                                                    }
-                                                });
+                                                var speFunTmp = '', data = [], code = '', id= '';
+                                                speFunTmp = $('#specialFunTmp').html();
+                                                code = $dom.attr('data-code');
+                                                id = $dom.attr('data-id');
+                                                eval(speFunTmp);
+                                                gridObj && (function () {
+                                                    gridObj['parms'] = {
+                                                        resourcesCode: code,
+                                                        page: 1,
+                                                        rows: 500
+                                                    }
+                                                })();
+                                                TVS.renderResourceTable(id, (col || []), $dom, null, $dom.attr('data-name'), '2', (gridObj || {}), code);
                                             } else {
                                                 me.getResourceData(v, $dom, null, $dom.attr('data-name'));
                                             }
@@ -119,6 +129,47 @@ debugger
                                     $.Notice.warn('获取报表模版失败！');
                                 }
                             })
+                        },
+                        findJs: function () {
+                            var $jsTmp = $('#jsTmp');
+                            if ($jsTmp.length > 0) {
+                                eval($jsTmp.html());
+                            }
+                        },
+                        findFormCrl: function () {//查找控件
+                            var me = this,$regionSel = $('#regionSel'), $dataSel = $('#dataSel'), html = '';
+                            if ($regionSel.length > 0) {//区域
+                                <%--me.resData('${contextRoot}/address/getDistrictByParent', {--%>
+                                    <%--pid: '361100'--%>
+                                <%--},function (data) {--%>
+                                    <%--var obj = data.obj;--%>
+                                    <%--$.each(obj, function (k, o) {--%>
+                                        <%--html += '<option value="' + o.id + '">' + o.name + '</option>';--%>
+                                    <%--});--%>
+                                    <%--$regionSel.html(html);--%>
+                                    <%--$regionSel.selectpicker({--%>
+                                        <%--width: 150--%>
+                                    <%--});--%>
+                                    <%--$regionSel.on('changed.bs.select', function (e, index) {--%>
+                                        <%--var o = obj;--%>
+<%--//                                        条件筛选暂时不弄--%>
+                                    <%--});--%>
+                                <%--});--%>
+                            }
+                            if ($dataSel.length > 0) {//时间
+                                $dataSel.datetimepicker({
+                                    format: 'yyyy-mm',
+                                    autoclose: true,
+                                    todayBtn: true,
+                                    startView: 'year',
+                                    minView:'year',
+                                    maxView:'decade',
+                                    language:  'zh-CN'
+                                }).on('changeDate',function(e){
+                                    var startTime = e.date;
+//                                        条件筛选暂时不弄
+                                });
+                            }
                         },
                         showViewList: function ($dom) {//展示视图列表
                             var wait = $.Notice.waitting("请稍后..."),
@@ -140,6 +191,7 @@ debugger
                             });
                             selViewDialog.hide();
                         },
+                        //加载地图
                         loadMap: function () {
                             var me = this, $map = me.$tmpCon.find('[data-type=map]'), fileName = '', myChart = null;
                             if ($map.length > 0) {
@@ -174,23 +226,29 @@ debugger
                                             mapType: '上饶市',
                                             selectedMode : 'single',
                                             itemStyle:{
-                                                normal:{label:{show:true}},
-                                                emphasis:{label:{show:true}}
+                                                normal:{
+                                                    label:{
+                                                        show:true,
+                                                        textStyle: {
+                                                            color: '#0f375a'
+                                                        }
+                                                    },
+                                                    borderWidth:2,
+                                                    borderColor:'#fff'
+                                                },
+                                                areaStyle:{color:'#55c5fb'},
+                                                emphasis: {
+                                                    borderWidth:2,
+                                                    color: '#55c5fb',
+                                                    label: {
+                                                        show: true,
+                                                        textStyle: {
+                                                            color: '#0f375a'
+                                                        }
+                                                    }
+                                                }
                                             },
-                                            data:[
-                                                {name: "玉山县", value: 20057.34},
-                                                {name: "广丰县", value: 15477.48},
-                                                {name: "横峰县", value: 31686.1},
-                                                {name: "铅山县", value: 6992.6},
-                                                {name: "上饶县", value: 44045.49},
-                                                {name: "万年县", value: 40689.64},
-                                                {name: "信州区", value: 37659.78},
-                                                {name: "余干县", value: 45180.97},
-                                                {name: "弋阳县", value: 55204.26},
-                                                {name: "德兴市", value: 21900.9},
-                                                {name: "鄱阳县", value: 4918.26},
-                                                {name: "婺源县", value: 5881.84}
-                                            ]
+                                            data:[]
                                         }
                                     ]
                                 });
@@ -212,7 +270,9 @@ debugger
                                 reader.onload = function () {
                                     me.rIdsAndQCode = [];
                                     me.$tmpCon.html(this.result);
+                                    me.findJs();
                                     me.loadMap();
+                                    me.findFormCrl();
                                 };
                                 reader.readAsText(files);
                             });
@@ -249,6 +309,7 @@ debugger
                                         } else if (t == 1) {
                                             quotaIds.push(tId);
                                         }
+                                        //特殊二维表模版
                                         if ($('#specialDiv').length > 0) {
                                             reportData.push({
                                                 id: '',
@@ -292,22 +353,81 @@ debugger
                                     if (!isT) return;
                                     TVS.chart.attr('id', id);
                                     TVS.chart.attr('data-type', 2);
-                                    option = JSON.parse(res.detailModelList[0].option);
-                                    xyChange = TVS.chart.attr('data-xy-change');
-                                    color = TVS.chart.attr('data-color');
+                                    option = TVS.resetOption(TVS.chart, JSON.parse(res.detailModelList[0].option));
+//                                    xyChange = TVS.chart.attr('data-xy-change');
+//                                    color = TVS.chart.attr('data-color');
+                                    
 //                                    if (xyChange == 'true') {
 //                                        var x = option.xAxis, y = option.yAxis;
 //                                        option.yAxis = x;
 //                                        option.xAxis = y;
 //                                    }
-                                    if (color && color != '') {
-                                        option.color = color.split(',');
-                                    }
+//                                    if (color && color != '') {
+//                                        option.color = color.split(',');
+//                                    }
                                     TVS.renderQuota(TVS.chart, option);
                                 } else {
                                     $.Notice.error(res.errorMsg);
                                 }
                             })
+                        },
+                        resetOption: function ($dom, opt) {
+                            var option = opt,
+                                color = $dom.attr('data-color'),
+                                zoom = $dom.attr('data-zoom'),
+                                grid = $dom.attr('data-grid'),
+                                legend = $dom.attr('data-legend'),
+                                seriesRadius = $dom.attr('data-series-radius'),
+                                seriesCenter = $dom.attr('data-series-center'),
+                                xaxisSplitLine = $dom.attr('data-xaxis'),
+                                yaxisSplitLine = $dom.attr('data-yaxis'),
+                                axisLine = $dom.attr('data-axis-line'),
+                                axisTick = $dom.attr('data-axis-tick'),
+                                seriesItemstyle = $dom.attr('data-series-itemstyle'),
+                                xyChange = $dom.attr('data-xy-change');
+                            if (color && color != '') {
+                                option['color'] = JSON.parse(color);
+                            }
+                            if (zoom && zoom != '') {
+                                option['dataZoom'] = JSON.parse(zoom);
+                            }
+                            if (grid && grid != '') {
+                                option['grid'] = JSON.parse(grid);
+                            }
+                            if (xaxisSplitLine && xaxisSplitLine != '') {
+                                option['xAxis']['splitLine'] = JSON.parse(xaxisSplitLine);
+                            }
+                            if (yaxisSplitLine && yaxisSplitLine != '') {
+                                option['yAxis']['splitLine'] = JSON.parse(yaxisSplitLine);
+                            }
+                            if (legend && legend != '') {
+                                option['legend'] = JSON.parse(legend);
+                            }
+                            if (seriesRadius && seriesRadius != '') {
+                                option['series']['radius'] = seriesRadius;
+                            }
+                            if (seriesCenter && seriesCenter != '') {
+                                option['series']['center'] = seriesCenter;
+                            }
+                            if (axisLine && axisLine != '') {
+                                option['xAxis']['axisLine'] = axisLine;
+                                option['yAxis']['axisLine'] = axisLine;
+                            }
+                            if (axisTick && axisTick != '') {
+                                option['xAxis']['axisTick'] = axisTick;
+                            }
+                            if (seriesItemstyle && seriesItemstyle != '') {
+                                option['series'][0]['itemStyle'] = JSON.parse(seriesItemstyle);
+                            }
+                            if (xyChange && xyChange == 'true') {
+                                var x = [], y = [];
+                                x = option['xAxis'];
+                                y = option['yAxis'];
+                                option['xAxis'] = y;
+                                option['yAxis'] = x;
+                            }
+
+                            return option;
                         },
                         renderQuota: function ($dom, opt) {//渲染指标图表
                             var myChart = null;
@@ -316,6 +436,7 @@ debugger
                             delete opt.title;
                             myChart.setOption(opt);
                         },
+                        //获取表头
                         getResourceData: function (id, $dom, sta, name) {//档案数据
                             var me = this;
                             if (id != '') {
@@ -326,33 +447,41 @@ debugger
                                 });
                             }
                         },
-                        renderResourceTable: function (id, res, $dom, sta, name) {//档案数据表格渲染
-                            var col = [], isT = false;
+                        //加载表格
+                        renderResourceTable: function (id, res, $dom, sta, name, gridType, opt, code) {//档案数据表格渲染
+                            var col = [], isT = false, params = {};
                             if (sta == 'change') {//change: 视图替换   undefined: 第一次渲染视图
                                 isT = TVS.checkIsExist(id);
                                 if (!isT) return;
                             }
-                            if (res && res.length > 0) {
-                                col = defauleColumnModel;
-                                $.each(res, function (k, obj) {
-                                    col.push({display: obj.value, name: obj.code, width: 100});
-                                })
+                            if (!gridType) {
+                                if (res && res.length > 0) {
+                                    col = defauleColumnModel;
+                                    $.each(res, function (k, obj) {
+                                        col.push({display: obj.value, name: obj.code, width: 100});
+                                    })
+                                }
+                            } else {
+                                col = res;
                             }
-                            $dom.ligerGrid($.LigerGridEx.config({
+                            params = {
                                 url: url[3],
                                 height: $dom.height(),
                                 parms: {
                                     searchParams: '',
-                                    resourcesCode: id
+                                    resourcesCode: code || id
                                 },
                                 pageSize: 5,
                                 columns: col,
                                 checkbox: true
-                            }));
+                            };
+                            $dom.ligerGrid($.LigerGridEx.config($.extend({},params, opt || {})));
                             $dom.parent().find('.c-title').html(name);
                             $dom.attr('id', id);
                             $dom.attr('data-name', name);
                             $dom.attr('data-type', 1);
+
+                            code && $dom.attr('data-code', code);
                         },
                         checkIsExist: function (id) {//检测id
                             var oldResourceId = TVS.chart.attr('id'),
@@ -368,7 +497,7 @@ debugger
                             TVS.rIdsAndQCode.push(id);
                             return true;
                         },
-                        resetHtml: function () {
+                        resetHtml: function () {//删除图表
                             TVS.chart && TVS.ET.resetHtml(TVS.chart.parent(), TVS.removeId);
                         },
                         removeId: function (id) {
@@ -396,27 +525,19 @@ debugger
                         selViewDialog.close();
                         msg && $.Notice.success(msg);
                         (id && type) && (function () {
+                            //特殊二维表模版
                             if ($('#specialDiv').length > 0) {
-                                TVS.resData(url[3], {
-                                    resourcesCode: code,
-                                    page: 1,
-                                    rows: 500
-                                }, function (res) {
-                                    var speFunTmp = '', data = [];
-//                                    if (res.successFlg) {
-                                    var isT = TVS.checkIsExist(id);
-                                    if (!isT) return;
-                                    data = res.detailModelList;
-                                    speFunTmp = $('#specialFunTmp').html();
-                                    eval('(function (data) {'+ speFunTmp +'})(data)')
-                                    TVS.chart.parent().find('.c-title').html(name);
-                                    TVS.chart.attr('id', id);
-                                    TVS.chart.attr('data-name', name);
-                                    TVS.chart.attr('data-type', 1);
-                                    TVS.chart.attr('data-code', code);
-
-//                                    }
-                                });
+                                var speFunTmp = '', data = [];
+                                speFunTmp = $('#specialFunTmp').html();
+                                eval(speFunTmp);
+                                gridObj && (function () {
+                                    gridObj['parms'] = {
+                                        resourcesCode: code,
+                                        page: 1,
+                                        rows: 500
+                                    }
+                                })();
+                                TVS.renderResourceTable(id, (col || []), TVS.chart, 'change', name, '2', (gridObj || []), code);
                             } else {
                                 if (type == 1) {
                                     TVS.getResourceData(id, TVS.chart, 'change', name);
