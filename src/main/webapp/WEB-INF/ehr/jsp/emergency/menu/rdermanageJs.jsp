@@ -110,6 +110,7 @@
                     parent._LIGERDIALOG.success(msg);
             };
             win.parent.closeMenuInfoDialog = function (callback) {
+                debugger
                 if(callback){
                     callback.call(win);
                     obj.reloadGrid();
