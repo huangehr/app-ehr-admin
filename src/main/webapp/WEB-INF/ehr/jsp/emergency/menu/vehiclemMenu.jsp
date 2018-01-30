@@ -32,6 +32,10 @@
             <%--<input type="radio"name="inp_status" value="1" /><span>值班</span>--%>
             <%--<input type="radio"name="inp_status" value="0"/><span>休息</span>--%>
         </div>
+        <div class="deviceCoding">
+            <label>设备编号</label>
+            <input type="text"id="codingInput"  />
+        </div>
         <div class="personnel_phone">
             <label>随车手机</label>
             <input type="text"id="personnel_phone_input"  />
