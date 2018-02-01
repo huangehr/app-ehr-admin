@@ -1440,7 +1440,7 @@
                     }
                 });
                 $("#link").click(function () {
-                    parent.window.open("http://171.35.109.35:1234/PMC/j_spring_security_check?j_username=wjw1&j_password=7bb98050796b649e");
+                    top.window.open("http://171.35.109.35:1234/PMC/j_spring_security_check?j_username=wjw1&j_password=7bb98050796b649e");
                 });
             },
             toZore: function (param) {
