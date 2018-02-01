@@ -24,7 +24,7 @@
 
             var addSystemDictEntityDialog = null;
             var updateSystemDictEntityDialog = null;
-
+            var validator = null;
             var code = null;
             var selectRow = null, selectEntityRow=null;
             var isSaveSelectStatus = false, isSaveEntitySelectStatus = false;
@@ -275,46 +275,10 @@
                         self.updateSystemEntityDialog();
                     });
 
-                },
-                updateSystemDialog: function (msg) {
-                    var self = this;
-                    var title = '';
-                    if (Util.isStrEquals(msg, 'add')) {
-                        title = '新增字典'
-                    } else {
-                        title = '修改字典'
-                    }
-                    systemDictUpdateDialog = parent._LIGERDIALOG.open({
-                        title: title,
-                        width: 416,
-                        height: 200,
-                        target: self.$updateSystemDictDialog
-                    });
-                    var validator = new jValidation.Validation(self.$updateSystemDictDialog, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
-                        var systemNameCopy =  self.$systemNameCopy.val();
-                        var systemName = self.$systemDictName.val();
-                        var result = new jValidation.ajax.Result();
-                        if(Util.isStrEquals(systemNameCopy,systemName)){
-                            return true;
-                        }
-                        var dataModel = $.DataModel.init();
-                        dataModel.updateRemote('${contextRoot}/dict/validator', {
-                            data: {systemName: systemName},
-                            async: false,
-                            success: function (data) {
-                                if (data.successFlg) {
-                                    result.setResult(true);
-                                } else {
-                                    result.setResult(false);
-                                    result.setErrorMsg("该字典名称已被使用");
-                                }
-                            }
-                        });
-                        return result;
-                    }
-                    });
                     //新增/修改 系统字典保存点击事件
-                    this.$addSystemDictBtn.click( function () {
+                    this.$addSystemDictBtn.click( function (e) {
+                        debugger
+                        e.stopPropagation();
                         if (validator.validate()) {
                             var systemName = self.$systemDictName.val();
                             var reference = self.$systemDictReference.val();         // reference 参数预留
@@ -346,6 +310,44 @@
                         } else {
                             //return;
                         }
+                    });
+                },
+                updateSystemDialog: function (msg) {
+                    var self = this;
+                    var title = '';
+                    if (Util.isStrEquals(msg, 'add')) {
+                        title = '新增字典'
+                    } else {
+                        title = '修改字典'
+                    }
+                    systemDictUpdateDialog = parent._LIGERDIALOG.open({
+                        title: title,
+                        width: 416,
+                        height: 200,
+                        target: self.$updateSystemDictDialog
+                    });
+                    validator = new jValidation.Validation(self.$updateSystemDictDialog, {immediate: true, onSubmit: false,onElementValidateForAjax:function(elm){
+                        var systemNameCopy =  self.$systemNameCopy.val();
+                        var systemName = self.$systemDictName.val();
+                        var result = new jValidation.ajax.Result();
+                        if(Util.isStrEquals(systemNameCopy,systemName)){
+                            return true;
+                        }
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote('${contextRoot}/dict/validator', {
+                            data: {systemName: systemName},
+                            async: false,
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    result.setResult(true);
+                                } else {
+                                    result.setResult(false);
+                                    result.setErrorMsg("该字典名称已被使用");
+                                }
+                            }
+                        });
+                        return result;
+                    }
                     });
                     validator.reset();//还原
                 },

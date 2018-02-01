@@ -33,10 +33,11 @@
 				pageSize:rsPageParams&&rsPageParams.pageSize || 15,
 			}
             function onUploadSuccess(g, result){
-                if(result)
-                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
-                else
-                    parent._LIGERDIALOG.success("导入成功！");
+                if(result) {
+					parent._OPENDIALOG("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+				} else {
+					parent._LIGERDIALOG.success("导入成功！");
+				}
             }
 
             $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess, str: '导入部门'});
