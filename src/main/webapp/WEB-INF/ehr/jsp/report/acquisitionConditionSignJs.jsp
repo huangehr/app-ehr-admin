@@ -9,5 +9,5 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <script>
-    window.location.href = 'http://10.176.97.13:8081/PMC/j_spring_security_check?j_username=root&j_password=7bb98050796b649e';
+    window.location.href = 'http://171.35.109.35:1234/PMC/j_spring_security_check?j_username=wjw1&j_password=7bb98050796b649e';
 </script>
