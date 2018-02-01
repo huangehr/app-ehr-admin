@@ -177,8 +177,8 @@
                                 }
                             });
                         }
-                        w.orgDeptDio.close();
                         w.ORGDEPTVAL = cd;
+                        w.orgDeptDio.close();
                     });
                     me.$selCloseBtn.on('click', function () {
                         w.orgDeptDio.close();
