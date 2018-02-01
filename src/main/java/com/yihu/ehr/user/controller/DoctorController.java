@@ -182,7 +182,7 @@ public class DoctorController extends BaseUIController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updateDoctor", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updateDoctor")
     @ResponseBody
     public Object updateDoctor(String doctorModelJsonData, String jsonModel, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -242,9 +242,9 @@ public class DoctorController extends BaseUIController {
                     updateDoctor.setIdCardNo(doctorDetailModel.getIdCardNo());
                     updateDoctor.setRoleType(doctorDetailModel.getRoleType());
                     imageId = fileUpload(String.valueOf(doctorId), restStream, imageName);
-                    if (!StringUtils.isEmpty(imageId))
+                    if (!StringUtils.isEmpty(imageId)) {
                         updateDoctor.setPhoto(imageId);
-
+                    }
                     params.add("doctor_json_data", toJson(updateDoctor));
                     params.add("model", jsonModel);
                     resultStr = templates.doPut(comUrl + url, params);
@@ -258,26 +258,32 @@ public class DoctorController extends BaseUIController {
                 params.add("model", jsonModel);
                 resultStr = templates.doPost(comUrl + url, params);
                 result = toModel(resultStr, Envelop.class);
-                DoctorDetailModel addDoctorModel = toModel(toJson(result.getObj()), DoctorDetailModel.class);
-                imageId = fileUpload(String.valueOf(addDoctorModel.getId()), restStream, imageName);
+                if (result.isSuccessFlg()) {
+                    DoctorDetailModel addDoctorModel = toModel(toJson(result.getObj()), DoctorDetailModel.class);
 
-                if (!StringUtils.isEmpty(imageId)) {
-                    addDoctorModel.setPhoto(imageId);
+                    imageId = fileUpload(String.valueOf(addDoctorModel.getId()), restStream, imageName);
 
-                    String doctorData = templates.doGet(comUrl + "/doctors/admin/" + addDoctorModel.getId());
-                    result = mapper.readValue(doctorData, Envelop.class);
-                    String doctorJsonModel = mapper.writeValueAsString(result.getObj());
-                    DoctorDetailModel doctorModel = mapper.readValue(doctorJsonModel, DoctorDetailModel.class);
-                    doctorModel.setPhoto(imageId);
+                    if (!StringUtils.isEmpty(imageId)) {
+                        addDoctorModel.setPhoto(imageId);
 
-                    params.remove("doctor_json_data");
-                    params.add("doctor_json_data", toJson(doctorModel));
-                    resultStr = templates.doPut(comUrl + url, params);
+                        String doctorData = templates.doGet(comUrl + "/doctors/admin/" + addDoctorModel.getId());
+                        result = mapper.readValue(doctorData, Envelop.class);
+                        String doctorJsonModel = mapper.writeValueAsString(result.getObj());
+                        DoctorDetailModel doctorModel = mapper.readValue(doctorJsonModel, DoctorDetailModel.class);
+                        doctorModel.setPhoto(imageId);
+
+                        params.remove("doctor_json_data");
+                        params.add("doctor_json_data", toJson(doctorModel));
+                        resultStr = templates.doPut(comUrl + url, params);
+                    }
+                }else {
+                    return failed(result.getErrorMsg());
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
             return result;
         }
         return resultStr;
