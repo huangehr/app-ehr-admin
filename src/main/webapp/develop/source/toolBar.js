@@ -127,7 +127,7 @@ function openDialog(url, title, width, height, parms, opts){
         title: title,
         url: url,
         urlParms: parms || {id: id, mode: mode},
-        //load: true,
+        load: true,
         isHidden: false
     };
     opts = $.extend({}, defaultOpts, opts);

@@ -156,6 +156,7 @@
                     var me = this;
                     me.$selSaveBtn.on('click', function () {
                         var checkData = me.rightTree.getChecked(),
+                            selectName = [],
                             cd = [];
                         if (checkData.length > 0) {
                             $.each(checkData, function (k, obj) {
@@ -168,6 +169,7 @@
                                         var cLen = $(o).find('.l-checkbox-checked').length;
                                         if (cLen > 0) {
                                             deptIds.push($(o).attr('id'));
+                                            selectName.push($(o).find('span').text());
                                         }
                                     });
                                     cd.push({
@@ -177,8 +179,11 @@
                                 }
                             });
                         }
-                        w.orgDeptDio.close();
                         w.ORGDEPTVAL = cd;
+                        if(selectName.length>0){
+                            $('#divBtnShow').html('<span>'+selectName.join(',')+'</sapn>')
+                        }
+                        w.orgDeptDio.close();
                     });
                     me.$selCloseBtn.on('click', function () {
                         w.orgDeptDio.close();
