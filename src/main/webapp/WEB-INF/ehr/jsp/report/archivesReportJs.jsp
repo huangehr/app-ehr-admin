@@ -20,7 +20,8 @@
             '${contextRoot}/resourcesStatistics/stasticReport/getArchivesInc',
             '${contextRoot}/resourcesStatistics/stasticReport/getArchivesFull',
             '${contextRoot}/resourcesStatistics/stasticReport/getArchivesTime',
-            '${contextRoot}/resourcesStatistics/stasticReport/getDataSetCount'
+            '${contextRoot}/resourcesStatistics/stasticReport/getDataSetCount',
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesRight'
         ];
 
         var mh = {
@@ -31,12 +32,17 @@
             $el4: document.getElementById("chart4"),
             $el5: document.getElementById("chart5"),
             $el6: document.getElementById("chart6"),
+            $el7: document.getElementById("chart7"),
+            $el8: document.getElementById("chart8"),
+            $el9: document.getElementById("chart9"),
             $startDate1:$("#start_date1"),
             $endDate1:$("#end_date1"),
             $startDate2:$("#start_date2"),
             $endDate2:$("#end_date2"),
             $startDate3:$("#start_date3"),
             $endDate3:$("#end_date3"),
+            $startDate4:$("#start_date4"),
+            $endDate4:$("#end_date4"),
             $date1:$("#date1"),
             $date2:$("#date2"),
             $date3:$("#date3"),
@@ -46,15 +52,21 @@
             $searchBtn3: $('#btn_search3'),
             $searchBtn4: $('#btn_search4'),
             $searchBtn5: $('#btn_search5'),
+            $searchBtn6: $('#btn_search6'),
             $orgCode1: $('#orgCode1'),
             $orgCode2: $('#orgCode2'),
             $orgCode3: $('#orgCode3'),
             $orgCode4: $('#orgCode4'),
+            $orgCode5: $('#orgCode5'),
             myCharts1: null,
             myCharts2: null,
             myCharts3: null,
             myCharts4: null,
             myCharts5: null,
+            myCharts6: null,
+            myCharts7: null,
+            myCharts8: null,
+            myCharts9: null,
             list4:[],
             init: function () {
                 var me = this;
@@ -63,6 +75,7 @@
                 this.$orgCode2.customCombo(url);
                 this.$orgCode3.customCombo(url);
                 this.$orgCode4.customCombo(url);
+                this.$orgCode5.customCombo(url);
                 me.$startDate1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
@@ -93,6 +106,16 @@
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
                 }});
+                me.$startDate4.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$endDate4.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
                 me.$date1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
@@ -114,6 +137,8 @@
                 me.$endDate2.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$startDate3.ligerDateEditor("setValue",me.getSevenDays());
                 me.$endDate3.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$startDate4.ligerDateEditor("setValue",me.getSevenDays());
+                me.$endDate4.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date1.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date2.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date3.ligerDateEditor("setValue",me.getCurrentDate());
@@ -123,7 +148,8 @@
                     me.getChart3(),
                     me.getChart4(),
                     me.getChart5(),
-                    me.getChart6()
+                    me.getChart6(),
+                    me.getChart7()
                 ]).then(function () {
                     me.bindEvents();
                 });
@@ -152,6 +178,8 @@
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart1(dataList);
+                    }else{
+                        me.myCharts1.hideLoading();
                     }
                 });
             },
@@ -163,6 +191,8 @@
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart2(dataList);
+                    }else{
+                        me.myCharts2.hideLoading();
                     }
                 });
             },
@@ -174,6 +204,8 @@
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart3(dataList);
+                    }else{
+                        me.myCharts3.hideLoading();
                     }
                 });
             },
@@ -199,8 +231,11 @@
                         $("#oupatient_rate_sc").html(me.toDecimal(obj.oupatient_rate_sc)+"%");
                         $("#inpatient_total_sc").html(obj.inpatient_total+"/"+obj.inpatient_total_sc);
                         $("#inpatient_rate_sc").html(me.toDecimal(obj.inpatient_rate_sc)+"%");
-                        console.info(obj);
-                        me.loadChart4(dataList);
+                        if(res.detailModelList && res.detailModelList.length>0){
+                            me.loadChart4(dataList);
+                        }
+                    }else{
+                        me.myCharts4.hideLoading();
                     }
                 });
             },
@@ -218,7 +253,11 @@
                         $("#oupatient_rate_time").html(me.toDecimal(obj.oupatient_rate)+"%");
                         $("#inpatient_total_time").html(obj.inpatient_total+"/"+obj.inpatient_total_es);
                         $("#inpatient_rate_time").html(me.toDecimal(obj.inpatient_rate)+"%");
-                        me.loadChart5(dataList);
+                        if(res.detailModelList && res.detailModelList.length>0){
+                            me.loadChart5(dataList);
+                        }
+                    }else{
+                        me.myCharts5.hideLoading();
                     }
                 });
             },
@@ -230,6 +269,25 @@
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart6(dataList);
+                    }else{
+                        me.myCharts6.hideLoading();
+                    }
+                });
+            },getChart7: function () {
+                var me = this;
+                me.myCharts7 = echarts.init(me.$el7);
+                me.myCharts8 = echarts.init(me.$el8);
+                me.myCharts9 = echarts.init(me.$el9);
+                me.myCharts7.showLoading();
+                me.myCharts8.showLoading();
+                me.myCharts9.showLoading();
+                this.getData(pi[6], {startDate: me.$startDate4.val(),endDate:me.$endDate4.val(),orgCode:  $("#orgCode5").ligerGetComboBoxManager().getValue() }, function (res) {
+                    if (res.successFlg) {
+                        me.loadChart7(res.obj);
+                    }else{
+                        me.myCharts7.hideLoading();
+                        me.myCharts8.hideLoading();
+                        me.myCharts9.hideLoading();
                     }
                 });
             },
@@ -239,16 +297,18 @@
                 var data1=[];
                 var data2=[];
                 var data3=[];
-                $.each(data,function (id1,item1) {
-                    $.each(item1, function (key,value) {
-                        xData.push(key);
-                        $.each(value,function (id2,item2) {
-                            data1.push(me.toZore(item2.waiting));
-                            data2.push(me.toZore(item2.successful));
-                            data3.push(item2.total);
+                if(data && data.length>0){
+                    $.each(data,function (id1,item1) {
+                        $.each(item1, function (key,value) {
+                            xData.push(key);
+                            $.each(value,function (id2,item2) {
+                                data1.push(me.toZore(item2.waiting));
+                                data2.push(me.toZore(item2.successful));
+                                data3.push(item2.total);
+                            });
                         });
                     });
-                });
+                }
                 var option = {
                     tooltip : {
                         trigger: 'axis',
@@ -374,13 +434,15 @@
                 var data2=[];
                 var data3=[];
                 var data4=[];
-                $.each(data,function (id,item) {
-                    xData.push(item.org_name);
-                    data1.push(me.toZore(item.successful));
-                    data2.push(me.toZore(item.waiting));
-                    data3.push(item.total);
-                    data4.push(me.toDecimal(item.rate));
-                });
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        xData.push(item.org_name);
+                        data1.push(me.toZore(item.successful));
+                        data2.push(me.toZore(item.waiting));
+                        data3.push(item.total);
+                        data4.push(me.toDecimal(item.rate));
+                    });
+                }
                 var option = {
                     tooltip : {
                         trigger: 'axis',
@@ -578,13 +640,15 @@
                 var data2=[];
                 var data3=[];
                 var data4=[];
-                $.each(data,function (id,item) {
-                    xData.push(item.ed);
-                    data1.push(me.toZore(item.inpatient_total));
-                    data2.push(me.toZore(item.oupatient_total));
-                    data3.push(item.inpatient_inc);
-                    data4.push(item.oupatient_inc);
-                });
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        xData.push(item.ed);
+                        data1.push(me.toZore(item.inpatient_total));
+                        data2.push(me.toZore(item.oupatient_total));
+                        data3.push(item.inpatient_inc);
+                        data4.push(item.oupatient_inc);
+                    });
+                }
                 var option = {
                     tooltip : {
                         trigger: 'axis',
@@ -605,11 +669,6 @@
                             start: 94,
                             end: 100,
                             bottom:"20"
-                        },
-                        {
-                            type: 'inside',
-                            start: 94,
-                            end: 100
                         }
                     ],
                     calculable : true,
@@ -737,20 +796,22 @@
                 var data4=[];
                 var data5=[];
                 var data6=[];
-                $.each(data,function (id,item) {
-                    $.each(item, function (key,value) {
-                        xData.push(key);
-                        if($("#chart4-head .div-items.active").index()==0){
-                            data1.push(me.toDecimal(value.total_rate));
-                            data2.push(me.toDecimal(value.oupatient_rate));
-                            data3.push(me.toDecimal(value.inpatient_rate));
-                        }else{
-                            data1.push(me.toDecimal(value.total_rate_sc));
-                            data2.push(me.toDecimal(value.oupatient_rate_sc));
-                            data3.push(me.toDecimal(value.inpatient_rate_sc));
-                        }
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        $.each(item, function (key, value) {
+                            xData.push(key);
+                            if ($("#chart4-head .div-items.active").index() == 0) {
+                                data1.push(me.toDecimal(value.total_rate));
+                                data2.push(me.toDecimal(value.oupatient_rate));
+                                data3.push(me.toDecimal(value.inpatient_rate));
+                            } else {
+                                data1.push(me.toDecimal(value.total_rate_sc));
+                                data2.push(me.toDecimal(value.oupatient_rate_sc));
+                                data3.push(me.toDecimal(value.inpatient_rate_sc));
+                            }
+                        });
                     });
-                });
+                }
                 var option = {
                     tooltip : {
                         trigger: 'axis',
@@ -877,20 +938,22 @@
                 var data4=[];
                 var data5=[];
                 var data6=[];
-                $.each(data,function (id,item) {
-                    $.each(item, function (key,value) {
-                        xData.push(key);
-                        if($("#chart4-head .div-items.active").index()==0){
-                            data1.push(me.toDecimal(value.total_rate));
-                            data2.push(me.toDecimal(value.oupatient_rate));
-                            data3.push(me.toDecimal(value.inpatient_rate));
-                        }else{
-                            data1.push(me.toDecimal(value.total_rate_sc));
-                            data2.push(me.toDecimal(value.oupatient_rate_sc));
-                            data3.push(me.toDecimal(value.inpatient_rate_sc));
-                        }
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        $.each(item, function (key, value) {
+                            xData.push(key);
+                            if ($("#chart4-head .div-items.active").index() == 0) {
+                                data1.push(me.toDecimal(value.total_rate));
+                                data2.push(me.toDecimal(value.oupatient_rate));
+                                data3.push(me.toDecimal(value.inpatient_rate));
+                            } else {
+                                data1.push(me.toDecimal(value.total_rate_sc));
+                                data2.push(me.toDecimal(value.oupatient_rate_sc));
+                                data3.push(me.toDecimal(value.inpatient_rate_sc));
+                            }
+                        });
                     });
-                });
+                }
                 var option = {
                     tooltip : {
                         trigger: 'axis',
@@ -1013,22 +1076,24 @@
                 console.info(colors.length);
                 var me = this;
                 var list=[];
-                if (data!=null&&data.length>0){
+                if (data&&data.length>0){
                     $("#grid").show();
                 }
                 var html=[];
-                $.each(data,function (id,item) {
-                    var obj = {};
-                    obj.value = item.row;
-                    obj.name = item.dataSet;
-                    list.push(obj);
-                   html.push('<tr>');
-                   html.push('<td align="center"><div style="background:'+colors[id]+';width:20px;height:10px;margin:5px auto;"></div></td>');
-                   html.push('<td>'+item.dataSet+'</td>');
-                   html.push('<td>'+item.count+'</td>');
-                   html.push('<td>'+item.row+'</td>');
-                   html.push( '</tr>');
-                });
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        var obj = {};
+                        obj.value = item.row;
+                        obj.name = item.dataSet;
+                        list.push(obj);
+                        html.push('<tr>');
+                        html.push('<td align="center"><div style="background:' + colors[id] + ';width:20px;height:10px;margin:5px auto;"></div></td>');
+                        html.push('<td>' + item.dataSet + '</td>');
+                        html.push('<td>' + item.count + '</td>');
+                        html.push('<td>' + item.row + '</td>');
+                        html.push('</tr>');
+                    });
+                }
                 $("#grid tbody").html(html.join(""));
                 var option = {
                     tooltip: {
@@ -1059,12 +1124,248 @@
                 me.myCharts6.hideLoading();
                 me.myCharts6.setOption(option);
             },
+            loadChart7:function(data){
+                var me = this;
+                var colors=["#EE9A13","#F8C400","#EFEE00","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78"];
+                var list1=[];
+                var legend1=[];
+                var list2=[];
+                var legend2=[];
+                var xData=[];
+                var data1=[];
+                var data2=[];
+                var html=[];
+                $.each(data.dataSet,function (id1,item1) {
+                    $.each(item1, function (key,value) {
+                        xData.push(key);
+                        data1.push(value.count);
+                        data2.push(value.rate);
+                    });
+                });
+                $.each(data.errorCode,function (id,item) {
+                    var obj = {};
+                    obj.value = item.count;
+                    if (item.errorCode=="e00001"){
+                        obj.name = "为空";
+                    }else if (item.errorCode=="e00002"){
+                        obj.name = "超出值域";
+                    }else{
+                        obj.name = "其他";
+                    }
+                    legend1.push(obj.name);
+                    list1.push(obj);
+                });
+                $.each(data.code,function (id,item) {
+                    var obj = {};
+                    obj.value = item.count;
+                    obj.name = item.code;
+                    legend2.push(obj.name);
+                    list2.push(obj);
+                });
+
+                var option1 = {
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data:['错误总数', '环比']
+                    },
+                    grid: {
+                        borderWidth:0
+                    },
+                    calculable : true,
+                    yAxis : [
+                        {
+                            type : 'value',
+                            name: '错误总数',
+                            boundaryGap : [0, 0.01],
+                            axisLine : {    // 轴线
+                                show: false,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick : {    // 轴标记
+                                show:false
+                            },
+                            splitLine : {
+                                show:true,
+                                lineStyle: {
+                                    color: '#dddddd',
+                                    type: 'dotted',
+                                    width: 2
+                                }
+                            },
+                            splitArea: {show:false},
+                            axisLabel: {show:true,textStyle:{
+                                color: '#909090',
+                                fontSize:14
+                            }}
+                        },
+                        {
+                            type : 'value',
+                            name: '环比',
+                            boundaryGap : [0, 0.01],
+                            axisLine : {    // 轴线
+                                show: false,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick : {    // 轴标记
+                                show:false
+                            },
+                            splitLine : {
+                                show:false
+                            },
+                            splitArea: {show:false},
+                            axisLabel: {
+                                formatter: '{value} %',
+                                show:true,
+                                textStyle:{
+                                    color: '#909090',
+                                    fontSize:14
+                                }}
+                        }
+                    ],
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : xData,
+                            axisLine : {    // 轴线
+                                show: true,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick: {show:false},
+                            splitArea: {show:false},
+                            splitLine: {show:false}
+                        }
+                    ],
+                    series : [
+                        {
+                            name: '错误总数',
+                            type:'bar',
+                            barGap:2,
+                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#28a9e6',
+                                    lineStyle:{
+                                        color:'#28a9e6'
+                                    }
+                                }
+                            },
+                            data: data1
+                        },
+                        {
+                            name:'环比',
+                            type:'line',
+                            yAxisIndex: 1,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#9c9af4',
+                                    lineStyle:{
+                                        color:'#9c9af4'
+                                    }
+                                }
+                            },
+                            data:data2
+                        }
+                    ]
+                };
+                var option2 = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}<br/> {c} ({d}%)"
+                    },
+                    color: colors,
+                    legend: {
+                        orient: 'vertical',
+                        x: 'right',
+                        bottom:'15%',
+                        data:legend1
+                    },
+                    series: [
+                        {
+                            type:'pie',
+                            radius: ['20%', '80%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:list1
+                        }
+                    ]
+                };
+                var option3 = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}<br/> {c} ({d}%)"
+                    },
+                    color: colors,
+                    legend: {
+                        orient: 'vertical',
+                        x: 'right',
+                        bottom:'15%',
+                        data:legend2
+                    },
+                    series: [
+                        {
+                            type:'pie',
+                            radius: ['20%', '80%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:list2
+                        }
+                    ]
+                };
+                me.myCharts7.hideLoading();
+                me.myCharts7.setOption(option1);
+                me.myCharts8.hideLoading();
+                me.myCharts8.setOption(option2);
+                me.myCharts9.hideLoading();
+                me.myCharts9.setOption(option3);
+            },
             bindEvents: function () {
                 var me = this;
                 window.onresize = function () {
                     me.myCharts1.resize();
                     me.myCharts2.resize();
                     me.myCharts3.resize();
+                    me.myCharts4.resize();
+                    me.myCharts5.resize();
+                    me.myCharts6.resize();
+                    me.myCharts7.resize();
+                    me.myCharts8.resize();
+                    me.myCharts9.resize();
                 };
                 me.$searchBtn.click(function () {
                     if(me.$startDate1.val()==""){
@@ -1120,12 +1421,26 @@
                     }
                     me.getChart6();//所有指标统计结果查询,初始化查询
                 });
+                me.$searchBtn6.click(function () {
+                    if(me.$startDate4.val()==""){
+                        parent._LIGERDIALOG.error('请选择开始日期');
+                        return false;
+                    }
+                    if(me.$endDate4.val()==""){
+                        parent._LIGERDIALOG.error('请选择结束日期');
+                        return false;
+                    }
+                    me.getChart7();//所有指标统计结果查询,初始化查询
+                });
                 $("#chart4-head .div-items").click(function () {
                     if(!$(this).hasClass("active")){
                         $(this).addClass("active");
                         $(this).siblings().removeClass("active");
                         me.loadChart4(list4);
                     }
+                });
+                $("#link").click(function () {
+                    parent._SHOWTAB({name: '采集监管', url: "http://171.35.109.35:1234/PMC/j_spring_security_check?j_username=wjw1&j_password=7bb98050796b649e"});
                 });
             },
             toZore: function (param) {
