@@ -7,7 +7,7 @@
     <div class="m-form-group">
         <label>消息队列编码：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-50 required ajax"
+            <input type="text" class="f-w240 max-length-50 required ajax validate-code-char"
                    id="channel" data-attr-scan="channel">
         </div>
     </div>
