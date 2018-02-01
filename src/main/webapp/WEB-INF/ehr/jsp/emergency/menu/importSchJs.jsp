@@ -2,11 +2,11 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <script type="text/javascript" src="${staticRoot}/Scripts/homeRelationship.js"></script>
-<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
 <script src="${contextRoot}/develop/lib/ligerui/custom/modifyAndupload.js"></script>
+
 <script>
     (function ($,win) {
         $(function () {
@@ -100,6 +100,7 @@
                     })
                     //关闭dailog的方法
                     obj.$cenclebutton.click(function(){
+                        debugger
                         parent.closeDialog();
                     })
                 }

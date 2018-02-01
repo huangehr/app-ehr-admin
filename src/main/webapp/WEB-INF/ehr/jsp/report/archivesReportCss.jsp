@@ -87,7 +87,7 @@
     .f-index10{index:10}
     .f-fs12{font-size:12px;}
     .f-pt135{padding-top:135px;}
-    .div-dzbl{margin-top: 20px;height: 400px;background: #ffffff;border: 1px solid #e1e1e1;}
+    .div-dzbl{margin-top: 20px;height: 410px;background: #ffffff;border: 1px solid #e1e1e1;}
     #div_jkda_chart4{height: 350px;width: 69%;display: inline-block;}
     .div-dzbl-content{height: 350px;width: calc(30% - 21px);display: inline-block;}
     .div-ylzyk{margin-top: 20px;height: 454px;background: #ffffff;border: 1px solid #e1e1e1;}
@@ -198,5 +198,14 @@
         padding:8px 6px;
         font-size: 12px;
         font-weight: bold;
+    }
+    .hr-tit-con {
+        font-size: 14px;
+        font-weight: 600;
+        padding-left: 16px;
+    }
+    .c-title {
+        padding-left: 20px;
+        border-left: 4px solid #30a9de;
     }
 </style>

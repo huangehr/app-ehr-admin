@@ -253,4 +253,23 @@ public class ResourcesStatisticsController extends BaseUIController {
         }
         return null;
     }
+
+    @RequestMapping(value = "/stasticReport/getArchivesRight", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "准确性", notes = "准确性")
+    public Result getArchivesRight(String startDate, String endDate, String orgCode) {
+        String url = "/stasticReport/getArchivesRight";
+        String resultStr = "";
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            params.put("orgCode", orgCode);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            return toModel(resultStr, ListResult.class);
+        } catch (Exception e) {
+            LogService.getLogger(ResourceInterfaceController.class).error(e.getMessage());
+        }
+        return null;
+    }
 }

@@ -187,10 +187,9 @@
 
                     //新增医生信息
                     retrieve.$newDoctor.click(function(){
-                        debugger
                         var wait = parent._LIGERDIALOG.waitting("请稍后...");
                         self.addDoctorInfoDialog = parent._LIGERDIALOG.open({
-                            height: 590,
+                            height: 630,
                             width: 820,
                             title: '新增医生信息',
                             url: '${contextRoot}/doctor/addDoctorInfoDialog',
