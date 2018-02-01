@@ -110,12 +110,14 @@
     }
 
     .div_btn div:nth-of-type(1) {
-        width: 100px;
+        width: 95px;
         height: 34px;
+        text-align: center;
+        line-height: 34px;
         display: inline-block;
         background: #30A9DE;
-        color: #323232;
-        border: 1px solid #E8ECEB;
+        color: #fff;
+        border: none;
         border-radius: 3px;
         position: relative;
     }
