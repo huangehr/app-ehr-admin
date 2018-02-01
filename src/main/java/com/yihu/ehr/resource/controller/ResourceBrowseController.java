@@ -524,6 +524,7 @@ public class ResourceBrowseController extends BaseUIController {
             sheet = inputData(sheet, envelop.getDetailModelList(), cells);
             sheet.mergeCells(0, 2, 0, objectList.size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
+            sheet.removeRow(0);
             book.write();
             book.close();
             os.flush();
@@ -572,6 +573,7 @@ public class ResourceBrowseController extends BaseUIController {
             sheet = inputData(sheet, envelop.getDetailModelList(), cells);
             sheet.mergeCells(0, 2, 0, envelop.getDetailModelList().size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
+            sheet.removeRow(0);
             book.write();
             book.close();
             os.flush();

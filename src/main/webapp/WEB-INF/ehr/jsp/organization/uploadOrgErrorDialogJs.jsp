@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
+<script src="${contextRoot}/develop/source/formFieldTools.js"></script>
+<script src="${contextRoot}/develop/source/gridTools.js"></script>
+<script src="${contextRoot}/develop/source/toolBar.js"></script>
 <script>
 
     (function ($, win) {
@@ -36,7 +39,7 @@
 
                         var dataModel = $.DataModel.init();
                         dataModel.createRemote(urls.batchSave, {
-                            data: {doctors: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
+                            data: {orgs: JSON.stringify(model), eFile: files.eFile[1], datePath: files.eFile[0]},
                             success: function (data) {
                                 waitting.close();
                                 if (data.successFlg) {

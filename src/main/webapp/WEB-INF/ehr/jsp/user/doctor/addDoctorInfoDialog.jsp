@@ -34,8 +34,8 @@
 	</div>
 	<div class="m-form-group">
 		<label><spring:message code="lbl.doctor.portal"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_portal" class="required useTitle max-length-256 validate-special-char"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="workPortal"/>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_portal" class="useTitle max-length-256 validate-special-char" data-attr-scan="workPortal"/>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -51,8 +51,8 @@
 	</div>
 	<div class="m-form-group">
 		<label><spring:message code="lbl.doctor.officeTel"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_officeTel" class="required useTitle validate-phone"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="officeTel"/>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_officeTel" class=" useTitle validate-phone" data-attr-scan="officeTel"/>
 		</div>
 		<label><spring:message code="lbl.doctor.xzzc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">

@@ -6,7 +6,7 @@
 <script src="${contextRoot}/develop/source/formFieldTools.js"></script>
 <script src="${contextRoot}/develop/source/gridTools.js"></script>
 <script src="${contextRoot}/develop/source/toolBar.js"></script>
-<script src="${contextRoot}/develop/lib/ligerui/custom/uploadFile.js"></script>
+<script src="${contextRoot}/develop/lib/ligerui/custom/modifyAndupload.js"></script>
 <script>
     (function ($,win) {
         $(function () {
@@ -23,15 +23,23 @@
                 gotoImportLs: "${contextRoot}/schedule/gotoImportLs"
             }
             function onUploadSuccess(g, result){
-                debugger
                 if(result){
-                    closeDialog();
-                    debugger
-                    openDialog(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
+                    var defaultOpts = {
+                        height: 640,
+                        width:1000 ,
+                        title: "导入错误信息",
+                        url: urls.gotoImportLs,
+                        urlParms: {result: result},
+//                        load: true,
+                        isHidden: false
+                    };
+                    var dialog = parent._LIGERDIALOG.open(defaultOpts);
+                    parent.closeDialog();
                 }
                 else{
-
-                    $.Notice.success("导入成功！");
+                    $.Notice.success("导入成功！",function () {
+                        parent.closeMenuInfoDialog();
+                    });
                 }
             }
             $('#importbutton').uploadFile({url: "${contextRoot}/schedule/import",onUploadSuccess: onUploadSuccess});
