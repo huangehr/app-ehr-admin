@@ -559,7 +559,7 @@
                                         content: htmlStr,
                                     });
                                 }else{
-                                    parent._LIGERDIALOG.error('获取数据失败');
+                                    parent._LIGERDIALOG.error(res.errorMsg);
                                 }
                             }
                         })
