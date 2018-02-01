@@ -286,7 +286,7 @@
                     if (me.type == 1) {
                         return
                     }
-                    if (data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
+                    if (data.length>0 && data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
                         if (data[me.index].dictCode == 'DATECONDITION') {
                             me.resetSelHtml(data[me.index], 'date');
                         } else {
