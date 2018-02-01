@@ -3,16 +3,16 @@
 <div style="width: 100%;height: 100%; overflow: auto;padding-bottom: 0;" class="div-main-content">
     <div ms-controller="app" style="background: #F2F3F7;padding: 20px;width: 100%;">
         <div class="c-w-100">
-            <div class="div-qyrkgak">
+            <div class="div-qyrkgak" style="height: 1210px;">
                 <div class="div-jkda-header">
                     <i class="if-qyrkgak"></i>
                     <span class="yj-tit">采集指标</span>
                     <div class="m-form-inline condition" style="float: right;line-height: 30px;height: 30px;padding-right: 20px;">
                         <div class="m-form-group f-mt10">
-                            <div class="m-form-control">
+                            <div class="m-form-control" style="padding-right: 0px;">
                                 <input type="text" id="start_date1" class="validate-date l-text-field validate-date"  placeholder="请选择开始日期"/>
                             </div>
-                            <div class="m-form-control" style="width: 32px;">
+                            <div class="m-form-control" style="width: 32px;margin-right: 10px;">
                                 <label>--</label>
                             </div>
                             <div class="m-form-control">
@@ -24,10 +24,17 @@
                                     <span><spring:message code="btn.search"/></span>
                                 </div>
                             </div>
+                            <div class="m-form-control f-ml10">
+                                <!--按钮:查询-->
+                                <div id="link" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" style="margin-bottom: 1px">
+                                    <span>采集监管</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div>
+                    <div class="hr-tit-con"><div class="c-title">按日期统计</div></div>
                     <div id="chart1" style="width: 100%;height: 300px;"></div>
                     <div class="m-form-inline condition" style="float: right;line-height: 30px;height: 30px;padding-right: 20px;">
                         <div class="m-form-group f-mt10">
@@ -42,8 +49,8 @@
                             </div>
                         </div>
                     </div>
+                    <div class="hr-tit-con"><div class="c-title">按医院统计</div></div>
                     <div id="chart2" style="width: 100%;height: 350px;margin-top: 50px;"></div>
-
                     <div class="m-form-inline condition" style="float: right;line-height: 30px;height: 30px;padding-right: 20px;">
                         <div class="m-form-group f-mt10">
                             <div class="m-form-control">
@@ -61,6 +68,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="hr-tit-con"><div class="c-title">数据集总量</div></div>
                     <div id="chart6" style="width: 50%;height: 300px;margin-top: 40px;float: left"></div>
 
                     <div style="max-width: 48%;height: 280px;margin-top: 40px;float: left;overflow-y: auto;margin-right: 20px;">
@@ -116,7 +124,7 @@
                             <div class="m-form-control">
                                 <input type="text" id="start_date2" class="validate-date l-text-field validate-date"  placeholder="请选择开始日期"/>
                             </div>
-                            <div class="m-form-control" style="width: 32px;">
+                            <div class="m-form-control" style="width: 32px;margin-right: 10px;">
                                 <label>--</label>
                             </div>
                             <div class="m-form-control">
@@ -196,7 +204,7 @@
                             <div class="m-form-control">
                                 <input type="text" id="start_date3" class="validate-date l-text-field validate-date"  placeholder="请选择开始日期"/>
                             </div>
-                            <div class="m-form-control" style="width: 32px;">
+                            <div class="m-form-control" style="width: 32px;margin-right: 10px;">
                                 <label>--</label>
                             </div>
                             <div class="m-form-control">
@@ -242,6 +250,45 @@
                     </div>
                 </div>
                 <div id="chart5" style="width: 100%;height: 350px;"></div>
+            </div>
+
+            <div class="div-dzbl" style="height: 780px">
+                <div class="div-jkda-header">
+                    <i class="if-jkda"></i>
+                    <span class="yj-tit">准确性</span>
+                    <div class="m-form-inline condition" style="float: right;line-height: 30px;height: 30px;padding-right: 20px;">
+                        <div class="m-form-group f-mt10">
+                            <div class="m-form-control">
+                                <input type="text" id="start_date4" class="validate-date l-text-field validate-date"  placeholder="请选择开始日期"/>
+                            </div>
+                            <div class="m-form-control" style="width: 32px;margin-right: 10px;">
+                                <label>--</label>
+                            </div>
+                            <div class="m-form-control">
+                                <input type="text" id="end_date4" class="validate-date l-text-field validate-date"  placeholder="请选择结束日期"/>
+                            </div>
+                            <div class="l-text-wrapper m-form-control ">
+                                <input type="text" id="orgCode5"  data-type="select"  class="useTitle ajax"
+                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
+                            </div>
+                            <div class="m-form-control f-ml10">
+                                <!--按钮:查询-->
+                                <div id="btn_search6" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" style="margin-bottom: 1px">
+                                    <span><spring:message code="btn.search"/></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="chart7" style="width: 100%;height: 350px;"></div>
+                <div style="width: 50%;float: left">
+                    <div class="hr-tit-con"><div class="c-title">错误分类占比</div></div>
+                    <div id="chart8" style="width: 100%;height: 350px;"></div>
+                </div>
+                <div style="width: 50%;float: left">
+                    <div class="hr-tit-con"><div class="c-title">错误数据元占比</div></div>
+                    <div id="chart9" style="width: 100%;height: 350px;"></div>
+                </div>
             </div>
         </div>
     </div>
