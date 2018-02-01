@@ -386,7 +386,7 @@
                                     },
                                     legend: {
                                         orient: 'vertical',
-                                        x: 'right',
+                                        x: '75%',
                                         y: 'center',
                                         data: legendArr
                                     },
@@ -623,7 +623,7 @@
                                 },
                                 legend: {
                                     orient: 'vertical',
-                                    x: 'right',
+                                    x: '72%',
                                     y: 'center',
                                     data: legendArr
                                 },
