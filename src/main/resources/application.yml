@@ -29,10 +29,10 @@ spring:
   datasource:
     url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: chenweishan
-    password: chenweishan
+    password: dev
   redis:
     host: 172.19.103.47 # Redis server host.
-    port: 6379
+    port: 6379123
     password: redis!@456
 app:
   baseClientId: zkGuSIm2Fg  # 【基础信息管理】应用
