@@ -62,20 +62,21 @@
 
             if(uploadDialog){
                 var html;
-                if(percentage == -2)
+                if(percentage == -2){
                     html = "模板不正确，请下载新的模板，并按照示例正确填写后上传！";
-                else if(percentage == -1)
+                }
+                else if(percentage == -1){
                     html = "导入失败！";
-                else
-                    var width = parseInt(percentage/100*193)
-                html = "导入进度:"+process(width);
+                }else{
+                    var width = parseInt(percentage/100*193);
+                    html = "导入进度:"+process(width);
+                }
                 $('#importPros', uploadDialog.element).html(html);
                 if(percentage == 100){
                     p.result = data;
                     setTimeout(suc, 500);
                 }
             }
-
         }
     };
 
