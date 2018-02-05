@@ -12,6 +12,6 @@
 <div id="signinCon">
     <div class="tips-con">
         <%--<img src="${staticRoot}/images/timg.png">--%>
-        <p>加载中...</p>
+        <%--<p>加载中...</p>--%>
     </div>
 </div>
