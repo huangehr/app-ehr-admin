@@ -30,7 +30,7 @@
                 $starTime: $('#inp_start_time'),
                 $endTime: $('#inp_end_time'),
                 //创建变量
-                $selectChnage:null,
+                $selectChnage:'qb',
                 init: function () {
                     this.$element.show();
                     this.$starTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
@@ -53,10 +53,10 @@
                         {
                             if(text=='统计值大于0'){
                                 patientRetrieve.$selectChnage = value;
+                            }if(text=='全部'){
+                            patientRetrieve.$selectChnage = value;
                             }
-
                         }
-
                     });
                     this.$orgName.ligerTextBox({width: 140 });
                     this.bindEvents();
@@ -125,6 +125,8 @@
                             {city: (address.names[1] == null ? '' : address.names[1])},
                             {district: (address.names[2] == null ? '' : address.names[2])},
                             {res:patientRetrieve.$selectChnage});
+                            console.log(values);
+                    debugger
                     Util.reloadGrid.call(this.grid, '${contextRoot}/tjQuota/selectQuotaResult', values, curPage);
                 },
                 bindEvents: function () {
