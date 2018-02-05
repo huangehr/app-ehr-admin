@@ -14,7 +14,7 @@
     <div class="m-form-group">
         <label>缓存分类编码：</label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" class="f-w240 max-length-30 required ajax validate-alpha-underline"
+            <input type="text" class="f-w240 max-length-30 required ajax validate-code-char"
                    id="code" data-attr-scan="code">
         </div>
     </div>

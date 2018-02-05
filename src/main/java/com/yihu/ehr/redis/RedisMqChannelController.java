@@ -71,7 +71,7 @@ public class RedisMqChannelController extends BaseUIController {
         StringBuffer filters = new StringBuffer();
 
         if (!StringUtils.isEmpty(searchContent)) {
-            filters.append("channel?" + searchContent + ";channelName?" + searchContent + ";");
+            filters.append("channel?" + searchContent + " gl;channelName?" + searchContent + " gl;");
         }
 
         params.put("filters", filters.toString());

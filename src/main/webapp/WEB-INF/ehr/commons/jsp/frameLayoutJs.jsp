@@ -11,6 +11,7 @@
 
         /* ************************** 变量定义 ******************************** */
 
+        window.GlobalEventBus = new Vue();
         var menuData = ${menuData};
         // Util工具类
         var Util = $.Util;
