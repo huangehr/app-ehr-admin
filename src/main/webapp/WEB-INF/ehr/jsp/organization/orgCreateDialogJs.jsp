@@ -78,7 +78,7 @@
                 });
                 this.$uploader.instance.on('uploadSuccess', function (file, resp) {
                     $.ligerDialog.alert("保存成功", function () {
-                        parent.closeAddOrgInfoDialog(function () {
+                        win.closeAddOrgInfoDialog(function () {
 
                         });
                     });
@@ -283,7 +283,7 @@
                     });
                 }
                 self.$cancelBtn.click(function(){
-                    parent.closeAddOrgInfoDialog();
+                    win.closeAddOrgInfoDialog();
                 });
                 function updateOrg(orgModel,addressModel,msg) {
                     var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
@@ -295,7 +295,7 @@
                         success: function (data) {
                             wait.close();
                             uploader.options.successCallBack=function(){
-                                parent.closeAddOrgInfoDialog(function () {
+                                win.closeAddOrgInfoDialog(function () {
                                     $.Notice.success('保存成功！');
                                 });
                             };
@@ -305,7 +305,7 @@
                                     uploader.options.server="${contextRoot}/file/upload/image";
                                     $(".uploadBtn").click();
                                 }else{
-                                    parent.closeAddOrgInfoDialog(function () {
+                                    win.closeAddOrgInfoDialog(function () {
                                        $.Notice.success('保存成功！');
                                     });
                                 }
