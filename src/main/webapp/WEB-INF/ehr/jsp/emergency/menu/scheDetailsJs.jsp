@@ -77,7 +77,7 @@
                                 {display: '车牌号码', name: 'carId', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '主/副班', name: 'main', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"},
                                     render: function (row) {
-                                        if (row.main == 'true') {
+                                        if (row.main == 'true'||row.main=='主') {
                                             return "主";
                                         } else {
                                             return "副";
@@ -148,29 +148,20 @@
                     }
                     Util.reloadGrid.call(this.grid, '${contextRoot}/schedule/level', values, curPage);
                 },
-                beginEdit:function () {
-//                    var row = obj.grid.getSelectedRow();
-//                    obj.grid.beginEdit(row);
-                },
-                endEdit:function () {
-                    var row = obj.grid.getSelectedRow();
-                    obj.grid.endEdit(row);
-                },
                 bindEvents:function () {
                     var self = this;
                     $.subscribe('scheDetailsJs:scheInfo:open',function (event, id, row) {
                         var fthisRow = JSON.parse(row);
                         if(fthisRow.main=='true'){
                             fthisRow.main = "主"
-                        }else {
+                        }if(fthisRow.main=='false'){
                             fthisRow.main = "副"
                         }
-                        var sthisRow = fthisRow;
-                        obj.grid.beginEdit(sthisRow);
-
+                        obj.grid.beginEdit(fthisRow);
                     })
                     $.subscribe('scheDetailsJs:scheInfo:lock',function (event, id, row) {
-                        self.endEdit();
+                        var row = obj.grid.getSelectedRow();
+                        obj.grid.endEdit(row);
                     })
                     $.subscribe('scheDetailsJs:scheInfo:edit',function (event,scheduleIds,date,carId,main) {
                         obj.detailDialog = $.ligerDialog.open({
