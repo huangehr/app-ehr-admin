@@ -33,10 +33,11 @@
 				pageSize:rsPageParams&&rsPageParams.pageSize || 15,
 			}
             function onUploadSuccess(g, result){
-                if(result)
-                    openDialog("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
-                else
-                    parent._LIGERDIALOG.success("导入成功！");
+                if(result) {
+					parent._OPENDIALOG("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+				} else {
+					parent._LIGERDIALOG.success("导入成功！");
+				}
             }
 
             $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess, str: '导入部门'});
@@ -703,10 +704,6 @@
 							parent._LIGERDIALOG.error('编码不能为空');
 							return false;
 						}
-//						if(orgId =='' || orgId == undefined){
-//							parent._LIGERDIALOG.error('机构不能为空');
-//							return false;
-//						}
 						var params = {id:id,mode:'addRoot',code:code,name:name,oldName:'',orgId:orgId};
 						if( $("#h_org_type").val()=="Hospital") {//如果机构类型为医院，则添加上述信息
 							url = "${contextRoot}/deptMember/addOrUpdateOrgDept";
@@ -744,6 +741,7 @@
 						);
 						return true;
                     },{title:'添加根部门'});
+
 					if( $("#h_org_type").val()=="Hospital"){//如果机构类型为医院，则添加上述信息
 						var html = [
 							'<div class="pop-form">',

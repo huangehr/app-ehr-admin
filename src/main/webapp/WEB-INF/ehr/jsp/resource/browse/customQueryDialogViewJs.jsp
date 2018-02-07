@@ -63,6 +63,7 @@
                 lr2.setDisabled();
                 this.$echartType.ligerComboBox({
                     data: [
+                        {text:"混合图形", id:"mixed"},
                         {text:"数值", id:"data"},
                         {text:"柱状图", id:"bar"},
                         {text:"线形图", id:"line"},

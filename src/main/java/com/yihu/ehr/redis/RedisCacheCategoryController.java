@@ -71,7 +71,7 @@ public class RedisCacheCategoryController extends BaseUIController {
         StringBuffer filters = new StringBuffer();
 
         if (!StringUtils.isEmpty(searchContent)) {
-            filters.append("code?" + searchContent + ";name?" + searchContent + ";");
+            filters.append("code?" + searchContent + " gl;name?" + searchContent + " gl;");
         }
 
         params.put("filters", filters.toString());

@@ -155,6 +155,11 @@
             initChart: function (option) {
                 var me = this;
                 me.myChart = echarts.init(me.chart);
+                me.myChart.setOption(option);
+                me.setEvent();
+            },
+            setEvent: function () {
+                var me = this;
                 function eConsole(param) {
                     var num = 0;
                     _.each(me.nrsAvalon.dimensionMap, function (o , k) {
@@ -169,11 +174,12 @@
                     }
                 }
                 me.myChart.on('click', eConsole);
-                me.myChart.setOption(option);
             },
             reloadChart: function (opt) {
-                this.myChart.clear();
+                this.myChart = echarts.init(this.chart);
+//                this.myChart.clear();
                 this.myChart.setOption(opt, true);
+                this.setEvent();
             },
             bindEvents: function () {
                 var me = this;

@@ -106,10 +106,10 @@
                         <%--<div class="c-title">档案来源分布情况</div>--%>
                     </div>
                     <div class="hr-chart" data-color="" data-xy-change="false" style="padding: 68px 0 0 25px;">
-                        <div class="cd-label">累计整合档案数:</div>
-                        <div class="cd-num" style="margin-bottom: 30px;" ms-text="ljzhNum"></div>
-                        <div class="cd-label">累计待整合档案数:</div>
-                        <div class="cd-num" ms-text="ljdzhNum"></div>
+                        <div class="cd-label" style="background: #ff88be;">累计整合档案数:</div>
+                        <div class="cd-num" style="margin-bottom: 15px;background: #ff88be;" ms-text="ljzhNum"></div>
+                        <div class="cd-label" style="background: #49d2db;">累计待整合档案数:</div>
+                        <div class="cd-num" ms-text="ljdzhNum" style="background: #49d2db;"></div>
                     </div>
                 </div>
             </div>

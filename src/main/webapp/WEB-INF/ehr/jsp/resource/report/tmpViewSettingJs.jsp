@@ -14,12 +14,12 @@
     (function (w, $) {
         var selViewDialog;
         var url = [
-                '${contextRoot}/resource/report/getRsQuotaPreview',//获取视图列表
-                '${contextRoot}/resource/report/uploadTemplate',//保存模板
-                '${contextRoot}/resource/report/getTemplateData',//获取模板
-                '${contextRoot}/resourceBrowse/searchResourceData',//获取模板对应的数据
-                '${contextRoot}/resourceBrowse/getGridCloumnNames',//获取表头
-                ''
+            '${contextRoot}/resource/report/getRsQuotaPreview',//获取视图列表
+            '${contextRoot}/resource/report/uploadTemplate',//保存模板
+            '${contextRoot}/resource/report/getTemplateData',//获取模板
+            '${contextRoot}/resourceBrowse/searchResourceData',//获取模板对应的数据
+            '${contextRoot}/resourceBrowse/getGridCloumnNames',//获取表头
+            ''
         ];
         require.config({
             paths: {
@@ -131,29 +131,29 @@
                             })
                         },
                         findJs: function () {
-                            var $jsTmp = $('#jsTmp');
+                            var $jsTmp = $('#specialFunTmp');
                             if ($jsTmp.length > 0) {
-                                eval($jsTmp.html());
+                                eval('(function (data,cityName) {' + $jsTmp.html() + '})("","")');
                             }
                         },
                         findFormCrl: function () {//查找控件
                             var me = this,$regionSel = $('#regionSel'), $dataSel = $('#dataSel'), html = '';
                             if ($regionSel.length > 0) {//区域
                                 <%--me.resData('${contextRoot}/address/getDistrictByParent', {--%>
-                                    <%--pid: '361100'--%>
+                                <%--pid: '361100'--%>
                                 <%--},function (data) {--%>
-                                    <%--var obj = data.obj;--%>
-                                    <%--$.each(obj, function (k, o) {--%>
-                                        <%--html += '<option value="' + o.id + '">' + o.name + '</option>';--%>
-                                    <%--});--%>
-                                    <%--$regionSel.html(html);--%>
-                                    <%--$regionSel.selectpicker({--%>
-                                        <%--width: 150--%>
-                                    <%--});--%>
-                                    <%--$regionSel.on('changed.bs.select', function (e, index) {--%>
-                                        <%--var o = obj;--%>
-<%--//                                        条件筛选暂时不弄--%>
-                                    <%--});--%>
+                                <%--var obj = data.obj;--%>
+                                <%--$.each(obj, function (k, o) {--%>
+                                <%--html += '<option value="' + o.id + '">' + o.name + '</option>';--%>
+                                <%--});--%>
+                                <%--$regionSel.html(html);--%>
+                                <%--$regionSel.selectpicker({--%>
+                                <%--width: 150--%>
+                                <%--});--%>
+                                <%--$regionSel.on('changed.bs.select', function (e, index) {--%>
+                                <%--var o = obj;--%>
+                                <%--//                                        条件筛选暂时不弄--%>
+                                <%--});--%>
                                 <%--});--%>
                             }
                             if ($dataSel.length > 0) {//时间
@@ -173,7 +173,7 @@
                         },
                         showViewList: function ($dom) {//展示视图列表
                             var wait = $.Notice.waitting("请稍后..."),
-                                    me = this;
+                                me = this;
                             me.chart = $dom.closest('.charts').find('.charts-con');
                             me.chartTit = $dom.closest('.charts').find('.c-title');
                             selViewDialog = $.ligerDialog.open({
@@ -212,33 +212,30 @@
                                         formatter: '{b}'
                                     },
                                     dataRange: {
-                                        min: 800,
-                                        max: 50000,
-                                        text:['High','Low'],
-                                        realtime: false,
-                                        calculable : true,
-                                        color: ['orangered','yellow'],
-                                        show: false
+                                        min: 0,
+                                        max: 100,
+                                        text: ['高', '低'],
+                                        color: ['#78a2c6', '#c7d2e3'],
                                     },
                                     series : [
                                         {
                                             type: 'map',
                                             mapType: '上饶市',
                                             selectedMode : 'single',
-                                            itemStyle:{
-                                                normal:{
-                                                    label:{
-                                                        show:true,
+                                            itemStyle: {
+                                                normal: {
+                                                    label: {
+                                                        show: true,
                                                         textStyle: {
                                                             color: '#0f375a'
                                                         }
                                                     },
-                                                    borderWidth:2,
-                                                    borderColor:'#fff'
+                                                    borderWidth: 2,
+                                                    borderColor: '#fff'
                                                 },
-                                                areaStyle:{color:'#55c5fb'},
+                                                areaStyle: {color: '#55c5fb'},
                                                 emphasis: {
-                                                    borderWidth:2,
+                                                    borderWidth: 2,
                                                     color: '#55c5fb',
                                                     label: {
                                                         show: true,
@@ -261,8 +258,8 @@
                             });
                             me.$upFileInp.on('change', function (e) {//上传模板文件
                                 var files = e.target.files[0],
-                                        type = files.type,
-                                        reader = new FileReader();
+                                    type = files.type,
+                                    reader = new FileReader();
                                 if (type != 'text/html') {
                                     $.Notice.error('请添加后缀名为’.html‘的模板文件！');
                                     return;
@@ -277,15 +274,18 @@
                                 reader.readAsText(files);
                             });
                             me.$saveTmp.on('click', function () {//保存模板
+                                if ($('#loadNum').length > 0) {
+                                    $('#loadNum').val(0);
+                                }
                                 var tmp = me.$tmpCon.html(),
-                                        num = tmp.indexOf('</style>') + ('</style>'.length),
-                                        styleStr = me.getFormatData(tmp.substring(0, num)),
-                                        tmpStr = me.getFormatData(tmp.substring(num, tmp.length)),
-                                        $tmpDom = $('<div>' + tmpStr + '</div>'),
-                                        reportData = [],
-                                        quotaIds = [],
-                                        isHas = false,
-                                        $input = $tmpDom.find('#quotaIds');
+                                    num = tmp.indexOf('</style>') + ('</style>'.length),
+                                    styleStr = me.getFormatData(tmp.substring(0, num)),
+                                    tmpStr = me.getFormatData(tmp.substring(num, tmp.length)),
+                                    $tmpDom = $('<div>' + tmpStr + '</div>'),
+                                    reportData = [],
+                                    quotaIds = [],
+                                    isHas = false,
+                                    $input = $tmpDom.find('#quotaIds');
                                 if ($input.length <= 0) {
                                     $input = document.createElement('input');
                                     $input.type = 'hidden';
@@ -298,7 +298,7 @@
                                 $tmpDom.find('.charts-con').removeAttr('style').removeAttr('ligeruiid').removeAttr('_echarts_instance_').removeClass('l-panel').removeClass('l-frozen').html('');
                                 $.each($tmpDom.find('.charts-con'), function (k, o) {
                                     var tId = $(o).attr('id'),
-                                            t = $(o).attr('data-type');
+                                        t = $(o).attr('data-type');
                                     if (tId) {
                                         if (t == 2) {
                                             reportData.push({
@@ -349,14 +349,14 @@
                             }, function (res) {
                                 if (res.successFlg) {
                                     var resourceId = res.detailModelList[0].resourceId,
-                                            isT = TVS.checkIsExist(id),option = {}, xyChange = 'false', color = '';
+                                        isT = TVS.checkIsExist(id),option = {}, xyChange = 'false', color = '';
                                     if (!isT) return;
                                     TVS.chart.attr('id', id);
                                     TVS.chart.attr('data-type', 2);
                                     option = TVS.resetOption(TVS.chart, JSON.parse(res.detailModelList[0].option));
 //                                    xyChange = TVS.chart.attr('data-xy-change');
 //                                    color = TVS.chart.attr('data-color');
-                                    
+
 //                                    if (xyChange == 'true') {
 //                                        var x = option.xAxis, y = option.yAxis;
 //                                        option.yAxis = x;
@@ -373,16 +373,20 @@
                         },
                         resetOption: function ($dom, opt) {
                             var option = opt,
-                                color = $dom.attr('data-color'),
-                                zoom = $dom.attr('data-zoom'),
+                                color = $dom.attr('data-color'),//展示的颜色设置
+                                zoom = $dom.attr('data-zoom'),//滚动条设置
                                 grid = $dom.attr('data-grid'),
-                                legend = $dom.attr('data-legend'),
-                                seriesRadius = $dom.attr('data-series-radius'),
-                                seriesCenter = $dom.attr('data-series-center'),
-                                xaxisSplitLine = $dom.attr('data-xaxis'),
-                                yaxisSplitLine = $dom.attr('data-yaxis'),
-                                axisLine = $dom.attr('data-axis-line'),
+                                legend = $dom.attr('data-legend'),//
+                                seriesRadius = $dom.attr('data-series-radius'),//设置环形饼图
+                                seriesCenter = $dom.attr('data-series-center'),//饼图展示位置
+                                xaxisSplitLine = $dom.attr('data-xaxis-splitline'),//网格线设置
+                                yaxisSplitLine = $dom.attr('data-yaxis-splitline'),
+                                xaxisShow = $dom.attr('data-xaxis-show'),//x轴是否显示
+                                yaxisShow = $dom.attr('data-yaxis-show'),//x轴是否显示
+                                axisAxisLine = $dom.attr('data-xyaxis-axisline'),//x、y轴颜色设置
                                 axisTick = $dom.attr('data-axis-tick'),
+                                xaxisBoundaryGap = $dom.attr('data-xaxis-boundary-gap'),//设置折线图数据展示起点位置
+                                seriesBarMaxWidth = $dom.attr('data-barmaxwidth'),//柱形图最大宽度
                                 seriesItemstyle = $dom.attr('data-series-itemstyle'),
                                 xyChange = $dom.attr('data-xy-change');
                             if (color && color != '') {
@@ -394,30 +398,68 @@
                             if (grid && grid != '') {
                                 option['grid'] = JSON.parse(grid);
                             }
+                            if (xaxisShow && xaxisShow != '') {
+                                _.each(option['xAxis'], function (o, k) {
+                                    option['xAxis'][k]['show'] = xaxisShow == 'false' ? false : true;
+                                });
+                            }
+                            if (yaxisShow && yaxisShow != '') {
+                                _.each(option['yAxis'], function (o, k) {
+                                    option['yAxis'][k]['show'] = yaxisShow == 'false' ? false : true;
+                                });
+                            }
                             if (xaxisSplitLine && xaxisSplitLine != '') {
-                                option['xAxis']['splitLine'] = JSON.parse(xaxisSplitLine);
+                                _.each(option['xAxis'], function (o, k) {
+                                    option['xAxis'][k]['splitLine'] = JSON.parse(xaxisSplitLine);
+                                });
+                            }
+                            if (xaxisBoundaryGap && xaxisBoundaryGap != '') {
+                                _.each(option['xAxis'], function (o, k) {
+                                    option['xAxis'][k]['boundaryGap'] = xaxisBoundaryGap == 'false' ? false : true;
+                                });
                             }
                             if (yaxisSplitLine && yaxisSplitLine != '') {
-                                option['yAxis']['splitLine'] = JSON.parse(yaxisSplitLine);
+                                _.each(option['yAxis'], function (o, k) {
+                                    option['yAxis'][k]['splitLine'] = JSON.parse(yaxisSplitLine);
+                                });
                             }
                             if (legend && legend != '') {
-                                option['legend'] = JSON.parse(legend);
+                                var legObj = JSON.parse(legend);
+                                legObj.data = [];
+                                _.each(option['series'][0].data, function (o, k) {
+                                    legObj.data.push(o.name ? o.name : '');
+                                });
+                                option['legend'] = legObj;
                             }
-                            if (seriesRadius && seriesRadius != '') {
-                                option['series']['radius'] = seriesRadius;
-                            }
-                            if (seriesCenter && seriesCenter != '') {
-                                option['series']['center'] = seriesCenter;
-                            }
-                            if (axisLine && axisLine != '') {
-                                option['xAxis']['axisLine'] = axisLine;
-                                option['yAxis']['axisLine'] = axisLine;
+                            if (axisAxisLine && axisAxisLine != '') {
+                                _.each(option['xAxis'], function (o, k) {
+                                    option['xAxis'][k]['axisLine'] = JSON.parse(axisAxisLine);
+                                    option['yAxis'][k]['axisLine'] = JSON.parse(axisAxisLine);
+                                });
                             }
                             if (axisTick && axisTick != '') {
                                 option['xAxis']['axisTick'] = axisTick;
                             }
+                            if (seriesBarMaxWidth && seriesBarMaxWidth != '') {
+                                _.each(option['series'], function (o, k) {
+                                    option['series'][k]['barMaxWidth'] = seriesBarMaxWidth;
+                                });
+                            }
+                            if (seriesRadius && seriesRadius != '') {
+                                _.each(option['series'], function (o, k) {
+                                    option['series'][k]['radius'] = seriesRadius.split(',');
+                                });
+                            }
+                            if (seriesCenter && seriesCenter != '') {
+                                _.each(option['series'], function (o, k) {
+                                    option['series'][k]['center'] = seriesCenter.split(',');
+                                });
+                            }
                             if (seriesItemstyle && seriesItemstyle != '') {
-                                option['series'][0]['itemStyle'] = JSON.parse(seriesItemstyle);
+                                _.each(option['series'], function (o, k) {
+                                    option['series'][k]['itemStyle'] = JSON.parse(seriesItemstyle);
+                                });
+                                // option['series'][0]['itemStyle'] = JSON.parse(seriesItemstyle);
                             }
                             if (xyChange && xyChange == 'true') {
                                 var x = [], y = [];
@@ -426,7 +468,6 @@
                                 option['xAxis'] = y;
                                 option['yAxis'] = x;
                             }
-
                             return option;
                         },
                         renderQuota: function ($dom, opt) {//渲染指标图表
@@ -485,8 +526,8 @@
                         },
                         checkIsExist: function (id) {//检测id
                             var oldResourceId = TVS.chart.attr('id'),
-                                    newIndex = TVS.rIdsAndQCode.indexOf(id),
-                                    oldIndex = TVS.rIdsAndQCode.indexOf(oldResourceId);
+                                newIndex = TVS.rIdsAndQCode.indexOf(id),
+                                oldIndex = TVS.rIdsAndQCode.indexOf(oldResourceId);
                             if (newIndex >= 0) {
                                 $.Notice.error('该视图已选择，请重选！');
                                 return false;
