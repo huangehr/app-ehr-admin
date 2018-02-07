@@ -107,7 +107,7 @@
                     </div>
                     <div class="hr-chart" data-color="" data-xy-change="false" style="padding: 68px 0 0 25px;">
                         <div class="cd-label">累计整合档案数:</div>
-                        <div class="cd-num" style="margin-bottom: 30px;" ms-text="ljzhNum"></div>
+                        <div class="cd-num" style="margin-bottom: 15px;" ms-text="ljzhNum"></div>
                         <div class="cd-label">累计待整合档案数:</div>
                         <div class="cd-num" ms-text="ljdzhNum"></div>
                     </div>

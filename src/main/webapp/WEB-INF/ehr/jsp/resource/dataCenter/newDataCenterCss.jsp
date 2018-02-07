@@ -69,7 +69,7 @@
     .hr-body{
         min-height: 100%;
         background: #e9f2f8;
-        padding-top: calc(13.728vh + 45px);
+        padding-top: calc(120px + 45px);
     }
     .tmp-top{
         /*padding: 15px;*/
@@ -87,7 +87,7 @@
         padding: 15px 0;
     }
     .tmp-top-item{
-        height: 13.728vh;
+        height: 120px;
         display: inline-block;
         width: 23.5%;
         margin: 0 7px;
