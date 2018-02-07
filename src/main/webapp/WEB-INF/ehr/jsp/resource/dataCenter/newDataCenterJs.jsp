@@ -96,10 +96,14 @@
                             var option = {
                                 tooltip : {
                                     trigger: 'item',
-                                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                    formatter: "{a} <br/>{b} : {c} ({d}%)",
+                                    position: function (point, params, dom, rect, size) {
+                                        // 固定在顶部
+                                        return [point[0], '10%'];
+                                    }
                                 },
                                 title: {
-                                    text: '健康卡绑定量\n\n' + res.obj.totalDemographicsNum,
+                                    text: '健康卡绑定量\n\n' + res.detailModelList[0].dataModels[0].value,
                                     subtext: '',
                                     x: 'center',
                                     y: 'center',
@@ -146,6 +150,9 @@
                             var option = {
                                 tooltip : {
                                     trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
 //                                    formatter: function (params){
 //                                        return params[0]['1'] + '（岁）：\n\n' + params[0]['2'] + '（人）';
 //                                    }
@@ -170,7 +177,7 @@
                                         },
                                         axisLine:{
                                             lineStyle:{
-                                                color:'#e7edeb',
+                                                color:'#333',
                                                 width:1
                                             }
                                         },
@@ -195,7 +202,7 @@
                                         },
                                         axisLine:{
                                             lineStyle:{
-                                                color:'#e7edeb',
+                                                color:'#333',
                                                 width:1
                                             }
                                         },
@@ -233,11 +240,11 @@
                                         splitLine: {show: false},
                                         axisTick:{show:false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
                                         axisLabel: {
-                                            rotate:40,
-                                            interval:0,
+//                                            rotate:40,
+//                                            interval:0,
                                             formatter : function(params){
                                                 var newParamsName = "";
                                                 var paramsNameNumber = params.length;
@@ -261,7 +268,7 @@
                                                 }
                                                 return newParamsName
                                             },
-                                            show:true,
+//                                            show:true,
                                             textStyle:{
                                                 color: '#909090',
                                                 fontSize:14,
@@ -274,11 +281,16 @@
                                         type: "value",
                                         name: "y",
                                         splitLine:{
-                                            show:false
+                                            show:true,
+                                            lineStyle: {
+                                                color: '#e8edec',
+                                                width: 1,
+                                                type: 'dashed'
+                                            }
                                         },
                                         axisLine:{
                                             lineStyle:{
-                                                color:'#e7edeb',
+                                                color:'#333',
                                                 width:1
                                             }
                                         },
@@ -322,7 +334,10 @@
                             });
                             var option = {
                                 tooltip : {
-                                    trigger: 'axis'
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
                                 },
                                 legend: {
                                     y : 'bottom',
@@ -348,7 +363,7 @@
                                         },
                                         axisLine:{
                                             lineStyle:{
-                                                color:'#e7edeb',
+                                                color:'#333',
                                                 width:1
                                             }
                                         },
@@ -373,7 +388,7 @@
                                         },
                                         axisLine:{
                                             lineStyle:{
-                                                color:'#e7edeb',
+                                                color:'#333',
                                                 width:1
                                             }
                                         },
@@ -403,7 +418,10 @@
                                 });
                                 var option =  {
                                     tooltip : {
-                                        trigger: 'axis'
+                                        trigger: 'axis',
+                                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                        }
                                     },
                                     color: ['#56c5fc','#1cd2bb'],
                                     grid: {
@@ -425,7 +443,7 @@
                                             },
                                             axisLine:{
                                                 lineStyle:{
-                                                    color:'#e7edeb',
+                                                    color:'#333',
                                                     width:1
                                                 }
                                             },
@@ -441,7 +459,7 @@
                                             },
                                             axisLine:{
                                                 lineStyle:{
-                                                    color:'#e7edeb',
+                                                    color:'#333',
                                                     width:1
                                                 }
                                             },
@@ -589,6 +607,9 @@
                             var option = {
                                 tooltip : {
                                     trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
 //                                    formatter: function (params){
 //                                        return params[0]['1'] + '（岁）：\n\n' + params[0]['2'] + '（人）';
 //                                    }
@@ -617,7 +638,7 @@
                                         },
                                         axisLine:{
                                             lineStyle:{
-                                                color:'#e7edeb',
+                                                color:'#333',
                                                 width:1
                                             }
                                         },
@@ -642,7 +663,7 @@
                                         },
                                         axisLine:{
                                             lineStyle:{
-                                                color:'#e7edeb',
+                                                color:'#333',
                                                 width:1
                                             }
                                         },
@@ -674,10 +695,13 @@
                             });
                             var option = {
                                 tooltip : {
-                                    trigger: 'axis'
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
                                 },
                                 legend: {
-                                    y : 'bottom',
+                                    y : '90%',
                                     data: legendArr
                                 },
                                 color: ['#56c5fc','#1cd2bb'],
@@ -695,13 +719,13 @@
                                         axisTick:{show:false},
                                         splitLine: {show: false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
                                         data : res.detailModelList[0].xData,
                                         axisLabel: {
-                                            rotate: 45,
-                                            interval: 0,
-                                            show:true,
+//                                            rotate: 45,
+//                                            interval: 0,
+//                                            show:true,
                                             textStyle:{
                                                 color: '#909090',
                                                 fontSize:14,
@@ -715,7 +739,7 @@
                                         name : 'y',
                                         splitLine: {show: false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
 //                                        axisLabel : {
 //                                            formatter: '{value} ml'
@@ -792,7 +816,10 @@
                             });
                             var option = {
                                 tooltip : {
-                                    trigger: 'axis'
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
                                 },
                                 xAxis : [
                                     {
@@ -801,7 +828,7 @@
                                         show: false,
                                         splitLine: {show: false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
                                     }
                                 ],
@@ -834,7 +861,7 @@
                                         axisTick:{show:false},
                                         splitLine: {show: false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
                                     }
                                 ],
@@ -866,7 +893,10 @@
                             });
                             var option = {
                                 tooltip : {
-                                    trigger: 'axis'
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
                                 },
                                 xAxis : [
                                     {
@@ -875,7 +905,7 @@
                                         show: false,
                                         splitLine: {show: false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
                                     }
                                 ],
@@ -908,7 +938,7 @@
                                         axisTick:{show:false},
                                         splitLine: {show: false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
                                     }
                                 ],
@@ -964,12 +994,12 @@
                                         axisTick:{show:false},
                                         splitLine: {show: false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
                                         axisLabel: {
-                                            rotate: 90,
-                                            interval: 0,
-                                            show:true,
+//                                            rotate: 90,
+//                                            interval: 0,
+//                                            show:true,
                                             textStyle:{
                                                 color: '#909090',
                                                 fontSize:14,
@@ -983,7 +1013,7 @@
                                         type : 'value',
                                         splitLine: {show: false},
                                         axisLine:{
-                                            lineStyle:{color:'#e7edeb', width:1}
+                                            lineStyle:{color:'#333', width:1}
                                         },
                                     }
                                 ],
