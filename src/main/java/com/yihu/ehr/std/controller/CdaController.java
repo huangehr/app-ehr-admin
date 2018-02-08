@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @RequestMapping("/cda")
 @Controller
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
@@ -241,7 +240,6 @@ public class CdaController extends BaseUIController {
         return result;
     }
 
-
     /**
      * 保存CDA信息
      * 1.先删除CDA数据集关联关系信息与cda文档XML文件，在新增信息
@@ -254,6 +252,9 @@ public class CdaController extends BaseUIController {
     @RequestMapping("SaveRelationship")
     @ResponseBody
     public Object SaveRelationship(String strDatasetIds, String strCdaId, String strVersionCode, String xmlInfo) {
+
+//        MultiValueMap<String,String> conditionMap = new LinkedMultiValueMap<String, String>();
+//        RestTemplates template = new RestTemplates();
 
         Envelop result = new Envelop();
         String strErrorMsg = "";
@@ -277,7 +278,18 @@ public class CdaController extends BaseUIController {
             String url = comUrl + "/cda/saveRelationship";
 
             RestTemplates template = new RestTemplates();
+//            String _rus = template.doPost(url, conditionMap);
             String _rus = HttpClientUtil.doPost( url, conditionMap, username, password);
+
+
+            //测试
+//            conditionMap.add("dataSetIds", strDatasetIds);
+//            conditionMap.add("cdaId", strCdaId);
+//            conditionMap.add("versionCode", strVersionCode);
+//            conditionMap.add("xmlInfo", xmlInfo);
+//            String _rus = template.doPost(comUrl + url, conditionMap);
+            //结束
+
 
             if(StringUtils.isEmpty(_rus)){
                 result.setSuccessFlg(false);
@@ -397,8 +409,76 @@ public class CdaController extends BaseUIController {
         }
         return result;
 
+        /*boolean documentExist = xcdaDocumentManager.isDocumentExist(versionCode, code);
+        if (documentExist) {
+            return getSuccessResult(true).toJson();
+        }
+        return getSuccessResult(false).toJson();*/
     }
 
+    /**
+     * 将String 保存为XML文件
+     *
+     * @param fileInfo 文件信息
+     * @return 返回 文件路径
+     */
+    /*public String SaveCdaFile(String fileInfo, String versionCode, String cdaId) {
+        fileInfo = fileInfo.replaceAll("&lt;", "<").replaceAll("&gt;", ">");
+        String strPath = System.getProperty("java.io.tmpdir");
+        String splitMark = System.getProperty("file.separator");
+        strPath += splitMark+"StandardFiles";
+        //文件路径
+        String strXMLFilePath = strPath + splitMark + "xml" + splitMark + versionCode + splitMark + "createfile" + splitMark + cdaId + ".xml";
+
+        File file = new File(strXMLFilePath);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        try {
+            file.createNewFile();
+        } catch (IOException ex) {
+            LogService.getLogger(CdaController_w.class).error(ex.getMessage());
+        }
+
+        try {
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(fileInfo);
+            bw.flush();
+            bw.close();
+            fw.close();
+        } catch (IOException ex) {
+            LogService.getLogger(CdaController_w.class).error(ex.getMessage());
+        }
+
+        return strXMLFilePath;
+    }*/
+
+   /* public boolean SaveXmlFilePath(String cdaId, String versionCode, String fileGroup, String filePath) {
+        boolean result = true;
+        try {
+            List<String> listIds = new ArrayList<>();
+            listIds.add(cdaId);
+            XCDADocument[] xcdaDocuments = xcdaDocumentManager.getDocumentList(versionCode, listIds);
+            if (xcdaDocuments.length <= 0) {
+                LogService.getLogger(CdaController_w.class).error("δ�ҵ�CDA");
+                return false;
+            }
+
+            xcdaDocuments[0].setFileGroup(fileGroup);
+            xcdaDocuments[0].setSchema(filePath);
+            xcdaDocuments[0].setVersionCode(versionCode);
+            int iRes = xcdaDocumentManager.saveDocument(xcdaDocuments[0]);
+            if (iRes < 0) {
+                return false;
+            }
+        } catch (Exception ex) {
+            result = false;
+            LogService.getLogger(CdaController_w.class).error(ex.getMessage());
+        }
+
+        return result;
+    }*/
 
     /**
      * 获取cda文档的XML文件信息。

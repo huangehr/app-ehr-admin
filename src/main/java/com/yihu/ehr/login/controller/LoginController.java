@@ -579,11 +579,11 @@ public class LoginController extends BaseUIController {
                 }
                 //获取角色视图
                 List<String> rolesResourceIdList =  new ArrayList<>();
-                List<MRsRolesResource> rolesResourceList = new ArrayList<>();
-                gerRolesResource(roleList, rolesResourceList);
+                List<String> rolesResourceList = new ArrayList<>();
+                gerRolesResource(userId, roleList, rolesResourceList);
                 if(rolesResourceList !=null && rolesResourceList.size() >0){
-                    for(MRsRolesResource rsRolesResource : rolesResourceList){
-                        rolesResourceIdList.add(rsRolesResource.getResourceId());
+                    for(String rsRolesResource : rolesResourceList){
+                        rolesResourceIdList.add(rsRolesResource);
                     }
                     session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
                 }else{
@@ -669,24 +669,25 @@ public class LoginController extends BaseUIController {
      * @param rolesResourceList
      * @return
      */
-    public List<MRsRolesResource> gerRolesResource(List<String> roleList,List<MRsRolesResource> rolesResourceList){
+    public List<String> gerRolesResource(String userId, List<String> roleList, List<String> rolesResourceList){
         for(String roleId : roleList){
             try {
                 String url = ServiceApi.Resources.GetRolesGrantResources;
                 Map<String,Object> params = new HashMap<>();
                 params.put("rolesId",roleId);
+                params.put("userId", userId);
                 String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
                 Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
                 if (envelop.isSuccessFlg() && null != envelop.getDetailModelList() && envelop.getDetailModelList().size() > 0 ) {
-                    List<MRsRolesResource> roleResourceModels = envelop.getDetailModelList();
+                    List<String> roleResourceModels = envelop.getDetailModelList();
                     if(roleResourceModels != null && roleResourceModels.size() > 0){
                         for(int i = 0; i < roleResourceModels.size() ;i++){
-                            MRsRolesResource rolesResource = objectMapper.convertValue(roleResourceModels.get(i),MRsRolesResource.class) ;
-                            rolesResourceList.add(rolesResource);
+                            rolesResourceList.add(roleResourceModels.get(i));
                         }
                     }
                 }
             } catch (Exception ex) {
+                ex.printStackTrace();
                 LogService.getLogger(LoginController.class).error(ex.getMessage());
             }
         }

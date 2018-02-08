@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.specialdict.Icd10DictModel;
 import com.yihu.ehr.agModel.specialdict.Icd10DrugRelationModel;
 import com.yihu.ehr.agModel.specialdict.Icd10IndicatorRelationModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;

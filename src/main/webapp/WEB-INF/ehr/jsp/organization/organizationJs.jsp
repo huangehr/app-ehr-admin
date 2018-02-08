@@ -40,7 +40,7 @@
             }
             function onUploadSuccess(g, result){
                 if(result)
-                    openDialog("${contextRoot}/orgImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
+                    parent._OPENDIALOG("${contextRoot}/orgImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
                 else
                     $.Notice.success("导入成功！");
             }

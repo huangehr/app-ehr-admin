@@ -3,7 +3,6 @@ package com.yihu.ehr.portal.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.portal.PortalResourcesModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -96,7 +95,7 @@ public class ResourcesController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
-        params.put("sorts", "-uploadTime");
+        params.put("sorts", "uploadTime");
         params.put("page", page);
         params.put("size", rows);
         try {
@@ -116,14 +115,13 @@ public class ResourcesController extends BaseUIController {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "updatePortalResources", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updatePortalResources")
     @ResponseBody
     public Object updatePortalResources(String portalResourcesModelJsonData, HttpServletRequest request) throws IOException{
 
         String url = "/portalResources/";
         String resultStr = "";
         String imageId = "";
-        System.out.println();
         ObjectMapper mapper = new ObjectMapper();
         Envelop result = new Envelop();
         UsersModel userDetailModel = getCurrentUserRedis(request);
@@ -201,7 +199,8 @@ public class ResourcesController extends BaseUIController {
             }
         } catch (Exception e) {
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            result.setErrorMsg(e.getMessage());
             return result;
         }
         return resultStr;

@@ -41,10 +41,10 @@
                         onSelect: function (obj) {
                             if(!!!obj.data.children) {
                                 var id = me.type == 1 ? obj.data.code : obj.data.id,
-                                    name = obj.data.name;
+                                    name = obj.data.name, code = obj.data.code;
                                 $.ligerDialog.confirm('确认选择“' + name + '”视图吗？',function(yes){
                                     if (yes) {
-                                        closeselViewDialog('', id, me.type, name);
+                                        closeselViewDialog('', id, me.type, name, code);
                                     }
                                 })
                             }

@@ -2,7 +2,6 @@ package com.yihu.ehr.apps.controller;
 
 import com.yihu.ehr.adapter.controller.ExtendController;
 import com.yihu.ehr.agModel.app.AppDetailModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.apps.service.PlatformAppService;
 import com.yihu.ehr.constants.SessionAttributeKeys;

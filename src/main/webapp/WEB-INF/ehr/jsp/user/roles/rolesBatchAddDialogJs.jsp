@@ -110,7 +110,6 @@
 						onElementValidateForAjax: function (elm) {
 							var name = $("#inp_roles_name").val();
 							var orgCode = $("#orgCodes").val();
-							debugger
 							if(!Util.isStrEmpty(name) && !Util.isStrEmpty(orgCode)){
 								return checkUnique("${contextRoot}/userRoles/isNameExistence",appId,name,orgCode,"角色组名称已被使用！");
 							}
@@ -128,7 +127,8 @@
 				function update(values){
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var dataModel = $.DataModel.init();
-					var orgCodes = $("#orgCodes").val();
+//					var orgCodes = $("#orgCodes").val();
+                    var orgCodes  =  $('#inpMechanism').ligerGetComboBoxManager().getValue();
 					dataModel.updateRemote("${contextRoot}/userRoles/batchAdd", {
 						data:{dataJson:JSON.stringify(values),orgCodes:orgCodes},
 						success: function(data) {

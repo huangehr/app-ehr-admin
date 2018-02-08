@@ -8,7 +8,7 @@
         /* ************************** 变量定义 ******************************** */
         // 通用工具类库
         var Util = $.Util;
-
+debugger
         // 表单校验工具类
         var jValidation = $.jValidation;
 
@@ -24,10 +24,11 @@
         var orgSelectedValue = "";
         var deptSelectedValue = "";
         /* ************************** 变量定义结束 **************************** */
-        win.parent.orgDeptDio = null;
-        win.parent.ORGDEPTVAL = '';
+        win.orgDeptDio = null;
+        win.ORGDEPTVAL = '';
         /* *************************** 函数定义 ******************************* */
         /**
+         * 页面初始化。
          * 页面初始化。
          * @type {Function}
          */
@@ -88,7 +89,7 @@
                         $.Notice.error(resp.errorMsg);
                     else
                         $.Notice.success('新增成功');
-                        closeAddDoctorInfoDialog();
+                        win.parent.closeAddDoctorInfoDialog();
                 });
             },
             initForm: function () {
@@ -211,7 +212,7 @@
 
                 //新增的点击事件
                 this.$addBtn.click(function () {
-                    var jsonModel = win.parent.ORGDEPTVAL;
+                    var jsonModel = win.ORGDEPTVAL;
                     if (jsonModel.length <= 0) {
                         $.Notice.error('请选择机构部门');
                         return;
@@ -244,10 +245,8 @@
                     var waittingDialog = $.ligerDialog.waitting('正在保存中,请稍候...');
                     var doctorModelJsonData = JSON.stringify(doctorModel);
                     var dataModel = $.DataModel.init();
-
-                    debugger
                     jsonModel = JSON.stringify(jsonModel);
-                    win.parent.ORGDEPTVAL = null;
+                    win.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
                         data: {doctorModelJsonData: doctorModelJsonData,jsonModel: jsonModel},
                         success: function (data) {
@@ -255,17 +254,21 @@
                             if (data.successFlg) {
                                 win.parent.reloadMasterUpdateGrid();
                                 win.parent.showAddSuccPop();
-                                closeAddDoctorInfoDialog();
+                                win.parent.closeAddDoctorInfoDialog();
                             } else {
                                 waittingDialog.close();
                                 $.Notice.error(data.errorMsg);
                             }
+                        },
+                        error:function(){
+                            waittingDialog.close();
+                            $.Notice.error('请求失败！');
                         }
                     })
                 }
 
                 self.$cancelBtn.click(function () {
-                    closeAddDoctorInfoDialog();
+                    win.parent.closeAddDoctorInfoDialog();
                 });
 
 

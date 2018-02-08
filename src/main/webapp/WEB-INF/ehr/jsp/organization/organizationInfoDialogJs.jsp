@@ -317,7 +317,7 @@
                                 });
                             }
                             if (data.successFlg) {
-                                parent.closeDialog();
+                                win.closeDialog();
                                 if(uploader.getFiles().length>0){
                                     $(".uploadBtn").click();
                                 }else{
@@ -368,7 +368,7 @@
                 }
 
                 self.$cancelBtn.click(function () {
-                    parent.closeDialog();
+                    win.closeDialog();
                 });
 
                 //公钥管理窗口点击事件

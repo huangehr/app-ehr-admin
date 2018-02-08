@@ -17,7 +17,11 @@
         var pi = [
             '${contextRoot}/resourcesStatistics/stasticReport/getArchiveReportAll',
             '${contextRoot}/resourcesStatistics/stasticReport/getRecieveOrgCount',
-            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesInc'
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesInc',
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesFull',
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesTime',
+            '${contextRoot}/resourcesStatistics/stasticReport/getDataSetCount',
+            '${contextRoot}/resourcesStatistics/stasticReport/getArchivesRight'
         ];
 
         var mh = {
@@ -25,27 +29,89 @@
             $el1: document.getElementById("chart1"),
             $el2: document.getElementById("chart2"),
             $el3: document.getElementById("chart3"),
-            $startDate:$("#inp_start_date"),
-            $endDate:$("#inp_end_date"),
+            $el4: document.getElementById("chart4"),
+            $el5: document.getElementById("chart5"),
+            $el6: document.getElementById("chart6"),
+            $el7: document.getElementById("chart7"),
+            $el8: document.getElementById("chart8"),
+            $el9: document.getElementById("chart9"),
+            $startDate1:$("#start_date1"),
+            $endDate1:$("#end_date1"),
+            $startDate2:$("#start_date2"),
+            $endDate2:$("#end_date2"),
+            $startDate3:$("#start_date3"),
+            $endDate3:$("#end_date3"),
+            $startDate4:$("#start_date4"),
+            $endDate4:$("#end_date4"),
             $date1:$("#date1"),
             $date2:$("#date2"),
+            $date3:$("#date3"),
             $searchBtn: $('#btn_search'),
             $searchBtn1: $('#btn_search1'),
             $searchBtn2: $('#btn_search2'),
-            $orgCode: $('#orgCode'),
+            $searchBtn3: $('#btn_search3'),
+            $searchBtn4: $('#btn_search4'),
+            $searchBtn5: $('#btn_search5'),
+            $searchBtn6: $('#btn_search6'),
+            $orgCode1: $('#orgCode1'),
+            $orgCode2: $('#orgCode2'),
+            $orgCode3: $('#orgCode3'),
+            $orgCode4: $('#orgCode4'),
+            $orgCode5: $('#orgCode5'),
             myCharts1: null,
             myCharts2: null,
             myCharts3: null,
+            myCharts4: null,
+            myCharts5: null,
+            myCharts6: null,
+            myCharts7: null,
+            myCharts8: null,
+            myCharts9: null,
+            list4:[],
             init: function () {
                 var me = this;
                 var url = '${contextRoot}/deptMember/getHospitalList';
-                this.$orgCode.customCombo(url);
-                me.$startDate.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                this.$orgCode1.customCombo(url);
+                this.$orgCode2.customCombo(url);
+                this.$orgCode3.customCombo(url);
+                this.$orgCode4.customCombo(url);
+                this.$orgCode5.customCombo(url);
+                me.$startDate1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
                 }});
-                me.$endDate.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                me.$endDate1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$startDate2.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$endDate2.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$startDate3.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$endDate3.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$startDate4.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$endDate4.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
@@ -60,14 +126,30 @@
                         $(".div-head").find(".div-item.active").trigger("click");
                     }
                 }});
-                me.$startDate.ligerDateEditor("setValue",me.getSevenDays());
-                me.$endDate.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$date3.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
+                    if(value){
+                        $(".div-head").find(".div-item.active").trigger("click");
+                    }
+                }});
+                me.$startDate1.ligerDateEditor("setValue",me.getSevenDays());
+                me.$endDate1.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$startDate2.ligerDateEditor("setValue",me.getSevenDays());
+                me.$endDate2.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$startDate3.ligerDateEditor("setValue",me.getSevenDays());
+                me.$endDate3.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$startDate4.ligerDateEditor("setValue",me.getSevenDays());
+                me.$endDate4.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date1.ligerDateEditor("setValue",me.getCurrentDate());
                 me.$date2.ligerDateEditor("setValue",me.getCurrentDate());
+                me.$date3.ligerDateEditor("setValue",me.getCurrentDate());
                 Promise.all([
                     me.getChart1(),
                     me.getChart2(),
-                    me.getChart3()
+                    me.getChart3(),
+                    me.getChart4(),
+                    me.getChart5(),
+                    me.getChart6(),
+                    me.getChart7()
                 ]).then(function () {
                     me.bindEvents();
                 });
@@ -92,10 +174,12 @@
                 var me = this;
                 me.myCharts1 = echarts.init(me.$el1);
                 me.myCharts1.showLoading();
-                this.getData(pi[0], {startDate: me.$startDate.val(),endDate:me.$endDate.val()}, function (res) {
+                this.getData(pi[0], {startDate: me.$startDate1.val(),endDate:me.$endDate1.val()}, function (res) {
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart1(dataList);
+                    }else{
+                        me.myCharts1.hideLoading();
                     }
                 });
             },
@@ -107,6 +191,8 @@
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart2(dataList);
+                    }else{
+                        me.myCharts2.hideLoading();
                     }
                 });
             },
@@ -114,10 +200,94 @@
                 var me = this;
                 me.myCharts3 = echarts.init(me.$el3);
                 me.myCharts3.showLoading();
-                this.getData(pi[2], {date: me.$date2.val(),orgCode:  $("#orgCode").ligerGetComboBoxManager().getValue() }, function (res) {
+                this.getData(pi[2], {date: me.$date2.val(),orgCode:  $("#orgCode1").ligerGetComboBoxManager().getValue() }, function (res) {
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart3(dataList);
+                    }else{
+                        me.myCharts3.hideLoading();
+                    }
+                });
+            },
+            getChart4: function () {
+                var me = this;
+                me.myCharts4 = echarts.init(me.$el4);
+                me.myCharts4.showLoading();
+                this.getData(pi[3], {startDate: me.$startDate2.val(),endDate:me.$endDate2.val(),orgCode:  $("#orgCode2").ligerGetComboBoxManager().getValue() }, function (res) {
+                    if (res.successFlg) {
+                        var dataList = res.detailModelList;
+                        list4=res.detailModelList;
+                        var obj = res.obj;
+                        $("#total").html(obj.total+"/"+obj.total_es);
+                        $("#total_rate").html(me.toDecimal(obj.total_rate)+"%");
+                        $("#oupatient_total").html(obj.oupatient_total+"/"+obj.oupatient_total_es);
+                        $("#oupatient_rate").html(me.toDecimal(obj.oupatient_rate)+"%");
+                        $("#inpatient_total").html(obj.inpatient_total+"/"+obj.inpatient_total_es);
+                        $("#inpatient_rate").html(me.toDecimal(obj.inpatient_rate)+"%");
+
+                        $("#total_sc").html(obj.total+"/"+obj.total_sc);
+                        $("#total_rate_sc").html(me.toDecimal(obj.total_rate_sc)+"%");
+                        $("#oupatient_total_sc").html(obj.oupatient_total+"/"+obj.oupatient_total_sc);
+                        $("#oupatient_rate_sc").html(me.toDecimal(obj.oupatient_rate_sc)+"%");
+                        $("#inpatient_total_sc").html(obj.inpatient_total+"/"+obj.inpatient_total_sc);
+                        $("#inpatient_rate_sc").html(me.toDecimal(obj.inpatient_rate_sc)+"%");
+                        if(res.detailModelList && res.detailModelList.length>0){
+                            me.loadChart4(dataList);
+                        }
+                    }else{
+                        me.myCharts4.hideLoading();
+                    }
+                });
+            },
+            getChart5: function () {
+                var me = this;
+                me.myCharts5 = echarts.init(me.$el5);
+                me.myCharts5.showLoading();
+                this.getData(pi[4], {startDate: me.$startDate3.val(),endDate:me.$endDate3.val(),orgCode:  $("#orgCode3").ligerGetComboBoxManager().getValue() }, function (res) {
+                    if (res.successFlg) {
+                        var dataList = res.detailModelList;
+                        var obj = res.obj;
+                        $("#total_time").html(obj.total+"/"+obj.total_es);
+                        $("#total_rate_time").html(me.toDecimal(obj.total_rate)+"%");
+                        $("#oupatient_total_time").html(obj.oupatient_total+"/"+obj.oupatient_total_es);
+                        $("#oupatient_rate_time").html(me.toDecimal(obj.oupatient_rate)+"%");
+                        $("#inpatient_total_time").html(obj.inpatient_total+"/"+obj.inpatient_total_es);
+                        $("#inpatient_rate_time").html(me.toDecimal(obj.inpatient_rate)+"%");
+                        if(res.detailModelList && res.detailModelList.length>0){
+                            me.loadChart5(dataList);
+                        }
+                    }else{
+                        me.myCharts5.hideLoading();
+                    }
+                });
+            },
+            getChart6: function () {
+                var me = this;
+                me.myCharts6 = echarts.init(me.$el6);
+                me.myCharts6.showLoading();
+                this.getData(pi[5], {date: me.$date3.val(), orgCode: $("#orgCode4").ligerGetComboBoxManager().getValue() }, function (res) {
+                    if (res.successFlg) {
+                        var dataList = res.detailModelList;
+                        me.loadChart6(dataList);
+                    }else{
+                        me.myCharts6.hideLoading();
+                    }
+                });
+            },getChart7: function () {
+                var me = this;
+                me.myCharts7 = echarts.init(me.$el7);
+                me.myCharts8 = echarts.init(me.$el8);
+                me.myCharts9 = echarts.init(me.$el9);
+                me.myCharts7.showLoading();
+                me.myCharts8.showLoading();
+                me.myCharts9.showLoading();
+                this.getData(pi[6], {startDate: me.$startDate4.val(),endDate:me.$endDate4.val(),orgCode:  $("#orgCode5").ligerGetComboBoxManager().getValue() }, function (res) {
+                    if (res.successFlg) {
+                        me.loadChart7(res.obj);
+                    }else{
+                        me.myCharts7.hideLoading();
+                        me.myCharts8.hideLoading();
+                        me.myCharts9.hideLoading();
                     }
                 });
             },
@@ -127,16 +297,18 @@
                 var data1=[];
                 var data2=[];
                 var data3=[];
-                $.each(data,function (id1,item1) {
-                    $.each(item1, function (key,value) {
-                        xData.push(key);
-                        $.each(value,function (id2,item2) {
-                            data1.push(me.toZore(item2.num1));
-                            data2.push(me.toZore(item2.num2));
-                            data3.push(item2.num3);
+                if(data && data.length>0){
+                    $.each(data,function (id1,item1) {
+                        $.each(item1, function (key,value) {
+                            xData.push(key);
+                            $.each(value,function (id2,item2) {
+                                data1.push(me.toZore(item2.waiting));
+                                data2.push(me.toZore(item2.successful));
+                                data3.push(item2.total);
+                            });
                         });
                     });
-                });
+                }
                 var option = {
                     tooltip : {
                         trigger: 'axis',
@@ -228,7 +400,7 @@
                                     }
                                 }
                             },
-                            data:data1
+                            data:data2
                         },
                         {
                             name:'未解析',
@@ -244,7 +416,7 @@
                                     }
                                 }
                             },
-                            data:data2
+                            data:data1
                         }
                     ]
                 };
@@ -262,13 +434,15 @@
                 var data2=[];
                 var data3=[];
                 var data4=[];
-                $.each(data,function (id,item) {
-                    xData.push(item.org_name);
-                    data1.push(me.toZore(item.successful));
-                    data2.push(me.toZore(item.waiting));
-                    data3.push(item.total);
-                    data4.push(me.toDecimal(item.rate));
-                });
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        xData.push(item.org_name);
+                        data1.push(me.toZore(item.successful));
+                        data2.push(me.toZore(item.waiting));
+                        data3.push(item.total);
+                        data4.push(me.toDecimal(item.rate));
+                    });
+                }
                 var option = {
                     tooltip : {
                         trigger: 'axis',
@@ -466,13 +640,15 @@
                 var data2=[];
                 var data3=[];
                 var data4=[];
-                $.each(data,function (id,item) {
-                    xData.push(item.ed);
-                    data1.push(me.toZore(item.inpatient_total));
-                    data2.push(me.toZore(item.oupatient_total));
-                    data3.push(item.inpatient_inc);
-                    data4.push(item.oupatient_inc);
-                });
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        xData.push(item.ed);
+                        data1.push(me.toZore(item.inpatient_total));
+                        data2.push(me.toZore(item.oupatient_total));
+                        data3.push(item.inpatient_inc);
+                        data4.push(item.oupatient_inc);
+                    });
+                }
                 var option = {
                     tooltip : {
                         trigger: 'axis',
@@ -493,11 +669,6 @@
                             start: 94,
                             end: 100,
                             bottom:"20"
-                        },
-                        {
-                            type: 'inside',
-                            start: 94,
-                            end: 100
                         }
                     ],
                     calculable : true,
@@ -616,19 +787,592 @@
                 me.myCharts3.hideLoading();
                 me.myCharts3.setOption(option);
             },
+            loadChart4:function(data){
+                var me = this;
+                var xData=[];
+                var data1=[];
+                var data2=[];
+                var data3=[];
+                var data4=[];
+                var data5=[];
+                var data6=[];
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        $.each(item, function (key, value) {
+                            xData.push(key);
+                            if ($("#chart4-head .div-items.active").index() == 0) {
+                                data1.push(me.toDecimal(value.total_rate));
+                                data2.push(me.toDecimal(value.oupatient_rate));
+                                data3.push(me.toDecimal(value.inpatient_rate));
+                            } else {
+                                data1.push(me.toDecimal(value.total_rate_sc));
+                                data2.push(me.toDecimal(value.oupatient_rate_sc));
+                                data3.push(me.toDecimal(value.inpatient_rate_sc));
+                            }
+                        });
+                    });
+                }
+                var option = {
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data:['就诊人次', '门诊人次','住院人次']
+                    },
+                    grid: {
+                        borderWidth:0,
+                        y2: 80
+                    },
+                    calculable : true,
+                    yAxis : [
+                        {
+                            type : 'value',
+                            min: 0,
+                            max: 100,
+                            boundaryGap : [0, 0.01],
+                            axisLine : {    // 轴线
+                                show: false,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick : {    // 轴标记
+                                show:false
+                            },
+                            splitLine : {
+                                show:true,
+                                lineStyle: {
+                                    color: '#dddddd',
+                                    type: 'dotted',
+                                    width: 2
+                                }
+                            },
+                            splitArea: {show:false},
+                            axisLabel: {
+                                show:true,
+                                formatter: '{value} %',
+                                textStyle:{
+                                color: '#909090',
+                                fontSize:14
+                            }}
+                        }
+                    ],
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : xData,
+                            axisLine : {    // 轴线
+                                show: true,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick: {show:false},
+                            splitArea: {show:false},
+                            splitLine: {show:false}
+                        }
+                    ],
+                    series : [
+                        {
+                            name: '就诊人次',
+                            type:'line',
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#FFBD5C',
+                                    lineStyle:{
+                                        color:'#FFBD5C'
+                                    }
+                                }
+                            },
+                            data: data1
+                        },
+                        {
+                            name:'门诊人次',
+                            type:'line',
+//                            barGap:2,
+//                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#44d4ca',
+                                    lineStyle:{
+                                        color:'#44d4ca'
+                                    }
+                                }
+                            },
+                            data:data2
+                        },
+                        {
+                            name:'住院人次',
+                            type:'line',
+//                            barGap:2,
+//                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#28a9e6',
+                                    lineStyle:{
+                                        color:'#28a9e6'
+                                    }
+                                }
+                            },
+                            data:data3
+                        }
+                    ]
+                };
+                me.myCharts4.hideLoading();
+                me.myCharts4.setOption(option);
+            },
+            loadChart5:function(data){
+                var me = this;
+                var xData=[];
+                var data1=[];
+                var data2=[];
+                var data3=[];
+                var data4=[];
+                var data5=[];
+                var data6=[];
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        $.each(item, function (key, value) {
+                            xData.push(key);
+                            if ($("#chart4-head .div-items.active").index() == 0) {
+                                data1.push(me.toDecimal(value.total_rate));
+                                data2.push(me.toDecimal(value.oupatient_rate));
+                                data3.push(me.toDecimal(value.inpatient_rate));
+                            } else {
+                                data1.push(me.toDecimal(value.total_rate_sc));
+                                data2.push(me.toDecimal(value.oupatient_rate_sc));
+                                data3.push(me.toDecimal(value.inpatient_rate_sc));
+                            }
+                        });
+                    });
+                }
+                var option = {
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data:['就诊人次', '门诊人次','住院人次']
+                    },
+                    grid: {
+                        borderWidth:0,
+                        y2: 80
+                    },
+                    calculable : true,
+                    yAxis : [
+                        {
+                            type : 'value',
+                            min: 0,
+                            max: 100,
+                            boundaryGap : [0, 0.01],
+                            axisLine : {    // 轴线
+                                show: false,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick : {    // 轴标记
+                                show:false
+                            },
+                            splitLine : {
+                                show:true,
+                                lineStyle: {
+                                    color: '#dddddd',
+                                    type: 'dotted',
+                                    width: 2
+                                }
+                            },
+                            splitArea: {show:false},
+                            axisLabel: {
+                                show:true,
+                                formatter: '{value} %',
+                                textStyle:{
+                                color: '#909090',
+                                fontSize:14
+                            }}
+                        }
+                    ],
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : xData,
+                            axisLine : {    // 轴线
+                                show: true,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick: {show:false},
+                            splitArea: {show:false},
+                            splitLine: {show:false}
+                        }
+                    ],
+                    series : [
+                        {
+                            name: '就诊人次',
+                            type:'line',
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#FFBD5C',
+                                    lineStyle:{
+                                        color:'#FFBD5C'
+                                    }
+                                }
+                            },
+                            data: data1
+                        },
+                        {
+                            name:'门诊人次',
+                            type:'line',
+//                            barGap:2,
+//                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#44d4ca',
+                                    lineStyle:{
+                                        color:'#44d4ca'
+                                    }
+                                }
+                            },
+                            data:data2
+                        },
+                        {
+                            name:'住院人次',
+                            type:'line',
+//                            barGap:2,
+//                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#28a9e6',
+                                    lineStyle:{
+                                        color:'#28a9e6'
+                                    }
+                                }
+                            },
+                            data:data3
+                        }
+                    ]
+                };
+                me.myCharts5.hideLoading();
+                me.myCharts5.setOption(option);
+            },
+            loadChart6:function(data){
+                var colors=["#EE9A13","#F8C400","#EFEE00","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78","#96C6EA","#BA72A4","#BBB4D6","#D9C7DF","#00AA90","#00AA90","#61BBA1","#7CC5B1","#E4EC65","#E3EF8D","#E6EA00","#D5649A","#DCA89A","#D4561B","#E2AA99","#138A6A","#739C5A","#3FB3B2","#B7DCB1","#F09B4A","#59BBD8","#76C5E6","#B4DEEC","#95D0DE","#B6DEDE","#A1A6A2","#E46713","#EE9A13","#F8C400","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78","#96C6EA","#BA72A4","#BBB4D6","#D9C7DF","#00AA90","#61BBA1","#7CC5B1","#E4EC65","#E3EF8D","#EDF4CA","#E6EA00","#D5649A","#DCA89A","#D4561B","#D66543","#E2AA99","#138A6A","#418F68","#739C5A","#389688","#3FB3B2","#B7DCB1","#F09B4A","#59BBD8","#76C5E6","#B4DEEC","#95D0DE","#B6DEDE","#A1A6A2"];
+                console.info(colors.length);
+                var me = this;
+                var list=[];
+                if (data&&data.length>0){
+                    $("#grid").show();
+                }
+                var html=[];
+                if(data && data.length>0) {
+                    $.each(data, function (id, item) {
+                        var obj = {};
+                        obj.value = item.row;
+                        obj.name = item.dataSet;
+                        list.push(obj);
+                        html.push('<tr>');
+                        html.push('<td align="center"><div style="background:' + colors[id] + ';width:20px;height:10px;margin:5px auto;"></div></td>');
+                        html.push('<td>' + item.dataSet + '</td>');
+                        html.push('<td>' + item.count + '</td>');
+                        html.push('<td>' + item.row + '</td>');
+                        html.push('</tr>');
+                    });
+                }
+                $("#grid tbody").html(html.join(""));
+                var option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}<br/> {c} ({d}%)"
+                    },
+                    color: colors,
+                    series: [
+                        {
+                            type:'pie',
+                            radius: ['20%', '80%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:list
+                        }
+                    ]
+                };
+                me.myCharts6.hideLoading();
+                me.myCharts6.setOption(option);
+            },
+            loadChart7:function(data){
+                var me = this;
+                var colors=["#EE9A13","#F8C400","#EFEE00","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78"];
+                var list1=[];
+                var legend1=[];
+                var list2=[];
+                var legend2=[];
+                var xData=[];
+                var data1=[];
+                var data2=[];
+                var html=[];
+                $.each(data.dataSet,function (id1,item1) {
+                    $.each(item1, function (key,value) {
+                        xData.push(key);
+                        data1.push(value.count);
+                        data2.push(value.rate);
+                    });
+                });
+                $.each(data.errorCode,function (id,item) {
+                    var obj = {};
+                    obj.value = item.count;
+                    if (item.errorCode=="e00001"){
+                        obj.name = "为空";
+                    }else if (item.errorCode=="e00002"){
+                        obj.name = "超出值域";
+                    }else{
+                        obj.name = "其他";
+                    }
+                    legend1.push(obj.name);
+                    list1.push(obj);
+                });
+                $.each(data.code,function (id,item) {
+                    var obj = {};
+                    obj.value = item.count;
+                    obj.name = item.code;
+                    legend2.push(obj.name);
+                    list2.push(obj);
+                });
+
+                var option1 = {
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    legend: {
+                        data:['错误总数', '环比']
+                    },
+                    grid: {
+                        borderWidth:0
+                    },
+                    calculable : true,
+                    yAxis : [
+                        {
+                            type : 'value',
+                            name: '错误总数',
+                            boundaryGap : [0, 0.01],
+                            axisLine : {    // 轴线
+                                show: false,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick : {    // 轴标记
+                                show:false
+                            },
+                            splitLine : {
+                                show:true,
+                                lineStyle: {
+                                    color: '#dddddd',
+                                    type: 'dotted',
+                                    width: 2
+                                }
+                            },
+                            splitArea: {show:false},
+                            axisLabel: {show:true,textStyle:{
+                                color: '#909090',
+                                fontSize:14
+                            }}
+                        },
+                        {
+                            type : 'value',
+                            name: '环比',
+                            boundaryGap : [0, 0.01],
+                            axisLine : {    // 轴线
+                                show: false,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick : {    // 轴标记
+                                show:false
+                            },
+                            splitLine : {
+                                show:false
+                            },
+                            splitArea: {show:false},
+                            axisLabel: {
+                                formatter: '{value} %',
+                                show:true,
+                                textStyle:{
+                                    color: '#909090',
+                                    fontSize:14
+                                }}
+                        }
+                    ],
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : xData,
+                            axisLine : {    // 轴线
+                                show: true,
+                                lineStyle: {
+                                    color: '#dcdcdc',
+                                    width: 1
+                                }
+                            },
+                            axisTick: {show:false},
+                            splitArea: {show:false},
+                            splitLine: {show:false}
+                        }
+                    ],
+                    series : [
+                        {
+                            name: '错误总数',
+                            type:'bar',
+                            barGap:2,
+                            barMaxWidth:6,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#28a9e6',
+                                    lineStyle:{
+                                        color:'#28a9e6'
+                                    }
+                                }
+                            },
+                            data: data1
+                        },
+                        {
+                            name:'环比',
+                            type:'line',
+                            yAxisIndex: 1,
+                            itemStyle : {
+                                normal : {
+                                    barBorderRadius:[6],
+                                    color:'#9c9af4',
+                                    lineStyle:{
+                                        color:'#9c9af4'
+                                    }
+                                }
+                            },
+                            data:data2
+                        }
+                    ]
+                };
+                var option2 = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}<br/> {c} ({d}%)"
+                    },
+                    color: colors,
+                    legend: {
+                        orient: 'vertical',
+                        x: 'right',
+                        bottom:'15%',
+                        data:legend1
+                    },
+                    series: [
+                        {
+                            type:'pie',
+                            radius: ['20%', '80%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:list1
+                        }
+                    ]
+                };
+                var option3 = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}<br/> {c} ({d}%)"
+                    },
+                    color: colors,
+                    legend: {
+                        orient: 'vertical',
+                        x: 'right',
+                        bottom:'15%',
+                        data:legend2
+                    },
+                    series: [
+                        {
+                            type:'pie',
+                            radius: ['20%', '80%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data:list2
+                        }
+                    ]
+                };
+                me.myCharts7.hideLoading();
+                me.myCharts7.setOption(option1);
+                me.myCharts8.hideLoading();
+                me.myCharts8.setOption(option2);
+                me.myCharts9.hideLoading();
+                me.myCharts9.setOption(option3);
+            },
             bindEvents: function () {
                 var me = this;
                 window.onresize = function () {
                     me.myCharts1.resize();
                     me.myCharts2.resize();
                     me.myCharts3.resize();
+                    me.myCharts4.resize();
+                    me.myCharts5.resize();
+                    me.myCharts6.resize();
+                    me.myCharts7.resize();
+                    me.myCharts8.resize();
+                    me.myCharts9.resize();
                 };
                 me.$searchBtn.click(function () {
-                    if(me.$startDate.val()==""){
+                    if(me.$startDate1.val()==""){
                         parent._LIGERDIALOG.error('请选择开始日期');
                         return false;
                     }
-                    if(me.$endDate.val()==""){
+                    if(me.$endDate1.val()==""){
                         parent._LIGERDIALOG.error('请选择结束日期');
                         return false;
                     }
@@ -647,6 +1391,56 @@
                         return false;
                     }
                     me.getChart3();//所有指标统计结果查询,初始化查询
+                });
+                me.$searchBtn3.click(function () {
+                    if(me.$startDate2.val()==""){
+                        parent._LIGERDIALOG.error('请选择开始日期');
+                        return false;
+                    }
+                    if(me.$endDate2.val()==""){
+                        parent._LIGERDIALOG.error('请选择结束日期');
+                        return false;
+                    }
+                    me.getChart4();//所有指标统计结果查询,初始化查询
+                });
+                me.$searchBtn4.click(function () {
+                    if(me.$startDate3.val()==""){
+                        parent._LIGERDIALOG.error('请选择开始日期');
+                        return false;
+                    }
+                    if(me.$endDate3.val()==""){
+                        parent._LIGERDIALOG.error('请选择结束日期');
+                        return false;
+                    }
+                    me.getChart5();//所有指标统计结果查询,初始化查询
+                });
+                me.$searchBtn5.click(function () {
+                    if(me.$date3.val()==""){
+                        parent._LIGERDIALOG.error('请选择开始日期');
+                        return false;
+                    }
+                    me.getChart6();//所有指标统计结果查询,初始化查询
+                });
+                me.$searchBtn6.click(function () {
+                    if(me.$startDate4.val()==""){
+                        parent._LIGERDIALOG.error('请选择开始日期');
+                        return false;
+                    }
+                    if(me.$endDate4.val()==""){
+                        parent._LIGERDIALOG.error('请选择结束日期');
+                        return false;
+                    }
+                    me.getChart7();//所有指标统计结果查询,初始化查询
+                });
+                $("#chart4-head .div-items").click(function () {
+                    if(!$(this).hasClass("active")){
+                        $(this).addClass("active");
+                        $(this).siblings().removeClass("active");
+                        me.loadChart4(list4);
+                    }
+                });
+                $("#link").click(function () {
+                    top.window.open("http://171.35.109.35:1234/PMC/j_spring_security_check?j_username=wjw1&j_password=7bb98050796b649e");
                 });
             },
             toZore: function (param) {

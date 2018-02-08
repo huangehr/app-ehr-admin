@@ -65,7 +65,7 @@
     jValidation.Tips = {
         useTips: true,
         showArrow: true,
-        position: 'right'
+        position: 'top'
     };
 
     jValidation.ValidatorDefaultOptions = function () {

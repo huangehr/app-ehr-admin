@@ -4,8 +4,8 @@
 <!--######用户管理页面Title设置######-->
 <div class="new_Dialogue">
     <%--<div class="title_Bk">--%>
-        <%--<div class="inlinebBlock addCar">导入排班</div>--%>
-        <%--<div class=" inlinebBlock close_Dialogue"></div>--%>
+    <%--<div class="inlinebBlock addCar">导入排班</div>--%>
+    <%--<div class=" inlinebBlock close_Dialogue"></div>--%>
     <%--</div>--%>
     <div class="base_Info">
         <div class="div_info">
@@ -17,25 +17,28 @@
         </div>
         <div class="div_imfo wu-example" id="uploader" >
             <label>导入文件</label>
-            <input type="text" disabled="disabled" id="thelist"  class="uploader-list"/>
-            <div id="div_doctor_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>
-                <!--用来存放item-->
-                <%--<div id="div_file_picker" class="f-mt10"><spring:message code="btn.file.choose"/></div>--%>
+            <input style="padding-left:10px;" type="text" readonly id="thelist"  class="uploader-list"/>
+            <div style="display: inline-block;position: relative;" >
+                <div id="importbutton"></div>
             </div>
+            <%--<div id="div_doctor_img_upload" class="u-upload alone f-ib f-tac f-vam u-upload-img" data-alone-file=true>--%>
+            <%--<!--用来存放item-->--%>
+            <%--&lt;%&ndash;<div id="div_file_picker" class="f-mt10"><spring:message code="btn.file.choose"/></div>&ndash;%&gt;--%>
+            <%--</div>--%>
         </div>
         <%--<div id="uploader" class="wu-example">--%>
-            <%--<!--用来存放文件信息-->--%>
-            <%--<div id="thelist" class="uploader-list"></div>--%>
-            <%--<div class="btns">--%>
-                <%--<div id="picker">选择文件</div>--%>
-                <%--<button id="ctlBtn" class="btn btn-default">开始上传</button>--%>
-            <%--</div>--%>
+        <%--<!--用来存放文件信息-->--%>
+        <%--<div id="thelist" class="uploader-list"></div>--%>
+        <%--<div class="btns">--%>
+        <%--<div id="picker">选择文件</div>--%>
+        <%--<button id="ctlBtn" class="btn btn-default">开始上传</button>--%>
+        <%--</div>--%>
         <%--</div>--%>
         <div class="div_download">
             模板下载
         </div>
         <div class="div_btn">
-            <div id="importbutton"></div>
+            <div id="okbutton">导入</div>
             <div id="cenclebutton">取消</div>
         </div>
     </div>

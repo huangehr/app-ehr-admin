@@ -2,7 +2,6 @@ package com.yihu.ehr.organization.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.adapter.controller.ExtendController;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -250,57 +250,57 @@ public class OrgImportController extends ExtendController<OrgService> {
 
     @RequestMapping("/batchSave")
     @ResponseBody
-    public Object batchSave(String doctors, String eFile, String tFile, String datePath){
-
+    public Object batchSave(String orgs, String eFile, String tFile, String datePath){
         try{
-            eFile = datePath + TemPath.separator + eFile;
-            File file = new File(TemPath.getFullPath(eFile, parentFile));
-            List<OrgMsgModel> all = (List<OrgMsgModel>) ObjectFileRW.read(file);
-            List<OrgMsgModel> orgMsgModels = objectMapper.readValue(doctors, new TypeReference<List<OrgMsgModel>>() {});
-            Map<String, Set> repeat = new HashMap<>();
-            repeat.put("orgCode", new HashSet<String>());
-            repeat.put("orgTypes", new HashSet<String>());
-            repeat.put("settledWays", new HashSet<String>());
-            repeat.put("hosTypeIds", new HashSet<String>());
-            repeat.put("ascriptionTypes", new HashSet<String>());
-            repeat.put("zxys", new HashSet<String>());
+            if(!StringUtils.isEmpty(orgs)&&!StringUtils.isEmpty(orgs.replaceAll("\\[|\\]",""))){
+                eFile = datePath + TemPath.separator + eFile;
+                File file = new File(TemPath.getFullPath(eFile, parentFile));
+                List<OrgMsgModel> all = (List<OrgMsgModel>) ObjectFileRW.read(file);
+                List<OrgMsgModel> orgMsgModels = objectMapper.readValue(orgs, new TypeReference<List<OrgMsgModel>>() {});
+                Map<String, Set> repeat = new HashMap<>();
+                repeat.put("orgCode", new HashSet<String>());
+                repeat.put("orgTypes", new HashSet<String>());
+                repeat.put("settledWays", new HashSet<String>());
+                repeat.put("hosTypeIds", new HashSet<String>());
+                repeat.put("ascriptionTypes", new HashSet<String>());
+                repeat.put("zxys", new HashSet<String>());
 
-            for(OrgMsgModel model : orgMsgModels){
-                model.validate(repeat);
-            }
-            //获取机构代码
-            Set<String> orgCodes = findExistOrgCode(toJson(repeat.get("orgCode")));
-            //根据字典代码获取字典项列表--机构类型,如:行政\科研等
-            Set<String> orgTypes = getDictEntryByDictId("7");
-            //根据字典代码获取字典项列表--入驻方式：直连/第三方接入
-            Set<String> settledWays = getDictEntryByDictId("8");
-            //根据字典代码获取字典项列表--医院类型：综合性医院/眼科医院
-            Set<String> hosTypeIds = getDictEntryByDictId("62");
-            //根据字典代码获取字典项列表--医院归属：省属/市属。
-            Set<String> ascriptionTypes = getDictEntryByDictId("63");
-            //根据字典代码获取字典项列表--中西医标识：中医/西医
-            Set<String> zxys = getDictEntryByDictId("70");
-            OrgMsgModel model;
-            List saveLs = new ArrayList<>();
-            for(int i=0; i<orgMsgModels.size(); i++){
-                model = orgMsgModels.get(i);
-                model=getAdressIdByName(model,model.getProvinceName(),model.getCityName(),model.getDistrict());
-                if(model.isAdDivisionExist()){
-                    if(validate(model, orgCodes,orgTypes,settledWays,hosTypeIds,ascriptionTypes,zxys)==0|| model.errorMsg.size()>0) {
-                        all.set(all.indexOf(model), model);
-                    }else{
-                        OrgMsgModel mod=getDictEntryKeyByName(model);
-                        saveLs.add(mod);
-                        all.remove(model);
-                    }
-                }else {
-                    all.set(all.indexOf(model), model);
+                for(OrgMsgModel model : orgMsgModels){
+                    model.validate(repeat);
                 }
+                //获取机构代码
+                Set<String> orgCodes = findExistOrgCode(toJson(repeat.get("orgCode")));
+                //根据字典代码获取字典项列表--机构类型,如:行政\科研等
+                Set<String> orgTypes = getDictEntryByDictId("7");
+                //根据字典代码获取字典项列表--入驻方式：直连/第三方接入
+                Set<String> settledWays = getDictEntryByDictId("8");
+                //根据字典代码获取字典项列表--医院类型：综合性医院/眼科医院
+                Set<String> hosTypeIds = getDictEntryByDictId("62");
+                //根据字典代码获取字典项列表--医院归属：省属/市属。
+                Set<String> ascriptionTypes = getDictEntryByDictId("63");
+                //根据字典代码获取字典项列表--中西医标识：中医/西医
+                Set<String> zxys = getDictEntryByDictId("70");
+                OrgMsgModel model;
+                List saveLs = new ArrayList<>();
+                for(int i=0; i<orgMsgModels.size(); i++){
+                    model = orgMsgModels.get(i);
+                    model=getAdressIdByName(model,model.getProvinceName(),model.getCityName(),model.getDistrict());
+                    if(model.isAdDivisionExist()){
+                        if(validate(model, orgCodes,orgTypes,settledWays,hosTypeIds,ascriptionTypes,zxys)==0|| model.errorMsg.size()>0) {
+                            all.set(all.indexOf(model), model);
+                        }else{
+                            OrgMsgModel mod=getDictEntryKeyByName(model);
+                            saveLs.add(mod);
+                            all.remove(model);
+                        }
+                    }else {
+                        all.set(all.indexOf(model), model);
+                    }
 
+                }
+                saveMeta(toJson(saveLs));
+                ObjectFileRW.write(file, all);
             }
-            saveMeta(toJson(saveLs));
-            ObjectFileRW.write(file, all);
-
             return success("");
         } catch (Exception e) {
             e.printStackTrace();

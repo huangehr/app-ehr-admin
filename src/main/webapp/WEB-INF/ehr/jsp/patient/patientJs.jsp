@@ -273,12 +273,12 @@
                                 dataModel.updateRemote('${contextRoot}/patient/deletePatient', {
                                     data: {idCardNo: idCardNo},
                                     success: function (data) {
+                                        debugger
                                         if (data.successFlg) {
-                                            //parent._LIGERDIALOG.open({type: 'success', msg: '删除成功！'});
                                             parent._LIGERDIALOG.success('操作成功。');
                                             patientMaster.reloadGrid();
                                         } else {
-                                            parent._LIGERDIALOG.open({type: 'error', msg: '操作失败。'});
+                                            parent._LIGERDIALOG.error('操作失败。');
                                         }
                                     }
                                 });

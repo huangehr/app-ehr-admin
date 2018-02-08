@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
@@ -296,17 +295,17 @@ public class ResourceBrowseController extends BaseUIController {
                 params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
                 params.put("areaCode", objectMapper.writeValueAsString(userAreaSaasList));
             }
-            Pattern pattern = Pattern.compile("\\[.+?\\]");
-            Matcher matcher = pattern.matcher(searchParams);
-            if(matcher.find()) {
-                if(searchParams.contains("{") || searchParams.contains("}")) {
-                    params.put("queryCondition", searchParams);
-                }else {
-                    params.put("queryCondition", "");
-                }
-            }else {
-                params.put("queryCondition", "");
-            }
+//            Pattern pattern = Pattern.compile("\\[.+?\\]");
+//            Matcher matcher = pattern.matcher(searchParams);
+//            if(matcher.find()) {
+//                if(searchParams.contains("{") || searchParams.contains("}")) {
+//                    params.put("queryCondition", searchParams);
+//                }else {
+//                    params.put("queryCondition", "");
+//                }
+//            }else {
+//                params.put("queryCondition", "");
+//            }
             params.put("page", page);
             params.put("size", rows);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -340,8 +339,38 @@ public class ResourceBrowseController extends BaseUIController {
                 finalList = resourceIntegratedController.changeIdCardNo(middleList, request);
             }
             envelop.setDetailModelList(finalList);
+            envelop.setSuccessFlg(true);
         } catch (Exception e) {
             e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    /**
+     * 档案资源浏览细表数据
+     * @param rowKey
+     * @param version
+     * @return
+     */
+    @RequestMapping("/searchResourceSubData")
+    @ResponseBody
+    public Object getRsDictEntryList(String rowKey, String version) {
+        Envelop envelop = new Envelop();
+        if(rowKey.contains("$")) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg("该列数据已为详细数据");
+            return envelop;
+        }
+        String dictEntryUrl = "/resources/ResourceBrowses/getResourceSubData";
+        Map<String, Object> params = new HashMap<>();
+        params.put("rowKey", rowKey);
+        params.put("version", version);
+        try {
+            String resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+        } catch (Exception e) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());
         }
@@ -495,6 +524,7 @@ public class ResourceBrowseController extends BaseUIController {
             sheet = inputData(sheet, envelop.getDetailModelList(), cells);
             sheet.mergeCells(0, 2, 0, objectList.size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
+            sheet.removeRow(0);
             book.write();
             book.close();
             os.flush();
@@ -543,6 +573,7 @@ public class ResourceBrowseController extends BaseUIController {
             sheet = inputData(sheet, envelop.getDetailModelList(), cells);
             sheet.mergeCells(0, 2, 0, envelop.getDetailModelList().size() + 1);
             sheet.addCell(new Label(0, 2, "值"));
+            sheet.removeRow(0);
             book.write();
             book.close();
             os.flush();

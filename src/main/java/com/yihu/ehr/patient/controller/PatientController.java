@@ -3,10 +3,7 @@ package com.yihu.ehr.patient.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
-import com.yihu.ehr.agModel.user.PlatformAppRolesTreeModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.user.controller.UserController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -445,7 +442,7 @@ public class PatientController extends BaseUIController {
         Envelop result = new Envelop();
         try {
             Map<String, Object> params = new HashMap<>();
-            String districtList = getInfoService.getDistrictList();
+//            String districtList = getInfoService.getDistrictList();
             params.put("search", searchNm.trim());
             params.put("gender", gender);
             params.put("page", page);
@@ -530,7 +527,6 @@ public class PatientController extends BaseUIController {
     @RequestMapping(value = "/deletePatientCardByCardId")
     @ResponseBody
     public Object auditUserCards(long id, HttpServletRequest request)throws Exception {
-//        UserDetailModel userDetailModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         String url = "/deletePatientCardByCardId";
         Map<String, Object> params = new HashMap<>();
         params.put("id", Long.valueOf(id));

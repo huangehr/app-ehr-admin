@@ -75,12 +75,12 @@
                                 {display: '日期', name: 'date', width: '20%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '归属地点', name: 'location', width: '20%', isAllowHide: false, align: 'center',editor:{type:"text"}},
                                 {display: '车牌号码', name: 'carId', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"}},
-                                {display: '主/付班', name: 'main', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"},
+                                {display: '主/副班', name: 'main', width: '10%', isAllowHide: false, align: 'center',editor:{type:"text"},
                                     render: function (row) {
-                                        if (row.main == 'true') {
+                                        if (row.main == 'true'||row.main=='主') {
                                             return "主";
                                         } else {
-                                            return "付";
+                                            return "副";
                                         }
 
                                     }},
@@ -94,13 +94,13 @@
                                         if (!row._editing)
                                         {
                                             html += '<a class="grid_towrite" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:open",row.id,rowJson) +'"></a>';
-                                            html += '<a class="grid_detail" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit",row.scheduleIds,row.date,row.carId,row.main) + '">'+'</a>';
+                                            html += '<a class="grid_detail" style="width:30px" title="详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit",row.scheduleIds,row.date,row.carId,row.main) + '">'+'</a>';
 
                                         }
                                         else
                                         {
-                                            html += '<a class="grid_hold" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:lock") + '"></a>';
-                                            html += '<a class="grid_detail" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit", row.scheduleIds,row.date,row.carId,row.main) + '"></a>';
+                                            html += '<a class="grid_hold" style="width:30px" title="保存" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:lock",row.id,rowJson) + '"></a>';
+                                            html += '<a class="grid_detail" style="width:30px" title="详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit", row.scheduleIds,row.date,row.carId,row.main) + '"></a>';
 
                                         }
                                         return html;
@@ -148,33 +148,25 @@
                     }
                     Util.reloadGrid.call(this.grid, '${contextRoot}/schedule/level', values, curPage);
                 },
-                beginEdit:function () {
-//                    var row = obj.grid.getSelectedRow();
-//                    obj.grid.beginEdit(row);
-                },
-                endEdit:function () {
-                    var row = obj.grid.getSelectedRow();
-                    obj.grid.endEdit(row);
-
-                },
                 bindEvents:function () {
                     var self = this;
                     $.subscribe('scheDetailsJs:scheInfo:open',function (event, id, row) {
-                        var thisRow = JSON.parse(row);
-                        obj.grid.beginEdit(thisRow);
-
+                        var fthisRow = JSON.parse(row);
+                        if(fthisRow.main=='true'){
+                            fthisRow.main = "主"
+                        }if(fthisRow.main=='false'){
+                            fthisRow.main = "副"
+                        }
+                        obj.grid.beginEdit(fthisRow);
                     })
-                    $.subscribe('scheDetailsJs:scheInfo:lock',function (event,id) {
-                        self.endEdit();
+                    $.subscribe('scheDetailsJs:scheInfo:lock',function (event, id, row) {
+                        var row = obj.grid.getSelectedRow();
+                        obj.grid.endEdit(row);
                     })
                     $.subscribe('scheDetailsJs:scheInfo:edit',function (event,scheduleIds,date,carId,main) {
-                        console.log(scheduleIds)
-                        console.log(date)
-                        console.log(carId)
-                        console.log(main)
                         obj.detailDialog = $.ligerDialog.open({
                             height: 'auto',
-                            width: 'auto',
+                            width: 800,
                             title: '排班信息',
                             url: '${contextRoot}/schedule/getPage',
                             urlParms: {

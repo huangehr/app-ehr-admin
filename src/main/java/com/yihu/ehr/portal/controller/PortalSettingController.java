@@ -2,8 +2,6 @@ package com.yihu.ehr.portal.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.portal.PortalSettingModel;
-import com.yihu.ehr.agModel.user.UserDetailModel;
-import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;

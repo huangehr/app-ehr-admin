@@ -79,7 +79,7 @@
     .license_plate_number{
         font-size: 14px;
         position: absolute;
-        top: 215px;
+        top: 195px;
     }
     #license_Plate_input{
         text-align: center;
@@ -96,7 +96,18 @@
     .personnel_phone{
         font-size: 14px;
         position: absolute;
-        top: 255px;
+        top: 265px;
+    }
+    .deviceCoding{
+        font-size: 14px;
+        position: absolute;
+        top: 230px;
+    }
+    .deviceCoding>input{
+        text-align: center;
+        height: 26px;
+        border: 1px solid #E8ECEB;
+        margin-left: 30px;
     }
     .personnel_phone>input{
         text-align: center;

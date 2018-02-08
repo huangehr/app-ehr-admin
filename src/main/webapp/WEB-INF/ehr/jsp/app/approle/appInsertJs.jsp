@@ -74,13 +74,13 @@
                                     return;
                                 }
                                 if (Util.isStrEmpty(configAppInsertGrid)) {
-                                    dataModel.updateRemote("${contextRoot}/appRole/searchInsertApps", {
-                                        data: {searchNm: '', gridType: "configAppInsertGrid", appRoleId: obj.id, page: 1, rows: Util.isStrEquals(gridType[0].data.totalCount,0)?15:gridType[0].data.totalCount},
-                                        async: false,
-                                        success: function (data) {
-                                            configAppInsertGrid = data.detailModelList;
-                                        }
-                                    });
+                                        dataModel.updateRemote("${contextRoot}/appRole/searchInsertApps", {
+                                            data: {searchNm: '', gridType: "configAppInsertGrid", appRoleId: obj.id, page: 1, rows: Util.isStrEquals(gridType[0].data.totalCount,0)?15:gridType[0].data.totalCount},
+                                            async: false,
+                                            success: function (data) {
+                                                configAppInsertGrid = data.detailModelList;
+                                            }
+                                        });
                                 }
                                 if (Util.isStrEmpty(configAppInsertGrid)){
                                     return false;

@@ -31,6 +31,8 @@
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
             $echartType: $("#echartType"),
+			$dimension: $("#dimension"),
+
 
 			init: function () {
 				this.initForm();
@@ -45,11 +47,17 @@
                 this.$dataSource.ligerTextBox({width:240});
                 this.$echartType.ligerComboBox({
                     data: [
-                        {text:"普通图表", id:"common"},
+                        {text:"混合图形", id:"mixed"},
+                        {text:"数值", id:"data"},
+                        {text:"柱状图", id:"bar"},
+                        {text:"线形图", id:"line"},
+                        {text:"饼图", id:"pie"},
+                        {text:"二维表", id:"twoDimensional"},
                         {text:"雷达图", id:"radar"},
                         {text:"旭日图", id:"nestedPie"}
                     ]
                 });
+				this.$dimension.ligerTextBox({width:240});
 //				this.$dataSource.ligerRadio();
 //                this.$dataSource.ligerGetRadioManager().setDisabled();
 				var mode = '${mode}';
@@ -80,6 +88,7 @@
 						id:info.id,
 						code:info.code,
 						name:info.name,
+						dimension:info.dimension,
 						categoryId:'${name}',
 						rsInterface:info.rsInterface,
 						grantType:info.grantType,

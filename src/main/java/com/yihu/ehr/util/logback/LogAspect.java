@@ -1,11 +1,11 @@
 package com.yihu.ehr.util.logback;
 
 import com.google.gson.Gson;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.rest.Envelop;
-import com.yihu.ehr.agModel.user.UserDetailModel;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -154,7 +154,7 @@ public class LogAspect {
         String userName = (String) session.getAttribute("loginCode");
                JSONObject data = new JSONObject();
         try {
-            UserDetailModel userModel = (UserDetailModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
+            UsersModel userModel = (UsersModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
             if(null!=userModel){
                 data.put("patient", userModel.getRealName());// 总支撑
             }
