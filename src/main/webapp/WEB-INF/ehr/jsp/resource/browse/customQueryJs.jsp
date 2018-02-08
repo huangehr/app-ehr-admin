@@ -30,6 +30,7 @@
             ]
         ];
         var rsInfoDialog = null,
+            waitSelect = '',
             defArr = [];
 
         $(function () {
@@ -64,6 +65,7 @@
                 type: 0,//0:档案数据；1：指标统计
                 index: 0,
                 masterArr: [],
+                change:0,
                 childArr: [],
                 queryCondition: '',
                 GridCloumnNamesData: [],
@@ -207,7 +209,9 @@
                                     me.index = 0;
                                     me.$selMore.html('');
                                     me.GridCloumnNamesData = sjyArr;
-                                    me.setSearchData();
+                                    me.change = 1;//改变标志
+//                                    console.log(sjyArr)
+//                                    me.setSearchData();
                                 } else {
                                     me.tjQuotaIds = [];
                                     me.tjQuotaCodes = [];
@@ -267,6 +271,7 @@
                     this.$selMore.html('');
                     this.GridCloumnNamesData = [];
                     this.masterArr = '';
+                    this.change = 0;
                     this.childArr = '';
                     this.tjQuotaIds = [];
                     this.tjQuotaCodes = [];
@@ -280,7 +285,7 @@
                     }
                 },
                 //档案数据-筛选存在数据字典中的字段
-                setSearchData: function (d) {
+                setSearchData: function () {
                     var me = this,
                         data = me.GridCloumnNamesData;
                     if (me.type == 1) {
@@ -288,7 +293,7 @@
                     }
                     if (data.length>0 && data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
                         if (data[me.index].dictCode == 'DATECONDITION') {
-                            me.resetSelHtml(data[me.index], 'date');
+                            me.resetSelHtml(data[me.index], 'date',me.index);
                         } else {
                             me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
                                 data: {dictId: data[me.index].dictCode},
@@ -298,7 +303,7 @@
                                     if (da.successFlg) {
                                         da.label = data[me.index].name;
                                         da.pCode = data[me.index].code;
-                                        me.resetSelHtml(da, 'list');
+                                        me.resetSelHtml(da, 'list',me.index);
                                     }
                                 }
                             });
@@ -307,39 +312,51 @@
                     me.index++;
                     if (me.index < me.GridCloumnNamesData.length) {
                         me.setSearchData();
+                    }else{
+                        me.resetSelHtml({}, 'list',me.index);
                     }
                 },
                 //添加查询条件
-                resetSelHtml: function (d, t) {
+                resetSelHtml: function (d, t,num) {
                     var me = this,
                         htm = '';
-                    if (t == 'list') {
-                        htm = me.render(me.selTmp, d, function (dd, $1) {
-                            var obj = d.detailModelList || [],
+                    if(! $.isEmptyObject(d)){
+                        if (t == 'list') {
+                            htm = me.render(me.selTmp, d, function (dd, $1) {
+                                var obj = d.detailModelList || [],
                                     str = '';
-                            for (var i = 0, len = obj.length; i < len; i++) {
-                                str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
-                            }
-                            dd.content = str;
-                        });
-                        me.$selMore.append(htm);
-                    } else {
-                        htm = me.render(me.selDateTmp, d, function (dd, $1) {
-                            var str = ['<li class="con-item ci-inp">',
-                                            '<input type="text" id="startDate' + d.code + '">',
-                                        '</li>',
-                                        '<li class="con-item ci-inp">',
-                                            '<input type="text" id="endDate' + d.code + '">',
-                                        '</li>'].join('');
-                            if ($1 == 'label') {
-                                dd.label = d.name;
-                            }
-                            if ($1 == 'content') {
+                                for (var i = 0, len = obj.length; i < len; i++) {
+                                    str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
+                                }
                                 dd.content = str;
-                            }
-                        });
-                        me.$selMore.append(htm);
-                        me.loadLirderDate(d.code);
+                            });
+                            me.$selMore.append(htm);
+                        } else {
+                            htm = me.render(me.selDateTmp, d, function (dd, $1) {
+                                var str = ['<li class="con-item ci-inp">',
+                                    '<input type="text" id="startDate' + d.code + '">',
+                                    '</li>',
+                                    '<li class="con-item ci-inp">',
+                                    '<input type="text" id="endDate' + d.code + '">',
+                                    '</li>'].join('');
+                                if ($1 == 'label') {
+                                    dd.label = d.name;
+                                }
+                                if ($1 == 'content') {
+                                    dd.content = str;
+                                }
+                            });
+                            me.$selMore.append(htm);
+                            me.loadLirderDate(d.code);
+                        }
+                    }
+                    if(num == me.GridCloumnNamesData.length){
+                        me.$scBtn.addClass('show');
+                        me.$selectCon.slideDown();
+                        me.calLen();
+                        setTimeout(function(){
+                            waitSelect.close();
+                        },200)
                     }
                 },
                 setZBSearchData: function () {
@@ -494,9 +511,17 @@
                             $that.removeClass('show');
                             me.$selectCon.slideUp();
                         } else {
-                            $that.addClass('show');
-                            me.$selectCon.slideDown();
-                            me.calLen();
+                            if(me.change == 1 && me.GridCloumnNamesData.length>0){
+                                waitSelect = parent._LIGERDIALOG.waitting("请稍后...");
+                                me.change = 0;
+                                setTimeout(function(){
+                                    me.setSearchData();
+                                },200);
+                            }else {
+                                me.$scBtn.addClass('show');
+                                me.$selectCon.slideDown();
+                                me.calLen();
+                            }
                         }
                     });
                     //展开\收起筛选条件
