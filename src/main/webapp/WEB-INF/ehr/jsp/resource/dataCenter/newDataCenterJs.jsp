@@ -546,7 +546,7 @@
                                         y: 'center',
                                         data: legendArr
                                     },
-                                    color: ['#56c5fc','#1cd2bb'],
+                                    color: ['#56c5fc','#1cd2bb','#ff88be'],
                                     series : [
                                         {
                                             name: '档案来源分布情况',
