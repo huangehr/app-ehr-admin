@@ -96,10 +96,14 @@
                             var option = {
                                 tooltip : {
                                     trigger: 'item',
-                                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                    formatter: "{a} <br/>{b} : {c} ({d}%)",
+                                    position: function (point, params, dom, rect, size) {
+                                        // 固定在顶部
+                                        return [point[0], '10%'];
+                                    }
                                 },
                                 title: {
-                                    text: '健康卡绑定量\n\n' + res.obj.totalDemographicsNum,
+                                    text: '健康卡绑定量\n\n' + res.detailModelList[0].dataModels[0].value,
                                     subtext: '',
                                     x: 'center',
                                     y: 'center',
@@ -109,6 +113,7 @@
                                         color: '#333'
                                     },
                                 },
+                                color: ['#56c5fc'],
                                 series: [
                                     {
                                         name: '健康卡绑定情况',
@@ -145,6 +150,9 @@
                             var option = {
                                 tooltip : {
                                     trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
 //                                    formatter: function (params){
 //                                        return params[0]['1'] + '（岁）：\n\n' + params[0]['2'] + '（人）';
 //                                    }
@@ -153,12 +161,26 @@
                                     x: 80,
                                     x2: 40,
                                     y: 30,
-                                    y2: 30
+                                    y2: 30,
+                                    borderWidth:0
                                 },
+                                color: ['#56c5fc'],
                                 xAxis : [
                                     {
                                         type : 'category',
                                         name: "x",
+                                        splitLine:{
+                                            show:false
+                                        },
+                                        axisTick:{
+                                            show:false
+                                        },
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'#333',
+                                                width:1
+                                            }
+                                        },
                                         data : res.detailModelList[0].xData,
 //                                        axisLabel: {
 //                                            rotate: -40,
@@ -175,6 +197,15 @@
                                     {
                                         type : 'value',
                                         name : 'y',
+                                        splitLine:{
+                                            show:false
+                                        },
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'#333',
+                                                width:1
+                                            }
+                                        },
 //                                            axisLabel : {
 //                                                formatter: '{value} ml'
 //                                            }
@@ -183,6 +214,7 @@
                                 series : [{
                                     name: '人口个案信息分布',
                                     type:'bar',
+                                    barMaxWidth:25,
                                     data: res.detailModelList[0].yData
                                 }]
                             };
@@ -203,11 +235,16 @@
                                     {
                                         type: "category",
                                         name: "x",
-                                        splitLine: {show: false},
                                         data: res.detailModelList[0].xData,
+                                        boundaryGap:false,
+                                        splitLine: {show: false},
+                                        axisTick:{show:false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
                                         axisLabel: {
-                                            rotate:40,
-                                            interval:0,
+//                                            rotate:40,
+//                                            interval:0,
                                             formatter : function(params){
                                                 var newParamsName = "";
                                                 var paramsNameNumber = params.length;
@@ -231,7 +268,7 @@
                                                 }
                                                 return newParamsName
                                             },
-                                            show:true,
+//                                            show:true,
                                             textStyle:{
                                                 color: '#909090',
                                                 fontSize:14,
@@ -242,15 +279,30 @@
                                 yAxis: [
                                     {
                                         type: "value",
-                                        name: "y"
+                                        name: "y",
+                                        splitLine:{
+                                            show:true,
+                                            lineStyle: {
+                                                color: '#e8edec',
+                                                width: 1,
+                                                type: 'dashed'
+                                            }
+                                        },
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'#333',
+                                                width:1
+                                            }
+                                        },
                                     }
                                 ],
-//                                color: ['#0064ff'],
+                                color: ['#56c5fc'],
                                 grid: {
                                     x: 100,
                                     x2: 40,
                                     y: 30,
-                                    y2: 80
+                                    y2: 80,
+                                    borderWidth:0
                                 },
                                 calculable: true,
                                 series: [
@@ -282,22 +334,39 @@
                             });
                             var option = {
                                 tooltip : {
-                                    trigger: 'axis'
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
                                 },
                                 legend: {
                                     y : 'bottom',
                                     data: legendArr
                                 },
+                                color: ['#43baff','#70ecf8','#ff88be','#fed327','#49d2db'],
                                 grid: {
                                     x: 80,
                                     x2: 40,
                                     y: 20,
-                                    y2: 90
+                                    y2: 90,
+                                    borderWidth:0
                                 },
                                 xAxis : [
                                     {
                                         type : 'category',
                                         name: "x",
+                                        splitLine:{
+                                            show:false
+                                        },
+                                        axisTick:{
+                                            show:false
+                                        },
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'#333',
+                                                width:1
+                                            }
+                                        },
                                         data : res.detailModelList[0].xData,
                                         axisLabel: {
                                             rotate: -40,
@@ -314,6 +383,15 @@
                                     {
                                         type : 'value',
                                         name : 'y',
+                                        splitLine:{
+                                            show:false
+                                        },
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'#333',
+                                                width:1
+                                            }
+                                        },
 //                                        axisLabel : {
 //                                            formatter: '{value} ml'
 //                                        }
@@ -334,23 +412,41 @@
                                     data.push({
                                         name: o.name,
                                         type:'bar',
+                                        barMaxWidth:25,
                                         data: o.yData
                                     })
                                 });
                                 var option =  {
                                     tooltip : {
-                                        trigger: 'axis'
+                                        trigger: 'axis',
+                                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                        }
                                     },
+                                    color: ['#56c5fc','#1cd2bb'],
                                     grid: {
                                         x: 80,
                                         x2: 40,
                                         y: 30,
-                                        y2: 40
+                                        y2: 40,
+                                        borderWidth:0
                                     },
                                     xAxis : [
                                         {
                                             type : 'category',
                                             name: "x",
+                                            splitLine:{
+                                                show:false
+                                            },
+                                            axisTick:{
+                                                show:false
+                                            },
+                                            axisLine:{
+                                                lineStyle:{
+                                                    color:'#333',
+                                                    width:1
+                                                }
+                                            },
                                             data : res.detailModelList[0].xData
                                         }
                                     ],
@@ -358,6 +454,15 @@
                                         {
                                             type : 'value',
                                             name : 'y',
+                                            splitLine:{
+                                                show:false
+                                            },
+                                            axisLine:{
+                                                lineStyle:{
+                                                    color:'#333',
+                                                    width:1
+                                                }
+                                            },
 //                                            axisLabel : {
 //                                                formatter: '{value} ml'
 //                                            }
@@ -390,7 +495,7 @@
                                         y: 'center',
                                         data: legendArr
                                     },
-//                                    color: ['#2ea7de','#ff9b87','#ffc83d'],
+                                    color: ['#43baff','#70ecf8','#ff88be'],
                                     series : [
                                         {
                                             name: '医护人员比例',
@@ -441,6 +546,7 @@
                                         y: 'center',
                                         data: legendArr
                                     },
+                                    color: ['#56c5fc','#1cd2bb','#ff88be'],
                                     series : [
                                         {
                                             name: '档案来源分布情况',
@@ -493,6 +599,7 @@
                                 data.push({
                                     name: o.name,
                                     type:'bar',
+                                    barMaxWidth:25,
                                     stack:"sum",
                                     data: o.yData
                                 })
@@ -500,6 +607,9 @@
                             var option = {
                                 tooltip : {
                                     trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
 //                                    formatter: function (params){
 //                                        return params[0]['1'] + '（岁）：\n\n' + params[0]['2'] + '（人）';
 //                                    }
@@ -508,20 +618,34 @@
                                     y : 'bottom',
                                     data: legendArr
                                 },
+                                color: ['#56c5fc','#1cd2bb'],
                                 grid: {
                                     x: 80,
                                     x2: 50,
                                     y: 30,
-                                    y2: 70
+                                    y2: 70,
+                                    borderWidth:0
                                 },
                                 xAxis : [
                                     {
                                         type : 'category',
                                         name: "x（岁）",
+                                        splitLine:{
+                                            show:false
+                                        },
+                                        axisTick:{
+                                            show:false
+                                        },
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'#333',
+                                                width:1
+                                            }
+                                        },
                                         data : res.detailModelList[0].xData,
                                         axisLabel: {
-                                            rotate: -40,
-                                            interval: 0,
+//                                            rotate: -40,
+//                                            interval: 0,
                                             show:true,
                                             textStyle:{
                                                 color: '#909090',
@@ -534,6 +658,15 @@
                                     {
                                         type : 'value',
                                         name : 'y',
+                                        splitLine:{
+                                            show:false
+                                        },
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'#333',
+                                                width:1
+                                            }
+                                        },
 //                                            axisLabel : {
 //                                                formatter: '{value} ml'
 //                                            }
@@ -562,27 +695,37 @@
                             });
                             var option = {
                                 tooltip : {
-                                    trigger: 'axis'
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
                                 },
                                 legend: {
-                                    y : 'bottom',
+                                    y : '90%',
                                     data: legendArr
                                 },
+                                color: ['#56c5fc','#1cd2bb'],
                                 grid: {
                                     x: 80,
                                     x2: 40,
                                     y: 20,
-                                    y2: 100
+                                    y2: 100,
+                                    borderWidth:0
                                 },
                                 xAxis : [
                                     {
                                         type : 'category',
                                         name: "x",
+                                        axisTick:{show:false},
+                                        splitLine: {show: false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
                                         data : res.detailModelList[0].xData,
                                         axisLabel: {
-                                            rotate: 45,
-                                            interval: 0,
-                                            show:true,
+//                                            rotate: 45,
+//                                            interval: 0,
+//                                            show:true,
                                             textStyle:{
                                                 color: '#909090',
                                                 fontSize:14,
@@ -594,6 +737,10 @@
                                     {
                                         type : 'value',
                                         name : 'y',
+                                        splitLine: {show: false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
 //                                        axisLabel : {
 //                                            formatter: '{value} ml'
 //                                        }
@@ -627,6 +774,7 @@
                                     y: 'center',
                                     data: legendArr
                                 },
+                                color: ['#56c5fc','#1cd2bb'],
                                 series : [
                                     {
                                         name: '电子病历来源分布情况',
@@ -668,16 +816,22 @@
                             });
                             var option = {
                                 tooltip : {
-                                    trigger: 'axis'
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
                                 },
                                 xAxis : [
                                     {
                                         type : 'value',
                                         boundaryGap : [0, 0.01],
-                                        show: false
+                                        show: false,
+                                        splitLine: {show: false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
                                     }
                                 ],
-                                color: ['#2ea7dd'],
                                 dataZoom: {
                                     show: true,
                                     realtime: true,
@@ -690,18 +844,25 @@
                                     height: 200,
                                     width: 10,
                                     start: 0,
-                                    end: 70
+                                    end: 90
                                 },
+                                color: ['#56c5fc'],
                                 grid: {
                                     x: 150,
                                     x2: 30,
                                     y: 10,
-                                    y2: 20
+                                    y2: 20,
+                                    borderWidth:0
                                 },
                                 yAxis : [
                                     {
                                         type : 'category',
-                                        data : yData
+                                        data : yData,
+                                        axisTick:{show:false},
+                                        splitLine: {show: false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
                                     }
                                 ],
                                 series : [
@@ -709,6 +870,7 @@
                                         name:'电子病历采集医院分布',
                                         type:'bar',
                                         data: data,
+                                        barMaxWidth:25,
                                         itemStyle: {normal: {
                                             label : {show: true, position: 'right'}
                                         }},
@@ -731,16 +893,23 @@
                             });
                             var option = {
                                 tooltip : {
-                                    trigger: 'axis'
+                                    trigger: 'axis',
+                                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                                    }
                                 },
                                 xAxis : [
                                     {
                                         type : 'value',
                                         boundaryGap : [0, 0.01],
-                                        show: false
+                                        show: false,
+                                        splitLine: {show: false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
                                     }
                                 ],
-                                color: ['#2ea7dd'],
+                                color: ['#56c5fc'],
                                 dataZoom: {
                                     show: true,
                                     realtime: true,
@@ -753,18 +922,24 @@
                                     height: 200,
                                     width: 10,
                                     start: 0,
-                                    end: 70
+                                    end: 90
                                 },
                                 grid: {
                                     x: 150,
                                     x2: 30,
                                     y: 10,
-                                    y2: 20
+                                    y2: 20,
+                                    borderWidth:0
                                 },
                                 yAxis : [
                                     {
                                         type : 'category',
-                                        data : yData
+                                        data : yData,
+                                        axisTick:{show:false},
+                                        splitLine: {show: false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
                                     }
                                 ],
                                 series : [
@@ -772,6 +947,7 @@
                                         name:'电子病历采集科室分布',
                                         type:'bar',
                                         data: data,
+                                        barMaxWidth:25,
                                         itemStyle: {normal: {
                                             label : {show: true, position: 'right'}
                                         }},
@@ -802,21 +978,28 @@
                                     }
                                 },
                                 calculable : true,
+                                color: ['#56c5fc','#1cd2bb'],
                                 grid: {
                                     x: 80,
                                     x2: 30,
                                     y: 30,
-                                    y2: 100
+                                    y2: 100,
+                                    borderWidth:0
                                 },
                                 xAxis : [
                                     {
                                         type : 'category',
                                         name: 'x',
                                         data : xData,
+                                        axisTick:{show:false},
+                                        splitLine: {show: false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
                                         axisLabel: {
-                                            rotate: 90,
-                                            interval: 0,
-                                            show:true,
+//                                            rotate: 90,
+//                                            interval: 0,
+//                                            show:true,
                                             textStyle:{
                                                 color: '#909090',
                                                 fontSize:14,
@@ -827,19 +1010,25 @@
                                 yAxis : [
                                     {
                                         name: 'y',
-                                        type : 'value'
+                                        type : 'value',
+                                        splitLine: {show: false},
+                                        axisLine:{
+                                            lineStyle:{color:'#333', width:1}
+                                        },
                                     }
                                 ],
                                 series : [
                                     {
                                         name:'门诊病历',
                                         type:'bar',
+                                        barMaxWidth:25,
                                         stack:"sum",
                                         data: data1
                                     },
                                     {
                                         name:'住院病历',
                                         stack:"sum",
+                                        barMaxWidth:25,
                                         type:'bar',
                                         data: data2
                                     }

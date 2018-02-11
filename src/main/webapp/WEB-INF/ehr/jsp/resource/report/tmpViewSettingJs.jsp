@@ -274,6 +274,9 @@
                                 reader.readAsText(files);
                             });
                             me.$saveTmp.on('click', function () {//保存模板
+                                if ($('#loadNum').length > 0) {
+                                    $('#loadNum').val(0);
+                                }
                                 var tmp = me.$tmpCon.html(),
                                     num = tmp.indexOf('</style>') + ('</style>'.length),
                                     styleStr = me.getFormatData(tmp.substring(0, num)),
@@ -370,16 +373,20 @@
                         },
                         resetOption: function ($dom, opt) {
                             var option = opt,
-                                color = $dom.attr('data-color'),
-                                zoom = $dom.attr('data-zoom'),
+                                color = $dom.attr('data-color'),//展示的颜色设置
+                                zoom = $dom.attr('data-zoom'),//滚动条设置
                                 grid = $dom.attr('data-grid'),
-                                legend = $dom.attr('data-legend'),
-                                seriesRadius = $dom.attr('data-series-radius'),
-                                seriesCenter = $dom.attr('data-series-center'),
-                                xaxisSplitLine = $dom.attr('data-xaxis'),
-                                yaxisSplitLine = $dom.attr('data-yaxis'),
-                                axisLine = $dom.attr('data-axis-line'),
+                                legend = $dom.attr('data-legend'),//
+                                seriesRadius = $dom.attr('data-series-radius'),//设置环形饼图
+                                seriesCenter = $dom.attr('data-series-center'),//饼图展示位置
+                                xaxisSplitLine = $dom.attr('data-xaxis-splitline'),//网格线设置
+                                yaxisSplitLine = $dom.attr('data-yaxis-splitline'),
+                                xaxisShow = $dom.attr('data-xaxis-show'),//x轴是否显示
+                                yaxisShow = $dom.attr('data-yaxis-show'),//x轴是否显示
+                                axisAxisLine = $dom.attr('data-xyaxis-axisline'),//x、y轴颜色设置
                                 axisTick = $dom.attr('data-axis-tick'),
+                                xaxisBoundaryGap = $dom.attr('data-xaxis-boundary-gap'),//设置折线图数据展示起点位置
+                                seriesBarMaxWidth = $dom.attr('data-barmaxwidth'),//柱形图最大宽度
                                 seriesItemstyle = $dom.attr('data-series-itemstyle'),
                                 xyChange = $dom.attr('data-xy-change');
                             if (color && color != '') {
@@ -391,11 +398,30 @@
                             if (grid && grid != '') {
                                 option['grid'] = JSON.parse(grid);
                             }
+                            if (xaxisShow && xaxisShow != '') {
+                                _.each(option['xAxis'], function (o, k) {
+                                    option['xAxis'][k]['show'] = xaxisShow == 'false' ? false : true;
+                                });
+                            }
+                            if (yaxisShow && yaxisShow != '') {
+                                _.each(option['yAxis'], function (o, k) {
+                                    option['yAxis'][k]['show'] = yaxisShow == 'false' ? false : true;
+                                });
+                            }
                             if (xaxisSplitLine && xaxisSplitLine != '') {
-                                option['xAxis']['splitLine'] = JSON.parse(xaxisSplitLine);
+                                _.each(option['xAxis'], function (o, k) {
+                                    option['xAxis'][k]['splitLine'] = JSON.parse(xaxisSplitLine);
+                                });
+                            }
+                            if (xaxisBoundaryGap && xaxisBoundaryGap != '') {
+                                _.each(option['xAxis'], function (o, k) {
+                                    option['xAxis'][k]['boundaryGap'] = xaxisBoundaryGap == 'false' ? false : true;
+                                });
                             }
                             if (yaxisSplitLine && yaxisSplitLine != '') {
-                                option['yAxis']['splitLine'] = JSON.parse(yaxisSplitLine);
+                                _.each(option['yAxis'], function (o, k) {
+                                    option['yAxis'][k]['splitLine'] = JSON.parse(yaxisSplitLine);
+                                });
                             }
                             if (legend && legend != '') {
                                 var legObj = JSON.parse(legend);
@@ -405,24 +431,29 @@
                                 });
                                 option['legend'] = legObj;
                             }
+                            if (axisAxisLine && axisAxisLine != '') {
+                                _.each(option['xAxis'], function (o, k) {
+                                    option['xAxis'][k]['axisLine'] = JSON.parse(axisAxisLine);
+                                    option['yAxis'][k]['axisLine'] = JSON.parse(axisAxisLine);
+                                });
+                            }
+                            if (axisTick && axisTick != '') {
+                                option['xAxis']['axisTick'] = axisTick;
+                            }
+                            if (seriesBarMaxWidth && seriesBarMaxWidth != '') {
+                                _.each(option['series'], function (o, k) {
+                                    option['series'][k]['barMaxWidth'] = seriesBarMaxWidth;
+                                });
+                            }
                             if (seriesRadius && seriesRadius != '') {
                                 _.each(option['series'], function (o, k) {
                                     option['series'][k]['radius'] = seriesRadius.split(',');
                                 });
-                                // option['series']['radius'] = seriesRadius;
                             }
                             if (seriesCenter && seriesCenter != '') {
                                 _.each(option['series'], function (o, k) {
                                     option['series'][k]['center'] = seriesCenter.split(',');
                                 });
-                                // option['series']['center'] = seriesCenter;
-                            }
-                            if (axisLine && axisLine != '') {
-                                option['xAxis']['axisLine'] = axisLine;
-                                option['yAxis']['axisLine'] = axisLine;
-                            }
-                            if (axisTick && axisTick != '') {
-                                option['xAxis']['axisTick'] = axisTick;
                             }
                             if (seriesItemstyle && seriesItemstyle != '') {
                                 _.each(option['series'], function (o, k) {
