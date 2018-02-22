@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -222,10 +223,11 @@ public class ScheduleController extends BaseUIController {
             for(int i=0; i<correctLs.size(); i++){
                 model = correctLs.get(i);
                 model.setCreator(user.getId());
-                if(validate(model, carIds)==0)
+                if(validate(model, carIds)==0){
                     errorLs.add(model);
-                else
+                }else{
                     saveLs.add(model);
+                }
             }
             for(int i=0; i<errorLs.size(); i++){
                 model = errorLs.get(i);
@@ -240,13 +242,14 @@ public class ScheduleController extends BaseUIController {
                 rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
                 writerResponse(response, 75 + "", "l_upd_progress");
             }
-            if(saveLs.size()>0)
+            if(saveLs.size()>0) {
                 saveMeta(toJson(saveLs));
-
-            if(rs.size()>0)
+            }
+            if(rs.size()>0) {
                 writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
-            else
+            }else{
                 writerResponse(response, 100 + "", "l_upd_progress");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             if(e.getMessage().equals("模板不正确，请下载新的模板，并按照示例正确填写后上传！")) {
@@ -396,8 +399,9 @@ public class ScheduleController extends BaseUIController {
      */
     @RequestMapping("/batchSave")
     @ResponseBody
-    public Object batchSave(String schedules, String eFile, String tFile, String datePath){
-        try{
+    public Object batchSave(String schedules, String eFile, String tFile, String datePath) {
+        if(!StringUtils.isEmpty(schedules)&&!StringUtils.isEmpty(schedules.replaceAll("\\[|\\]",""))){
+        try {
             eFile = datePath + TemPath.separator + eFile;
             File file = new File(TemPath.getFullPath(eFile, parentFile));
             List<ScheduleMsgModel> all = (List<ScheduleMsgModel>) ObjectFileRW.read(file);
@@ -410,18 +414,18 @@ public class ScheduleController extends BaseUIController {
             repeat.put("end", new HashSet<String>());
             repeat.put("main", new HashSet<String>());
 
-            for(ScheduleMsgModel model : scheduleMsgModels){
+            for (ScheduleMsgModel model : scheduleMsgModels) {
                 model.validate(repeat);
             }
             //获取eme_schedule所有车牌号
-            Set<String> carIds = findExistIdOrPhoneInSchedule("id",toJson(repeat.get("carId")));
+            Set<String> carIds = findExistIdOrPhoneInSchedule("id", toJson(repeat.get("carId")));
             ScheduleMsgModel model;
             List saveLs = new ArrayList<>();
-            for(int i=0; i<scheduleMsgModels.size(); i++){
+            for (int i = 0; i < scheduleMsgModels.size(); i++) {
                 model = scheduleMsgModels.get(i);
-                if(validate(model, carIds)==0|| model.errorMsg.size()>0) {
+                if (validate(model, carIds) == 0 || model.errorMsg.size() > 0) {
                     all.set(all.indexOf(model), model);
-                }else{
+                } else {
                     saveLs.add(model);
                     all.remove(model);
                 }
@@ -431,7 +435,10 @@ public class ScheduleController extends BaseUIController {
             return success("");
         } catch (Exception e) {
             e.printStackTrace();
-            return failed("保存失败！"+e.getMessage());
+            return failed("保存失败！" + e.getMessage());
+        }
+    }else{
+            return  failed("没有数据，保存失败！");
         }
     }
 
