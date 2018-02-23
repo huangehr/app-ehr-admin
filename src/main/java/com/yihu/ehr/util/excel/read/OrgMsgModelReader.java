@@ -25,7 +25,9 @@ public class OrgMsgModelReader extends AExcelReader {
             getRepeat().put("zxy", new HashSet<>());// 中西医标识：中医/西医
 
             for (Sheet sheet : sheets) {
-                if ((rows = sheet.getRows()) == 0) continue;
+                if ((rows = sheet.getRows()) == 0){
+                    continue;
+                }
                 for (int i = 1; i < rows; i++, j++) {
                     p = new OrgMsgModel();
                     p.setOrgCode(getCellCont(sheet, i, 0));
@@ -55,16 +57,19 @@ public class OrgMsgModelReader extends AExcelReader {
                     p.setExcelSeq(j);
 
                     int rs = p.validate(repeat);
-                    if (rs == 0)
+                    if (rs == 0){
                         errorLs.add(p);
-                    else if (rs == 1)
+                    } else if (rs == 1){
                         correctLs.add(p);
+                    }
                 }
             }
         } catch (Exception e) {
             throw new RuntimeException("模板不正确，请下载新的模板，并按照示例正确填写后上传！");
         } finally {
-            if (rwb != null) rwb.close();
+            if (rwb != null) {
+                rwb.close();
+            }
         }
     }
 }
