@@ -61,7 +61,7 @@
                             self.reloadGrid();
                         }
                     });
-                    this.loadMainGrid();//加载主维度值
+                    this.loadMainGrid();//加载默认维度值
                     this.bindEvents();
                 },
                 loadMainGrid:function(){
