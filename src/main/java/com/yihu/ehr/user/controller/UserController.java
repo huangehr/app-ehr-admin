@@ -483,7 +483,7 @@ public class UserController extends BaseUIController {
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id",userId);
+        params.put("userId",userId);
         params.put("password",passWord);
 
         try {
