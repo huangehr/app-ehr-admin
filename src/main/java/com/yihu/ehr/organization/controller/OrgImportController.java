@@ -300,8 +300,10 @@ public class OrgImportController extends ExtendController<OrgService> {
                 }
                 saveMeta(toJson(saveLs));
                 ObjectFileRW.write(file, all);
+                return success("");
+            }else{
+                return faild("无数据，保存失败！");
             }
-            return success("");
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();

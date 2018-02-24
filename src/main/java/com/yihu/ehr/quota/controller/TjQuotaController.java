@@ -665,13 +665,14 @@ public class TjQuotaController extends BaseUIController {
             }
             writerResponse(response, 65 + "", "l_upd_progress");
 
-            if (LsMap.size() > 0)
+            if (LsMap.size() > 0) {
                 saveData(LsMap);
-            if (errorLs.size() == 0)
+            }
+            if (errorLs.size() == 0){
                 writerResponse(response, 100 + ",'suc'", "l_upd_progress");
-            else
+            } else {
                 writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
-
+            }
         } catch (Exception e) {
             e.printStackTrace();
             writerResponse(response, "-1", "l_upd_progress");
@@ -972,8 +973,12 @@ public class TjQuotaController extends BaseUIController {
             toClient.close();
         } catch (Exception e) {
             e.printStackTrace();
-            if (fis != null) fis.close();
-            if (toClient != null) toClient.close();
+            if (fis != null){
+                fis.close();
+            }
+            if (toClient != null){
+                toClient.close();
+            }
         }
     }
 

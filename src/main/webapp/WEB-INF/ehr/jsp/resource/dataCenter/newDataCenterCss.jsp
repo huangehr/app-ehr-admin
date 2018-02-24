@@ -41,8 +41,11 @@
         float: right;
     }
     .hr-c-top{
-        /*margin-bottom: 15px;*/
+        margin-bottom: 15px;
         font-size: 0;
+        -moz-box-shadow: 0px 9px 20px #b9daef;
+        -webkit-box-shadow: 0px 9px 20px #b9daef;
+        box-shadow: 0px 9px 20px #b9daef;
     }
     .hr-chart-top{
         display: inline-block;
@@ -51,7 +54,11 @@
         vertical-align: middle;
     }
     .hr-chart-top .charts{
-        /*background: #fff;*/
+        background: #fff;
+        vertical-align: middle;
+        /*-moz-box-shadow: 0px 9px 20px #b9daef;*/
+        /*-webkit-box-shadow: 0px 9px 20px #b9daef;*/
+        /*box-shadow: 0px 9px 20px #b9daef;*/
     }
     .hr-tit-con{
         height: 61px;
@@ -159,12 +166,12 @@
     .big-tit{
         font-size: 18px;
         color: #333333;
-        padding: 0 15px;
+        /*padding: 0 15px;*/
     }
     .big-con{
         height: 60px;
         line-height: 60px;
-        /*background: #fff;*/
+        background: #d7ecfa;
     }
     .bt-icon{
         width: 20px;
@@ -201,11 +208,12 @@
         color: #fff;
     }
     .cd-num{
-        padding-left: 15px;
+        /*padding-left: 15px;*/
         padding-top: 10px;
         font-size: 17px;
         font-weight: 600;
         color: #fff;
         padding-bottom: 10px;
+        text-align: center;
     }
 </style>
