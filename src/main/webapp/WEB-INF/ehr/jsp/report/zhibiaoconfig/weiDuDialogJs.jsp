@@ -8,7 +8,7 @@
         /* ************************** 变量定义 ******************************** */
         var Util = $.Util;
         var weiduInfo = null;
-        var DimensionMainId =  72;//主维度字典id
+        var DimensionMainId =  72;//默认维度字典id
         var DimensionSlaveId = 73;//从维度字典id
         var DimensionStatusId =  74;//维度状态
         // 表单校验工具类
