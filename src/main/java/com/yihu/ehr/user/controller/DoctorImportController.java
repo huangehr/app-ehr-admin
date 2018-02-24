@@ -95,10 +95,11 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             for(int i=0; i<correctLs.size(); i++){
                 model = correctLs.get(i);
                 //, Set<String> emails, Set<String> userEmails
-                if(validate(model, phones,userPhones,emails,userEmails,idCardNos,userIdCardNos)==0)
+                if(validate(model, phones,userPhones,emails,userEmails,idCardNos,userIdCardNos)==0) {
                     errorLs.add(model);
-                else
+                }else {
                     saveLs.add(model);
+                }
             }
             for(int i=0; i<errorLs.size(); i++){
                 model = errorLs.get(i);
@@ -112,13 +113,14 @@ public class DoctorImportController extends ExtendController<DoctorService> {
                 rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
                 writerResponse(response, 75 + "", "l_upd_progress");
             }
-            if(saveLs.size()>0)
+            if(saveLs.size()>0) {
                 saveMeta(toJson(saveLs));
-
-            if(rs.size()>0)
+            }
+            if(rs.size()>0) {
                 writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
-            else
+            }else{
                 writerResponse(response, 100 + "", "l_upd_progress");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             if(e.getMessage().equals("模板不正确，请下载新的模板，并按照示例正确填写后上传！")) {
@@ -391,8 +393,9 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             e.printStackTrace();
             return systemError();
         }
+        }else{
+            return  failed("没有数据，保存失败！");
         }
-        return success("");
     }
     @RequestMapping("/doctorIsExistence")
     @ResponseBody

@@ -473,8 +473,9 @@ public class AmbulanceController extends BaseUIController {
      */
     @RequestMapping("/batchSave")
     @ResponseBody
-    public Object batchSave(String ambulances, String eFile, String tFile, String datePath){
-        try{
+    public Object batchSave(String ambulances, String eFile, String tFile, String datePath) {
+        if(!StringUtils.isEmpty(ambulances)&&!StringUtils.isEmpty(ambulances.replaceAll("\\[|\\]",""))){
+        try {
             eFile = datePath + TemPath.separator + eFile;
             File file = new File(TemPath.getFullPath(eFile, parentFile));
             List<AmbulanceMsgModel> all = (List<AmbulanceMsgModel>) ObjectFileRW.read(file);
@@ -484,22 +485,22 @@ public class AmbulanceController extends BaseUIController {
             repeat.put("orgCode", new HashSet<String>());
             repeat.put("orgName", new HashSet<String>());
             repeat.put("phone", new HashSet<String>());
-            for(AmbulanceMsgModel model : ambulanceMsgModels){
+            for (AmbulanceMsgModel model : ambulanceMsgModels) {
                 model.validate(repeat);
             }
             //获取eme_ambulance所有车牌号
-            Set<String> ids = findExistIdOrPhoneInAmbulance("id",toJson(repeat.get("id")));
+            Set<String> ids = findExistIdOrPhoneInAmbulance("id", toJson(repeat.get("id")));
             //获取eme_ambulance所有随车电话
-            Set<String> phones = findExistIdOrPhoneInAmbulance("phone",toJson(repeat.get("phone")));
+            Set<String> phones = findExistIdOrPhoneInAmbulance("phone", toJson(repeat.get("phone")));
             //获取机构表所有机构、机构名称
-            Map<String,String> orgs = findExistOrgInOrganization(toJson(repeat.get("orgCode")));
+            Map<String, String> orgs = findExistOrgInOrganization(toJson(repeat.get("orgCode")));
             AmbulanceMsgModel model;
             List saveLs = new ArrayList<>();
-            for(int i=0; i<ambulanceMsgModels.size(); i++){
+            for (int i = 0; i < ambulanceMsgModels.size(); i++) {
                 model = ambulanceMsgModels.get(i);
-                if(validate(model, ids,phones,orgs)==0|| model.errorMsg.size()>0) {
+                if (validate(model, ids, phones, orgs) == 0 || model.errorMsg.size() > 0) {
                     all.set(all.indexOf(model), model);
-                }else{
+                } else {
                     saveLs.add(model);
                     all.remove(model);
                 }
@@ -509,7 +510,10 @@ public class AmbulanceController extends BaseUIController {
             return success("");
         } catch (Exception e) {
             e.printStackTrace();
-            return failed("保存失败！"+e.getMessage());
+            return failed("保存失败！" + e.getMessage());
+        }
+    }else{
+            return  failed("没有数据，保存失败！");
         }
     }
 
