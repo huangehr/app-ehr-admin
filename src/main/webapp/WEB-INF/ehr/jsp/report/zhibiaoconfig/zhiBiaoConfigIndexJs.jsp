@@ -15,7 +15,7 @@
             var conditionArea = null;
             var entryMater = null;
             var versionStage = null;
-            var DimensionMainId =  72;//主维度字典id
+            var DimensionMainId =  72;//默认维度字典id
             var DimensionSlaveId = 73;//从维度字典id
             var DimensionStatusId =  74;//维度状态
             var DimensionMainData = null;
@@ -63,8 +63,8 @@
                     $("#div_weidu_info_grid").css("visibility","hidden");
                     this.loadDataSourceGrid();//加载数据源管理
                     this.loadDataStorageGrid();//加载数据存储管理
-                    this.loadTjDimensionMainGrid();//加载主维度管理
-                    this.loadTjDimensionSlaveGrid();//加载主维度管理
+                    this.loadTjDimensionMainGrid();//加载默认维度管理
+                    this.loadTjDimensionSlaveGrid();//加载默认维度管理
                 },
                 loadDataSourceGrid:function(){
                     if (this.DataSourceGrid)
@@ -260,11 +260,11 @@
                         grid = self.DataStorageGrid;
                         searchUrl = '${contextRoot}/tjDataSave/getTjDataSave';
                         value = this.$searchBox2.val();
-                    }else if(activeIndex==2){//主维度管理
+                    }else if(activeIndex==2){//默认维度管理
                         grid = self.TjDimensionMainGrid;
                         searchUrl = '${contextRoot}/tjDimensionMain/getTjDimensionMain';
                         value = this.$searchBox3.val();
-                    }else{//细维度管理
+                    }else{//可选维度管理
                         grid = self.TjDimensionSlaveGrid;
                         searchUrl = '${contextRoot}/tjDimensionSlave/getTjDimensionSlave';
                         value = this.$searchBox4.val();
@@ -303,7 +303,7 @@
                             $("#div_datastorage_info_grid").css("height","100%");
                             $("#div_weidu_info_grid").css("height","0px");
                             $("#div_slave_weidu_info_grid").css("height","0px");
-                        }else if(index==2){//主维度管理
+                        }else if(index==2){//默认维度管理
                             $(".div-datasource-search").hide();
                             $(".div-datastorage-search").hide();
                             $(".div-main-search").show();
@@ -316,7 +316,7 @@
                             $("#div_datastorage_info_grid").css("height","0px");
                             $("#div_weidu_info_grid").css("height","100%");
                             $("#div_slave_weidu_info_grid").css("height","0px");
-                        }else if(index==3){//细维度管理
+                        }else if(index==3){//可选维度管理
                             $(".div-datasource-search").hide();
                             $(".div-datastorage-search").hide();
                             $(".div-main-search").hide();
@@ -344,11 +344,11 @@
                         }else if(activeIndex==1){//数据存储管理
                             titleName = "数据源";
                             requestUrl = '${contextRoot}/zhibiaoconfig/dataStorageDialog';
-                        }else if(activeIndex==2){//主维度管理
-                            titleName = "主维度";
+                        }else if(activeIndex==2){//默认维度管理
+                            titleName = "默认维度";
                             requestUrl = '${contextRoot}/zhibiaoconfig/weiDuDialog';
-                        }else{//细维度管理
-                            titleName = "细维度";
+                        }else{//可选维度管理
+                            titleName = "可选维度";
                             requestUrl = '${contextRoot}/zhibiaoconfig/xiWeiDuDialog';
                         }
 
@@ -382,10 +382,10 @@
                         }else if(activeIndex==1){//数据存储管理
                             requestUrl = '${contextRoot}/tjDataSave/deleteTjDataSave';
                             reqParams = {tjDataSaveId:id};
-                        }else if(activeIndex==2){//主维度管理
+                        }else if(activeIndex==2){//默认维度管理
                             requestUrl = '${contextRoot}/tjDimensionMain/deleteTjDimensionMain';
                             reqParams = {tjDimensionMainId:id};
-                        }else{//细维度管理
+                        }else{//可选维度管理
                             requestUrl = '${contextRoot}/tjDimensionSlave/deleteTjDimensionSlave';
                             reqParams = {tjDimensionSlaveId:id};
                         }

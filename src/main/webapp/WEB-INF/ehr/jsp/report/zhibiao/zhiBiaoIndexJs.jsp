@@ -335,12 +335,12 @@
                                                 }
                                             });
                                         }else{
-                                            parent._LIGERDIALOG.error("请先在维度配置中配置主维度");
+                                            parent._LIGERDIALOG.error("请先在维度配置中配置默认维度");
                                             loading.close();
                                         }
                                     },
                                     error: function () {
-                                        parent._LIGERDIALOG.error("验证指标主维度发生异常。");
+                                        parent._LIGERDIALOG.error("验证指标默认维度发生异常。");
                                         loading.close();
                                     }
                                 });
@@ -450,12 +450,12 @@
                                         }
                                     });
                                 }else{
-                                    parent._LIGERDIALOG.error("请先在维度配置中配置主维度");
+                                    parent._LIGERDIALOG.error("请先在维度配置中配置默认维度");
                                     loading.close();
                                 }
                             },
                             error: function () {
-                                parent._LIGERDIALOG.error("验证指标主维度发生异常。");
+                                parent._LIGERDIALOG.error("验证指标默认维度发生异常。");
                                 loading.close();
                             }
                         });

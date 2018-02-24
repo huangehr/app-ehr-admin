@@ -8,8 +8,8 @@
     <div class="btn-group" data-toggle="buttons">
       <label class="btn btn-default active" style="width: 100px;" id="switch_dataSource"><input type="radio" name="options" autocomplete="off" checked="">数据源管理</label>
       <label class="btn btn-default" style="width: 100px;" id="switch_dataStoage"><input type="radio" name="options" autocomplete="off">数据存储管理</label>
-      <label class="btn btn-default" style="width: 100px;" id="switch_dimension"><input type="radio" name="options" autocomplete="off">主维度管理</label>
-      <label class="btn btn-default" style="width: 100px;" id="switch_slave_dimension"><input type="radio" name="options" autocomplete="off">细维度管理</label>
+      <label class="btn btn-default" style="width: 100px;" id="switch_dimension"><input type="radio" name="options" autocomplete="off">默认维度管理</label>
+      <label class="btn btn-default" style="width: 100px;" id="switch_slave_dimension"><input type="radio" name="options" autocomplete="off">可选维度管理</label>
     </div>
   </div>
 
@@ -79,16 +79,16 @@
   </div>
   <!--######数据存储管理表#结束######-->
 
-  <!--######主维度管理表######-->
+  <!--######默认维度管理表######-->
   <div id="div_weidu_info_grid">
 
   </div>
-  <!--######主维度管理表#结束######-->
+  <!--######默认维度管理表#结束######-->
 
-  <!--######细维度管理表######-->
+  <!--######可选维度管理表######-->
   <div id="div_slave_weidu_info_grid" >
 
   </div>
-  <!--######细维度管理表#结束######-->
+  <!--######可选维度管理表#结束######-->
 
 </div>
