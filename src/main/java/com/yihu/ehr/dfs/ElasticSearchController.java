@@ -180,7 +180,7 @@ public class ElasticSearchController extends BaseUIController {
         HashSet<String> hashSet = new HashSet<>(list);
         list.clear();
         list.addAll(hashSet);
-        jsonString = URLEncoder.encode(String.join(";", list).trim(), "UTF-8");
+        jsonString = URLEncoder.encode(String.join(";", list).replace(" ", ""), "UTF-8");
         Map<String, Object> params = new HashMap<>();
         params.put("index", index);
         params.put("type", type);
