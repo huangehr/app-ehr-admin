@@ -59,7 +59,7 @@
                         var formData = new FormData($( "#uploadForm" )[0]);
                         var fileUrl;
                         $.ajax({
-                            url: '${contextRoot}/elasticSearch/addElastic' ,
+                            url: url,
                             type: 'POST',
                             data: formData,
                             async: false,

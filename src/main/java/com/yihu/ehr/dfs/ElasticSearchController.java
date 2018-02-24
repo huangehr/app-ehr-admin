@@ -5,7 +5,6 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.json.JSONObject;
@@ -139,26 +138,19 @@ public class ElasticSearchController extends BaseUIController {
     @ResponseBody
     public Object addElastic(
             @RequestParam("file") MultipartFile file) throws IOException {
-//        InputStream inputStream = file.getInputStream();
-//        String fileName = file.getOriginalFilename(); //获取文件名
-//        if (!file.isEmpty()) {
-//            return  uploadFile(inputStream,fileName);
-//        }
-//        return "fail";
         String url ="/elasticSearch/addElasticSearch";
         Envelop envelop = new Envelop();
         String str;
         String jsonString = "";
-        List<String> list = new ArrayList<>();
         String index = "";
         String type = "";
+        StringBuilder sb = new StringBuilder();
         InputStream inputStream = file.getInputStream();
         InputStreamReader isr = null;
         BufferedReader br = null;
         isr = new InputStreamReader(inputStream);
         br = new BufferedReader(isr);
         while ((str = br.readLine()) != null) {
-            System.out.println(str);// 打印
             JSONObject jsonObject = new JSONObject(str);
             if (str.contains("_index")) {
                 JSONObject data = jsonObject.getJSONObject("index");
@@ -169,18 +161,21 @@ public class ElasticSearchController extends BaseUIController {
                     type = data.get("_type").toString();
                 }
             } else {
-                list.add(str);
+                sb.append(str.replace(" ", ""));
             }
+        }
+        try {
+            br.close();
+            isr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         if (StringUtils.isEmpty(index) || StringUtils.isEmpty(type)) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("格式有误，请检查");
             return envelop;
         }
-        HashSet<String> hashSet = new HashSet<>(list);
-        list.clear();
-        list.addAll(hashSet);
-        jsonString = URLEncoder.encode(String.join(";", list).replace(" ", ""), "UTF-8");
+        jsonString = URLEncoder.encode(sb.toString(), "UTF-8");
         Map<String, Object> params = new HashMap<>();
         params.put("index", index);
         params.put("type", type);
