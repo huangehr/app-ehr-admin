@@ -189,20 +189,21 @@
                             if (me.selectData.length > 0) {
                                 if (me.type == 0) {
                                     var ma = [], ca = [], sjyArr = [];
-                                    if (me.selectData[0].data.level == 2 && me.selectData.length == 1) {
+                                    if (me.selectData[0].data.level == 3 && me.selectData.length == 1) {
                                         me.selectData.push({data:this.getDataByNode(this.getParentTreeItem(me.selectData[0].target))});
                                     }
                                     for (var i = 0, len = me.selectData.length; i < len; i++) {
                                         switch (me.selectData[i].data.level) {
-                                            case '1':
+                                            case '2':
                                                 ma.push(me.selectData[i].data.code);
                                                 break;
-                                            case '2':
+                                            case '3':
                                                 sjyArr.push(me.selectData[i].data);
                                                 ca.push(me.selectData[i].data.code);
                                                 break;
                                         }
                                     }
+                                    debugger
                                     me.masterArr = JSON.stringify(ma);
                                     me.childArr = JSON.stringify(ca);
                                     //初始化
@@ -233,15 +234,16 @@
                                     dmList = [];
                             if (detailModelList) {
                                 if (me.type == 0) {
-                                    for(var i = 0; i < detailModelList.length; i++){
-                                        if (detailModelList[i].level == 0) {
-                                            defArr = detailModelList[i].baseInfo;
-                                        } else {
-                                            var rsResourceslist = detailModelList[i].metaDataList;
-                                            detailModelList[i].children = rsResourceslist;
-                                            dmList.push(detailModelList[i]);
-                                        }
-                                    }
+//                                    for(var i = 0; i < detailModelList.length; i++){
+//                                        if (detailModelList[i].level == 0) {
+//                                            defArr = detailModelList[i].baseInfo;
+//                                        } else {
+//                                            var rsResourceslist = detailModelList[i].metaDataList;
+//                                            detailModelList[i].children = rsResourceslist;
+//                                            dmList.push(detailModelList[i]);
+//                                        }
+//                                    }
+                                    me.leftTree.setData(detailModelList[1]);
                                 } else {
                                     for(var i = 0; i < detailModelList.length; i++){
                                         var childOne = detailModelList[i].child;
@@ -251,8 +253,8 @@
                                         }
                                         dmList.push(detailModelList[i]);
                                     }
+                                    me.leftTree.setData(dmList);
                                 }
-                                me.leftTree.setData(dmList);
                             } else {
                                 if (num == 0) {
                                     parent._LIGERDIALOG.error('暂无数据');
@@ -414,7 +416,7 @@
                         }
                         //获取列名
                         for (var i = 0, len = me.selectData.length; i < len; i++) {
-                            if (me.selectData[i].data.level == '2') {
+                            if (me.selectData[i].data.level == '3') {
                                 columnModel.push({display: me.selectData[i].data.name, name: me.selectData[i].data.code, width: 100});
                             }
                         }
