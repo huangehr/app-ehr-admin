@@ -43,13 +43,14 @@
                             success: function (data) {
                                 waitting.close();
                                 if (data.successFlg) {
-                                    $.Notice.success("保存成功!");
+                                    parent._LIGERDIALOG.success("保存成功!");
+                                    parent._ErrorDio.close();
                                     searchFun();
                                 } else {
                                     if (data.errorMsg)
-                                        $.Notice.error(data.errorMsg);
+                                        parent._LIGERDIALOG.error(data.errorMsg);
                                     else
-                                        $.Notice.error('出错了！');
+                                        parent._LIGERDIALOG.error('出错了！');
                                 }
                             },
                             error: function () {

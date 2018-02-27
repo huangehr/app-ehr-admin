@@ -39,10 +39,21 @@
                 }).empty().load(url,data);
             }
             function onUploadSuccess(g, result){
-                if(result)
-                    parent._OPENDIALOG("${contextRoot}/orgImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
-                else
+                if(result){
+                    <%--parent._OPENDIALOG("${contextRoot}/orgImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});--%>
+                    var defaultOpts = {
+                        height: 640,
+                        width: 1000,
+                        title: "导入错误信息",
+                        url: "${contextRoot}/orgImport/gotoImportLs",
+                        urlParms: {result: result},
+//                        load: true,
+                        isHidden: false
+                    };
+                    parent._ErrorDio = parent._LIGERDIALOG.open(defaultOpts)
+                } else {
                     $.Notice.success("导入成功！");
+                }
             }
             $('#upOrg').uploadFile({url: "${contextRoot}/orgImport/importOrg", onUploadSuccess: onUploadSuccess, str: '导入机构'});
             /* *************************** 模块初始化 ***************************** */
