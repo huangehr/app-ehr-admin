@@ -203,7 +203,6 @@
                                                 break;
                                         }
                                     }
-                                    debugger
                                     me.masterArr = JSON.stringify(ma);
                                     me.childArr = JSON.stringify(ca);
                                     //初始化
@@ -243,6 +242,7 @@
 //                                            dmList.push(detailModelList[i]);
 //                                        }
 //                                    }
+                                    defArr = detailModelList[0].baseInfo;
                                     me.leftTree.setData(detailModelList[1]);
                                 } else {
                                     for(var i = 0; i < detailModelList.length; i++){
