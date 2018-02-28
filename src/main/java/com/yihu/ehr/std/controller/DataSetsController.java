@@ -9,7 +9,6 @@ import com.yihu.ehr.agModel.standard.standardsource.StdSourceModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.std.model.DataSetMsg;
 import com.yihu.ehr.std.model.MetaDataMsg;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -345,7 +344,7 @@ public class DataSetsController extends BaseUIController {
 
             result = getEnvelop(envelopStr);
             MetaDataModel mdModel = getEnvelopModel(result.getObj(), MetaDataModel.class);
-            if(mdModel.getDictId() != 0){
+            if(mdModel.getDictId() != null){
                 Long dictId = mdModel.getDictId();
 
                 String urlForDict = "/dict";

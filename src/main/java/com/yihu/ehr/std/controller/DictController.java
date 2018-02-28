@@ -171,7 +171,9 @@ public class DictController  extends BaseUIController {
             }
             Map<String, Object> params = new HashMap<>();
             DictModel dictModel = new DictModel();
-            dictModel.setId(Long.parseLong(dictId));
+            if(StringUtils.isNotBlank(dictId)){
+                dictModel.setId(Long.parseLong(dictId));
+            }
             dictModel.setCode(code);
             dictModel.setName(name);
             dictModel.setBaseDict(StringUtils.isEmpty(baseDict) ? null : Long.parseLong(baseDict));

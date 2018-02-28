@@ -1,29 +1,24 @@
 package com.yihu.ehr.template.controller;
 
-import com.yihu.ehr.adapter.controller.ExtendController;
-import com.yihu.ehr.adapter.service.PageParms;
-import com.yihu.ehr.agModel.template.TemplateModel;
-import com.yihu.ehr.model.profile.MTemplate;
-import com.yihu.ehr.model.standard.MCDADocument;
-import com.yihu.ehr.template.service.TemplateService;
-import com.yihu.ehr.util.HttpClientUtil;
-import com.yihu.ehr.util.rest.Envelop;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONUtil;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+        import com.yihu.ehr.adapter.controller.ExtendController;
+        import com.yihu.ehr.adapter.service.PageParms;
+        import com.yihu.ehr.agModel.template.TemplateModel;
+        import com.yihu.ehr.model.profile.MTemplate;
+        import com.yihu.ehr.template.service.TemplateService;
+        import com.yihu.ehr.util.HttpClientUtil;
+        import com.yihu.ehr.util.rest.Envelop;
+        import org.apache.commons.lang.StringUtils;
+        import org.springframework.beans.factory.annotation.Value;
+        import org.springframework.stereotype.Controller;
+        import org.springframework.ui.Model;
+        import org.springframework.web.bind.annotation.RequestMapping;
+        import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+        import javax.servlet.http.HttpServletRequest;
+        import java.io.IOException;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Map;
 
 /**
  * 健康档案浏览器模板管理控制器。
@@ -152,7 +147,7 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
                     Object obj = mcdaDocuments.get(0);
                     Map dataMap  = objectMapper.readValue(toJson(obj), Map.class);
                     mTemplate.setCdaCode(dataMap.get("code").toString());
-                     parms.put("model",toJson(mTemplate));
+                    parms.put("model",toJson(mTemplate));
                 }else{
                     throw new RuntimeException("获取cda文档失败！cda文档不存在！");
                 }
