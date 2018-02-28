@@ -626,7 +626,7 @@
                                     if (me.type == 0) {
                                         for (var i = 0, len = sd.length; i < len; i++) {
                                             var data = sd[i].data
-                                            if (data.level == 2) {
+                                            if (data.level == 3) {
                                                 md.push({
                                                     resourcesId: '',
                                                     metadataId: data.code,
