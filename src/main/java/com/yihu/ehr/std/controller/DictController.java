@@ -174,7 +174,6 @@ public class DictController  extends BaseUIController {
             if(StringUtils.isNotBlank(dictId)){
                 dictModel.setId(Long.parseLong(dictId));
             }
-            dictModel.setId(Long.parseLong(dictId));
             dictModel.setCode(code);
             dictModel.setName(name);
             dictModel.setBaseDict(StringUtils.isEmpty(baseDict) ? null : Long.parseLong(baseDict));
