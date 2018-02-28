@@ -120,17 +120,16 @@
                 },
                 reloadGrid: function (curPage) {
                     console.log(patientRetrieve.$selectChnage)
-                    patientRetrieve.$element.attrScan();
+//                    patientRetrieve.$element.attrScan();
 //                    var values = patientRetrieve.$element.Fields.getValues();
 //                    var address = patientRetrieve.$element.Fields.location.getValue();
                     var address = patientRetrieve.$location.val();
                     var values = $.extend({},
 //                            {province: (address.names[0] == null ? '' : address.names[0])},
                             {city: (address)},
+                            {tjQuotaId: (id)},
 //                            {district: (address.names[2] == null ? '' : address.names[2])},
                             {res:patientRetrieve.$selectChnage});
-                            console.log(values);
-                    debugger
                     Util.reloadGrid.call(this.grid, '${contextRoot}/tjQuota/selectQuotaResult', values, curPage);
                 },
                 bindEvents: function () {
