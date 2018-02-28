@@ -36,11 +36,12 @@
                     this.$starTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
                     this.$endTime.ligerDateEditor({width: '150',format: "yyyy-MM-dd",showTime:true});
 
-                    this.$location.addressDropdown({tabsData:[
-                        {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
-                        {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
-                        {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}
-                    ]});
+                    <%--this.$location.addressDropdown({tabsData:[--%>
+                        <%--{name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},--%>
+                        <%--{name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},--%>
+                        <%--{name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}--%>
+                    <%--]});--%>
+                    this.$location.ligerTextBox({labelWidth: 100, labelAlign: 'center' });
                     this.$select.ligerComboBox({
                         width : 150,
                         data: [
