@@ -27,7 +27,7 @@
 
           <div class="m-form-control f-ml10 f-mb10">
             <!--下拉框-->
-            <input type="text" id="inp_location"placeholder="请输入地区" data-type="comboSelect" data-attr-scan="location"/>
+            <input type="text" id="inp_location" data-type="comboSelect" data-attr-scan="location"/>
           </div>
           <div class="m-form-control f-ml10 f-mb10">
             <!--下拉框-->

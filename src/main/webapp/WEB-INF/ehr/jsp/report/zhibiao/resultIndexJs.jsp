@@ -41,7 +41,9 @@
                         <%--{name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},--%>
                         <%--{name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}--%>
                     <%--]});--%>
+
                     this.$location.ligerTextBox({labelWidth: 100, labelAlign: 'center' });
+
                     this.$select.ligerComboBox({
                         width : 150,
                         data: [
@@ -120,11 +122,12 @@
                     console.log(patientRetrieve.$selectChnage)
                     patientRetrieve.$element.attrScan();
 //                    var values = patientRetrieve.$element.Fields.getValues();
-                    var address = patientRetrieve.$element.Fields.location.getValue();
-                    var values = $.extend({}, patientRetrieve.$element.Fields.getValues(),
-                            {province: (address.names[0] == null ? '' : address.names[0])},
-                            {city: (address.names[1] == null ? '' : address.names[1])},
-                            {district: (address.names[2] == null ? '' : address.names[2])},
+//                    var address = patientRetrieve.$element.Fields.location.getValue();
+                    var address = patientRetrieve.$location.val();
+                    var values = $.extend({},
+//                            {province: (address.names[0] == null ? '' : address.names[0])},
+                            {city: (address)},
+//                            {district: (address.names[2] == null ? '' : address.names[2])},
                             {res:patientRetrieve.$selectChnage});
                             console.log(values);
                     debugger
