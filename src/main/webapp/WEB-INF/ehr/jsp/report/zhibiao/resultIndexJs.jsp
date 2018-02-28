@@ -105,6 +105,7 @@
                                 {display: slaveKey3Name, name: 'slaveKey3Name', width: '10%', hide: (!!!slaveKey3Name), align: 'left'},
                                 {display: '结果', name: 'result', width: '10%', isAllowHide: false, align: 'left'}
                             ],
+                            enabledSort: false,
                             validate: true,
                             unSetValidateAttr: false,
                             allowHideColumn: false,
