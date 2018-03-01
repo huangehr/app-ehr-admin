@@ -333,6 +333,7 @@ public class LoginController extends BaseUIController {
                 return envelop;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return envelop;
         }
         envelop.setSuccessFlg(true);
@@ -383,11 +384,10 @@ public class LoginController extends BaseUIController {
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
         }
-        if(ip != null) {
-            System.out.println(ip);
-            if("0:0:0:0:0:0:0:1".equals(ip)) {
+        if (ip != null) {
+            if ("0:0:0:0:0:0:0:1".equals(ip)) {
                 request.getSession().setAttribute("isInnerIp", true);
-            }else {
+            } else {
                 if("127.0.0.1".equals(ip) || isInnerIP(ip)) {
                     request.getSession().setAttribute("isInnerIp", true);
                 }else {
