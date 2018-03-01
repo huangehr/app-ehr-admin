@@ -52,10 +52,12 @@
                                     $.Notice.success("保存成功!");
                                     searchFun();
                                 } else {
-                                    if (data.errorMsg)
-                                        $.Notice.error(data.errorMsg);
-                                    else
+                                    if (data.errorMsg) {
+                                    $.Notice.error(data.errorMsg);
+                                    searchFun();
+                                    }else{
                                         $.Notice.error('出错了！');
+                                    }
                                 }
                             },
                             error: function () {
