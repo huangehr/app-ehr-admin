@@ -25,12 +25,12 @@
         </div>
     </div>
 
-    <%--<div class="m-form-group">
+    <div class="m-form-group">
         <label class="label_title"><spring:message code="lbl.std.source"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential f-pr0">
             <input type="text" id="inp_stddict_stdSource" data-type="select" class="required useTitle" data-attr-scan="stdSource" required-title=<spring:message code="lbl.must.input"/> >
         </div>
-    </div>--%>
+    </div>
 
     <div class="m-form-group" id="div_stddict_stdVersion" >
         <label class="label_title"><spring:message code="lbl.version.ref"/><spring:message code="spe.colon"/></label>

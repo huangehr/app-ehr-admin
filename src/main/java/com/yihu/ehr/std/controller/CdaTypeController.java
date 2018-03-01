@@ -12,12 +12,14 @@ import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,6 +62,20 @@ public class CdaTypeController extends BaseUIController {
             envelop.setErrorMsg(ErrorCode.SystemError.toString());
             return envelop;
         }
+    }
+
+    @RequestMapping("index")
+    public String cdaTypeInitial(Model model) {
+        model.addAttribute("contentPage", "std/cdaType/index");
+        return "pageView";
+    }
+
+    @RequestMapping("typeupdate")
+    public String typeupdate(Model model,HttpServletRequest request) throws IOException {
+        UsersModel user = getCurrentUserRedis(request);
+        model.addAttribute("UserId", user.getId());
+        model.addAttribute("contentPage", "std/cdaType/CdaTypeDetail");
+        return "generalView";
     }
 
     @RequestMapping("GetCdaTypeList")
