@@ -244,6 +244,10 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             model.addErrorMsg("idCardNo", "该身份证号码在医生表已存在，请核对！");
             rs = 0;
         }
+        if(!(model.getIdCardNo().length()==15 ||model.getIdCardNo().length()==18)){
+            model.addErrorMsg("idCardNo", "该身份证号码格式不正确，请核对！");
+            rs = 0;
+        }
         //账户表
         if(userPhones.contains(model.getPhone())){
             //账户表中存在此电话号码，但不是此人的账户，则判断为该电话号码重复。
@@ -385,10 +389,14 @@ public class DoctorImportController extends ExtendController<DoctorService> {
                 }
 
             }
-            saveMeta(toJson(saveLs));
-            ObjectFileRW.write(file, all);
-
-            return success("");
+            if(saveLs.size()>0){
+                saveMeta(toJson(saveLs));
+                ObjectFileRW.write(file, all);
+                return success("");
+            }else{
+                ObjectFileRW.write(file, all);
+                return failed("尚有数据未验证通过！");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();
