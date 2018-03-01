@@ -45,7 +45,7 @@
 	</appender>-->
 
 	<!-- project default level -->
-	<logger name="com.yihu.ehr" level="INFO" />
+	<logger name="com.yihu.ehr" level="WARN" />
 	<!--log4jdbc -->
 	<logger name="jdbc.sqltiming" level="INFO"/>
 
