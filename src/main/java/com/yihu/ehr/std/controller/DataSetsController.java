@@ -344,7 +344,7 @@ public class DataSetsController extends BaseUIController {
 
             result = getEnvelop(envelopStr);
             MetaDataModel mdModel = getEnvelopModel(result.getObj(), MetaDataModel.class);
-            if(mdModel.getDictId() != null){
+            if(mdModel.getDictId() != 0){
                 Long dictId = mdModel.getDictId();
 
                 String urlForDict = "/dict";

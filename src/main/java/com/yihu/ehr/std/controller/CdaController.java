@@ -1,5 +1,7 @@
 package com.yihu.ehr.std.controller;
 
+import com.yihu.ehr.agModel.standard.cdadocument.CDAModel;
+import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -9,11 +11,14 @@ import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +35,129 @@ public class CdaController extends BaseUIController {
 
     @Value("${service-gateway.standard}")
     public String standardUrl;
+
+
+    @RequestMapping("initial")
+    public String cdaInitial(Model model) {
+        model.addAttribute("contentPage", "std/cda/cda");
+        return "pageView";
+    }
+
+    @RequestMapping("cdaupdate")
+    public String cdaUpdate(Model model,String userId) {
+        model.addAttribute("UserId", userId);
+        model.addAttribute("contentPage", "std/cda/CDAUpdate");
+        return "generalView";
+    }
+
+    @RequestMapping("cdaBaseInfo")
+    public String cdaBaseInfo(Model model, String userId) {
+        model.addAttribute("UserId", userId);
+        model.addAttribute("contentPage", "std/cda/cdaBaseInfo");
+        return "generalView";
+    }
+
+    @RequestMapping("cdaRelationship")
+    public String cdaRelationship(Model model) {
+        model.addAttribute("contentPage", "std/cda/cdaRelationship");
+        return "generalView";
+    }
+
+    @RequestMapping("SaveCdaInfo")
+    @ResponseBody
+    public Object SaveCdaInfo(String cdaJson,String version,HttpServletRequest request) throws IOException {
+
+        String url = "/cda/cda";
+        String resultStr = "";
+        CDAModel cdaModel = null;
+
+        Envelop envelop = new Envelop();
+        Map<String,Object> params = new HashMap<>();
+
+        cdaModel = toModel(cdaJson,CDAModel.class);
+        UsersModel userDetailModel = getCurrentUserRedis(request);
+
+        params.put("version",version);
+
+        try {
+
+            if(StringUtils.isEmpty(cdaModel.getId())) {
+                cdaModel.setCreateUser(userDetailModel.getId());
+                params.put("cdaInfoJson",toJson(cdaModel));
+                resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);//新增
+            }
+            else {
+                params.put("version_code",cdaModel.getVersionCode());
+                params.put("cda_id",cdaModel.getId());
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);//获取
+                envelop = toModel(resultStr,Envelop.class);
+                CDAModel updateCdaModel = getEnvelopModel(envelop.getDetailModelList().get(0),CDAModel.class);
+
+                updateCdaModel.setCode(cdaModel.getCode());
+                updateCdaModel.setName(cdaModel.getName());
+                updateCdaModel.setSourceId(cdaModel.getSourceId());
+                updateCdaModel.setType(cdaModel.getType());
+                updateCdaModel.setDescription(cdaModel.getDescription());
+
+                cdaModel.setUpdateUser(userDetailModel.getId());
+                params.put("cdaInfoJson",toJson(updateCdaModel));
+                resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);//修改
+            }
+            envelop = toModel(resultStr,Envelop.class);
+            if(!envelop.isSuccessFlg()){
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("CDA保存失败");
+            }else {
+                envelop.setSuccessFlg(true);
+            }
+        } catch (Exception ex) {
+            LogService.getLogger(CdaController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+
+    }
+
+    @RequestMapping("deleteCdaInfo")
+    @ResponseBody
+    public Object deleteCdaInfo(String ids, String strVersionCode) {
+
+        String url = "/cda/cda";
+        String resultStr = "";
+
+        Envelop envelop = new Envelop();
+        Map<String,Object> params = new HashMap<>();
+
+        params.put("cdaId",ids);
+        params.put("versionCode",strVersionCode);
+
+        String strErrorMsg = "";
+        if (StringUtils.isEmpty(strVersionCode)) {
+            strErrorMsg += "标准版本不能为空!";
+        }
+        if (StringUtils.isEmpty(ids)) {
+            strErrorMsg += "请先选择将要删除的CDA";
+        }
+        if (!StringUtils.isEmpty(strErrorMsg)) {
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(strErrorMsg);
+            return envelop;
+        }
+        try {
+
+            resultStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
+            return resultStr;
+
+        } catch (Exception ex) {
+            LogService.getLogger(CdaController.class).error(ex.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        }
+        return envelop;
+
+    }
+
 
 
     @RequestMapping("GetCdaListByKey")
