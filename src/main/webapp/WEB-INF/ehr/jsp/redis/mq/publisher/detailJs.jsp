@@ -44,17 +44,18 @@
                 success: function (data) {
                     if (data.successFlg) {
                         if (!detailModel.id) {
-                            parent.closeDetailDialog('新增成功');
+                            parent._LIGERDIALOG.success('新增成功。');
                         } else {
-                            parent.closeDetailDialog('修改成功');
+                            parent._LIGERDIALOG.success('修改成功。');
                         }
                         parent.reloadMasterGrid();
+                        parent.closeDetailDialog();
                     } else {
-                        $.Notice.error(data.errorMsg);
+                        parent._LIGERDIALOG.success(data.errorMsg);
                     }
                 },
                 error: function () {
-                    $.Notice.error('保存发生异常');
+                    parent._LIGERDIALOG.success('保存发生异常');
                 },
                 complete: function () {
                     loading.close();
