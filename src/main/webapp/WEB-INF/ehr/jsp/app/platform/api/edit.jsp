@@ -29,7 +29,7 @@
     <div id="div_methodName" class="m-form-group">
       <label>方法名<spring:message code="spe.colon"/></label>
       <div class="l-text-wrapper m-form-control essential">
-        <input type="text" id="ipt_api_methodName" class="required"  data-attr-scan="methodName">
+        <input type="text" id="ipt_api_methodName" class="required ajax"  data-attr-scan="methodName">
       </div>
     </div>
 

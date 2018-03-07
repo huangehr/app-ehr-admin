@@ -159,7 +159,10 @@
                 var field = $(elm).attr('id');
                 var val = $('#' + field).val();
                 if(field=='ipt_api_name' && val!=model.name){
-                    return uniqValid4List(urls.existence, "name="+val+" g1;parentId="+ model.parentId, "该应用代码已存在！");
+                    return uniqValid4List(urls.existence, "name="+val+" g1;parentId="+ model.parentId, "该应用名称已存在！");
+                }
+                if(field=='ipt_api_methodName' && val!=model.methodName){
+                    return uniqValid4List(urls.existence, "methodName="+val+" g1;parentId="+ model.parentId, "该方法名已存在！");
                 }
             });
 
