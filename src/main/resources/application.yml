@@ -229,7 +229,7 @@ service-gateway:
   template: http://10.176.97.10:10000/api/v1.0/template
   standard: http://10.176.97.10:10000/api/v1.0/std
   browseClientUrl: http://10.176.97.11:8010/ehr/browser
-  browseClientOutSizeUrl: http://171.35.109.41:8010/ehr/browser
+  browseClientOutSizeUrl: http://171.35.109.35:1235/ehr/browser
   profileurl: http://10.176.97.12:9009/api/v1.0
 fast-dfs:
   tracker-server: 10.176.97.5:22122
