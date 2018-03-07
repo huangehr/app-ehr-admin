@@ -113,7 +113,7 @@
                                         color: '#333'
                                     },
                                 },
-                                color: ['#56c5fc'],
+                                color: ['#ff88be','#56c5fc'],
                                 series: [
                                     {
                                         name: '健康卡绑定情况',
@@ -546,7 +546,7 @@
                                         y: 'center',
                                         data: legendArr
                                     },
-                                    color: ['#56c5fc','#1cd2bb','#ff88be'],
+                                    color: ['#56c5fc','#fed327','#ff88be'],
                                     series : [
                                         {
                                             name: '档案来源分布情况',
@@ -618,7 +618,7 @@
                                     y : 'bottom',
                                     data: legendArr
                                 },
-                                color: ['#56c5fc','#1cd2bb'],
+                                color: ['#56c5fc','#ff88be'],
                                 grid: {
                                     x: 80,
                                     x2: 50,
@@ -704,7 +704,7 @@
                                     y : '90%',
                                     data: legendArr
                                 },
-                                color: ['#56c5fc','#1cd2bb'],
+                                color: ['#56c5fc','#ff88be'],
                                 grid: {
                                     x: 80,
                                     x2: 40,
@@ -774,7 +774,7 @@
                                     y: 'center',
                                     data: legendArr
                                 },
-                                color: ['#56c5fc','#1cd2bb'],
+                                color: ['#56c5fc','#ff88be','#fed327','#49d2db'],
                                 series : [
                                     {
                                         name: '电子病历来源分布情况',
@@ -978,7 +978,7 @@
                                     }
                                 },
                                 calculable : true,
-                                color: ['#56c5fc','#1cd2bb'],
+                                color: ['#56c5fc','#ff88be'],
                                 grid: {
                                     x: 80,
                                     x2: 30,

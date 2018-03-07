@@ -14,6 +14,9 @@ import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -35,6 +38,9 @@ import java.util.*;
 @RequestMapping("/resourceIntegrated")
 public class ResourceIntegratedController extends BaseUIController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ResourceIntegratedController.class);
+    private static final Integer SINGLE_REQUEST_SIZE = 5000; //导出Excel时的单次请求量
+    private static final Integer SINGLE_EXCEL_SIZE = 50000; //导出Excel时的单个文件数据量
 
     /**
      * 综合查询档案数据列表树
@@ -337,34 +343,54 @@ public class ResourceIntegratedController extends BaseUIController {
         return envelop;
     }
 
-
-
     /**
      * 综合查询档案数据导出
      * @param request
      * @param response
-     * @param size
      * @param resourcesCode
      * @param searchParams
      * @param metaData
+     * @param size
+     * @throws Exception
      */
     @RequestMapping(value = "/outFileExcel")
-    public void outExcel(HttpServletRequest request, HttpServletResponse response, String resourcesCode, Integer size, String searchParams, String metaData) {
-        Envelop envelop = new Envelop();
+    public void outExcel(HttpServletRequest request, HttpServletResponse response, String resourcesCode, String searchParams, String metaData, Integer size) throws Exception {
+        //权限控制
+        HttpSession session = request.getSession();
+        List<String> userOrgSaasList  = getUserOrgSaasListRedis(request);
+        List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
+        boolean isAccessAll = getIsAccessAllRedis(request);
+        if (!isAccessAll) {
+            if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+                logger.warn("无权访问");
+                response.setStatus(403);
+                return;
+            }
+        }
+        //基本设置
+        response.setContentType("application/vnd.ms-excel");
+        String fileName = "综合查询档案资源数据";
+        Long current = System.currentTimeMillis();
+        response.setHeader("Content-Disposition", "attachment; filename="
+                + new String(fileName.getBytes("UTF-8"), "ISO8859-1") + current.toString() + ".xls");
+        OutputStream os = response.getOutputStream();
         Map<String, Object> params = new HashMap<>();
-        String resultStr = "";
-        String fileName = "综合查询档案数据";
-        String resourceCategoryName = System.currentTimeMillis() + "";
-        try {
-            response.setContentType("octets/stream");
-            response.setHeader("Content-Disposition", "attachment; filename="
-                    + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
-            OutputStream os = response.getOutputStream();
+        //基本参数
+        String url = "/resources/integrated/metadata_data";
+        params.put("resourcesCode", resourcesCode);
+        if (isAccessAll) {
+            params.put("orgCode", "*");
+            params.put("areaCode", "*");
+        }else {
+            params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
+            params.put("areaCode", objectMapper.writeValueAsString(userAreaSaasList));
+        }
+        params.put("queryCondition", searchParams);
+        params.put("size", SINGLE_REQUEST_SIZE);
+        if (size <= SINGLE_EXCEL_SIZE) {
             WritableWorkbook book = Workbook.createWorkbook(os);
-            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-            /**
-             * 初始化基础数据
-             */
+            WritableSheet sheet = book.createSheet("page1", 0);
+            //初始化表格基础数据
             sheet = initBaseInfo(sheet);
             List<Map<String, String>> metaDataSrcList = objectMapper.readValue(metaData, List.class);
             List<String> metaDataList = new ArrayList<String>();
@@ -374,48 +400,83 @@ public class ResourceIntegratedController extends BaseUIController {
                 sheet.addCell(new Label(i + 6, 1, String.valueOf(temp.get("name"))));
                 metaDataList.add(String.valueOf(temp.get("code")));
             }
-            String url = "/resources/integrated/metadata_data";
-            //权限控制
-            HttpSession session = request.getSession();
-            List<String> userOrgSaasList  = getUserOrgSaasListRedis(request);
-            List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
-            boolean isAccessAll = getIsAccessAllRedis(request);
-            if(!isAccessAll) {
-                if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
-                    System.out.println("无权访问");
-                }
-            }
-            params.put("resourcesCode", resourcesCode);
             params.put("metaData", objectMapper.writeValueAsString(metaDataList));
-            if(isAccessAll) {
-                params.put("orgCode", "*");
-                params.put("areaCode", "*");
-            }else {
-                params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
-                params.put("areaCode", objectMapper.writeValueAsString(userAreaSaasList));
+            //循环获取数据
+            int totalPage;
+            if (size % SINGLE_REQUEST_SIZE > 0) {
+                totalPage = size / SINGLE_REQUEST_SIZE + 1;
+            } else {
+                totalPage = size / SINGLE_REQUEST_SIZE;
             }
-            params.put("queryCondition", searchParams);
-            params.put("page", 1);
-            params.put("size", size);
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = toModel(resultStr, Envelop.class);
-            List<Object> dataList = envelop.getDetailModelList();
-            Cell[] cells = sheet.getRow(0);
-            /**
-             * 填充数据
-             */
-            sheet = inputData(sheet, dataList, cells);
-
-            sheet.mergeCells(0, 2, 0, dataList.size() + 1);
+            for (int page = 1; page <= totalPage; page ++) {
+                params.put("page", page);
+                String httpResponse = HttpClientUtil.doGet(comUrl + url, params);
+                Envelop envelop = toModel(httpResponse, Envelop.class);
+                List<Object> dataList = envelop.getDetailModelList();
+                Cell[] cells = sheet.getRow(0);
+                //填充数据
+                sheet = inputData(sheet, dataList, cells, sheet.getRows());
+            }
+            sheet.mergeCells(0, 2, 0, sheet.getRows() - 1);
             sheet.addCell(new Label(0, 2, "值"));
             sheet.removeRow(0);
             book.write();
             book.close();
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            int fileCount;
+            if (size % SINGLE_EXCEL_SIZE > 0) {
+                fileCount = size / SINGLE_EXCEL_SIZE + 1;
+            } else {
+                fileCount = size / SINGLE_EXCEL_SIZE;
+            }
+            int totalPage;
+            if (size % SINGLE_REQUEST_SIZE > 0) {
+                totalPage = size / SINGLE_REQUEST_SIZE + 1;
+            } else {
+                totalPage = size / SINGLE_REQUEST_SIZE;
+            }
+            WritableWorkbook book = Workbook.createWorkbook(os);
+            for (int fileIndex = 1; fileIndex <= fileCount; fileIndex ++) {
+                WritableSheet sheet = book.createSheet("page" + fileIndex, fileIndex - 1);
+                //初始化表格基础数据
+                sheet = initBaseInfo(sheet);
+                List<Map<String, String>> metaDataSrcList = objectMapper.readValue(metaData, List.class);
+                List<String> metaDataList = new ArrayList<String>();
+                for (int i = 0; i < metaDataSrcList.size(); i++) {
+                    Map<String, String> temp = metaDataSrcList.get(i);
+                    sheet.addCell(new Label(i + 6, 0, String.valueOf(temp.get("code"))));
+                    sheet.addCell(new Label(i + 6, 1, String.valueOf(temp.get("name"))));
+                    metaDataList.add(String.valueOf(temp.get("code")));
+                }
+                params.put("metaData", objectMapper.writeValueAsString(metaDataList));
+                //循环获取数据
+                int currentPage = (fileIndex - 1) * (SINGLE_EXCEL_SIZE / SINGLE_REQUEST_SIZE) + 1;
+                int cycPage;
+                if (fileIndex == fileCount) {
+                    int beforePage = (fileIndex - 1) * (SINGLE_EXCEL_SIZE / SINGLE_REQUEST_SIZE);
+                    int lastPage = totalPage - beforePage;
+                    cycPage = beforePage + lastPage;
+                } else {
+                    cycPage = fileIndex * (SINGLE_EXCEL_SIZE / SINGLE_REQUEST_SIZE);
+                }
+                for (int page = currentPage; page <= cycPage; page ++) {
+                    params.put("page", page);
+                    String httpResponse = HttpClientUtil.doGet(comUrl + url, params);
+                    Envelop envelop = toModel(httpResponse, Envelop.class);
+                    List<Object> dataList = envelop.getDetailModelList();
+                    Cell[] cells = sheet.getRow(0);
+                    //填充数据
+                    sheet = inputData(sheet, dataList, cells, sheet.getRows());
+                }
+                sheet.mergeCells(0, 2, 0, sheet.getRows() - 1);
+                sheet.addCell(new Label(0, 2, "值"));
+                sheet.removeRow(0);
+            }
+            book.write();
+            book.close();
         }
+        os.flush();
+        os.close();
     }
 
     /**
@@ -426,49 +487,45 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param searchParams
      */
     @RequestMapping("/outQuotaExcel")
-    public void outQuotaExcel(HttpServletResponse response, String tjQuotaIds, String tjQuotaCodes, String searchParams,
-    HttpServletRequest request){
-        Envelop envelop = new Envelop();
-        String fileName = "综合查询指标数据";
-        String resourceCategoryName = System.currentTimeMillis() + "";
-        try {
-            //请求数据
-            String url = "/resources/integrated/quota_data";
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put("quotaIds", tjQuotaIds);
-            params.put("quotaCodes", tjQuotaCodes);
-            params.put("queryCondition", searchParams);
-            List<String> userOrgList  = getUserOrgSaasListRedis(request);
-            params.put("userOrgList", userOrgList);
-            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = toModel(resultStr, Envelop.class);
-            //处理Excel
-            response.setContentType("octets/stream");
-            response.setHeader("Content-Disposition", "attachment; filename="
-                    + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
-            OutputStream os = response.getOutputStream();
-            WritableWorkbook book = Workbook.createWorkbook(os);
-            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-            sheet.addCell(new Label(0, 0, "代码"));
-            sheet.addCell(new Label(0, 1, "名称"));
-            List<Map<String, String>> objList = (List<Map<String, String>>)envelop.getObj();
-            for(int i = 0; i< objList.size(); i ++) {
-                Map<String, String> objMap = objList.get(i);
-                sheet.addCell(new Label(i + 1, 0, String.valueOf(objMap.get("key"))));
-                sheet.addCell(new Label(i + 1, 1, String.valueOf(objMap.get("name"))));
-            }
-            Cell [] cells = sheet.getRow(0);
-            sheet = inputData(sheet, envelop.getDetailModelList(), cells);
-            sheet.mergeCells(0, 2, 0, envelop.getDetailModelList().size() + 1);
-            sheet.addCell(new Label(0, 2, "值"));
-            sheet.removeRow(0);
-            book.write();
-            book.close();
-            os.flush();
-            os.close();
-        }catch (Exception e) {
-            e.printStackTrace();
+    public void outQuotaExcel(HttpServletResponse response, HttpServletRequest request, String tjQuotaIds, String tjQuotaCodes, String searchParams) throws Exception {
+        //基本设置
+        response.setContentType("application/vnd.ms-excel");
+        String fileName = "综合查询指标资源数据";
+        Long current = System.currentTimeMillis();
+        response.setHeader("Content-Disposition", "attachment; filename="
+                + new String(fileName.getBytes("UTF-8"), "ISO8859-1") + current.toString() + ".xls");
+        OutputStream os = response.getOutputStream();
+        //请求数据
+        String url = "/resources/integrated/quota_data";
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("quotaIds", tjQuotaIds);
+        params.put("quotaCodes", tjQuotaCodes);
+        params.put("queryCondition", searchParams);
+        List<String> userOrgList  = getUserOrgSaasListRedis(request);
+        params.put("userOrgList", userOrgList);
+        String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+        Envelop envelop = toModel(resultStr, Envelop.class);
+        //处理Excel
+        WritableWorkbook book = Workbook.createWorkbook(os);
+        WritableSheet sheet = book.createSheet("page1", 0);
+        sheet.addCell(new Label(0, 0, "代码"));
+        sheet.addCell(new Label(0, 1, "名称"));
+        List<Map<String, String>> objList = (List<Map<String, String>>)envelop.getObj();
+        for(int i = 0; i< objList.size(); i ++) {
+            Map<String, String> objMap = objList.get(i);
+            sheet.addCell(new Label(i + 1, 0, String.valueOf(objMap.get("key"))));
+            sheet.addCell(new Label(i + 1, 1, String.valueOf(objMap.get("name"))));
         }
+        Cell [] cells = sheet.getRow(0);
+        sheet = inputData(sheet, envelop.getDetailModelList(), cells, sheet.getRows());
+        sheet.mergeCells(0, 2, 0, sheet.getRows() - 1);
+        sheet.addCell(new Label(0, 2, "值"));
+        sheet.removeRow(0);
+        book.write();
+        book.close();
+        os.flush();
+        os.close();
+
     }
 
     /**
@@ -478,41 +535,37 @@ public class ResourceIntegratedController extends BaseUIController {
      * @param metaData
      */
     @RequestMapping(value = "/outSelectExcel", method = RequestMethod.GET)
-    public void outSelectExcel(HttpServletResponse response, String selectData, String metaData) {
-        String fileName = "综合查询档案数据已选数据";
-        String resourceCategoryName = System.currentTimeMillis() + "";
-        try {
-            response.setContentType("octets/stream");
-            response.setHeader("Content-Disposition", "attachment; filename="
-                    + new String(fileName.getBytes("gb2312"), "ISO8859-1") + resourceCategoryName + ".xls");
-            OutputStream os = response.getOutputStream();
-            WritableWorkbook book = Workbook.createWorkbook(os);
-            WritableSheet sheet = book.createSheet(resourceCategoryName, 0);
-            /**
-             * 初始化基础数据
-             */
-            sheet = initBaseInfo(sheet);
-            List<Map<String, String>> metaDataSrcList = objectMapper.readValue(metaData, List.class);
-            for(int i = 0; i < metaDataSrcList.size(); i ++) {
-                Map<String, String> temp = metaDataSrcList.get(i);
-                sheet.addCell(new Label(i + 6, 0, String.valueOf(temp.get("code"))));
-                sheet.addCell(new Label(i + 6, 1, String.valueOf(temp.get("name"))));
-            }
-            List<Object> selectDataList = objectMapper.readValue(selectData, List.class);
-            Cell[] cells = sheet.getRow(0);
-            /**
-             * 填充数据
-             */
-            sheet = inputData(sheet, selectDataList, cells);
-            sheet.mergeCells(0, 2, 0, selectDataList.size() + 1);
-            sheet.addCell(new Label(0, 2, "值"));
-            book.write();
-            book.close();
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void outSelectExcel(HttpServletResponse response, String selectData, String metaData) throws Exception {
+        //基本设置
+        response.setContentType("application/vnd.ms-excel");
+        String fileName = "综合查询档案数据资源已选数据";
+        Long current = System.currentTimeMillis();
+        response.setHeader("Content-Disposition", "attachment; filename="
+                + new String(fileName.getBytes("gb2312"), "ISO8859-1") + current.toString() + ".xls");
+        OutputStream os = response.getOutputStream();
+        WritableWorkbook book = Workbook.createWorkbook(os);
+        WritableSheet sheet = book.createSheet("page1", 0);
+        //初始化基础数据
+        sheet = initBaseInfo(sheet);
+        List<Map<String, String>> metaDataSrcList = objectMapper.readValue(metaData, List.class);
+        for(int i = 0; i < metaDataSrcList.size(); i ++) {
+            Map<String, String> temp = metaDataSrcList.get(i);
+            sheet.addCell(new Label(i + 6, 0, String.valueOf(temp.get("code"))));
+            sheet.addCell(new Label(i + 6, 1, String.valueOf(temp.get("name"))));
         }
+        List<Object> selectDataList = objectMapper.readValue(selectData, List.class);
+        Cell[] cells = sheet.getRow(0);
+        /**
+         * 填充数据
+         */
+        sheet = inputData(sheet, selectDataList, cells, sheet.getRows());
+        sheet.mergeCells(0, 2, 0, sheet.getRows() - 1);
+        sheet.addCell(new Label(0, 2, "值"));
+        book.write();
+        book.close();
+        os.flush();
+        os.close();
+
     }
 
     /**
@@ -545,13 +598,13 @@ public class ResourceIntegratedController extends BaseUIController {
      * @return
      * @throws Exception
      */
-    public WritableSheet inputData(WritableSheet sheet, List<Object> dataList, Cell[] cells) throws Exception{
+    public WritableSheet inputData(WritableSheet sheet, List<Object> dataList, Cell[] cells, int rowNum) throws Exception{
         for (int i = 0; i < dataList.size(); i++) {
             Map<String, String> map = toModel(toJson(dataList.get(i)), Map.class);
             for (String key : map.keySet()) {
                 for (Cell cell : cells) {
                     if (cell.getContents().equals(key)) {
-                        sheet.addCell(new Label(cell.getColumn(), i + 2, String.valueOf(map.get(key))));
+                        sheet.addCell(new Label(cell.getColumn(), i + rowNum, String.valueOf(map.get(key))));
                     }
                 }
             }
@@ -611,10 +664,10 @@ public class ResourceIntegratedController extends BaseUIController {
             return finalList;
         }
     }
+
     /**
      * 新建查询
      *
-     * @param response
      * @throws IOException
      */
     @RequestMapping("/goAddQueryPage")
