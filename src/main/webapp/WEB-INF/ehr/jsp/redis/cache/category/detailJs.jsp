@@ -43,11 +43,11 @@
                 success: function (data) {
                     if (data.successFlg) {
                         if (!detailModel.id) {
-                            parent.closeDetailDialog('新增成功');
+                            window.closeDetailDialog('新增成功');
                         } else {
-                            parent.closeDetailDialog('修改成功');
+                            window.closeDetailDialog('修改成功');
                         }
-                        parent.reloadMasterGrid();
+                        window.reloadMasterGrid();
                     } else {
                         $.Notice.error(data.errorMsg);
                     }
