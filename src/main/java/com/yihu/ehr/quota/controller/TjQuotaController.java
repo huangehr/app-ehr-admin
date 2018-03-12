@@ -2,6 +2,7 @@ package com.yihu.ehr.quota.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
@@ -418,7 +419,7 @@ public class TjQuotaController extends BaseUIController {
             filters.put("endTime", endTime);
             filters.put("orgName", orgName);
             filters.put("province", province);
-            filters.put("city", city);
+            filters.put("townName", city);
             filters.put("district", district);
              // 结果大于0
             filters.put("result", res);

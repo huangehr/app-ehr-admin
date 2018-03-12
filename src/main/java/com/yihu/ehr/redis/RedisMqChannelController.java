@@ -24,7 +24,7 @@ import java.util.Map;
  * @date 2017/11/10 11:45
  */
 @Controller
-    @RequestMapping("/redis/mq/channel")
+@RequestMapping("/redis/mq/channel")
 public class RedisMqChannelController extends BaseUIController {
 
     @Value("${service-gateway.username}")
