@@ -3,6 +3,7 @@ package com.yihu.ehr.util.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
+import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.http.HttpResponse;
 import com.yihu.ehr.util.http.HttpUtils;
@@ -30,7 +31,7 @@ public class BaseUIController {
     @Value("${service-gateway.url}")
     protected String comUrl;
 
-    private static String ERR_SYSTEM_DES = "系统错误,请联系管理员!";
+    protected static String ERR_SYSTEM_DES = "系统错误,请联系管理员!";
 
     public Envelop getEnvelop(String json){
         try {
@@ -105,19 +106,34 @@ public class BaseUIController {
         }
     }
 
-    public Envelop failed(String errMsg) {
+    protected Envelop failed(String errMsg){
+        return failed(errMsg, ErrorCode.REQUEST_NOT_COMPLETED.value());
+    }
+
+    protected Envelop failed(String errMsg, int errorCode){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(false);
         envelop.setErrorMsg(errMsg);
+        envelop.setErrorCode(errorCode);
         return envelop;
     }
 
-    public Envelop success(Object object) {
+    protected Envelop success(Object object){
+        return success(object, null);
+    }
+
+    protected Envelop success(List list){
+        return success(null, list);
+    }
+
+    protected Envelop success(Object object, List list){
         Envelop envelop = new Envelop();
         envelop.setSuccessFlg(true);
         envelop.setObj(object);
+        envelop.setDetailModelList(list);
         return envelop;
     }
+
     public String encodeStr(String str) {
         try {
             if (str == null) {

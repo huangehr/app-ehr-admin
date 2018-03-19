@@ -82,8 +82,7 @@ public class RedisMqChannelController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqChannel.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -122,8 +121,7 @@ public class RedisMqChannelController extends BaseUIController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -139,8 +137,7 @@ public class RedisMqChannelController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.MqChannel.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -158,8 +155,7 @@ public class RedisMqChannelController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqChannel.IsUniqueChannel, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -177,8 +173,7 @@ public class RedisMqChannelController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqChannel.IsUniqueChannelName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqChannelController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

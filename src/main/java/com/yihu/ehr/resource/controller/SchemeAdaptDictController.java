@@ -64,10 +64,9 @@ public class SchemeAdaptDictController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     /**
@@ -87,11 +86,9 @@ public class SchemeAdaptDictController extends BaseUIController {
             String url = "/adaptions/adapter/dictionaries";
             resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return resultStr;
-        }catch(Exception ex){
-            LogService.getLogger(SchemeAdaptController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

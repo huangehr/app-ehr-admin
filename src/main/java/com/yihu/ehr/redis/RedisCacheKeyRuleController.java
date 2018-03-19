@@ -85,8 +85,7 @@ public class RedisCacheKeyRuleController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheKeyRule.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -124,8 +123,7 @@ public class RedisCacheKeyRuleController extends BaseUIController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -141,8 +139,7 @@ public class RedisCacheKeyRuleController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.CacheKeyRule.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -160,8 +157,7 @@ public class RedisCacheKeyRuleController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheKeyRule.IsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -179,8 +175,7 @@ public class RedisCacheKeyRuleController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheKeyRule.IsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -199,8 +194,7 @@ public class RedisCacheKeyRuleController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheKeyRule.IsUniqueExpression, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheKeyRuleController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

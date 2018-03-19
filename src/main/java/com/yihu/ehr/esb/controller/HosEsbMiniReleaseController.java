@@ -124,11 +124,9 @@ public class HosEsbMiniReleaseController extends BaseUIController {
             String url = "/esb/saveReleaseInfo";
             resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return resultStr;
-        }catch(Exception ex){
-            LogService.getLogger(HosEsbMiniReleaseController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -141,11 +139,9 @@ public class HosEsbMiniReleaseController extends BaseUIController {
         try{
             String resultStr =  HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return resultStr;
-        }catch(Exception ex){
-            LogService.getLogger(HosEsbMiniReleaseController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -175,15 +171,13 @@ public class HosEsbMiniReleaseController extends BaseUIController {
         params.put("size", rows);
         params.put("fields", "");
         params.put("sorts", "");
-        try{
+        try {
             String url = "/esb/searchHosEsbMiniReleases";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
-        }catch(Exception ex){
-            LogService.getLogger(HosEsbMiniReleaseController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

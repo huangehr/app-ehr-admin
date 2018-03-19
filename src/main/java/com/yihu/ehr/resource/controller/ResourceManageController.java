@@ -168,9 +168,8 @@ public class ResourceManageController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -323,7 +322,7 @@ public class ResourceManageController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
@@ -346,10 +345,9 @@ public class ResourceManageController extends BaseUIController {
         try{
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -368,10 +366,9 @@ public class ResourceManageController extends BaseUIController {
             params.put("name",name);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -394,7 +391,7 @@ public class ResourceManageController extends BaseUIController {
             if(envelopGet.isSuccessFlg()){
                 list = (List<RsCategoryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<>(),RsCategoryModel.class);
             }
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
         }
         return list;
@@ -485,10 +482,8 @@ public class ResourceManageController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -505,9 +500,8 @@ public class ResourceManageController extends BaseUIController {
             try {
                 resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             } catch (Exception e) {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SystemError.toString());
-                return result;
+                e.printStackTrace();
+                return failed(ERR_SYSTEM_DES);
             }
             return resultStr;
         }
@@ -517,9 +511,8 @@ public class ResourceManageController extends BaseUIController {
         try {
             resultStr = templates.doPost(comUrl + url, params);
         } catch (RestClientException e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -650,9 +643,8 @@ public class ResourceManageController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -668,9 +660,8 @@ public class ResourceManageController extends BaseUIController {
             String resultStr = templates.doPost(comUrl + url, params);
             return resultStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceManageController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

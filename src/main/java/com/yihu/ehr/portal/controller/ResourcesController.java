@@ -102,9 +102,8 @@ public class ResourcesController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -198,8 +197,8 @@ public class ResourcesController extends BaseUIController {
 
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
             e.printStackTrace();
+            result.setSuccessFlg(false);
             result.setErrorMsg(e.getMessage());
             return result;
         }
@@ -227,13 +226,12 @@ public class ResourcesController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -277,9 +275,8 @@ public class ResourcesController extends BaseUIController {
             model.addAttribute("contentPage", "portal/resources/portalResourcesInfoDialog");
             return "simpleView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

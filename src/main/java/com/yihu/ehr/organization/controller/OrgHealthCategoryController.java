@@ -77,8 +77,7 @@ public class OrgHealthCategoryController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Org.HealthCategory.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -93,8 +92,8 @@ public class OrgHealthCategoryController extends BaseUIController {
             List<Object> data = toModel(envelopJsonStr, Envelop.class).getDetailModelList();
             return toJson(data);
         } catch (Exception ex) {
-            LogService.getLogger(ReportCategoryController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -132,8 +131,7 @@ public class OrgHealthCategoryController extends BaseUIController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -149,8 +147,7 @@ public class OrgHealthCategoryController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Org.HealthCategory.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -168,8 +165,7 @@ public class OrgHealthCategoryController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Org.HealthCategory.IsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -187,8 +183,7 @@ public class OrgHealthCategoryController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Org.HealthCategory.IsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(OrgHealthCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
