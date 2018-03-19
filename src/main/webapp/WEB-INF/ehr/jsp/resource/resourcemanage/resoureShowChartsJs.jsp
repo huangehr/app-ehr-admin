@@ -12,9 +12,9 @@
             chart: document.getElementById('chart'),
             resourceId: '${id}',
             myChart: null,
-            xAxisMap: {},//细维度
-            firstDimension: '',//默认第一次查询的主维度code
-            dimensionMap: {},//主维度-对象
+            xAxisMap: {},//可选维度
+            firstDimension: '',//默认第一次查询的默认维度code
+            dimensionMap: {},//默认维度-对象
             $cDropDown: $('#cDropDown'),
             init: function () {
                 this.initAvalon();
@@ -28,9 +28,9 @@
                     $id: 'nrsApp',
                     downClass: '',
                     showDown: false,//是否显示下拉
-                    dimensionMap: [],//主维度-数组
+                    dimensionMap: [],//默认维度-数组
                     downValArr: [],//下钻数据
-                    downKeyArr: [],//主维度index
+                    downKeyArr: [],//默认维度index
                     selVal: '',//图表选中值
                     isSel: false,//是否先选中图表
                     nowDimension: [],//下砖维度顺序

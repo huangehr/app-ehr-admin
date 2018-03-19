@@ -63,11 +63,15 @@ $(function(){
             me.clickSessionId();
         },
         clickSessionId: function () {
+            var $a = [];
             if(MenuId){
-                $("a[data-find='" + MenuId + "']").click();
-            } else {
-                $('.menucyc').find('.has-url').eq(0).trigger('click');
+                $a = $("a[data-find='" + MenuId + "']");
+                if ($a.length > 0) {
+                    $("a[data-find='" + MenuId + "']").click();
+                    return;
+                }
             }
+            $('.menucyc').find('.has-url').eq(0).trigger('click');
         },
         menu:function(){
             var ObjCyc=$(this).find("a");

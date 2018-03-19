@@ -2,6 +2,7 @@ package com.yihu.ehr.quota.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
@@ -418,7 +419,7 @@ public class TjQuotaController extends BaseUIController {
             filters.put("endTime", endTime);
             filters.put("orgName", orgName);
             filters.put("province", province);
-            filters.put("city", city);
+            filters.put("townName", city);
             filters.put("district", district);
              // 结果大于0
             filters.put("result", res);
@@ -665,13 +666,14 @@ public class TjQuotaController extends BaseUIController {
             }
             writerResponse(response, 65 + "", "l_upd_progress");
 
-            if (LsMap.size() > 0)
+            if (LsMap.size() > 0) {
                 saveData(LsMap);
-            if (errorLs.size() == 0)
+            }
+            if (errorLs.size() == 0 && quotaMainErrorLs.size() == 0 && quotaSlaveErrorLs.size() == 0){
                 writerResponse(response, 100 + ",'suc'", "l_upd_progress");
-            else
+            } else {
                 writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
-
+            }
         } catch (Exception e) {
             e.printStackTrace();
             writerResponse(response, "-1", "l_upd_progress");
@@ -758,12 +760,12 @@ public class TjQuotaController extends BaseUIController {
             }
 
             //判断主维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
-            if (!(quotaCodes.contains(TjQuotaDMainModel.getMainCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDMainModel.getMainCode()))) {
-                TjQuotaDMainModel.addErrorMsg("quotaCode", "该主维度的指标编码不存在！");
+            if (!excelReader.getRepeat().get("code").contains(TjQuotaDMainModel.getMainCode())) {
+                TjQuotaDMainModel.addErrorMsg("quotaCode", "导入指标中找不到该主维度的指标编码！");
             }
             //判断细维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
-            if (!(quotaCodes.contains(TjQuotaDSlaveModel.getSlaveCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDSlaveModel.getSlaveCode()))) {
-                TjQuotaDSlaveModel.addErrorMsg("quotaCode", "该细维度的指标编码不存在！");
+            if (excelReader.getRepeat().get("code").contains(TjQuotaDSlaveModel.getSlaveCode())) {
+                TjQuotaDSlaveModel.addErrorMsg("quotaCode", "导入指标中找不到该细维度的指标编码！");
             }
         }
 
@@ -811,7 +813,7 @@ public class TjQuotaController extends BaseUIController {
             }
             //判断主维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
             if (!(quotaCodes.contains(TjQuotaDMainModel.getQuotaCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDMainModel.getQuotaCode()))) {
-                TjQuotaDMainModel.addErrorMsg("quotaCode", "该主维度的指标编码不存在！");
+                TjQuotaDMainModel.addErrorMsg("quotaCode", "导入的指标中找不到该主维度的指标编码！");
                 valid = false;
             }
             //主维度错误信息
@@ -834,15 +836,13 @@ public class TjQuotaController extends BaseUIController {
             }
             //判断细维度指标编码是否存在（包括库里存在、现导入文件的指标编码）
             if (!(quotaCodes.contains(TjQuotaDSlaveModel.getQuotaCode()) || excelReader.getRepeat().get("code").contains(TjQuotaDSlaveModel.getQuotaCode()))) {
-                TjQuotaDSlaveModel.addErrorMsg("quotaCode", "该细维度的指标编码不存在！");
+                TjQuotaDSlaveModel.addErrorMsg("quotaCode", "导入的指标中找不到该细维度的指标编码！");
                 valid = false;
             }
             //细维度错误信息
             if (!valid) {
                 quotaSlaveErrorLs.add(TjQuotaDSlaveModel);
-            }
-
-            if (valid) {
+            }else{
                 quotaSlaveLs.add(quotaSlaveCorrectLs.get(i));
             }
         }
@@ -926,13 +926,12 @@ public class TjQuotaController extends BaseUIController {
         try {
             map.put("lsMap", toJson(lsMap));
             String envelopStrNew = HttpClientUtil.doPost(comUrl + "/tjQuota/batch", map, username, password);
-            if (null != envelopStrNew) {
-                ret.setSuccessFlg(true);
-            }
+            ret = objectMapper.readValue(envelopStrNew,Envelop.class);
             return ret;
         } catch (Exception e) {
             e.printStackTrace();
             ret.setSuccessFlg(false);
+            ret.setErrorMsg(e.getMessage());
             return ret;
         }
     }
@@ -972,8 +971,12 @@ public class TjQuotaController extends BaseUIController {
             toClient.close();
         } catch (Exception e) {
             e.printStackTrace();
-            if (fis != null) fis.close();
-            if (toClient != null) toClient.close();
+            if (fis != null){
+                fis.close();
+            }
+            if (toClient != null){
+                toClient.close();
+            }
         }
     }
 

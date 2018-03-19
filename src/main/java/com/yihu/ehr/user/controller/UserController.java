@@ -242,7 +242,7 @@ public class UserController extends BaseUIController {
                 userModel.setAreaId(userDetailModel.getAreaId());
                 userModel.setAreaName(userDetailModel.getAreaName());
                 userModel.setStreet(userDetailModel.getStreet());
-                if(userDetailModel.getUserType().equals("Doctor")){
+                if("Doctor".equals(userDetailModel.getUserType())){
                     userModel.setMajor(userDetailModel.getMajor());
                 }
                 String imageId = fileUpload(userModel.getId(),restStream,imageName);
@@ -470,8 +470,9 @@ public class UserController extends BaseUIController {
         } catch (IOException e) {
             LogService.getLogger(UserController.class).error(e.getMessage());
         } finally {
-            if (outputStream != null)
+            if (outputStream != null){
                 outputStream.close();
+              }
         }
     }
 
@@ -482,7 +483,7 @@ public class UserController extends BaseUIController {
         String resultStr = "";
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
-        params.put("user_id",userId);
+        params.put("userId",userId);
         params.put("password",passWord);
 
         try {

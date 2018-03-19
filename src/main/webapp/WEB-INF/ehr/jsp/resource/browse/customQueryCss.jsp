@@ -159,7 +159,7 @@
     }
     .select-con{
         width: 100%;
-        max-height: 450px;
+        max-height: 410px;
         padding-top: 20px;
         border: 1px solid #e1e1e1;
         margin-bottom: 20px;

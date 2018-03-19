@@ -30,6 +30,7 @@
             ]
         ];
         var rsInfoDialog = null,
+            waitSelect = '',
             defArr = [];
 
         $(function () {
@@ -64,6 +65,7 @@
                 type: 0,//0:档案数据；1：指标统计
                 index: 0,
                 masterArr: [],
+                change:0,
                 childArr: [],
                 queryCondition: '',
                 GridCloumnNamesData: [],
@@ -187,15 +189,15 @@
                             if (me.selectData.length > 0) {
                                 if (me.type == 0) {
                                     var ma = [], ca = [], sjyArr = [];
-                                    if (me.selectData[0].data.level == 2 && me.selectData.length == 1) {
+                                    if (me.selectData[0].data.level == 3 && me.selectData.length == 1) {
                                         me.selectData.push({data:this.getDataByNode(this.getParentTreeItem(me.selectData[0].target))});
                                     }
                                     for (var i = 0, len = me.selectData.length; i < len; i++) {
                                         switch (me.selectData[i].data.level) {
-                                            case '1':
+                                            case '2':
                                                 ma.push(me.selectData[i].data.code);
                                                 break;
-                                            case '2':
+                                            case '3':
                                                 sjyArr.push(me.selectData[i].data);
                                                 ca.push(me.selectData[i].data.code);
                                                 break;
@@ -207,7 +209,9 @@
                                     me.index = 0;
                                     me.$selMore.html('');
                                     me.GridCloumnNamesData = sjyArr;
-                                    me.setSearchData();
+                                    me.change = 1;//改变标志
+//                                    console.log(sjyArr)
+//                                    me.setSearchData();
                                 } else {
                                     me.tjQuotaIds = [];
                                     me.tjQuotaCodes = [];
@@ -229,15 +233,17 @@
                                     dmList = [];
                             if (detailModelList) {
                                 if (me.type == 0) {
-                                    for(var i = 0; i < detailModelList.length; i++){
-                                        if (detailModelList[i].level == 0) {
-                                            defArr = detailModelList[i].baseInfo;
-                                        } else {
-                                            var rsResourceslist = detailModelList[i].metaDataList;
-                                            detailModelList[i].children = rsResourceslist;
-                                            dmList.push(detailModelList[i]);
-                                        }
-                                    }
+//                                    for(var i = 0; i < detailModelList.length; i++){
+//                                        if (detailModelList[i].level == 0) {
+//                                            defArr = detailModelList[i].baseInfo;
+//                                        } else {
+//                                            var rsResourceslist = detailModelList[i].metaDataList;
+//                                            detailModelList[i].children = rsResourceslist;
+//                                            dmList.push(detailModelList[i]);
+//                                        }
+//                                    }
+                                    defArr = detailModelList[0].baseInfo;
+                                    me.leftTree.setData(detailModelList[1]);
                                 } else {
                                     for(var i = 0; i < detailModelList.length; i++){
                                         var childOne = detailModelList[i].child;
@@ -247,8 +253,8 @@
                                         }
                                         dmList.push(detailModelList[i]);
                                     }
+                                    me.leftTree.setData(dmList);
                                 }
-                                me.leftTree.setData(dmList);
                             } else {
                                 if (num == 0) {
                                     parent._LIGERDIALOG.error('暂无数据');
@@ -267,6 +273,7 @@
                     this.$selMore.html('');
                     this.GridCloumnNamesData = [];
                     this.masterArr = '';
+                    this.change = 0;
                     this.childArr = '';
                     this.tjQuotaIds = [];
                     this.tjQuotaCodes = [];
@@ -280,7 +287,7 @@
                     }
                 },
                 //档案数据-筛选存在数据字典中的字段
-                setSearchData: function (d) {
+                setSearchData: function () {
                     var me = this,
                         data = me.GridCloumnNamesData;
                     if (me.type == 1) {
@@ -288,7 +295,7 @@
                     }
                     if (data.length>0 && data[me.index].dictCode && !Util.isStrEquals(data[me.index].dictCode, 0) && data[me.index].dictCode != '') {
                         if (data[me.index].dictCode == 'DATECONDITION') {
-                            me.resetSelHtml(data[me.index], 'date');
+                            me.resetSelHtml(data[me.index], 'date',me.index);
                         } else {
                             me.dataModel.fetchRemote(pubInf.getRsDictEntryList, {
                                 data: {dictId: data[me.index].dictCode},
@@ -298,7 +305,7 @@
                                     if (da.successFlg) {
                                         da.label = data[me.index].name;
                                         da.pCode = data[me.index].code;
-                                        me.resetSelHtml(da, 'list');
+                                        me.resetSelHtml(da, 'list',me.index);
                                     }
                                 }
                             });
@@ -307,39 +314,51 @@
                     me.index++;
                     if (me.index < me.GridCloumnNamesData.length) {
                         me.setSearchData();
+                    }else{
+                        me.resetSelHtml({}, 'list',me.index);
                     }
                 },
                 //添加查询条件
-                resetSelHtml: function (d, t) {
+                resetSelHtml: function (d, t,num) {
                     var me = this,
                         htm = '';
-                    if (t == 'list') {
-                        htm = me.render(me.selTmp, d, function (dd, $1) {
-                            var obj = d.detailModelList || [],
+                    if(! $.isEmptyObject(d)){
+                        if (t == 'list') {
+                            htm = me.render(me.selTmp, d, function (dd, $1) {
+                                var obj = d.detailModelList || [],
                                     str = '';
-                            for (var i = 0, len = obj.length; i < len; i++) {
-                                str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
-                            }
-                            dd.content = str;
-                        });
-                        me.$selMore.append(htm);
-                    } else {
-                        htm = me.render(me.selDateTmp, d, function (dd, $1) {
-                            var str = ['<li class="con-item ci-inp">',
-                                            '<input type="text" id="startDate' + d.code + '">',
-                                        '</li>',
-                                        '<li class="con-item ci-inp">',
-                                            '<input type="text" id="endDate' + d.code + '">',
-                                        '</li>'].join('');
-                            if ($1 == 'label') {
-                                dd.label = d.name;
-                            }
-                            if ($1 == 'content') {
+                                for (var i = 0, len = obj.length; i < len; i++) {
+                                    str += '<li class="con-item" data-code="' + obj[i].code + '">' + obj[i].name + '</li>';
+                                }
                                 dd.content = str;
-                            }
-                        });
-                        me.$selMore.append(htm);
-                        me.loadLirderDate(d.code);
+                            });
+                            me.$selMore.append(htm);
+                        } else {
+                            htm = me.render(me.selDateTmp, d, function (dd, $1) {
+                                var str = ['<li class="con-item ci-inp">',
+                                    '<input type="text" id="startDate' + d.code + '">',
+                                    '</li>',
+                                    '<li class="con-item ci-inp">',
+                                    '<input type="text" id="endDate' + d.code + '">',
+                                    '</li>'].join('');
+                                if ($1 == 'label') {
+                                    dd.label = d.name;
+                                }
+                                if ($1 == 'content') {
+                                    dd.content = str;
+                                }
+                            });
+                            me.$selMore.append(htm);
+                            me.loadLirderDate(d.code);
+                        }
+                    }
+                    if(num == me.GridCloumnNamesData.length){
+                        me.$scBtn.addClass('show');
+                        me.$selectCon.slideDown();
+                        me.calLen();
+                        setTimeout(function(){
+                            waitSelect.close();
+                        },200)
                     }
                 },
                 setZBSearchData: function () {
@@ -397,7 +416,7 @@
                         }
                         //获取列名
                         for (var i = 0, len = me.selectData.length; i < len; i++) {
-                            if (me.selectData[i].data.level == '2') {
+                            if (me.selectData[i].data.level == '3') {
                                 columnModel.push({display: me.selectData[i].data.name, name: me.selectData[i].data.code, width: 100});
                             }
                         }
@@ -494,9 +513,17 @@
                             $that.removeClass('show');
                             me.$selectCon.slideUp();
                         } else {
-                            $that.addClass('show');
-                            me.$selectCon.slideDown();
-                            me.calLen();
+                            if(me.change == 1 && me.GridCloumnNamesData.length>0){
+                                waitSelect = parent._LIGERDIALOG.waitting("请稍后...");
+                                me.change = 0;
+                                setTimeout(function(){
+                                    me.setSearchData();
+                                },200);
+                            }else {
+                                me.$scBtn.addClass('show');
+                                me.$selectCon.slideDown();
+                                me.calLen();
+                            }
                         }
                     });
                     //展开\收起筛选条件
@@ -599,7 +626,7 @@
                                     if (me.type == 0) {
                                         for (var i = 0, len = sd.length; i < len; i++) {
                                             var data = sd[i].data
-                                            if (data.level == 2) {
+                                            if (data.level == 3) {
                                                 md.push({
                                                     resourcesId: '',
                                                     metadataId: data.code,

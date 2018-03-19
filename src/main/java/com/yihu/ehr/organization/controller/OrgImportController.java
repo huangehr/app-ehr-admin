@@ -104,13 +104,14 @@ public class OrgImportController extends ExtendController<OrgService> {
                 rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
                 writerResponse(response, 75 + "", "l_upd_progress");
             }
-            if(saveLs.size()>0)
+            if(saveLs.size()>0) {
                 saveMeta(toJson(saveLs));
-
-            if(rs.size()>0)
+            }
+            if(rs.size()>0) {
                 writerResponse(response, 100 + ",'" + toJson(rs) + "'", "l_upd_progress");
-            else
+            }else{
                 writerResponse(response, 100 + "", "l_upd_progress");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             if(e.getMessage().equals("模板不正确，请下载新的模板，并按照示例正确填写后上传！")) {
@@ -163,8 +164,9 @@ public class OrgImportController extends ExtendController<OrgService> {
         Map map = new HashMap<>();
         map.put("orgs", orgs);
         EnvelopExt<OrgMsgModel> envelop = getEnvelopExt(service.doPost(service.comUrl + "/organizations/batch", map), OrgMsgModel.class);
-        if(envelop.isSuccessFlg())
+        if(envelop.isSuccessFlg()){
             return envelop.getDetailModelList();
+        }
         throw new Exception("保存失败！");
     }
 
@@ -185,12 +187,10 @@ public class OrgImportController extends ExtendController<OrgService> {
         try{
             File file = new File( TemPath.getFullPath(datePath + TemPath.separator + filenName, parentFile) );
             List ls = (List) ObjectFileRW.read(file);
-
             int start = (page-1) * rows;
             int total = ls.size();
             int end = start + rows;
             end = end > total ? total : end;
-
             List g = new ArrayList<>();
             for(int i=start; i<end; i++){
                 g.add( ls.get(i) );
@@ -208,7 +208,6 @@ public class OrgImportController extends ExtendController<OrgService> {
 
     @RequestMapping("/downLoadErrInfo")
     public void downLoadErrInfo(String f, String datePath,  HttpServletResponse response) throws IOException {
-
         OutputStream toClient = response.getOutputStream();
         try{
             f = datePath + TemPath.separator + f;
@@ -296,12 +295,13 @@ public class OrgImportController extends ExtendController<OrgService> {
                     }else {
                         all.set(all.indexOf(model), model);
                     }
-
                 }
                 saveMeta(toJson(saveLs));
                 ObjectFileRW.write(file, all);
+                return success("");
+            }else{
+                return faild("无数据，保存失败！");
             }
-            return success("");
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();
@@ -332,7 +332,6 @@ public class OrgImportController extends ExtendController<OrgService> {
         Map<String, Object> args = new HashMap<>();
         int pid=0;
         int AdDivision=0;
-
         model.setAdDivisionExist(false);
         String[] values={province,city,district};
         String[] fields={"name"};
@@ -397,31 +396,26 @@ public class OrgImportController extends ExtendController<OrgService> {
             for(String key:settledWays.keySet()) {
                 if (model.getSettledWay().equals(settledWays.get(key).toString())) {
                     model.setSettledWay(key);
-
                 }
             }
             for(String key:hosTypeIds.keySet()) {
                 if (model.getHosTypeId().equals(hosTypeIds.get(key).toString())) {
                     model.setHosTypeId(key);
-
                 }
             }
             for(String key:ascriptionTypes.keySet()) {
                 if (model.getAscriptionType().equals(ascriptionTypes.get(key).toString())) {
                     model.setAscriptionType(key);
-
                 }
             }
             for(String key:zxys.keySet()) {
                 if (model.getZxy().equals(zxys.get(key).toString())) {
                     model.setZxy(key);
-
                 }
             }
         }catch(Exception e){
             e.printStackTrace();
         }
-
         return model;
     }
 
