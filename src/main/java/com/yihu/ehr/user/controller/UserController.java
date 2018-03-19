@@ -123,7 +123,8 @@ public class UserController extends BaseUIController {
             return resultStr;
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg(e.getMessage());
+            e.printStackTrace();
             return envelop;
         }
 
@@ -146,12 +147,13 @@ public class UserController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("更新失败");
             }
             return result;
         } catch (Exception e) {
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
+            e.printStackTrace();
             return result;
         }
 
@@ -172,12 +174,13 @@ public class UserController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                result.setErrorMsg("更新失败");
             }
             return result;
         } catch (Exception e) {
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
+            e.printStackTrace();
             return result;
         }
 
@@ -288,7 +291,8 @@ public class UserController extends BaseUIController {
             }
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg(e.getMessage());
+            e.printStackTrace();
         }
         return resultStr;
 
@@ -334,12 +338,13 @@ public class UserController extends BaseUIController {
                 result.setObj(userDetailModel.getId()); //重置到当前用户时需重登
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                result.setErrorMsg("更新失败");
             }
             return result;
         } catch (Exception e) {
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
+            e.printStackTrace();
             return result;
         }
     }
@@ -374,7 +379,8 @@ public class UserController extends BaseUIController {
             return "simpleView";
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg(e.getMessage());
+            e.printStackTrace();
             return envelop;
         }
     }
@@ -394,12 +400,13 @@ public class UserController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                result.setErrorMsg("更新失败");
             }
             return result;
         } catch (Exception e) {
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
+            e.printStackTrace();
             return result;
         }
     }
@@ -420,11 +427,12 @@ public class UserController extends BaseUIController {
                 envelop.setSuccessFlg(true);
             } else {
                 envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                envelop.setErrorMsg("更新失败");
             }
         } catch (Exception e) {
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg(e.getMessage());
+            e.printStackTrace();
         }
 
         return envelop;
@@ -445,7 +453,8 @@ public class UserController extends BaseUIController {
             return resultStr;
         } catch (Exception e) {
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
+            e.printStackTrace();
             return result;
         }
 
@@ -537,7 +546,8 @@ public class UserController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ex.getMessage());
         }
     }
 
@@ -566,7 +576,8 @@ public class UserController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ex.getMessage());
         }
     }
 
@@ -590,7 +601,8 @@ public class UserController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ex.getMessage());
         }
     }
 
@@ -608,7 +620,7 @@ public class UserController extends BaseUIController {
             return resultStr;
         } catch (Exception e) {
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(e.getMessage());
             return result;
         }
 
@@ -746,7 +758,7 @@ public class UserController extends BaseUIController {
         }catch (Exception ex){
             LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
             result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            result.setErrorMsg(ex.getMessage());
             return "查询字典项失败！";
         }
     }
