@@ -189,11 +189,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
        /* Result result = new Result();
         Long id = dictId.equals("") ? 0 : Long.parseLong(dictId);
@@ -273,10 +270,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 /*        Result result = new Result();
         Long id = Long.parseLong(dictId);
@@ -338,11 +333,10 @@ public class DictController  extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
 
-        }catch(Exception ex){
+        } catch(Exception ex){
 //            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg("数据加载失败！");
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -372,10 +366,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         } catch (Exception ex) {
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.GetCDAVersionListFailed.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -407,10 +399,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
         /*Result result = new Result();
@@ -471,10 +461,8 @@ public class DictController  extends BaseUIController {
 
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.GetCDAVersionListFailed.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -516,10 +504,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -561,10 +547,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     /**
@@ -658,10 +642,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
        /* Result result = new Result();
@@ -742,10 +724,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -772,12 +752,11 @@ public class DictController  extends BaseUIController {
                 result.setSuccessFlg(true);
             }else{
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.DeleteDictEntryFailed.toString());
+                result.setErrorMsg("删除失败");
             }
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -819,9 +798,8 @@ public class DictController  extends BaseUIController {
 
         }catch(Exception ex){
 //            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
  /*       Result result = new Result();
@@ -873,11 +851,8 @@ public class DictController  extends BaseUIController {
             return resultStr;
 
         }catch(Exception ex){
-            LogService.getLogger(DictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
 
@@ -1081,8 +1056,7 @@ public class DictController  extends BaseUIController {
             os.flush();
             os.close();
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
         }
     }
 

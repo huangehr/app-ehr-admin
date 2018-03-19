@@ -85,10 +85,8 @@ public class RsResourceCategoryController extends BaseUIController {
             strResult = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return strResult;
         }catch(Exception ex){
-            LogService.getLogger(RsResourceCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -120,11 +118,9 @@ public class RsResourceCategoryController extends BaseUIController {
             }
             return envelopStrUpdate;
         } catch (Exception ex){
-            LogService.getLogger(RsResourceCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     /**
@@ -148,11 +144,9 @@ public class RsResourceCategoryController extends BaseUIController {
             String _msg = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             return _msg;
         }catch (Exception ex){
-            LogService.getLogger(RsResourceCategoryController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return result;
     }
 
     /**
@@ -173,11 +167,9 @@ public class RsResourceCategoryController extends BaseUIController {
             envelop = mapper.readValue(envelopStr,Envelop.class);
             return envelop.getDetailModelList();
         } catch (Exception ex) {
-            LogService.getLogger(RsResourceCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     /**
@@ -193,7 +185,7 @@ public class RsResourceCategoryController extends BaseUIController {
         try{
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());
@@ -211,7 +203,7 @@ public class RsResourceCategoryController extends BaseUIController {
     public Object getCdaTypeExcludeSelfAndChildren(String strId) {
         //页面新增修改访问的是同个接口
         Envelop envelop = new Envelop();
-        try{
+        try {
             String urlGetAll =  "/resources/categories/all";
             Map<String,Object> params = new HashMap<>();
             if(!StringUtils.isEmpty(strId)){
@@ -220,11 +212,9 @@ public class RsResourceCategoryController extends BaseUIController {
             }
             String envelopStr = HttpClientUtil.doGet(comUrl + urlGetAll, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(RsResourceCategoryController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }

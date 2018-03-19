@@ -52,10 +52,9 @@ public class HosLogsController extends BaseUIController {
             try{
                 Date beginTimeTemp  =  DateTimeUtils.simpleDateTimeParse(beginTime);
                 stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeFormat(beginTimeTemp)+ ";");
-            }catch (Exception e){
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.SystemError.toString());
-                return envelop;
+            } catch (Exception e){
+                e.printStackTrace();
+                return failed(ERR_SYSTEM_DES);
             }
 
         }
@@ -63,10 +62,9 @@ public class HosLogsController extends BaseUIController {
             try{
                 Date endTimeTemp  =  DateTimeUtils.simpleDateTimeParse(endTime);
                 stringBuffer.append("uploadTime<=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
-            }catch (Exception e){
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.SystemError.toString());
-                return envelop;
+            } catch (Exception e){
+                e.printStackTrace();
+                return failed(ERR_SYSTEM_DES);
             }
         }
         if (!StringUtils.isEmpty(organization)) {
@@ -87,9 +85,8 @@ public class HosLogsController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -105,9 +102,8 @@ public class HosLogsController extends BaseUIController {
                 Date beginTimeTemp  =  DateTimeUtils.simpleDateTimeParse(beginTime);
                 stringBuffer.append("uploadTime>=" + DateTimeUtils.utcDateTimeFormat(beginTimeTemp)+ ";");
             }catch (Exception e){
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.SystemError.toString());
-                return envelop;
+                e.printStackTrace();
+                return failed(ERR_SYSTEM_DES);
             }
         }
         if (!StringUtils.isEmpty(endTime)) {
@@ -115,9 +111,8 @@ public class HosLogsController extends BaseUIController {
                 Date endTimeTemp  =  DateTimeUtils.simpleDateTimeParse(endTime);
                 stringBuffer.append("uploadTime<=" + DateTimeUtils.utcDateTimeFormat(endTimeTemp)+ ";");
             }catch (Exception e){
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.SystemError.toString());
-                return envelop;
+                e.printStackTrace();
+                return failed(ERR_SYSTEM_DES);
             }
         }
         if (!StringUtils.isEmpty(organization)) {
@@ -137,9 +132,8 @@ public class HosLogsController extends BaseUIController {
             envelop.setSuccessFlg(true);
             return envelop;
         }catch (Exception e){
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 }

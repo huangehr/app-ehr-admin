@@ -55,9 +55,8 @@ public class TjQuotaDimensionSlaveController extends BaseUIController {
             try {
                 resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             } catch (Exception e) {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SystemError.toString());
-                return result;
+                e.printStackTrace();
+                return failed(ERR_SYSTEM_DES);
             }
             return resultStr;
         }
@@ -67,9 +66,8 @@ public class TjQuotaDimensionSlaveController extends BaseUIController {
         try {
             resultStr = templates.doPost(comUrl + url, params);
         } catch (RestClientException e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }

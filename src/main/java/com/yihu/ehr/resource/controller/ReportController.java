@@ -154,8 +154,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReports, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -235,8 +234,7 @@ public class ReportController extends BaseUIController {
             return doGet(comUrl + ServiceApi.Resources.RsReportViews, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -282,8 +280,7 @@ public class ReportController extends BaseUIController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -299,8 +296,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Resources.RsReportDelete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -318,8 +314,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportIsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -337,8 +332,7 @@ public class ReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportIsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

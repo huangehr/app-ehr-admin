@@ -79,10 +79,8 @@ public class ElasticSearchController extends BaseUIController {
             envelop.setObj(obj);
             return envelop;
         } catch (Exception ex) {
-            LogService.getLogger(ElasticSearchController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -101,9 +99,8 @@ public class ElasticSearchController extends BaseUIController {
             result = toModel(resultStr, Envelop.class);
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

@@ -86,14 +86,13 @@ public class StdSourceManagerController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             if(StringUtils.isEmpty(envelopStr)){
                 envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.GetStandardSourceFailed.toString());
+                envelop.setErrorMsg("获取标准数据源失败");
             }else{
                 return envelopStr;
             }
-        }catch(Exception ex){
-            LogService.getLogger(StdSourceManagerController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -108,12 +107,10 @@ public class StdSourceManagerController extends BaseUIController {
         try{
             envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
             return envelopStr;
-        }catch(Exception ex){
-            LogService.getLogger(StdSourceManagerController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("updateStdSource")
@@ -178,10 +175,8 @@ public class StdSourceManagerController extends BaseUIController {
             envelopStr = HttpClientUtil.doPut(comUrl+urlUpdate,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(StdSourceManagerController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -207,12 +202,10 @@ public class StdSourceManagerController extends BaseUIController {
 //            }else{
 //                envelop.setSuccessFlg(false);
 //            }
-        }catch(Exception ex){
-            LogService.getLogger(StdSourceManagerController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
 //    public Envelop isDeleteStdSource(String id){
@@ -290,14 +283,13 @@ public class StdSourceManagerController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             if(StringUtils.isEmpty(envelopStr)){
                 envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.GetStandardSourceFailed.toString());
+                envelop.setErrorMsg("获取标准数据源失败");
             }else{
                 return envelopStr;
             }
-        }catch(Exception ex){
-            LogService.getLogger(StdSourceManagerController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }

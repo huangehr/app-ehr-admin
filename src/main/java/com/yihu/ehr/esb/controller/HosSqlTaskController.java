@@ -93,9 +93,8 @@ public class HosSqlTaskController extends BaseUIController {
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(HosSqlTaskController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -109,11 +108,9 @@ public class HosSqlTaskController extends BaseUIController {
             params.put("id",id);
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
-        }catch(Exception ex){
-            LogService.getLogger(HosSqlTaskController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -139,11 +136,9 @@ public class HosSqlTaskController extends BaseUIController {
             params.put("size",rows);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(HosSqlTaskController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -157,11 +152,9 @@ public class HosSqlTaskController extends BaseUIController {
             params.put("id",id);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch(Exception ex){
-            LogService.getLogger(HosSqlTaskController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

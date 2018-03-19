@@ -237,13 +237,12 @@ public class OrgImportController extends ExtendController<OrgService> {
                 envelop.setSuccessFlg(true);
             } else {
                 envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                envelop.setErrorMsg("更新失败");
             }
             return envelop;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

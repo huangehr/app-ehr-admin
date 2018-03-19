@@ -112,9 +112,8 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
             resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -150,11 +149,10 @@ public class UpAndDownMemberController extends ExtendController<OrgAdapterPlanSe
             String envelopStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return envelopStr;
 
-        }catch (Exception ex){
-            LogService.getLogger(UpAndDownMemberController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
 

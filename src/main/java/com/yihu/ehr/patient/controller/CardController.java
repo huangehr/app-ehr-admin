@@ -63,9 +63,8 @@ public class CardController extends BaseUIController {
             resultStr = templates.doGet(comUrl+url+"?"+builder.toString(params));
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -88,9 +87,8 @@ public class CardController extends BaseUIController {
             resultStr = templates.doGet(comUrl+url+"?"+builder.toString(params));
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -116,9 +114,8 @@ public class CardController extends BaseUIController {
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -138,13 +135,12 @@ public class CardController extends BaseUIController {
             }
             else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                result.setErrorMsg("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -165,13 +161,12 @@ public class CardController extends BaseUIController {
             }
             else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                result.setErrorMsg("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
