@@ -354,17 +354,6 @@
                                     TVS.chart.attr('id', id);
                                     TVS.chart.attr('data-type', 2);
                                     option = TVS.resetOption(TVS.chart, JSON.parse(res.detailModelList[0].option));
-//                                    xyChange = TVS.chart.attr('data-xy-change');
-//                                    color = TVS.chart.attr('data-color');
-
-//                                    if (xyChange == 'true') {
-//                                        var x = option.xAxis, y = option.yAxis;
-//                                        option.yAxis = x;
-//                                        option.xAxis = y;
-//                                    }
-//                                    if (color && color != '') {
-//                                        option.color = color.split(',');
-//                                    }
                                     TVS.renderQuota(TVS.chart, option);
                                 } else {
                                     $.Notice.error(res.errorMsg);
@@ -388,6 +377,7 @@
                                 xaxisBoundaryGap = $dom.attr('data-xaxis-boundary-gap'),//设置折线图数据展示起点位置
                                 seriesBarMaxWidth = $dom.attr('data-barmaxwidth'),//柱形图最大宽度
                                 seriesItemstyle = $dom.attr('data-series-itemstyle'),
+                                seriesDataItemstyle = $dom.attr('data-series-data-itemstyle'),
                                 xyChange = $dom.attr('data-xy-change');
                             if (color && color != '') {
                                 option['color'] = JSON.parse(color);
@@ -446,8 +436,16 @@
                                 });
                             }
                             if (seriesRadius && seriesRadius != '') {
+                                var sr = null;
+                                if (seriesRadius.indexOf('|') != -1) {
+                                    sr = seriesRadius.split('|');
+                                }
                                 _.each(option['series'], function (o, k) {
-                                    option['series'][k]['radius'] = seriesRadius.split(',');
+                                    if (sr) {
+                                        option['series'][k]['radius'] = sr[k].split(',');
+                                    } else {
+                                        option['series'][k]['radius'] = seriesRadius.split(',');
+                                    }
                                 });
                             }
                             if (seriesCenter && seriesCenter != '') {
@@ -457,9 +455,12 @@
                             }
                             if (seriesItemstyle && seriesItemstyle != '') {
                                 _.each(option['series'], function (o, k) {
-                                    option['series'][k]['itemStyle'] = JSON.parse(seriesItemstyle);
+                                    var si = JSON.parse(seriesItemstyle);
+                                    if (si.normal.label.formatter.indexOf('function')== 0) {
+                                        si.normal.label.formatter = Function('return ' + si.normal.label.formatter)();
+                                    }
+                                    option['series'][k]['itemStyle'] = si;
                                 });
-                                // option['series'][0]['itemStyle'] = JSON.parse(seriesItemstyle);
                             }
                             if (xyChange && xyChange == 'true') {
                                 var x = [], y = [];
@@ -467,6 +468,19 @@
                                 y = option['yAxis'];
                                 option['xAxis'] = y;
                                 option['yAxis'] = x;
+                            }
+                            if (seriesDataItemstyle && seriesDataItemstyle != '') {
+                                var sdi = JSON.parse(seriesDataItemstyle);
+                                _.each(option['series'], function (o, k) {
+                                    var d = option['series'][k]['data'];
+                                    _.each(d, function (obj, key) {
+                                        if ($.isArray(sdi)) {
+                                            obj['itemStyle'] = sdi[k];
+                                        } else {
+                                            obj['itemStyle'] = sdi;
+                                        }
+                                    });
+                                });
                             }
                             return option;
                         },
