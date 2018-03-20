@@ -21,6 +21,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -134,9 +135,9 @@ public class UserRolesController extends BaseUIController {
             params.put("data_json",updateModelJson);
             String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
             return envelopStr;
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -155,7 +156,7 @@ public class UserRolesController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -188,7 +189,7 @@ public class UserRolesController extends BaseUIController {
             return envelopStr;
         }catch(Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -219,7 +220,7 @@ public class UserRolesController extends BaseUIController {
             return envelopStr;
         } catch (Exception e) {
             LogService.getLogger(UserRolesController.class).error(e.getMessage());
-            return failed(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -236,7 +237,7 @@ public class UserRolesController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -273,7 +274,7 @@ public class UserRolesController extends BaseUIController {
             return result;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
     @RequestMapping("/isCodeExistence")
@@ -308,9 +309,9 @@ public class UserRolesController extends BaseUIController {
                 result.setSuccessFlg(false);
             }
             return result;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -349,9 +350,9 @@ public class UserRolesController extends BaseUIController {
             params.put("data_json",objectMapper.writeValueAsString(model));
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -372,9 +373,9 @@ public class UserRolesController extends BaseUIController {
             String url = ServiceApi.Roles.RoleUser;
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -401,9 +402,8 @@ public class UserRolesController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            LogService.getLogger(UserRolesController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -425,9 +425,9 @@ public class UserRolesController extends BaseUIController {
             params.put("size",rows);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -444,9 +444,9 @@ public class UserRolesController extends BaseUIController {
             params.put("filters","roleId="+roleId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -469,9 +469,9 @@ public class UserRolesController extends BaseUIController {
             params.put("data_json",objectMapper.writeValueAsString(model));
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -492,9 +492,9 @@ public class UserRolesController extends BaseUIController {
             params.put("feature_id",featureId);
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -537,7 +537,6 @@ public class UserRolesController extends BaseUIController {
             params.put("roleId", roleId);
         }
         String resultStr = "";
-
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
@@ -693,7 +692,7 @@ public class UserRolesController extends BaseUIController {
             }
         } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -840,11 +839,9 @@ public class UserRolesController extends BaseUIController {
             params.put("roleId", roleId);
             envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -861,9 +858,8 @@ public class UserRolesController extends BaseUIController {
             try {
                 resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             } catch (Exception e) {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SystemError.toString());
-                return result;
+                LogService.getLogger(UserRolesController.class).error(e.getMessage());
+                return failed(ERR_SYSTEM_DES);
             }
             return resultStr;
         }
@@ -873,9 +869,8 @@ public class UserRolesController extends BaseUIController {
         try {
             resultStr = templates.doPost(comUrl + url, params);
         } catch (RestClientException e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            LogService.getLogger(User.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -903,9 +898,8 @@ public class UserRolesController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            LogService.getLogger(UserRolesController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -929,9 +923,9 @@ public class UserRolesController extends BaseUIController {
             params.put("data_json",objectMapper.writeValueAsString(model));
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -952,9 +946,9 @@ public class UserRolesController extends BaseUIController {
             String url = ServiceApi.Roles.RoleOrg;
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -977,7 +971,7 @@ public class UserRolesController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -994,9 +988,9 @@ public class UserRolesController extends BaseUIController {
             params.put("filters","roleId="+roleId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

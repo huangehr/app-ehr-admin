@@ -120,11 +120,10 @@ public class DataSetsController extends BaseUIController {
             params.put("version",version);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return envelopStr;
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("/deleteDataSet")
@@ -143,12 +142,10 @@ public class DataSetsController extends BaseUIController {
             params.put("id",dataSetId);
             String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             return envelopStr;
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping(value = "/getDataSet", produces = "text/html;charset=UTF-8")
@@ -169,10 +166,8 @@ public class DataSetsController extends BaseUIController {
             return envelopStr;
         }catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("/saveDataSet")
@@ -239,12 +234,10 @@ public class DataSetsController extends BaseUIController {
             params.put("json_data",dataJsonUpdate);
             String envelopStrUpdate = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStrUpdate;
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("/searchMetaData")
@@ -272,14 +265,13 @@ public class DataSetsController extends BaseUIController {
             String _rus = HttpClientUtil.doGet(comUrl + url, params, username, password);
             if(StringUtils.isEmpty(_rus)){
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SavedatasetFailed.toString());
+                result.setErrorMsg("保存失败");
             }else{
                 return _rus;
             }
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -309,10 +301,8 @@ public class DataSetsController extends BaseUIController {
             return envelopStr;
         } catch (Exception ex) {
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping(value = "/getMetaData", produces = "text/html;charset=UTF-8")
@@ -372,8 +362,7 @@ public class DataSetsController extends BaseUIController {
             return envelopStr;
         } catch (Exception ex) {
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -454,10 +443,8 @@ public class DataSetsController extends BaseUIController {
             return envelopStrUpdate;
         } catch (Exception ex) {
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     /**
@@ -527,10 +514,9 @@ public class DataSetsController extends BaseUIController {
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg("验证失败");
             }
-        }catch(Exception ex){
+        } catch(Exception ex){
             LogService.getLogger(DataSetsController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -792,8 +778,8 @@ public class DataSetsController extends BaseUIController {
             envelop.setObj(saveDatas);
             envelop.setSuccessFlg(true);
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -936,8 +922,7 @@ public class DataSetsController extends BaseUIController {
             os.flush();
             os.close();
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
         }
     }
 

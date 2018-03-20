@@ -164,8 +164,8 @@ public class Icd10Controller extends BaseUIController {
                 return envelopStr;
             }
         }catch (Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -185,10 +185,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -202,11 +200,9 @@ public class Icd10Controller extends BaseUIController {
             params.put("name",name);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -219,10 +215,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -285,9 +279,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -315,9 +308,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -358,9 +350,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -381,9 +372,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -403,9 +393,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -421,9 +410,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -524,9 +512,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -553,10 +540,9 @@ public class Icd10Controller extends BaseUIController {
             String url = "/dict/indicators";
             String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
             return envelopStr;
-        }catch(Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -598,9 +584,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -622,9 +607,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -643,10 +627,9 @@ public class Icd10Controller extends BaseUIController {
             params.put("size",rows);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch(Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -662,9 +645,8 @@ public class Icd10Controller extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(Icd10Controller.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

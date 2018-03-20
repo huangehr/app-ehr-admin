@@ -306,9 +306,9 @@ public class AppRoleController extends BaseUIController {
             String url = ServiceApi.Roles.RoleNameExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed("系统出错");
         }
     }
     @RequestMapping("/isCodeExistence")
@@ -321,9 +321,9 @@ public class AppRoleController extends BaseUIController {
             String url = ServiceApi.Roles.RoleCodeExistence;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed("系统出错");
         }
     }
 
@@ -344,9 +344,9 @@ public class AppRoleController extends BaseUIController {
             String url = ServiceApi.Roles.RoleUser;
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed("系统出错");
         }
     }
 

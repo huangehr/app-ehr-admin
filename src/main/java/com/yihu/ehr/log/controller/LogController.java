@@ -77,9 +77,8 @@ public class LogController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -108,9 +107,8 @@ public class LogController extends BaseUIController {
             model.addAttribute("contentPage", "log/logInfo");
             return "emptyView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -149,9 +147,8 @@ public class LogController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

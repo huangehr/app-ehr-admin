@@ -91,11 +91,9 @@ public class HosAcqTaskController extends BaseUIController {
             params.put("size",rows);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(HosAcqTaskController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -178,9 +176,9 @@ public class HosAcqTaskController extends BaseUIController {
                 String envelopStr = HttpClientUtil.doPut(comUrl+urlUpdate,params,username,password);
                 return envelopStr;
             }
-        }catch (Exception ex){
-            LogService.getLogger(HosAcqTaskController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
 
@@ -206,11 +204,9 @@ public class HosAcqTaskController extends BaseUIController {
             params.put("id",id);
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(HosAcqTaskController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -255,9 +251,9 @@ public class HosAcqTaskController extends BaseUIController {
                 return envelopGet;
             }
             return envelop;
-        }catch (Exception ex){
-            LogService.getLogger(HosAcqTaskController.class).error(ex.getMessage());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

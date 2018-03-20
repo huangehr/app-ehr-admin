@@ -53,9 +53,7 @@ public class CdaController extends BaseUIController {
         params.put("size",rows);
 
         if (StringUtils.isEmpty(strVersion)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.VersionCodeIsNull.toString());
-            return result;
+            return failed("版本号不能为空");
         }
 
         try {
@@ -63,14 +61,13 @@ public class CdaController extends BaseUIController {
             String _rus = HttpClientUtil.doGet(comUrl+url, params, username, password);
             if (StringUtils.isEmpty(_rus)) {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.GetCDAInfoFailed.toString());
+                result.setErrorMsg("获取CDA失败");
             }else{
                 return _rus;
             }
         } catch (Exception ex) {
-            LogService.getLogger(CdaController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
 
@@ -106,11 +103,9 @@ public class CdaController extends BaseUIController {
 
             return _rus;
         } catch (Exception ex) {
-            LogService.getLogger(CdaController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return result;
 
         /*Result result = new Result();
         try {
@@ -183,9 +178,8 @@ public class CdaController extends BaseUIController {
                 return _rus;
             }
         } catch (Exception ex) {
-            LogService.getLogger(CdaController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
 
@@ -233,9 +227,8 @@ public class CdaController extends BaseUIController {
                 return _rus;
             }
         } catch (Exception ex) {
-            LogService.getLogger(CdaController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -298,9 +291,8 @@ public class CdaController extends BaseUIController {
                 result.setSuccessFlg(true);
             }
         }catch(Exception ex){
-            LogService.getLogger(CdaController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -323,9 +315,8 @@ public class CdaController extends BaseUIController {
                 result.setErrorMsg("关系删除失败!");
             }
         } catch (Exception ex) {
-            LogService.getLogger(CdaController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
 
@@ -379,9 +370,8 @@ public class CdaController extends BaseUIController {
                 return _rus;
             }
         } catch (Exception ex) {
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
 
@@ -403,9 +393,8 @@ public class CdaController extends BaseUIController {
                 result.setSuccessFlg(false);
             }
         } catch (Exception ex) {
-            LogService.getLogger(CdaController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
 

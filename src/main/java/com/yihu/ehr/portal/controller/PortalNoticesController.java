@@ -92,9 +92,8 @@ public class PortalNoticesController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -147,9 +146,8 @@ public class PortalNoticesController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -176,13 +174,12 @@ public class PortalNoticesController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

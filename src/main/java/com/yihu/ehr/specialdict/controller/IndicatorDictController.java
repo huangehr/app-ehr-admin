@@ -180,9 +180,9 @@ public class IndicatorDictController extends BaseUIController {
                 String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
                 return envelopStr;
             }
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -195,11 +195,9 @@ public class IndicatorDictController extends BaseUIController {
             String url = "dict/indicator/icd10/"+id;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -214,11 +212,9 @@ public class IndicatorDictController extends BaseUIController {
             params.put("name",name);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -232,10 +228,8 @@ public class IndicatorDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(IndicatorDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

@@ -67,8 +67,7 @@ public class ResourceMonitorTypeReportController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReports, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -92,8 +91,8 @@ public class ResourceMonitorTypeReportController extends BaseUIController {
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceMonitorTypeReportController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -115,8 +114,8 @@ public class ResourceMonitorTypeReportController extends BaseUIController {
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceMonitorTypeReportController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -137,8 +136,8 @@ public class ResourceMonitorTypeReportController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceMonitorTypeReportController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -156,8 +155,8 @@ public class ResourceMonitorTypeReportController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceMonitorTypeReportController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

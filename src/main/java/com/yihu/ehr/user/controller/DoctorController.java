@@ -139,9 +139,8 @@ public class DoctorController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -166,9 +165,8 @@ public class DoctorController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -312,13 +310,12 @@ public class DoctorController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -365,9 +362,8 @@ public class DoctorController extends BaseUIController {
             model.addAttribute("contentPage", "user/doctor/doctorInfoDialog");
             return "emptyView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -386,13 +382,12 @@ public class DoctorController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                result.setErrorMsg("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -471,9 +466,8 @@ public class DoctorController extends BaseUIController {
             List<Object> data = toModel(resultStr, Envelop.class).getDetailModelList();
             return toJson(data);
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -489,9 +483,8 @@ public class DoctorController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, param, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

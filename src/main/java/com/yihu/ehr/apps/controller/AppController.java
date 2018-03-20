@@ -182,9 +182,8 @@ public class AppController extends BaseUIController {
             if (envelop.isSuccessFlg()){
                 result.setSuccessFlg(true);
                 result.setObj(envelop.getObj());
-            }else{
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidAppRegister.toString());
+            } else {
+                return failed("注册失败");
             }
         } catch (Exception ex) {
             LogService.getLogger(AppController.class).error(ex.getMessage());
@@ -242,11 +241,9 @@ public class AppController extends BaseUIController {
                     result.setErrorMsg("修改失败！");
                 }
             }
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             LogService.getLogger(AppController.class).error(ex.getMessage());
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed("系统错误");
         }
 
         return result;
@@ -320,12 +317,12 @@ public class AppController extends BaseUIController {
     @ResponseBody
     public Object getAppById(String appId){
         Envelop envelop = new Envelop();
-        try{
+        try {
             String url = "/apps/"+appId;
             RestTemplates template = new RestTemplates();
             String envelopStr = template.doGet(comUrl+url);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(AppController.class).error(ex.getMessage());
         }
         envelop.setSuccessFlg(false);
@@ -391,7 +388,8 @@ public class AppController extends BaseUIController {
             }
         } catch (Exception ex) {
             LogService.getLogger(AppController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            return failed("系统出错");
+
         }
         return envelop;
     }
@@ -466,7 +464,7 @@ public class AppController extends BaseUIController {
             try {
                 url = HttpClientUtil.doPost(comUrl + "/filesReturnUrl", params,username,password);
                 return url;
-            }catch (Exception e){
+            } catch (Exception e){
                 e.printStackTrace();
             }
         }
@@ -580,9 +578,9 @@ public class AppController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
 //            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(AppController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed("内部服务请求失败");
         }
     }
 

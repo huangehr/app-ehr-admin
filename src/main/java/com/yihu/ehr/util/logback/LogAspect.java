@@ -200,8 +200,9 @@ public class LogAspect {
             resultStr = HttpClientUtil.doGet(comUrl + rqUrl, params, username, password);
             return resultStr;
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg("系统错误");
             return envelop;
         }
 
@@ -221,8 +222,9 @@ public class LogAspect {
             resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
             return resultStr;
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            envelop.setErrorMsg("系统错误");
             return envelop;
         }
 

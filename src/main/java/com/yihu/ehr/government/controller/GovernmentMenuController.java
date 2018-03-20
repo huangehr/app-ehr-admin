@@ -61,10 +61,8 @@ public class GovernmentMenuController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(GovernmentMenuController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -139,8 +137,8 @@ public class GovernmentMenuController extends BaseUIController {
                 }
             }
         }catch (Exception ex){
-            LogService.getLogger(GovernmentMenuController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -221,10 +219,8 @@ public class GovernmentMenuController extends BaseUIController {
             }
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(GovernmentMenuController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }
