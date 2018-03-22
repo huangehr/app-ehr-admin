@@ -73,8 +73,7 @@ public class FastDFSController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + "/fastDfs/page", params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(FastDFSController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -85,8 +84,7 @@ public class FastDFSController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + "/fastDfs/getPublicUrl", username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(FastDFSController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -97,8 +95,7 @@ public class FastDFSController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + "/fastDfs/status", username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(FastDFSController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

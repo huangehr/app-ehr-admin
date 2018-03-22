@@ -3,8 +3,6 @@ package com.yihu.ehr.patient.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
-import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.user.controller.UserController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
@@ -116,9 +114,8 @@ public class PatientController extends BaseUIController {
             }
 
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -139,9 +136,8 @@ public class PatientController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -159,9 +155,8 @@ public class PatientController extends BaseUIController {
             resultStr = restTemplates.doDelete(comUrl + url);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -185,9 +180,8 @@ public class PatientController extends BaseUIController {
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -211,9 +205,8 @@ public class PatientController extends BaseUIController {
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -331,9 +324,8 @@ public class PatientController extends BaseUIController {
                 result.setSuccessFlg(getEnvelop(resultStr).isSuccessFlg());
                 return result;
             } catch (Exception e) {
-                result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SystemError.toString());
-                return result;
+                e.printStackTrace();
+                return failed(ERR_SYSTEM_DES);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -381,9 +373,8 @@ public class PatientController extends BaseUIController {
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -456,9 +447,8 @@ public class PatientController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -513,9 +503,8 @@ public class PatientController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -538,6 +527,7 @@ public class PatientController extends BaseUIController {
         Envelop envelop = getEnvelop(resultStr);
         return envelop;
     }
+
     //获取所有平台应用下的角色组用于下拉框
     @RequestMapping("/appRolesList")
     @ResponseBody
@@ -557,9 +547,9 @@ public class PatientController extends BaseUIController {
 //                return getEnvelopList(envelop.getDetailModelList(),new ArrayList<>(), PlatformAppRolesTreeModel.class);
 //            }
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -579,8 +569,8 @@ public class PatientController extends BaseUIController {
             params.put("user_id",userId);
              envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
         } catch (Exception ex) {
-            LogService.getLogger(UserController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelopStr;
     }
@@ -609,8 +599,8 @@ public class PatientController extends BaseUIController {
                 result.setSuccessFlg(false);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }

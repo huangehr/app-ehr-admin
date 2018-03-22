@@ -107,8 +107,8 @@ public class ReportCategoryController extends BaseUIController {
         try {
             return doGet(comUrl + ServiceApi.Resources.RsReportCategoryTree, params, username, password);
         } catch (Exception ex) {
-            LogService.getLogger(ReportCategoryController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -123,8 +123,8 @@ public class ReportCategoryController extends BaseUIController {
             List<Object> data = toModel(envelopJsonStr, Envelop.class).getDetailModelList();
             return toJson(data);
         } catch (Exception ex) {
-            LogService.getLogger(ReportCategoryController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -167,8 +167,7 @@ public class ReportCategoryController extends BaseUIController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -184,8 +183,7 @@ public class ReportCategoryController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Resources.RsReportCategoryDelete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -203,8 +201,7 @@ public class ReportCategoryController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportCategoryIsUniqueCode, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -222,8 +219,7 @@ public class ReportCategoryController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportCategoryIsUniqueName, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(ReportCategoryController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -233,7 +229,7 @@ public class ReportCategoryController extends BaseUIController {
         if(org.apache.commons.lang.StringUtils.isEmpty(searchNm)){
             return failed("id不能为空");
         }
-        try{
+        try {
             String url = "/apps";
             Map<String,Object> params = new HashMap<>();
             params.put("filters","id="+searchNm);
@@ -241,9 +237,9 @@ public class ReportCategoryController extends BaseUIController {
             params.put("size",rows);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(ReportCategoryController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

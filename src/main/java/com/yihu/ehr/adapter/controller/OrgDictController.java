@@ -8,6 +8,7 @@ import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ import java.util.Map;
 @RequestMapping("/orgdict")
 @Controller
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class OrgDictController {
+public class OrgDictController extends BaseUIController{
 
     @Value("${service-gateway.username}")
     private String username;
@@ -72,9 +73,8 @@ public class OrgDictController {
             model.addAttribute("contentPage","/adapter/orgCollection/dialog");
             return "simpleView";
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -105,9 +105,8 @@ public class OrgDictController {
             model.addAttribute("contentPage","/adapter/orgCollection/dialog");
             return "simpleView";
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -133,9 +132,8 @@ public class OrgDictController {
             result.setSuccessFlg(true);
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 //        Result result = new Result();
 //        try {
@@ -172,9 +170,8 @@ public class OrgDictController {
 
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -198,9 +195,8 @@ public class OrgDictController {
 
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -225,9 +221,8 @@ public class OrgDictController {
 
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -261,9 +256,8 @@ public class OrgDictController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -290,9 +284,8 @@ public class OrgDictController {
             result.setSuccessFlg(true);
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 //        Result result = new Result();
 //        try {
@@ -334,9 +327,8 @@ public class OrgDictController {
 
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -360,13 +352,12 @@ public class OrgDictController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 //        Result result = new Result();
 //        try {
@@ -404,9 +395,8 @@ public class OrgDictController {
 
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 //        Result result = new Result();
 //
@@ -447,9 +437,8 @@ public class OrgDictController {
 
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -483,9 +472,8 @@ public class OrgDictController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return  resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -516,11 +504,6 @@ public class OrgDictController {
 
     private OrgDictEntryDetailModel toOrgDictEntryDetailModel(String json) throws IOException {
         return objectMapper.readValue(json, OrgDictEntryDetailModel.class);
-    }
-
-    private String toJson(Object obj) throws JsonProcessingException {
-
-        return objectMapper.writeValueAsString(obj);
     }
 
     private UsersModel getCurUser(HttpServletRequest request){

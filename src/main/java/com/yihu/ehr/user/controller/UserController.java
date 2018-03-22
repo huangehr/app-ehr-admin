@@ -122,10 +122,8 @@ public class UserController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(e.getMessage());
-            e.printStackTrace();
-            return envelop;
+            LogService.getLogger(UserController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -146,15 +144,12 @@ public class UserController extends BaseUIController {
             if (result.isSuccessFlg()) {
                 result.setSuccessFlg(true);
             } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("更新失败");
+                return failed("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(e.getMessage());
-            e.printStackTrace();
-            return result;
+            LogService.getLogger(UserController.class).error(e.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -173,15 +168,12 @@ public class UserController extends BaseUIController {
             if (Boolean.parseBoolean(resultStr)) {
                 result.setSuccessFlg(true);
             } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("更新失败");
+                return failed("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(e.getMessage());
             e.printStackTrace();
-            return result;
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -290,9 +282,8 @@ public class UserController extends BaseUIController {
 
             }
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(e.getMessage());
             e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
 
@@ -337,15 +328,12 @@ public class UserController extends BaseUIController {
                 result.setSuccessFlg(true);
                 result.setObj(userDetailModel.getId()); //重置到当前用户时需重登
             } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("更新失败");
+                return failed("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(e.getMessage());
             e.printStackTrace();
-            return result;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -378,10 +366,8 @@ public class UserController extends BaseUIController {
             model.addAttribute("contentPage", "user/userInfoDialog");
             return "simpleView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(e.getMessage());
             e.printStackTrace();
-            return envelop;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -399,15 +385,12 @@ public class UserController extends BaseUIController {
             if (Boolean.parseBoolean(resultStr)) {
                 result.setSuccessFlg(true);
             } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("更新失败");
+                return failed("更新失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(e.getMessage());
             e.printStackTrace();
-            return result;
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -426,13 +409,11 @@ public class UserController extends BaseUIController {
                 envelop.setObj(resultStr);
                 envelop.setSuccessFlg(true);
             } else {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("更新失败");
+                return failed("更新失败");
             }
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(e.getMessage());
             e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
         return envelop;
@@ -452,10 +433,8 @@ public class UserController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + getUserUrl, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(e.getMessage());
             e.printStackTrace();
-            return result;
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -544,10 +523,9 @@ public class UserController extends BaseUIController {
             params.put("user_id",userId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            ex.printStackTrace();
-            return failed(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -576,8 +554,7 @@ public class UserController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            ex.printStackTrace();
-            return failed(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -601,8 +578,7 @@ public class UserController extends BaseUIController {
             return envelopStr;
         }catch (Exception ex){
             LogService.getLogger(UserController.class).error(ex.getMessage());
-            ex.printStackTrace();
-            return failed(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -619,9 +595,8 @@ public class UserController extends BaseUIController {
             Envelop envelop = objectMapper.readValue(resultStr,Envelop.class);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(e.getMessage());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -755,10 +730,8 @@ public class UserController extends BaseUIController {
                 systemDictEntryModel = getEnvelopModel(result.getDetailModelList().get(0),SystemDictEntryModel.class);
             }
             return systemDictEntryModel.getCode();
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ex.getMessage());
             return "查询字典项失败！";
         }
     }
@@ -812,9 +785,8 @@ public class UserController extends BaseUIController {
             envelop.setCurrPage(0);
             return envelop;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(e.getMessage());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

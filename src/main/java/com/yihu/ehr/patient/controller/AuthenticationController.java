@@ -100,10 +100,8 @@ public class AuthenticationController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(AuthenticationController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     //认证状态修改
@@ -128,8 +126,8 @@ public class AuthenticationController extends BaseUIController {
                 return HttpClientUtil.doPut(comUrl + url, params,username,password);
             }
         }catch (Exception ex){
-            LogService.getLogger(AuthenticationController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         envelop.setSuccessFlg(false);
         return envelop;
@@ -152,8 +150,9 @@ public class AuthenticationController extends BaseUIController {
         } catch (IOException e) {
             LogService.getLogger(PatientController.class).error(e.getMessage());
         } finally {
-            if (outputStream != null)
+            if (outputStream != null) {
                 outputStream.close();
+            }
         }
     }
 

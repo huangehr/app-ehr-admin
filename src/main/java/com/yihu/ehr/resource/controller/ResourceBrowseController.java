@@ -398,8 +398,9 @@ public class ResourceBrowseController extends BaseUIController {
             params.put("resourcesId", resourcesId);
             String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
-        }catch (Exception e) {
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -758,9 +759,9 @@ public class ResourceBrowseController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             //Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(ResourceBrowseController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -774,9 +775,9 @@ public class ResourceBrowseController extends BaseUIController {
             params.put("categoryId",categoryId);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(ResourceBrowseController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

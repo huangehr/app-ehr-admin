@@ -109,10 +109,8 @@ public class TjQuotaController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(TjQuotaController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -175,9 +173,8 @@ public class TjQuotaController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -218,13 +215,12 @@ public class TjQuotaController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -321,9 +317,8 @@ public class TjQuotaController extends BaseUIController {
             envelop = objectMapper.readValue(resultStr, Envelop.class);
             return envelop;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -348,9 +343,8 @@ public class TjQuotaController extends BaseUIController {
             envelop = objectMapper.readValue(resultStr, Envelop.class);
             return envelop;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -435,9 +429,8 @@ public class TjQuotaController extends BaseUIController {
             result = mapper.readValue(resultStr, Envelop.class);
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -481,10 +474,8 @@ public class TjQuotaController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(TjQuotaController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -550,10 +541,8 @@ public class TjQuotaController extends BaseUIController {
             }
             return envelop;
         } catch (Exception ex) {
-            LogService.getLogger(TjQuotaController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -588,10 +577,8 @@ public class TjQuotaController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception ex) {
-            LogService.getLogger(TjQuotaController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -615,9 +602,8 @@ public class TjQuotaController extends BaseUIController {
         try {
             resultStr = templates.doPost(comUrl + url, params);
         } catch (RestClientException e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }

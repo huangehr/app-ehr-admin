@@ -51,7 +51,6 @@ public class SchemeAdaptController extends BaseUIController {
     @RequestMapping("/list")
     @ResponseBody
     public Object searchAdaptSchemes(String searchNm, String type, int page, int rows){
-        Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<String, Object>();
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(searchNm)) {
@@ -72,14 +71,13 @@ public class SchemeAdaptController extends BaseUIController {
         }
         String url = ServiceApi.Adaptions.Schemes;
         String result="";
-        try{
+        try {
             result = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return result;
-        }catch (Exception e){
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception e){
+            e.printStackTrace();
+            return failed("内部服务请求失败");
         }
-        return envelop;
     }
     /**
      * 资源适配：新增、修改窗口
@@ -104,9 +102,8 @@ public class SchemeAdaptController extends BaseUIController {
             model.addAttribute("contentPage","/resource/adaptview/schemeAdaptDialog");
             return "emptyView";
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed("内部服务请求失败");
         }
     }
 
@@ -157,11 +154,9 @@ public class SchemeAdaptController extends BaseUIController {
             resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
         }
         return resultStr;
-        }catch(Exception ex){
-            LogService.getLogger(SchemeAdaptController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed("内部服务请求失败");
         }
     }
 
@@ -174,11 +169,9 @@ public class SchemeAdaptController extends BaseUIController {
         try{
            String resultStr =  HttpClientUtil.doDelete(comUrl+url,params,username,password);
            return resultStr;
-        }catch(Exception ex){
-            LogService.getLogger(SchemeAdaptController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed("内部服务请求失败");
         }
     }
 }

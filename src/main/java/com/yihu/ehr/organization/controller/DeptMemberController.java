@@ -118,9 +118,8 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
             resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -203,8 +202,8 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 return envelopStr;
             }
         }catch (Exception ex){
-            LogService.getLogger(DeptMemberController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -230,12 +229,12 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 envelop.setSuccessFlg(true);
             } else {
                 envelop.setSuccessFlg(false);
-                envelop.setErrorMsg(ErrorCode.InvalidUpdate.toString());
+                envelop.setErrorMsg("更新失败");
             }
             return envelop;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -261,13 +260,12 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -360,8 +358,8 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 return envelopStr;
             }
         }catch (Exception ex){
-            LogService.getLogger(DeptMemberController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -394,13 +392,12 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -428,13 +425,12 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.SystemError.toString());
+                result.setErrorMsg("操作失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -592,8 +588,8 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
                 return envelopStr;
             }
         }catch (Exception ex){
-            LogService.getLogger(DeptMemberController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -635,12 +631,9 @@ public class DeptMemberController   extends ExtendController<OrgAdapterPlanServi
             String url ="/orgDept/list";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
-        }catch (Exception ex){
-            LogService.getLogger(DeptMemberController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

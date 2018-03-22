@@ -165,8 +165,8 @@ public class HealthProblemDictController extends BaseUIController {
                 return envelopStr;
             }
         }catch (Exception ex){
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -176,15 +176,13 @@ public class HealthProblemDictController extends BaseUIController {
     //"判断提交的字典代码是否已经存在"
     public Object isCodeExist(String code){
         Envelop envelop = new Envelop();
-        try{
+        try {
             String url = "/dict/hp/existence/code/"+code;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception ex) {
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -199,11 +197,9 @@ public class HealthProblemDictController extends BaseUIController {
             params.put("name",name);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex) {
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -253,9 +249,8 @@ public class HealthProblemDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -284,9 +279,8 @@ public class HealthProblemDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
             return envelopStr;
         }catch(Exception ex){
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -380,9 +374,8 @@ public class HealthProblemDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -404,9 +397,8 @@ public class HealthProblemDictController extends BaseUIController {
             String envelopStr = HttpClientUtil.doDelete(comUrl + url, params, username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -431,10 +423,8 @@ public class HealthProblemDictController extends BaseUIController {
             envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex) {
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -443,18 +433,16 @@ public class HealthProblemDictController extends BaseUIController {
     //"判断健康问题与ICD10的关联关系在系统中是否已存在"
     public Object isHpIcd10RelaExist(Long hpId,Long icd10Id){
         Envelop envelop = new Envelop();
-        try{
+        try {
             String url = "/dict/hp/icd10/existence";
             Map<String,Object> params = new HashMap<>();
             params.put("hpId",hpId);
             params.put("icd10Id",icd10Id);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(HealthProblemDictController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

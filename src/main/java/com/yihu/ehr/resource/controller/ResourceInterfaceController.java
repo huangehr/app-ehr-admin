@@ -79,11 +79,9 @@ public class ResourceInterfaceController extends BaseUIController {
             params.put("size",rows);
             String url = "/resources/interfaces";
             envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
-        }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            envelop.setSuccessFlg(false);
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelopStr;
     }
@@ -96,11 +94,9 @@ public class ResourceInterfaceController extends BaseUIController {
             String url = "/resources/interfaces/{id}"+id;
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -114,11 +110,9 @@ public class ResourceInterfaceController extends BaseUIController {
             params.put("resource_interface",resourceInterface);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     //新增、修改
@@ -159,8 +153,8 @@ public class ResourceInterfaceController extends BaseUIController {
                 return envelopStr;
             }
         }catch(Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return envelop;
     }
@@ -174,11 +168,9 @@ public class ResourceInterfaceController extends BaseUIController {
             String url = "/resources/interfaces/"+id;
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,new HashMap<>(),username,password);
             return envelopStr;
-        }catch(Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -192,11 +184,9 @@ public class ResourceInterfaceController extends BaseUIController {
             args.put("name",name);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,args,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(true);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 }

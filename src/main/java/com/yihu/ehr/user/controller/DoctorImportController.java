@@ -556,11 +556,9 @@ public class DoctorImportController extends ExtendController<DoctorService> {
                 return false;
             }
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
             return false;
         }
-
     }
 
     /**

@@ -84,8 +84,7 @@ public class RedisCacheAuthorizationController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheAuthorization.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheAuthorizationController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -122,8 +121,7 @@ public class RedisCacheAuthorizationController extends BaseUIController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheAuthorizationController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -139,8 +137,7 @@ public class RedisCacheAuthorizationController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.CacheAuthorization.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheAuthorizationController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -159,8 +156,7 @@ public class RedisCacheAuthorizationController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheAuthorization.IsUniqueAppId, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheAuthorizationController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

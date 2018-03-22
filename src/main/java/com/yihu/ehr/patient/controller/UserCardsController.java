@@ -109,9 +109,8 @@ public class UserCardsController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -180,9 +179,8 @@ public class UserCardsController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params, username, password);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -307,9 +305,8 @@ public class UserCardsController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -328,7 +325,7 @@ public class UserCardsController extends BaseUIController {
                 envelopStr = HttpClientUtil.doPost(comUrl + url, par, username, password);
             }
             model.addAttribute("allData",StringUtils.isEmpty(envelopStr)?objectMapper.writeValueAsString(envelop):envelopStr);
-        }catch (Exception ex){
+        } catch (Exception ex){
             LogService.getLogger(UserCardsController.class).error(ex.getMessage());
         }
         return "emptyView";
@@ -386,9 +383,8 @@ public class UserCardsController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params, username, password);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -415,13 +411,12 @@ public class UserCardsController extends BaseUIController {
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

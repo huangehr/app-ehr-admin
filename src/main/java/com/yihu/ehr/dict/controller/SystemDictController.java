@@ -76,11 +76,8 @@ public class SystemDictController extends BaseUIController {
             return resultStr;
 
         }catch (Exception ex){
-            result.setSuccessFlg(false);
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -100,11 +97,8 @@ public class SystemDictController extends BaseUIController {
             return resultStr;
 
         }catch (Exception ex){
-            result.setSuccessFlg(false);
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -116,7 +110,7 @@ public class SystemDictController extends BaseUIController {
         Envelop result = new Envelop();
         String resultStr = "";
 
-        if(StringUtils.isEmpty(name)) {
+        if (StringUtils.isEmpty(name)) {
             result.setSuccessFlg(false);
             result.setErrorMsg("字典名字不能为空！");
             return result;
@@ -138,10 +132,9 @@ public class SystemDictController extends BaseUIController {
                 resultStr = HttpClientUtil.doPut(comUrl + urlCheckDict, params, username, password);
                 return resultStr;
             }
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -170,12 +163,9 @@ public class SystemDictController extends BaseUIController {
             String url ="/dictionaries";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -228,12 +218,9 @@ public class SystemDictController extends BaseUIController {
             resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
             return resultStr;
 
-        }catch (Exception ex){
-            result.setSuccessFlg(false);
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -252,12 +239,9 @@ public class SystemDictController extends BaseUIController {
         try {
             resultStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return resultStr;
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -307,10 +291,9 @@ public class SystemDictController extends BaseUIController {
                 resultStr = HttpClientUtil.doPut(comUrl + urlCheckDict, params, username, password);
                 return resultStr;
             }
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -339,12 +322,9 @@ public class SystemDictController extends BaseUIController {
             String url ="/dictionaries/entries";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -365,12 +345,9 @@ public class SystemDictController extends BaseUIController {
             result.setObj(result.getDetailModelList());
 
             return result;
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -405,11 +382,8 @@ public class SystemDictController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         }catch (Exception ex){
-            LogService.getLogger(SystemDictEntryModel.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-
-            return result;
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -425,17 +399,15 @@ public class SystemDictController extends BaseUIController {
         try {
             String url ="/dictionaries/existence";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-
             if(Boolean.parseBoolean(resultStr)){
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.RepeatSysDictName.toString());
+                result.setErrorMsg("名称重复");
             }else{
                 result.setSuccessFlg(true);
             }
-        }catch (Exception ex){
-            LogService.getLogger(SystemDictController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }

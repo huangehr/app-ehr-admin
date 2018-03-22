@@ -37,8 +37,7 @@ public class RedisCacheStatisticsController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheStatistics.GetCategoryKeys, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheStatisticsController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -52,8 +51,7 @@ public class RedisCacheStatisticsController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.CacheStatistics.GetCategoryMemory, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisCacheStatisticsController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

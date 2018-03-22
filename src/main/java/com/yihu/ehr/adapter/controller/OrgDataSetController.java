@@ -8,6 +8,7 @@ import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
+import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +28,7 @@ import java.util.Map;
 @RequestMapping("/orgdataset")
 @Controller
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
-public class OrgDataSetController {
+public class OrgDataSetController extends BaseUIController {
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -79,9 +80,8 @@ public class OrgDataSetController {
             model.addAttribute("contentPage","/adapter/orgCollection/dialog");
             return "simpleView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -112,9 +112,8 @@ public class OrgDataSetController {
             model.addAttribute("contentPage","/adapter/orgCollection/dialog");
             return "simpleView";
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -141,9 +140,8 @@ public class OrgDataSetController {
             result.setSuccessFlg(true);
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 //        Result result = new Result();
 //        try{
@@ -181,9 +179,8 @@ public class OrgDataSetController {
             resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);//创建数据集
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg("系统出错！");
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -207,9 +204,8 @@ public class OrgDataSetController {
             resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("系统出错!");
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -229,10 +225,9 @@ public class OrgDataSetController {
             resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
 
@@ -268,9 +263,8 @@ public class OrgDataSetController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -302,9 +296,8 @@ public class OrgDataSetController {
             result.setSuccessFlg(true);
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 //        Result result = new Result();
 //        try{
@@ -342,9 +335,8 @@ public class OrgDataSetController {
             resultStr = HttpClientUtil.doPost(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -390,9 +382,8 @@ public class OrgDataSetController {
 
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -424,9 +415,8 @@ public class OrgDataSetController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -436,11 +426,6 @@ public class OrgDataSetController {
 
     private OrgMetaDataDetailModel toOrgMetaDataDetailModel(String json) throws IOException {
         return objectMapper.readValue(json, OrgMetaDataDetailModel.class);
-    }
-
-    private String toJson(Object obj) throws JsonProcessingException {
-
-        return objectMapper.writeValueAsString(obj);
     }
 
     private UsersModel getCurUser(HttpServletRequest request){

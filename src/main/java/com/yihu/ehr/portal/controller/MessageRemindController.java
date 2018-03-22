@@ -93,9 +93,8 @@ public class MessageRemindController extends ExtendController<OrgAdapterPlanServ
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -149,9 +148,8 @@ public class MessageRemindController extends ExtendController<OrgAdapterPlanServ
                 resultStr = templates.doPost(comUrl + url, params);
             }
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return resultStr;
     }
@@ -178,13 +176,12 @@ public class MessageRemindController extends ExtendController<OrgAdapterPlanServ
                 result.setSuccessFlg(true);
             } else {
                 result.setSuccessFlg(false);
-                result.setErrorMsg(ErrorCode.InvalidDelete.toString());
+                result.setErrorMsg("删除失败");
             }
             return result;
         } catch (Exception e) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -214,9 +211,8 @@ public class MessageRemindController extends ExtendController<OrgAdapterPlanServ
             model.addAttribute("contentPage", "portal/message/messageRemindInfoDialog");
             return "simpleView";
         } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

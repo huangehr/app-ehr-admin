@@ -49,16 +49,14 @@ public class CdaTypeController extends BaseUIController {
         if (StringUtils.isEmpty(codeName)){
             codeName = "";
         }
-        try{
+        try {
             Map<String,Object> params = new HashMap<>();
             params.put("code_name",codeName);
             strResult = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return strResult;
-        }catch(Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -76,12 +74,10 @@ public class CdaTypeController extends BaseUIController {
             params.put("filters",filters);
             String _rus = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return _rus;
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("getCdaTypeById")
@@ -92,12 +88,10 @@ public class CdaTypeController extends BaseUIController {
         try{
             String envelopStr = HttpClientUtil.doGet(comUrl+url,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     @RequestMapping("delteCdaTypeInfo")
@@ -126,10 +120,9 @@ public class CdaTypeController extends BaseUIController {
                 result.setSuccessFlg(false);
                 result.setErrorMsg("cda类别删除失败");
             }
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
         return result;
     }
@@ -183,11 +176,9 @@ public class CdaTypeController extends BaseUIController {
             String envelopStrUpdate = HttpClientUtil.doPut(comUrl + url, params, username, password);
             return envelopStrUpdate;
         } catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
     /**
@@ -220,11 +211,9 @@ public class CdaTypeController extends BaseUIController {
             args.put("id",strId);
             String envelopStrOthers = HttpClientUtil.doGet(comUrl+urlGetOthers,args,username,password);
             return envelopStrOthers;
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
 
     }
@@ -245,11 +234,9 @@ public class CdaTypeController extends BaseUIController {
 
             return envelop.getDetailModelList();
         } catch (Exception ex) {
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
-        return envelop;
     }
 
 
@@ -268,11 +255,9 @@ public class CdaTypeController extends BaseUIController {
             params.put("ids",ids);
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
-        }catch (Exception ex){
-            LogService.getLogger(CdaTypeController.class).error(ex.getMessage());
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

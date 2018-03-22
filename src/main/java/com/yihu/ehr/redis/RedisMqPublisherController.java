@@ -84,8 +84,7 @@ public class RedisMqPublisherController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqPublisher.Search, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -118,8 +117,7 @@ public class RedisMqPublisherController extends BaseUIController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -135,8 +133,7 @@ public class RedisMqPublisherController extends BaseUIController {
             return HttpClientUtil.doDelete(comUrl + ServiceApi.Redis.MqPublisher.Delete, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -155,8 +152,7 @@ public class RedisMqPublisherController extends BaseUIController {
             return HttpClientUtil.doGet(comUrl + ServiceApi.Redis.MqPublisher.IsUniqueAppId, params, username, password);
         } catch (Exception e) {
             e.printStackTrace();
-            LogService.getLogger(RedisMqPublisherController.class).error(e.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            return failed(ERR_SYSTEM_DES);
         }
     }
 

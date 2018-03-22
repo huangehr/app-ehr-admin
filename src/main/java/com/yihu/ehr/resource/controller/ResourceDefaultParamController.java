@@ -101,8 +101,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             String envelopStr = HttpClientUtil.doPut(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     //删除
@@ -119,8 +119,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             String envelopStr = HttpClientUtil.doDelete(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
     //查看不分页
@@ -138,8 +138,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
@@ -156,8 +156,8 @@ public class ResourceDefaultParamController extends BaseUIController {
             String envelopStr = HttpClientUtil.doGet(comUrl+url,params,username,password);
             return envelopStr;
         }catch (Exception ex){
-            LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
-            return failed(ErrorCode.SystemError.toString());
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }

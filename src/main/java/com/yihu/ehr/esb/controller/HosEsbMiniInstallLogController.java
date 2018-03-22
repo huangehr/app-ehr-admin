@@ -66,15 +66,13 @@ public class HosEsbMiniInstallLogController extends BaseUIController {
         params.put("size", rows);
         params.put("fields", "");
         params.put("sorts", "");
-        try{
+        try {
             String url = "/esb/searchHosEsbMiniInstallLog";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
-        }catch(Exception ex){
-            LogService.getLogger(HosEsbMiniInstallLogController.class).error(ex.getMessage());
-            result.setSuccessFlg(false);
-            result.setErrorMsg(ErrorCode.SystemError.toString());
-            return result;
+        } catch(Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 }
