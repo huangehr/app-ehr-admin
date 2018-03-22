@@ -498,6 +498,7 @@ public class ReportController extends BaseUIController {
             params.put("resourceId", resourceId);
             List<String> userOrgList  = getUserOrgSaasListRedis(request);
             params.put("userOrgList", userOrgList);
+            params.put("quotaFilter", "");
             String chartInfoStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.GetRsQuotaPreview, params, username, password);
             Envelop envelop1 = objectMapper.readValue(chartInfoStr, Envelop.class);
             String s = objectMapper.writeValueAsString((HashMap<String,String>)envelop1.getObj());

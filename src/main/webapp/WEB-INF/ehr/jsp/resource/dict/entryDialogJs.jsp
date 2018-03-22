@@ -38,7 +38,15 @@
             });
 
             $('#btn_save').click(function () {
-                saveForm({url: urls.update, $form: $form, validator: validator});
+                saveForm({url: urls.update, $form: $form, modelName: 'model', validator: validator,
+                    onSuccess: function (data) {
+                        if(data.successFlg){
+                            closeDialog("保存成功!");
+                        }else {
+                            closeDialog("保存失败!");
+                        }
+                    }});
+//                saveForm({url: urls.update, $form: $form, validator: validator});
             });
 
             $('#btn_cancel').click(function () {

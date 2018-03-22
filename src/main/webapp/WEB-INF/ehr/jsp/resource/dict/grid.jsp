@@ -19,7 +19,7 @@
     </div>
     <div id="div_wrapper" style="position: relative;overflow: hidden">
 
-        <div id="grid_content" style="width: 100%;position: relative;overflow: hidden"">
+        <div id="grid_content" style="width: 100%;position: relative;overflow: hidden">
             <!--   字典-->
             <div id="div_left" style=" width:400px;float: left;">
                 <div id="retrieve" class="m-retrieve-area f-h50 f-pr m-form-inline condition retrieve-border" data-role-form>
