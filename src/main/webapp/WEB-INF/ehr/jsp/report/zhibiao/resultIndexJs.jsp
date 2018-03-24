@@ -120,13 +120,21 @@
                     }
                 },
                 reloadGrid: function (curPage) {
-                    console.log(patientRetrieve.$selectChnage)
-//                    patientRetrieve.$element.attrScan();
+//                    console.log(patientRetrieve.$selectChnage)
+                    patientRetrieve.$element.attrScan();
 //                    var values = patientRetrieve.$element.Fields.getValues();
 //                    var address = patientRetrieve.$element.Fields.location.getValue();
+                    // 起止时间
+                    var startTime = patientRetrieve.$starTime.val();
+                    var endTime = patientRetrieve.$endTime.val();
                     var address = patientRetrieve.$location.val();
+                    var orgName = patientRetrieve.$orgName.val();
+
                     var values = $.extend({},
 //                            {province: (address.names[0] == null ? '' : address.names[0])},
+                            {startTime:(startTime)},
+                            {endTime:(endTime)},
+                            {orgName:(orgName)},
                             {city: (address)},
                             {tjQuotaId: (id)},
 //                            {district: (address.names[2] == null ? '' : address.names[2])},
@@ -136,7 +144,7 @@
                 bindEvents: function () {
                     var self = this;
                     patientRetrieve.$searchBtn.click(function () {
-                        dictMaster.reloadGrid();
+                        dictMaster.reloadGrid(1);
                     });
                     $(document).on('click', '.go-back', function () {
                         win.location.reload();
