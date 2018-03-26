@@ -201,9 +201,10 @@
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
+                            var cellphone = $("#inp_userTel").val();
                             checkObj = checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
                             if (checkObj.result) {
-                                inputSourceByIdCard(idCard);
+                                inputSourceByIdCard(idCard,cellphone);
                             }
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
@@ -242,7 +243,7 @@
                     return result;
                 }
 
-                function inputSourceByIdCard(inputValue) {
+                function inputSourceByIdCard(inputValue,phone) {
                     var result = new jValidation.ajax.Result();
                     var dataModel = $.DataModel.init();
                     dataModel.fetchRemote("${contextRoot}/user/getPatientInUserByIdCardNo", {
@@ -277,6 +278,9 @@
                                 }
                                 if(model.telephoneNo){
                                     self.$userTel.val(model.telephoneNo);
+                                    if(phone){
+                                        self.$userTel.val(phone);
+                                    }
                                 }
                             }
                         },
@@ -353,6 +357,7 @@
 
                 });
 
+
                 function updateUser(userModel) {
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
@@ -388,7 +393,7 @@
 						//autoCheckboxEven:false,
 						isExpand:true,
 						onClick:function(e){
-                            debugger
+
 							self.listTree(trees);
 						},
 						onSuccess:function(data){
@@ -398,7 +403,7 @@
 						}
 					},
                     onBeforeSelect: function () {
-                        debugger
+
                     }
 				})
 
