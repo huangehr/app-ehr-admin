@@ -97,15 +97,16 @@ public class AppRoleController extends BaseUIController {
 
     @RequestMapping("/searchAppRole")
     @ResponseBody
-    public String searchAppRole(String searchNm, String gridType,String appRoleId, int page, int rows) {
+    public String searchAppRole(String searchNm, String gridType, String appRoleId, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
         String url = ServiceApi.Roles.Roles;
         String resultStr = "";
-
-        String filters = StringUtils.isEmpty(searchNm)?"type=0 g0;appId="+appRoleId+" g1":"type=0 g0;code?"+searchNm+" g1;name?"+searchNm+" g1;appId="+appRoleId+" g2";
-        if(gridType.equals("appRole")){
+        String filters = "type=0 g0;";
+        filters = StringUtils.isEmpty(appRoleId)? filters : filters + "appId=" + appRoleId + " g1;";
+        filters = StringUtils.isEmpty(searchNm)? filters : filters + "code?" + searchNm + " g2;name?" + searchNm + " g2;";
+        if (gridType.equals("appRole")){
             url = "/apps";
-            filters = StringUtils.isEmpty(searchNm)?"":"name?"+searchNm+" g1";
+            filters = StringUtils.isEmpty(searchNm) ? "" : "name?" + searchNm + " g1";
         }
         params.put("filters", filters);
         params.put("page", page);

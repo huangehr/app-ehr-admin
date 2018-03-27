@@ -160,9 +160,9 @@ public class ResourceBrowseController extends BaseUIController {
     public Object getGridColumnNames(String dictId, HttpServletRequest request) {
         Envelop envelop;
         envelop = getColumns(dictId, request);
-        if(envelop != null) {
+        if (envelop != null) {
             return envelop.getDetailModelList();
-        }else {
+        } else {
             return new ArrayList<Object>();
         }
     }
@@ -232,6 +232,7 @@ public class ResourceBrowseController extends BaseUIController {
                 return resultStr;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("字典查询失败");
         }
@@ -259,13 +260,13 @@ public class ResourceBrowseController extends BaseUIController {
             List<String> userOrgSaasList  = getUserOrgSaasListRedis(request);
             List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
             boolean isAccessAll = getIsAccessAllRedis(request);
-            if(!isAccessAll) {
-                if(null == userRolesList || userRolesList.size() <= 0) {
+            if (!isAccessAll) {
+                if (null == userRolesList || userRolesList.size() <= 0) {
                     envelop.setSuccessFlg(false);
                     envelop.setErrorMsg("无权访问");
                     return envelop;
                 }
-                if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+                if ((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
                     envelop.setSuccessFlg(false);
                     envelop.setErrorMsg("无权访问");
                     return envelop;
@@ -273,11 +274,11 @@ public class ResourceBrowseController extends BaseUIController {
             }
             Map<String, Object> params = new HashMap<>();
             params.put("resourcesCode", resourcesCode);
-            if(isAccessAll) {
+            if (isAccessAll) {
                 params.put("roleId", "*");
                 params.put("orgCode", "*");
                 params.put("areaCode", "*");
-            }else {
+            } else {
                 // 获取资源拥着信息
                 String urlGet = "/resources/byCode";
                 Map<String, Object> getParams = new HashMap<>();
@@ -293,9 +294,9 @@ public class ResourceBrowseController extends BaseUIController {
                 String userId = String.valueOf(request.getSession().getAttribute("userId"));
                 String creator = String.valueOf(rsObj.get("creator"));
                 // 判断视图是否由用户生成
-                if(userId.equals(creator)) {
+                if (userId.equals(creator)) {
                     params.put("roleId", "*");
-                }else {
+                } else {
                     params.put("roleId", objectMapper.writeValueAsString(userRolesList));
                 }
                 params.put("orgCode", objectMapper.writeValueAsString(userOrgSaasList));
@@ -318,7 +319,7 @@ public class ResourceBrowseController extends BaseUIController {
             envelop = toModel(resultStr, Envelop.class);
             List<Map<String, Object>> envelopList = envelop.getDetailModelList();
             List<Map<String, Object>> finalList = new ArrayList<Map<String, Object>>();
-            if(envelop.isSuccessFlg() && envelopList != null) {
+            if (envelop.isSuccessFlg() && envelopList != null) {
                 List<Map<String, Object>> middleList = new ArrayList<>();
                 for (Map<String, Object> envelopMap : envelopList) {
                     Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -364,7 +365,7 @@ public class ResourceBrowseController extends BaseUIController {
     @ResponseBody
     public Object getRsDictEntryList(String rowKey, String version) {
         Envelop envelop = new Envelop();
-        if(rowKey.contains("$")) {
+        if (rowKey.contains("$")) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("该列数据已为详细数据");
             return envelop;
@@ -377,6 +378,7 @@ public class ResourceBrowseController extends BaseUIController {
             String resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
             envelop = toModel(resultStr, Envelop.class);
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());
         }
@@ -437,6 +439,7 @@ public class ResourceBrowseController extends BaseUIController {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());
         }
@@ -463,7 +466,7 @@ public class ResourceBrowseController extends BaseUIController {
         List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
         boolean isAccessAll = getIsAccessAllRedis(request);
         if (!isAccessAll) {
-            if((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
+            if ((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
                 logger.warn("无权访问");
                 response.setStatus(403);
                 return;
@@ -480,11 +483,11 @@ public class ResourceBrowseController extends BaseUIController {
         //基本参数
         String url = "/resources/ResourceBrowses/getResourceData";
         params.put("resourcesCode", resourcesCode);
-        if(isAccessAll) {
+        if (isAccessAll) {
             params.put("roleId", "*");
             params.put("orgCode", "*");
             params.put("areaCode", "*");
-        }else {
+        } else {
             // 获取资源拥着信息
             String urlGet = "/resources/byCode";
             Map<String, Object> getParams = new HashMap<>();
@@ -499,9 +502,9 @@ public class ResourceBrowseController extends BaseUIController {
             String userId = String.valueOf(request.getSession().getAttribute("userId"));
             String creator = String.valueOf(rsObj.get("creator"));
             // 判断视图是否由用户生成
-            if(userId.equals(creator)) {
+            if (userId.equals(creator)) {
                 params.put("roleId", "*");
-            }else {
+            } else {
                 params.put("roleId", objectMapper.writeValueAsString(userRolesList));
             }
             params.put("roleId", objectMapper.writeValueAsString(userRolesList));
@@ -516,7 +519,7 @@ public class ResourceBrowseController extends BaseUIController {
             WritableSheet sheet = book.createSheet("page1", 0);
             //初始化表格基础数据
             sheet = resourceIntegratedController.initBaseInfo(sheet);
-            for(int i = 0; i < colEnvelop.getDetailModelList().size(); i++) {
+            for (int i = 0; i < colEnvelop.getDetailModelList().size(); i++) {
                 Map cmap = objectMapper.readValue(toJson(colEnvelop.getDetailModelList().get(i)), Map.class);
                 sheet.addCell(new Label(i + 6, 0, String.valueOf(cmap.get("code"))));
                 sheet.addCell(new Label(i + 6, 1, String.valueOf(cmap.get("value"))));
@@ -742,6 +745,7 @@ public class ResourceBrowseController extends BaseUIController {
 
             return "pageView";
         } catch (Exception e) {
+            e.printStackTrace();
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("字典查询失败");
         }

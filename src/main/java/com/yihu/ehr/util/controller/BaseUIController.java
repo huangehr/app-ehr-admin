@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -35,6 +36,7 @@ public class BaseUIController {
 
     public Envelop getEnvelop(String json){
         try {
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             return objectMapper.readValue(json,Envelop.class);
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,6 +46,7 @@ public class BaseUIController {
 
     public String toJson(Object data){
         try {
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             String json = objectMapper.writeValueAsString(data);
             return json;
         }catch (Exception e){
@@ -54,9 +57,10 @@ public class BaseUIController {
 
     public <T> T toModel(String json,Class<T> targetCls){
         try {
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             T model = objectMapper.readValue(json, targetCls);
             return model;
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
             return null;
         }
@@ -94,6 +98,7 @@ public class BaseUIController {
      */
     public <T> Collection<T> getEnvelopList(List modelList, Collection<T> targets, Class<T> targetCls) {
         try {
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             for (Object aModelList : modelList) {
                 String objJsonData = objectMapper.writeValueAsString(aModelList);
                 T model = objectMapper.readValue(objJsonData, targetCls);
@@ -203,6 +208,7 @@ public class BaseUIController {
         params.put("size", 15);
         HttpResponse httpResponse = HttpUtils.doGet(comUrl + "/dictionaries", params, null);
         if (httpResponse.isSuccessFlg()) {
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
             Envelop envelop = objectMapper.readValue(httpResponse.getContent(), Envelop.class);
             if (envelop.isSuccessFlg() && envelop.getDetailModelList() != null) {
                 List<Map<String, Object>> systemDictModels = envelop.getDetailModelList();

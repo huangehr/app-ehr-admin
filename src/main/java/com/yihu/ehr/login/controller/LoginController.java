@@ -326,7 +326,7 @@ public class LoginController extends BaseUIController {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("demographic_id", idCardNo);
         paramsMap.put("version", stdVersion);
-        String url2 = "/" + paramsMap.get("demographic_id") + "/profile/info";
+        String url2 =  "/profile/baseInfo";
         try {
             String result = HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
             if (StringUtils.isEmpty(result)) {
