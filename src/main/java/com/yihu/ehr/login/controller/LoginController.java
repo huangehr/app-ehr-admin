@@ -320,24 +320,23 @@ public class LoginController extends BaseUIController {
      */
     @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Envelop check(String idCardNo,String loginCode, HttpServletRequest request) {
-        initUrlInfo(loginCode,request);
-        Envelop envelop = new Envelop();
+    public Envelop check (String idCardNo,String loginCode, HttpServletRequest request) {
+        initUrlInfo(loginCode, request);
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("demographic_id", idCardNo);
         paramsMap.put("version", stdVersion);
         String url2 =  "/profile/baseInfo";
         try {
             String result = HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
-            if (StringUtils.isEmpty(result)) {
-                return envelop;
+            Map<String, Object> resultMap = objectMapper.readValue(result, Map.class);
+            if (resultMap != null && resultMap.size() > 0) {
+                return success(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return envelop;
+            return failed(e.getMessage());
         }
-        envelop.setSuccessFlg(true);
-        return envelop;
+        return failed("该居民暂无档案信息");
     }
 
     @RequestMapping(value = "/broswerSignin", method = RequestMethod.GET)
