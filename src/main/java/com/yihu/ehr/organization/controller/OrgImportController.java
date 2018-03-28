@@ -62,7 +62,7 @@ public class OrgImportController extends ExtendController<OrgService> {
             List<OrgMsgModel> errorLs = excelReader.getErrorLs();
             List<OrgMsgModel> correctLs = excelReader.getCorrectLs();
             writerResponse(response, 20 + "", "l_upd_progress");
-            List saveLs = new ArrayList<>();
+            List<OrgMsgModel> saveLs = new ArrayList<OrgMsgModel>();
             //获取机构代码
             Set<String> orgCodes = findExistOrgCode(toJson(excelReader.getRepeat().get("orgCode")));
             //根据字典代码获取字典项列表--机构类型,如:行政\科研等
@@ -102,13 +102,13 @@ public class OrgImportController extends ExtendController<OrgService> {
             }
             writerResponse(response, 55 + "", "l_upd_progress");
             Map rs = new HashMap<>();
-            if (errorLs.size() > 0) {
+            if (!errorLs.isEmpty()) {
                 String eFile = TemPath.createFileName(user.getLoginCode(), "e", parentFile, ".dat");
                 ObjectFileRW.write(new File(TemPath.getFullPath(eFile, parentFile)), errorLs);
                 rs.put("eFile", new String[]{eFile.substring(0, 10), eFile.substring(11, eFile.length())});
                 writerResponse(response, 75 + "", "l_upd_progress");
             }
-            if (saveLs.size() > 0) {
+            if (!saveLs.isEmpty()) {
                 saveMeta(toJson(saveLs));
             }
             if (rs.size() > 0) {

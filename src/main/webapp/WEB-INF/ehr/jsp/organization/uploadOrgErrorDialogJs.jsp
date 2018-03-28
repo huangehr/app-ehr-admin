@@ -178,7 +178,16 @@
                     {display: '经度',  hide: true,name: 'ing', width: '95', align: 'left', render: textRender},
                     {display: '纬度', hide: true, name: 'lat', width: '95', align: 'left', render: textRender},
                     {display: '标签',  hide: true,name: 'tags', width: '95', align: 'left', render: textRender},
-                    {display: '医院简介',  hide: true,name: 'introduction', width: '95', align: 'left', render: textRender}
+                    {display: '医院简介',  hide: true,name: 'introduction', width: '95', align: 'left', render: textRender},
+
+                    {display: '医院等次',  hide: true,name: 'hosHierarchy', width: '95', align: 'left', render: textRender},
+                    {display: '经济类型代码',  hide: true,name: 'hosEconomic', width: '95', align: 'left', render: textRender},
+                    {display: '卫生机构分类',  hide: true,name: 'classification', width: '95', align: 'left', render: textRender},
+                    {display: '卫生机构大分类',  hide: true,name: 'bigClassification', width: '95', align: 'left', render: textRender},
+                    {display: '机构性质1',  hide: true,name: 'nature', width: '95', align: 'left', render: textRender},
+                    {display: '机构性质Ⅱ',  hide: true,name: 'branchType', width: '95', align: 'left', render: textRender},
+                    {display: '是否开放显示',  hide: true,name: 'displayStatus', width: '95', align: 'left', render: textRender},
+                    {display: '健康之路机构id',  hide: true,name: 'jkzlOrgId', width: '95', align: 'left', render: textRender}
 //                    {display: '资质信息',  hide: true,name: 'qualification', width: '95', align: 'left', render: textRender},
                 ];
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});

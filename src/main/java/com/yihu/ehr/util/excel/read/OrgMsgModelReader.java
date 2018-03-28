@@ -61,6 +61,7 @@ public class OrgMsgModelReader extends AExcelReader {
                     orgMsgModel.setNature(getCellCont(sheet, i, 27));
                     orgMsgModel.setBranchType(getCellCont(sheet, i, 28));
                     orgMsgModel.setDisplayStatus(getCellCont(sheet, i, 29));
+                    orgMsgModel.setJkzlOrgId(getCellCont(sheet, i, 30));
 
                     orgMsgModel.setExcelSeq(j);
 

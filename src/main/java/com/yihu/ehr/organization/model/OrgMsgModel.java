@@ -13,7 +13,7 @@ import java.util.*;
  * Created by zdm on 2017/10/19
  */
 @Row(start = 1)
-@Title(names= "{'机构代码', '机构全名','医院类型', '医院归属', '机构简称', '机构类型', '医院等级', '医院法人', '联系人', '联系方式', '中西医标识', '床位', '机构地址', '交通路线', '入驻方式', '经度', '纬度', '标签', '医院简介'}")
+@Title(names= "{'机构代码', '机构全名','医院类型', '医院归属', '机构简称', '机构类型', '医院等级', '医院法人', '联系人', '联系方式', '中西医标识', '床位', '机构地址', '交通路线', '入驻方式', '经度', '纬度', '标签', '医院简介','医院等次','经济类型代码','卫生机构分类','卫生机构大分类','机构性质1','机构性质Ⅱ','是否开放显示','健康之路机构id'}")
 public class OrgMsgModel extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
@@ -84,6 +84,8 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
     private String branchType;//机构性质Ⅱ，1总院、2分院
 
     private String displayStatus;//与总部同步数据补充字段是否开放显示：0：不显示 1:显示
+
+    private String jkzlOrgId;//总部机构id-同步数据使用
 
     public String getAscriptionType() {
         return ascriptionType;
@@ -376,5 +378,13 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
 
     public void setDisplayStatus(String displayStatus) {
         this.displayStatus = displayStatus;
+    }
+
+    public String getJkzlOrgId() {
+        return jkzlOrgId;
+    }
+
+    public void setJkzlOrgId(String jkzlOrgId) {
+        this.jkzlOrgId = jkzlOrgId;
     }
 }
