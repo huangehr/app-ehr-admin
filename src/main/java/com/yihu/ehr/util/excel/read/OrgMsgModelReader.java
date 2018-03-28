@@ -16,7 +16,7 @@ public class OrgMsgModelReader extends AExcelReader {
         try {
             Sheet[] sheets = rwb.getSheets();
             int j = 0, rows;
-            OrgMsgModel p;
+            OrgMsgModel orgMsgModel;
             getRepeat().put("orgCode", new HashSet<>());
             getRepeat().put("orgType", new HashSet<>());// 机构类型,如:行政\科研等
             getRepeat().put("settledWay", new HashSet<>());// 入驻方式：直连/第三方接入
@@ -29,38 +29,46 @@ public class OrgMsgModelReader extends AExcelReader {
                     continue;
                 }
                 for (int i = 1; i < rows; i++, j++) {
-                    p = new OrgMsgModel();
-                    p.setOrgCode(getCellCont(sheet, i, 0));
-                    p.setFullName(getCellCont(sheet, i, 1));
-                    p.setHosTypeId(getCellCont(sheet, i, 2).trim());
-                    p.setAscriptionType(getCellCont(sheet, i ,3).trim());
-                    p.setShortName(getCellCont(sheet, i ,4));
-                    p.setOrgType(getCellCont(sheet, i, 5).trim());
-                    p.setLevelId(getCellCont(sheet, i, 6));
-                    p.setLegalPerson(getCellCont(sheet, i, 7));
-                    p.setAdmin(getCellCont(sheet, i, 8));
-                    p.setPhone(getCellCont(sheet, i, 9));
-                    p.setZxy(getCellCont(sheet, i, 10).trim());
-                    p.setBerth(getCellCont(sheet,i,11));
-                    p.setProvinceName(getCellCont(sheet, i, 12).trim());
-                    p.setCityName(getCellCont(sheet, i, 13).trim());
-                    p.setDistrict(getCellCont(sheet, i, 14).trim());
-                    p.setTown(getCellCont(sheet, i, 15).trim());
-                    p.setStreet(getCellCont(sheet, i, 16));
-                    p.setTraffic(getCellCont(sheet, i ,17));
-                    p.setSettledWay(getCellCont(sheet, i ,18).trim());
-                    p.setIng(getCellCont(sheet, i, 19));
-                    p.setLat(getCellCont(sheet, i, 20));
-                    p.setTags(getCellCont(sheet, i, 21));
-                    p.setIntroduction(getCellCont(sheet, i, 22));
+                    orgMsgModel = new OrgMsgModel();
+                    orgMsgModel.setOrgCode(getCellCont(sheet, i, 0));
+                    orgMsgModel.setFullName(getCellCont(sheet, i, 1));
+                    orgMsgModel.setHosTypeId(getCellCont(sheet, i, 2).trim());
+                    orgMsgModel.setAscriptionType(getCellCont(sheet, i ,3).trim());
+                    orgMsgModel.setShortName(getCellCont(sheet, i ,4));
+                    orgMsgModel.setOrgType(getCellCont(sheet, i, 5).trim());
+                    orgMsgModel.setLevelId(getCellCont(sheet, i, 6));
+                    orgMsgModel.setLegalPerson(getCellCont(sheet, i, 7));
+                    orgMsgModel.setAdmin(getCellCont(sheet, i, 8));
+                    orgMsgModel.setPhone(getCellCont(sheet, i, 9));
+                    orgMsgModel.setZxy(getCellCont(sheet, i, 10).trim());
+                    orgMsgModel.setBerth(getCellCont(sheet,i,11));
+                    orgMsgModel.setProvinceName(getCellCont(sheet, i, 12).trim());
+                    orgMsgModel.setCityName(getCellCont(sheet, i, 13).trim());
+                    orgMsgModel.setDistrict(getCellCont(sheet, i, 14).trim());
+                    orgMsgModel.setTown(getCellCont(sheet, i, 15).trim());
+                    orgMsgModel.setStreet(getCellCont(sheet, i, 16));
+                    orgMsgModel.setTraffic(getCellCont(sheet, i ,17));
+                    orgMsgModel.setSettledWay(getCellCont(sheet, i ,18).trim());
+                    orgMsgModel.setIng(getCellCont(sheet, i, 19));
+                    orgMsgModel.setLat(getCellCont(sheet, i, 20));
+                    orgMsgModel.setTags(getCellCont(sheet, i, 21));
+                    orgMsgModel.setIntroduction(getCellCont(sheet, i, 22));
 
-                    p.setExcelSeq(j);
+                    orgMsgModel.setHosHierarchy(getCellCont(sheet, i, 23));
+                    orgMsgModel.setHosEconomic(getCellCont(sheet, i, 24));
+                    orgMsgModel.setClassification(getCellCont(sheet, i, 25));
+                    orgMsgModel.setBigClassification(getCellCont(sheet, i, 26));
+                    orgMsgModel.setNature(getCellCont(sheet, i, 27));
+                    orgMsgModel.setBranchType(getCellCont(sheet, i, 28));
+                    orgMsgModel.setDisplayStatus(getCellCont(sheet, i, 29));
 
-                    int rs = p.validate(repeat);
+                    orgMsgModel.setExcelSeq(j);
+
+                    int rs = orgMsgModel.validate(repeat);
                     if (rs == 0){
-                        errorLs.add(p);
+                        errorLs.add(orgMsgModel);
                     } else if (rs == 1){
-                        correctLs.add(p);
+                        correctLs.add(orgMsgModel);
                     }
                 }
             }
