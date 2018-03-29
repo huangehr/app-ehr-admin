@@ -45,6 +45,7 @@ service-gateway:
   username: user
   password: eureka
   url: http://172.19.103.73:10000/api/v1.0/admin
+  zuuUrl: http://172.19.103.73:10000
   stdurl: http://172.19.103.73:10000/api/v1.0/admin/std
   versionurl: http://172.19.103.73:10000/api/v1.0/admin/version
   cdatypeurl: http://172.19.103.73:10000/api/v1.0/admin/cda_type
@@ -83,6 +84,7 @@ service-gateway:
   username: user
   password: eureka
   url: http://localhost:10000/api/v1.0/admin
+  zuulUrl: http://localhost:10000
   stdurl: http://localhost:10000/api/v1.0/admin/std
   versionurl: http://localhost:10000/api/v1.0/admin/version
   cdatypeurl: http://localhost:10000/api/v1.0/admin/cda_type
@@ -116,6 +118,7 @@ service-gateway:
   username: user
   password: eureka
   url: http://172.19.103.58:10000/api/v1.0/admin
+  zuulUrl: http://172.19.103.58:10000
   stdurl: http://172.19.103.58:10000/api/v1.0/admin/std
   versionurl: http://172.19.103.58:10000/api/v1.0/admin/version
   cdatypeurl: http://172.19.103.58:10000/api/v1.0/admin/cda_type
@@ -150,6 +153,7 @@ service-gateway:
   username: user
   password: eureka
   url: http://11.1.2.21:10000/api/v1.0/admin
+  zuulUrl: http://11.1.2.21:10000
   stdurl: http://11.1.2.21:10000/api/v1.0/admin/std
   versionurl: http://11.1.2.21:10000/api/v1.0/admin/version
   cdatypeurl: http://11.1.2.21:10000/api/v1.0/admin/cda_type
@@ -185,6 +189,7 @@ service-gateway:
   username: user
   password: eureka
   url: http://11.1.2.13:10000/api/v1.0/admin
+  zuulUrl: http://11.1.2.13:10000
   stdurl: http://11.1.2.13:10000/api/v1.0/admin/std
   versionurl: http://11.1.2.13:10000/api/v1.0/admin/version
   cdatypeurl: http://11.1.2.13:10000/api/v1.0/admin/cda_type
@@ -221,6 +226,7 @@ service-gateway:
   username: user
   password: eureka
   url: http://10.176.97.10:10000/api/v1.0/admin
+  zuulUrl: http://10.176.97.10:10000
   stdurl: http://10.176.97.10:10000/api/v1.0/admin/std
   versionurl: http://10.176.97.10:10000/api/v1.0/admin/version
   cdatypeurl: http://10.176.97.10:10000/api/v1.0/admin/cda_type
@@ -256,6 +262,7 @@ service-gateway:
   username: user
   password: eureka
   url: http://100.100.1.162:10000/api/v1.0/admin
+  zuulUrl: http://100.100.1.162:10000
   stdurl: http://100.100.1.162:10000/api/v1.0/admin/std
   versionurl: http://100.100.1.162:10000/api/v1.0/admin/version
   cdatypeurl: http://100.100.1.162:10000/api/v1.0/admin/cda_type
