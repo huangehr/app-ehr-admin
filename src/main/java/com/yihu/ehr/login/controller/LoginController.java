@@ -111,6 +111,7 @@ public class LoginController extends BaseUIController {
         model.addAttribute("successFlg", true);
         model.addAttribute("clientId", clientId);
         model.addAttribute("host", host);
+        model.addAttribute("menuId", request.getParameter("menuId"));
         return "generalView";
     }
 
