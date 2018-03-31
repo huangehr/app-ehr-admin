@@ -153,5 +153,16 @@
 	.l-layout-center{left: 200px !important;border-top: 0;}
 
 	/*菜单栏风格修改*/
-	
+
+    .ifr_fixed{
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 10;
+    }
+    .l-layout-center{
+        z-index: 30;
+    }
 </style>

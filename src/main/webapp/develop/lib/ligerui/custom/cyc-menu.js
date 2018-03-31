@@ -9,6 +9,10 @@ $(function(){
     var isTrigger = false;
     var MenuId = sessionStorage.getItem("MenuId");//获取MenuId
     $.extend({MenuInit:function(obj,data){
+        var lastData = data[data.length - 1];
+        if (lastData['MenuId']) {
+            MenuId = lastData['MenuId'];
+        }
         $(obj).InitHmtl(obj,data);
     }})
     $.fn.extend({
@@ -64,6 +68,7 @@ $(function(){
         },
         clickSessionId: function () {
             var $a = [];
+            debugger
             if(MenuId){
                 $a = $("a[data-find='" + MenuId + "']");
                 if ($a.length > 0) {
