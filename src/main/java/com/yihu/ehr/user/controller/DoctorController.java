@@ -6,7 +6,6 @@ import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -32,7 +31,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yeshijie on 2017/2/13.
@@ -239,6 +241,11 @@ public class DoctorController extends BaseUIController {
                     updateDoctor.setXzzc(doctorDetailModel.getXzzc());
                     updateDoctor.setIdCardNo(doctorDetailModel.getIdCardNo());
                     updateDoctor.setRoleType(doctorDetailModel.getRoleType());
+                    updateDoctor.setJobType(doctorDetailModel.getJobType());
+                    updateDoctor.setJobLevel(doctorDetailModel.getJobLevel());
+                    updateDoctor.setJobScope(doctorDetailModel.getJobScope());
+                    updateDoctor.setJobState(doctorDetailModel.getJobState());
+                    updateDoctor.setRegisterFlag(doctorDetailModel.getRegisterFlag());
                     imageId = fileUpload(String.valueOf(doctorId), restStream, imageName);
                     if (!StringUtils.isEmpty(imageId)) {
                         updateDoctor.setPhoto(imageId);
