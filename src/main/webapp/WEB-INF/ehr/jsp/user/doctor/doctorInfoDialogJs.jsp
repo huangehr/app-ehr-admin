@@ -21,7 +21,13 @@
         var allData = ${allData};
         var doctor = allData.obj;
 
-        var roleTypeDictId = 13;
+        var jxzcDictId = 108; // 是否制证
+        var lczcDictId = 118; // 技术职称
+        var roleTypeDictId = 120; // 人员类别
+        var jobTypeDictId = 104; // 执业类别
+        var jobLevelDictId = 105; // 执业级别
+        var jobScopeDictId = 103; // 执业范围
+        var jobStateDictId = 106; // 执业状态
 
         /* ************************** 变量定义结束 **************************** */
         win.orgDeptDio = null;
@@ -58,6 +64,11 @@
             $updateDtn: $("#div_update_btn"),
             $cancelBtn: $("#div_cancel_btn"),
             $roleType:$("#inp_roleType"),
+            $jobType:$("#inp_jobType"),
+            $jobLevel:$("#inp_jobLevel"),
+            $jobScope:$("#inp_jobScope"),
+            $jobState:$("#inp_jobState"),
+            $registerFlag: $('input[name="registerFlag"]', this.$form),
             $divBtnShow: document.getElementById('divBtnShow'),
 
             init: function () {
@@ -97,12 +108,17 @@
                 this.$secondPhone.ligerTextBox({width: 240});
                 this.$familyTel.ligerTextBox({width: 240});
                 this.$officeTel.ligerTextBox({width: 240});
-                this.$jxzc.ligerTextBox({width: 240});
-                this.$lczc.ligerTextBox({width: 240});
+                this.initDDL(jxzcDictId, this.$jxzc);
+                this.initDDL(lczcDictId, this.$lczc);
                 this.$xlzc.ligerTextBox({width: 240});
                 this.$zxzc.ligerTextBox({width: 240});
                 this.$introduction.ligerTextBox({width:600,height:100 });
                 this.initDDL(roleTypeDictId, this.$roleType);
+                this.initDDL(jobTypeDictId, this.$jobType);
+                this.initDDL(jobLevelDictId, this.$jobLevel);
+                this.initDDL(jobScopeDictId, this.$jobScope);
+                this.initDDL(jobStateDictId, this.$jobState);
+                this.$registerFlag.ligerRadio();
                 this.$sex.ligerRadio();
                 $imageShow: $('#div_file_list'),
                         this.$form.attrScan();
@@ -125,7 +141,12 @@
                     lczc: doctor.lczc,
                     xlzc: doctor.xlzc,
                     xzzc: doctor.xzzc,
-                    roleType: doctor.roleType
+                    roleType: doctor.roleType,
+                    jobType: doctor.jobType,
+                    jobLevel: doctor.jobLevel,
+                    jobScope: doctor.jobScope,
+                    jobState: doctor.jobState,
+                    registerFlag: doctor.registerFlag
                 });
 
 
