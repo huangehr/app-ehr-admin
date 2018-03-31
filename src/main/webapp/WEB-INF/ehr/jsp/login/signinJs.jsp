@@ -2,6 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <script>
+    var menuId = '${menuId}';
     var clientId = '${clientId}';
     var signin = {
         $signinCon: $('#signinCon'),
@@ -28,7 +29,7 @@
                         if(data.successFlg){
 //                            var iframe = document.createElement('iframe');
                             <%--iframe.src = '${contextRoot}/index#signin';--%>
-                            location.href = '${contextRoot}/index#signin';
+                            location.href = '${contextRoot}/index?menuId=' + menuId + '#signin';
 //                            me.$signinCon.html(iframe);
                         }else{
                             me.$tipsCon.html(me.gethtml('访问失败'));
