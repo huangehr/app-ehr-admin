@@ -31,7 +31,7 @@ public class BaseUIController {
     protected String password;
     @Value("${service-gateway.url}")
     protected String comUrl;
-    @Value("${service-gateway.zuuUrl}")
+    @Value("${service-gateway.zuulUrl}")
     protected String zuul;
 
     protected static String ERR_SYSTEM_DES = "系统错误,请联系管理员!";
