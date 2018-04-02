@@ -18,7 +18,12 @@
                 obj.init(1);
             }
             function Flip(pn) {
-                obj.init(pn);
+                if(pn>Math.ceil(obj.dataCount/6)){
+                    return
+                }else {
+                    obj.init(pn);
+                }
+
             }
             function choosele(num, cur) {
                 if(num == cur) {
