@@ -93,13 +93,13 @@
                                         var rowJson = JSON.stringify(row).replace(/"/g,'&quot;');
                                         if (!row._editing)
                                         {
-                                            html += '<a class="grid_towrite" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:open",row.id,rowJson) +'"></a>';
+//                                            html += '<a class="grid_towrite" style="width:30px" title="编辑" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:open",row.id,rowJson) +'"></a>';
                                             html += '<a class="grid_detail" style="width:30px" title="详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit",row.scheduleIds,row.date,row.carId,row.main) + '">'+'</a>';
 
                                         }
                                         else
                                         {
-                                            html += '<a class="grid_hold" style="width:30px" title="保存" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:lock",row.id,rowJson) + '"></a>';
+//                                            html += '<a class="grid_hold" style="width:30px" title="保存" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "scheDetailsJs:scheInfo:lock",row.id,rowJson) + '"></a>';
                                             html += '<a class="grid_detail" style="width:30px" title="详情" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}'])", "scheDetailsJs:scheInfo:edit", row.scheduleIds,row.date,row.carId,row.main) + '"></a>';
 
                                         }
@@ -150,19 +150,19 @@
                 },
                 bindEvents:function () {
                     var self = this;
-                    $.subscribe('scheDetailsJs:scheInfo:open',function (event, id, row) {
-                        var fthisRow = JSON.parse(row);
-                        if(fthisRow.main=='true'){
-                            fthisRow.main = "主"
-                        }if(fthisRow.main=='false'){
-                            fthisRow.main = "副"
-                        }
-                        obj.grid.beginEdit(fthisRow);
-                    })
-                    $.subscribe('scheDetailsJs:scheInfo:lock',function (event, id, row) {
-                        var row = obj.grid.getSelectedRow();
-                        obj.grid.endEdit(row);
-                    })
+//                    $.subscribe('scheDetailsJs:scheInfo:open',function (event, id, row) {
+//                        var fthisRow = JSON.parse(row);
+//                        if(fthisRow.main=='true'){
+//                            fthisRow.main = "主"
+//                        }if(fthisRow.main=='false'){
+//                            fthisRow.main = "副"
+//                        }
+//                        obj.grid.beginEdit(fthisRow);
+//                    })
+//                    $.subscribe('scheDetailsJs:scheInfo:lock',function (event, id, row) {
+//                        var row = obj.grid.getSelectedRow();
+//                        obj.grid.endEdit(row);
+//                    })
                     $.subscribe('scheDetailsJs:scheInfo:edit',function (event,scheduleIds,date,carId,main) {
                         obj.detailDialog = $.ligerDialog.open({
                             height: 'auto',
