@@ -8,11 +8,29 @@
 
 <script type="text/javascript">
     $(function () {
-
+        var menuId = '${menuId}';
+        var sta = 0;
         /* ************************** 变量定义 ******************************** */
-
+        window.addEventListener("message", function (e) {
+            switch (e.data.type) {
+                case 'fullScreen':
+                    if (sta == 0) {
+                        $('.J_iframe').addClass('ifr_fixed');
+                    } else {
+                        $('.J_iframe').removeClass('ifr_fixed');
+                    }
+                    sta = sta == 0 ? 1 : 0;
+                    break;
+            }
+            window.parent.postMessage(e.data, '*');
+        }, true);
         window.GlobalEventBus = new Vue();
         var menuData = ${menuData};
+        if (menuId != '') {
+            menuData.push({
+                MenuId: menuId
+            });
+        }
         // Util工具类
         var Util = $.Util;
 
@@ -64,6 +82,7 @@
 //            $contentPage: $("#contentPage"),
             init: function () {
                 //判断是否内嵌登录
+
                 var hash = window.location.hash;
                 if(hash.indexOf("#signin")>=0)
                 {

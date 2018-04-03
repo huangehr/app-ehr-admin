@@ -54,9 +54,12 @@
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_officeTel" class=" useTitle validate-phone" data-attr-scan="officeTel"/>
 		</div>
-		<label><spring:message code="lbl.doctor.xzzc"/><spring:message code="spe.colon"/></label>
+		<label>是否制证</label>
 		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_zxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xzzc"/>
+			<div class="l-text-wrapper m-form-control f-pr0">
+				<input type="text" id="inp_jxzc" data-type="select" class="useTitle max-length-50"
+					   placeholder="请选是否制证" data-attr-scan="jxzc"/>
+			</div>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -64,13 +67,24 @@
 		<div class="l-text-wrapper m-form-control essential">
 			<input type="text" id="inp_phone" class="required useTitle ajax validate-mobile-phone"  required-title=<spring:message code="lbl.must.input"/>  validate-mobile-phone-title=<spring:message code="lbl.input.true.tel"/> data-attr-scan="phone"/>
 		</div>
+		<label>技术职称</label>
+		<div class="l-text-wrapper m-form-control">
+			<div class="l-text-wrapper m-form-control f-pr0">
+				<input type="text" id="inp_lczc" data-type="select" class="useTitle max-length-50"
+					   placeholder="请选技术职称" data-attr-scan="lczc"/>
+			</div>
+		</div>
+	</div>
+	<div class="m-form-group">
 		<label><spring:message code="lbl.doctor.secondPhone"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_secondPhone" class="useTitle validate-mobile-phone" data-attr-scan="secondPhone"/>
 		</div>
+		<label><spring:message code="lbl.doctor.xlzc"/><spring:message code="spe.colon"/></label>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_xlzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xlzc"/>
+		</div>
 	</div>
-
-
 	<div class="m-form-group">
 		<label>选择机构部门:</label>
 		<div class="l-text-wrapper m-form-control">
@@ -84,9 +98,9 @@
 		<div class="l-text-wrapper m-form-control">
 			<input type="text" id="inp_familyTel" class="useTitle validate-phone" data-attr-scan="familyTel"/>
 		</div>
-		<label><spring:message code="lbl.doctor.xlzc"/><spring:message code="spe.colon"/></label>
+		<label><spring:message code="lbl.doctor.xzzc"/><spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="inp_xlzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xlzc"/>
+			<input type="text" id="inp_zxzc" class="useTitle max-length-50 validate-special-char" data-attr-scan="xzzc"/>
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -95,6 +109,35 @@
             <input type="text" id="inp_roleType" data-type="select" class="useTitle max-length-50"
                    placeholder="请选择类别" data-attr-scan="roleType"/>
         </div>
+		<label>执业类别</label>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="inp_jobType" data-type="select" class="useTitle max-length-20"
+				   placeholder="请选择执业类别" data-attr-scan="jobType"/>
+		</div>
+	</div>
+	<div class="m-form-group">
+		<label>执业级别</label>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="inp_jobLevel" data-type="select" class="useTitle max-length-20"
+				   placeholder="请选择执业级别" data-attr-scan="jobLevel"/>
+		</div>
+		<label>执业范围</label>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="inp_jobScope" data-type="select" class="useTitle max-length-20"
+				   placeholder="请选择执业范围" data-attr-scan="jobScope"/>
+		</div>
+	</div>
+	<div class="m-form-group">
+		<label>执业状态</label>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="inp_jobState" data-type="select" class="useTitle max-length-20"
+				   placeholder="请选择执业状态" data-attr-scan="jobState"/>
+		</div>
+		<label>考试库连带注册</label>
+		<div class="u-checkbox-wrap m-form-control">
+			<input type="radio" value="0" name="registerFlag" data-attr-scan>是
+			<input type="radio" value="1" name="registerFlag" data-attr-scan>否
+		</div>
 	</div>
 	<div class="m-form-group" id="inp_introduction_div">
 		<label><spring:message code="lbl.doctor.introduction"/><spring:message code="spe.colon"/></label>
