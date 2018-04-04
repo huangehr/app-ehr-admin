@@ -92,41 +92,38 @@ public class SessionOutTimeFilter extends OncePerRequestFilter {
             try {
                 String resultStr = HttpClientUtil.doPost(authorize + validTokenUrl, params, this.username, this.password);
                 Map map = objectMapper.readValue(resultStr, Map.class);
-                if ((boolean) map.get("successFlg")) {
-                    //验证通过。赋值session中的用户信息
-                    resultStr = HttpClientUtil.doGet(comUrl + "/users/" + loginName, params, this.username, this.password);
-                    Envelop envelop = (Envelop) this.objectMapper.readValue(resultStr, Envelop.class);
-                    String ex = this.objectMapper.writeValueAsString(envelop.getObj());
-                    UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
-                    //存储基本信息
-                    UsersModel usersModel = new UsersModel();
-                    usersModel.setId(userDetailModel.getId());
-                    usersModel.setRealName(userDetailModel.getRealName());
-                    usersModel.setEmail(userDetailModel.getEmail());
-                    usersModel.setOrganizationCode(userDetailModel.getOrganization());
-                    usersModel.setTelephone(userDetailModel.getTelephone());
-                    usersModel.setLoginCode(userDetailModel.getLoginCode());
-                    usersModel.setUserType(userDetailModel.getUserType());
-                    usersModel.setActivated(userDetailModel.getActivated());
-                    usersModel.setLastLoginTime(userDetailModel.getLastLoginTime());
-                    request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, usersModel);
+                //验证通过。赋值session中的用户信息
+                resultStr = HttpClientUtil.doGet(comUrl + "/users/" + loginName, params, this.username, this.password);
+                Envelop envelop = (Envelop) this.objectMapper.readValue(resultStr, Envelop.class);
+                String ex = this.objectMapper.writeValueAsString(envelop.getObj());
+                UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+                //存储基本信息
+                UsersModel usersModel = new UsersModel();
+                usersModel.setId(userDetailModel.getId());
+                usersModel.setRealName(userDetailModel.getRealName());
+                usersModel.setEmail(userDetailModel.getEmail());
+                usersModel.setOrganizationCode(userDetailModel.getOrganization());
+                usersModel.setTelephone(userDetailModel.getTelephone());
+                usersModel.setLoginCode(userDetailModel.getLoginCode());
+                usersModel.setUserType(userDetailModel.getUserType());
+                usersModel.setActivated(userDetailModel.getActivated());
+                usersModel.setLastLoginTime(userDetailModel.getLastLoginTime());
+                request.getSession().setAttribute(SessionAttributeKeys.CurrentUser, usersModel);
 
-                    //获取用户角色信息
-                    List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
-                    Collection<GrantedAuthority> gas = new ArrayList<>();
-                    if (features != null) {
-                        for (AppFeatureModel feature : features) {
-                            if (!StringUtils.isEmpty(feature.getUrl()))
-                                gas.add(new SimpleGrantedAuthority(feature.getUrl()));
-                        }
+                //获取用户角色信息
+                List<AppFeatureModel> features = getUserFeatures(userDetailModel.getId());
+                Collection<GrantedAuthority> gas = new ArrayList<>();
+                if (features != null) {
+                    for (AppFeatureModel feature : features) {
+                        if (!StringUtils.isEmpty(feature.getUrl()))
+                            gas.add(new SimpleGrantedAuthority(feature.getUrl()));
                     }
-                    //生成认证token
-                    Authentication token = new UsernamePasswordAuthenticationToken(this.username, this.password, gas);
-                    //将信息存放到SecurityContext
-                    SecurityContextHolder.getContext().setAuthentication(token);
-                } else {
-                    //TODO 返回到错误页面
                 }
+                //生成认证token
+                Authentication token = new UsernamePasswordAuthenticationToken(this.username, this.password, gas);
+                //将信息存放到SecurityContext
+                SecurityContextHolder.getContext().setAuthentication(token);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
