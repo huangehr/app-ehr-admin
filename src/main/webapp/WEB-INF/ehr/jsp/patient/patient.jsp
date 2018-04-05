@@ -4,6 +4,15 @@
 <!--######人口管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">人口管理</div>
 <div id="div_wrapper">
+
+    <%--新增tab切换未识别档案--%>
+        <div class="f-tac f-mb20">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default active" style="width: 100px;" id="known_patient"><input type="radio" name="options" autocomplete="off" checked="">已识别居民</label>
+                <label class="btn btn-default" style="width: 100px;" id="unknow_archives"><input type="radio" name="options" autocomplete="off">未识别档案</label>
+            </div>
+        </div>
+
     <div class="m-retrieve-area f-dn f-pr  m-form-inline" data-role-form>
         <%--<input type="text" id="inp_search" placeholder="输入姓名或身份证号"/>--%>
         <div class="m-form-group">
@@ -78,7 +87,13 @@
 
     </div>
     <!--######人口信息表#结束######-->
+    <!--######未识别档案######-->
+    <div id="div_unknowarchives_info_grid" style="display: none">
+
+    </div>
+    <!--######未识别档案#结束######-->
 </div>
+
 <div id="div_user_info_dialog">
 
 </div>

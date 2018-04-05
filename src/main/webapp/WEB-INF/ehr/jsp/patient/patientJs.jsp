@@ -78,11 +78,14 @@
                     var self = this;
                 }
             };
-
             patientMaster = {
+                KnownPatientGrid:null,
+                UnknowArchivesGrid:null,
                 init: function () {
                     var self = this;
-                   grid = $("#div_patient_info_grid").ligerGrid($.LigerGridEx.config({
+                    var num=1 ;
+                    var afternum;
+                    self.KnownPatientGrid =grid = $("#div_patient_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/patient/searchPatientByParams',
                         // 传给服务器的ajax 参数
                         pageSize:20,
@@ -169,7 +172,28 @@
                             self.showUserInfo(row.idCardNo,row.userId);
                         }
                     }));
-                    grid.adjustToWidth();
+                    self.KnownPatientGrid.adjustToWidth();
+                    self.UnknowArchivesGrid = $("#div_unknowarchives_info_grid").ligerGrid($.LigerGridEx.config({
+                        url: '${contextRoot}/archiveRelation/page',
+                        parms:{
+                            size:15
+                        },
+                        columns: [
+                            {display: '档案编号', name: 'id', width: '30%',  align: 'left'},
+                            {display: '姓名', name: 'name', width: '30%', align: 'left'},
+                            {display: '性别', name: '', width: '30%',  align: 'left'},
+                            {display: '就诊卡类型', name: 'cardType', width: '30%', align: 'left'},
+                            {display: '就诊卡号码', name: 'cardNo', width: '30%', align: 'left'},
+                            {display: '手机号码', name: '', width: '30%',  align: 'left'},
+                            {display: '操作', name: 'operator', minWidth: 120, render: function (row) {
+                                var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientBroswerInfoDialog:open", row.idCardNo) + '">档案查询</a>';
+                                return html;
+                            }
+                            }
+                        ],
+                        method:'GET'
+                    }));
+                    self.UnknowArchivesGrid.adjustToWidth();
                     this.bindEvents();
                 },
                 showUserInfo: function (id,userId) {
@@ -177,7 +201,7 @@
                     wait = parent._LIGERDIALOG.waitting('正在加载中...');
                     var dialog = parent._LIGERDIALOG.open({
                         title:'居民信息详情',
-                        height: 625,
+                        height: 630,
                         width: 600,
                         url: '${contextRoot}/patient/patientDialogType',
                         load: true,
@@ -202,7 +226,7 @@
                 },*/
                 reloadGrid: function () {
                     //var values = retrieve.$element.Fields.getValues();
-                    debugger
+
                     patientRetrieve.$element.attrScan();
                     var homeAddress = patientRetrieve.$element.Fields.homeAddress.getValue();
                     var values = $.extend({},patientRetrieve.$element.Fields.getValues(),
@@ -218,7 +242,22 @@
                         grid.options.newPage = 1;
                         patientMaster.reloadGrid();
                     });
-
+//                    点击tab 切换表格
+                    $(".btn-group").on("click",".btn",function() {
+                        var index = $(this).index();
+                        $(".btn-group").find(".btn").removeClass("active");
+                        $(this).addClass("active");
+                        if(index==0){
+                            patientRetrieve.$element.show();
+                            $("#div_patient_info_grid").show();
+                            $("#div_unknowarchives_info_grid").hide();
+                        }else {
+                            patientRetrieve.$element.hide();
+                            $("#div_patient_info_grid").hide();
+                            $("#div_unknowarchives_info_grid").show();
+                            self.UnknowArchivesGrid.reload();
+                        }
+                    });
                     //新增人口信息
                     patientRetrieve.$newPatient.click(function(){
                         var wait =  parent._LIGERDIALOG.waitting("正在加载...");
