@@ -41,6 +41,7 @@ public class ArchiveRelationController extends BaseUIController {
             }
             String url = "/basic/api/v1.0/archiveRelation";
             //String url = "/basic/api/v1.0/patientArchive/getArRelationList";
+            params.put("sorts", "-relationDate");
             params.put("page", page);
             params.put("size", size);
             String envelopStr = HttpClientUtil.doGet(zuul + url, params, username, password);
