@@ -297,7 +297,7 @@ service-gateway:
   username: user
   password: eureka
   url: http://192.168.220.84:10000/api/v1.0/admin
-  zuulUrl: http://192.168.220.84:10001
+  zuulUrl: http://192.168.220.84:10000
   stdurl: http://192.168.220.84:10000/api/v1.0/admin/std
   versionurl: http://192.168.220.84:10000/api/v1.0/admin/version
   cdatypeurl: http://192.168.220.84:10000/api/v1.0/admin/cda_type
