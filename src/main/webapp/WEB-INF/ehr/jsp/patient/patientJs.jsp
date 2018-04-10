@@ -178,13 +178,14 @@
                         parms:{
                             size:15
                         },
+                        width:'97%',
                         columns: [
-                            {display: '档案编号', name: 'id', width: '30%',  align: 'left'},
-                            {display: '姓名', name: 'name', width: '30%', align: 'left'},
-                            {display: '性别', name: '', width: '30%',  align: 'left'},
-                            {display: '就诊卡类型', name: 'cardType', width: '30%', align: 'left'},
-                            {display: '就诊卡号码', name: 'cardNo', width: '30%', align: 'left'},
-                            {display: '手机号码', name: '', width: '30%',  align: 'left'},
+                            {display: '档案编号', name: 'id', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '姓名', name: 'name', width: '10%',isAllowHide: false, align: 'left'},
+                            {display: '性别', name: '', width: '5%', isAllowHide: false, align: 'left'},
+                            {display: '就诊卡类型', name: 'cardType', width: '20%',isAllowHide: false, align: 'left'},
+                            {display: '就诊卡号码', name: 'cardNo', width: '20%',isAllowHide: false, align: 'left'},
+                            {display: '手机号码', name: '', width: '10%',  isAllowHide: false,align: 'left'},
                             {display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                 var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientBroswerInfoDialog:open", row.idCardNo) + '">档案查询</a>';
                                 return html;
@@ -251,6 +252,7 @@
                             patientRetrieve.$element.show();
                             $("#div_patient_info_grid").show();
                             $("#div_unknowarchives_info_grid").hide();
+                            self.KnownPatientGrid.reload();
                         }else {
                             patientRetrieve.$element.hide();
                             $("#div_patient_info_grid").hide();
