@@ -111,6 +111,7 @@ public class LoginController extends BaseUIController {
         model.addAttribute("successFlg", true);
         model.addAttribute("clientId", clientId);
         model.addAttribute("host", host);
+        model.addAttribute("menuId", request.getParameter("menuId"));
         return "generalView";
     }
 
@@ -155,61 +156,55 @@ public class LoginController extends BaseUIController {
             }
             params.put("accessToken", token);
             String response = HttpClientUtil.doPost(authorize + "/oauth/validToken", params);
-            Map<String, Object> map = objectMapper.readValue(response, Map.class);
-            if ((Boolean) map.get("successFlg")) {
-                AccessToken accessToken = objectMapper.readValue(response, AccessToken.class);
-                String loginName = accessToken.getUser();
-                //验证通过。赋值session中的用户信息
-                String userInfo = HttpClientUtil.doGet(comUrl + "/users/" + loginName, params);
-                Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
-                String ex = this.objectMapper.writeValueAsString(envelop.getObj());
-                UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
-                //存储基本信息
-                UsersModel usersModel = new UsersModel();
-                usersModel.setId(userDetailModel.getId());
-                usersModel.setRealName(userDetailModel.getRealName());
-                usersModel.setEmail(userDetailModel.getEmail());
-                usersModel.setOrganizationCode(userDetailModel.getOrganization());
-                usersModel.setTelephone(userDetailModel.getTelephone());
-                usersModel.setLoginCode(userDetailModel.getLoginCode());
-                usersModel.setUserType(userDetailModel.getUserType());
-                usersModel.setActivated(userDetailModel.getActivated());
-                usersModel.setLastLoginTime(userDetailModel.getLastLoginTime());
-                // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
-                model.addAttribute(SessionAttributeKeys.CurrentUser, usersModel);
-                HttpSession session = request.getSession();
-                //增加超级管理员信息
-                if(loginName.equals(permissionsInfo)) {
-                    session.setAttribute(AuthorityKey.IsAccessAll, true);
-                }else {
-                    session.setAttribute(AuthorityKey.IsAccessAll, false);
-                }
-                session.setAttribute("isLogin", true);
-                session.setAttribute("token", accessToken);
-                session.setAttribute("loginName", loginName);
-                session.setAttribute("userId", usersModel.getId());
-                session.setAttribute("clientId", clientId);
-                //获取用户的角色，机构，视图 等权限
-                initUserRolePermissions(usersModel.getId(), loginName, request);
-                //获取用户角色信息
-                List<AppFeatureModel> features = getUserFeatures(usersModel.getId());
-                Collection<GrantedAuthority> gas = new ArrayList<>();
-                if (features != null) {
-                    for (AppFeatureModel feature : features) {
-                        if (!StringUtils.isEmpty(feature.getUrl()))
-                            gas.add(new SimpleGrantedAuthority(feature.getUrl()));
-                    }
-                }
-                //生成认证token
-                //Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(loginName, userDetailModel.getPassword(), gas);
-                //将信息存放到SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                return success(accessToken);
-            } else {
-                String msg = String.valueOf(map.get("message"));
-                return failed(msg);
+            AccessToken accessToken = objectMapper.readValue(response, AccessToken.class);
+            String loginName = accessToken.getUser();
+            //验证通过。赋值session中的用户信息
+            String userInfo = HttpClientUtil.doGet(comUrl + "/users/" + loginName, params);
+            Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
+            String ex = this.objectMapper.writeValueAsString(envelop.getObj());
+            UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
+            //存储基本信息
+            UsersModel usersModel = new UsersModel();
+            usersModel.setId(userDetailModel.getId());
+            usersModel.setRealName(userDetailModel.getRealName());
+            usersModel.setEmail(userDetailModel.getEmail());
+            usersModel.setOrganizationCode(userDetailModel.getOrganization());
+            usersModel.setTelephone(userDetailModel.getTelephone());
+            usersModel.setLoginCode(userDetailModel.getLoginCode());
+            usersModel.setUserType(userDetailModel.getUserType());
+            usersModel.setActivated(userDetailModel.getActivated());
+            usersModel.setLastLoginTime(userDetailModel.getLastLoginTime());
+            // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
+            model.addAttribute(SessionAttributeKeys.CurrentUser, usersModel);
+            HttpSession session = request.getSession();
+            //增加超级管理员信息
+            if(loginName.equals(permissionsInfo)) {
+                session.setAttribute(AuthorityKey.IsAccessAll, true);
+            }else {
+                session.setAttribute(AuthorityKey.IsAccessAll, false);
             }
+            session.setAttribute("isLogin", true);
+            session.setAttribute("token", accessToken);
+            session.setAttribute("loginName", loginName);
+            session.setAttribute("userId", usersModel.getId());
+            session.setAttribute("clientId", clientId);
+            //获取用户的角色，机构，视图 等权限
+            initUserRolePermissions(usersModel.getId(), loginName, request);
+            //获取用户角色信息
+            List<AppFeatureModel> features = getUserFeatures(usersModel.getId());
+            Collection<GrantedAuthority> gas = new ArrayList<>();
+            if (features != null) {
+                for (AppFeatureModel feature : features) {
+                    if (!StringUtils.isEmpty(feature.getUrl()))
+                        gas.add(new SimpleGrantedAuthority(feature.getUrl()));
+                }
+            }
+            //生成认证token
+            //Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(loginName, userDetailModel.getPassword(), gas);
+            //将信息存放到SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return success(accessToken);
         } catch (Exception e) {
             return failed(e.getMessage());
         }
@@ -320,24 +315,23 @@ public class LoginController extends BaseUIController {
      */
     @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Envelop check(String idCardNo,String loginCode, HttpServletRequest request) {
-        initUrlInfo(loginCode,request);
-        Envelop envelop = new Envelop();
+    public Envelop check (String idCardNo,String loginCode, HttpServletRequest request) {
+        initUrlInfo(loginCode, request);
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("demographic_id", idCardNo);
         paramsMap.put("version", stdVersion);
         String url2 =  "/profile/baseInfo";
         try {
             String result = HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
-            if (StringUtils.isEmpty(result)) {
-                return envelop;
+            Map<String, Object> resultMap = objectMapper.readValue(result, Map.class);
+            if (resultMap != null && resultMap.size() > 0) {
+                return success(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return envelop;
+            return failed(e.getMessage());
         }
-        envelop.setSuccessFlg(true);
-        return envelop;
+        return failed("该居民暂无档案信息");
     }
 
     @RequestMapping(value = "/broswerSignin", method = RequestMethod.GET)

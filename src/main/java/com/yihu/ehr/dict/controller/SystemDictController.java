@@ -7,6 +7,8 @@ import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ import java.util.Map;
 @Controller
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
 public class SystemDictController extends BaseUIController {
+
     @Value("${service-gateway.username}")
     private String username;
     @Value("${service-gateway.password}")
@@ -43,100 +46,77 @@ public class SystemDictController extends BaseUIController {
 
     @RequestMapping("/createDict")
     @ResponseBody
-    public Object createDict(String name, String reference, String userId) {
-
+    public Envelop createDict(String name, String reference, String userId) {
         Map<String, Object> params = new HashMap<>();
-        Envelop result = new Envelop();
-        String resultStr = "";
-
-        if(StringUtils.isEmpty(name)){
-            result.setSuccessFlg(false);
-            result.setErrorMsg("字典名字不能为空");
-            return result;
+        if (StringUtils.isEmpty(name)){
+            return failed("字典名称不能为空");
         }
-        SystemDictModel systemDictModel= new SystemDictModel();
+        SystemDictModel systemDictModel = new SystemDictModel();
         systemDictModel.setName(name);
         systemDictModel.setAuthorId("System");
-        params.put("dictionary",toJson(systemDictModel));
-
-        try{
-            String urlCheck = "/dictionaries/existence";
+        params.put("dictionary", toJson(systemDictModel));
+        try {
+            String urlCheck = "/basic/api/v1.0/dictionaries/existence";
             Map<String, Object> paramsCheck = new HashMap<>();
             paramsCheck.put("dict_name",name);
-            String resultCheckStr = HttpClientUtil.doGet(comUrl + urlCheck, paramsCheck, username, password);
-
-            if(Boolean.parseBoolean(resultCheckStr)){
-                result.setSuccessFlg(false);
-                result.setErrorMsg("字典名字在系统中已存在。");
-                return result;
+            String resultCheckStr = HttpClientUtil.doGet(zuul + urlCheck, paramsCheck, username, password);
+            boolean exists = Boolean.valueOf(resultCheckStr);
+            if (exists) {
+                return failed("字典名字在系统中已存在");
             }
-
-            String url = "/dictionaries";
-            resultStr = HttpClientUtil.doPost(comUrl+url,params,username,password);
-            return resultStr;
-
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return failed(ERR_SYSTEM_DES);
-        }
-    }
-
-    @RequestMapping("deleteDict")
-    @ResponseBody
-    public Object deleteDict(long dictId) {
-
-        Envelop result = new Envelop();
-        String resultStr = "";
-
-        try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("dictId",dictId);
-
-            String url ="/dictionaries/" + dictId;
-            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
-            return resultStr;
-
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return failed(ERR_SYSTEM_DES);
-        }
-    }
-
-    @RequestMapping("updateDict")
-    @ResponseBody
-    public Object updateDict(long dictId, String name) {
-
-        Map<String, Object> params = new HashMap<>();
-        Envelop result = new Envelop();
-        String resultStr = "";
-
-        if (StringUtils.isEmpty(name)) {
-            result.setSuccessFlg(false);
-            result.setErrorMsg("字典名字不能为空！");
-            return result;
-        }
-
-        try {
-            String urlGetDict = "/dictionaries/" + dictId;
-            Map<String, Object> dictParams = new HashMap<>();
-            dictParams.put("id",dictId);
-            String dictResultStr = HttpClientUtil.doGet(comUrl + urlGetDict, dictParams, username, password);
-            result = getEnvelop(dictResultStr);
-
-            if(result.isSuccessFlg()){
-                SystemDictModel systemDictModel = getEnvelopModel(result.getObj(),SystemDictModel.class);
-                systemDictModel.setName(name);
-                params.put("dictionary",toJson(systemDictModel));
-
-                String urlCheckDict = "/dictionaries";
-                resultStr = HttpClientUtil.doPut(comUrl + urlCheckDict, params, username, password);
-                return resultStr;
+            String url = "/basic/api/v1.0/dictionaries";
+            HttpResponse resultStr = HttpUtils.doJsonPost(zuul + url, toJson(systemDictModel), null, username, password);
+            if (resultStr.isSuccessFlg()) {
+                return toModel(resultStr.getContent(), Envelop.class);
+            } else {
+                return failed(resultStr.getContent());
             }
         } catch (Exception ex){
             ex.printStackTrace();
-            return failed(ERR_SYSTEM_DES);
+            return failed(ex.getMessage());
         }
-        return result;
+    }
+
+    @RequestMapping("/deleteDict")
+    @ResponseBody
+    public Envelop deleteDict(long dictId) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("dictId", dictId);
+            String url ="/basic/api/v1.0/dictionaries/" + dictId;
+            String resultStr = HttpClientUtil.doDelete(zuul + url, params, username, password);
+            boolean success = Boolean.valueOf(resultStr);
+            if (success) {
+                return success(true);
+            }
+            return failed("删除失败");
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ex.getMessage());
+        }
+    }
+
+    @RequestMapping("/updateDict")
+    @ResponseBody
+    public Envelop updateDict(long dictId, String name) {
+        if (StringUtils.isEmpty(name)) {
+            return failed("字典名称不能为空");
+        }
+        try {
+            Map<String, Object> dictParams = new HashMap<>();
+            dictParams.put("id", dictId);
+            dictParams.put("name", name);
+            String url = "/basic/api/v1.0/dictionaries";
+            HttpResponse httpResponse = HttpUtils.doJsonPut(zuul + url, toJson(dictParams), null, username, password);
+            if (httpResponse.isSuccessFlg()) {
+                return toModel(httpResponse.getContent(), Envelop.class);
+            } else {
+                return failed(httpResponse.getContent());
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ex.getMessage());
+        }
     }
 
     @RequestMapping("searchSysDicts")

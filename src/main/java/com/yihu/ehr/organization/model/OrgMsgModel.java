@@ -13,7 +13,7 @@ import java.util.*;
  * Created by zdm on 2017/10/19
  */
 @Row(start = 1)
-@Title(names= "{'机构代码', '机构全名','医院类型', '医院归属', '机构简称', '机构类型', '医院等级', '医院法人', '联系人', '联系方式', '中西医标识', '床位', '机构地址', '交通路线', '入驻方式', '经度', '纬度', '标签', '医院简介'}")
+@Title(names= "{'机构代码', '机构全名','医院类型', '医院归属', '机构简称', '机构类型', '医院等级', '医院法人', '联系人', '联系方式', '中西医标识', '床位', '机构地址', '交通路线', '入驻方式', '经度', '纬度', '标签', '医院简介','医院等次','经济类型代码','卫生机构分类','卫生机构大分类','机构性质1','机构性质Ⅱ','是否开放显示','健康之路机构id'}")
 public class OrgMsgModel extends ExcelUtil implements Validation {
     @Location(x=0)
     @ValidRepeat
@@ -70,6 +70,22 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
 
     private boolean isAdDivisionExist;//判断是否存在最小行政区域
     private Integer administrativeDivision;//最小行政区域id
+
+    private String hosHierarchy;//医院等次 ：1：特等、2：甲等、3：乙等、4：丙等、9：未评
+
+    private String hosEconomic;//经济类型代码 与 资源字典对应
+
+    private String classification;//卫生机构分类，值参考系统字典卫生机构分类
+
+    private String bigClassification;//卫生机构大分类，值参考系统字典卫生机构大分类
+
+    private String nature;//机构性质1，1公立、2民营
+
+    private String branchType;//机构性质Ⅱ，1总院、2分院
+
+    private String displayStatus;//与总部同步数据补充字段是否开放显示：0：不显示 1:显示
+
+    private String jkzlOrgId;//总部机构id-同步数据使用
 
     public String getAscriptionType() {
         return ascriptionType;
@@ -306,5 +322,69 @@ public class OrgMsgModel extends ExcelUtil implements Validation {
 
     public void setAdministrativeDivision(Integer administrativeDivision) {
         this.administrativeDivision = administrativeDivision;
+    }
+
+    public String getHosHierarchy() {
+        return hosHierarchy;
+    }
+
+    public void setHosHierarchy(String hosHierarchy) {
+        this.hosHierarchy = hosHierarchy;
+    }
+
+    public String getHosEconomic() {
+        return hosEconomic;
+    }
+
+    public void setHosEconomic(String hosEconomic) {
+        this.hosEconomic = hosEconomic;
+    }
+
+    public String getClassification() {
+        return classification;
+    }
+
+    public void setClassification(String classification) {
+        this.classification = classification;
+    }
+
+    public String getBigClassification() {
+        return bigClassification;
+    }
+
+    public void setBigClassification(String bigClassification) {
+        this.bigClassification = bigClassification;
+    }
+
+    public String getNature() {
+        return nature;
+    }
+
+    public void setNature(String nature) {
+        this.nature = nature;
+    }
+
+    public String getBranchType() {
+        return branchType;
+    }
+
+    public void setBranchType(String branchType) {
+        this.branchType = branchType;
+    }
+
+    public String getDisplayStatus() {
+        return displayStatus;
+    }
+
+    public void setDisplayStatus(String displayStatus) {
+        this.displayStatus = displayStatus;
+    }
+
+    public String getJkzlOrgId() {
+        return jkzlOrgId;
+    }
+
+    public void setJkzlOrgId(String jkzlOrgId) {
+        this.jkzlOrgId = jkzlOrgId;
     }
 }

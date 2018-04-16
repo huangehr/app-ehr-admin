@@ -59,6 +59,7 @@ public class IndexController extends BaseUIController {
         model.addAttribute("menuData", menuData);
         model.addAttribute("contentPage", "login/empty");
         model.addAttribute("successFlg", true);
+        model.addAttribute("menuId", request.getParameter("menuId"));
         return "frameView";
     }
 }

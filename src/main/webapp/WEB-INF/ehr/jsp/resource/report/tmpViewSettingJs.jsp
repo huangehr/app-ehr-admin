@@ -456,8 +456,10 @@
                             if (seriesItemstyle && seriesItemstyle != '') {
                                 _.each(option['series'], function (o, k) {
                                     var si = JSON.parse(seriesItemstyle);
-                                    if (si.normal.label.formatter.indexOf('function')== 0) {
-                                        si.normal.label.formatter = Function('return ' + si.normal.label.formatter)();
+                                    if (si.normal.label) {
+                                        if (si.normal.label.formatter.indexOf('function')== 0) {
+                                            si.normal.label.formatter = Function('return ' + si.normal.label.formatter)();
+                                        }
                                     }
                                     option['series'][k]['itemStyle'] = si;
                                 });

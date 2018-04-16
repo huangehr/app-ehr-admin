@@ -19,7 +19,13 @@ debugger
         var source;
 		var trees;
 
-		var roleTypeDictId = 13;
+		var jxzcDictId = 108; // 是否制证
+		var lczcDictId = 118; // 技术职称
+		var roleTypeDictId = 120; // 人员类别
+		var jobTypeDictId = 104; // 执业类别
+		var jobLevelDictId = 105; // 执业级别
+		var jobScopeDictId = 103; // 执业范围
+		var jobStateDictId = 106; // 执业状态
         var orgId = "";
         var orgSelectedValue = "";
         var deptSelectedValue = "";
@@ -65,6 +71,11 @@ debugger
             $xlzc:$("#inp_xlzc"),
             $zxzc:$("#inp_zxzc"),
             $roleType:$("#inp_roleType"),
+            $jobType:$("#inp_jobType"),
+            $jobLevel:$("#inp_jobLevel"),
+            $jobScope:$("#inp_jobScope"),
+            $jobState:$("#inp_jobState"),
+            $registerFlag: $('input[name="registerFlag"]', this.$form),
             $divBtnShow: document.getElementById('divBtnShow'),
 //            $org:$("#inp_org"),
 //            $dept:$("#inp_dept"),
@@ -72,6 +83,7 @@ debugger
             init: function () {
                 var self = this;
                 self.$sex.eq(0).attr("checked", 'true');
+                self.$registerFlag.eq(0).attr("checked", 'true');
                 self.initForm();
                 self.bindEvents();
                 self.$uploader.instance = self.$uploader.webupload({
@@ -104,8 +116,8 @@ debugger
                 me.$secondPhone.ligerTextBox({width: 240});
                 me.$familyTel.ligerTextBox({width: 240});
                 me.$officeTel.ligerTextBox({width: 240});
-                me.$jxzc.ligerTextBox({width: 240});
-                me.$lczc.ligerTextBox({width: 240});
+                me.initDDL(jxzcDictId, this.$jxzc);
+                me.initDDL(lczcDictId, this.$lczc);
                 me.$xlzc.ligerTextBox({width: 240});
                 me.$zxzc.ligerTextBox({width: 240});
                 <%--me.$org.customCombo('${contextRoot}/organization/searchOrgs',{},null,null,null,{--%>
@@ -150,6 +162,11 @@ debugger
                 <%--});--%>
                 me.$introduction.ligerTextBox({width:600,height:100 });
                 me.initDDL(roleTypeDictId, this.$roleType);
+                me.initDDL(jobTypeDictId, this.$jobType);
+                me.initDDL(jobLevelDictId, this.$jobLevel);
+                me.initDDL(jobScopeDictId, this.$jobScope);
+                me.initDDL(jobStateDictId, this.$jobState);
+                me.$registerFlag.ligerRadio();
                 me.$sex.ligerRadio();
                 me.$form.attrScan();
             },

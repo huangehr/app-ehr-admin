@@ -87,25 +87,15 @@ public class QuotaCategoryController extends BaseUIController {
     @RequestMapping("deleteQuotaCategory")
     @ResponseBody
     public Object deleteQuotaCategory(Integer id) {
-        String url = "/quotaCategory/delete";
-        String resultStr = "";
-        Envelop result = new Envelop();
+        String url = "/basic/api/v1.0/quotaCategory/delete";
         Map<String, Object> params = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-
         params.put("id", id);
         try {
-            resultStr = HttpClientUtil.doDelete(comUrl + url, params, username, password);
-            if ("true".equals(resultStr)) {
-                result.setSuccessFlg(true);
-            } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("删除失败");
-            }
-            return result;
+            String resultStr = HttpClientUtil.doDelete(zuul + url, params, username, password);
+            return resultStr;
         } catch (Exception e) {
             e.printStackTrace();
-            return failed(ERR_SYSTEM_DES);
+            return failed(e.getMessage());
         }
     }
 

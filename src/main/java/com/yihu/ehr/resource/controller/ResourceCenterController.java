@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/resourceCenter")
-public class ResourceCenterStatisticsController extends BaseUIController{
+public class ResourceCenterController extends BaseUIController{
 
+    // ------------------------------- 统计相关 start ------------------------------------
     /**
      * 顶部栏 - 居民建档数
      * @return
@@ -29,7 +30,7 @@ public class ResourceCenterStatisticsController extends BaseUIController{
             String resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
             envelop = toModel(resultStr, Envelop.class);
             return envelop;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());
@@ -407,12 +408,96 @@ public class ResourceCenterStatisticsController extends BaseUIController{
             String resultStr = HttpClientUtil.doGet(comUrl + url, username, password);
             envelop = toModel(resultStr, Envelop.class);
             return envelop;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
     }
+    // ------------------------------- 统计相关 end ------------------------------------
+
+    // ------------------------------- 大数据展示相关 start ------------------------------------
+    /**
+     * 成果展示
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/achievements")
+    public Envelop achievements() {
+        Envelop envelop = new Envelop();
+        String url = "/resource/api/v1.0/resource/center/achievements";
+        try {
+            String resultStr = HttpClientUtil.doGet(zuul + url, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+            return envelop;
+        } catch (Exception e) {
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    /**
+     * 可视化
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/visualization")
+    public Envelop visualization() {
+        Envelop envelop = new Envelop();
+        String url = "/resource/api/v1.0/resource/center/visualization";
+        try {
+            String resultStr = HttpClientUtil.doGet(zuul + url, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+            return envelop;
+        } catch (Exception e) {
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    /**
+     * 数据分析
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/dataAnalysis")
+    public Envelop dataAnalysis() {
+        Envelop envelop = new Envelop();
+        String url = "/resource/api/v1.0/resource/center/dataAnalysis";
+        try {
+            String resultStr = HttpClientUtil.doGet(zuul + url, username, password);
+            envelop = toModel(resultStr, Envelop.class);
+            return envelop;
+        } catch (Exception e) {
+            e.printStackTrace();
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    /**
+     * 分级管理
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/hierarchicalManagement")
+    public Envelop hierarchicalManagement() {
+        String url = "/resource/api/v1.0/resource/center/hierarchicalManagement";
+        try {
+            String resultStr = HttpClientUtil.doGet(zuul + url, username, password);
+            Envelop envelop = toModel(resultStr, Envelop.class);
+            return envelop;
+        } catch (Exception e) {
+            return failed(e.getMessage());
+        }
+    }
+
+    // ------------------------------- 大数据展示相关 end ------------------------------------
 
 }
