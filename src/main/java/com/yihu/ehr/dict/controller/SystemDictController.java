@@ -59,13 +59,13 @@ public class SystemDictController extends BaseUIController {
             String urlCheck = "/basic/api/v1.0/dictionaries/existence";
             Map<String, Object> paramsCheck = new HashMap<>();
             paramsCheck.put("dict_name",name);
-            String resultCheckStr = HttpClientUtil.doGet(zuul + urlCheck, paramsCheck, username, password);
+            String resultCheckStr = HttpClientUtil.doGet(adminInnerUrl + urlCheck, paramsCheck, username, password);
             boolean exists = Boolean.valueOf(resultCheckStr);
             if (exists) {
                 return failed("字典名字在系统中已存在");
             }
             String url = "/basic/api/v1.0/dictionaries";
-            HttpResponse resultStr = HttpUtils.doJsonPost(zuul + url, toJson(systemDictModel), null, username, password);
+            HttpResponse resultStr = HttpUtils.doJsonPost(adminInnerUrl + url, toJson(systemDictModel), null, username, password);
             if (resultStr.isSuccessFlg()) {
                 return toModel(resultStr.getContent(), Envelop.class);
             } else {
@@ -84,7 +84,7 @@ public class SystemDictController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             params.put("dictId", dictId);
             String url ="/basic/api/v1.0/dictionaries/" + dictId;
-            String resultStr = HttpClientUtil.doDelete(zuul + url, params, username, password);
+            String resultStr = HttpClientUtil.doDelete(adminInnerUrl + url, params, username, password);
             boolean success = Boolean.valueOf(resultStr);
             if (success) {
                 return success(true);
@@ -107,7 +107,7 @@ public class SystemDictController extends BaseUIController {
             dictParams.put("id", dictId);
             dictParams.put("name", name);
             String url = "/basic/api/v1.0/dictionaries";
-            HttpResponse httpResponse = HttpUtils.doJsonPut(zuul + url, toJson(dictParams), null, username, password);
+            HttpResponse httpResponse = HttpUtils.doJsonPut(adminInnerUrl + url, toJson(dictParams), null, username, password);
             if (httpResponse.isSuccessFlg()) {
                 return toModel(httpResponse.getContent(), Envelop.class);
             } else {

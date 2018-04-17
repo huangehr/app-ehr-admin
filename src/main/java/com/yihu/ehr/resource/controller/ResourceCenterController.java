@@ -428,7 +428,7 @@ public class ResourceCenterController extends BaseUIController{
         Envelop envelop = new Envelop();
         String url = "/resource/api/v1.0/resource/center/achievements";
         try {
-            String resultStr = HttpClientUtil.doGet(zuul + url, username, password);
+            String resultStr = HttpClientUtil.doGet(adminInnerUrl + url, username, password);
             envelop = toModel(resultStr, Envelop.class);
             return envelop;
         } catch (Exception e) {
@@ -449,7 +449,7 @@ public class ResourceCenterController extends BaseUIController{
         Envelop envelop = new Envelop();
         String url = "/resource/api/v1.0/resource/center/visualization";
         try {
-            String resultStr = HttpClientUtil.doGet(zuul + url, username, password);
+            String resultStr = HttpClientUtil.doGet(adminInnerUrl + url, username, password);
             envelop = toModel(resultStr, Envelop.class);
             return envelop;
         } catch (Exception e) {
@@ -470,7 +470,7 @@ public class ResourceCenterController extends BaseUIController{
         Envelop envelop = new Envelop();
         String url = "/resource/api/v1.0/resource/center/dataAnalysis";
         try {
-            String resultStr = HttpClientUtil.doGet(zuul + url, username, password);
+            String resultStr = HttpClientUtil.doGet(adminInnerUrl + url, username, password);
             envelop = toModel(resultStr, Envelop.class);
             return envelop;
         } catch (Exception e) {
@@ -490,7 +490,7 @@ public class ResourceCenterController extends BaseUIController{
     public Envelop hierarchicalManagement() {
         String url = "/resource/api/v1.0/resource/center/hierarchicalManagement";
         try {
-            String resultStr = HttpClientUtil.doGet(zuul + url, username, password);
+            String resultStr = HttpClientUtil.doGet(adminInnerUrl + url, username, password);
             Envelop envelop = toModel(resultStr, Envelop.class);
             return envelop;
         } catch (Exception e) {
