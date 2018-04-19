@@ -10,22 +10,20 @@ import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.AgAdminConstants;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.model.common.ObjectResult;
 import com.yihu.ehr.model.geography.MGeographyDict;
 import com.yihu.ehr.model.org.MOrganization;
-import com.yihu.ehr.model.resource.MRsRolesResource;
-import com.yihu.ehr.model.user.MRoles;
-import com.yihu.ehr.util.DateTimeUtils;
+import com.yihu.ehr.model.user.EhrUserSimple;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.datetime.DateTimeUtil;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
+import com.yihu.ehr.util.http.IPInfoUtils;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,9 +31,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,43 +50,6 @@ import java.util.*;
 @SessionAttributes(SessionAttributeKeys.CurrentUser)
 public class LoginController extends BaseUIController {
 
-    private final long a1 = getIpNum("10.0.0.0");
-    private final long a2 = getIpNum("10.255.255.255");
-    private final long b1 = getIpNum("172.16.0.0");
-    private final long b2 = getIpNum("172.31.255.255");
-    private final long c1 = getIpNum("192.168.0.0");
-    private final long c2 = getIpNum("192.168.255.255");
-    private final long d1 = getIpNum("10.44.0.0");
-    private final long d2 = getIpNum("10.69.0.255");
-
-    @Value("${service-gateway.username}")
-    private String username;
-    @Value("${service-gateway.password}")
-    private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
-    @Value("${service-gateway.browseClientUrl}")
-    private String browseClientUrl;
-    @Value("${service-gateway.browseClientOutSizeUrl}")
-    private String browseClientOutSizeUrl;
-    @Value("${service-gateway.profileurl}")
-    private String profileurl;
-    @Value("${app.oauth2InnerUrl}")
-    private String authorize;
-    @Value("${app.oauth2OuterUrl}")
-    private String oauth2OutSize;
-    @Value("${app.baseClientId}")
-    private String baseClientId;
-    @Value("${app.qcReportClientId}")
-    private String qcReportClientId;
-    @Value("${app.resourceBrowseClientId}")
-    private String resourceBrowseClientId;
-    @Value("${app.browseClientId}")
-    public String browseClientId;
-    @Value("${std.version}")
-    public String stdVersion;
-    @Value("${permissions.info}")
-    private String permissionsInfo;
 
     @RequestMapping()
     public String login(Model model) {
@@ -144,165 +102,169 @@ public class LoginController extends BaseUIController {
     public Envelop autoLogin(HttpServletRequest request, Model model,
                              @RequestParam String token,
                              @RequestParam(name = "isQcReport", required = false) String isQcReport) throws Exception {
-        try {
-            String clientId = request.getParameter("clientId").toString();
-            Map<String, Object> params = new HashMap<>();
-            if ("1".equals(isQcReport)) { // 质控报告-oauth2验证集成
-                params.put("clientId", qcReportClientId);
-            } else if ("2".equals(isQcReport)) { // 资源视图-oauth2验证集成
-                params.put("clientId", resourceBrowseClientId);
-            } else {
-                params.put("clientId", clientId);
-            }
-            params.put("accessToken", token);
-            String response = HttpClientUtil.doPost(authorize + "/oauth/validToken", params);
-            AccessToken accessToken = objectMapper.readValue(response, AccessToken.class);
-            String loginName = accessToken.getUser();
-            //验证通过。赋值session中的用户信息
-            String userInfo = HttpClientUtil.doGet(comUrl + "/users/" + loginName, params);
-            Envelop envelop = (Envelop) this.objectMapper.readValue(userInfo, Envelop.class);
-            String ex = this.objectMapper.writeValueAsString(envelop.getObj());
-            UserDetailModel userDetailModel = this.objectMapper.readValue(ex, UserDetailModel.class);
-            //存储基本信息
-            UsersModel usersModel = new UsersModel();
-            usersModel.setId(userDetailModel.getId());
-            usersModel.setRealName(userDetailModel.getRealName());
-            usersModel.setEmail(userDetailModel.getEmail());
-            usersModel.setOrganizationCode(userDetailModel.getOrganization());
-            usersModel.setTelephone(userDetailModel.getTelephone());
-            usersModel.setLoginCode(userDetailModel.getLoginCode());
-            usersModel.setUserType(userDetailModel.getUserType());
-            usersModel.setActivated(userDetailModel.getActivated());
+        String clientId = request.getParameter("clientId").toString();
+        Map<String, Object> params = new HashMap<>();
+        if ("1".equals(isQcReport)) { // 质控报告-oauth2验证集成
+            params.put("clientId", qcReportClientId);
+        } else if ("2".equals(isQcReport)) { // 资源视图-oauth2验证集成
+            params.put("clientId", resourceBrowseClientId);
+        } else {
+            params.put("clientId", clientId);
+        }
+        params.put("accessToken", token);
+        String response = HttpClientUtil.doPost(adminInnerUrl + "/authentication/oauth/validToken", params);
+        AccessToken accessToken = objectMapper.readValue(response, AccessToken.class);
+        String loginName = accessToken.getUser();
+        //验证通过。赋值session中的用户信息
+        String userInfo = HttpClientUtil.doGet(adminInnerUrl + "/basic/api/v1.0/users/" + loginName, params);
+        UserDetailModel userDetailModel = this.objectMapper.readValue(userInfo, UserDetailModel.class);
+        //存储基本信息
+        UsersModel usersModel = new UsersModel();
+        usersModel.setId(userDetailModel.getId());
+        usersModel.setRealName(userDetailModel.getRealName());
+        usersModel.setEmail(userDetailModel.getEmail());
+        usersModel.setOrganizationCode(userDetailModel.getOrganization());
+        usersModel.setTelephone(userDetailModel.getTelephone());
+        usersModel.setLoginCode(userDetailModel.getLoginCode());
+        usersModel.setUserType(userDetailModel.getUserType());
+        usersModel.setActivated(userDetailModel.getActivated());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
+        if (userDetailModel.getLastLoginTime() != null) {
             usersModel.setLastLoginTime(userDetailModel.getLastLoginTime());
-            // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
-            model.addAttribute(SessionAttributeKeys.CurrentUser, usersModel);
-            HttpSession session = request.getSession();
-            //增加超级管理员信息
-            if(loginName.equals(permissionsInfo)) {
-                session.setAttribute(AuthorityKey.IsAccessAll, true);
-            }else {
-                session.setAttribute(AuthorityKey.IsAccessAll, false);
-            }
-            session.setAttribute("isLogin", true);
-            session.setAttribute("token", accessToken);
-            session.setAttribute("loginName", loginName);
-            session.setAttribute("userId", usersModel.getId());
-            session.setAttribute("clientId", clientId);
-            //获取用户的角色，机构，视图 等权限
-            initUserRolePermissions(usersModel.getId(), loginName, request);
-            //获取用户角色信息
-            List<AppFeatureModel> features = getUserFeatures(usersModel.getId());
-            Collection<GrantedAuthority> gas = new ArrayList<>();
-            if (features != null) {
-                for (AppFeatureModel feature : features) {
-                    if (!StringUtils.isEmpty(feature.getUrl()))
-                        gas.add(new SimpleGrantedAuthority(feature.getUrl()));
+        } else {
+            String now = dateFormat.format(new Date());
+            usersModel.setLastLoginTime(now);
+        }
+        // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
+        model.addAttribute(SessionAttributeKeys.CurrentUser, usersModel);
+        HttpSession session = request.getSession();
+        //增加超级管理员信息
+        if (loginName.equals(permissionsInfo)) {
+            session.setAttribute(AuthorityKey.IsAccessAll, true);
+        } else {
+            session.setAttribute(AuthorityKey.IsAccessAll, false);
+        }
+        model.addAttribute("last_login_time", usersModel.getLastLoginTime());
+        session.setAttribute("last_login_time", usersModel.getLastLoginTime());
+        session.setAttribute("isLogin", true);
+        session.setAttribute("token", accessToken);
+        session.setAttribute("loginName", loginName);
+        session.setAttribute("userId", usersModel.getId());
+        session.setAttribute("clientId", clientId);
+        //获取用户的角色，机构，视图 等权限
+        initUserRolePermissions(usersModel.getId(), loginName, request);
+        //获取用户角色信息
+        List<AppFeatureModel> features = getUserFeatures(usersModel.getId());
+        Collection<GrantedAuthority> gas = new ArrayList<>();
+        if (features != null) {
+            for (AppFeatureModel feature : features) {
+                if (!StringUtils.isEmpty(feature.getUrl())) {
+                    gas.add(new SimpleGrantedAuthority(feature.getUrl()));
                 }
             }
-            //生成认证token
-            //Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(loginName, userDetailModel.getPassword(), gas);
-            //将信息存放到SecurityContext
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return success(accessToken);
-        } catch (Exception e) {
-            return failed(e.getMessage());
         }
+        //生成认证token
+        //Authentication AuthenticationToken = new UsernamePasswordAuthenticationToken(request, "", gas);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(loginName, userDetailModel.getPassword(), gas);
+        //将信息存放到SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return success(accessToken);
+
     }
 
     @RequestMapping(value = "/validate", method = RequestMethod.POST)
-    public String loginValid(Model model, String userName, String password, HttpServletRequest request) {
-        String resultStr;
+    public String loginValid(Model model, String userName, String password, HttpServletRequest request) throws Exception {
         Map<String, Object> params = new HashMap<>(2);
+        params.put("client_id", baseClientId);
         params.put("username", userName);
         params.put("password", password);
-        String url = "/portal/login";
-        try {
-            resultStr = HttpClientUtil.doPost(comUrl + url, params, username, this.password);
-            Envelop envelop = getEnvelop(resultStr);
-            //判断用户是否登入成功
-            if (envelop.isSuccessFlg()) {
-                UsersModel usersModel = getEnvelopModel(envelop.getObj(), UsersModel.class);
-                //获取用户的角色，机构，视图 等权限
-                initUserRolePermissions(usersModel.getId(), userName, request);
-                //增加超级管理员信息
-                HttpSession session = request.getSession();
-                if(userName.equals(permissionsInfo)) {
-                    session.setAttribute(AuthorityKey.IsAccessAll, true);
-                }else {
-                    session.setAttribute(AuthorityKey.IsAccessAll, false);
-                }
-                String lastLoginTime = null;
-                //判断用户是否失效
-                if (!usersModel.isActivated()) {
-                    model.addAttribute("userName", userName);
-                    model.addAttribute("successFlg", false);
-                    model.addAttribute("failMsg", "该用户已失效，请联系系统管理员重新生效。");
-                    model.addAttribute("contentPage", "login/login");
-                    return "generalView";
-                }
-                //判断用户密码是否初始密码
-                model.addAttribute(SessionAttributeKeys.CurrentUser, usersModel);
-
-                if (password.equals("123456")) {
-                    session.setAttribute("defaultPassWord", true);
-                    model.addAttribute("contentPage", "user/changePassword");
-                    return "generalView";
-                } else {
-                    //创建session保存用户信息
-                    session.removeAttribute("defaultPassWord");
-                    SimpleDateFormat sdf = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
-                    Date date = new Date();
-                    String now = sdf.format(date);
-                    if (usersModel.getLastLoginTime() != null) {
-                        lastLoginTime = usersModel.getLastLoginTime();
-                    } else {
-                        lastLoginTime = now;
-                    }
-                    model.addAttribute("last_login_time", lastLoginTime);
-                    session.setAttribute("last_login_time", lastLoginTime);
-
-                    //update lastLoginTime
-                    usersModel.setLastLoginTime(DateTimeUtils.utcDateTimeFormat(date));
-                    MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<>();
-                    conditionMap.add("user_json_data", toJson(usersModel));
-                    session.setAttribute("loginCode", usersModel.getLoginCode());
-                    session.setAttribute("userId", usersModel.getId());
-
-                    //获取用户角色信息
-                    List<AppFeatureModel> features = getUserFeatures(usersModel.getId());
-                    Collection<GrantedAuthority> gas = new ArrayList<>();
-                    if (features != null) {
-                        for (AppFeatureModel feature : features) {
-                            if (!StringUtils.isEmpty(feature.getUrl()))
-                                gas.add(new SimpleGrantedAuthority(feature.getUrl()));
-                        }
-                    }
-                    //生成认证token
-                    Authentication token = new UsernamePasswordAuthenticationToken(userName, password, gas);
-                    AccessToken accessToken = getAccessToken(userName, password, baseClientId);
-                    session.setAttribute("token", accessToken);
-                    //将信息存放到SecurityContext
-                    SecurityContextHolder.getContext().setAuthentication(token);
-                    return "redirect:/index";
-                }
-
-            } else {
+        String url = "/authentication/oauth/login";
+        HttpResponse httpResponse = HttpUtils.doPost(adminInnerUrl + url, params);
+        //判断用户是否登入成功
+        if (httpResponse.isSuccessFlg()) {
+            EhrUserSimple ehrUserSimple = objectMapper.readValue(httpResponse.getContent(), EhrUserSimple.class);
+            //增加超级管理员信息
+            HttpSession session = request.getSession();
+            //判断用户是否失效
+            if (ehrUserSimple.getActivated() != null && !ehrUserSimple.getActivated()) {
                 model.addAttribute("userName", userName);
                 model.addAttribute("successFlg", false);
-                model.addAttribute("failMsg", "用户名或密码错误，请重新输入。");
+                model.addAttribute("failMsg", "该用户已失效，请联系系统管理员重新生效。");
                 model.addAttribute("contentPage", "login/login");
                 return "generalView";
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogService.getLogger(LoginController.class).error(e.getMessage());
+            //判断用户密码是否初始密码
+            if (password.equals("123456")) {
+                session.setAttribute("defaultPassWord", true);
+                model.addAttribute("contentPage", "user/changePassword");
+                return "generalView";
+            } else {
+                SimpleDateFormat dateFormat = new SimpleDateFormat(AgAdminConstants.DateTimeFormat);
+                //存储基本信息
+                UsersModel usersModel = new UsersModel();
+                usersModel.setId(ehrUserSimple.getId());
+                usersModel.setRealName(ehrUserSimple.getRealName());
+                usersModel.setEmail(ehrUserSimple.getEmail());
+                usersModel.setOrganizationCode(ehrUserSimple.getOrganization());
+                usersModel.setTelephone(ehrUserSimple.getTelephone());
+                usersModel.setLoginCode(ehrUserSimple.getLoginCode());
+                usersModel.setUserType(ehrUserSimple.getUserType());
+                usersModel.setActivated(ehrUserSimple.getActivated());
+                if (ehrUserSimple.getLastLoginTime() != null) {
+                    usersModel.setLastLoginTime(dateFormat.format(ehrUserSimple.getLastLoginTime()));
+                } else {
+                    String now = dateFormat.format(new Date());
+                    usersModel.setLastLoginTime(now);
+                }
+                // 注：SessionAttributeKeys.CurrentUser 是用 @SessionAttributes 来最终赋值，换成用 session.setAttribute() 赋值后将会被覆盖。
+                model.addAttribute(SessionAttributeKeys.CurrentUser, usersModel);
+                //增加超级管理员信息
+                if (userName.equals(permissionsInfo)) {
+                    session.setAttribute(AuthorityKey.IsAccessAll, true);
+                } else {
+                    session.setAttribute(AuthorityKey.IsAccessAll, false);
+                }
+                session.removeAttribute("defaultPassWord");
+                model.addAttribute("last_login_time", usersModel.getLastLoginTime());
+                session.setAttribute("last_login_time", usersModel.getLastLoginTime());
+                session.setAttribute("isLogin", true);
+                AccessToken accessToken = new AccessToken();
+                accessToken.setAccessToken(ehrUserSimple.getAccessToken());
+                accessToken.setRefreshToken(ehrUserSimple.getRefreshToken());
+                accessToken.setExpiresIn(ehrUserSimple.getExpiresIn());
+                accessToken.setState(ehrUserSimple.getState());
+                accessToken.setTokenType(ehrUserSimple.getTokenType());
+                accessToken.setUser(ehrUserSimple.getUser());
+                session.setAttribute("token", accessToken);
+                session.setAttribute("loginName", userName);
+                session.setAttribute("userId", ehrUserSimple.getId());
+                session.setAttribute("clientId", baseClientId);
+                //获取用户的角色，机构，视图 等权限
+                initUserRolePermissions(ehrUserSimple.getId(), userName, request);
+                //获取用户角色信息
+                List<AppFeatureModel> features = getUserFeatures(ehrUserSimple.getId());
+                Collection<GrantedAuthority> gas = new ArrayList<>();
+                if (features != null) {
+                    for (AppFeatureModel feature : features) {
+                        if (!StringUtils.isEmpty(feature.getUrl())) {
+                            gas.add(new SimpleGrantedAuthority(feature.getUrl()));
+                        }
+                    }
+                }
+                //生成认证token
+                Authentication token = new UsernamePasswordAuthenticationToken(userName, password, gas);
+                //将信息存放到SecurityContext
+                SecurityContextHolder.getContext().setAuthentication(token);
+                return "redirect:/index";
+            }
+        } else {
             model.addAttribute("userName", userName);
             model.addAttribute("successFlg", false);
-            model.addAttribute("failMsg", e.getMessage());
+            model.addAttribute("failMsg", "用户名或密码错误，请重新输入。");
             model.addAttribute("contentPage", "login/login");
             return "generalView";
         }
+
     }
 
     //------------------------------------------------- 单点登录 start -------------------------------------------
@@ -315,21 +277,16 @@ public class LoginController extends BaseUIController {
      */
     @RequestMapping(value = "/checkInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Envelop check (String idCardNo,String loginCode, HttpServletRequest request) {
-        initUrlInfo(loginCode, request);
+    public Envelop check (String idCardNo, HttpServletRequest request) throws Exception {
+        initUrlInfo(request);
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("demographic_id", idCardNo);
         paramsMap.put("version", stdVersion);
         String url2 =  "/profile/baseInfo";
-        try {
-            String result = HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
-            Map<String, Object> resultMap = objectMapper.readValue(result, Map.class);
-            if (resultMap != null && resultMap.size() > 0) {
-                return success(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return failed(e.getMessage());
+        String result = HttpClientUtil.doGet(profileurl + url2, paramsMap, username, password);
+        Map<String, Object> resultMap = objectMapper.readValue(result, Map.class);
+        if (resultMap != null && resultMap.size() > 0) {
+            return success(true);
         }
         return failed("该居民暂无档案信息");
     }
@@ -348,10 +305,10 @@ public class LoginController extends BaseUIController {
             isInnerIp = (Boolean) session.getAttribute("isInnerIp");
         }
         //System.out.println("isInnerIp:" + isInnerIp);
-        if(isInnerIp) {
+        if (isInnerIp) {
             String url = browseClientUrl + "/common/login/signin?idCardNo=" + idCardNo;
             response.sendRedirect(authorize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
-        }else {
+        } else {
             String url = browseClientOutSizeUrl + "/common/login/signin?idCardNo=" + idCardNo;
             response.sendRedirect(oauth2OutSize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
         }
@@ -361,104 +318,142 @@ public class LoginController extends BaseUIController {
      * 初始化内外网IP信息
      * @param request
      */
-    public void initUrlInfo(String loginCode ,HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
+    public void initUrlInfo(HttpServletRequest request) {
+        String ip = IPInfoUtils.getIPAddress(request);
         if (ip != null) {
             if ("0:0:0:0:0:0:0:1".equals(ip)) {
                 request.getSession().setAttribute("isInnerIp", true);
             } else {
-                if("127.0.0.1".equals(ip) || isInnerIP(ip)) {
+                if ("127.0.0.1".equals(ip) || IPInfoUtils.isInnerIP(ip)) {
                     request.getSession().setAttribute("isInnerIp", true);
-                }else {
+                } else {
                     request.getSession().setAttribute("isInnerIp", false);
                 }
             }
         }
     }
 
-    public long getIpNum(String ipAddress) {
-        String [] ip = ipAddress.split("\\.");
-        long a = Integer.parseInt(ip[0]);
-        long b = Integer.parseInt(ip[1]);
-        long c = Integer.parseInt(ip[2]);
-        long d = Integer.parseInt(ip[3]);
-        return a * 256 * 256 * 256 + b * 256 * 256 + c * 256 + d;
-    }
-
-    public boolean isInnerIP(String ip){
-        long n = getIpNum(ip);
-        return (n >= a1 && n <= a2) || (n >= b1 && n <= b2) || (n >= c1 && n <= c2) || (n >= d1 && n <= d2);
-    }
-
     //------------------------------------------------- 单点登录 end -------------------------------------------
+
+    /**
+     * 获取用户的角色，机构，视图 等权限
+     * @param userId
+     * @param request
+     * @throws Exception
+     */
+    public void initUserRolePermissions(String userId, String loginCode, HttpServletRequest request) throws Exception {
+        String loginName = loginCode;
+        HttpSession session = request.getSession();
+        if (loginCode.equals(permissionsInfo)){
+            session.setAttribute(AuthorityKey.UserRoles, null);
+            session.setAttribute(AuthorityKey.UserResource, null);
+            session.setAttribute(AuthorityKey.UserAreaSaas, null);
+            session.setAttribute(AuthorityKey.UserOrgSaas, null);
+        } else{
+            //获取用户角色
+            List<String> roleList = gerUserRoles(userId);
+            if (!roleList.isEmpty()){
+                session.setAttribute(AuthorityKey.UserRoles, roleList);
+                //获取角色机构
+                List<RoleOrgModel> roleOrgModels = gerRolesOrgs(roleList);
+                if (roleOrgModels.size() > 0){
+                    List<String> roleOrgCodes = new ArrayList<>();
+                    for (RoleOrgModel roleOrgModel : roleOrgModels){
+                        roleOrgCodes.add(roleOrgModel.getOrgCode());
+                    }
+                    getUserSaasOrgAndArea(roleOrgCodes, request);
+                } else {
+                    List<String> userOrgList = new ArrayList<>();
+                    userOrgList.add(AuthorityKey.NoUserOrgSaas);
+                    session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
+                }
+                //获取角色视图
+                List<String> rolesResourceIdList =  new ArrayList<>();
+                List<String> rolesResourceList = getRolesResource(userId, roleList);
+                if (rolesResourceList != null && rolesResourceList.size() >0){
+                    for (String rsRolesResource : rolesResourceList){
+                        rolesResourceIdList.add(rsRolesResource);
+                    }
+                    session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
+                } else {
+                    rolesResourceIdList.add(AuthorityKey.NoUserResource);
+                    session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
+                }
+            } else {
+                roleList.add(AuthorityKey.NoUserRole);
+                session.setAttribute(AuthorityKey.UserRoles, roleList);
+            }
+        }
+    }
+
+    /**
+     * 获取用户角色
+     * @param userId
+     * @return
+     */
+    public List<String> gerUserRoles(String userId) throws Exception {
+        //获取用户所属角色
+        String url = "/basic/api/v1.0/roles/clientRole";
+        Map<String,Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("clientId", baseClientId);
+        HttpResponse httpResponse = HttpUtils.doGet(adminInnerUrl + url, params);
+        if (httpResponse.isSuccessFlg()) {
+            return objectMapper.readValue(httpResponse.getContent(), List.class);
+        }
+        return new ArrayList<>();
+    }
 
     /**
      * 获取用的saas机构
      */
     @RequestMapping(value = "/getUserSaasOrgAndArea", method = RequestMethod.GET)
-    public void getUserSaasOrgAndArea(List<String> roleOrgCodes,String loginName, HttpServletRequest request) throws Exception {
-        Envelop envelop = new Envelop();
-        List<String> userOrgList = new ArrayList<>();
+    public void getUserSaasOrgAndArea(List<String> roleOrgCodes, HttpServletRequest request) throws Exception {
         //使用orgCode获取saas化的机构或者区域。
         String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
         Map<String, Object> uParams = new HashMap<>();
-        uParams.put("orgCodeStr",org.apache.commons.lang.StringUtils.join(roleOrgCodes,',') );
+        uParams.put("orgCodeStr", StringUtils.join(roleOrgCodes, ',') );
         String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
-        envelop = getEnvelop(resultStrUserSaasOrg);
+        Envelop envelop = getEnvelop(resultStrUserSaasOrg);
         HttpSession session = request.getSession();
         session.setAttribute(AuthorityKey.UserAreaSaas, envelop.getObj());
-        session.setAttribute(AuthorityKey.UserOrgSaas, envelop.getDetailModelList());
-
-        userOrgList = envelop.getDetailModelList();
+        List<String> userOrgList = envelop.getDetailModelList();
         List<String> districtList = (List<String>) envelop.getObj();
         String geographyUrl = "/geography_entries/";
-        if(districtList != null && districtList.size() > 0){
-            for(String code : districtList){
+        if (districtList != null && districtList.size() > 0){
+            for (String code : districtList){
                 uParams.clear();
                 String mGeographyDictStr = HttpClientUtil.doGet(comUrl + geographyUrl + code, uParams, username, password);
                 envelop = getEnvelop(mGeographyDictStr);
                 MGeographyDict mGeographyDict = null;
                 mGeographyDict = getEnvelopModel(envelop.getObj(), MGeographyDict.class);
-                if(mGeographyDict != null){
+                if (mGeographyDict != null){
                     String province = "";
                     String city = "";
                     String district = "";
-                    if(mGeographyDict.getLevel() == 1){
+                    if (mGeographyDict.getLevel() == 1){
                         province =  mGeographyDict.getName();
-                    }else if(mGeographyDict.getLevel() == 2){
+                    } else if(mGeographyDict.getLevel() == 2){
                         city =  mGeographyDict.getName();
-                    }else if(mGeographyDict.getLevel() == 3){
+                    } else if(mGeographyDict.getLevel() == 3){
                         district =  mGeographyDict.getName();
                     }
                     String  orgGeographyStr = "/organizations/geography";
                     uParams.clear();
-                    uParams.put("province",province);
-                    uParams.put("city",city);
-                    uParams.put("district",district);
+                    uParams.put("province", province);
+                    uParams.put("city", city);
+                    uParams.put("district", district);
                     String mOrgsStr = HttpClientUtil.doGet(comUrl + orgGeographyStr , uParams, username, password);
                     envelop = getEnvelop(mOrgsStr);
-                    if(envelop !=null && envelop.getDetailModelList() != null ){
+                    if (envelop != null && envelop.getDetailModelList() != null ){
                         List<MOrganization> organizations = (List<MOrganization>)getEnvelopList(envelop.getDetailModelList(),new ArrayList<MOrganization>(),MOrganization.class);
-                        if(organizations !=null ){
+                        if (organizations !=null ){
                             java.util.Iterator it = organizations.iterator();
-                            while(it.hasNext()){
+                            while (it.hasNext()){
                                 MOrganization mOrganization = (MOrganization)it.next();
-                                userOrgList.add(mOrganization.getCode());
+                                if (!userOrgList.contains(mOrganization.getCode())) {
+                                    userOrgList.add(mOrganization.getCode());
+                                }
                             }
                         }
                     }
@@ -471,186 +466,93 @@ public class LoginController extends BaseUIController {
         }
         userOrgList.removeAll(Collections.singleton(null));
         userOrgList.removeAll(Collections.singleton(""));
-        request.getSession().setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
-
+        session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
     }
 
     @RequestMapping(value = "/userVerification")
     @ResponseBody
-    public Object dataValidation(String userName, String password) {
+    public Object dataValidation(String userName, String password) throws Exception {
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         Envelop envelop = new Envelop();
-        String url = "";
-        String resultStr = "";
-        try {
-            if (StringUtils.isEmpty(password)) {
-                url = "/users";
-                params.put("filters", "loginCode=" + userName);
-                params.put("page", 1);
-                params.put("size", 15);
-                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
-            } else {
-                url = "/users/verification/" + userName;
-                params.put("psw", password);
-                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
-            }
-            envelop = mapper.readValue(resultStr, Envelop.class);
-            if (!envelop.isSuccessFlg()) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("密码错误，请重新输入！");
-            } else {
-                envelop.setSuccessFlg(true);
-            }
-        } catch (Exception e) {
+        String url;
+        String resultStr;
+        if (StringUtils.isEmpty(password)) {
+            url = "/users";
+            params.put("filters", "loginCode=" + userName);
+            params.put("page", 1);
+            params.put("size", 15);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+        } else {
+            url = "/users/verification/" + userName;
+            params.put("psw", password);
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, this.password);
+        }
+        envelop = mapper.readValue(resultStr, Envelop.class);
+        if (!envelop.isSuccessFlg()) {
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg("密码错误，请重新输入！");
-            return envelop;
+        } else {
+            envelop.setSuccessFlg(true);
         }
         return envelop;
     }
 
-    @RequestMapping("activityUser")
+    @RequestMapping("/activityUser")
     @ResponseBody
-    public Object activityUser(String userId, boolean activated) {
+    public Object activityUser(String userId, boolean activated) throws Exception {
         String url = "/users/admin/" + userId;
         String resultStr = "";
         Envelop result = new Envelop();
         Map<String, Object> params = new HashMap<>();
         params.put("activity", activated);
-        try {
-            resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
+        resultStr = HttpClientUtil.doPut(comUrl + url, params, username, password);
 
-            if (Boolean.parseBoolean(resultStr)) {
-                result.setSuccessFlg(true);
-            } else {
-                result.setSuccessFlg(false);
-                result.setErrorMsg("更新失败");
-            }
-            return result;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return failed(ERR_SYSTEM_DES);
+        if (Boolean.parseBoolean(resultStr)) {
+            result.setSuccessFlg(true);
+        } else {
+            result.setSuccessFlg(false);
+            result.setErrorMsg("更新失败");
         }
+        return result;
+
     }
 
-    /**
-     * 获取用户的角色，机构，视图 等权限
-     * @param userId
-     * @param request
-     * @throws Exception
-     */
-    public void initUserRolePermissions(String userId, String loginCode, HttpServletRequest request) throws Exception {
-        String loginName = loginCode;
-        HttpSession session = request.getSession();
-        if(loginCode.equals(permissionsInfo)){
-            session.setAttribute(AuthorityKey.UserRoles, null);
-            session.setAttribute(AuthorityKey.UserResource, null);
-            session.setAttribute(AuthorityKey.UserAreaSaas, null);
-            session.setAttribute(AuthorityKey.UserOrgSaas, null);
-        }else{
-            //获取用户角色
-            String roleStr = "";
-            List<String> roleList = new ArrayList<>();
-            roleStr =  gerUserRoles(userId);
-            if( !StringUtils.isEmpty(roleStr)){
-                roleList =  Arrays.asList(roleStr.split(","));
-                session.setAttribute(AuthorityKey.UserRoles, roleList);
-                //获取角色机构
-                List<RoleOrgModel> roleOrgModels = new ArrayList<>();
-                gerRolesOrgs(roleList,roleOrgModels);
-                if(roleOrgModels !=null && roleOrgModels.size() >0){
-                    List<String> roleOrgCodes = new ArrayList<>();
-                    for(RoleOrgModel roleOrgModel : roleOrgModels){
-                        roleOrgCodes.add(roleOrgModel.getOrgCode());
-                    }
-                    getUserSaasOrgAndArea(roleOrgCodes, loginName, request);
-                }else{
-                    List<String> userOrgList = new ArrayList<>();
-                    userOrgList.add(AuthorityKey.NoUserOrgSaas);
-                    session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
-                }
-                //获取角色视图
-                List<String> rolesResourceIdList =  new ArrayList<>();
-                List<String> rolesResourceList = new ArrayList<>();
-                gerRolesResource(userId, roleList, rolesResourceList);
-                if(rolesResourceList !=null && rolesResourceList.size() >0){
-                    for(String rsRolesResource : rolesResourceList){
-                        rolesResourceIdList.add(rsRolesResource);
-                    }
-                    session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
-                }else{
-                    rolesResourceIdList.add(AuthorityKey.NoUserResource);
-                    session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
-                }
-            }else{
-                roleList.add(AuthorityKey.NoUserRole);
-                session.setAttribute(AuthorityKey.UserRoles, roleList);
-            }
-        }
-    }
-
-    /**
-     * 获取用户角色
-     * @param userId
-     * @return
-     */
-    public String gerUserRoles(String userId){
-        //获取用户所属角色
-        String roleStr = "";
-        try {
-            String url = "/roles/role_user/userRolesIds";
-            Map<String,Object> params = new HashMap<>();
-            params.put("user_id",userId);
-            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
-            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
-            if (envelop.isSuccessFlg() && null != envelop.getObj() && !"".equals(envelop.getObj())) {
-                roleStr = envelop.getObj().toString();
-            }
-        } catch (Exception ex) {
-            LogService.getLogger(LoginController.class).error(ex.getMessage());
-        }
-        return  roleStr;
-    }
 
     /**
      * 获取角色机构
      * @param roleList 角色组列表
      * @return
      */
-    public List<RoleOrgModel> gerRolesOrgs(List<String> roleList,List<RoleOrgModel> roleOrgs){
-        for(String roleId : roleList){
-            try {
-                Map<String,Object> params = new HashMap<>();
-                String roleUrl = "/roles/role/"+roleId;
-                params.put("id",Long.valueOf(roleId));
-                String envelopRoleStr = HttpClientUtil.doGet(comUrl + roleUrl,params, username, password);
-                Envelop envelopRole = objectMapper.readValue(envelopRoleStr,Envelop.class);
-                if(envelopRole.getObj() != null){
-                    MRoles mRoles = objectMapper.convertValue(envelopRole.getObj(), MRoles.class);
-                    if ( ! StringUtils.isEmpty( mRoles.getOrgCode() )){
-                        RoleOrgModel roleOrgModel = new RoleOrgModel();
-                        roleOrgModel.setOrgCode(mRoles.getOrgCode());
-                        roleOrgModel.setRoleId(mRoles.getId());
-                        roleOrgs.add(roleOrgModel);
+    public List<RoleOrgModel> gerRolesOrgs(List<String> roleList) throws Exception {
+        List<RoleOrgModel> roleOrgs = new ArrayList<>();
+        for (String roleId : roleList){
+            Map<String, Object> params = new HashMap<>();
+            /*String roleUrl = "/roles/role/" + roleId;
+            params.put("id", Long.valueOf(roleId));
+            String envelopRoleStr = HttpClientUtil.doGet(comUrl + roleUrl, params, username, password);
+            Envelop envelopRole = objectMapper.readValue(envelopRoleStr,Envelop.class);
+            if (envelopRole.getObj() != null){
+                MRoles mRoles = objectMapper.convertValue(envelopRole.getObj(), MRoles.class);
+                if ( ! StringUtils.isEmpty( mRoles.getOrgCode() )){
+                    RoleOrgModel roleOrgModel = new RoleOrgModel();
+                    roleOrgModel.setOrgCode(mRoles.getOrgCode());
+                    roleOrgModel.setRoleId(mRoles.getId());
+                    roleOrgs.add(roleOrgModel);
+                }
+            }*/
+            String url = ServiceApi.Roles.RoleOrgsNoPage;
+            params.put("filters", "roleId=" + roleId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
+            if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
+                List<RoleOrgModel> roleOrgModels = envelop.getDetailModelList();
+                if (roleOrgModels != null && roleOrgModels.size() > 0){
+                    for(int i = 0; i < roleOrgModels.size() ;i++){
+                        RoleOrgModel orgModel = objectMapper.convertValue(roleOrgModels.get(i), RoleOrgModel.class) ;
+                        roleOrgs.add(orgModel);
                     }
                 }
-                String url = ServiceApi.Roles.RoleOrgsNoPage;
-                params.clear();
-                params.put("filters","roleId=" + roleId);
-                String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
-                Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
-                if (envelop.isSuccessFlg() && null != envelop.getDetailModelList() &&  envelop.getDetailModelList().size()>0) {
-                    List<RoleOrgModel> roleOrgModels = envelop.getDetailModelList();
-                    if(roleOrgModels != null && roleOrgModels.size() > 0){
-                        for(int i = 0; i < roleOrgModels.size() ;i++){
-                            RoleOrgModel orgModel = objectMapper.convertValue(roleOrgModels.get(i), RoleOrgModel.class) ;
-                            roleOrgs.add(orgModel);
-                        }
-                    }
-                }
-            } catch (Exception ex) {
-                LogService.getLogger(LoginController.class).error(ex.getMessage());
             }
         }
         return  roleOrgs;
@@ -659,146 +561,27 @@ public class LoginController extends BaseUIController {
     /**
      * 获取角色视图列表
      * @param roleList
-     * @param rolesResourceList
      * @return
      */
-    public List<String> gerRolesResource(String userId, List<String> roleList, List<String> rolesResourceList){
-        for(String roleId : roleList){
-            try {
-                String url = ServiceApi.Resources.GetRolesGrantResources;
-                Map<String,Object> params = new HashMap<>();
-                params.put("rolesId",roleId);
-                params.put("userId", userId);
-                String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
-                Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
-                if (envelop.isSuccessFlg() && null != envelop.getDetailModelList() && envelop.getDetailModelList().size() > 0 ) {
-                    List<String> roleResourceModels = envelop.getDetailModelList();
-                    if(roleResourceModels != null && roleResourceModels.size() > 0){
-                        for(int i = 0; i < roleResourceModels.size() ;i++){
-                            rolesResourceList.add(roleResourceModels.get(i));
-                        }
+    public List<String> getRolesResource(String userId, List<String> roleList) throws Exception {
+        List<String> rolesResourceList = new ArrayList<>();
+        for (String roleId : roleList){
+            String url = ServiceApi.Resources.GetRolesGrantResources;
+            Map<String,Object> params = new HashMap<>();
+            params.put("rolesId", roleId);
+            params.put("userId", userId);
+            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
+            Envelop envelop = objectMapper.readValue(envelopStr,Envelop.class);
+            if (envelop.isSuccessFlg() && null != envelop.getDetailModelList() && envelop.getDetailModelList().size() > 0 ) {
+                List<String> roleResourceModels = envelop.getDetailModelList();
+                if (roleResourceModels != null && roleResourceModels.size() > 0){
+                    for (int i = 0; i < roleResourceModels.size() ;i++){
+                        rolesResourceList.add(roleResourceModels.get(i));
                     }
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                LogService.getLogger(LoginController.class).error(ex.getMessage());
             }
         }
-        return null;
-    }
-
-    // 暂时没用到
-    /*@RequestMapping(value = "activeValidateCode")
-    public String activeValidateCode(String loginCode, String validateCode, Model model) {
-        XUser user = userManager.getUserByLoginCode(loginCode);
-        Map<ErrorCode, String> message = new HashMap<>();
-
-        if (user != null) {
-            if (user.isActivated()) {
-                Date currentTime = new Date();
-                if (currentTime.before(user.getCreateDate())) {
-                    if (validateCode.equals(user.getValidateCode())) {
-                        model.addAttribute("successFlg", true);
-                        model.addAttribute("contentPage","login/login");
-                        return "generalView";
-                    } else {
-                        model.addAttribute("successFlg", false);
-                        message.put(ErrorCode.InvalidValidateCode, "验证码不正确");
-                        model.addAttribute("contentPage","login/login");
-                        return "generalView";
-                    }
-                } else {
-                    message.put(ErrorCode.ExpireValidateCode, "验证码已过期");
-                    model.addAttribute("contentPage","login/login");
-                    return "generalView";
-                }
-            } else {
-                message.put(ErrorCode.MailHasValidate, "邮箱已验证，请登录！");
-                model.addAttribute("contentPage","login/login");
-                return "generalView";
-            }
-        } else {
-            message.put(ErrorCode.InvalidMail, "该邮箱未注册（邮箱地址不存在）！");
-            model.addAttribute("contentPage","login/login");
-            return "generalView";
-        }
-    }*/
-
-    // 暂时没用到
-    /*@RequestMapping(value = "sendActiveCode")
-    public String sendActiveCode(Model model, String loginCode, String email) {
-        Map<ErrorCode, String> message = new HashMap<>();
-        XUser user = userManager.getUserByCodeAndEmail(loginCode, email);
-
-        if (user == null || "0".equals(user.getActivated())) {
-            message.put(ErrorCode.InvalidUser, "用户不存在!");
-            model.addAttribute("message", message);
-            model.addAttribute("contentPage","login/login");
-            return "generalView";
-        }
-
-        user.setValidateCode("1234");
-        userManager.updateUser(user);
-
-        StringBuffer sb = new StringBuffer("点击下面链接激活账号，48小时生效，否则重新注册账号，链接只能使用一次，请尽快激活！</br>");
-        sb.append(user.getValidateCode());
-
-        MailUtil.send(email, sb.toString());
-        return "login/login";
-    }*/
-
-    /*@RequestMapping("searchUsers")
-    @ResponseBody
-    public Object searchUsers(String searchNm, String searchType, int page, int rows) {
-
-        String url = "/users";
-        String resultStr = "";
-        Envelop envelop = new Envelop();
-        Map<String, Object> params = new HashMap<>();
-
-        StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(searchNm)) {
-            stringBuffer.append("realName?" + searchNm + " g1;organization?" + searchNm + " g1;loginCode?" +searchNm + " g1");
-        }
-        if (!StringUtils.isEmpty(searchType)) {
-            stringBuffer.append("userType=" + searchType);
-        }
-
-        params.put("filters", "");
-        String filters = stringBuffer.toString();
-        if (!StringUtils.isEmpty(filters)) {
-            params.put("filters", filters);
-        }
-
-        params.put("page", page);
-        params.put("size", rows);
-        try {
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            return resultStr;
-        } catch (Exception e) {
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(ErrorCode.SystemError.toString());
-            return envelop;
-        }
-    }*/
-
-    /**
-     * 通过用户名密码获取token
-     */
-    private AccessToken getAccessToken(String userName, String password, String clientId) {
-        try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("grant_type", "password");
-            params.put("client_id", clientId);
-            params.put("username", userName);
-            params.put("password", password);
-            String result = HttpClientUtil.doPost(authorize + "oauth/accessToken", params);
-            AccessToken accessToken = objectMapper.readValue(result, AccessToken.class);
-            return accessToken;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return rolesResourceList;
     }
 
     private List<AppFeatureModel> getUserFeatures(String userId) throws Exception {
@@ -811,114 +594,6 @@ public class LoginController extends BaseUIController {
             return envelopExt.getDetailModelList();
         } else {
             throw new Exception(envelopExt.getErrorMsg());
-        }
-    }
-
-    /**
-     * 获取当前用户的ip地址
-     *
-     * @return
-     */
-    // 暂时没用到
-    /*public String requestGetAddress(HttpServletRequest request) {
-        String strRead = null;
-        String address = null;
-        String ip = getIp();
-
-        SystemDictId systemDict = new SystemDictId();
-        String addressAPI = systemDict.AddressAPI;
-        String apiKey = systemDict.Apikey;
-        LoginAddress loginAddress = conventionalDictEntry.getLoginAddress(addressAPI);
-        LoginAddress apiKeys = conventionalDictEntry.getLoginAddress(apiKey);
-        String httpUrl = loginAddress.getValue();
-        String httpArg = "ip=" + ip;
-
-        BufferedReader reader = null;
-        httpUrl = httpUrl + "?" + httpArg;
-
-        try {
-            URL url = new URL(httpUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-
-            connection.setRequestProperty("apikey", apiKeys.getValue());
-            connection.connect();
-            InputStream is = connection.getInputStream();
-            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            strRead = reader.readLine();
-            reader.close();
-
-            address = getAddress(strRead);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return address;
-    }*/
-
-    private String getAddress(String citys) {
-        String[] st = citys.split(",");
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < st.length; i++) {
-            String addressEs = st[i];
-            String[] address = addressEs.split(":");
-            for (int j = 0; j < 1; j++) {
-                String provinceCitys = address[1];
-
-                if (provinceCitys.length() > 1) {
-                    String ar = (provinceCitys.substring(1, provinceCitys.length() - 1));
-                    String getCity = StringEscapeUtils.unescapeJava(ar);
-                    list.add(getCity);
-                }
-            }
-        }
-
-        String province = list.get(3);
-        String city = list.get(4);
-        String provinceCity = null;
-        if (province.equals("None") || province.equals("") || province == null && city.equals("None") || city.equals("") || city == null) {
-            provinceCity = "未知";
-        } else {
-            provinceCity = province + "省" + city + "市";
-        }
-
-        return provinceCity;
-    }
-
-    /**
-     * 多IP处理，可以得到最终ip
-     *
-     * @return
-     */
-    private String getIp() {
-        String localIP = null;      // 本地IP，如果没有配置外网IP则返回它
-        String publicIP = null;     // 外网IP
-        try {
-            Enumeration<NetworkInterface> netInterfaces = NetworkInterface.getNetworkInterfaces();
-            InetAddress ip = null;
-            boolean finded = false;// 是否找到外网IP
-            while (netInterfaces.hasMoreElements() && !finded) {
-                NetworkInterface ni = netInterfaces.nextElement();
-                Enumeration<InetAddress> address = ni.getInetAddresses();
-                while (address.hasMoreElements()) {
-                    ip = address.nextElement();
-                    if (!ip.isSiteLocalAddress() && !ip.isLoopbackAddress() && ip.getHostAddress().indexOf(":") == -1) {// 外网IP
-                        publicIP = ip.getHostAddress();
-                        finded = true;
-                        break;
-                    } else if (ip.isSiteLocalAddress()
-                            && !ip.isLoopbackAddress()
-                            && ip.getHostAddress().indexOf(":") == -1) {
-                        localIP = ip.getHostAddress();
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-        if (publicIP != null && !"".equals(publicIP)) {
-            return publicIP;
-        } else {
-            return localIP;
         }
     }
 

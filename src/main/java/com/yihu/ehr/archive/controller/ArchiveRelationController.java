@@ -44,7 +44,7 @@ public class ArchiveRelationController extends BaseUIController {
             params.put("sorts", "-relationDate");
             params.put("page", page);
             params.put("size", size);
-            String envelopStr = HttpClientUtil.doGet(zuul + url, params, username, password);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
             return toModel(envelopStr, Envelop.class);
         } catch (Exception e){
             e.printStackTrace();

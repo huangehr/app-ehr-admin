@@ -181,35 +181,25 @@ public class ResourceManageController extends BaseUIController {
      */
     @RequestMapping("/resources/tree")
     @ResponseBody
-    public Envelop getResourceTree(String filters, Integer dataSource, HttpServletRequest request){
-        Envelop envelop = new Envelop();
-        String url = "/resources/tree";
-        String resultStr = "";
+    public Envelop getResourceTree(String filters, Integer dataSource, HttpServletRequest request) throws Exception {
+        String url = "/resource/api/v1.0/resources/tree";
         //从Session中获取用户的角色和和授权视图列表作为查询参数
-        try {
-            HttpSession session = request.getSession();
-            boolean isAccessAll = getIsAccessAllRedis(request);
-            List<String> userResourceList = getUserResourceListRedis(request);
-            Map<String, Object> params = new HashMap<>();
-            if (!StringUtils.isEmpty(filters)) {
-                params.put("filters", filters);
-            }
-            if(dataSource != null && dataSource != 0) {
-                params.put("dataSource", dataSource);
-            }
-            if(isAccessAll) {
-                params.put("userResource", "*");
-            }else {
-                params.put("userResource", objectMapper.writeValueAsString(userResourceList));
-            }
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-            envelop = toModel(resultStr, Envelop.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            envelop.setSuccessFlg(false);
-            envelop.setErrorMsg(e.getMessage());
-            return envelop;
+        boolean isAccessAll = getIsAccessAllRedis(request);
+        List<String> userResourceList = getUserResourceListRedis(request);
+        Map<String, Object> params = new HashMap<>();
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
         }
+        if(dataSource != null && dataSource != 0) {
+            params.put("dataSource", dataSource);
+        }
+        if (isAccessAll) {
+            params.put("userResource", "*");
+        } else {
+            params.put("userResource", objectMapper.writeValueAsString(userResourceList));
+        }
+        String resultStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+        Envelop envelop = toModel(resultStr, Envelop.class);
         return envelop;
     }
 

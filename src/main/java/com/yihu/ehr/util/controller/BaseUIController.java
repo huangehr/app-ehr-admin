@@ -31,8 +31,30 @@ public class BaseUIController {
     protected String password;
     @Value("${service-gateway.url}")
     protected String comUrl;
-    @Value("${service-gateway.zuulUrl}")
-    protected String zuul;
+    @Value("${service-gateway.adminInnerUrl}")
+    protected String adminInnerUrl;
+    @Value("${service-gateway.browseClientUrl}")
+    protected String browseClientUrl;
+    @Value("${service-gateway.browseClientOutSizeUrl}")
+    protected String browseClientOutSizeUrl;
+    @Value("${service-gateway.profileurl}")
+    protected String profileurl;
+    @Value("${app.oauth2InnerUrl}")
+    protected String authorize;
+    @Value("${app.oauth2OuterUrl}")
+    protected String oauth2OutSize;
+    @Value("${app.baseClientId}")
+    protected String baseClientId;
+    @Value("${app.qcReportClientId}")
+    protected String qcReportClientId;
+    @Value("${app.resourceBrowseClientId}")
+    protected String resourceBrowseClientId;
+    @Value("${app.browseClientId}")
+    protected String browseClientId;
+    @Value("${std.version}")
+    protected String stdVersion;
+    @Value("${permissions.info}")
+    protected String permissionsInfo;
 
     protected static String ERR_SYSTEM_DES = "系统错误,请联系管理员!";
 
@@ -157,37 +179,37 @@ public class BaseUIController {
     }
 
 
-    public UsersModel getCurrentUserRedis(HttpServletRequest request) throws IOException {
+    public UsersModel getCurrentUserRedis(HttpServletRequest request) {
         UsersModel userDetailModel = (UsersModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
         return  userDetailModel;
     }
 
-    public boolean getIsAccessAllRedis(HttpServletRequest request) throws IOException {
-        boolean isAccessAll = true;
-        if(request.getSession().getAttribute(AuthorityKey.IsAccessAll) != null){
+    public boolean getIsAccessAllRedis(HttpServletRequest request) {
+        boolean isAccessAll = false;
+        if (request.getSession().getAttribute(AuthorityKey.IsAccessAll) != null){
             isAccessAll = (boolean)request.getSession().getAttribute(AuthorityKey.IsAccessAll);
         }
-        return  isAccessAll;
+        return isAccessAll;
     }
 
-    public List<String> getUserAreaSaasListRedis(HttpServletRequest request) throws IOException {
+    public List<String> getUserAreaSaasListRedis(HttpServletRequest request) {
         List<String> userOrgList  = new ArrayList<>();
-        if(request.getSession().getAttribute(AuthorityKey.UserOrgSaas) != null){
-            userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
+        if(request.getSession().getAttribute(AuthorityKey.UserAreaSaas) != null){
+            userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserAreaSaas);
         }
         return  userOrgList;
     }
 
 
-    public List<String> getUserOrgSaasListRedis(HttpServletRequest request) throws IOException {
+    public List<String> getUserOrgSaasListRedis(HttpServletRequest request) {
         List<String> userOrgList  = new ArrayList<>();
-        if(request.getSession().getAttribute(AuthorityKey.UserOrgSaas) != null){
+        if (request.getSession().getAttribute(AuthorityKey.UserOrgSaas) != null){
             userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
         }
         return  userOrgList;
     }
 
-    public List<String> getUserRolesListRedis(HttpServletRequest request) throws IOException {
+    public List<String> getUserRolesListRedis(HttpServletRequest request) {
         List<String> userRoleList  = new ArrayList<>();
         if(request.getSession().getAttribute(AuthorityKey.UserRoles) != null){
             userRoleList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserRoles);
@@ -195,7 +217,7 @@ public class BaseUIController {
         return  userRoleList;
     }
 
-    public List<String> getUserResourceListRedis(HttpServletRequest request) throws IOException {
+    public List<String> getUserResourceListRedis(HttpServletRequest request) {
         List<String> userResourceList  = new ArrayList<>();
         if(request.getSession().getAttribute(AuthorityKey.UserResource) != null){
             userResourceList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserResource);

@@ -91,7 +91,7 @@ public class QuotaCategoryController extends BaseUIController {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         try {
-            String resultStr = HttpClientUtil.doDelete(zuul + url, params, username, password);
+            String resultStr = HttpClientUtil.doDelete(adminInnerUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
             e.printStackTrace();
