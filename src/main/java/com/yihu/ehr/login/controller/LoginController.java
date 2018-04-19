@@ -186,7 +186,7 @@ public class LoginController extends BaseUIController {
             //增加超级管理员信息
             HttpSession session = request.getSession();
             //判断用户是否失效
-            if (!ehrUserSimple.getActivated()) {
+            if (ehrUserSimple.getActivated() != null && !ehrUserSimple.getActivated()) {
                 model.addAttribute("userName", userName);
                 model.addAttribute("successFlg", false);
                 model.addAttribute("failMsg", "该用户已失效，请联系系统管理员重新生效。");
