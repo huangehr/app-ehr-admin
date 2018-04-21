@@ -88,6 +88,7 @@ public class PortalNoticesController extends BaseUIController {
         }
         params.put("page", page);
         params.put("size", rows);
+        params.put("sorts", "-releaseDate"); // 根据releaseDate排序，-：降序
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
