@@ -168,6 +168,7 @@
                             }
                             }
                         ],
+                        enabledSort:false,
                         onDblClickRow: function (row) {
                             self.showUserInfo(row.idCardNo,row.userId);
                         }
@@ -192,6 +193,7 @@
                             }
                             }
                         ],
+                        enabledSort:false,
                         method:'GET'
                     }));
                     self.UnknowArchivesGrid.adjustToWidth();
