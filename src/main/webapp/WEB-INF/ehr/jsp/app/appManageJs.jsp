@@ -144,7 +144,7 @@
                         ],
 						pageSize:searchParms.pageSize,
 
-						enabledSort:true,
+						enabledSort:false,
                         enabledEdit: true,
                         validate : true,
                         unSetValidateAttr:false,
