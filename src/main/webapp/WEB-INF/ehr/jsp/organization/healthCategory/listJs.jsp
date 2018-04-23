@@ -40,6 +40,7 @@
                 }
             ],
             allowHideColumn: false,
+            enabledSort:false,
             tree: {columnName: 'name'},
             usePager: false
         }));

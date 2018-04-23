@@ -1,9 +1,7 @@
 package com.yihu.ehr.archive.controller;
 
-import com.yihu.ehr.emergency.controller.AmbulanceController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
@@ -26,30 +24,23 @@ public class ArchiveRelationController extends BaseUIController {
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     @ApiOperation(value = "获取未识别档案关联列表")
     @ResponseBody
-    public Envelop list(
-            @RequestParam(value = "fields", required = false) String fields,
+    public Envelop list (
             @RequestParam(value = "filters", required = false) String filters,
             @RequestParam(value = "sorts", required = false) String sorts,
             @RequestParam(value = "page") int page,
-            @RequestParam(value = "size") int size) {
-        try {
-            Map<String, Object> params = new HashMap<String, Object>();
-            if (StringUtils.isEmpty(filters)) {
-                params.put("filters", "identifyFlag=0;idCardNo<>null");
-            } else {
-                params.put("filters", "identifyFlag=0;idCardNo<>null;" + filters);
-            }
-            String url = "/basic/api/v1.0/archiveRelation";
-            //String url = "/basic/api/v1.0/patientArchive/getArRelationList";
-            params.put("sorts", "-relationDate");
-            params.put("page", page);
-            params.put("size", size);
-            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
-            return toModel(envelopStr, Envelop.class);
-        } catch (Exception e){
-            e.printStackTrace();
-            return failed(e.getMessage());
+            @RequestParam(value = "size") int size) throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (StringUtils.isEmpty(filters)) {
+            params.put("filters", "identify_flag=0");
+        } else {
+            params.put("filters", "identify_flag=0;" + filters);
         }
+        String url = "/pack-resolve/api/v1.0/archiveRelation";
+        params.put("sorts", "-relation_date");
+        params.put("page", page);
+        params.put("size", size);
+        String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+        return toModel(envelopStr, Envelop.class);
     }
 
 }
