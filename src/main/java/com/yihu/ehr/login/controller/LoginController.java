@@ -15,6 +15,7 @@ import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.geography.MGeographyDict;
 import com.yihu.ehr.model.org.MOrganization;
 import com.yihu.ehr.model.user.EhrUserSimple;
+import com.yihu.ehr.model.user.MRoleOrg;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.http.HttpResponse;
@@ -39,6 +40,7 @@ import javax.servlet.http.HttpSession;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.rmi.MarshalledObject;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -342,7 +344,6 @@ public class LoginController extends BaseUIController {
      * @throws Exception
      */
     public void initUserRolePermissions(String userId, String loginCode, HttpServletRequest request) throws Exception {
-        String loginName = loginCode;
         HttpSession session = request.getSession();
         if (loginCode.equals(permissionsInfo)){
             session.setAttribute(AuthorityKey.UserRoles, null);
@@ -355,12 +356,12 @@ public class LoginController extends BaseUIController {
             if (!roleList.isEmpty()){
                 session.setAttribute(AuthorityKey.UserRoles, roleList);
                 //获取角色机构
-                List<RoleOrgModel> roleOrgModels = gerRolesOrgs(roleList);
+                List<Map<String, Object>> roleOrgModels = gerRolesOrgs(roleList);
                 if (roleOrgModels.size() > 0){
-                    List<String> roleOrgCodes = new ArrayList<>();
-                    for (RoleOrgModel roleOrgModel : roleOrgModels){
-                        roleOrgCodes.add(roleOrgModel.getOrgCode());
-                    }
+                    Set<String> roleOrgCodes = new HashSet<>();
+                    roleOrgModels.forEach(item -> {
+                        roleOrgCodes.add((String) item.get("orgCode"));
+                    });
                     getUserSaasOrgAndArea(roleOrgCodes, request);
                 } else {
                     List<String> userOrgList = new ArrayList<>();
@@ -368,14 +369,11 @@ public class LoginController extends BaseUIController {
                     session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
                 }
                 //获取角色视图
-                List<String> rolesResourceIdList =  new ArrayList<>();
                 List<String> rolesResourceList = getRolesResource(userId, roleList);
                 if (rolesResourceList != null && rolesResourceList.size() >0){
-                    for (String rsRolesResource : rolesResourceList){
-                        rolesResourceIdList.add(rsRolesResource);
-                    }
-                    session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
+                    session.setAttribute(AuthorityKey.UserResource, rolesResourceList);
                 } else {
+                    List<String> rolesResourceIdList = new ArrayList<>();
                     rolesResourceIdList.add(AuthorityKey.NoUserResource);
                     session.setAttribute(AuthorityKey.UserResource, rolesResourceIdList);
                 }
@@ -399,74 +397,73 @@ public class LoginController extends BaseUIController {
         params.put("clientId", baseClientId);
         HttpResponse httpResponse = HttpUtils.doGet(adminInnerUrl + url, params);
         if (httpResponse.isSuccessFlg()) {
-            return objectMapper.readValue(httpResponse.getContent(), List.class);
+            List<String> list = new ArrayList<>();
+            List<String> temp = objectMapper.readValue(httpResponse.getContent(), List.class);
+            temp.forEach(item -> {
+                if (!list.contains(item)) {
+                    list.add(item);
+                }
+            });
+            return list;
         }
         return new ArrayList<>();
     }
 
     /**
-     * 获取用的saas机构
+     * 获取用的saas机构   响应时间很久
      */
     @RequestMapping(value = "/getUserSaasOrgAndArea", method = RequestMethod.GET)
-    public void getUserSaasOrgAndArea(List<String> roleOrgCodes, HttpServletRequest request) throws Exception {
-        //使用orgCode获取saas化的机构或者区域。
-        String urlUOrg = "/org/getUserOrgSaasByUserOrgCode/";
-        Map<String, Object> uParams = new HashMap<>();
-        uParams.put("orgCodeStr", StringUtils.join(roleOrgCodes, ',') );
-        String resultStrUserSaasOrg = HttpClientUtil.doGet(comUrl + urlUOrg, uParams, username, password);
-        Envelop envelop = getEnvelop(resultStrUserSaasOrg);
+    public void getUserSaasOrgAndArea(Set<String> roleOrgCodes, HttpServletRequest request) throws Exception {
+        //获取地区saas
+        String saas = "/basic/api/v1.0/org/getUserOrgSaasByUserOrgCode/";
+        Map<String, Object> params = new HashMap<>();
+        params.put("userOrgCode", StringUtils.join(roleOrgCodes, ',') );
+        params.put("type", "1");
+        HttpResponse areaSaasResponse = HttpUtils.doGet(adminInnerUrl + saas, params);
         HttpSession session = request.getSession();
-        session.setAttribute(AuthorityKey.UserAreaSaas, envelop.getObj());
-        List<String> userOrgList = envelop.getDetailModelList();
-        List<String> districtList = (List<String>) envelop.getObj();
-        String geographyUrl = "/geography_entries/";
-        if (districtList != null && districtList.size() > 0){
-            for (String code : districtList){
-                uParams.clear();
-                String mGeographyDictStr = HttpClientUtil.doGet(comUrl + geographyUrl + code, uParams, username, password);
-                envelop = getEnvelop(mGeographyDictStr);
-                MGeographyDict mGeographyDict = null;
-                mGeographyDict = getEnvelopModel(envelop.getObj(), MGeographyDict.class);
-                if (mGeographyDict != null){
-                    String province = "";
-                    String city = "";
-                    String district = "";
-                    if (mGeographyDict.getLevel() == 1){
-                        province =  mGeographyDict.getName();
-                    } else if(mGeographyDict.getLevel() == 2){
-                        city =  mGeographyDict.getName();
-                    } else if(mGeographyDict.getLevel() == 3){
-                        district =  mGeographyDict.getName();
-                    }
-                    String  orgGeographyStr = "/organizations/geography";
-                    uParams.clear();
-                    uParams.put("province", province);
-                    uParams.put("city", city);
-                    uParams.put("district", district);
-                    String mOrgsStr = HttpClientUtil.doGet(comUrl + orgGeographyStr , uParams, username, password);
-                    envelop = getEnvelop(mOrgsStr);
-                    if (envelop != null && envelop.getDetailModelList() != null ){
-                        List<MOrganization> organizations = (List<MOrganization>)getEnvelopList(envelop.getDetailModelList(),new ArrayList<MOrganization>(),MOrganization.class);
-                        if (organizations !=null ){
-                            java.util.Iterator it = organizations.iterator();
-                            while (it.hasNext()){
-                                MOrganization mOrganization = (MOrganization)it.next();
-                                if (!userOrgList.contains(mOrganization.getCode())) {
-                                    userOrgList.add(mOrganization.getCode());
-                                }
-                            }
-                        }
-                    }
+        List<String> _areaSaasList = new ArrayList<>();
+        if (areaSaasResponse.isSuccessFlg()) {
+            List<String> areaSaasList = toModel(areaSaasResponse.getContent(), List.class);
+            areaSaasList.forEach(item -> {
+                if (!_areaSaasList.contains(item)) {
+                    _areaSaasList.add(item);
                 }
+            });
+        }
+        session.setAttribute(AuthorityKey.UserAreaSaas, _areaSaasList);
+        //获取机构saas
+        params.put("type", "2");
+        HttpResponse orgSaasResponse = HttpUtils.doGet(adminInnerUrl + saas, params);
+        if (orgSaasResponse.isSuccessFlg()) {
+            List<String> orgSaasList = objectMapper.readValue(orgSaasResponse.getContent(), List.class);
+            StringBuilder stringBuilder = new StringBuilder();
+            _areaSaasList.forEach(item -> {
+                stringBuilder.append(item).append(",");
+            });
+            String childOrgSaas = "/basic/api/v1.0/org/childOrgSaasByAreaCode";
+            params.clear();
+            params.put("area", stringBuilder.toString());
+            HttpResponse childOrgSaasResponse = HttpUtils.doPost(adminInnerUrl + childOrgSaas, params);
+            if (childOrgSaasResponse.isSuccessFlg()) {
+                List<String> temp = toModel(childOrgSaasResponse.getContent(), List.class);
+                temp.forEach(item -> {
+                    if (!orgSaasList.contains(item)) {
+                        orgSaasList.add(item);
+                    }
+                });
             }
+            //加上自身默认机构
+            roleOrgCodes.forEach(item -> {
+                if (!orgSaasList.contains(item)) {
+                    orgSaasList.add(item);
+                }
+            });
+            orgSaasList.removeAll(Collections.singleton(null));
+            orgSaasList.removeAll(Collections.singleton(""));
+            session.setAttribute(AuthorityKey.UserOrgSaas, orgSaasList);
+        } else {
+            session.setAttribute(AuthorityKey.UserOrgSaas, new ArrayList<>());
         }
-        //加上自身默认机构
-        for(String code : roleOrgCodes){
-            userOrgList.add(code);
-        }
-        userOrgList.removeAll(Collections.singleton(null));
-        userOrgList.removeAll(Collections.singleton(""));
-        session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
     }
 
     @RequestMapping(value = "/userVerification")
@@ -518,44 +515,25 @@ public class LoginController extends BaseUIController {
 
     }
 
-
     /**
      * 获取角色机构
      * @param roleList 角色组列表
      * @return
      */
-    public List<RoleOrgModel> gerRolesOrgs(List<String> roleList) throws Exception {
-        List<RoleOrgModel> roleOrgs = new ArrayList<>();
-        for (String roleId : roleList){
-            Map<String, Object> params = new HashMap<>();
-            /*String roleUrl = "/roles/role/" + roleId;
-            params.put("id", Long.valueOf(roleId));
-            String envelopRoleStr = HttpClientUtil.doGet(comUrl + roleUrl, params, username, password);
-            Envelop envelopRole = objectMapper.readValue(envelopRoleStr,Envelop.class);
-            if (envelopRole.getObj() != null){
-                MRoles mRoles = objectMapper.convertValue(envelopRole.getObj(), MRoles.class);
-                if ( ! StringUtils.isEmpty( mRoles.getOrgCode() )){
-                    RoleOrgModel roleOrgModel = new RoleOrgModel();
-                    roleOrgModel.setOrgCode(mRoles.getOrgCode());
-                    roleOrgModel.setRoleId(mRoles.getId());
-                    roleOrgs.add(roleOrgModel);
-                }
-            }*/
-            String url = ServiceApi.Roles.RoleOrgsNoPage;
-            params.put("filters", "roleId=" + roleId);
-            String envelopStr = HttpClientUtil.doGet(comUrl + url,params, username, password);
-            Envelop envelop = objectMapper.readValue(envelopStr, Envelop.class);
-            if (envelop.isSuccessFlg() && envelop.getDetailModelList().size() > 0) {
-                List<RoleOrgModel> roleOrgModels = envelop.getDetailModelList();
-                if (roleOrgModels != null && roleOrgModels.size() > 0){
-                    for(int i = 0; i < roleOrgModels.size() ;i++){
-                        RoleOrgModel orgModel = objectMapper.convertValue(roleOrgModels.get(i), RoleOrgModel.class) ;
-                        roleOrgs.add(orgModel);
-                    }
-                }
-            }
+    public List<Map<String, Object>> gerRolesOrgs(List<String> roleList) throws Exception {
+        StringBuilder stringBuilder = new StringBuilder();
+        roleList.forEach(item -> {
+            stringBuilder.append(item).append(",");
+        });
+        Map<String, Object> params = new HashMap<>();
+        String url = "/basic/api/v1.0/roles/role_orgs/no_page";
+        params.put("filters", "roleId=" + stringBuilder.toString());
+        HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+        if (response.isSuccessFlg()) {
+            List<Map<String, Object>> list = objectMapper.readValue(response.getContent(), List.class);
+            return list;
         }
-        return  roleOrgs;
+        return new ArrayList<>();
     }
 
     /**
