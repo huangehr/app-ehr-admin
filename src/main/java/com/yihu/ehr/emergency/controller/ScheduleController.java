@@ -8,6 +8,7 @@ import com.yihu.ehr.emergency.model.ScheduleMsgModelReader;
 import com.yihu.ehr.emergency.model.ScheduleMsgModelWriter;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.excel.AExcelReader;
 import com.yihu.ehr.util.excel.ObjectFileRW;
 import com.yihu.ehr.util.excel.TemPath;
@@ -220,6 +221,7 @@ public class ScheduleController extends BaseUIController {
             Set<String> carIds = findExistIdOrPhoneInSchedule("id",toJson(excelReader.getRepeat().get("carId")));
             writerResponse(response, 35+"", "l_upd_progress");
             ScheduleMsgModel model;
+            Date now = new Date();
             for(int i=0; i<correctLs.size(); i++){
                 model = correctLs.get(i);
                 model.setCreator(user.getId());
@@ -227,6 +229,10 @@ public class ScheduleController extends BaseUIController {
                     errorLs.add(model);
                 }else{
                     saveLs.add(model);
+                }
+                if(DateUtil.strToDate(model.getStart()).getTime()<now.getTime()){
+                    model.addErrorMsg("start", "开始时间不能小于当前时间");
+                    errorLs.add(model);
                 }
             }
             for(int i=0; i<errorLs.size(); i++){
