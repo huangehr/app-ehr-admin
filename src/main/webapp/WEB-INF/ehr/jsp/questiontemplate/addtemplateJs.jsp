@@ -50,8 +50,13 @@
                             },
                             processResults: function (data, page) {
                                 if(data.successFlg){
+                                    var itemList = [];
+                                    var arr = data.detailModelList
+                                    for(item in arr){
+                                        itemList.push({id: item, text: arr[item].labelName})
+                                    }
                                     return {
-                                        results:  data.detailModelList
+                                        results:  itemList
                                     };
                                 }else{
                                     $.ligerDialog.error(data.msg);
