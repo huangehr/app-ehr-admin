@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="utf-8"%>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<style>
+	<%--样式重置--%>
+	.l-frozen .l-grid2 .l-grid-body {
+		overflow-x: hidden !important;
+	}
+</style>
 <input type="text" id="ipt_param_resourcesId" hidden="hidden" value="${resourcesId}"/>
 <input type="text" id="ipt_param_resourcesCode" hidden="hidden" value="${resourcesCode}"/>
 <%--<div id="">--%>

@@ -143,6 +143,7 @@
                             }
                         ],
                        enabledEdit: true,
+                       enabledSort:false,
                        validate: true,
                        unSetValidateAttr: false,
                        onDblClickRow : function (row){

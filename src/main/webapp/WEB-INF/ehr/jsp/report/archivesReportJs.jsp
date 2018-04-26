@@ -158,8 +158,12 @@
                     scrollButtons:{
                         enable:false,
                         scrollType:"continuous",
-                        scrollSpeed:10,
-                        scrollAmount:40
+                        scrollSpeed:5,
+                        scrollAmount:10
+                    },
+                    mouseWheel:{
+                        enable:true,
+                        scrollAmount:200
                     },
                     horizontalScroll:false,
                 });
@@ -190,7 +194,11 @@
                 this.getData(pi[1], {date:me.$date1.val()}, function (res) {
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
-                        me.loadChart2(dataList);
+                        if (dataList && dataList.length>0){
+                            me.loadChart2(dataList);
+                        }else{
+                            me.myCharts2.hideLoading();
+                        }
                     }else{
                         me.myCharts2.hideLoading();
                     }
@@ -231,8 +239,10 @@
                         $("#oupatient_rate_sc").html(me.toDecimal(obj.oupatient_rate_sc)+"%");
                         $("#inpatient_total_sc").html(obj.inpatient_total+"/"+obj.inpatient_total_sc);
                         $("#inpatient_rate_sc").html(me.toDecimal(obj.inpatient_rate_sc)+"%");
-                        if(res.detailModelList && res.detailModelList.length>0){
+                        if(res.detailModelList&&res.detailModelList.length>0){
                             me.loadChart4(dataList);
+                        }else{
+                            me.myCharts4.hideLoading();
                         }
                     }else{
                         me.myCharts4.hideLoading();
@@ -253,8 +263,10 @@
                         $("#oupatient_rate_time").html(me.toDecimal(obj.oupatient_rate)+"%");
                         $("#inpatient_total_time").html(obj.inpatient_total+"/"+obj.inpatient_total_es);
                         $("#inpatient_rate_time").html(me.toDecimal(obj.inpatient_rate)+"%");
-                        if(res.detailModelList && res.detailModelList.length>0){
+                        if(res.detailModelList&&res.detailModelList.length>0){
                             me.loadChart5(dataList);
+                        }else{
+                            me.myCharts5.hideLoading();
                         }
                     }else{
                         me.myCharts5.hideLoading();
@@ -394,9 +406,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#44d4ca',
+                                    color:'#83c44e',
                                     lineStyle:{
-                                        color:'#44d4ca'
+                                        color:'#83c44e'
                                     }
                                 }
                             },
@@ -410,9 +422,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#FFBD5C',
+                                    color:'#ffac15',
                                     lineStyle:{
-                                        color:'#FFBD5C'
+                                        color:'#ffac15'
                                     }
                                 }
                             },
@@ -589,9 +601,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#44d4ca',
+                                    color:'#83c44e',
                                     lineStyle:{
-                                        color:'#44d4ca'
+                                        color:'#83c44e'
                                     }
                                 }
                             },
@@ -605,9 +617,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#FFBD5C',
+                                    color:'#ffac15',
                                     lineStyle:{
-                                        color:'#FFBD5C'
+                                        color:'#ffac15'
                                     }
                                 }
                             },
@@ -742,9 +754,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#44d4ca',
+                                    color:'#83c44e',
                                     lineStyle:{
-                                        color:'#44d4ca'
+                                        color:'#83c44e'
                                     }
                                 }
                             },
@@ -758,9 +770,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#FFBD5C',
+                                    color:'#ffac15',
                                     lineStyle:{
-                                        color:'#FFBD5C'
+                                        color:'#ffac15'
                                     }
                                 }
                             },
@@ -884,9 +896,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#FFBD5C',
+                                    color:'#ffac15',
                                     lineStyle:{
-                                        color:'#FFBD5C'
+                                        color:'#ffac15'
                                     }
                                 }
                             },
@@ -900,9 +912,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#44d4ca',
+                                    color:'#83c44e',
                                     lineStyle:{
-                                        color:'#44d4ca'
+                                        color:'#83c44e'
                                     }
                                 }
                             },
@@ -1026,9 +1038,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#FFBD5C',
+                                    color:'#ffac15',
                                     lineStyle:{
-                                        color:'#FFBD5C'
+                                        color:'#ffac15'
                                     }
                                 }
                             },
@@ -1042,9 +1054,9 @@
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
-                                    color:'#44d4ca',
+                                    color:'#83c44e',
                                     lineStyle:{
-                                        color:'#44d4ca'
+                                        color:'#83c44e'
                                     }
                                 }
                             },
@@ -1139,7 +1151,7 @@
                     $.each(item1, function (key,value) {
                         xData.push(key);
                         data1.push(value.count);
-                        data2.push(value.rate);
+                        data2.push(me.toDecimal(value.rate));
                     });
                 });
                 $.each(data.errorCode,function (id,item) {
