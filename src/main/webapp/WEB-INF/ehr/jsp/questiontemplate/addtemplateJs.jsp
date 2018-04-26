@@ -223,8 +223,8 @@
                             if (res.successFlg) {
                                 var data = res.obj;
                                 var labels = data.labels;
-                                $("#inp_wenjuan_name").val(data.title);
-                                $("#tea_wenjuan_instruction").val(data.comment);
+                                $("#inp_wenjuan_name").val(data.surveyTemplate.title);
+                                $("#tea_wenjuan_instruction").val(data.surveyTemplate.comment);
                                 var allLabel = $(".div-label-content .div-label");
                                 for(var i=0;i<allLabel.length;i++){
                                     var labelId = $(allLabel[i]).attr("data-id");
