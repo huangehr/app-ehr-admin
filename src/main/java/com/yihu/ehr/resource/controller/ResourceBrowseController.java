@@ -232,11 +232,6 @@ public class ResourceBrowseController extends BaseUIController {
         List<String> userAreaSaasList  = getUserAreaSaasListRedis(request);
         boolean isAccessAll = getIsAccessAllRedis(request);
         if (!isAccessAll) {
-            if (null == userRolesList || userRolesList.size() <= 0) {
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("无权访问");
-                return envelop;
-            }
             if ((null == userOrgSaasList || userOrgSaasList.size() <= 0) && (null == userAreaSaasList || userAreaSaasList.size() <= 0)) {
                 envelop.setSuccessFlg(false);
                 envelop.setErrorMsg("无权访问");
