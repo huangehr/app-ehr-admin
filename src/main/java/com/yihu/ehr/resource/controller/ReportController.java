@@ -584,12 +584,12 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/uploadTemplate")
     @ResponseBody
-    public Object uploadTemplate(Integer id, String content, String reportData, @RequestBody String position) {
+    public Object uploadTemplate(Integer id, String content, String reportData, String position) {
         try {
             saveSetting(id, reportData);
             Envelop result = new Envelop();
             String filePath = this.getClass().getResource("/").getPath() + "temp/";
-            String fileName = System.currentTimeMillis() + "template.html";
+            String fileName = System.currentTimeMillis() + "template.js";
             // 生成模板
             FileUploadUtil.createFile(filePath, fileName, content);
             FileInputStream inputStream = new FileInputStream(filePath + fileName);

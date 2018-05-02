@@ -1157,9 +1157,9 @@
                 $.each(data.errorCode,function (id,item) {
                     var obj = {};
                     obj.value = item.count;
-                    if (item.errorCode=="e00001"){
+                    if (item.errorCode=="E00001"){
                         obj.name = "为空";
-                    }else if (item.errorCode=="e00002"){
+                    }else if (item.errorCode=="E00002"){
                         obj.name = "超出值域";
                     }else{
                         obj.name = "其他";
