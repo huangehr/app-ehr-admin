@@ -206,7 +206,7 @@ public class BaseUIController {
         if (request.getSession().getAttribute(AuthorityKey.UserOrgSaas) != null){
             userOrgList  = (List<String>)request.getSession().getAttribute(AuthorityKey.UserOrgSaas);
         }
-        return  userOrgList;
+        return userOrgList;
     }
 
     public List<String> getUserRolesListRedis(HttpServletRequest request) {

@@ -89,7 +89,13 @@
             return true;
         }
         function showName(){
-            $('#thelist').val($(this).val())
+            var str = $(this).val();
+            var arr = str.split('\\');
+            for(var i = 0;i<arr.length;i++){
+                if(arr[i]!=("C"||"fakepath")){
+                    $('#thelist').val(arr[i]);
+                }
+            }
         }
         function chg(val) {
             console.log(val)

@@ -108,7 +108,7 @@
             <label>源配置：</label>
 
             <div class="l-text-wrapper m-form-control essential">
-                <textarea id="inp_dataSource_json" class="required useTitle validate-special-char"  required-title=<spring:message code="lbl.must.input"/> ></textarea>
+                <textarea id="inp_dataSource_json" class="required useTitle"  required-title=<spring:message code="lbl.must.input"/> ></textarea>
             </div>
         </div>
         <div class="m-form-group f-mt5">

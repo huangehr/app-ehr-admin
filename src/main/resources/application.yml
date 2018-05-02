@@ -51,8 +51,8 @@ service-gateway:
   stdsourceurl: http://172.19.103.73:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
   standard: http://172.19.103.73:10000/api/v1.0/std
-  browseClientUrl: http://192.168.1.221:8010/ehr/browser
-  browseClientOutSizeUrl: http://27.154.233.186:9480/ehr/browser
+  browseClientUrl: http://192.168.1.221:8010/profile/browser
+  browseClientOutSizeUrl: http://27.154.233.186:9480/profile/browser
   profileurl: http://172.19.103.74:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
@@ -85,8 +85,8 @@ service-gateway:
   stdsourceurl: http://172.19.103.58:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.58:10000/api/v1.0/adapter
   standard: http://172.19.103.58:10000/api/v1.0/std
-  browseClientUrl: http://172.19.103.58:8010/ehr/browser
-  browseClientOutSizeUrl: http://172.19.103.58:8010/ehr/browser
+  browseClientUrl: http://172.19.103.58:8010/profile/browser
+  browseClientOutSizeUrl: http://172.19.103.58:8010/profile/browser
   profileurl: http://172.19.103.58:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
@@ -119,8 +119,8 @@ service-gateway:
   stdsourceurl: http://11.1.2.13:10000/api/v1.0/admin/standard_source
   adaption: http://11.1.2.13:10000/api/v1.0/adapter
   standard: http://11.1.2.13:10000/api/v1.0/std
-  browseClientUrl: http://11.1.2.16:8010/ehr/browser
-  browseClientOutSizeUrl: http://11.1.2.16:8010/ehr/browser
+  browseClientUrl: http://11.1.2.16:8010/profile/browser
+  browseClientOutSizeUrl: http://11.1.2.16:8010/profile/browser
   profileurl: http://11.1.2.14:9009/api/v1.0
 fast-dfs:
   tracker-server: 11.1.2.9:22122
@@ -155,8 +155,8 @@ service-gateway:
   stdsourceurl: http://10.176.97.10:10000/api/v1.0/admin/standard_source
   adaption: http://10.176.97.10:10000/api/v1.0/adapter
   standard: http://10.176.97.10:10000/api/v1.0/std
-  browseClientUrl: http://10.176.97.11:8010/ehr/browser
-  browseClientOutSizeUrl: http://171.35.109.35:1235/ehr/browser
+  browseClientUrl: http://10.176.97.11:8010/profile/browser
+  browseClientOutSizeUrl: http://171.35.109.35:1235/profile/browser
   profileurl: http://10.176.97.12:9009/api/v1.0
 fast-dfs:
   tracker-server: 10.176.97.5:22122
@@ -190,8 +190,8 @@ service-gateway:
   stdsourceurl: http://100.100.1.162:10000/api/v1.0/admin/standard_source
   adaption: http://100.100.1.162:10000/api/v1.0/adapter
   standard: http://100.100.1.162:10000/api/v1.0/std
-  browseClientUrl: http://100.100.1.163:8010/ehr/browser
-  browseClientOutSizeUrl: http://100.100.1.163:8010/ehr/browser
+  browseClientUrl: http://100.100.1.163:8010/profile/browser
+  browseClientOutSizeUrl: http://100.100.1.163:8010/profile/browser
   profileurl: http://100.100.1.164:9009/api/v1.0
 fast-dfs:
   tracker-server: 100.100.1.157:22122
@@ -203,7 +203,7 @@ std:
 spring:
   profiles: prod_srformal
   datasource:
-    url: jdbc:mysql://192.168.40.34:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://192.168.210.3:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: healthcloud
     password: GP8Qz4qU
 app:
@@ -224,8 +224,8 @@ service-gateway:
   stdsourceurl: http://192.168.220.84:10000/api/v1.0/admin/standard_source
   adaption: http://192.168.220.84:10000/api/v1.0/adapter
   standard: http://192.168.220.84:10000/api/v1.0/std
-  browseClientUrl: http://192.168.220.72:8010/ehr/browser
-  browseClientOutSizeUrl: http://192.168.220.72:8010/ehr/browser
+  browseClientUrl: http://192.168.220.72:8010/profile/browser
+  browseClientOutSizeUrl: http://223.84.134.42:1234/profile/browser
   profileurl: http://192.168.200.68:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.50.116:22122,192.168.50.119:22122

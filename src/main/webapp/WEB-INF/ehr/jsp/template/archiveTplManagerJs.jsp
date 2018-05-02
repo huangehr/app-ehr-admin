@@ -11,7 +11,7 @@
             var urls = {
                 list: "${contextRoot}/template/list",
                 gotoModify: "${contextRoot}/template/gotoModify",
-                delete: "${contextRoot}/template/lsit",
+                delete: "${contextRoot}/template/delete",
                 uploadTplFile: "${contextRoot}/template/update_tpl_content"
             }
             var selectRow = null;

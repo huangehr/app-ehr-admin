@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -583,12 +584,12 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/uploadTemplate")
     @ResponseBody
-    public Object uploadTemplate(Integer id, String content, String reportData) {
+    public Object uploadTemplate(Integer id, String content, String reportData, String position) {
         try {
             saveSetting(id, reportData);
             Envelop result = new Envelop();
             String filePath = this.getClass().getResource("/").getPath() + "temp/";
-            String fileName = System.currentTimeMillis() + "template.html";
+            String fileName = System.currentTimeMillis() + "template.js";
             // 生成模板
             FileUploadUtil.createFile(filePath, fileName, content);
             FileInputStream inputStream = new FileInputStream(filePath + fileName);
@@ -600,6 +601,8 @@ public class ReportController extends BaseUIController {
             Envelop envelopGet = objectMapper.readValue(envelopGetStr, Envelop.class);
             RsReportModel updateModel = getEnvelopModel(envelopGet.getObj(), RsReportModel.class);
             updateModel.setTemplatePath(storagePath);
+            // 设置报表中视图和位置的关系
+            updateModel.setPosition(position);
 
             Map<String, Object> params = new HashMap<>();
             params.put("rsReport", objectMapper.writeValueAsString(updateModel));
