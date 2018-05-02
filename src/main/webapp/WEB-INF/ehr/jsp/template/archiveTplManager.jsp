@@ -32,7 +32,7 @@
             <div class="m-form-control" id="div-searchNm" style="float: left">
                 <%--<a href="javascript:$('#contentPage').empty();$('#contentPage').load('${contextRoot}/organization/initial');"  class="f-fwb hidden" id="a-back">返回上一层 </a>--%>
                 <!--输入框带查询-->
-                <input type="text" id="inp_searchOrgName" placeholder="请输入模板或医疗机构" class="f-ml10 " data-attr-scan="orgName"/>
+                <input type="text" id="inp_searchOrgName" placeholder="请输入模板名称" class="f-ml10 " data-attr-scan="orgName"/>
             </div>
             <sec:authorize url="/template/update">
             <div class="m-form-control m-form-control-fr f-ml10" style="float: right;">
