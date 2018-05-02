@@ -50,7 +50,6 @@ service-gateway:
   cdatypeurl: http://172.19.103.73:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://172.19.103.73:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
-  template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
   browseClientUrl: http://192.168.1.221:8010/ehr/browser
   browseClientOutSizeUrl: http://27.154.233.186:9480/ehr/browser
@@ -85,7 +84,6 @@ service-gateway:
   cdatypeurl: http://172.19.103.58:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://172.19.103.58:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.58:10000/api/v1.0/adapter
-  template: http://172.19.103.58:10000/api/v1.0/template
   standard: http://172.19.103.58:10000/api/v1.0/std
   browseClientUrl: http://172.19.103.58:8010/ehr/browser
   browseClientOutSizeUrl: http://172.19.103.58:8010/ehr/browser
@@ -120,7 +118,6 @@ service-gateway:
   cdatypeurl: http://11.1.2.13:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://11.1.2.13:10000/api/v1.0/admin/standard_source
   adaption: http://11.1.2.13:10000/api/v1.0/adapter
-  template: http://11.1.2.13:10000/api/v1.0/template
   standard: http://11.1.2.13:10000/api/v1.0/std
   browseClientUrl: http://11.1.2.16:8010/ehr/browser
   browseClientOutSizeUrl: http://11.1.2.16:8010/ehr/browser
@@ -157,7 +154,6 @@ service-gateway:
   cdatypeurl: http://10.176.97.10:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://10.176.97.10:10000/api/v1.0/admin/standard_source
   adaption: http://10.176.97.10:10000/api/v1.0/adapter
-  template: http://10.176.97.10:10000/api/v1.0/template
   standard: http://10.176.97.10:10000/api/v1.0/std
   browseClientUrl: http://10.176.97.11:8010/ehr/browser
   browseClientOutSizeUrl: http://171.35.109.35:1235/ehr/browser
@@ -193,7 +189,6 @@ service-gateway:
   cdatypeurl: http://100.100.1.162:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://100.100.1.162:10000/api/v1.0/admin/standard_source
   adaption: http://100.100.1.162:10000/api/v1.0/adapter
-  template: http://100.100.1.162:10000/api/v1.0/template
   standard: http://100.100.1.162:10000/api/v1.0/std
   browseClientUrl: http://100.100.1.163:8010/ehr/browser
   browseClientOutSizeUrl: http://100.100.1.163:8010/ehr/browser
@@ -228,7 +223,6 @@ service-gateway:
   cdatypeurl: http://192.168.220.84:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://192.168.220.84:10000/api/v1.0/admin/standard_source
   adaption: http://192.168.220.84:10000/api/v1.0/adapter
-  template: http://192.168.220.84:10000/api/v1.0/template
   standard: http://192.168.220.84:10000/api/v1.0/std
   browseClientUrl: http://192.168.220.72:8010/ehr/browser
   browseClientOutSizeUrl: http://192.168.220.72:8010/ehr/browser
