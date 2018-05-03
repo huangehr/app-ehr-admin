@@ -171,7 +171,7 @@
                                 render: function (row) {
                                     var html = ''
                                         <sec:authorize url="/template/update">
-                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "tpl:tplInfo:open", row.id, 'modify', row.cdaVersion) + '">修改</a>'
+                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "tpl:tplInfo:open", row.id, 'modify', row.cdaVersion) + '">修改</a>' + "/"
                                         + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "tpl:tplInfo:delete", row.id) + '">删除</a>';
                                     </sec:authorize>
 
@@ -265,18 +265,22 @@
                     });
                     $.subscribe('tpl:tplInfo:delete', function (event, id) {
                         var dataModel = $.DataModel.init();
-                        dataModel.updateRemote("${contextRoot}/template/delete", {
-                            data: {ids:id},
-                            success: function (data) {
-                                if (data.successFlg) {
-                                    parent._LIGERDIALOG.success('删除成功');
-                                    master.reloadGrid();
-                                } else {
-                                    parent._LIGERDIALOG.error(data.errorMsg);
-                                }
-                            },
-                            error:function (data) {
-                                parent._LIGERDIALOG.error(data.errorMsg);
+                        $.ligerDialog.confirm('确认删除？', function (yes) {
+                            if (yes) {
+                                dataModel.updateRemote("${contextRoot}/template/delete", {
+                                    data: {ids:id},
+                                    success: function (data) {
+                                        if (data.successFlg) {
+                                            parent._LIGERDIALOG.success('删除成功');
+                                            master.reloadGrid();
+                                        } else {
+                                            parent._LIGERDIALOG.error(data.errorMsg);
+                                        }
+                                    },
+                                    error:function (data) {
+                                        parent._LIGERDIALOG.error(data.errorMsg);
+                                    }
+                                });
                             }
                         });
                     });
