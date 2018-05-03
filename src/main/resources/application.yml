@@ -26,9 +26,9 @@ permissions:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: weifuwu
-    password: weifuwu
+    url: jdbc:mysql://localhost:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: root
   redis:
     host: 172.19.103.47 # Redis server host.
     port: 6379
@@ -43,8 +43,8 @@ app:
 service-gateway:
   username: user
   password: eureka
-  url: http://172.19.103.73:10000/api/v1.0/admin
-  adminInnerUrl: http://172.19.103.73:10000
+  url: http://localhost:10000/api/v1.0/admin
+  adminInnerUrl: http://localhost:10000
   stdurl: http://172.19.103.73:10000/api/v1.0/admin/std
   versionurl: http://172.19.103.73:10000/api/v1.0/admin/version
   cdatypeurl: http://172.19.103.73:10000/api/v1.0/admin/cda_type
@@ -212,7 +212,7 @@ app:
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
   oauth2InnerUrl: http://192.168.220.84:10001/authentication/
-  oauth2OuterUrl: http://jksr.srswjw.gov.cn:1235/authentication/
+  oauth2OuterUrl: http://jksr.srswjw.gov.cn:1235/gateway/authentication/
 service-gateway:
   username: user
   password: eureka
