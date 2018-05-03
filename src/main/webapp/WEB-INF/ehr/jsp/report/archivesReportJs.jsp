@@ -1303,14 +1303,14 @@
                     color: colors,
                     legend: {
                         orient: 'vertical',
-                        x: 'right',
+                        right: 20,
                         bottom:'15%',
                         data:legend1
                     },
                     series: [
                         {
                             type:'pie',
-                            radius: ['20%', '80%'],
+                            radius: ['20%', '70%'],
                             avoidLabelOverlap: false,
                             label: {
                                 normal: {
@@ -1335,14 +1335,14 @@
                     color: colors,
                     legend: {
                         orient: 'vertical',
-                        x: 'right',
+                        right: 20,
                         bottom:'15%',
                         data:legend2
                     },
                     series: [
                         {
                             type:'pie',
-                            radius: ['20%', '80%'],
+                            radius: ['20%', '70%'],
                             avoidLabelOverlap: false,
                             label: {
                                 normal: {
