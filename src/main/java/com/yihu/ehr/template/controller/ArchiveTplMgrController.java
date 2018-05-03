@@ -47,14 +47,14 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
         String url = "/cda/cdas";
         try {
             PageParms pageParms = new PageParms(rows, page)
-                    .setFields("id,name")
+                    .setFields("id,name,code")
                     .addExt("version", version)
                     .addGroupNotNull("name", searchName, "g1")
                     .addGroupNotNull("code", searchName, "g1")
                     .addGroupNotNull("name", PageParms.LIKE, searchParm, "g1")
                     .addGroupNotNull("code", PageParms.LIKE, searchParm, "g1");
             String resultStr = service.search(url, pageParms);
-            return formatComboData(resultStr, "id", "name");
+            return toModel(resultStr, Envelop.class);
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();

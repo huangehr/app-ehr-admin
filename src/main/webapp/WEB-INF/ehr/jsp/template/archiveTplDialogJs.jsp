@@ -113,7 +113,8 @@
                         data:[
                             { text: '门诊', id: 'clinic' },
                             { text: '住院', id: 'resident'},
-                            { text: '体检', id: 'medicalExam'}
+                            { text: '体检', id: 'medicalExam'},
+                            { text: '通用', id : 'universal'}
                         ],
                         onSelected: function (value ,text){
                            this.category = value;
@@ -200,9 +201,6 @@
                             TemplateModel.type = TemplateModel.organizationCode;
                             var dataModel = $.DataModel.init();
 //                            TemplateModel['organizationCode'] = TemplateModel.organizationCode;
-                            if(!TemplateModel['organizationCode']){
-                                TemplateModel['organizationCode'] = model.organizationCode;
-                            }
                             TemplateModel.cdaVersion = versionCode;
                             var parmes = $.extend({},TemplateModel,{cdaDocumentName:addArchiveTplInfo.name});
                             dataModel.createRemote(urls.update, {

@@ -125,6 +125,8 @@
                                         return "住院";
                                     }else if(row.type == 'medicalExam'){
                                         return "体检";
+                                    }else if(row.type == 'universal') {
+                                        return "通用";
                                     }
                                 }
                             },
