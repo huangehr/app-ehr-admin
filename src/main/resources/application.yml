@@ -211,8 +211,8 @@ app:
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
-  oauth2InnerUrl: http://192.168.220.84:10000/authentication/
-  oauth2OuterUrl: http://223.84.134.42:1235/
+  oauth2InnerUrl: http://192.168.220.84:10001/authentication/
+  oauth2OuterUrl: http://jksr.srswjw.gov.cn:1235/authentication/
 service-gateway:
   username: user
   password: eureka
@@ -225,7 +225,7 @@ service-gateway:
   adaption: http://192.168.220.84:10000/api/v1.0/adapter
   standard: http://192.168.220.84:10000/api/v1.0/std
   browseClientUrl: http://192.168.220.72:8010/profile/browser
-  browseClientOutSizeUrl: http://223.84.134.42:1234/profile/browser
+  browseClientOutSizeUrl: http://jksr.srswjw.gov.cn:1234/profile/browser
   profileurl: http://192.168.200.68:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.50.116:22122,192.168.50.119:22122
