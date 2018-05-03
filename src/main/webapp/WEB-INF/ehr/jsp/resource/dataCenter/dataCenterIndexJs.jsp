@@ -12,19 +12,51 @@
     $('#contentPage').css({
         padding: 0
     });
+    var width = window.screen.width;
+    $("html").css("font-size", (width/10)+"px");
+
     var api = [
         '${contextRoot}/resourceCenter/achievements',//数据治理
         '${contextRoot}/resourceCenter/dataAnalysis',//数据分析
         '${contextRoot}/resourceCenter/visualization',//可视化
         '${contextRoot}/resourceCenter/hierarchicalManagement'//分级管理
     ];
+    var color = [
+        '#907bf4',
+        '#ff88be',
+        '#20e1e3',
+        '#03d269',
+        '#fed227',
+        '#30aafa',
+        '#7eed7e',
+        '#ff88be',
+        '#f97e0f',
+        '#1cd2bb',
+        '#a693fe',
+        '#ffc329',
+        '#ff9aa4',
+        '#ffe30c',
+        '#7cf084',
+        '#77c2fc',
+        '#7f8bbb',
+        '#9ede28',
+        '#e1ac7b',
+        '#70ecf8',
+        '#e3eb9e',
+        '#ff5f5f',
+        '#c6adc3',
+        '#f29804',
+        '#9fb6ed',
+        '#8abf87'
+    ];
+
     var option = function () {
         return {
             tooltip : {
                 trigger: 'item',
                     formatter: "{a} <br/>{b} : {c} ({d}%)"
             },
-            color: ['#43b2fa','#20e1e3','#907bf4','#ff88be','#03d269','#fed227','#ff88be']
+            color: color
         }
     };
     var option0 = {}, option1 = {}, option2 = {}, option3 = {};
@@ -36,6 +68,7 @@
             index: 0,
             oldInd: 0,
             sta: true,
+            isFullScreen: false,
             itemData: [
                 {
                     title: '数据治理',
@@ -91,42 +124,28 @@
                 });
                 return [d, lenD];
             },
-            getSeries: function (r, c, d, f, labelBool) {
+            getSeries: function (r, c, d, f, labelBool, name, position) {
                 return {
+                        name: name || '',
                         type: 'pie',
                         radius : r,
                         center: c,
                         data:d,
-                        itemStyle: {
-                        normal : {
-                            label : {
-                                show : labelBool,
-                                formatter: f
-                            },
-                            labelLine : {
-                                show : labelBool
+                        itemStyle : {
+                            normal : {
+                                label : {
+                                    show : labelBool,
+                                    position : position || 'outter'
+                                },
+                                labelLine : {
+                                    show : labelBool
+                                }
                             }
-                        }
+                        },
+                        avoidLabelOverlap: true,
                     }
-                }
             },
             getHandleOpt: function (lenD, d) {
-                return $.extend(option(), {
-                    legend: {
-                        orient: 'vertical',
-                        x: 'right',
-                        y: 'center',
-                        data: lenD
-                    },
-                    series: [ this.getSeries(['30%', '60%'], ['40%', '50%'], d, '{c} ({d}%)', true) ]
-                });
-            },
-            getAnalysisOpt: function (d) {
-                return $.extend(option(), {
-                    series: [ this.getSeries(['30%', '60%'], ['50%', '50%'], d, '{c} ({d}%)', true) ]
-                });
-            },
-            getVisualizationOpt: function (lenD, d1, d2) {
                 return $.extend(option(), {
 //                    legend: {
 //                        orient: 'vertical',
@@ -134,11 +153,44 @@
 //                        y: 'center',
 //                        data: lenD
 //                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}: {c} ({d}%)"
+                    },
+                    series: [ this.getSeries(['50%', '80%'], ['50%', '50%'], d, '{c} ({d}%)', true) ]
+                });
+            },
+            getAnalysisOpt: function (lenD, d) {
+                return $.extend(option(), {
+                    legend: {
+                        orient: 'vertical',
+                        x: 'left',
+                        y: 'center',
+                        data: lenD
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b}: {c} ({d}%)"
+                    },
+                    series: [ this.getSeries(['40%', '70%'], ['60%', '50%'], d, '{c} ({d}%)', false) ]
+                });
+            },
+            getVisualizationOpt: function (lenD, d1, d2) {
+                var op = option();
+                $.extend(op, {
+//                    legend: {
+//                        orient: 'vertical',
+//                        x: 'right',
+//                        y: 'center',
+//                        data: lenD
+//                    },
                     series: [
-                        this.getSeries(['20%', '50%'], ['50%', '50%'], d1, '{c} ({d}%)', false),
-                        this.getSeries(['50%', '80%'], ['50%', '50%'], d2, '{c} ({d}%)', false)
+                        this.getSeries([0, '45%'], ['50%', '50%'], d1, '{b}', true, '视图', 'inner'),
+                        this.getSeries(['60%', '80%'], ['50%', '50%'], d2, '{c} ({d}%)', false, '视图')
                     ]
                 });
+                op.series[0].itemStyle.normal.labelLine.show = false;
+                return op;
             },
             getVisualizationOpt2: function (lenD, d) {
                 return $.extend(option(), {
@@ -148,7 +200,7 @@
 //                        y: 'center',
 //                        data: lenD
 //                    },
-                    series: [ this.getSeries(['30%', '80%'], ['50%', '50%'], d, '', false) ]
+                    series: [ this.getSeries(['30%', '80%'], ['50%', '50%'], d, '', false, '资源报表') ]
                 });
             },
             getAllData: function () {
@@ -172,8 +224,9 @@
                     }
                     if (res[1].successFlg) {
                         var analysisData = res[1].detailModelList[0].view[1],
-                            d = me.getSeriesData(analysisData)[0];
-                        option1 = me.getAnalysisOpt(d);
+                            d = me.getSeriesData(analysisData)[0],
+                            lenD1 = me.getSeriesData(analysisData)[1];
+                        option1 = me.getAnalysisOpt(lenD1, d);
                         me.dataAnalysis = res[1].detailModelList[0];
                     }
                     if (res[2].successFlg) {
@@ -221,8 +274,9 @@
                 }, 2000);
             },
             setSta: function (sta) {
-                $('#runningDom')[0].style.animationPlayState = sta;
-                $('#runningDom')[0].style.WebkitAnimationPlayState = sta;
+                var el = document.getElementById("runningDom");
+                el.style.animationPlayState = sta;
+                el.style.WebkitAnimationPlayState = sta;
             },
             change: function (n) {
                 var me = this;
@@ -283,9 +337,16 @@
                 }, '*');
             },
             toggleFullscreen: function () {
-                window.parent.postMessage({
-                    type: 'fullScreen'
-                }, '*');
+//                window.parent.postMessage({
+//                    type: 'fullScreen'
+//                }, '*');
+                var elem = document.getElementById("dcApp");
+                if(this.isFullScreen){
+                    exitFullScreen();
+                }else{
+                    requestFullScreen(elem);
+                }
+                this.isFullScreen = !this.isFullScreen;
             },
             getDataPromise: function (url, data) {
                 return new Promise(function (resolve, reject) {
@@ -312,6 +373,70 @@
             this.$nextTick(function() {
                 this.getAllData();
             });
+        },
+        filters: {
+            formatNumber: function (value) {
+                return formatNumber(value)
+            }
         }
     });
+
+    function formatNumber(str){
+        var newStr = "";
+        var count = 0;
+        str = str + "";
+        if(str.indexOf(".")==-1){
+            for(var i=str.length-1;i>=0;i--){
+                if(count % 3 == 0 && count != 0){
+                    newStr = str.charAt(i) + "," + newStr;
+                }else{
+                    newStr = str.charAt(i) + newStr;
+                }
+                count++;
+            }
+            str = newStr; //自动补小数点后两位
+        }
+        else
+        {
+            for(var i = str.indexOf(".")-1;i>=0;i--){
+                if(count % 3 == 0 && count != 0){
+                    newStr = str.charAt(i) + "," + newStr; //碰到3的倍数则加上“,”号
+                }else{
+                    newStr = str.charAt(i) + newStr; //逐个字符相接起来
+                }
+                count++;
+            }
+            str = newStr + (str + "00").substr((str + "00").indexOf("."),3);
+        }
+        return str;
+    }
+
+    function requestFullScreen(element) {
+        var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+        if (requestMethod) {
+            requestMethod.call(element);
+        } else if (typeof window.ActiveXObject !== "undefined") {
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    }
+
+    function exitFullScreen(){
+        // 判断各种浏览器，找到正确的方法
+        var exitMethod = document.exitFullscreen || //W3C
+            document.mozCancelFullScreen || //Chrome等
+            document.webkitExitFullscreen || //FireFox
+            document.webkitExitFullscreen; //IE11
+        if (exitMethod) {
+            exitMethod.call(document);
+        }
+        else if (typeof window.ActiveXObject !== "undefined") {//for Internet Explorer
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    }
 </script>

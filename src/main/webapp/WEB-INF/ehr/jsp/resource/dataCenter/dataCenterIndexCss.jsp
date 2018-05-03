@@ -9,7 +9,9 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <style>
-
+    html{
+        /*font-size: 128px;*/
+    }
     body{
         background: url(${staticRoot}/images/diwen_bg_img.png) center no-repeat;
         background-position: bottom right;
@@ -18,9 +20,20 @@
     ul,li{
         list-style: none;
     }
-    li{
-        display: inline-block;
+    .width-50{
+        width: 50%;
     }
+    .ui-grid { display: -webkit-box; display: box; }
+    .ui-grid-middle { -webkit-box-pack: center; -webkit-box-align: center; box-pack: center; box-align: center; }
+    .ui-grid-vertical { -webkit-box-orient: vertical; box-orient: vertical; }
+    .ui-grid-label { -webkit-box-flex: 0; box-flex: 0; width: 100px; font-weight: 600; }
+    .ui-col-0 { -webkit-box-flex: 0; box-flex: 0; }
+    .ui-col-1 { -webkit-box-flex: 1; box-flex: 1; }
+    .ui-col-2 { -webkit-box-flex: 2; box-flex: 2; }
+    .ui-col-3 { -webkit-box-flex: 3; box-flex: 3; }
+    .ui-col-4 { -webkit-box-flex: 4; box-flex: 3; }
+    .ui-col-5 { -webkit-box-flex: 5; box-flex: 5; }
+    .ui-col-6 { -webkit-box-flex: 6; box-flex: 6; }
     .dc-main{
         width: 100%;
         height: 100%;
@@ -28,48 +41,55 @@
         position: relative;
     }
     .qp-icon{
-        width: 16px;
-        height: 16px;
+        width: 0.083rem;
+        height: 0.083rem;
         background: url(${staticRoot}/images/zhankai_icon.png) center no-repeat;
         position: absolute;
-        top: 15px;
-        right: 25px;
+        top: 0.078rem;
+        right: 0.13rem;
         cursor: pointer;
     }
     .dc-body{
         height: 100%;
-        min-width: 1710px;
-        min-height: 942px;
-        position: relative;
+        width: 100%;
+        /*min-height: 4.9rem;*/
+        /*position: relative;*/
+        display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
     }
     .dc-left,.dc-right{
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        overflow: hidden;
+        /*position: absolute;*/
+        /*top: 0;*/
+        /*bottom: 0;*/
+        /*overflow: hidden;*/
+        -webkit-box-flex: 0;
+        height: 100%;
+        position: relative;
     }
     .dc-left{
         width: 60%;
-        left: 0;
+        /*left: 0;*/
         color: #323232;
+
     }
     .dc-right{
         width: 40%;
-        right: 0;
-        padding-right: 120px;
-        padding-top: 20px;
+        /*right: 0;*/
+        /*padding-right: 0.625rem;*/
+        /*padding-top: 0.1rem;*/
         color: #323232;
     }
     .dc-big-circle,.dc-little-circle,.dc-little-circle1{
-        width: 940px;
-        height: 940px;
+        width: 4.8rem;
+        height: 4.8rem;
         /*border:1px dashed #3fb1fa;*/
         -webkit-border-radius:100%;
         -moz-border-radius:100%;
         border-radius:100%;
         position: absolute;
-        left: -150px;
-        bottom: -77px;
+        left: -0.78rem;
+        top: 0.34rem;
     }
     .dc-little-circle1{
         border:1px dashed #3fb1fa;
@@ -78,11 +98,11 @@
         z-index: 5;
     }
     .dc-circle-item{
-        width: 100px;
-        height: 100px;
+        width: 0.52rem;
+        height: 0.52rem;
         cursor: pointer;
         text-align: center;
-        line-height: 100px;
+        line-height: 0.52rem;
         border: 1px solid #2eaafa;
         position: absolute;
         -webkit-border-radius:100%;
@@ -93,17 +113,18 @@
     }
     .dc-circle-item:before{
         content: ' ';
-        width: 110px;
-        height: 110px;
+        width: 0.57rem;
+        height: 0.57rem;
         display: none;
         position: absolute;
-        left: -6px;
-        top: -6px;
+        left: -0.03rem;
+        top: -0.03rem;
         -webkit-border-radius:100%;
         -moz-border-radius:100%;
         border-radius:100%;
         border:1px dashed #3fb1fa;
     }
+    .dc-circle-item.loaded:before,
     .dc-circle-item:hover:before{
         display: block;
         -webkit-animation: run 5s linear;
@@ -113,6 +134,9 @@
         -moz-animation-iteration-count: infinite;
         animation-iteration-count: infinite;
     }
+    /*.dc-circle-item:hover{*/
+        /*z-index: -1;*/
+    /*}*/
     .dc-circle-item.item-two:before{
         border:1px dashed #49d2dc;
     }
@@ -124,11 +148,11 @@
     }
     .dc-circle-item.active:after{
         content: ' ';
-        width: 160px;
-        height: 160px;
+        width: 0.83rem;
+        height: 0.83rem;
         position: absolute;
-        left: -31px;
-        top: -31px;
+        left: -0.16rem;
+        top: -0.16rem;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         border-radius: 50%;
@@ -139,17 +163,17 @@
         -webkit-animation-iteration-count: infinite;
         -moz-animation-iteration-count: infinite;
         animation-iteration-count: infinite;
-        box-shadow: 1px 1px 30px #3fb1fa; /* 阴影效果 */
+        box-shadow: 1px 1px 0.16rem #3fb1fa; /* 阴影效果 */
         z-index: 1;
     }
     .dc-circle-item.item-two:after{
-        box-shadow: 1px 1px 30px #49d2dc; /* 阴影效果 */
+        box-shadow: 1px 1px 0.16rem #49d2dc; /* 阴影效果 */
     }
     .dc-circle-item.item-three:after{
-        box-shadow: 1px 1px 30px #907bf4; /* 阴影效果 */
+        box-shadow: 1px 1px 0.16rem #907bf4; /* 阴影效果 */
     }
     .dc-circle-item.item-four:after{
-        box-shadow: 1px 1px 30px #2075d4; /* 阴影效果 */
+        box-shadow: 1px 1px 0.16rem #2075d4; /* 阴影效果 */
     }
 
     .dc-little-circle{
@@ -161,25 +185,29 @@
         animation-iteration-count: 1;
     }
     .item-one{
-        left: 289px;
-        top: -31px;
+        left: 1.5rem;
+        top: -0.16rem;
         color: #2eaafa;
     }
+    .item-one:hover{
+        opacity: 1;
+    }
     .item-two{
-        left: 629px;
-        border: 1px solid #49d2dc;
+        left: 3.28rem;
+        top: 0;
+        /*border: 1px solid #49d2dc;*/
         color: #49d2dc;
     }
     .item-three{
-        left: 853px;
-        top: 243px;
-        border: 1px solid #907bf4;
+        left: 4.35rem;
+        top: 1.27rem;
+        /*border: 1px solid #907bf4;*/
         color: #907bf4;
     }
     .item-four{
-        left: 864px;
-        top: 563px;
-        border: 1px solid #2075d4;
+        left: 4.4rem;
+        top: 2.93rem;
+        /*border: 1px solid #2075d4;*/
         color: #2075d4;
     }
     .dc-little-circle{
@@ -187,42 +215,46 @@
     }
     .dc-img,.dc-img1{
         position: absolute;
-        /*opacity: 0;*/
-        display: none;
-        left: -1px;
-        top: -3px;
-        transition: All 1s ease-in;
-        -webkit-transition: All 1s ease-in;
-        -moz-transition: All 1s ease-in;
-        -o-transition: All 1s ease-in;
+        width: 0.52rem;
+        height: 0.52rem;
+        object-fit: contain;
+        display: block;
+        opacity: 0;
+
+        transition-property: left,top;
+        transition-duration: 2s;
+        -moz-transition-property: left,top; /* Firefox 4 */
+        -moz-transition-duration: 2s; /* Firefox 4 */
+        -webkit-transition-property: left,top; /* Safari and Chrome */
+        -webkit-transition-duration: 2s; /* Safari and Chrome */
+        -o-transition-property: left,top; /* Opera */
+        -o-transition-duration: 2s; /* Opera */
+        transition-timing-function: ease-in;
+        -moz-transition-timing-function: ease-in; /* Firefox 4 */
+        -webkit-transition-timing-function: ease-in; /* Safari 和 Chrome */
+        -o-transition-timing-function: ease-in; /* Opera */
+    }
+    .dc-img>img,.dc-img1>img {
+        width: 100%;
+        height: 100%;
+        display: inherit;
     }
     .dc-circle-item:hover .dc-img,.dc-circle-item:hover .dc-img1{
-        /*opacity: 1;*/
-        display: block;
+        opacity: 1;
+        /*display: block;*/
     }
-    .dc-icon0.active{
-        display: block;
-        left: 129px;
-        top: 447px;
-    }
-    .dc-icon1.active{
-        display: block;
-        left: -211px;
-        top: 416px;
-    }
-    .dc-icon2.active{
-        display: block;
-        left: -435px;
-        top: 173px;
-    }
+    .dc-icon0.active,
+    .dc-icon1.active,
+    .dc-icon2.active,
     .dc-icon3.active{
-        display: block;
-        left: -446px;
-        top: -147px;
+        opacity: 1;
+        left: 2.15rem;
+        top: 2.15rem;
     }
     .dc-label{
-        width: 100px;
-        height: 100px;
+        font-size: 0.083rem;
+        width: 0.52rem;
+        height: 0.52rem;
         text-align: center;
         position: absolute;
         left: 0;
@@ -233,18 +265,19 @@
         -o-transition: All 0.4s ease-in-out;
     }
     .dc-circle-item:hover .dc-label{
-        left: 100px;
-        width: 100px;
+        left: 0.52rem;
+        width: 0.52rem;
     }
     .dc-info-circle{
-        width: 501px;
-        height: 500px;
+        width: 2.6rem;
+        height: 2.6rem;
         position: absolute;
         left: 50%;
         top: 50%;
-        margin-top:-250px;
-        margin-left:-250px;
+        margin-top:-1.3rem;
+        margin-left:-1.3rem;
         background: url(${staticRoot}/images/ty.png) center no-repeat;
+        background-size: 2.6rem 2.6rem;
         transition: All 0.5s linear;
         -webkit-transition: All 0.5s linear;
         -moz-transition: All 0.5s linear;
@@ -264,8 +297,9 @@
     }
 
     .dc-icon{
-        width: 100px;
-        height: 100px;
+        width: 0.52rem;
+        height: 0.52rem;
+        object-fit: contain;
         position: absolute;
         left: 50%;
         top: 50%;
@@ -284,23 +318,27 @@
         -moz-transition: All 1s linear;
         -o-transition: All 1s linear;
     }
+    .dc-icon>img{
+        width: 100%;
+        height: 100%;
+    }
     .dc-icon.active{
         opacity: 0;
     }
     .item-info{
-        margin-left: 113px;
-        margin-top: -142px;
-        width: 302px;
+        margin-left: 1.59rem;
+        margin-top: 0.74rem;
+        width: 1.30rem;
     }
     .itme-tit{
-        padding-bottom: 8px;
-        font-size: 30px;
+        padding-bottom: 0.042rem;
+        font-size: 0.16rem;
         border-bottom: 1px solid #323232;
     }
     .item-con{
         position: relative;
-        padding-top: 10px;
-        font-size: 16px;
+        padding-top: 0.052rem;
+        font-size: 0.083rem;
     }
     .itme-tit,.item-con{
         color: #323232;
@@ -308,11 +346,11 @@
     }
     .item-con:before{
         content: ' ';
-        width: 26px;
-        height: 10px;
+        width: 0.14rem;
+        height: 0.055rem;
         position: absolute;
-        left: -19px;
-        top: 7px;
+        left: -0.1rem;
+        top: 0.036rem;
         border-top: 1px solid #323232;
         -webkit-transform: rotate(-45deg);
         -moz-transform: rotate(-45deg);
@@ -323,18 +361,18 @@
 
     .container {
         position: absolute;
-        width: 18px;
-        height: 18px;
-        left: 331px;
-        top: 10px;
+        width: 0.0938rem;
+        height: 0.0938rem;
+        left: 1.72rem;
+        top: 0.052rem;
     }
     /* 保持大小不变的小圆点 */
     .dot {
         position: absolute;
-        width: 18px;
-        height: 18px;
-        left: 0;
-        top: 0;
+        width: 0.0938rem;
+        height: 0.0938rem;
+        left: -0.002rem;
+        top: -0.01rem;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         border-radius: 50%;
@@ -344,10 +382,10 @@
     /* 产生动画（向外扩散变大）的圆圈 第一个圆 */
     .pulse {
         position: absolute;
-        width: 30px;
-        height: 30px;
-        left: -6px;
-        top: -6px;
+        width: 0.156rem;
+        height: 0.156rem;
+        left: -0.031rem;
+        top: -0.031rem;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         border-radius: 50%;
@@ -359,35 +397,36 @@
         -webkit-animation-iteration-count: infinite;
         -moz-animation-iteration-count: infinite;
         animation-iteration-count: infinite;
-        box-shadow: 1px 1px 30px #04ffff; /* 阴影效果 */
+        box-shadow: 1px 1px 0.156rem #04ffff; /* 阴影效果 */
     }
     .dc-r-titO{
-        font-size: 24px;
+        font-size: 0.125rem;
         font-weight: 600;
-        padding-bottom: 20px;
+        padding-bottom: 0.1rem;
         position: relative;
     }
     .dc-r-titO:after{
         content: ' ';
-        width: 446px;
+        width: 100%;
         height: 1px;
         position: absolute;
-        right: 0;
-        bottom: 20px;
-        border-bottom: 1px solid #ebebeb;
+        left: 0;
+        bottom: 0;
+        /*border-bottom: 1px solid #ebebeb;*/
+        background-color: #ebebeb;
     }
     .dc-r-con{
         text-indent: 2em;
-        font-size: 16px;
-        line-height: 30px;
-        padding-bottom: 30px;
+        font-size: 0.083rem;
+        line-height: 1.5;
+        padding: 0.052rem 0;
     }
     .dc-r-titT{
-        font-size: 20px;
+        font-size: 0.1rem;
         font-weight: 600;
         border-left: 4px solid #2eaafa;
-        padding-left: 16px;
-        margin: 20px 0;
+        padding-left: 0.083rem;
+        margin: 0.1rem 0;
     }
     .dc-bz{
         width: 100%;
@@ -396,22 +435,22 @@
         font-size: 0;
     }
     .dc-bz-item{
-        width: 160px;
-        height: 160px;
-        margin: 0 7px;
-        -webkit-border-radius:12px;
-        -moz-border-radius:12px;
-        border-radius:12px;
+        width: 0.83rem;
+        height: 0.83rem;
+        margin: 0 0.036rem;
+        -webkit-border-radius:0.0625rem;
+        -moz-border-radius:0.0625rem;
+        border-radius:0.0625rem;
         overflow: hidden;
         border:1px solid #fff;
         position: relative;
     }
     .dc-bz-icon{
-        width: 80px;
-        height: 80px;
+        width: 0.417rem;
+        height: 0.417rem;
         margin: 0 auto;
-        margin-top: 10px;
-        margin-bottom: 6px;
+        margin-top: 0.052rem;
+        margin-bottom: 0.03125rem;
     }
     .ptbz-icon{
         background: url(${staticRoot}/images/pingtaibiaozhun_icon.png) center no-repeat;
@@ -423,35 +462,35 @@
         background: url(${staticRoot}/images/shujuzidian_icon.png) center no-repeat;
     }
     .dc-dz-tit{
-        font-size: 16px;
+        font-size: 0.083rem;
         color: #666;
 
     }
     .dc-dz-num,.dc-dz-info{
-        height: 40px;
-        line-height: 40px;
-        font-size: 20px;
-        margin-top: 3px;
+        height: 0.208rem;
+        line-height: 0.208rem;
+        font-size: 0.1rem;
+        margin-top: 0.0156rem;
     }
     .dc-dz-num{
-        font-size: 20px;
+        font-size: 0.1rem;
     }
     .dc-dz-info{
         /*display: none;*/
         width: 100%;
         background-color: #2eaafa;
         color: #fff;
-        font-size: 16px;
+        font-size: 0.083rem;
         position: absolute;
         left: 0;
-        bottom: -40px;
+        bottom: -0.208rem;
         transition: All 0.2s linear;
         -webkit-transition: All 0.2s linear;
         -moz-transition: All 0.2s linear;
         -o-transition: All 0.2s linear;
-        -webkit-border-radius: 0 0 12px 12px;
-        -moz-border-radius: 0 0 12px 12px;
-        border-radius: 0 0 12px 12px;
+        -webkit-border-radius: 0 0 0.625rem 0.625rem;
+        -moz-border-radius: 0 0 0.625rem 0.625rem;
+        border-radius: 0 0 0.625rem 0.625rem;
     }
     .dc-dz-info:hover{
         color: #fff;
@@ -469,40 +508,42 @@
     .dc-cj{
         position: relative;
         border: 1px solid #ebebeb;
+        display: -webkit-box;
+        display: box;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+        box-pack: center;
+        box-align: center;
     }
     .dc-cj-left{
-        width: 190px;
-        height: 160px;
-        display: inline-block;
+        -webkit-box-flex: 0;
+        box-flex: 0;
+        padding: 0.078rem 0.15rem;
         text-align: center;
-        border-right: 1px solid #ebebeb;
     }
     .dc-cj-icon{
-        width: 52px;
-        height: 52px;
+        width: 0.27rem;
+        height: 0.27rem;
         background: url(${staticRoot}/images/caijizongliang_icon.png) center no-repeat;
+        background-size: 0.27rem 0.27rem;
         margin: 0 auto;
-        margin-top: 20px;
-        margin-bottom: 20px;
     }
     .dc-cj-tit{
-        font-size: 16px;
+        font-size: 0.083rem;
         color: #666;
+        margin-top: 0.1rem;
     }
     .dc-cj-num{
-        font-size: 24px;
-
+        font-size: 0.125rem;
+        margin-top: 0.052rem;
     }
     .dc-cj-right{
-        /*width: 372px;*/
-        height: 160px;
-        float: right;
-        display: inline-block;
-        position: absolute;
-        left: 191px;
-        right: 0;
-        top: 0;
-        bottom: 0;
+        -webkit-box-flex: 1;
+        box-flex: 1;
+        border-left: 1px solid #ebebeb;
+    }
+    .dc-cj-right .chart-div{
+        height: 0.99rem;
     }
     .dc-yzczb{
         border: 1px solid #ebebeb;
@@ -512,131 +553,150 @@
         border:1px solid #2eaafa;
     }
     .dc-cc{
-        height: 140px;
+        /*height: 0.73rem;*/
         text-align: center;
         border: 1px solid #ebebeb;
-        padding-left: 0;
-        font-size: 0;
+        /*padding-left: 0;*/
+        /*font-size: 0;*/
     }
     .dc-cc-item{
-        width: 140px;
-        height: 140px;
+        /*width: 0.73rem;*/
+        /*height: 0.73rem;*/
         border-left: 1px solid #ebebeb;
     }
     .dc-cc-item:first-child{
         border-left: none;
     }
     .dc-cc-icon{
-        width: 52px;
-        height: 52px;
+        width: 0.271rem;
+        height: 0.271rem;
         margin: 0 auto;
-        margin-top: 20px;
-        margin-bottom: 10px;
+        margin-top: 0.1rem;
+        margin-bottom: 0.052rem;
     }
     .dc-cc-tit{
-        font-size: 16px;
+        font-size: 0.083rem;
         color: #666;
     }
     .dc-cc-num{
-        font-size: 20px;
+        font-size: 0.1rem;
     }
     .jm-icon{
         background: url(${staticRoot}/images/jumingjiandang_icon.png) center no-repeat;
+        background-size: 0.271rem 0.271rem;
     }
     .yl-icon{
         background: url(${staticRoot}/images/yiliaoziyuan_icon.png) center no-repeat;
+        background-size: 0.271rem 0.271rem;
     }
     .jk-icon{
         background: url(${staticRoot}/images/jiankangdanan_icon.png) center no-repeat;
+        background-size: 0.271rem 0.271rem;
     }
     .dz-icon{
         background: url(${staticRoot}/images/dianzibingli_icon.png) center no-repeat;
+        background-size: 0.271rem 0.271rem;
+    }
+    .dc-zb{
+        border: 1px solid #ebebeb;
     }
     .dc-zb-top{
         width: 100%;
-        height: 80px;
+        height: 0.417rem;
         text-align: center;
         border-bottom: 1px solid #ebebeb;
-        padding-top: 12px;
+        padding-top: 0.0625rem;
     }
     .dc-zb-icon{
-        display: inline-block;
-        width: 52px;
-        height: 52px;
+        width: 0.271rem;
+        height: 0.271rem;
         background: url(${staticRoot}/images/zibiaozhongshu_icon.png) center no-repeat;
-        vertical-align: middle;
+        background-size: 0.271rem 0.271rem;
+        display: inline-block;
     }
     .dc-zb-con{
         display: inline-block;
-        text-align: left;
-        vertical-align: middle;
-        padding-left: 30px;
+        /*text-align: left;*/
+        /*vertical-align: middle;*/
+        padding-left: 0.156rem;
     }
     .dc-zb-lab{
-        font-size: 16px;
+        font-size: 0.083rem;
         color: #999;
     }
     .dc-zb-num{
-        font-size: 24px;
+        font-size: 0.125rem;
     }
     .dc-zb-bottom{
         width: 100%;
-        height: 160px;
+        /*height: 0.83rem;*/
         /*border: 1px solid #ebebeb;*/
         border-top: none;
     }
+    .dc-zb-bottom .chart-div{
+        width: 100%;
+        height: 1.8rem;
+    }
     .dc-ksh{
         width: 100%;
-        height: 160px;
+        /*height: 0.83rem;*/
         border: 1px solid #ebebeb;
-        position: relative;
+        /*position: relative;*/
     }
     .dc-ksh-left{
-        width: 190px;
-        height: 158px;
-        display: inline-block;
-        vertical-align: middle;
-        border-right: 1px solid #ebebeb;
+        /*width: 0.99rem;*/
+        /*height: 0.83rem;*/
+        /*display: inline-block;*/
+        /*vertical-align: middle;*/
+        /*border-right: 1px solid #ebebeb;*/
         text-align: center;
+        padding: 0.078rem 0.15rem;
     }
     .dc-ksh-icon{
-        width: 52px;
-        height: 52px;
+        width: 0.271rem;
+        height: 0.271rem;
         margin: 0 auto;
-        margin-top: 20px;
-        margin-bottom: 15px;
+        margin-top: 0.1rem;
+        margin-bottom: 0.078rem;
         background: url(${staticRoot}/images/shituzongshu_icon.png) center no-repeat;
+        background-size: 0.271rem 0.271rem;
     }
     .dc-ksh-tit{
-        font-size: 16px;
+        font-size: 0.083rem;
         color: #999;
     }
     .sc-ksh-num{
-        padding-top: 5px;
-        font-size: 24px;
+        padding-top: 0.026rem;
+        font-size: 0.125rem;
     }
     .dc-ksh-right{
-        height: 158px;
-        display: inline-block;
-        vertical-align: middle;
-        position: absolute;
-        left: 191px;
-        top: 0;
-        right: 0;
-        bottom:0;
+        border-left: 1px solid #ebebeb;
+        /*height: 0.823rem;*/
+        /*display: inline-block;*/
+        /*vertical-align: middle;*/
+        /*position: absolute;*/
+        /*left: 0.99rem;*/
+        /*top: 0;*/
+        /*right: 0;*/
+        /*bottom:0;*/
+    }
+    .dc-ksh-right .chart-div{
+        width: 100%;
+        height: 1.5rem;
     }
     .zybb-icon{
         background: url(${staticRoot}/images/baobiaozongshu_icon.png) center no-repeat;
+        background-size: 0.271rem 0.271rem;
     }
     .dc-fj-item{
         width: 100%;
-        height: 100px;
-        margin-bottom: 20px;
+        height: 0.52rem;
+        margin-bottom: 0.1rem;
         display: block;
         color: #323232;
-        -webkit-border-radius:9px;
-        -moz-border-radius:9px;
-        border-radius:9px;
+        -webkit-border-radius:0.047rem;
+        -moz-border-radius:0.047rem;
+        border-radius:0.047rem;
         border:1px solid #fff;
     }
     .dc-fj-item:hover{
@@ -644,46 +704,47 @@
         border:1px solid #2eaafa;
     }
     .dc-fj-left{
-        width: 160px;
-        height: 100px;
+        width: 0.83rem;
+        height: 0.52rem;
     }
     .dc-fj-icon{
-        width: 80px;
-        height: 80px;
+        width: 0.417rem;
+        height: 0.417rem;
         margin: 0 auto;
-        margin-top: 9px;
+        margin-top: 0.047rem;
     }
     .dc-fj-info{
-        width: 398px;
-        padding-right: 20px;
+        width: 2.07rem;
+        padding-right: 0.1rem;
     }
     .dc-fj-left,.dc-fj-info{
         display: inline-block;
         vertical-align: middle;
     }
     .dc-fj-tit{
-        font-size: 16px;
+        font-size: 0.083rem;
         font-weight: 600;
     }
     .dc-fj-con{
-        font-size: 14px;
-        padding-top: 6px;
+        font-size: 0.073rem;
+        padding-top: 0.03125rem;
     }
     .jgsq-icon{
         background: url(${staticRoot}/images/shujushouquan_icon.png) center no-repeat;
+        background-size: 0.417rem 0.417rem;
     }
     .yysq-icon{
         background: url(${staticRoot}/images/yingyongshouquan_icon.png) center no-repeat;
+        background-size: 0.417rem 0.417rem;
     }
     .jssq-icon{
         background: url(${staticRoot}/images/jiaosheshouquan_icon.png) center no-repeat;
+        background-size: 0.417rem 0.417rem;
     }
     .dc-item-info{
-        position: absolute;
-        left: 0;
-        top: 20px;
-        right: 120px;
         display: none;
+        padding: 0 0.1rem 0 0;
+        margin-top: 0.3rem;
     }
     .dc-item-info.fadeInUp{
         display: block;
@@ -811,29 +872,29 @@
     @keyframes fadeInUp {
         0% {
             opacity: 0;
-            top: 60px;
+            top: 0.3125rem;
         }
         50% {
             opacity: 0.5;
-            top: 40px;
+            top: 0.208rem;
         }
         100%{
             opacity: 1;
-            top: 20px;
+            top: 0.1rem;
         }
     }
     @keyframes fadeInDown1 {
         0% {
             opacity: 1;
-            top: 20px;
+            top: 0.1rem;
         }
         50% {
             opacity: 0.5;
-            top: 40px;
+            top: 0.208rem;
         }
         100%{
             opacity: 0;
-            top: 60px;
+            top: 0.3125rem;
             display: none;
         }
     }
