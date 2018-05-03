@@ -111,27 +111,36 @@
                         parms: this.formatParms(values),
                         columns: [
                             {display: 'id', name: 'id', hide: true, isAllowHide: false},
-                            {display: '模板', name: 'title', width: '15%', isAllowHide: false, align: 'left'},
+                            {display: '模板', name: 'title', width: '20%', isAllowHide: false, align: 'left'},
                             {
-                                display: '医疗机构',
+                                display: '类别',
                                 name: 'organizationName',
                                 width: '30%',
                                 isAllowHide: false,
-                                align: 'left'
+                                align: 'left',
+                                render: function (row) {
+                                    if(row.type == 'clinic'){
+                                        return "门诊";
+                                    }else if(row.type == 'resident'){
+                                        return "住院";
+                                    }else if(row.type == 'medicalExam'){
+                                        return "体检";
+                                    }
+                                }
                             },
                             {display: 'CDA文档ID', name: 'cdaDocumentId', hide: true, isAllowHide: false},
-                            {
-                                display: 'CDA文档',
-                                name: 'cdaDocumentName',
-                                width: '25%',
-                                minColumnWidth: 60,
-                                align: 'left'
-                            },
+//                            {
+//                                display: 'CDA文档',
+//                                name: 'cdaDocumentName',
+//                                width: '25%',
+//                                minColumnWidth: 60,
+//                                align: 'left'
+//                            },
                             {display: 'CDA版本ID', name: 'cdaVersion', hide: true, isAllowHide: false},
                             {
                                 display: '导入模版',
                                 name: 'checkStatus',
-                                width: '10%',
+                                width: '20%',
                                 minColumnWidth: 20,
                                 render: function (row) {
                                     var html = ''
@@ -143,7 +152,7 @@
                                 }
                             },
                             {
-                                display: '复制模版', name: 'operator', width: '10%', render: function (row) {
+                                display: '复制模版', name: 'operator', width: '20%', render: function (row) {
 
                                 var html = ''
                                     <sec:authorize url="/template/updateCopy">
@@ -162,8 +171,10 @@
                                 render: function (row) {
                                     var html = ''
                                         <sec:authorize url="/template/update">
-                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "tpl:tplInfo:open", row.id, 'modify', row.cdaVersion) + '">修改</a>';
+                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "tpl:tplInfo:open", row.id, 'modify', row.cdaVersion) + '">修改</a>'
+                                        + '<a href="#" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "tpl:tplInfo:delete", row.id) + '">删除</a>';
                                     </sec:authorize>
+
                                     return html;
                                 }
                             }
@@ -182,7 +193,6 @@
                             }
                         }
                     }));
-
                     this.$filePickerBtn.instance = this.$filePickerBtn.webupload({
                         auto: true,
                         server: urls.uploadTplFile,
@@ -253,7 +263,23 @@
                             load: true
                         });
                     });
-
+                    $.subscribe('tpl:tplInfo:delete', function (event, id) {
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote("${contextRoot}/template/delete", {
+                            data: {ids:id},
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    parent._LIGERDIALOG.success('删除成功');
+                                    master.reloadGrid();
+                                } else {
+                                    parent._LIGERDIALOG.error(data.errorMsg);
+                                }
+                            },
+                            error:function (data) {
+                                parent._LIGERDIALOG.error(data.errorMsg);
+                            }
+                        });
+                    });
                     var uploader = self.$filePickerBtn.instance;
                     var templateId = '';
                     var tplMode = '';

@@ -97,20 +97,10 @@ public class ArchiveTplMgrController extends ExtendController<TemplateService> {
     public Object delete(String ids, String idField, String extParms, String type){
         try {
             Map<String, Object> params = new HashMap<>();
-            if (StringUtils.isEmpty(idField)) {
-                params.put("ids", nullToSpace(ids));
-            } else {
-                params.put(idField, nullToSpace(ids));
-            }
-            params = putAll(extParms, params);
-            params = beforeDel(params);
-            String rs;
-            if("uniq".equals(type)) {
-                rs = service.deleteUniq(params);
-            } else {
-                rs = service.delete(params);
-            }
-            return afterDel(rs, params);
+            params.put("id", ids);
+            String url = "/profile/api/v1.0/templates/" + ids;
+            HttpResponse response = HttpUtils.doDelete(adminInnerUrl + url, params);
+            return success(true);
         } catch (Exception e) {
             e.printStackTrace();
             return systemError();
