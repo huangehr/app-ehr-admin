@@ -14,21 +14,25 @@
             <!--大圆-->
             <div class="dc-big-circle">
                 <div class="dc-circle-item item-one active loaded" v-on:click="change(0)" >
+                    <div class="dc-img"><img src="${staticRoot}/images/shujuzili_icon.png" alt=""></div>
                     <div class="dc-label">数据治理</div>
                 </div>
                 <div class="dc-img1 item-one dc-icon0 active"><img src="${staticRoot}/images/shujuzili_icon.png" alt=""></div>
 
                 <div class="dc-circle-item item-two " v-on:click="change(1)">
+                    <div class="dc-img"><img src="${staticRoot}/images/shujufenxi_icon.png" alt=""></div>
                     <div class="dc-label">数据分析</div>
                 </div>
                 <div class="dc-img1 item-two dc-icon1"><img src="${staticRoot}/images/shujufenxi_icon.png" alt=""></div>
 
                 <div class="dc-circle-item item-three" v-on:click="change(2)">
+                    <div class="dc-img"><img src="${staticRoot}/images/keshihua_icon.png" alt=""></div>
                     <div class="dc-label">可视化</div>
                 </div>
                 <div class="dc-img1 item-three dc-icon2"><img src="${staticRoot}/images/keshihua_icon.png" alt=""></div>
 
                 <div class="dc-circle-item item-four" v-on:click="change(3)">
+                    <div class="dc-img"><img src="${staticRoot}/images/fenjiguanli_icon.png" alt=""></div>
                     <div class="dc-label">分级管理</div>
                 </div>
                 <div class="dc-img1 item-four dc-icon3"><img src="${staticRoot}/images/fenjiguanli_icon.png" alt=""></div>
@@ -37,8 +41,8 @@
                         <%--<img :src="itemData[index].icon" alt="">--%>
                     <%--</div>--%>
                     <div class="item-info">
-                        <div class="itme-tit" v-text="itemData[index].title"></div>
-                        <div class="item-con" v-text="itemData[index].content"></div>
+                        <div class="item-tit"><span class="" v-text="itemData[index].title"></span></div>
+                        <div class="item-con"><span class="" v-text="itemData[index].content"></span></div>
                     </div>
                 </div>
             </div>
@@ -59,27 +63,27 @@
             <div class="dc-item-info fadeInUp">
                 <h3 class="dc-r-titO">数据治理</h3>
                 <p class="dc-r-con">数据治理是要在大数据生命周期、医疗数据种类及特征的基础上,提出医疗大数据生命周期模型,并基于此模型提出医疗大数据治理的问题、目标及具体措施,包括数据标准的制定、元数据管理、医疗数据质量管理以及数据生命周期管理等。</p>
-                <%--<h4 class="dc-r-titT">标准管理</h4>--%>
-                <%--<ul class="dc-bz">--%>
-                    <%--<li class="dc-bz-item">--%>
-                        <%--<div class="dc-bz-icon ptbz-icon"></div>--%>
-                        <%--<div class="dc-dz-tit" >平台标准</div>--%>
+                <h4 class="dc-r-titT">标准管理</h4>
+                <ul class="ui-grid">
+                    <li class="ui-col-1">
+                        <div class="dc-bz-icon ptbz-icon"></div>
+                        <div class="dc-dz-tit" >平台标准</div>
                         <%--<div class="dc-dz-num">472456472</div>--%>
                         <%--<a class="dc-dz-info" href="javascript:;" v-on:click="checkInfo">查看详情</a>--%>
-                    <%--</li>--%>
-                    <%--<li class="dc-bz-item">--%>
-                        <%--<div class="dc-bz-icon ccpt-icon"></div>--%>
-                        <%--<div class="dc-dz-tit">存储平台</div>--%>
+                    </li>
+                    <li class="ui-col-1">
+                        <div class="dc-bz-icon ccpt-icon"></div>
+                        <div class="dc-dz-tit">存储平台</div>
                         <%--<div class="dc-dz-num">472456472</div>--%>
                         <%--<a class="dc-dz-info" href="javascript:;">查看详情</a>--%>
-                    <%--</li>--%>
-                    <%--<li class="dc-bz-item">--%>
-                        <%--<div class="dc-bz-icon sjzd-icon"></div>--%>
-                        <%--<div class="dc-dz-tit">数据字典</div>--%>
+                    </li>
+                    <li class="ui-col-1">
+                        <div class="dc-bz-icon sjzd-icon"></div>
+                        <div class="dc-dz-tit">数据字典</div>
                         <%--<div class="dc-dz-num">472456472</div>--%>
                         <%--<a class="dc-dz-info" href="javascript:;">查看详情</a>--%>
-                    <%--</li>--%>
-                <%--</ul>--%>
+                    </li>
+                </ul>
                 <h4 class="dc-r-titT">数据采集</h4>
                 <div class="dc-cj" v-on:click="checkInfo(dataHandle[0].appId, dataHandle[0].menuId)">
                     <div class="dc-cj-left">

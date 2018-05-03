@@ -222,13 +222,13 @@
         opacity: 0;
 
         transition-property: left,top;
-        transition-duration: 2s;
+        transition-duration: 1s;
         -moz-transition-property: left,top; /* Firefox 4 */
-        -moz-transition-duration: 2s; /* Firefox 4 */
+        -moz-transition-duration: 1s; /* Firefox 4 */
         -webkit-transition-property: left,top; /* Safari and Chrome */
-        -webkit-transition-duration: 2s; /* Safari and Chrome */
+        -webkit-transition-duration: 1s; /* Safari and Chrome */
         -o-transition-property: left,top; /* Opera */
-        -o-transition-duration: 2s; /* Opera */
+        -o-transition-duration: 1s; /* Opera */
         transition-timing-function: ease-in;
         -moz-transition-timing-function: ease-in; /* Firefox 4 */
         -webkit-transition-timing-function: ease-in; /* Safari 和 Chrome */
@@ -329,8 +329,11 @@
         margin-left: 1.59rem;
         margin-top: 0.74rem;
         width: 1.30rem;
+        /*position： relative;*/
     }
-    .itme-tit{
+    .item-tit{
+        /*position: absolute;*/
+        /*left: 0;*/
         padding-bottom: 0.042rem;
         font-size: 0.16rem;
         border-bottom: 1px solid #323232;
@@ -340,7 +343,7 @@
         padding-top: 0.052rem;
         font-size: 0.083rem;
     }
-    .itme-tit,.item-con{
+    .item-tit,.item-con{
         color: #323232;
         text-align: center;
     }
@@ -454,17 +457,20 @@
     }
     .ptbz-icon{
         background: url(${staticRoot}/images/pingtaibiaozhun_icon.png) center no-repeat;
+        background-size: 100% 100%;
     }
     .ccpt-icon{
         background: url(${staticRoot}/images/chucunbiaozhun_icon.png) center no-repeat;
+        background-size: 100% 100%;
     }
     .sjzd-icon{
         background: url(${staticRoot}/images/shujuzidian_icon.png) center no-repeat;
+        background-size: 100% 100%;
     }
     .dc-dz-tit{
         font-size: 0.083rem;
         color: #666;
-
+        text-align: center;
     }
     .dc-dz-num,.dc-dz-info{
         height: 0.208rem;
@@ -563,6 +569,7 @@
         /*width: 0.73rem;*/
         /*height: 0.73rem;*/
         border-left: 1px solid #ebebeb;
+        padding: 0 0 0.052rem;
     }
     .dc-cc-item:first-child{
         border-left: none;
@@ -580,6 +587,7 @@
     }
     .dc-cc-num{
         font-size: 0.1rem;
+        margin-top: 0.026rem;
     }
     .jm-icon{
         background: url(${staticRoot}/images/jumingjiandang_icon.png) center no-repeat;
@@ -764,6 +772,24 @@
         -moz-animation-iteration-count: 1;
         animation-iteration-count: 1;
     }
+    .fadeLeftIn{
+        /*display: inline-block;*/
+        -webkit-animation: fadeLeftIn 1s linear;
+        -moz-animation: fadeLeftIn 1s linear;
+        animation: fadeLeftIn 1s linear;
+        -webkit-animation-iteration-count: 1;
+        -moz-animation-iteration-count: 1;
+        animation-iteration-count: 1;
+    }
+    .fadeLeftIn2{
+        display: block;
+        -webkit-animation: fadeLeftIn 1.5s linear;
+        -moz-animation: fadeLeftIn 1.5s linear;
+        animation: fadeLeftIn 1.5s linear;
+        -webkit-animation-iteration-count: 1;
+        -moz-animation-iteration-count: 1;
+        animation-iteration-count: 1;
+    }
     a:active, a:visited, a:focus {
         color: #323232;
     }
@@ -896,6 +922,20 @@
             opacity: 0;
             top: 0.3125rem;
             display: none;
+        }
+    }
+    @keyframes fadeLeftIn {
+        0% {
+            opacity: 1;
+            margin-left: 0
+        }
+        50% {
+            opacity: 0.5;
+            margin-left: 0.8rem
+        }
+        100%{
+            opacity: 0;
+            margin-left: 1.59rem;
         }
     }
 </style>
