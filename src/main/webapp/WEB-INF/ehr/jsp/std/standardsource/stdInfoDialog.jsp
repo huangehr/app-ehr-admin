@@ -8,7 +8,7 @@
     <div class="m-form-group">
         <label style="width:80px"><spring:message code="lbl.type"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="inp_std_type" data-type="select" class="required useTitle"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
+            <input type="text" id="inp_std_type" 0data-type="select" class="required useTitle"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="type">
         </div>
     </div>
     <div class="m-form-group">

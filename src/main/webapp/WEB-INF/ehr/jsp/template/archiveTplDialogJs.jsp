@@ -45,6 +45,9 @@
                 versionNo: '',
                 orgCode: '',
                 cda: '',
+                category:'',
+                name:'',
+
 
                 $dataset: $("#inp_dataset"),
                 $addBtn: $("#div_add_btn"),
@@ -84,25 +87,37 @@
                     this.initCombo(self.$dataset, urls.cdaDocument, {
                         version: versionCode
                     });
-
-                    this.$org.addressDropdown({
-                        lazyLoad: mode!='new' || (mode=='new' && !Util.isStrEmpty(model.organizationCode)),
-                        width: 240,
-                        selectBoxWidth: 240,
-                        tabsData: [
-                            {name: '省份', code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},
-                            {name: '城市', code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
-                            {
-                                name: '医院', code:'orgCode',value:'fullName', url: '${contextRoot}/address/getOrgs', beforeAjaxSend: function (ds, $options) {
-                                var province = $options.eq(0).attr('title'),
-                                    city = $options.eq(1).attr('title');
-                                ds.params = $.extend({}, ds.params, {
-                                    province: province,
-                                    city: city
-                                });
-                            }
-                            }
-                        ]
+                    <%--this.$org.addressDropdown({--%>
+                        <%--lazyLoad: mode!='new' || (mode=='new' && !Util.isStrEmpty(model.organizationCode)),--%>
+                        <%--width: 240,--%>
+                        <%--selectBoxWidth: 240,--%>
+                        <%--tabsData: [--%>
+                            <%--{name: '省份', code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},--%>
+                            <%--{name: '城市', code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},--%>
+                            <%--{--%>
+                                <%--name: '医院', code:'orgCode',value:'fullName', url: '${contextRoot}/address/getOrgs', beforeAjaxSend: function (ds, $options) {--%>
+                                <%--var province = $options.eq(0).attr('title'),--%>
+                                    <%--city = $options.eq(1).attr('title');--%>
+                                <%--ds.params = $.extend({}, ds.params, {--%>
+                                    <%--province: province,--%>
+                                    <%--city: city--%>
+                                <%--});--%>
+                            <%--}--%>
+                            <%--}--%>
+                        <%--]--%>
+                    <%--});--%>
+                    self.$org.ligerComboBox({
+                        width : 240,
+                        valueField: 'id',
+                        textField: 'text',
+                        data:[
+                            { text: '门诊', id: 'clinic' },
+                            { text: '住院', id: 'resident'},
+                            { text: '体检', id: 'medicalExam'}
+                        ],
+                        onSelected: function (value ,text){
+                           this.category = value;
+                        }
                     });
                     $('#inp_versionNo_wrap').addClass('u-ui-readonly');
                     if(mode=='new' && !Util.isStrEmpty(model.organizationCode))
@@ -114,11 +129,12 @@
                         id: model.id,
                         title: mode=='copy'? '': model.title,
 //                            cdaVersion: model.cdaVersion,
-                        organizationCode: [model.province, model.city, model.organizationCode]
+                        type: this.category
                     });
-
+//
                     $("#inp_dataset").ligerGetComboBoxManager().setValue(model.cdaDocumentId);
                     $("#inp_dataset").ligerGetComboBoxManager().setText(model.cdaDocumentName);
+
 
 //                    var versionMgr = this.$versionNo.ligerGetTextBoxManager();
 //                    versionMgr.selectValue(version.v);
@@ -132,7 +148,9 @@
                     }
                 },
                 initCombo : function (target, url, parms, value, text, parentValue){
-                    this.cda = target.customCombo(url, parms);
+                    this.cda = target.customCombo(url, parms,function (value,text) {
+                        addArchiveTplInfo.name = text;
+                    });
                     if(!Util.isStrEmpty(value)){
                         this.cda.setValue(value);
                         this.cda.setText(text);
@@ -146,23 +164,23 @@
                             var values = addArchiveTplInfo.$form.Fields.getValues();
                             var newTitle = values.title;
                             var version = values.cdaVersion;
-                            var orgCode = values.organizationCode.keys[2];
+                            var orgCode = values.organizationCode
                             if(mode=='modify'&&Util.isStrEquals(oldTitle,newTitle)){
                                 return true;
                             }else{
                                 if(Util.isStrEmpty(orgCode))
                                     return true;
-                                return checkTitle(elm, version, newTitle, orgCode);
+                                return checkTitle(elm, version, newTitle);
                             }
                         }
                     })
 
-                    function checkTitle(elm,version,newTitle,orgCode){
+                    function checkTitle(elm,version,newTitle){
                         if(Util.isStrEquals($(elm).attr('id'),'inp_title')){
                             var result = new jValidation.ajax.Result();
                             var dataModel = $.DataModel.init();
                             dataModel.fetchRemote("${contextRoot}/template/validateTitle", {
-                                data: {version:version,title: newTitle, orgCode: orgCode},
+                                data: {version:version,title: newTitle},
                                 async: false,
                                 success: function (data) {
                                     if (data.successFlg) {
@@ -179,17 +197,18 @@
                     self.$addBtn.click(function () {
                         if (validator.validate()) {
                             var TemplateModel = self.$form.Fields.getValues();
-                            TemplateModel.organizationCode = TemplateModel.organizationCode.keys[2];
+                            TemplateModel.type = TemplateModel.organizationCode;
                             var dataModel = $.DataModel.init();
-                            TemplateModel['organizationCode'] = TemplateModel.organizationCode;
+//                            TemplateModel['organizationCode'] = TemplateModel.organizationCode;
                             if(!TemplateModel['organizationCode']){
                                 TemplateModel['organizationCode'] = model.organizationCode;
                             }
                             TemplateModel.cdaVersion = versionCode;
+                            var parmes = $.extend({},TemplateModel,{cdaDocumentName:addArchiveTplInfo.name});
                             dataModel.createRemote(urls.update, {
                                 data: {
                                     id: TemplateModel.id,
-                                    model: JSON.stringify(TemplateModel),
+                                    model: JSON.stringify(parmes),
                                     extParms: '{"mode":"'+mode+'"}'
                                 },
                                 async: false,
