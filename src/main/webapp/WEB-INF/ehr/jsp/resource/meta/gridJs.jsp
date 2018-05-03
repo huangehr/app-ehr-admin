@@ -23,7 +23,16 @@
             var gotoModify = function (event, id, mode) {
                 mode = mode || 'new';
                 id = id || '';
-                editDialog = parent._OPENDIALOG(urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode});
+                editDialog = parent._LIGERDIALOG.open({
+//                    urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode}
+                    height: 440,
+                    width: 620,
+                    title: mode=='new'?'新增':'修改',
+                    url: urls.gotoModify,
+                    urlParms: {
+                        id: id, mode: mode
+                    }
+                });
             }
 
 
@@ -37,7 +46,7 @@
 
             var uploadDialog;
             //初始化工具栏
-            var barTools = function(){
+//            var barTools = function(){
 
                 var btn = [
 					<sec:authorize url="/resource/meta/gotoModify">
@@ -45,17 +54,36 @@
 					</sec:authorize>
                 ];
                 initBarBtn($('.m-retrieve-inner'), btn)
-
                 function onUploadSuccess(g, result){
-                    if(result)
-                        parent._OPENDIALOG(urls.gotoImportLs, "导入错误信息", 1000, 640, {result: result});
-                    else
+                    if(result) {
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                        var rowDialog = parent._LIGERDIALOG.open({
+                            height: 640,
+                            width: 1000,
+                            isDrag: true,
+                            //isResize:true,
+                            title: '导入错误信息',
+                            url: urls.gotoImportLs,
+//                        load: true
+                            urlParms: {
+                                result: result
+                            },
+                            isHidden: false,
+                            show: false,
+                            onLoaded: function () {
+                                wait.close(),
+                                    rowDialog.show()
+                            }
+                        });
+                        rowDialog.hide();
+                    } else {
                         parent._LIGERDIALOG.success("导入成功！");
+                    }
                 }
 
                 $('#upd').uploadFile({url: "${contextRoot}/resource/meta/import", onUploadSuccess: onUploadSuccess});
 
-            };
+//            };
 
 
             function opratorRender(row){
@@ -145,11 +173,10 @@
                     }
                 }
             }
-
             var pageInit = function(){
                 publishFunc();
                 filters();
-                barTools();
+//                barTools();
                 rendGrid();
             }();
         });
