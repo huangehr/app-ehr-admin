@@ -136,6 +136,7 @@
                             normal : {
                                 label : {
                                     show : labelBool,
+                                    formatter: f,
                                     position : position || 'outter',
                                     fontSize: fontsize
                                 },
@@ -159,7 +160,7 @@
                         trigger: 'item',
                         formatter: "{b}: {c} ({d}%)"
                     },
-                    series: [ this.getSeries(['50%', '80%'], ['50%', '50%'], d, '{c} ({d}%)', true) ]
+                    series: [ this.getSeries(['50%', '80%'], ['50%', '50%'], d, '{b}:{c}', true) ]
                 });
             },
             getAnalysisOpt: function (lenD, d) {
@@ -261,11 +262,19 @@
                     $('.dc-circle-item').eq(me.deg).addClass('active');
                     if (me.deg < 3) {
                         me.running();
-                    } else {
+                    } else if(me.deg == 3) {
+                        me.running();
+//                        clearTimeout(me.runTimeout);
+
+                    }else{
+                        clearTimeout(me.runTimeout);
+                        me.setSta("running");
                         me.runTimeout = setTimeout(function () {
+                            me.deg = -1;
                             clearTimeout(me.runTimeout);
+                            me.running();
                             $('.dc-circle-item').eq(me.deg).removeClass('active');
-                        }, 2000);
+                        }, 6500);
                     }
                 }, 2300);
             },

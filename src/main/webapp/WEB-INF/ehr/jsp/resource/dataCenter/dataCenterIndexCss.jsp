@@ -180,9 +180,9 @@
         -webkit-animation: run 20s linear;
         -moz-animation: run 20s linear;
         animation: run 20s linear;
-        -webkit-animation-iteration-count: 1;
-        -moz-animation-iteration-count: 1;
-        animation-iteration-count: 1;
+        -webkit-animation-iteration-count: infinite;
+        -moz-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
     }
     .item-one{
         left: 1.5rem;
