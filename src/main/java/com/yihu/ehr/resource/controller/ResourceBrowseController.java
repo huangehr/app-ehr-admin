@@ -1,18 +1,13 @@
 package com.yihu.ehr.resource.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.resource.RsBrowseModel;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
-import com.yihu.ehr.common.constants.AuthorityKey;
-import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.model.resource.MRsColumnsModel;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.http.HttpResponse;
 import com.yihu.ehr.util.http.HttpUtils;
-import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Cell;
 import jxl.Workbook;
@@ -22,7 +17,6 @@ import jxl.write.WritableWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -31,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.OutputStream;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -335,11 +328,11 @@ public class ResourceBrowseController extends BaseUIController {
             envelop.setErrorMsg("该列数据已为详细数据");
             return envelop;
         }
-        String dictEntryUrl = "/resource/api/v1.0/resources/query/getResourceSubData";
+        String url = "/resource/api/v1.0/resources/query/getResourceSubData";
         Map<String, Object> params = new HashMap<>();
         params.put("rowKey", rowKey);
         params.put("version", version);
-        String resultStr = HttpClientUtil.doGet(comUrl + dictEntryUrl, params, username, password);
+        String resultStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
         envelop = toModel(resultStr, Envelop.class);
         return envelop;
     }
