@@ -125,6 +125,7 @@
                 return [d, lenD];
             },
             getSeries: function (r, c, d, f, labelBool, name, position) {
+                var fontsize = (14/1920) * width;
                 return {
                         name: name || '',
                         type: 'pie',
@@ -135,7 +136,9 @@
                             normal : {
                                 label : {
                                     show : labelBool,
-                                    position : position || 'outter'
+                                    formatter: f,
+                                    position : position || 'outter',
+                                    fontSize: fontsize
                                 },
                                 labelLine : {
                                     show : labelBool
@@ -157,22 +160,24 @@
                         trigger: 'item',
                         formatter: "{b}: {c} ({d}%)"
                     },
-                    series: [ this.getSeries(['50%', '80%'], ['50%', '50%'], d, '{c} ({d}%)', true) ]
+                    series: [ this.getSeries(['50%', '80%'], ['50%', '50%'], d, '{b}:{c}', true) ]
                 });
             },
             getAnalysisOpt: function (lenD, d) {
+                var padd = (20/1920) * width;
                 return $.extend(option(), {
                     legend: {
                         orient: 'vertical',
-                        x: 'left',
+                        x: 'right',
                         y: 'center',
-                        data: lenD
+                        data: lenD,
+                        padding: padd
                     },
                     tooltip: {
                         trigger: 'item',
                         formatter: "{b}: {c} ({d}%)"
                     },
-                    series: [ this.getSeries(['40%', '70%'], ['60%', '50%'], d, '{c} ({d}%)', false) ]
+                    series: [ this.getSeries(['40%', '70%'], ['40%', '50%'], d, '{c} ({d}%)', false) ]
                 });
             },
             getVisualizationOpt: function (lenD, d1, d2) {
@@ -257,11 +262,19 @@
                     $('.dc-circle-item').eq(me.deg).addClass('active');
                     if (me.deg < 3) {
                         me.running();
-                    } else {
+                    } else if(me.deg == 3) {
+                        me.running();
+//                        clearTimeout(me.runTimeout);
+
+                    }else{
+                        clearTimeout(me.runTimeout);
+                        me.setSta("running");
                         me.runTimeout = setTimeout(function () {
+                            me.deg = -1;
                             clearTimeout(me.runTimeout);
+                            me.running();
                             $('.dc-circle-item').eq(me.deg).removeClass('active');
-                        }, 2000);
+                        }, 6500);
                     }
                 }, 2300);
             },
@@ -281,12 +294,15 @@
             change: function (n) {
                 var me = this;
                 if (me.sta && n != this.oldInd) {
+//                    $(".item-info").find("span").removeClass("fadeLeftIn");
                     me.sta = false;
                     $('.dc-info-circle').addClass('active');
                     $('.dc-icon').addClass('active');
                     $('.dc-item-info').eq(me.oldInd).removeClass('fadeInUp').addClass('fadeInDown1');
                     $('.dc-icon' + me.oldInd).removeClass('active');
                     $('.dc-icon' + n).addClass('active');
+                    $(".dc-circle-item").removeClass("loaded");
+                    $(".dc-circle-item").eq(n).addClass("loaded");
                     (function (num) {
                         setTimeout(function () {
                             me.index = n;
@@ -298,6 +314,14 @@
                             }
                             $('.dc-info-circle').removeClass('active');
                             $('.dc-icon').removeClass('active');
+//                            $(".item-info").find("span").addClass("fadeLeftIn");
+//                            $(".item-tit").animate({
+//                                left:'250px',
+//                                opacity:'0.5',
+//                                height:'150px',
+//                                width:'150px'
+//                            });
+
                             $('.dc-item-info').eq(me.oldInd).removeClass('fadeInDown1');
                             $('.dc-item-info').eq(me.index).addClass('fadeInUp');
                             me.sta = true;
