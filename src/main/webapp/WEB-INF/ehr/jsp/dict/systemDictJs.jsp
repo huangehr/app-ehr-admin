@@ -277,7 +277,6 @@
 
                     //新增/修改 系统字典保存点击事件
                     this.$addSystemDictBtn.click( function (e) {
-                        debugger
                         e.stopPropagation();
                         if (validator.validate()) {
                             var systemName = self.$systemDictName.val();
@@ -311,6 +310,39 @@
                             //return;
                         }
                     });
+
+                    //新增、修改字典详情验证
+                    var validateEntityAdd = new jValidation.Validation(self.$addSystemDictEntityDialog, {immediate: true, onSubmit: false,
+                        onElementValidateForAjax:function(elm){}});
+                    //新增字典 详情 保存事件
+                    this.$addSystemDictEntityBtn.click(function () {
+                        var code = self.$systemDictEntityCode.val();
+                        var value = self.$systemDictEntityValue.val();
+                        var sort = self.$systemDictEntitySort.val();
+                        var catalog = self.$systemDictEntityCatalog.val();
+                        var systemDictId = master.$systemDictId.val();
+                        if (validateEntityAdd.validate()) {
+                            if (Util.isStrEquals(systemDictId,'30')){
+                                catalog = catalog.replace('，',',');
+                            }
+                            var dataModel = $.DataModel.init();
+                            var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
+                            dataModel.updateRemote('${contextRoot}/dict/createDictEntry', {
+                                data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
+                                success: function (data) {
+                                    waittingDialog.close();
+                                    if (data.successFlg) {
+                                        parent._LIGERDIALOG.success('保存成功');
+                                        master.searchSystemDictEntity(master.$systemDictId.val());
+                                    } else {
+                                        parent._LIGERDIALOG.error(data.errorMsg);
+                                    }
+                                    addSystemDictEntityDialog.close();
+                                }
+                            });
+                        }
+                    });
+                    validateEntityAdd.reset();//还原
                 },
                 updateSystemDialog: function (msg) {
                     var self = this;
@@ -359,39 +391,7 @@
                         height: 250,
                         target: self.$addSystemDictEntityDialog
                     });
-                    //新增、修改字典详情验证
-                    var validateEntityAdd = new jValidation.Validation(self.$addSystemDictEntityDialog, {immediate: true, onSubmit: false,
-                        onElementValidateForAjax:function(elm){}});
 
-                    //新增字典 详情 保存事件
-                    this.$addSystemDictEntityBtn.click(function () {
-                        if (validateEntityAdd.validate()) {
-                            var code = self.$systemDictEntityCode.val();
-                            var value = self.$systemDictEntityValue.val();
-                            var sort = self.$systemDictEntitySort.val();
-                            var catalog = self.$systemDictEntityCatalog.val();
-                            var systemDictId = master.$systemDictId.val();
-                            if (Util.isStrEquals(systemDictId,'30')){
-                                catalog = catalog.replace('，',',');
-                            }
-                            var dataModel = $.DataModel.init();
-                            var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
-                            dataModel.updateRemote('${contextRoot}/dict/createDictEntry', {
-                                data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
-                                success: function (data) {
-                                    waittingDialog.close();
-                                    if (data.successFlg) {
-                                        parent._LIGERDIALOG.success('保存成功');
-                                        master.searchSystemDictEntity(master.$systemDictId.val());
-                                    } else {
-                                        parent._LIGERDIALOG.error(data.errorMsg);
-                                    }
-                                    addSystemDictEntityDialog.close();
-                                }
-                            });
-                        }
-                    });
-                    validateEntityAdd.reset();//还原
                 },
                 updateSystemEntityDialog: function () {
 
@@ -423,7 +423,7 @@
                                         parent._LIGERDIALOG.success('更新成功');
                                         master.searchSystemDictEntity(master.$systemDictId.val());
                                     } else {
-                                        parent._LIGERDIALOG.error('更新失败');
+                                        parent._LIGERDIALOG.error(data.errorMsg);
                                     }
                                     updateSystemDictEntityDialog.close();
                                 }
