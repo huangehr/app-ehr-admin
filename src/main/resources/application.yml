@@ -27,8 +27,8 @@ spring:
   profiles: dev
   datasource:
     url: jdbc:mysql://172.19.103.50:3306/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: weifuwu
-    password: weifuwu
+    username: chenweishan
+    password: chenweishan
   redis:
     host: 172.19.103.47 # Redis server host.
     port: 6379
@@ -43,17 +43,16 @@ app:
 service-gateway:
   username: user
   password: eureka
-  url: http://172.19.103.73:10000/api/v1.0/admin
-  adminInnerUrl: http://172.19.103.73:10000
+  url: http://localhost:10000/api/v1.0/admin
+  adminInnerUrl: http://localhost:10000
   stdurl: http://172.19.103.73:10000/api/v1.0/admin/std
   versionurl: http://172.19.103.73:10000/api/v1.0/admin/version
   cdatypeurl: http://172.19.103.73:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://172.19.103.73:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
-  template: http://172.19.103.73:10000/api/v1.0/template
   standard: http://172.19.103.73:10000/api/v1.0/std
-  browseClientUrl: http://192.168.1.221:8010/ehr/browser
-  browseClientOutSizeUrl: http://27.154.233.186:9480/ehr/browser
+  browseClientUrl: http://192.168.1.221:8010/profile/browser
+  browseClientOutSizeUrl: http://27.154.233.186:9480/profile/browser
   profileurl: http://172.19.103.74:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
@@ -85,10 +84,9 @@ service-gateway:
   cdatypeurl: http://172.19.103.58:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://172.19.103.58:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.58:10000/api/v1.0/adapter
-  template: http://172.19.103.58:10000/api/v1.0/template
   standard: http://172.19.103.58:10000/api/v1.0/std
-  browseClientUrl: http://172.19.103.58:8010/ehr/browser
-  browseClientOutSizeUrl: http://172.19.103.58:8010/ehr/browser
+  browseClientUrl: http://172.19.103.58:8010/profile/browser
+  browseClientOutSizeUrl: http://172.19.103.58:8010/profile/browser
   profileurl: http://172.19.103.58:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
@@ -120,10 +118,9 @@ service-gateway:
   cdatypeurl: http://11.1.2.13:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://11.1.2.13:10000/api/v1.0/admin/standard_source
   adaption: http://11.1.2.13:10000/api/v1.0/adapter
-  template: http://11.1.2.13:10000/api/v1.0/template
   standard: http://11.1.2.13:10000/api/v1.0/std
-  browseClientUrl: http://11.1.2.16:8010/ehr/browser
-  browseClientOutSizeUrl: http://11.1.2.16:8010/ehr/browser
+  browseClientUrl: http://11.1.2.16:8010/profile/browser
+  browseClientOutSizeUrl: http://11.1.2.16:8010/profile/browser
   profileurl: http://11.1.2.14:9009/api/v1.0
 fast-dfs:
   tracker-server: 11.1.2.9:22122
@@ -157,10 +154,9 @@ service-gateway:
   cdatypeurl: http://10.176.97.10:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://10.176.97.10:10000/api/v1.0/admin/standard_source
   adaption: http://10.176.97.10:10000/api/v1.0/adapter
-  template: http://10.176.97.10:10000/api/v1.0/template
   standard: http://10.176.97.10:10000/api/v1.0/std
-  browseClientUrl: http://10.176.97.11:8010/ehr/browser
-  browseClientOutSizeUrl: http://171.35.109.35:1235/ehr/browser
+  browseClientUrl: http://10.176.97.11:8010/profile/browser
+  browseClientOutSizeUrl: http://171.35.109.35:1235/profile/browser
   profileurl: http://10.176.97.12:9009/api/v1.0
 fast-dfs:
   tracker-server: 10.176.97.5:22122
@@ -193,10 +189,9 @@ service-gateway:
   cdatypeurl: http://100.100.1.162:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://100.100.1.162:10000/api/v1.0/admin/standard_source
   adaption: http://100.100.1.162:10000/api/v1.0/adapter
-  template: http://100.100.1.162:10000/api/v1.0/template
   standard: http://100.100.1.162:10000/api/v1.0/std
-  browseClientUrl: http://100.100.1.163:8010/ehr/browser
-  browseClientOutSizeUrl: http://100.100.1.163:8010/ehr/browser
+  browseClientUrl: http://100.100.1.163:8010/profile/browser
+  browseClientOutSizeUrl: http://100.100.1.163:8010/profile/browser
   profileurl: http://100.100.1.164:9009/api/v1.0
 fast-dfs:
   tracker-server: 100.100.1.157:22122
@@ -208,7 +203,7 @@ std:
 spring:
   profiles: prod_srformal
   datasource:
-    url: jdbc:mysql://192.168.40.34:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://192.168.210.3:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: healthcloud
     password: GP8Qz4qU
 app:
@@ -216,8 +211,8 @@ app:
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
-  oauth2InnerUrl: http://192.168.220.84:10000/authentication/
-  oauth2OuterUrl: http://223.84.134.42:1235/
+  oauth2InnerUrl: http://192.168.220.84:10001/authentication/
+  oauth2OuterUrl: http://jksr.srswjw.gov.cn:1235/gateway/authentication/
 service-gateway:
   username: user
   password: eureka
@@ -228,10 +223,9 @@ service-gateway:
   cdatypeurl: http://192.168.220.84:10000/api/v1.0/admin/cda_type
   stdsourceurl: http://192.168.220.84:10000/api/v1.0/admin/standard_source
   adaption: http://192.168.220.84:10000/api/v1.0/adapter
-  template: http://192.168.220.84:10000/api/v1.0/template
   standard: http://192.168.220.84:10000/api/v1.0/std
-  browseClientUrl: http://192.168.220.72:8010/ehr/browser
-  browseClientOutSizeUrl: http://192.168.220.72:8010/ehr/browser
+  browseClientUrl: http://192.168.220.72:8010/profile/browser
+  browseClientOutSizeUrl: http://jksr.srswjw.gov.cn:1234/profile/browser
   profileurl: http://192.168.200.68:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.50.116:22122,192.168.50.119:22122

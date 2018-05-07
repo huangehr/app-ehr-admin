@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <div style="width: 100%;height: 100%; overflow: auto;padding-bottom: 0;" class="div-main-content">
-    <div ms-controller="app" style="background: #F2F3F7;padding: 20px;width: 100%;">
+    <div ms-controller="app" style="background: #F2F3F7;width: 100%;">
         <div class="c-w-100">
             <div class="div-qyrkgak" style="height: 1210px;">
                 <div class="div-jkda-header">

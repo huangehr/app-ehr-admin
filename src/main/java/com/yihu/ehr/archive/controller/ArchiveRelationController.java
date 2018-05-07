@@ -28,7 +28,9 @@ public class ArchiveRelationController extends BaseUIController {
             @RequestParam(value = "filters", required = false) String filters,
             @RequestParam(value = "sorts", required = false) String sorts,
             @RequestParam(value = "page") int page,
-            @RequestParam(value = "size") int size) throws Exception {
+            @RequestParam(value = "size") int size,
+            @RequestParam(value = "rows") int rows) throws Exception {
+        size = rows;
         Map<String, Object> params = new HashMap<String, Object>();
         if (StringUtils.isEmpty(filters)) {
             params.put("filters", "identify_flag=0");

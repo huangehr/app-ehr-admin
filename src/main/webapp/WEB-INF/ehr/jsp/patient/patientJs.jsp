@@ -181,14 +181,24 @@
                         },
                         width:'97%',
                         columns: [
-                            {display: '档案编号', name: 'id', width: '10%', isAllowHide: false, align: 'left'},
+                            {display: '档案编号', name: 'sn', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '姓名', name: 'name', width: '10%',isAllowHide: false, align: 'left'},
-                            {display: '性别', name: '', width: '5%', isAllowHide: false, align: 'left'},
-                            {display: '就诊卡类型', name: 'cardType', width: '20%',isAllowHide: false, align: 'left'},
-                            {display: '就诊卡号码', name: 'cardNo', width: '20%',isAllowHide: false, align: 'left'},
-                            {display: '手机号码', name: '', width: '10%',  isAllowHide: false,align: 'left'},
+                            {display: '性别', name: 'gender', width: '5%', isAllowHide: false, align: 'left',
+                            render:function (row) {
+                                if(row.gender == 0){
+                                    return "未知";
+                                }else if(row.gender == 1){
+                                    return "男";
+                                }else {
+                                    return "女";
+                                }
+                            }
+                            },
+                            {display: '就诊卡类型', name: 'card_type', width: '20%',isAllowHide: false, align: 'left'},
+                            {display: '就诊卡号码', name: 'card_no', width: '20%',isAllowHide: false, align: 'left'},
+                            {display: '手机号码', name: 'telephone', width: '10%',  isAllowHide: false,align: 'left'},
                             {display: '操作', name: 'operator', minWidth: 120, render: function (row) {
-                                var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientBroswerInfoDialog:open", row.idCardNo) + '">档案查询</a>';
+                                var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 40px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientBroswerInfoDialog:open", row.id_card_no) + '">档案查询</a>';
                                 return html;
                             }
                             }

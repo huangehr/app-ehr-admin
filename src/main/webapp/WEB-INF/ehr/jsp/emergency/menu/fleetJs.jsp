@@ -86,7 +86,7 @@
                     var self = this;
                     var searchNm = $("#searchNm").val();
                     var values = {
-                        filters: "id=" + searchNm,
+                        filters: "id?" + searchNm,
                         page:1,
                         size:6
                     };
