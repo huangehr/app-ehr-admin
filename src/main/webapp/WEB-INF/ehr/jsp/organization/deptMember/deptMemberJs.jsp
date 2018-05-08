@@ -33,11 +33,35 @@
 				pageSize:rsPageParams&&rsPageParams.pageSize || 15,
 			}
             function onUploadSuccess(g, result){
+                <%--if(result) {--%>
+					<%--parent._OPENDIALOG("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});--%>
+				<%--} else {--%>
+					<%--parent._LIGERDIALOG.success("导入成功！");--%>
+				<%--}--%>
                 if(result) {
-					parent._OPENDIALOG("${contextRoot}/orgDeptImport/gotoImportLs", "导入错误信息", 1000, 640, {result: result});
-				} else {
-					parent._LIGERDIALOG.success("导入成功！");
-				}
+                    var wait = parent._LIGERDIALOG.waitting("请稍后...");
+                    var rowDialog = parent._LIGERDIALOG.open({
+                        height: 640,
+                        width: 1000,
+                        isDrag: true,
+                        //isResize:true,
+                        title: '导入错误信息',
+                        url: '${contextRoot}/orgDeptImport/gotoImportLs',
+//                        load: true
+                        urlParms: {
+                            result: result
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded: function () {
+                            wait.close(),
+                                rowDialog.show()
+                        }
+                    });
+                    rowDialog.hide();
+                } else {
+                    parent._LIGERDIALOG.success("导入成功！");
+                }
             }
 
             $('#upd').uploadFile({url: "${contextRoot}/orgDeptImport/importOrgDept", onUploadSuccess: onUploadSuccess, str: '导入部门'});
