@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="TRUE">
 
+	<!--<property name="log_dir" value="E:/logs/" />-->
 	<property name="log_dir" value="logs/" />
 	<!--<property name="log_dir" value="/home/dev-admin/ehr-deploy/logs" />-->
 	<property name="LOG_HOME" value="${log_dir:-logs}" />
