@@ -3,6 +3,7 @@ package com.yihu.ehr.dict.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.dict.SystemDictModel;
+import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -361,6 +364,54 @@ public class SystemDictController extends BaseUIController {
             String url ="/dictionaries/entries";
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return resultStr;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+
+    @RequestMapping("searchDictForSelect")
+    @ResponseBody
+    public Object searchDictForSelect(Long dictId, Integer page, Integer rows) {
+
+        String resultStr = "";
+        Envelop result = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(dictId)) {
+            stringBuffer.append("dictId=" + dictId);
+        }
+        String filters = stringBuffer.toString();
+        params.put("filters", "");
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        if(StringUtils.isEmpty(page) || page == 0){
+            page = 1;
+        }
+        if(StringUtils.isEmpty(rows) || rows == 0){
+            rows = 50;
+        }
+        params.put("page", page);
+        params.put("size", rows);
+        params.put("sorts", "+sort");
+
+        try {
+            String url ="/dictionaries/entries";
+            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            Envelop envelopGet = objectMapper.readValue(resultStr,Envelop.class);
+            List<SystemDictEntryModel> modelList = (List<SystemDictEntryModel>)getEnvelopList(envelopGet.getDetailModelList(),new ArrayList<SystemDictEntryModel>(),SystemDictEntryModel.class);
+            List<Map> list = new ArrayList<>();
+            for (SystemDictEntryModel m:modelList){
+                Map map = new HashMap<>();
+                map.put("id", m.getCode());
+                map.put("name",m.getValue());
+                list.add(map);
+            }
+            envelopGet.setDetailModelList(list);
+            return envelopGet;
         }catch (Exception ex){
             ex.printStackTrace();
             return failed(ERR_SYSTEM_DES);
