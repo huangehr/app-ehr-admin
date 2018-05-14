@@ -134,7 +134,7 @@
 					$("#org_code").ligerGetComboBoxManager().setValue(model.orgCode);
 					$("#org_code").ligerGetComboBoxManager().setText(model.orgName);
                     $("#device_type").ligerGetComboBoxManager().setValue(model.deviceType);
-                    $("#device_type").ligerGetComboBoxManager().setText(model.deviceType);
+                    $("#device_type").ligerGetComboBoxManager().setText(model.deviceTypeName);
                 }
                 this.$form.show();
             },
