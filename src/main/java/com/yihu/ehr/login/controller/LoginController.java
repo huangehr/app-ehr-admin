@@ -436,21 +436,23 @@ public class LoginController extends BaseUIController {
         HttpResponse orgSaasResponse = HttpUtils.doGet(adminInnerUrl + saas, params);
         if (orgSaasResponse.isSuccessFlg()) {
             List<String> orgSaasList = objectMapper.readValue(orgSaasResponse.getContent(), List.class);
-            StringBuilder stringBuilder = new StringBuilder();
-            _areaSaasList.forEach(item -> {
-                stringBuilder.append(item).append(",");
-            });
-            String childOrgSaas = "/basic/api/v1.0/org/childOrgSaasByAreaCode";
-            params.clear();
-            params.put("area", stringBuilder.toString());
-            HttpResponse childOrgSaasResponse = HttpUtils.doPost(adminInnerUrl + childOrgSaas, params);
-            if (childOrgSaasResponse.isSuccessFlg()) {
-                List<String> temp = toModel(childOrgSaasResponse.getContent(), List.class);
-                temp.forEach(item -> {
-                    if (!orgSaasList.contains(item)) {
-                        orgSaasList.add(item);
-                    }
+            if (_areaSaasList.size() > 0) {
+                StringBuilder stringBuilder = new StringBuilder();
+                _areaSaasList.forEach(item -> {
+                    stringBuilder.append(item).append(",");
                 });
+                String childOrgSaas = "/basic/api/v1.0/org/childOrgSaasByAreaCode";
+                params.clear();
+                params.put("area", stringBuilder.toString());
+                HttpResponse childOrgSaasResponse = HttpUtils.doPost(adminInnerUrl + childOrgSaas, params);
+                if (childOrgSaasResponse.isSuccessFlg()) {
+                    List<String> temp = toModel(childOrgSaasResponse.getContent(), List.class);
+                    temp.forEach(item -> {
+                        if (!orgSaasList.contains(item)) {
+                            orgSaasList.add(item);
+                        }
+                    });
+                }
             }
             //加上自身默认机构
             roleOrgCodes.forEach(item -> {
