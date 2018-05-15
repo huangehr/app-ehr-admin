@@ -624,4 +624,13 @@ public class ReportController extends BaseUIController {
             return failed("生成模版发生异常");
         }
     }
+
+    @RequestMapping("/getPositionMapByCode")
+    @ResponseBody
+    public Object getPositionByCode(String code) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", code);
+        String chartInfoStr = HttpClientUtil.doGet(comUrl + "/resources/report/getPositionMapByCode", params, username, password);
+        return chartInfoStr;
+    }
 }
