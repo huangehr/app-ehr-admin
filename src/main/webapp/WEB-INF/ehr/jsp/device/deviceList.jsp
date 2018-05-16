@@ -18,6 +18,9 @@
             <div class="m-form-control f-ml10 f-mb10">
                 <input type="text" id="org_code" data-type="select" placeholder="请选择归属机构" data-attr-scan="orgCode">
             </div>
+            <div class="m-form-control f-mb10">
+                <input type="text" id="device_model" placeholder="请输入设备型号" class="f-ml10" data-attr-scan="deviceModel"/>
+            </div>
             <div class="m-form-control f-ml10 f-mb10">
                 <!--按钮:查询 & 新增-->
 					<div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam f-mr10" >
