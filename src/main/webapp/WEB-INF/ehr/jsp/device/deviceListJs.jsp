@@ -34,11 +34,13 @@
                 $deviceName: $('#device_name'),
                 $orgCode: $('#org_code'),
                 $deviceType: $('#device_type'),
+                $deviceModel: $('#device_model'),
                 $searchBtn: $('#btn_search'),
                 $addBtn: $('#btn_add'),
                 $importBtn: $('#btn_import'),
                 init: function () {
 					this.$deviceName.ligerTextBox({width: 200});
+                    this.$deviceModel.ligerTextBox({width: 200});
                     this.$element.show();
                     this.$element.attrScan();
                     this.$orgCode.customCombo('${contextRoot}/organization/orgCodes',{filters: "activityFlag=1;"});
@@ -104,7 +106,8 @@
                     var vo = [
                         {name: 'deviceName', logic: '?'},
                         {name: 'deviceType', logic: '='},
-                        {name: 'orgCode', logic: '='}
+                        {name: 'orgCode', logic: '='},
+                        {name: 'deviceModel', logic: '?'}
                     ];
                     params = {filters: covertFilters(vo, retrieve.$element)};
 					reloadGrid.call(this, params);
