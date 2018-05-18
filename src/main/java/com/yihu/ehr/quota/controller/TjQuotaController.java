@@ -2,12 +2,10 @@ package com.yihu.ehr.quota.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.adapter.service.PageParms;
 import com.yihu.ehr.agModel.tj.TjDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaDimensionSlaveModel;
 import com.yihu.ehr.agModel.tj.TjQuotaModel;
 import com.yihu.ehr.agModel.user.UsersModel;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.quota.controller.model.TjQuotaDMainMsg;
 import com.yihu.ehr.quota.controller.model.TjQuotaDSlaveMsg;
@@ -17,7 +15,6 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.excel.TemPath;
 import com.yihu.ehr.util.excel.read.TjQuotaMsgReader;
 import com.yihu.ehr.util.excel.read.TjQuotaMsgWriter;
-import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -963,6 +960,30 @@ public class TjQuotaController extends BaseUIController {
             if (toClient != null){
                 toClient.close();
             }
+        }
+    }
+
+    /**
+     * 停止执行指标
+     */
+    @RequestMapping("removeQuota")
+    @ResponseBody
+    public Object removeQuota(Long tjQuotaId) {
+        Envelop envelop = new Envelop();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", tjQuotaId);
+        try {
+            String url = "/quota/api/v1.0/job/removeJob";
+            String resultStr = HttpClientUtil.doPost(adminInnerUrl + url, params, username, password);
+            if(resultStr.equals("true")){
+                envelop.setSuccessFlg(true);
+            }else{
+                envelop.setSuccessFlg(false);
+            }
+            return envelop;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
         }
     }
 
