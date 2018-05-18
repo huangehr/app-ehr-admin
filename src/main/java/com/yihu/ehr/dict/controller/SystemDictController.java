@@ -373,7 +373,7 @@ public class SystemDictController extends BaseUIController {
 
     @RequestMapping("searchDictForSelect")
     @ResponseBody
-    public Object searchDictForSelect(Long dictId, Integer page, Integer rows) {
+    public Object searchDictForSelect(Long dictId, String searchParm, Integer page, Integer rows) {
 
         String resultStr = "";
         Envelop result = new Envelop();
@@ -381,7 +381,10 @@ public class SystemDictController extends BaseUIController {
 
         StringBuffer stringBuffer = new StringBuffer();
         if (!StringUtils.isEmpty(dictId)) {
-            stringBuffer.append("dictId=" + dictId);
+            stringBuffer.append("dictId=" + dictId+";");
+        }
+        if (!StringUtils.isEmpty(searchParm)){
+            stringBuffer.append("code?"+searchParm+" g1;value?"+searchParm+" g1;");
         }
         String filters = stringBuffer.toString();
         params.put("filters", "");
