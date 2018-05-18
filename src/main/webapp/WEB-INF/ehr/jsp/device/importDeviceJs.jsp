@@ -48,7 +48,7 @@
             /* *************************** 函数定义结束******************************* */
             obj = {
                 $importbutton : $('#import_button'),
-                $cancelbutton : $('#cancel_button'),
+                $cancelbutton : $('#cancelbutton'),
                 $div_btn:$('.div_btn'),
                 $div_download:$('.div_download'),
                 $fileShow:$('#thelist'),

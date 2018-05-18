@@ -50,7 +50,7 @@
 		</div>
 		<label>采购数量:</label>
 		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="purchase_num"  data-attr-scan="purchaseNum validate-positive-integer" placeholder="请输入采购数量">
+			<input type="text" id="purchase_num"  class="validate-positive-integer" data-attr-scan="purchaseNum" placeholder="请输入采购数量">
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -72,7 +72,7 @@
                    required-title=<spring:message code="lbl.must.input"/>/>
         </div>
         <label>采购日期:</label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control f-pr0 essential">
             <input id="purchase_time" class="required" placeholder="请输入采购日期"  required-title=<spring:message code="lbl.must.input"/>
                     data-attr-scan="purchaseTime"/>
         </div>
