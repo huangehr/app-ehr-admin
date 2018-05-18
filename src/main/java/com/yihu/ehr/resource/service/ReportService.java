@@ -18,6 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -120,7 +121,14 @@ public class ReportService{
                             RsReportModel rsReportModel = objectMapper.readValue(reportEnvelopStr, RsReportModel.class);
                             String position = rsReportModel.getPosition();
                             if (StringUtils.isNotEmpty(position)) {
-                                Map<String, String> map = objectMapper.readValue(position, Map.class);
+                                Map<String, String> map = new HashMap<>();
+                                List<Map<String, String>> listMap = objectMapper.readValue(position, new TypeReference<List<Map<String, String>>>() {
+                                });
+                                if (null != listMap && listMap.size() > 0) {
+                                    for (int i = 0; i < listMap.size(); i++) {
+                                        map.put(listMap.get(i).get("key"), listMap.get(i).get("resourceId"));
+                                    }
+                                }
                                 if (null != map && map.size() > 0) {
                                     for (Map.Entry<String, String> m : map.entrySet()) {
                                         if (m.getValue().equals(chartInfoModel.getResourceId())) {
