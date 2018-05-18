@@ -178,23 +178,23 @@
                     {display: '排序号', name: 'excelSeq', hide: true, render: function (row, index) {
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                     }},
-                    {display: '设备名称', name: 'deviceName', width: '120', align: 'left', render: textRender},
-                    {display: '机构代码', name: 'orgCode', width: '80', align: 'left', render: textRender},
-                    {display: '机构名称', name: 'orgName', width: '120', align: 'left', render: textRender},
-                    {display: '设备代号', name: 'deviceType', width: '80', align: 'left', render: textRender},
-                    {display: '采购数量', name: 'purchaseNum', width: '80', align: 'left', render: textRender},
-                    {display: '产地', name: 'originPlace', width: '80', align: 'left', render: textRender},
-                    {display: '厂家', name: 'manufacturerName', width: '120', align: 'left', render: textRender},
-                    {display: '设备型号', name: 'deviceModel', width: '80', align: 'left', render: textRender},
-                    {display: '采购时间', name: 'purchaseTime', width: '80', align: 'left', render: textRender},
-                    {display: '新旧情况', name: 'isNew', width: '80', align: 'left', render: textRender},
-                    {display: '设备价格', name: 'devicePrice', width: '80', align: 'left', render: textRender},
-                    {display: '使用年限', name: 'yearLimit', width: '80', align: 'left', render: textRender},
-                    {display: '状态', name: 'status', width: '80', align: 'left', render: textRender},
-                    {display: '是否配置GPS', name: 'isGps', width: '120', align: 'left', render: textRender},
-                    {display: '创建者',hide:true, name: 'creator', width: '80', align: 'left', render: textRender}];
+                    {display: '设备名称', name: 'deviceName', width: '100', align: 'left', render: textRender},
+                    {display: '机构代码', name: 'orgCode', width: '60', align: 'left', render: textRender},
+                    {display: '机构名称', name: 'orgName', width: '100', align: 'left', render: textRender},
+                    {display: '设备代号', name: 'deviceType', width: '60', align: 'left', render: textRender},
+                    {display: '采购数量', name: 'purchaseNum', width: '60', align: 'left', render: textRender},
+                    {display: '产地', name: 'originPlace', width: '60', align: 'left', render: textRender},
+                    {display: '厂家', name: 'manufacturerName', width: '100', align: 'left', render: textRender},
+                    {display: '设备型号', name: 'deviceModel', width: '60', align: 'left', render: textRender},
+                    {display: '采购时间', name: 'purchaseTime', width: '60', align: 'left', render: textRender},
+                    {display: '新旧情况', name: 'isNew', width: '60', align: 'left', render: textRender},
+                    {display: '设备价格', name: 'devicePrice', width: '60', align: 'left', render: textRender},
+                    {display: '使用年限', name: 'yearLimit', width: '60', align: 'left', render: textRender},
+                    {display: '状态', name: 'status', width: '60', align: 'left', render: textRender},
+                    {display: '是否配置GPS', name: 'isGps', width: '100', align: 'left', render: textRender},
+                    {display: '创建者',hide:true, name: 'creator', width: '60', align: 'left', render: textRender}];
 
-                grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520,width:1360 ,pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
+                grid = initGrid($('#impGrid'), urls.list, {}, columns, {pageSize:10, pageSizeOptions:[10, 15], checkbox: false, onAfterShowData: onAfterShowData});
                 grid.adjustToWidth();
                 searchFun();
             };
