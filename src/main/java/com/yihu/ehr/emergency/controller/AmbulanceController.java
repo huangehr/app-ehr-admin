@@ -60,14 +60,14 @@ public class AmbulanceController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             String url = "/ambulance/list";
-            if(filters != null && !"id=".equals(filters)) {
+            if (filters != null && !"id?".equals(filters)) {
                 params.put("filters", filters);
             }
             params.put("page", page);
             params.put("size", size);
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
-        }catch (Exception e){
+        } catch (Exception e){
             LogService.getLogger(AmbulanceController.class).error(e.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());

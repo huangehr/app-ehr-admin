@@ -1157,9 +1157,9 @@
                 $.each(data.errorCode,function (id,item) {
                     var obj = {};
                     obj.value = item.count;
-                    if (item.errorCode=="e00001"){
+                    if (item.errorCode=="E00001"){
                         obj.name = "为空";
-                    }else if (item.errorCode=="e00002"){
+                    }else if (item.errorCode=="E00002"){
                         obj.name = "超出值域";
                     }else{
                         obj.name = "其他";
@@ -1303,14 +1303,14 @@
                     color: colors,
                     legend: {
                         orient: 'vertical',
-                        x: 'right',
+                        right: 20,
                         bottom:'15%',
                         data:legend1
                     },
                     series: [
                         {
                             type:'pie',
-                            radius: ['20%', '80%'],
+                            radius: ['20%', '70%'],
                             avoidLabelOverlap: false,
                             label: {
                                 normal: {
@@ -1335,14 +1335,14 @@
                     color: colors,
                     legend: {
                         orient: 'vertical',
-                        x: 'right',
+                        right: 20,
                         bottom:'15%',
                         data:legend2
                     },
                     series: [
                         {
                             type:'pie',
-                            radius: ['20%', '80%'],
+                            radius: ['20%', '70%'],
                             avoidLabelOverlap: false,
                             label: {
                                 normal: {
@@ -1452,7 +1452,7 @@
                     }
                 });
                 $("#link").click(function () {
-                    top.window.open("http://171.35.109.35:1234/PMC/j_spring_security_check?j_username=wjw1&j_password=7bb98050796b649e");
+                    top.window.open("http://223.84.134.42:1234/PMC/j_spring_security_check?j_username=wjw1&j_password=7bb98050796b649e");
                 });
             },
             toZore: function (param) {

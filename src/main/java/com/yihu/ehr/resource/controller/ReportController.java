@@ -9,6 +9,7 @@ import com.yihu.ehr.common.constants.AuthorityKey;
 import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.model.resource.MChartInfoModel;
+import com.yihu.ehr.resource.service.ReportService;
 import com.yihu.ehr.util.FileUploadUtil;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -16,6 +17,7 @@ import com.yihu.ehr.util.datetime.DateTimeUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,6 +51,9 @@ public class ReportController extends BaseUIController {
     private String password;
     @Value("${service-gateway.url}")
     private String comUrl;
+
+    @Autowired
+    private ReportService reportService;
 
     @RequestMapping("/index")
     public String index(Model model) {
@@ -520,6 +525,35 @@ public class ReportController extends BaseUIController {
     }
 
     /**
+     * 获取报表 联动图形数据
+     * @param reportCode 报表code
+     * @param linkageResourceIdStr 联动视图Id串，多个用;拼接    改为只用于一个视图查询
+     * @param linkageFilter  联动视图条件，多个用;拼接 town=361102;quotaDate >= '2018-03-01' and quotaDate <= '2018-03-31'
+     * @param linkageDimension  联动维度
+     */
+    @RequestMapping("/getLinkageTemplateData")
+    @ResponseBody
+    public Object getLinkageTemplateData(@RequestParam(name="reportCode",required=false) String reportCode,
+                                         @RequestParam(name="linkageResourceIdStr",required=true) String linkageResourceIdStr,
+                                         @RequestParam(name="linkageFilter",required=false) String linkageFilter,
+                                         @RequestParam(name="linkageDimension",required=false)String linkageDimension,
+                                         @RequestParam(name="limitCondition",required=false)String limitCondition) {
+        String filter = "";
+
+        if(StringUtils.isNotEmpty(linkageFilter)){
+            String [] quotaFilters = linkageFilter.split(";");
+            for(int i = 0;i < quotaFilters.length; i++){
+                if(i == 0){
+                    filter = quotaFilters[0];
+                }else{
+                    filter += " and " + quotaFilters[i];
+                }
+            }
+        }
+        return reportService.getTemplateData(reportCode,linkageResourceIdStr,filter,linkageDimension, limitCondition);
+    }
+
+    /**
      * 转换视图数据筛选条件
      */
     private Map<String, Object> translateViewCondition(Integer type, String queryStr) throws IOException, ParseException {
@@ -584,12 +618,12 @@ public class ReportController extends BaseUIController {
      */
     @RequestMapping("/uploadTemplate")
     @ResponseBody
-    public Object uploadTemplate(Integer id, String content, String reportData, @RequestBody String position) {
+    public Object uploadTemplate(Integer id, String content, String reportData, String position) {
         try {
             saveSetting(id, reportData);
             Envelop result = new Envelop();
             String filePath = this.getClass().getResource("/").getPath() + "temp/";
-            String fileName = System.currentTimeMillis() + "template.html";
+            String fileName = System.currentTimeMillis() + "template.js";
             // 生成模板
             FileUploadUtil.createFile(filePath, fileName, content);
             FileInputStream inputStream = new FileInputStream(filePath + fileName);
@@ -622,6 +656,30 @@ public class ReportController extends BaseUIController {
         } catch (Exception e) {
             e.printStackTrace();
             return failed("生成模版发生异常");
+        }
+    }
+
+    @RequestMapping("/getPositionMapByCode")
+    @ResponseBody
+    public Object getPositionByCode(String code) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", code);
+        String chartInfoStr = HttpClientUtil.doGet(comUrl + "/resources/report/getPositionMapByCode", params, username, password);
+        return chartInfoStr;
+    }
+
+    @RequestMapping("/getTemplateContent")
+    @ResponseBody
+    public Object getTemplateContent(String reportCode) {
+        Map<String, Object> params = new HashMap<>();
+        try {
+            // 获取报表模版内容
+            params.put("reportCode", reportCode);
+            String templateContent = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.RsReportTemplateContent, params, username, password);
+            return templateContent ;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
     }
 }
