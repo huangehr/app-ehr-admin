@@ -194,7 +194,7 @@
                     {display: '是否配置GPS', name: 'isGps', width: '120', align: 'left', render: textRender},
                     {display: '创建者',hide:true, name: 'creator', width: '80', align: 'left', render: textRender}];
 
-                grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520, pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
+                grid = initGrid($('#impGrid'), urls.list, {}, columns, {height: 520,width:1360 ,pageSize:10, pageSizeOptions:[10, 15], delayLoad: true, checkbox: false, onAfterShowData: onAfterShowData});
                 grid.adjustToWidth();
                 searchFun();
             };

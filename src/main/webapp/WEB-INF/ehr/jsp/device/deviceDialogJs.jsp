@@ -115,6 +115,7 @@
                 this.$form.attrScan();
                 if(mode !='new'){
                     model = ${model};
+                    console.info(model)
                     this.$form.Fields.fillValues({
                         deviceName: model.deviceName,
                         orgCode:model.orgCode,
