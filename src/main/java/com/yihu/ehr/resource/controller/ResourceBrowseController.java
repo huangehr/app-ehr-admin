@@ -291,7 +291,9 @@ public class ResourceBrowseController extends BaseUIController {
                             } else if (eventType.equals("1")) {
                                 resultMap.put(key, "住院");
                             } else if (eventType.equals("2")) {
-                                resultMap.put(key, "线上");
+                                resultMap.put(key, "体检");
+                            } else {
+                                resultMap.put(key, "未知");
                             }
                         } else if (value.contains("T") && value.contains("Z")) {
                             String newDateStr = value.replace("T", " ").replace("Z", "");
