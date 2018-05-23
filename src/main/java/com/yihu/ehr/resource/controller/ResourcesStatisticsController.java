@@ -148,13 +148,14 @@ public class ResourcesStatisticsController extends BaseUIController {
     @RequestMapping(value = "/stasticReport/getArchiveReportAll", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "获取一段时间内数据解析情况", notes = "获取一段时间内数据解析情况")
-    public Result getArchiveReport1(String startDate,String endDate) {
+    public Result getArchiveReport1(String startDate,String endDate,String orgCode) {
         String url = "/stasticReport/getArchiveReportAll";
         String resultStr = "";
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("startDate", startDate);
             params.put("endDate", endDate);
+            params.put("orgCode", orgCode);
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             return toModel(resultStr, ListResult.class);
         } catch (Exception e) {
