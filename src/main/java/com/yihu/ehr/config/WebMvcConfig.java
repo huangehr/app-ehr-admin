@@ -1,7 +1,5 @@
 package com.yihu.ehr.config;
 
-import com.yihu.ehr.Filter.LogInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -13,7 +11,6 @@ import org.springframework.http.converter.xml.SourceHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
@@ -27,21 +24,9 @@ import java.util.List;
 @EnableWebMvc
 public class WebMvcConfig extends WebMvcConfigurerAdapter{
 
-    @Autowired
-    LogInterceptor logInterceptor;
-
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 多个拦截器组成一个拦截器链
-        // addPathPatterns 用于添加拦截规则
-        // excludePathPatterns 用户排除拦截
-        registry.addInterceptor(logInterceptor).addPathPatterns("/**");
-        super.addInterceptors(registry);
     }
 
     @Bean
