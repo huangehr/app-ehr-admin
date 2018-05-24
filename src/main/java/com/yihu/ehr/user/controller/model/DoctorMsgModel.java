@@ -166,6 +166,36 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
     }
 
 
+    public int validate(String field,boolean valFlag) {
+        int valid = 1;
+        if("roleType".equals(field) && false == valFlag ){
+            valid = 0;
+            addErrorMsg("roleType", "人员类别有误，请参考系统字典的人员类别！" );
+        }
+        if("jobType".equals(field) && false == valFlag ){
+            valid = 0;
+            addErrorMsg("jobType", "执业类别，请参考系统字典的执业类别！" );
+        }
+        if("jobLevel".equals(field) && false == valFlag ){
+            valid = 0;
+            addErrorMsg("jobLevel", "执业级别有误，请参考系统字典的执业级别！" );
+        }
+        if("jobScope".equals(field) && false == valFlag ){
+            valid = 0;
+            addErrorMsg("jobScope", "执业范围有误，请参考系统字典的执业范围！" );
+        }
+        if("jobScope".equals(field) && false == valFlag ){
+            valid = 0;
+            addErrorMsg("jobState", "执业状态有误，请参考系统字典的执业状态！" );
+        }
+        if("lczc".equals(field) && false == valFlag ){
+            valid = 0;
+            addErrorMsg("lczc", "技术职称有误，请参考系统字典的技术职称！" );
+        }
+        return valid;
+    }
+
+
     public String getCode() {
         return code;
     }

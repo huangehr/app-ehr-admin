@@ -65,12 +65,12 @@ public class DoctorMsgModelWriter extends AExcelWriter {
                 addCell(ws, i, 7, m.getSkill(), m.findErrorMsg("skill"));
                 addCell(ws, i, 8, m.getEmail(), m.findErrorMsg("email"));
                 addCell(ws, i, 9, m.getPhone(), m.findErrorMsg("phone"));
-                addCell(ws, i, 10, m.getPhone(), m.findErrorMsg("roleType"));
-                addCell(ws, i, 11, m.getPhone(), m.findErrorMsg("jobType"));
-                addCell(ws, i, 12, m.getPhone(), m.findErrorMsg("jobLevel"));
-                addCell(ws, i, 13, m.getPhone(), m.findErrorMsg("jobScope"));
-                addCell(ws, i, 14, m.getPhone(), m.findErrorMsg("jobState"));
-                addCell(ws, i, 15, m.getPhone(), m.findErrorMsg("registerFlag"));
+                addCell(ws, i, 10, m.getRoleType(), m.findErrorMsg("roleType"));
+                addCell(ws, i, 11, m.getJobType(), m.findErrorMsg("jobType"));
+                addCell(ws, i, 12, m.getJobLevel(), m.findErrorMsg("jobLevel"));
+                addCell(ws, i, 13, m.getJobScope(), m.findErrorMsg("jobScope"));
+                addCell(ws, i, 14, m.getJobState(), m.findErrorMsg("jobState"));
+                addCell(ws, i, 15, m.getRegisterFlag(), m.findErrorMsg("registerFlag"));
                 addCell(ws, i, 16, m.getJxzc(), m.findErrorMsg("jxzc"));
                 addCell(ws, i, 17, m.getLczc(), m.findErrorMsg("lczc"));
                 addCell(ws, i, 18, m.getXlzc(), m.findErrorMsg("xlzc"));
@@ -78,7 +78,7 @@ public class DoctorMsgModelWriter extends AExcelWriter {
                 addCell(ws, i, 20, m.getOfficeTel(), m.findErrorMsg("officeTel"));
                 addCell(ws, i, 21, m.getWorkPortal(), m.findErrorMsg("workPortal"));
                 addCell(ws, i, 22, m.getIntroduction(), m.findErrorMsg("introduction"));
-                addCell(ws, i, 17, getErrorInfo(m), "");
+                addCell(ws, i, 23, getErrorInfo(m), "");
                 i++;
             }
             wwb.write();

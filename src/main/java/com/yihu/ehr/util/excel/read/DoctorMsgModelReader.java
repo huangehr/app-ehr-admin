@@ -109,33 +109,33 @@ public class DoctorMsgModelReader extends AExcelReader {
                         p.setRoleType(searchDictEntryListForDDL(roleTypeDictId, roleType));
                     } else {
                         vatFlag = false;
-                        p.setRoleType(CONTENTERROR);
+                        p.validate("roleType",vatFlag);
                     }
 
                     if (!"".equals(searchDictEntryListForDDL(jobTypeDictId, getCellCont(sheet, i, 11).trim()))) {
                         p.setJobType(searchDictEntryListForDDL(jobTypeDictId, getCellCont(sheet, i, 11).trim()));
                     } else {
                         vatFlag = false;
-                        p.setJobType(CONTENTERROR);
+                        p.validate("jobType",vatFlag);
                     }
 
                     if (!"".equals(searchDictEntryListForDDL(jobLevelDictId, getCellCont(sheet, i, 12).trim()))) {
                         p.setJobLevel(searchDictEntryListForDDL(jobLevelDictId, getCellCont(sheet, i, 12).trim()));
                     } else {
                         vatFlag = false;
-                        p.setJobLevel(CONTENTERROR);
+                        p.validate("jobLevel",vatFlag);
                     }
                     if (!"".equals(searchDictEntryListForDDL(jobScopeDictId, getCellCont(sheet, i, 13).trim()))) {
                         p.setJobScope(searchDictEntryListForDDL(jobScopeDictId, getCellCont(sheet, i, 13).trim()));
                     } else {
                         vatFlag = false;
-                        p.setJobScope(CONTENTERROR);
+                        p.validate("jobScope",vatFlag);
                     }
                     if (!"".equals(searchDictEntryListForDDL(jobStateDictId, getCellCont(sheet, i, 14).trim()))) {
                         p.setJobState(searchDictEntryListForDDL(jobStateDictId, getCellCont(sheet, i, 14).trim()));
                     } else {
                         vatFlag = false;
-                        p.setJobState(CONTENTERROR);
+                        p.validate("jobState",vatFlag);
                     }
                     //0为是，1为否
                     String registerFlag = getCellCont(sheet, i, 15) == null ? "" : getCellCont(sheet, i, 15).trim();
@@ -155,7 +155,7 @@ public class DoctorMsgModelReader extends AExcelReader {
                         p.setLczc(searchDictEntryListForDDL(lczcDictId, getCellCont(sheet, i, 17).trim()));
                     } else {
                         vatFlag = false;
-                        p.setLczc(CONTENTERROR);
+                        p.validate("lczc",vatFlag);
                     }
                     p.setXlzc(getCellCont(sheet, i, 18) == null ? "" : getCellCont(sheet, i, 18).trim());
                     p.setXzzc(getCellCont(sheet, i, 19) == null ? "" : getCellCont(sheet, i, 19).trim());
@@ -163,12 +163,11 @@ public class DoctorMsgModelReader extends AExcelReader {
                     p.setWorkPortal(getCellCont(sheet, i, 21));
                     p.setIntroduction(getCellCont(sheet, i, 22) == null ? "" : getCellCont(sheet, i, 22).trim());
                     p.setExcelSeq(j);
-
                     int rs = p.validate(repeat);
-                    if (vatFlag == false || rs == 0) {
-                        errorLs.add(p);
-                    } else if (rs == 1) {
+                    if (rs == 1 && vatFlag == true) {
                         correctLs.add(p);
+                    }else{
+                        errorLs.add(p);
                     }
                 }
             }
