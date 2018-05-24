@@ -178,7 +178,19 @@
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
                                 {display: '执行时间', name: 'execTime', width: '14%', isAllowHide: false, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '7%', isAllowHide: false, align: 'center'},
-                                {display: '状态', name: 'status', width: '5%', isAllowHide: false, align: 'center',
+                                {display: '执行状态', name: 'jobStatus', width: '7%', isAllowHide: false, align: 'center',
+                                    render: function (row) {
+                                        var sta = row.jobStatus,
+                                            str = '';
+                                        if (sta == '0') {
+                                            str = '未开启'
+                                        }else if (sta == '1') {
+                                            str = '执行中'
+                                        }
+                                        return str;
+                                    }
+                                },
+                                {display: '指标状态', name: 'status', width: '5%', isAllowHide: false, align: 'center',
                                     render: function (row) {
                                         var sta = row.status,
                                             str = '';
@@ -192,7 +204,7 @@
                                         return str;
                                     }
                                 },
-                                {display: '操作', name: 'operator', minWidth: 400, align: 'left',
+                                {display: '操作', name: 'operator', minWidth: 500, align: 'left',
                                     render: function (row) {
                                         var html = '';
                                         html += '<sec:authorize url="/tjQuota/updateDimensionTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:weidu:config", row.code) + '">维度配置</a></sec:authorize>';
@@ -209,6 +221,8 @@
                                             <%--} else {--%>
                                             html += '<sec:authorize url="/tjQuota/executeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "zhibiao:execu", row.id, row.code, row.execType) + '">执行指标</a></sec:authorize>';
 //                                            }
+
+                                            html += '<sec:authorize url="/tjQuota/removeTjQuota"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "zhibiao:remove", row.id, row.code, row.execType) + '">停止指标</a></sec:authorize>';
                                         }
                                         html += '<sec:authorize url="/tjQuota/queryTjQuotaResult"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "zhibiao:result:selectResult", row.id,row.code) + '">结果查询</a></sec:authorize>';
                                         html += '<sec:authorize url="/tjQuota/queryTjQuotaLog"><a class="label_a" style="margin-left:10px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "zhibiao:log:quotaLog", row.code) + '">日志查询</a></sec:authorize>';
@@ -395,6 +409,11 @@
                         }
                     });
 
+                    // 停止执行指标
+                    $.subscribe('zhibiao:remove', function (event, id, quotaCode, execType) {
+                        removeQuota(id);
+                    });
+
                     $.subscribe('zhibiao:result:selectResult', function (event, id,quotaCode) {
                         var url = '${contextRoot}/tjQuota/initialResult';
                         var urlParms = {
@@ -456,6 +475,32 @@
                             },
                             error: function () {
                                 parent._LIGERDIALOG.error("验证指标默认维度发生异常。");
+                                loading.close();
+                            }
+                        });
+                    }
+                });
+            }
+
+            // 停止执行指标
+            function removeQuota(id) {
+                parent._LIGERDIALOG.confirm('确认要停止所选指标吗？', function (r) {
+                    if (r) {
+                        var dataModel = $.DataModel.init();
+                        dataModel.updateRemote('${contextRoot}/tjQuota/removeQuota', {
+                            data: {
+                                tjQuotaId: id
+                            },
+                            success: function (data) {
+                                if (data.successFlg) {
+                                    parent._LIGERDIALOG.success('指标已停止执行！');
+                                } else {
+                                    parent._LIGERDIALOG.warn(data.errorMsg);
+                                }
+                                loading.close();
+                            },
+                            error: function (data) {
+                                parent._LIGERDIALOG.error('停止指标异常。');
                                 loading.close();
                             }
                         });
