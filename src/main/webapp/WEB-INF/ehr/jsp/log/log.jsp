@@ -15,11 +15,11 @@
             <div class="m-form-control f-mb10">
                 <input type="text" id="inp_end_time" class="f-h28 f-w160" placeholder="截止时间" data-attr-scan="endTime">
             </div>
-            <div class="m-form-control f-ml10 f-mb10">
+            <%--<div class="m-form-control f-ml10 f-mb10">
                 <!--下拉框-->
                 <input type="text" id="inp_type" class="f-h28 f-w160" placeholder="请选择类型" data-type="select"
                        data-attr-scan="type">
-            </div>
+            </div>--%>
             <div class="m-form-control f-ml10 f-mb10">
                 <input type="text" id="inp_caller" class="f-h28 f-w1240" placeholder="请输入操作者姓名" data-attr-scan="caller">
             </div>

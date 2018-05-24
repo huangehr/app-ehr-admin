@@ -23,7 +23,8 @@
 			<charset class="java.nio.charset.Charset">UTF-8</charset>
 		</encoder>
 	</appender>
-	<appender name="business_m" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+	<!--<appender name="business_m" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_HOME}/business_logs/business_m.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${LOG_HOME}/business_logs/bk/business_m.%d{yyyy-MM-dd_HH-mm}.log</fileNamePattern>
@@ -32,7 +33,27 @@
 			<pattern>%msg%n</pattern>
 			<charset class="java.nio.charset.Charset">UTF-8</charset>
 		</encoder>
+	</appender>-->
+
+
+	<appender name="business_m" class="com.yihu.base.es.ElasticsearchAppender">
+		<!--支持集群 逗号分割-->
+		<hosts>http://172.19.103.9:9200</hosts>
+		<!--es index 名称-->
+		<index>businesslog</index>
+		<!--es type 名称-->
+		<type>businesslog</type>
+				<!--es 集群 名称-->  >
+		<clusterName>elasticsearch</clusterName>
+		<!--按照什么模式区滚动 支持 按照
+                 每天:day
+                 每周:week
+                 每月:month
+                 每年:year
+                  -->
+		<!--<rolling>year</rolling>-->
 	</appender>
+
 
 	<!--<appender name="business_d" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_HOME}/business_logs/business_d.log</file>
@@ -50,7 +71,7 @@
 	<!--log4jdbc -->
 	<logger name="jdbc.sqltiming" level="INFO"/>
 
-	<logger name="com.yihu.ehr.util.logback.BusinessLogs" level="INFO" additivity="false">
+	<logger name="BusinessLogs" level="INFO" additivity="false">
 		<appender-ref ref="business_m" />
 		<!--<appender-ref ref="business_d" />-->
 	</logger>

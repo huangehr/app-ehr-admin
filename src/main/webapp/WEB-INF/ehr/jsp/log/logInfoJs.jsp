@@ -40,13 +40,13 @@
                     debugger
                     if (obg) {
                         if (obg.successFlg) {
-                            var d = obg.detailModelList[0];
+                            var d = obg.obj;
                             debugger
                             this.$form.Fields.fillValues({
                                 appKey: d.appKey,
-                                function:d.function,
+                                functionName: d.function,
                                 operation:d.operation,
-                                patient:d.patient,
+                                patient:d.caller,
                                 time:d.time,
                                 responseTime:d.responseTime,
                                 responseCode:d.responseCode,
