@@ -1,14 +1,12 @@
 package com.yihu.ehr.user.controller.model;
 
 import com.yihu.ehr.util.excel.ExcelUtil;
-import com.yihu.ehr.util.excel.RegUtil;
 import com.yihu.ehr.util.excel.Validation;
 import com.yihu.ehr.util.excel.annotation.Location;
 import com.yihu.ehr.util.excel.annotation.Row;
 import com.yihu.ehr.util.excel.annotation.Title;
 import com.yihu.ehr.util.excel.annotation.ValidRepeat;
 import org.springframework.util.StringUtils;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -94,7 +92,6 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
     @Override
     public int validate(Map<String, Set> repeatMap) {
         int valid = 1;
-
         if(!repeatMap.get("code").add(code)){
             valid = 0;
             addErrorMsg("code", "医生账户重复！" );
@@ -111,6 +108,30 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
             valid = 0;
             addErrorMsg("idCardNo", "医生身份证号重复！" );
         }
+        if("contentError".equals(roleType)){
+            valid = 0;
+            addErrorMsg("roleType", "人员类别有误，请参考系统字典的人员类别！" );
+        }
+        if("contentError".equals(jobType)){
+            valid = 0;
+            addErrorMsg("jobType", "执业类别，请参考系统字典的执业类别！" );
+        }
+        if("contentError".equals(jobLevel)){
+            valid = 0;
+            addErrorMsg("jobLevel", "执业级别有误，请参考系统字典的执业级别！" );
+        }
+        if("contentError".equals(jobScope)){
+            valid = 0;
+            addErrorMsg("jobScope", "执业范围有误，请参考系统字典的执业范围！" );
+        }
+        if("contentError".equals(jobState)){
+            valid = 0;
+            addErrorMsg("jobState", "执业状态有误，请参考系统字典的执业状态！" );
+        }
+        if("contentError".equals(lczc)){
+            valid = 0;
+            addErrorMsg("lczc", "技术职称有误，请参考系统字典的技术职称！" );
+        }
         String validateEmail="^[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,4}$";
         Pattern vEmailPa = Pattern.compile(validateEmail);
         //正则表达式的匹配器
@@ -121,7 +142,6 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
             valid = 0;
             addErrorMsg("email", "请输入有效的邮件地址,如 username123@example.com！" );
         }
-
         String validatePhone="^1[3|4|5|7|8][0-9]{9}$";
         //正则表达式的模式
         Pattern vPhonePa = Pattern.compile(validatePhone);

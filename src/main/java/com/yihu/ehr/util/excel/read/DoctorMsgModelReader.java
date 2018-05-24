@@ -1,15 +1,45 @@
 package com.yihu.ehr.util.excel.read;
 
-import com.yihu.ehr.resource.model.RsMetaMsgModel;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
+import com.yihu.ehr.organization.controller.OrganizationController;
 import com.yihu.ehr.user.controller.model.DoctorMsgModel;
+import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.excel.AExcelReader;
+import com.yihu.ehr.util.log.LogService;
+import com.yihu.ehr.util.rest.Envelop;
 import jxl.Sheet;
 import jxl.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DoctorMsgModelReader extends AExcelReader {
-
+    @Value("${service-gateway.username}")
+    private String username;
+    @Value("${service-gateway.password}")
+    private String password;
+    @Value("${service-gateway.url}")
+    private String comUrl;
+    @Autowired
+    private ObjectMapper objectMapper;
+    // 人员类别 系统字典
+    public static final long roleTypeDictId = 120;
+    // 执业类别
+    public static final long jobTypeDictId = 104;
+    // 执业级别
+    public static final long jobLevelDictId = 105;
+    // 执业范围
+    public static final long jobScopeDictId = 103;
+    // 执业状态
+    public static final long jobStateDictId = 106;
+    // 技术职称
+    public static final long lczcDictId = 118;
+    public static final String CONTENTERROR = "contentError";
+    @Override
     public void read(Workbook rwb) throws Exception {
         try {
             Sheet[] sheets = rwb.getSheets();
@@ -35,6 +65,7 @@ public class DoctorMsgModelReader extends AExcelReader {
                 }
                 for (int i = 1; i < rows; i++, j++) {
                     p = new DoctorMsgModel();
+                    boolean vatFlag = true;
                     p.setCode(getCellCont(sheet, i, 0));
                     p.setName(getCellCont(sheet, i, 1));
                     p.setIdCardNo(getCellCont(sheet, i, 2));
@@ -73,11 +104,39 @@ public class DoctorMsgModelReader extends AExcelReader {
                     } else if ("护士".equals(roleType)) {
                         roleType = "注册护士";
                     }
-                    p.setRoleType(roleType);
-                    p.setJobType(getCellCont(sheet, i, 11) == null ? "" : getCellCont(sheet, i, 11).trim());
-                    p.setJobLevel(getCellCont(sheet, i, 12) == null ? "" : getCellCont(sheet, i, 12).trim());
-                    p.setJobScope(getCellCont(sheet, i, 13) == null ? "" : getCellCont(sheet, i, 13).trim());
-                    p.setJobState(getCellCont(sheet, i, 14) == null ? "" : getCellCont(sheet, i, 14).trim());
+
+                    if (!"".equals(searchDictEntryListForDDL(roleTypeDictId, roleType))) {
+                        p.setRoleType(searchDictEntryListForDDL(roleTypeDictId, roleType));
+                    } else {
+                        vatFlag = false;
+                        p.setRoleType(CONTENTERROR);
+                    }
+
+                    if (!"".equals(searchDictEntryListForDDL(jobTypeDictId, getCellCont(sheet, i, 11).trim()))) {
+                        p.setJobType(searchDictEntryListForDDL(jobTypeDictId, getCellCont(sheet, i, 11).trim()));
+                    } else {
+                        vatFlag = false;
+                        p.setJobType(CONTENTERROR);
+                    }
+
+                    if (!"".equals(searchDictEntryListForDDL(jobLevelDictId, getCellCont(sheet, i, 12).trim()))) {
+                        p.setJobLevel(searchDictEntryListForDDL(jobLevelDictId, getCellCont(sheet, i, 12).trim()));
+                    } else {
+                        vatFlag = false;
+                        p.setJobLevel(CONTENTERROR);
+                    }
+                    if (!"".equals(searchDictEntryListForDDL(jobScopeDictId, getCellCont(sheet, i, 13).trim()))) {
+                        p.setJobScope(searchDictEntryListForDDL(jobScopeDictId, getCellCont(sheet, i, 13).trim()));
+                    } else {
+                        vatFlag = false;
+                        p.setJobScope(CONTENTERROR);
+                    }
+                    if (!"".equals(searchDictEntryListForDDL(jobStateDictId, getCellCont(sheet, i, 14).trim()))) {
+                        p.setJobState(searchDictEntryListForDDL(jobStateDictId, getCellCont(sheet, i, 14).trim()));
+                    } else {
+                        vatFlag = false;
+                        p.setJobState(CONTENTERROR);
+                    }
                     //0为是，1为否
                     String registerFlag = getCellCont(sheet, i, 15) == null ? "" : getCellCont(sheet, i, 15).trim();
                     if ("是".equals(registerFlag)) {
@@ -92,7 +151,12 @@ public class DoctorMsgModelReader extends AExcelReader {
                     } else {
                         p.setJxzc("2");
                     }
-                    p.setLczc(getCellCont(sheet, i, 17) == null ? "" : getCellCont(sheet, i, 17).trim());
+                    if (!"".equals(searchDictEntryListForDDL(lczcDictId, getCellCont(sheet, i, 17).trim()))) {
+                        p.setLczc(searchDictEntryListForDDL(lczcDictId, getCellCont(sheet, i, 17).trim()));
+                    } else {
+                        vatFlag = false;
+                        p.setLczc(CONTENTERROR);
+                    }
                     p.setXlzc(getCellCont(sheet, i, 18) == null ? "" : getCellCont(sheet, i, 18).trim());
                     p.setXzzc(getCellCont(sheet, i, 19) == null ? "" : getCellCont(sheet, i, 19).trim());
                     p.setOfficeTel(getCellCont(sheet, i, 20));
@@ -101,7 +165,7 @@ public class DoctorMsgModelReader extends AExcelReader {
                     p.setExcelSeq(j);
 
                     int rs = p.validate(repeat);
-                    if (rs == 0) {
+                    if (vatFlag == false || rs == 0) {
                         errorLs.add(p);
                     } else if (rs == 1) {
                         correctLs.add(p);
@@ -114,6 +178,66 @@ public class DoctorMsgModelReader extends AExcelReader {
             if (rwb != null) {
                 rwb.close();
             }
+        }
+    }
+
+    /**
+     * 获取系统字典 校验
+     *
+     * @param dictId
+     * @param value
+     * @return
+     */
+    public String searchDictEntryListForDDL(Long dictId, String value) {
+        String resultStr = "";
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(value)) {
+            if (!StringUtils.isEmpty(dictId)) {
+                stringBuffer.append("dictId=" + dictId + ";");
+            }
+            stringBuffer.append("value=" + value + ";");
+            params.put("filters", stringBuffer.toString());
+            params.put("page", 1);
+            params.put("size", 500);
+            try {
+                String url = "/dictionaries/entries";
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
+                List<SystemDictEntryModel> modelList = (List<SystemDictEntryModel>) getEnvelopList(envelop.getDetailModelList(), new ArrayList<SystemDictEntryModel>(), SystemDictEntryModel.class);
+                for (SystemDictEntryModel m : modelList) {
+                    resultStr = m.getCode();
+                }
+            } catch (Exception ex) {
+                LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            }
+        }
+        return resultStr;
+    }
+
+    /**
+     * 将envelop中的DetailList串转化为模板对象集合
+     * Envelop envelop = objectMapper.readValue(resultStr,Envelop.class)
+     * modelList = envelop.getDetailModelList()
+     *
+     * @param modelList
+     * @param targets
+     * @param targetCls
+     * @param <T>
+     * @return
+     */
+    public <T> Collection<T> getEnvelopList(List modelList, Collection<T> targets, Class<T> targetCls) {
+        try {
+            objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+            for (Object aModelList : modelList) {
+                String objJsonData = objectMapper.writeValueAsString(aModelList);
+                T model = objectMapper.readValue(objJsonData, targetCls);
+                targets.add(model);
+            }
+            return targets;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
         }
     }
 }

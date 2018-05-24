@@ -3,16 +3,9 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.adapter.controller.ExtendController;
-import com.yihu.ehr.adapter.service.ExtendService;
-import com.yihu.ehr.adapter.service.PageParms;
-import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.org.OrgModel;
-import com.yihu.ehr.agModel.user.DoctorDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
-import com.yihu.ehr.constants.ErrorCode;
-import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.organization.controller.DeptMemberController;
 import com.yihu.ehr.organization.controller.OrganizationController;
 import com.yihu.ehr.user.controller.model.DoctorMsgModel;
 import com.yihu.ehr.user.controller.service.DoctorService;
@@ -25,7 +18,6 @@ import com.yihu.ehr.util.excel.read.DoctorMsgModelWriter;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,12 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -601,27 +590,5 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         }
     }
 
-    /** 获取系统字典 校验
-     * @param dictId
-     * @return
-     */
-    public Object searchDictEntryListForDDL(Long dictId) {
-        String resultStr = "";
-        Map<String, Object> params = new HashMap<>();
-        StringBuffer stringBuffer = new StringBuffer();
-        if (!StringUtils.isEmpty(dictId)) {
-            stringBuffer.append("dictId=" + dictId);
-        }
-        params.put("filters",stringBuffer.toString());
-        params.put("page", 1);
-        params.put("size", 500);
-        try {
-            String url = "/dictionaries/entries";
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
-        } catch (Exception ex) {
-            LogService.getLogger(OrganizationController.class).error(ex.getMessage());
-        }
-        return resultStr;
-    }
 
 }
