@@ -10,21 +10,14 @@ import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import jxl.Sheet;
 import jxl.Workbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
-
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DoctorMsgModelReader extends AExcelReader {
-    @Value("${service-gateway.username}")
     private String username;
-    @Value("${service-gateway.password}")
     private String password;
-    @Value("${service-gateway.url}")
     private String comUrl;
-    @Autowired
     private ObjectMapper objectMapper;
     // 人员类别 系统字典
     public static final long roleTypeDictId = 120;
@@ -38,7 +31,6 @@ public class DoctorMsgModelReader extends AExcelReader {
     public static final long jobStateDictId = 106;
     // 技术职称
     public static final long lczcDictId = 118;
-    public static final String CONTENTERROR = "contentError";
     @Override
     public void read(Workbook rwb) throws Exception {
         try {
@@ -238,5 +230,14 @@ public class DoctorMsgModelReader extends AExcelReader {
             ex.printStackTrace();
             return null;
         }
+    }
+    public DoctorMsgModelReader() {
+    }
+
+    public DoctorMsgModelReader(String username, String password, String comUrl, ObjectMapper objectMapper) {
+        this.username = username;
+        this.password = password;
+        this.comUrl = comUrl;
+        this.objectMapper = objectMapper;
     }
 }

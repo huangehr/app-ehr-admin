@@ -3,6 +3,7 @@ package com.yihu.ehr.user.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.adapter.controller.ExtendController;
+import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.org.OrgModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
@@ -18,6 +19,7 @@ import com.yihu.ehr.util.excel.read.DoctorMsgModelWriter;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,6 +50,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     @Value("${service-gateway.url}")
     private String comUrl;
     static final String parentFile = "doctor";
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @RequestMapping(value = "import")
     @ResponseBody
@@ -57,7 +61,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         try {
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
-            AExcelReader excelReader = new DoctorMsgModelReader();
+            AExcelReader excelReader = new DoctorMsgModelReader(username, password, comUrl, objectMapper);
             excelReader.read(file.getInputStream());
             List<DoctorMsgModel> errorLs = excelReader.getErrorLs();
             List<DoctorMsgModel> correctLs = excelReader.getCorrectLs();
@@ -588,6 +592,40 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             LogService.getLogger(OrganizationController.class).error(ex.getMessage());
             return "";
         }
+    }
+
+    /**
+     * 获取系统字典 校验
+     *
+     * @param dictId
+     * @param value
+     * @return
+     */
+    public String searchDictEntryListForDDL(Long dictId, String value) {
+        String resultStr = "";
+        Map<String, Object> params = new HashMap<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        if (!StringUtils.isEmpty(value)) {
+            if (!StringUtils.isEmpty(dictId)) {
+                stringBuffer.append("dictId=" + dictId + ";");
+            }
+            stringBuffer.append("value=" + value + ";");
+            params.put("filters", stringBuffer.toString());
+            params.put("page", 1);
+            params.put("size", 500);
+            try {
+                String url = "/dictionaries/entries";
+                resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+                Envelop envelop = objectMapper.readValue(resultStr, Envelop.class);
+                List<SystemDictEntryModel> modelList = (List<SystemDictEntryModel>) getEnvelopList(envelop.getDetailModelList(), new ArrayList<SystemDictEntryModel>(), SystemDictEntryModel.class);
+                for (SystemDictEntryModel m : modelList) {
+                    resultStr = m.getCode();
+                }
+            } catch (Exception ex) {
+                LogService.getLogger(OrganizationController.class).error(ex.getMessage());
+            }
+        }
+        return resultStr;
     }
 
 
