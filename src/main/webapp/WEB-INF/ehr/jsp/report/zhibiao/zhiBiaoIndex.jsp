@@ -45,7 +45,7 @@
         </div>
 
         <div class="m-form-control f-mr10 f-fr f-mb10">
-            <sec:authorize url="/tjQuota/TjQuotaTemplateDownLoad">
+            <%--<sec:authorize url="/tjQuota/TjQuotaTemplateDownLoad">
               <a href="<%=request.getContextPath()%>/template/指标导入模板.xls" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam"
                  style="">
                 下载模版
@@ -54,7 +54,7 @@
 
           <sec:authorize url="/tjQuota/TjQuotaImport">
             <div id="upd" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" style="overflow: hidden; width: 84px; position: relative"></div>
-          </sec:authorize>
+          </sec:authorize>--%>
           <sec:authorize url="/tjQuota/updateTjDataSource">
             <div id="div_new_record" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam"  onclick="javascript:$.publish('zhibiao:zhiBiaoInfo:open',['','new'])">
               <span><spring:message code="btn.create"/></span>

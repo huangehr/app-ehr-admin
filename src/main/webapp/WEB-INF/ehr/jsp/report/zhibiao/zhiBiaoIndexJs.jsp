@@ -176,7 +176,7 @@
                                     }
                                 },
                                 {display: 'cron表达式', name: 'cron', width: '10%', isAllowHide: false, align: 'left'},
-                                {display: '执行时间', name: 'execTime', width: '14%', isAllowHide: false, align: 'left'},
+                                {display: '执行时间', name: 'execTime', width: '14%',hide:true, isAllowHide: true, align: 'left'},
                                 {display: '执行方式', name: 'execTypeName', width: '7%', isAllowHide: false, align: 'center'},
                                 {display: '执行状态', name: 'jobStatus', width: '7%', isAllowHide: false, align: 'center',
                                     render: function (row) {
