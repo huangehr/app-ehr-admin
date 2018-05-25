@@ -159,7 +159,7 @@
                             success: function(data) {
                                 wait.close();
                                 if (data.successFlg) {
-                                    $.Notice.success('新增成功！');
+                                    $.Notice.success('保存成功！');
                                     closeDialog();
                                 } else {
                                     $.Notice.error(data.errorMsg);
