@@ -58,6 +58,7 @@
             $orgCode3: $('#orgCode3'),
             $orgCode4: $('#orgCode4'),
             $orgCode5: $('#orgCode5'),
+            $orgCode6: $('#orgCode6'),
             myCharts1: null,
             myCharts2: null,
             myCharts3: null,
@@ -76,6 +77,7 @@
                 this.$orgCode3.customCombo(url);
                 this.$orgCode4.customCombo(url);
                 this.$orgCode5.customCombo(url);
+                this.$orgCode6.customCombo(url);
                 me.$startDate1.ligerDateEditor({format: "yyyy-MM-dd",onChangeDate:function(value){
                     if(value){
                         $(".div-head").find(".div-item.active").trigger("click");
@@ -178,7 +180,7 @@
                 var me = this;
                 me.myCharts1 = echarts.init(me.$el1);
                 me.myCharts1.showLoading();
-                this.getData(pi[0], {startDate: me.$startDate1.val(),endDate:me.$endDate1.val()}, function (res) {
+                this.getData(pi[0], {startDate: me.$startDate1.val(),endDate:me.$endDate1.val(),orgCode:  $("#orgCode6").ligerGetComboBoxManager().getValue()}, function (res) {
                     if (res.successFlg) {
                         var dataList = res.detailModelList;
                         me.loadChart1(dataList);

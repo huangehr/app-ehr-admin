@@ -25,7 +25,7 @@
         var lczcDictId = 118; // 技术职称
         var roleTypeDictId = 120; // 人员类别
         var jobTypeDictId = 104; // 执业类别
-        var jobLevelDictId = 105; // 执业级别
+        var jobLevelDictId = 105; // 从事专业类别代码-执业级别
         var jobScopeDictId = 103; // 执业范围
         var jobStateDictId = 106; // 执业状态
 

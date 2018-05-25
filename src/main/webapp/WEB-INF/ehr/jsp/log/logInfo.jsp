@@ -20,13 +20,13 @@
     <div class="m-form-group">
         <label>菜单名称<spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control f-pr0">
-            <input type="text" id="function" readonly="readonly" data-type="select" class="required useTitle f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="function" />
+            <input type="text" id="function" readonly="readonly" data-type="select" class="required useTitle f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="functionName" />
         </div>
     </div>
 
 
     <div class="m-form-group">
-        <label>功能名称<spring:message code="spe.colon"/></label>
+        <label>操作名称<spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control f-pr0">
             <input type="text" id="operation" readonly="readonly" data-type="select" class="required useTitle f-h28 f-w240"   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="operation" />
         </div>

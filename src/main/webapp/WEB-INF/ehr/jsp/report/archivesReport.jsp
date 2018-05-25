@@ -1,5 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
+<style>
+    .l-text{
+        width:180px;
+    }
+    .l-text-field {
+        width: 178px;
+    }
+    .l-text.l-text-combobox{
+        width: 240px;
+    }
+    .l-text-combobox .l-text-field{
+        width: 238px;
+    }
+</style>
 <div style="width: 100%;height: 100%; overflow: auto;padding-bottom: 0;" class="div-main-content">
     <div ms-controller="app" style="background: #F2F3F7;width: 100%;">
         <div class="c-w-100">
@@ -17,6 +31,10 @@
                             </div>
                             <div class="m-form-control">
                                 <input type="text" id="end_date1" class="validate-date l-text-field validate-date"  placeholder="请选择结束日期"/>
+                            </div>
+                            <div class="l-text-wrapper m-form-control ">
+                                <input type="text" id="orgCode6"  data-type="select"  class="useTitle ajax"
+                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
                             </div>
                             <div class="m-form-control f-ml10">
                                 <!--按钮:查询-->

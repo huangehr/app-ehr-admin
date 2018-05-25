@@ -115,6 +115,7 @@ public class DeviceController extends BaseUIController {
             }
             params.put("page", page);
             params.put("size", rows);
+            params.put("sorts","-createDate");
             String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         }catch (Exception e){
@@ -401,7 +402,7 @@ public class DeviceController extends BaseUIController {
                 return failed("保存失败！" + e.getMessage());
             }
         }else{
-                return  failed("没有数据，保存失败！");
+                return  failed("没有可保存的数据");
         }
     }
 

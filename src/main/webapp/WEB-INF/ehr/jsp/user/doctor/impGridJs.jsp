@@ -275,11 +275,17 @@
                     {display: '联系电话', name: 'phone', width: '125', align: 'left', render: textRender},
                     {display: '办公电话（固）',hide: true, name: 'officeTel', width: '140', align: 'left', render: textRender},
 
+                    {display: '人员类别',  hide: true,name: 'roleType', width: '95', align: 'left', render: textRender},
+                    {display: '执业类别',  hide: true,name: 'jobType', width: '95', align: 'left', render: textRender},
+                    {display: '从事专业类别代码',  hide: true,name: 'jobLevel', width: '95', align: 'left', render: textRender},
+                    {display: '执业范围',  hide: true,name: 'jobScope', width: '95', align: 'left', render: textRender},
+                    {display: '执业状态',  hide: true,name: 'jobState', width: '95', align: 'left', render: textRender},
+                    {display: '是否注册', hide: true, name: 'registerFlag', width: '95', align: 'left', render: textRender},
 
 
                     {display: '医生门户首页',  hide: true,name: 'workPortal', width: '95', align: 'left', render: textRender},
-                    {display: '教学职称',  hide: true,name: 'jxzc', width: '95', align: 'left', render: textRender},
-                    {display: '临床职称',  hide: true,name: 'lczc', width: '95', align: 'left', render: textRender},
+                    {display: '是否制证',  hide: true,name: 'jxzc', width: '95', align: 'left', render: textRender},
+                    {display: '技术职称',  hide: true,name: 'lczc', width: '95', align: 'left', render: textRender},
                     {display: '学历',  hide: true,name: 'xlzc', width: '95', align: 'left', render: textRender},
                     {display: '行政职称',  hide: true,name: 'xzzc', width: '95', align: 'left', render: textRender},
                     {display: '简介', hide: true, name: 'introduction', width: '95', align: 'left', render: textRender}];

@@ -27,7 +27,7 @@
                 if(result){
                     var defaultOpts = {
                         height: 640,
-                        width:1000 ,
+                        width:1100 ,
                         title: "导入错误信息",
                         url: urls.gotoImportLs,
                         urlParms: {result: result},

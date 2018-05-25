@@ -15,11 +15,10 @@ import java.util.Date;
 public class BusinessLogs {
 
     // 日志输出
-    private static Logger logger = LoggerFactory.getLogger(BusinessLogs.class);
+    private static Logger logger = LoggerFactory.getLogger("BusinessLogs");
 
     /**
      * 业务日志输出
-     *
      * @param info 日志信息
      */
     public static void info(String caller, JSONObject info) {
@@ -27,13 +26,19 @@ public class BusinessLogs {
             JSONObject log = new JSONObject();
 
             log.put("caller", caller);
-            log.put("time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date()));
+            log.put("time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             log.put("logType", "3");
-
-            JSONObject data = new JSONObject();
-
-            log.put("data", info);
-
+            /*log.put("data",info);*/
+            if(info != null){
+                log.put("url", info.get("url").toString());
+                log.put("responseTime", info.get("responseTime").toString());
+                log.put("responseCode", info.get("responseCode").toString());
+                log.put("response", info.get("response").toString());
+                log.put("appKey", info.get("appKey").toString());
+                log.put("param", info.get("param").toString());
+                log.put("function", info.get("function").toString());
+                log.put("operation", info.get("operation").toString());
+            }
             logger.info(log.toString());
         } catch (Exception e) {
             e.printStackTrace();

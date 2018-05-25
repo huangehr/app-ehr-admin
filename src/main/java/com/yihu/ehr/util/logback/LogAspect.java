@@ -155,7 +155,7 @@ public class LogAspect {
         HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
         HttpSession session = request.getSession();
         String userName = (String) session.getAttribute("loginName");
-               JSONObject data = new JSONObject();
+        JSONObject data = new JSONObject();
         try {
             UsersModel userModel = (UsersModel)request.getSession().getAttribute(SessionAttributeKeys.CurrentUser);
             if(null!=userModel){
