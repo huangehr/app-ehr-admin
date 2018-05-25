@@ -23,16 +23,7 @@
             var gotoModify = function (event, id, mode) {
                 mode = mode || 'new';
                 id = id || '';
-                editDialog = parent._LIGERDIALOG.open({
-//                    urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode}
-                    height: 440,
-                    width: 620,
-                    title: mode=='new'?'新增':'修改',
-                    url: urls.gotoModify,
-                    urlParms: {
-                        id: id, mode: mode
-                    }
-                });
+                editDialog = parent._OPENDIALOG(urls.gotoModify, mode=='new'?'新增':'修改', 440, 620, {id: id, mode: mode});
             }
 
 
