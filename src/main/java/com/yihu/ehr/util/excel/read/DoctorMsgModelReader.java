@@ -23,7 +23,7 @@ public class DoctorMsgModelReader extends AExcelReader {
     public static final long roleTypeDictId = 120;
     // 执业类别
     public static final long jobTypeDictId = 104;
-    // 执业级别
+    //从事专业类别代码- 执业级别
     public static final long jobLevelDictId = 105;
     // 执业范围
     public static final long jobScopeDictId = 103;

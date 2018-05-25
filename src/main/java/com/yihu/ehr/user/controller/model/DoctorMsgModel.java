@@ -118,7 +118,7 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
         }
         if("contentError".equals(jobLevel)){
             valid = 0;
-            addErrorMsg("jobLevel", "执业级别有误，请参考系统字典的执业级别！" );
+            addErrorMsg("jobLevel", "从事专业类别代码有误，请参考系统字典的从事专业类别代码！" );
         }
         if("contentError".equals(jobScope)){
             valid = 0;
@@ -178,7 +178,7 @@ public class DoctorMsgModel extends ExcelUtil implements Validation {
         }
         if("jobLevel".equals(field) && false == valFlag ){
             valid = 0;
-            addErrorMsg("jobLevel", "执业级别有误，请参考系统字典的执业级别！" );
+            addErrorMsg("jobLevel", "从事专业类别代码有误，请参考系统字典的从事专业类别代码！" );
         }
         if("jobScope".equals(field) && false == valFlag ){
             valid = 0;

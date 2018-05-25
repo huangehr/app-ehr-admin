@@ -120,10 +120,10 @@
         </div>
     </div>
     <div class="m-form-group">
-        <label>执业级别</label>
+        <label>从事专业类别代码</label>
         <div class="l-text-wrapper m-form-control f-pr0">
             <input type="text" id="inp_jobLevel" data-type="select" class="useTitle max-length-20"
-                   placeholder="请选择执业级别" data-attr-scan="jobLevel"/>
+                   placeholder="请选择从事专业类别代码" data-attr-scan="jobLevel"/>
         </div>
         <label>执业范围</label>
         <div class="l-text-wrapper m-form-control f-pr0">
