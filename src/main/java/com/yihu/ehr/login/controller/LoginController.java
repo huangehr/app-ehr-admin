@@ -308,13 +308,15 @@ public class LoginController extends BaseUIController {
         }
         //System.out.println("isInnerIp:" + isInnerIp);
         if (isInnerIp) {
-            String url = browseClientUrl + "/common/login/signin?idCardNo=" + idCardNo;
+            String url = browseClientUrl + "/app/home/html/signin.html?idCardNo=" + idCardNo;
             response.sendRedirect(authorize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
         } else {
-            String url = browseClientOutSizeUrl + "/common/login/signin?idCardNo=" + idCardNo;
+            String url = browseClientOutSizeUrl + "/app/home/html/signin.html?idCardNo=" + idCardNo;
             response.sendRedirect(oauth2OutSize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
         }
     }
+
+
 
     /**
      * 初始化内外网IP信息
