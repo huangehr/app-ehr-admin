@@ -48,9 +48,9 @@
 			<input type="text" id="device_type" data-type="select" class="required" data-attr-scan="deviceType"
                    placeholder="请选择设备代码" required-title=<spring:message code="lbl.must.input"/>>
 		</div>
-		<label>采购数量:</label>
+		<label>购进数量:</label>
 		<div class="l-text-wrapper m-form-control">
-			<input type="text" id="purchase_num"  class="validate-positive-integer" data-attr-scan="purchaseNum" placeholder="请输入采购数量">
+			<input type="text" id="purchase_num"  class="validate-positive-integer" data-attr-scan="purchaseNum" placeholder="请输入购进数量">
 		</div>
 	</div>
 	<div class="m-form-group">
@@ -71,9 +71,9 @@
             <input type="text" id="device_model" class="required useTitle max-length-30 validate-special-char"  data-attr-scan="deviceModel" placeholder="请输入设备型号"
                    required-title=<spring:message code="lbl.must.input"/>/>
         </div>
-        <label>采购日期:</label>
+        <label>购买日期:</label>
         <div class="l-text-wrapper m-form-control f-pr0 essential">
-            <input id="purchase_time" class="required" placeholder="请输入采购日期"  required-title=<spring:message code="lbl.must.input"/>
+            <input id="purchase_time" class="required" placeholder="请输入购买日期"  required-title=<spring:message code="lbl.must.input"/>
                     data-attr-scan="purchaseTime"/>
         </div>
     </div>

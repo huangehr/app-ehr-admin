@@ -64,7 +64,7 @@
 							{ display: '归属机构', name: 'orgName',width: '20%',align:'left'},
 							{ display: '设备代号', name: 'deviceTypeName', width: '20%',align:'left'},
 							{ display: '设备型号', name: 'deviceModel', width: '10%',align:'left'},
-							{ display: '购进台数', name: 'purchaseNum', width: '10%'},
+							{ display: '购进数量', name: 'purchaseNum', width: '10%'},
 							{ display: '产地', name: 'originPlace', width: '10%', render: function (row) {
                                 if(row.originPlace=="1"){
                                     return '进口';
@@ -161,7 +161,7 @@
 					//删除
 					$.subscribe('device:deviceInfo:delete',function(event,id){
 						isFirstPage = false;
-						parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
+						parent._LIGERDIALOG.confirm('确认删除该行信息？', function (yes) {
 							if (yes) {
 								var dataModel = $.DataModel.init();
 								dataModel.updateRemote('${contextRoot}/device/delete', {
