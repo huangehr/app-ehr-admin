@@ -21,22 +21,21 @@ public class DeviceMsgModelReader extends AExcelReader {
                     p = new DeviceMsgModel();
                     p.setDeviceName(getCellCont(sheet, i, 0));
                     p.setOrgCode(getCellCont(sheet, i, 1));
-                    p.setOrgName(getCellCont(sheet, i, 2));
-                    p.setDeviceType(getCellCont(sheet, i, 3));
-                    p.setPurchaseNum(getCellCont(sheet, i, 4));
-                    p.setOriginPlace(getCellCont(sheet, i, 5));
-                    p.setManufacturerName(getCellCont(sheet, i, 6));
-                    p.setDeviceModel(getCellCont(sheet, i, 7));
-                    p.setPurchaseTime(getCellCont(sheet, i, 8));
-                    p.setIsNew(getCellCont(sheet, i, 9));
+                    p.setDeviceType(getCellCont(sheet, i, 2));
+                    p.setPurchaseNum(getCellCont(sheet, i, 3));
+                    p.setOriginPlace(getCellCont(sheet, i, 4));
+                    p.setManufacturerName(getCellCont(sheet, i, 5));
+                    p.setDeviceModel(getCellCont(sheet, i, 6));
+                    p.setPurchaseTime(getCellCont(sheet, i, 7));
+                    p.setIsNew(getCellCont(sheet, i, 8));
+                    if(!StringUtils.isEmpty(getCellCont(sheet, i, 9))) {
+                        p.setDevicePrice(Double.valueOf(getCellCont(sheet, i, 9)));
+                    }
                     if(!StringUtils.isEmpty(getCellCont(sheet, i, 10))) {
-                        p.setDevicePrice(Double.valueOf(getCellCont(sheet, i, 10)));
+                        p.setYearLimit(Integer.valueOf(getCellCont(sheet, i, 10)));
                     }
-                    if(!StringUtils.isEmpty(getCellCont(sheet, i, 11))) {
-                        p.setYearLimit(Integer.valueOf(getCellCont(sheet, i, 11)));
-                    }
-                    p.setStatus(getCellCont(sheet, i, 12));
-                    p.setIsGps(getCellCont(sheet, i, 13));
+                    p.setStatus(getCellCont(sheet, i, 11));
+                    p.setIsGps(getCellCont(sheet, i, 12));
                     p.setExcelSeq(j);
 
                     int rs = p.validate(repeat);
