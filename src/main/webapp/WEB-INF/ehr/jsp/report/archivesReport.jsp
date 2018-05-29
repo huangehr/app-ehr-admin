@@ -42,12 +42,6 @@
                                     <span><spring:message code="btn.search"/></span>
                                 </div>
                             </div>
-                            <div class="m-form-control f-ml10">
-                                <!--按钮:查询-->
-                                <div id="link" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" style="margin-bottom: 1px">
-                                    <span>采集监管</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
