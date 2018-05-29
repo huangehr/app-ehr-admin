@@ -342,7 +342,7 @@
                             titleName = "数据源";
                             requestUrl = '${contextRoot}/zhibiaoconfig/dataSourceDialog';
                         }else if(activeIndex==1){//数据存储管理
-                            titleName = "数据源";
+                            titleName = "数据存储";
                             requestUrl = '${contextRoot}/zhibiaoconfig/dataStorageDialog';
                         }else if(activeIndex==2){//默认维度管理
                             titleName = "默认维度";
