@@ -646,7 +646,7 @@ public class NumberUtil {
                 String suffix = idCard.substring(length - 4);
                 newIdCard = prefix + "********" + suffix;
             } else {
-                newIdCard = "******************";
+                newIdCard = idCard;
             }
         }
         return newIdCard;
