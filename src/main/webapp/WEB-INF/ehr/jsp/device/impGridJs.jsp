@@ -46,6 +46,7 @@
                                 if (data.successFlg) {
                                     parent._LIGERDIALOG.success("保存成功!");
                                     searchFun();
+                                    parent.reloadMasterGrid();
                                 } else {
                                     if (data.errorMsg)
                                         parent._LIGERDIALOG.error(data.errorMsg);
@@ -100,24 +101,13 @@
                     }
 
                     if(field.indexOf('orgCode')!=-1){
-                        var result=uniqValid(urls.isOrgExistence+"?orgCode="+val+"&orgName="+ $('#' + orgName).val(), undefined,"该机构代码或机构名称不正确！");
-                        if(result.result){
-                            $.jValidation.Validation.reset("#orgName"+o[1]);
+                        var result=uniqValid(urls.isOrgExistence+"?orgCode="+val+"&orgName=", undefined,"该机构代码不正确！");
+                        if(result.errorMsg){
+                            $.jValidation.Validation.showErrorMsg('ajax', "#orgCode"+o[1], "该机构代码不正确！");
                         } else {
-                            $.jValidation.Validation.showErrorMsg('ajax', "#orgName"+o[1], "该机构代码或机构名称不正确！");
+                            $.jValidation.Validation.reset("#orgCode"+o[1]);
                         }
                         return result;
-                    }
-                    if(field.indexOf('orgName')!=-1){
-                        debugger;
-                        var result=uniqValid(urls.isOrgExistence+"?orgCode="+$('#' + code).val()+"&orgName="+val, "该机构代码或机构名称不正确！");
-                        if(result.result){
-                            $.jValidation.Validation.reset("#orgCode_"+o[1]);
-                        } else {
-                            $.jValidation.Validation.showErrorMsg('ajax', "#orgCode_"+o[1], "该机构代码或机构名称不正确！");
-                        }
-                        return result;
-
                     }
                 });
                 validator.validate();
@@ -179,19 +169,18 @@
                         return '<input type="hidden" value="'+ row.excelSeq +'" data-attr-scan="excelSeq_'+ index +'">'
                     }},
                     {display: '设备名称', name: 'deviceName', width: '100', align: 'left', render: textRender},
-                    {display: '机构代码', name: 'orgCode', width: '60', align: 'left', render: textRender},
-                    {display: '机构名称', name: 'orgName', width: '100', align: 'left', render: textRender},
-                    {display: '设备代号', name: 'deviceType', width: '60', align: 'left', render: textRender},
-                    {display: '采购数量', name: 'purchaseNum', width: '60', align: 'left', render: textRender},
+                    {display: '机构代码', name: 'orgCode', width: '80', align: 'left', render: textRender},
+                    {display: '设备代号', name: 'deviceType', width: '70', align: 'left', render: textRender},
+                    {display: '购进数量', name: 'purchaseNum', width: '60', align: 'left', render: textRender},
                     {display: '产地', name: 'originPlace', width: '60', align: 'left', render: textRender},
-                    {display: '厂家', name: 'manufacturerName', width: '100', align: 'left', render: textRender},
-                    {display: '设备型号', name: 'deviceModel', width: '60', align: 'left', render: textRender},
-                    {display: '采购时间', name: 'purchaseTime', width: '60', align: 'left', render: textRender},
+                    {display: '生产厂家', name: 'manufacturerName', width: '100', align: 'left', render: textRender},
+                    {display: '设备型号', name: 'deviceModel', width: '100', align: 'left', render: textRender},
+                    {display: '购买日期', name: 'purchaseTime', width: '90', align: 'left', render: textRender},
                     {display: '新旧情况', name: 'isNew', width: '60', align: 'left', render: textRender},
-                    {display: '设备价格', name: 'devicePrice', width: '60', align: 'left', render: textRender},
+                    {display: '购买单价', name: 'devicePrice', width: '60', align: 'left', render: textRender},
                     {display: '使用年限', name: 'yearLimit', width: '60', align: 'left', render: textRender},
                     {display: '状态', name: 'status', width: '60', align: 'left', render: textRender},
-                    {display: '是否配置GPS', name: 'isGps', width: '100', align: 'left', render: textRender},
+                    {display: '是否配备GPS', name: 'isGps', width: '100', align: 'left', render: textRender},
                     {display: '创建者',hide:true, name: 'creator', width: '60', align: 'left', render: textRender}];
 
                 grid = initGrid($('#impGrid'), urls.list, {}, columns, {pageSize:10, pageSizeOptions:[10, 15], checkbox: false, onAfterShowData: onAfterShowData});

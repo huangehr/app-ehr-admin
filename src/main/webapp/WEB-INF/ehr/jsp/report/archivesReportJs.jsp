@@ -668,6 +668,13 @@
                         trigger: 'axis',
                         axisPointer : {            // 坐标轴指示器，坐标轴触发有效
                             type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        },
+                        formatter: function (params) {
+                            var res='<div><p>就诊时间：'+params[0].name+'</p></div>'
+                            for(var i=0;i<params.length;i++){
+                                res+='<p>'+params[i].seriesName+':'+params[i].data+'</p>'
+                            }
+                            return res;
                         }
                     },
                     legend: {
@@ -680,7 +687,7 @@
                     dataZoom: [
                         {
                             show: true,
-                            start: 94,
+                            start: 80,
                             end: 100,
                             bottom:"20"
                         }
@@ -734,9 +741,9 @@
                     series : [
                         {
                             name: '住院',
-                            type:'line',
-//                            barGap:2,
-//                            barMaxWidth:6,
+                            type:'bar',
+                            barGap:2,
+                            barMaxWidth:6,
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
@@ -750,9 +757,9 @@
                         },
                         {
                             name:'门诊',
-                            type:'line',
-//                            barGap:2,
-//                            barMaxWidth:6,
+                            type:'bar',
+                            barGap:2,
+                            barMaxWidth:6,
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
@@ -766,9 +773,9 @@
                         },
                         {
                             name:'新增住院',
-                            type:'line',
-//                            barGap:2,
-//                            barMaxWidth:6,
+                            type:'bar',
+                            barGap:2,
+                            barMaxWidth:6,
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
@@ -782,9 +789,9 @@
                         },
                         {
                             name:'新增门诊',
-                            type:'line',
-//                            barGap:2,
-//                            barMaxWidth:6,
+                            type:'bar',
+                            barGap:2,
+                            barMaxWidth:6,
                             itemStyle : {
                                 normal : {
                                     barBorderRadius:[6],
