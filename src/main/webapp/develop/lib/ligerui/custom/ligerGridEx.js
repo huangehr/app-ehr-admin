@@ -169,9 +169,13 @@
                             self.f.gridbody[0].scrollTop = -this.mcs.top;
                             //$('.l-grid-editor',self.element).top - self.f.gridbody[0].scrollTop;
                             // 修复滚动条滚动时，gridbody高度不变导致数据无法显示问题
-                            self.gridbody.css({
-                                height:$('.l-grid-body-table', self.element).height()
-                            });
+                            var height = $('.l-grid-body-table', self.element).height()
+                            if(height) {
+                                self.gridbody.css({
+                                    height:$('.l-grid-body-table', self.element).height()
+                                });
+                            }
+
                         },
                         onScroll: function () {
                             //updateScroller.apply(self, arguments);
