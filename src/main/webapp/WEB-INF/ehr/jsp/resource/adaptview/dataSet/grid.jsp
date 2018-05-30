@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <!--######用户管理页面Title设置######-->
 <div class="f-dn" data-head-title="true">标准适配</div>
-<div id="div_wrapper" >
+<div id="div_wrapper" style="overflow: visible;">
   <div id="conditionArea" class="f-mb10 f-mr10" align="right">
     <div class="body-head f-h50" align="left">
       <a href="#" id="gohis" class="f-fwb">返回上一层 </a>

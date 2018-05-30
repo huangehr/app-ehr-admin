@@ -181,7 +181,9 @@
                             if (data.successFlg) {
 //                                reloadMasterUpdateGrid(categoryIdNew);
                                 $.Notice.success('操作成功');
-                                win.parent.closeRsInfoDialog();
+                                setTimeout(function(){
+                                    win.parent.closeRsInfoDialog()
+                                },3000)
                             } else {
                                 $.Notice.error('操作失败！');
                             }
