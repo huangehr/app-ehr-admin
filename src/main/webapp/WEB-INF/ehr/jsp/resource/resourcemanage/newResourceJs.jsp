@@ -295,6 +295,17 @@
                             var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
                             zTree.expandAll(true);
                         }
+                        $("#treeDom li").each(function(k,item){
+                            if($(item).find("ul li").length==0){
+                                $(item).find(".level0").find("span.button.ico_docu").css("background-position","-147px 0");
+                            }
+                        })
+
+                        $("#treeDomZB li").each(function(k,item){
+                            if($(item).find("ul li").length==0){
+                                $(item).find(".level0").find("span.button.ico_docu").css("background-position","-147px 0");
+                            }
+                        })
                     } else {
                         parent._LIGERDIALOG.error('数据获取失败');
                     }
@@ -333,6 +344,11 @@
                                     me.$autBtn.show();
                                 } else {
                                     me.$autBtn.hide();
+                                }
+                                if(data&&data.rs_interface=="getEhrCenterSub"){
+                                    me.$ddSeach.show();
+                                }else{
+                                    me.$ddSeach.hide();
                                 }
                                 me.loadDAGridData(data.code);
                                 break;
