@@ -1,7 +1,5 @@
 package com.yihu.ehr.log.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.HashMap;
@@ -95,8 +92,9 @@ public class LogController extends BaseUIController {
     @RequestMapping("searchListLogs")
     @ResponseBody
     public Object searchListLogs(String patient,String type,String startTime ,String endTime ,String caller, int page, int rows) {
-        String url = "/dfs/api/v1.0/elasticSearch/page";
+        String url = "/dfs/api/v1.0/elasticSearch/pageSort";
         String index = "";
+        String sorts = "-time";
         if("3".equals(type)){
             //总支撑业务日志
 
@@ -124,11 +122,11 @@ public class LogController extends BaseUIController {
             //enddate = DateUtil.addDate(1,enddate);
             filter =  filter + ";time<" + DateUtil.formatDate(enddate,DateUtil.DEFAULT_YMDHMSDATE_FORMAT);
         }
-
         if (!StringUtils.isEmpty(patient)) {
             filter =  filter + ";caller=" + patient;
         }
         params.put("filter", filter);
+        params.put("sorts", sorts);
         params.put("page", page);
         params.put("size", rows);
         try {
