@@ -25,86 +25,130 @@ import java.util.regex.Pattern;
 public class DeviceMsgModel extends ExcelUtil implements Validation {
 
     @Location(x=0)
+    @ValidRepeat
     private String deviceName; //设备名称
 
     @Location(x=1)
     @ValidRepeat
     private String orgCode; //归属机构代码
 
+
     @Location(x=2)
     @ValidRepeat
-    private String orgName; //归属机构名称
-
-    @Location(x=3)
     private String deviceType;//设备代号
 
-    @Location(x=4)
+    @Location(x=3)
     private String purchaseNum;//采购数量
 
     /**
      * 产地
      * 1进口 2国产/合资
      */
-    @Location(x=5)
+    @Location(x=4)
+    @ValidRepeat
     private String originPlace;
 
     /**
      * 厂家
      */
-    @Location(x=6)
+    @Location(x=5)
+    @ValidRepeat
     private String manufacturerName;
 
     /**
      * 设备型号
      */
-    @Location(x=7)
+    @Location(x=6)
+    @ValidRepeat
     private String deviceModel;
 
     /**
      * 采购时间
      */
-    @Location(x=8)
+    @Location(x=7)
+    @ValidRepeat
     private String purchaseTime;
 
 
     /**
      * 新旧情况 1新设备 2	二手设备
      */
-    @Location(x=9)
+    @Location(x=8)
+    @ValidRepeat
     private String isNew;
 
     /**
      * 设备价格
      */
-    @Location(x=10)
+    @Location(x=9)
     private double devicePrice;
     /**
      * 使用年限
      */
-    @Location(x=11)
+    @Location(x=10)
     private Integer yearLimit;
 
     /**
      * 状态 1启用 2未启用 3报废
 
      */
-    @Location(x=12)
+    @Location(x=11)
     private String status;
 
     /**
      * 是否配置GPS  1是 0否
      *
      */
-    @Location(x=13)
+    @Location(x=12)
     private String isGps;
 
     //创建者
     private String creator;
 
+    private String orgName;
 
     @Override
     public int validate(Map<String, Set> repeatMap) {
         int valid = 1;
+        if(StringUtils.isEmpty(deviceName)){
+            valid = 0;
+            addErrorMsg("deviceName", "设备名称不能为空！" );
+        }
+
+        if(StringUtils.isEmpty(orgCode)){
+            valid = 0;
+            addErrorMsg("orgCode", "所属机构不能为空！" );
+        }
+
+        if(StringUtils.isEmpty(deviceType)){
+            valid = 0;
+            addErrorMsg("deviceType", "设备代号不能为空！" );
+        }
+
+        if(StringUtils.isEmpty(originPlace)){
+            valid = 0;
+            addErrorMsg("originPlace", "产地不能为空！" );
+        }
+
+        if(StringUtils.isEmpty(manufacturerName)){
+            valid = 0;
+            addErrorMsg("manufacturerName", "生产厂家不能为空！" );
+        }
+
+        if(StringUtils.isEmpty(deviceModel)){
+            valid = 0;
+            addErrorMsg("deviceModel", "设备型号不能为空！" );
+        }
+
+        if(StringUtils.isEmpty(purchaseTime)){
+            valid = 0;
+            addErrorMsg("purchaseTime", "购买日期不能为空！" );
+        }
+
+        if(StringUtils.isEmpty(isNew)){
+            valid = 0;
+            addErrorMsg("isNew", "新旧情况不能为空！" );
+        }
 
         if(!StringUtils.isEmpty(orgCode)){
             repeatMap.get("orgCode").add(orgCode);

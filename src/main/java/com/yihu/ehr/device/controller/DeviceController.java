@@ -223,6 +223,7 @@ public class DeviceController extends BaseUIController {
             for(int i=0; i<correctLs.size(); i++){
                 model = correctLs.get(i);
                 model.setCreator(user.getId());
+                model.setOrgName(orgs.get(model.getOrgCode()));
                 if(validate(model,orgs)==0)
                     errorLs.add(model);
                 else
@@ -387,6 +388,7 @@ public class DeviceController extends BaseUIController {
                 List saveLs = new ArrayList<>();
                 for (int i = 0; i < DeviceMsgModels.size(); i++) {
                     model = DeviceMsgModels.get(i);
+                    model.setOrgName(orgs.get(model.getOrgCode()));
                     if (validate(model, orgs) == 0 || model.errorMsg.size() > 0) {
                         all.set(all.indexOf(model), model);
                     } else {
@@ -421,16 +423,11 @@ public class DeviceController extends BaseUIController {
             List<String> list  = new ArrayList<>();
             list.add(orgCode);
             Map<String,String>  orgMap=findExistOrgInOrganization(toJson(list));
-            if(null!=orgMap&&null!=orgMap.get(orgCode)){
-                if(orgName.equals(orgMap.get(orgCode))){
-                    envelop.setSuccessFlg(true);
-                }else{
-                    envelop.setSuccessFlg(false);
-                    envelop.setErrorMsg("该机构code和机构名称不对应，请核对！");
-                }
+            if(!(null!=orgMap&&null!=orgMap.get(orgCode))){
+                envelop.setSuccessFlg(true);
+                envelop.setObj("该机构不存在，请核对！");
             }else{
-                envelop.setSuccessFlg(false);
-                envelop.setErrorMsg("该机构不存在，请核对！");
+                envelop.setSuccessFlg(true);
             }
             return envelop;
         } catch (Exception e) {
@@ -447,9 +444,6 @@ public class DeviceController extends BaseUIController {
         //验证机构
         if(null==orgs.get(model.getOrgCode())){
             model.addErrorMsg("orgCode", "该机构不存在，请核对！");
-            rs = 0;
-        }else if(!orgs.get(model.getOrgCode()).equals(model.getOrgName())){
-            model.addErrorMsg("orgName", "该机构名称不正确，请核对！");
             rs = 0;
         }
         return rs;

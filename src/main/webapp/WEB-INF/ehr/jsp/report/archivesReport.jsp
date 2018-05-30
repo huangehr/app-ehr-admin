@@ -34,18 +34,12 @@
                             </div>
                             <div class="l-text-wrapper m-form-control ">
                                 <input type="text" id="orgCode6"  data-type="select"  class="useTitle ajax"
-                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
+                                       placeholder="全部" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
                             </div>
                             <div class="m-form-control f-ml10">
                                 <!--按钮:查询-->
                                 <div id="btn_search" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" style="margin-bottom: 1px">
                                     <span><spring:message code="btn.search"/></span>
-                                </div>
-                            </div>
-                            <div class="m-form-control f-ml10">
-                                <!--按钮:查询-->
-                                <div id="link" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" style="margin-bottom: 1px">
-                                    <span>采集监管</span>
                                 </div>
                             </div>
                         </div>
@@ -76,7 +70,7 @@
                             </div>
                             <div class="l-text-wrapper m-form-control ">
                                 <input type="text" id="orgCode4"  data-type="select"  class="useTitle ajax"
-                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
+                                       placeholder="全部" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
                             </div>
                             <div class="m-form-control f-ml10">
                                 <!--按钮:查询-->
@@ -118,7 +112,7 @@
                             </div>
                             <div class="l-text-wrapper m-form-control ">
                                 <input type="text" id="orgCode1"  data-type="select"  class="useTitle ajax"
-                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
+                                       placeholder="全部" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
                             </div>
                             <div class="m-form-control f-ml10">
                                 <!--按钮:查询-->
@@ -150,7 +144,7 @@
                             </div>
                             <div class="l-text-wrapper m-form-control ">
                                 <input type="text" id="orgCode2"  data-type="select"  class="useTitle ajax"
-                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
+                                       placeholder="全部" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
                             </div>
                             <div class="m-form-control f-ml10">
                                 <!--按钮:查询-->
@@ -230,7 +224,7 @@
                             </div>
                             <div class="l-text-wrapper m-form-control ">
                                 <input type="text" id="orgCode3"  data-type="select"  class="useTitle ajax"
-                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
+                                       placeholder="全部" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
                             </div>
                             <div class="m-form-control f-ml10">
                                 <!--按钮:查询-->
@@ -287,7 +281,7 @@
                             </div>
                             <div class="l-text-wrapper m-form-control ">
                                 <input type="text" id="orgCode5"  data-type="select"  class="useTitle ajax"
-                                       placeholder="请选择医院" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
+                                       placeholder="全部" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="parentHosId">
                             </div>
                             <div class="m-form-control f-ml10">
                                 <!--按钮:查询-->
