@@ -301,9 +301,9 @@
                                         parent._LIGERDIALOG.success('更新成功');
                                         self.searchSystemDict();
                                     } else {
-                                        parent._LIGERDIALOG.error("更新失败");
+                                        parent.$.Notice.error(data.errorMsg);
+//                                        parent._LIGERDIALOG.error("更新失败");
                                     }
-                                    systemDictUpdateDialog.close();
                                 }
                             });
                         } else {
@@ -334,10 +334,11 @@
                                     if (data.successFlg) {
                                         parent._LIGERDIALOG.success('保存成功');
                                         master.searchSystemDictEntity(master.$systemDictId.val());
+                                        addSystemDictEntityDialog.close();
                                     } else {
-                                        parent._LIGERDIALOG.error(data.errorMsg);
+                                        parent.$.Notice.error(data.errorMsg);
+//                                        parent._LIGERDIALOG.error(data.errorMsg);
                                     }
-                                    addSystemDictEntityDialog.close();
                                 }
                             });
                         }

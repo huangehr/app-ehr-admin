@@ -10,15 +10,22 @@
         // 表单校验工具类
         var jValidation = $.jValidation;
         var mode = '${mode}';
-        var type = '${type}';
+
         var nameCopy = '';
         var codeCopy = '';
         <%--var categoryIdOld = '${categoryId}';--%>
 
-        var queryCondition = '${queryCondition}' || [];
-        var metadatas = '${metadatas}';
+        var resourceStr = sessionStorage.getItem("customQueryDialog_resourceBrowse")
+        var resourceJson = {};
+        if(resourceStr) {
+            resourceJson = JSON.parse(resourceStr);
+        }
+
+        var type = resourceJson.type;
+        var queryCondition = resourceJson.queryCondition || [];
+        var metadatas = resourceJson.metadatas || "[]";
         console.log(metadatas);
-        console.log(queryCondition + '-' + metadatas);
+        console.log(queryCondition);
 
         /* *************************** 函数定义 ******************************* */
         function pageInit() {

@@ -288,7 +288,13 @@
                     if (data.successFlg && data.detailModelList) {
                         var zNodes = data.detailModelList;
                         $.each(zNodes, function (k, obj) {
-                            obj.children = obj.detailList;
+                            if(obj.child.length>0){
+                                obj.child[0].isParent = true
+                                obj.child[0].enable = false;
+                                obj.children = obj.detailList.concat(obj.child);
+                            }else{
+                                obj.children = obj.detailList;
+                            }
                         });
                         $.fn.zTree.init(me.type == 1 ? me.$treeDom : me.$treeDomZB, me.getZTreeOption(), zNodes);
                         if (me.searchVal) {
@@ -314,7 +320,7 @@
                     var sObj = $("#" + treeNode.tId + "_span");
                     var delObj = $("#" + treeNode.tId + "_remove");
                     var editObj = $("#" + treeNode.tId + "_edit");
-                    if (treeNode.level == 0) {
+                    if (treeNode.isParent) {//分类
                         delObj.hide();
                         editObj.hide();
                         if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
