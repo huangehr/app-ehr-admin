@@ -288,13 +288,35 @@
                     if (data.successFlg && data.detailModelList) {
                         var zNodes = data.detailModelList;
                         $.each(zNodes, function (k, obj) {
-                            obj.children = obj.detailList;
+                            if(obj.child.length>0){
+                                obj.child[0].isParent = true
+                                obj.child[0].enable = false;
+                                obj.children = obj.detailList.concat(obj.child);
+                                $.each(obj.children, function (ks, objs) {
+                                    if(objs.detailList&&objs.detailList.length>0){
+                                        objs.children = objs.detailList;
+                                    }
+                                })
+                            }else{
+                                obj.children = obj.detailList;
+                            }
                         });
                         $.fn.zTree.init(me.type == 1 ? me.$treeDom : me.$treeDomZB, me.getZTreeOption(), zNodes);
                         if (me.searchVal) {
                             var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
                             zTree.expandAll(true);
                         }
+                        $("#treeDom li").each(function(k,item){
+                            if($(item).find("ul li").length==0){
+                                $(item).find(".level0").find("span.button.ico_docu").css("background-position","-147px 0");
+                            }
+                        })
+
+                        $("#treeDomZB li").each(function(k,item){
+                            if($(item).find("ul li").length==0){
+                                $(item).find(".level0").find("span.button.ico_docu").css("background-position","-147px 0");
+                            }
+                        })
                     } else {
                         parent._LIGERDIALOG.error('数据获取失败');
                     }
@@ -303,7 +325,7 @@
                     var sObj = $("#" + treeNode.tId + "_span");
                     var delObj = $("#" + treeNode.tId + "_remove");
                     var editObj = $("#" + treeNode.tId + "_edit");
-                    if (treeNode.level == 0) {
+                    if (treeNode.isParent) {//分类
                         delObj.hide();
                         editObj.hide();
                         if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
@@ -333,6 +355,11 @@
                                     me.$autBtn.show();
                                 } else {
                                     me.$autBtn.hide();
+                                }
+                                if(data&&data.rs_interface=="getEhrCenterSub"){
+                                    me.$ddSeach.show();
+                                }else{
+                                    me.$ddSeach.hide();
                                 }
                                 me.loadDAGridData(data.code);
                                 break;

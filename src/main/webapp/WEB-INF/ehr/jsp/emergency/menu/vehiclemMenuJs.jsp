@@ -48,7 +48,7 @@
             ambulance:{},
             global:null,
             dataModel: $.DataModel.init(),//ajax初始化
-            $uploader:$('#div_file_picker'),
+            $uploader:$('#div_doctor_img_upload'),
             $imageShow: $("#div_file_list"),
             $div_doctor_img_upload:$('#div_doctor_img_upload'),
             $location:null,
@@ -66,7 +66,7 @@
                 self.$uploader.instance = self.$uploader.webupload({
                     method:'POST',
                     server: "${contextRoot}/ambulance/save",
-                    pick: {id: '#div_file_picker'},
+                    pick: {id: '#div_doctor_img_upload'},
                     accept: {
                         title: 'Images',
                         extensions: 'gif,jpg,jpeg,bmp,png',

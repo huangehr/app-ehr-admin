@@ -38,7 +38,7 @@ app:
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
-  oauth2InnerUrl: http://172.19.103.73:10260/
+  oauth2InnerUrl: http://172.19.103.70:1235/gateway/authentication/
   oauth2OuterUrl: http://27.154.233.186:10260/  #厦门-认证外网
 service-gateway:
   username: user
@@ -51,8 +51,9 @@ service-gateway:
   stdsourceurl: http://172.19.103.73:10000/api/v1.0/admin/standard_source
   adaption: http://172.19.103.73:10000/api/v1.0/adapter
   standard: http://172.19.103.73:10000/api/v1.0/std
-  browseClientUrl: http://192.168.1.221:8010/profile/browser
-  browseClientOutSizeUrl: http://27.154.233.186:9480/profile/browser
+  #browseClientUrl: http://192.168.1.221:8010/profile/browser
+  browseClientUrl: http://172.19.103.70:1235/profile
+  browseClientOutSizeUrl: http://27.154.233.186:9480/profile/
   profileurl: http://172.19.103.74:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122
@@ -225,7 +226,7 @@ service-gateway:
   adaption: http://192.168.220.84:10000/api/v1.0/adapter
   standard: http://192.168.220.84:10000/api/v1.0/std
   browseClientUrl: http://192.168.220.72:8010/profile/browser
-  browseClientOutSizeUrl: http://jksr.srswjw.gov.cn:1234/profile/browser
+  browseClientOutSizeUrl: http://jksr.srswjw.gov.cn:1235/profile/browser
   profileurl: http://192.168.200.68:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.50.116:22122,192.168.50.119:22122

@@ -68,7 +68,6 @@ $(function(){
         },
         clickSessionId: function () {
             var $a = [];
-            debugger
             if(MenuId){
                 $a = $("a[data-find='" + MenuId + "']");
                 if ($a.length > 0) {

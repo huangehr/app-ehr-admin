@@ -43,8 +43,16 @@
              */
             function pageInit() {
 
-                login.init();
-                passwordInNum();
+                if(top === window) {
+                    login.init();
+                    passwordInNum();
+                } else {
+                    top.postMessage({
+                        type: 'pagereload'
+                    },'*');
+                    top.location.reload()
+                }
+
             }
 
             /* ************************** 函数定义结束 **************************** */

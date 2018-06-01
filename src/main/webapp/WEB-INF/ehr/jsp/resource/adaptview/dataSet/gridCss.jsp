@@ -61,7 +61,7 @@
   .body-head input{
     border: 0;
     font-size: 12px;
-    width: 120px;
+    width:auto;
   }
   .back{
     border-right: 1px solid #d3d3d3;
