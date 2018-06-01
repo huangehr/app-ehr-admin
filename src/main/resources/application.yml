@@ -226,7 +226,7 @@ service-gateway:
   adaption: http://192.168.220.84:10000/api/v1.0/adapter
   standard: http://192.168.220.84:10000/api/v1.0/std
   browseClientUrl: http://192.168.220.72:8010/profile/browser
-  browseClientOutSizeUrl: http://jksr.srswjw.gov.cn:1234/profile/browser
+  browseClientOutSizeUrl: http://jksr.srswjw.gov.cn:1235/profile/browser
   profileurl: http://192.168.200.68:9009/api/v1.0
 fast-dfs:
   tracker-server: 192.168.50.116:22122,192.168.50.119:22122

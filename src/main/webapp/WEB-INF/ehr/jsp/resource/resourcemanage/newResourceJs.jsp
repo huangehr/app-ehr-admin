@@ -292,6 +292,11 @@
                                 obj.child[0].isParent = true
                                 obj.child[0].enable = false;
                                 obj.children = obj.detailList.concat(obj.child);
+                                $.each(obj.children, function (ks, objs) {
+                                    if(objs.detailList&&objs.detailList.length>0){
+                                        objs.children = objs.detailList;
+                                    }
+                                })
                             }else{
                                 obj.children = obj.detailList;
                             }
