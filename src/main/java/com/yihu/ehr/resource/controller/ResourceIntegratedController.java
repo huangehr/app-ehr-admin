@@ -70,6 +70,54 @@ public class ResourceIntegratedController extends BaseUIController {
     }
 
     /**
+     * 综合查询档案数据分类列表 zuul
+     * @param filters
+     * @return
+     */
+    /**
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/category")
+    @ResponseBody
+    public Envelop getCategory() throws Exception {
+        String url = "/resource/api/v1.0/resources/integrated/category";
+        HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, null);
+        return toModel(response.getContent(), Envelop.class);
+    }
+
+    /**
+     * 综合查询档案数据资源列表 zuul
+     * @param filters
+     * @return
+     */
+    @RequestMapping("/metadata")
+    @ResponseBody
+    public List getMetadataList(String categoryId, String filters, HttpServletRequest request) throws Exception {
+        String url = "/resource/api/v1.0/resources/integrated/metadata";
+        //从Session中获取用户的角色信息和授权视图列表作为查询参数
+        List<String> userRolesList = getUserRolesListRedis(request);
+        List<String> userResourceList  = getUserResourceListRedis(request);
+        boolean isAccessAll = getIsAccessAllRedis(request);
+        Map<String, Object> params = new HashMap<>();
+        params.put("categoryId", categoryId);
+        if (isAccessAll) {
+            params.put("userResource", "*");
+            params.put("roleId", "*");
+        } else {
+            params.put("userResource", objectMapper.writeValueAsString(userResourceList));
+            params.put("roleId", objectMapper.writeValueAsString(userRolesList));
+        }
+        if (!StringUtils.isEmpty(filters)) {
+            params.put("filters", filters);
+        }
+        HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+        Envelop envelop =  toModel(response.getContent(), Envelop.class);
+        return envelop.getDetailModelList();
+    }
+
+    /**
      * 综合查询档案数据检索 zuul
      * @param resourcesCode
      * @param metaData
