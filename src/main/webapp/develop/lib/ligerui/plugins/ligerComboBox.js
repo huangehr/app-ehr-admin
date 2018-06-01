@@ -852,6 +852,7 @@
                 if ($(this).hasClass("l-selected"))
                 {
                     g.selectBox.hide();
+                    $("#contentPage").css({"overflow":""})
                     return;
                 }
                 $(".l-selected", g.selectBox).removeClass("l-selected");
@@ -864,6 +865,7 @@
                 g.select[0].selectedIndex = newIndex;
                 g.select.trigger("change");
                 g.selectBox.hide();
+                $("#contentPage").css({"overflow":""})
                 var value = $(this).attr("value");
                 var text = $(this).html();
                 if (p.render)
@@ -1108,6 +1110,7 @@
                     var text = node.data[p.textField];
                     g._changeValue(value, text,true);
                     g.selectBox.hide();
+                    $("#contentPage").css({"overflow":""})
                 };
                 tree.onCancelSelect = function (node)
                 {
@@ -1320,6 +1323,7 @@
                     click: function ()
                     {
                         g.selectBox.hide();
+                        $("#contentPage").css({"overflow":""})
                     }
                 });
             }
@@ -1632,6 +1636,7 @@
                     {
                         if (p.slide) g.selectBox.slideToggle("fast");
                         else g.selectBox.hide();
+                        $("#contentPage").css({"overflow":""})
                         return false;
                     }
                     g.selected = data;
@@ -1639,6 +1644,7 @@
                     {
                         if (p.slide) g.selectBox.slideToggle("fast");
                         else g.selectBox.hide();
+                        $("#contentPage").css({"overflow":""})
                         return;
                     }
                     $(".l-selected", g.selectBox).removeClass("l-selected");
@@ -1658,7 +1664,10 @@
                         {
                             g.boxToggling = false;
                         })
-                    } else g.selectBox.hide();
+                    } else {
+                        g.selectBox.hide();
+                        $("#contentPage").css({"overflow":""})
+                    }
                     g.lastInputText = text;
                     g._changeValue(value, text, true);
                 }
@@ -1742,6 +1751,7 @@
                 else
                 {
                     g.selectBox.hide();
+                    $("#contentPage").css({"overflow":""})
                     g.boxToggling = false;
                 }
             }
@@ -1783,9 +1793,11 @@
                 if (g.selectBox.table.find("tr").length || (p.selectBoxRender && g.selectBoxInner.html()))
                 {
                     g.selectBox.show();
+                    $("#contentPage").css({"overflow":"hidden"})
                 } else
                 {
                     g.selectBox.hide();
+                    $("#contentPage").css({"overflow":""})
                 }
                 return;
             }
@@ -1835,7 +1847,8 @@
                     if (!p.autocompleteAllowEmpty && !currentKey)
                     {
                         g.clear();
-                        g.selectBox.hide(); 
+                        g.selectBox.hide();
+                        $("#contentPage").css({"overflow":""})
                         return;
                     }
                     if (p.url)
