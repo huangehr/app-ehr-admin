@@ -40,12 +40,6 @@
             };
             //档案数据基本数据
             var defauleColumnModel = [
-                {"key": 'patient_name', "name": "病人姓名"},
-                {"key": 'event_type', "name": "就诊类型"},
-                {"key": 'org_name', "name": "机构名称"},
-                {"key": 'org_code', "name": "机构编号"},
-                {"key": 'event_date', "name": "时间"},
-                {"key": 'demographic_id', "name": "病人身份证号码"}
             ];
             var Util = $.Util,
                 rsInfoDialog = null,//视图弹窗（增、改）
