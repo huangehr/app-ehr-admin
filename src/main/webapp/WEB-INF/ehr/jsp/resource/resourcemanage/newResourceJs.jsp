@@ -281,6 +281,7 @@
                 addTreeAjaxFun: function (data, me) {//初始化树
                     if (data.successFlg && data.detailModelList) {
                         var zNodes = data.detailModelList;
+                        debugger
                         $.each(zNodes, function (k, obj) {
                             if(obj.child.length>0){
                                 obj.child[0].isParent = true
@@ -293,6 +294,9 @@
                                 })
                             }else{
                                 obj.children = obj.detailList;
+                                if(obj.level==0){
+                                    obj.isParent = true;
+                                }
                             }
                         });
                         $.fn.zTree.init(me.type == 1 ? me.$treeDom : me.$treeDomZB, me.getZTreeOption(), zNodes);

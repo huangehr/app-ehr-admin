@@ -86,7 +86,7 @@
         position: absolute;
         left: 0;
         top: 0;
-        right: 0;
+        right: 18px;
         z-index: 5;
         border-bottom: 1px solid #f0f0f0;
     }

@@ -841,7 +841,7 @@
                                     dataBackgroundColor: '#eee',
                                     orient:'vertical',
                                     showDetail: false,
-                                    height: 200,
+//                                    height: 200,
                                     width: 10,
                                     start: 0,
                                     end: 90
@@ -863,6 +863,19 @@
                                         axisLine:{
                                             lineStyle:{color:'#333', width:1}
                                         },
+                                        axisLabel :{
+                                             formatter : function (value)
+                                             {
+                                                 var valueTxt = '';
+                                                 if (value.length > 8) {
+                                                        valueTxt = value.substring(0, 9) + '...';
+                                                 }
+                                                  else {
+                                                          valueTxt = value;
+                                                      }
+                                                  return valueTxt ;
+                                              }
+                                        }
                                     }
                                 ],
                                 series : [
@@ -907,6 +920,9 @@
                                         axisLine:{
                                             lineStyle:{color:'#333', width:1}
                                         },
+                                        axisLabel :{
+                                            interval:0
+                                        }
                                     }
                                 ],
                                 color: ['#56c5fc'],
@@ -919,14 +935,14 @@
                                     dataBackgroundColor: '#eee',
                                     orient:'vertical',
                                     showDetail: false,
-                                    height: 200,
+//                                    height: 200,
                                     width: 10,
                                     start: 0,
-                                    end: 90
+                                    end: 20
                                 },
                                 grid: {
                                     x: 150,
-                                    x2: 30,
+                                    x2: 80,
                                     y: 10,
                                     y2: 20,
                                     borderWidth:0
@@ -937,8 +953,24 @@
                                         data : yData,
                                         axisTick:{show:false},
                                         splitLine: {show: false},
+                                        axisLabel :{
+                                            interval:0
+                                        },
                                         axisLine:{
-                                            lineStyle:{color:'#333', width:1}
+                                            lineStyle:{color:'#333', width:1},
+                                            axisLabel :{
+                                                formatter : function (value)
+                                                {
+                                                    var valueTxt = '';
+                                                    if (value.length > 8) {
+                                                        valueTxt = value.substring(0, 9) + '...';
+                                                    }
+                                                    else {
+                                                        valueTxt = value;
+                                                    }
+                                                    return valueTxt ;
+                                                }
+                                            }
                                         },
                                     }
                                 ],

@@ -21,6 +21,7 @@
         var id = ${id};
         var validator = null;
         var txtCronExpression = "";
+        var jobStatus = 0;
 
 
         /* ************************** 变量定义结束 ******************************** */
@@ -70,6 +71,7 @@
             setZBInfo: function ( res, me) {
                 initCode = res.code;
                 initName = res.name;
+                jobStatus = res.jobStatus;
                 me.$inpCode.val(res.code);
                 me.$inpName.val(res.name);
                 txtCronExpression = res.cron;
@@ -530,9 +532,11 @@
                         var values = self.$form.Fields.getValues();
                         values.cron = txtCronExpression;
                         values.execType = $('input[name=jobType]:checked').val();
+                        values.jobStatus = jobStatus;
 //                        values.execTime = $('#execTime').val();
                         values.execTime = $('#inp_zhixing_date').val();
                         values.jobClazz = objClassCode;
+//                        values.jobStatus = ;
                         values.tjQuotaDataSourceModel = {sourceCode:dataSourceSelectedVal,configJson:self.$inpDataSourceJson.val()};
                         values.tjQuotaDataSaveModel = {saveCode:dataStorageSelectedVal,configJson:self.$inpDataStorageJson.val()};
                         if (id != '-1') {
