@@ -808,6 +808,7 @@
                 )
                 ,reqFun(int[15], null,//电子病历采集医院分布
                     function (res) {
+                        res = {"successFlg":true,"pageSize":10,"currPage":0,"totalPage":0,"totalCount":0,"detailModelList":null,"obj":{"上饶市立医院":421950,"上饶市第三人民医院":31925,"德兴市人民医院":334110,"上饶市妇幼保健院":150054,"江西医学高等专科学校第一附属医院":24352,"鄱阳县人民医院":596931,"上饶县人民医院":539780,"上饶县中医院":75754,"上饶市第二人民医院":52030},"errorMsg":null,"errorCode":0};
                         if (res.successFlg) {
                             var yData = [], data = [];
                             $.each(res.obj, function (k, o) {
@@ -841,7 +842,7 @@
                                     dataBackgroundColor: '#eee',
                                     orient:'vertical',
                                     showDetail: false,
-                                    height: 200,
+//                                    height: 200,
                                     width: 10,
                                     start: 0,
                                     end: 90
@@ -863,6 +864,19 @@
                                         axisLine:{
                                             lineStyle:{color:'#333', width:1}
                                         },
+                                        axisLabel :{
+                                             formatter : function (value)
+                                             {
+                                                 var valueTxt = '';
+                                                 if (value.length > 8) {
+                                                        valueTxt = value.substring(0, 9) + '...';
+                                                 }
+                                                  else {
+                                                          valueTxt = value;
+                                                      }
+                                                  return valueTxt ;
+                                              }
+                                        }
                                     }
                                 ],
                                 series : [
@@ -885,6 +899,7 @@
                 )
                 ,reqFun(int[16], null,//电子病历采集科室分布
                     function (res) {
+                        res = {"successFlg":true,"pageSize":10,"currPage":0,"totalPage":0,"totalCount":0,"detailModelList":null,"obj":{"麻醉科":1764,"心血管内科专业":9987,"皮肤科":9822,"眼科":457,"其他":98518,"耳鼻咽喉科专业":22328,"泌尿外科专业":16701,"肾病学专业":4147,"耳鼻咽喉科":34393,"社区防治专业":80,"传染科":4305,"整形外科专业":1327,"全科医疗科":252634,"产科专业":60678,"口腔科":20987,"外科":39330,"骨科专业":37107,"医学影像科":4040,"普通外科专业":19554,"儿科":213037,"新生儿专业":478,"肠道传染病专业":10,"妇产科":38361,"精神科":1809,"妇科专业":120228,"儿童保健科":7179,"肝炎专业":4423,"神经内科专业":2273,"重症医学科":7766,"急诊科专业":27770,"CT诊断专业":3,"康复医学科":1688,"临床体液血液专业":8469,"中医科":112710,"呼吸内科专业":8736,"妇产科专业":6251,"疼痛科":3477,"肿瘤科":8949,"内分泌专业":5651,"消化内科专业":1474,"内科":172734,"急诊医学科":57731},"errorMsg":null,"errorCode":0};
                         if (res.successFlg) {
                             var yData = [], data = [];
                             $.each(res.obj, function (k, o) {
@@ -907,6 +922,9 @@
                                         axisLine:{
                                             lineStyle:{color:'#333', width:1}
                                         },
+                                        axisLabel :{
+                                            interval:0
+                                        }
                                     }
                                 ],
                                 color: ['#56c5fc'],
@@ -919,14 +937,14 @@
                                     dataBackgroundColor: '#eee',
                                     orient:'vertical',
                                     showDetail: false,
-                                    height: 200,
+//                                    height: 200,
                                     width: 10,
                                     start: 0,
-                                    end: 90
+                                    end: 20
                                 },
                                 grid: {
                                     x: 150,
-                                    x2: 30,
+                                    x2: 80,
                                     y: 10,
                                     y2: 20,
                                     borderWidth:0
@@ -937,8 +955,24 @@
                                         data : yData,
                                         axisTick:{show:false},
                                         splitLine: {show: false},
+                                        axisLabel :{
+                                            interval:0
+                                        },
                                         axisLine:{
-                                            lineStyle:{color:'#333', width:1}
+                                            lineStyle:{color:'#333', width:1},
+                                            axisLabel :{
+                                                formatter : function (value)
+                                                {
+                                                    var valueTxt = '';
+                                                    if (value.length > 8) {
+                                                        valueTxt = value.substring(0, 9) + '...';
+                                                    }
+                                                    else {
+                                                        valueTxt = value;
+                                                    }
+                                                    return valueTxt ;
+                                                }
+                                            }
                                         },
                                     }
                                 ],
