@@ -255,6 +255,7 @@
                                                     parent._LIGERDIALOG.success('删除成功');
                                                     var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
                                                     zTree.removeNode(treeNode);
+                                                    me.loadTree();//重新加载树
                                                 }else{
                                                     parent._LIGERDIALOG.error(data.errorMsg);
                                                 }
