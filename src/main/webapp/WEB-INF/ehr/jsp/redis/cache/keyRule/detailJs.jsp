@@ -31,8 +31,6 @@
         $('#remark').ligerTextBox({width: 240, height: 150});
 
         if(detailModel.id) {
-            nameTb.setDisabled(true);
-            nameTb.setReadonly(true);
             codeTb.setDisabled(true);
             codeTb.setReadonly(true);
             categoryCode.setDisabled(true);

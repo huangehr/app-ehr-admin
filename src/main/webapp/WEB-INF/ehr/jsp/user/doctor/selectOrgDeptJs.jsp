@@ -36,7 +36,11 @@
                 treeNodeTmp: $('#treeNodeTmp').html(),
                 treeChildNodeTmp: $('#treeChildNodeTmp').html(),
                 index:0,
+                cd:"",
+                orgId:"",
+                deptIds:"",
                 init: function () {
+                    var me = this;
                     this.getOrgAllData();
                     this.loadRightTree();
                     this.bindEvent();
@@ -45,6 +49,15 @@
                     }).mCustomScrollbar("scrollTo","left");
                     if (type == 'view') {
                         this.$selSaveBtn.hide();
+                    }
+                    if($("#divBtnShow span").attr("data-cd")!=undefined){
+                        this.cd=$("#divBtnShow span").attr("data-cd")
+                        var jsoncd=JSON.parse(this.cd);
+                        $.each(jsoncd,function (k,obj) {
+                            me.orgId+=obj.orgId+",";
+                            me.deptIds+=obj.deptIds+",";
+                        })
+                        console.log(me.orgId,me.deptIds)
                     }
                 },
                 getOrgAllData: function () {
@@ -71,7 +84,19 @@
                             }
                         },
                         onSuccess: function (res) {
-                            if (idCardNo != '') {
+                            debugger
+                            if(me.cd!=""){
+                                if(res.successFlg){
+                                    res=res.detailModelList
+                                }
+                                me.leftTree.setData(res);
+                                $.each(res, function (k, obj) {
+                                    if (me.orgId.indexOf(obj.id)!=-1) {
+                                        me.leftTree.selectNode(obj.id);
+                                        me.getDeptData(obj.id);
+                                    }
+                                })
+                            }else if (idCardNo != '') {
                                 if (res.successFlg) {
                                     me.leftTree.setData(res.detailModelList);
                                     $.each(res.detailModelList, function (k, obj) {
@@ -143,6 +168,15 @@
                                     });
                                     me.index++;
                                     me.$deptTree.append(html);
+                                    if(me.cd!=""){
+                                        $(".sel-r #"+id +" .l-checkbox").addClass("l-checkbox-checked").removeClass("l-checkbox-unchecked")
+                                        $(".sel-r  #"+id +" .l-children  .l-checkbox").removeClass("l-checkbox-checked").addClass("l-checkbox-unchecked")
+                                        $.each(children, function (k , o ) {
+                                            if (me.deptIds.indexOf(o.id)!=-1) {
+                                                $(".sel-r .l-children #"+o.id +" .l-checkbox").addClass("l-checkbox-checked").removeClass("l-checkbox-unchecked")
+                                            }
+                                        })
+                                    }
                                 } else {
                                     $.Notice.error('该机构暂无部门');
                                 }
@@ -180,8 +214,9 @@
                             });
                         }
                         w.ORGDEPTVAL = cd;
+                        me.cd=JSON.stringify(cd)
                         if(selectName.length>0){
-                            $('#divBtnShow').html('<span>'+selectName.join(',')+'</sapn>')
+                            $('#divBtnShow').html("<span data-cd='"+me.cd+"'>"+selectName.join(',')+"</sapn>")
                         }
                         w.orgDeptDio.close();
                     });

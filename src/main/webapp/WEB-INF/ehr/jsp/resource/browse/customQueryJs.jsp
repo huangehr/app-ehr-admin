@@ -51,7 +51,8 @@
                 $startDate: $('#startDate'),
                 $endDate: $('#endDate'),
                 $treeCon: $('.tree-con-zhcx'),
-                $divLeftTree: $('#divLeftTree'),
+                $divLeftTree1: $('#divLeftTree1'),
+                $divLeftTree2: $('#divLeftTree2'),
                 $divResourceInfoGrid: $('#divResourceInfoGrid'),
                 $zbGrid: $('#zbGrid'),
                 dataModel: $.DataModel.init(),
@@ -94,15 +95,6 @@
                 //初始化表单控件
                 initForm: function () {
                     var me = this;
-                    me.$searchInp.ligerTextBox({
-                        width: 245,
-                        isSearch: true,
-                        search: function () {
-                            var serVal = $('#searchInp').val();
-                            me.filters = serVal;
-                            me.loadTree();
-                        }
-                    });
                     me.$startDate.ligerDateEditor({
                         width: 180
                     });
@@ -170,69 +162,144 @@
                 loadTree: function () {
                     var me = this;
                     var num = 0;
-                    me.leftTree = me.$divLeftTree.ligerSearchTree({
-                        nodeWidth: 180,
-                        url: conInf[me.type][0],
-                        parms: {
-                            filters: me.filters
-                        },
-                        idFieldName: 'code',
-                        textFieldName: 'name',
-                        isExpand: false,
-                        enabledCompleteCheckbox:false,
-                        checkbox: true,
-                        async: false,
-                        onCheck:function (data,target) {
-                            me.selectData = this.getChecked();
-                            me.$scBtn.removeClass('show');
-                            me.$selectCon.hide();
-                            if (me.selectData.length > 0) {
-                                if (me.type == 0) {
-                                    var ma = [], ca = [], sjyArr = [];
-                                    if (me.selectData[0].data.level == 3 && me.selectData.length == 1) {
-                                        me.selectData.push({data:this.getDataByNode(this.getParentTreeItem(me.selectData[0].target))});
+                    if(me.type==0){//档案数据
+                       me.leftTree = me.$divLeftTree1.ligerTree({
+                            nodeWidth: 300,
+                            url: '${contextRoot}/resourceIntegrated/category',
+                            isLeaf : function(data)
+                            {
+                                if (!data) return false;
+                                return data.level == "3";
+                            },
+                            delay: function(e)
+                            {
+                                var data = e.data;
+                                if (data.level == "1")
+                                {
+                                    return { url: '${contextRoot}/resourceIntegrated/metadata?categoryId=' + data.id }
+                                }
+                                return false;
+                            },
+                           onSuccess: function (data) {
+                               var detailModelList = [];
+                                if(data.successFlg){
+                                    detailModelList = data.detailModelList;
+                                    for(var i = 0; i < detailModelList.length; i++){
+//                                        detailModelList[i].ischecked = false;
+                                        detailModelList[i].children = [];
                                     }
-                                    for (var i = 0, len = me.selectData.length; i < len; i++) {
-                                        switch (me.selectData[i].data.level) {
-                                            case '2':
-                                                ma.push(me.selectData[i].data.code);
-                                                break;
-                                            case '3':
-                                                sjyArr.push(me.selectData[i].data);
-                                                ca.push(me.selectData[i].data.code);
-                                                break;
-                                        }
+                                    if(detailModelList.length>0 && detailModelList[0].level=="1"){
+                                        defArr = data.obj.baseInfo;
+                                        me.leftTree.setData(detailModelList);
                                     }
-                                    me.masterArr = JSON.stringify(ma);
-                                    me.childArr = JSON.stringify(ca);
-                                    //初始化
-                                    me.index = 0;
-                                    me.$selMore.html('');
-                                    me.GridCloumnNamesData = sjyArr;
-                                    me.change = 1;//改变标志
+                                }
+                           },
+                           onCheck:function (data,target) {
+                               me.selectData = this.getChecked();
+                               me.$scBtn.removeClass('show');
+                               me.$selectCon.hide();
+                               if (me.selectData.length > 0) {
+                                   if (me.type == 0) {
+                                       var ma = [], ca = [], sjyArr = [];
+                                       if (me.selectData[0].data.level == 3 && me.selectData.length == 1) {
+                                           me.selectData.push({data:this.getDataByNode(this.getParentTreeItem(me.selectData[0].target))});
+                                       }
+                                       for (var i = 0, len = me.selectData.length; i < len; i++) {
+                                           switch (me.selectData[i].data.level) {
+                                               case '2':
+                                                   ma.push(me.selectData[i].data.code);
+                                                   break;
+                                               case '3':
+                                                   sjyArr.push(me.selectData[i].data);
+                                                   ca.push(me.selectData[i].data.code);
+                                                   break;
+                                           }
+                                       }
+                                       me.masterArr = JSON.stringify(ma);
+                                       me.childArr = JSON.stringify(ca);
+                                       //初始化
+                                       me.index = 0;
+                                       me.$selMore.html('');
+                                       me.GridCloumnNamesData = sjyArr;
+                                       me.change = 1;//改变标志
 //                                    console.log(sjyArr)
 //                                    me.setSearchData();
-                                } else {
-                                    me.tjQuotaIds = [];
-                                    me.tjQuotaCodes = [];
-                                    for (var k = 0, len = me.selectData.length; k < len; k++) {
-                                        if (me.selectData[k].data.level == 2) {
-                                            me.tjQuotaIds.push(me.selectData[k].data.id);
-                                            me.tjQuotaCodes.push(me.selectData[k].data.code);
+                                   }
+                               } else {
+                                   me.resetDate();
+                               }
+                           },
+                           idFieldName: 'code',
+                           textFieldName: 'name',
+                           isExpand: false,
+                           enabledCompleteCheckbox:false,
+                           checkbox: true,
+                            slide: false
+                        });
+                    }else if(me.type==1){//指标统计
+                        me.leftTree = me.$divLeftTree2.ligerSearchTree({
+                            nodeWidth: 180,
+                            url: conInf[me.type][0],
+                            parms: {
+                                filters: me.filters
+                            },
+                            idFieldName: 'code',
+                            textFieldName: 'name',
+                            isExpand: false,
+                            enabledCompleteCheckbox:false,
+                            checkbox: true,
+                            async: false,
+                            onCheck:function (data,target) {
+                                me.selectData = this.getChecked();
+                                me.$scBtn.removeClass('show');
+                                me.$selectCon.hide();
+                                if (me.selectData.length > 0) {
+                                    if (me.type == 0) {
+                                        var ma = [], ca = [], sjyArr = [];
+                                        if (me.selectData[0].data.level == 3 && me.selectData.length == 1) {
+                                            me.selectData.push({data:this.getDataByNode(this.getParentTreeItem(me.selectData[0].target))});
                                         }
+                                        for (var i = 0, len = me.selectData.length; i < len; i++) {
+                                            switch (me.selectData[i].data.level) {
+                                                case '2':
+                                                    ma.push(me.selectData[i].data.code);
+                                                    break;
+                                                case '3':
+                                                    sjyArr.push(me.selectData[i].data);
+                                                    ca.push(me.selectData[i].data.code);
+                                                    break;
+                                            }
+                                        }
+                                        me.masterArr = JSON.stringify(ma);
+                                        me.childArr = JSON.stringify(ca);
+                                        //初始化
+                                        me.index = 0;
+                                        me.$selMore.html('');
+                                        me.GridCloumnNamesData = sjyArr;
+                                        me.change = 1;//改变标志
+//                                    console.log(sjyArr)
+//                                    me.setSearchData();
+                                    } else {
+                                        me.tjQuotaIds = [];
+                                        me.tjQuotaCodes = [];
+                                        for (var k = 0, len = me.selectData.length; k < len; k++) {
+                                            if (me.selectData[k].data.level == 2) {
+                                                me.tjQuotaIds.push(me.selectData[k].data.id);
+                                                me.tjQuotaCodes.push(me.selectData[k].data.code);
+                                            }
+                                        }
+                                        me.ZBCloumnNamesData = [];
+                                        me.setZBSearchData();
                                     }
-                                    me.ZBCloumnNamesData = [];
-                                    me.setZBSearchData();
+                                } else {
+                                    me.resetDate();
                                 }
-                            } else {
-                                me.resetDate();
-                            }
-                        },
-                        onSuccess: function (data) {
-                            var detailModelList = data.detailModelList,
+                            },
+                            onSuccess: function (data) {
+                                var detailModelList = data.detailModelList,
                                     dmList = [];
-                            if (detailModelList) {
-                                if (me.type == 0) {
+                                if (detailModelList) {
+                                    if (me.type == 0) {
 //                                    for(var i = 0; i < detailModelList.length; i++){
 //                                        if (detailModelList[i].level == 0) {
 //                                            defArr = detailModelList[i].baseInfo;
@@ -242,27 +309,28 @@
 //                                            dmList.push(detailModelList[i]);
 //                                        }
 //                                    }
-                                    defArr = detailModelList[0].baseInfo;
-                                    me.leftTree.setData(detailModelList[1]);
-                                } else {
-                                    for(var i = 0; i < detailModelList.length; i++){
-                                        var childOne = detailModelList[i].child;
-                                        detailModelList[i].children = childOne;
-                                        for ( var j = 0; j < childOne.length; j++) {
-                                            detailModelList[i].children[j].children = childOne[j].detailList;
+                                        defArr = detailModelList[0].baseInfo;
+                                        me.leftTree.setData(detailModelList[1]);
+                                    } else {
+                                        for(var i = 0; i < detailModelList.length; i++){
+                                            var childOne = detailModelList[i].child;
+                                            detailModelList[i].children = childOne;
+                                            for ( var j = 0; j < childOne.length; j++) {
+                                                detailModelList[i].children[j].children = childOne[j].detailList;
+                                            }
+                                            dmList.push(detailModelList[i]);
                                         }
-                                        dmList.push(detailModelList[i]);
+                                        me.leftTree.setData(dmList);
                                     }
-                                    me.leftTree.setData(dmList);
+                                } else {
+                                    if (num == 0) {
+                                        parent._LIGERDIALOG.error('暂无数据');
+                                    }
+                                    num++;
                                 }
-                            } else {
-                                if (num == 0) {
-                                    parent._LIGERDIALOG.error('暂无数据');
-                                }
-                                num++;
                             }
-                        }
-                    });
+                        });
+                    }
                 },
                 resetDate: function () {
                     this.$scBtn.removeClass('show');
@@ -490,10 +558,27 @@
                             return;
                         }
                         if (index == 0) {
+                            me.$divLeftTree1.show();
+                            me.$divLeftTree2.hide();
+                            me.$searchInp.hide();
+                            $(".l-text").hide();
                             me.loadSelData();
                             me.$divResourceInfoGrid.show();
                             me.$zbGrid.hide();
                         } else {
+                            me.$searchInp.ligerTextBox({
+                                width: 245,
+                                isSearch: true,
+                                search: function () {
+                                    var serVal = $('#searchInp').val();
+                                    me.filters = serVal;
+                                    me.loadTree();
+                                }
+                            });
+                            me.$divLeftTree1.hide();
+                            me.$divLeftTree2.show();
+                            $(".l-text").show();
+                            me.$searchInp.show();
                             me.$pubSel.html('');
                             me.$divResourceInfoGrid.hide();
                             me.$zbGrid.show();
@@ -571,6 +656,7 @@
                     });
                     //查询
                     me.$queryCon.on('click', function () {
+                        debugger
                         me.$scBtn.removeClass('show');
                         me.$selectCon.hide();
                         if (me.type == 0) {
@@ -676,18 +762,19 @@
                                     if (me.type == 1) {
                                         height = 600;
                                     }
+
+                                    sessionStorage.setItem("customQueryDialog_resourceBrowse", JSON.stringify({
+                                        queryCondition: qc,
+                                        type: me.type,
+                                        metadatas: JSON.stringify(md)
+                                    }))
+
                                     rsInfoDialog = parent._LIGERDIALOG.open({
                                         height:height,
                                         width:500,
                                         title:'新增视图',
                                         url:'${contextRoot}/resourceBrowse/infoInitial',
-//                                        resType: 'POST',
-                                        urlParms:{
-                                            queryCondition: qc,
-                                            type: me.type,
-                                            metadatas: JSON.stringify(md)
-                                        },
-//                                        load:true,
+                                        urlParms:{ },
                                         show:false,
                                         isHidden:false,
                                         onLoaded:function(){
@@ -706,6 +793,7 @@
                     var me = this;
                     var $selItems = me.$selectCon.find('.sel-item'),
                             jsonData = [];
+                    debugger
                     for (var i = 0, len = $selItems.length; i < len; i++) {
 //                        debugger
                         var pCode = $selItems.eq(i).attr('data-parent-code'),
