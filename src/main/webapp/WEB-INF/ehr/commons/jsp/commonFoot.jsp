@@ -11,6 +11,7 @@
     })
 </script>
 <%--<script src="${staticRoot}/common/base.js"></script>--%>
+<script src="${staticRoot}/Scripts/polyfill.min.js" ></script>
 <script src="${staticRoot}/module/cookie.js"></script>
 <script src="${staticRoot}/module/util.js"></script>
 <script src="${staticRoot}/module/juicer.js"></script>

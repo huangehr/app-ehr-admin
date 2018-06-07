@@ -3,14 +3,11 @@ package com.yihu.ehr.dict.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.dict.SystemDictEntryModel;
 import com.yihu.ehr.agModel.dict.SystemDictModel;
-import com.yihu.ehr.agModel.org.OrgModel;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.SessionAttributeKeys;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.http.HttpResponse;
 import com.yihu.ehr.util.http.HttpUtils;
-import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -46,6 +43,29 @@ public class SystemDictController extends BaseUIController {
         model.addAttribute("contentPage","/dict/systemDict");
         return "pageView";
     }
+
+    /*系统字典的新增和修改*/
+    @RequestMapping("editSystemDict")
+    public String editSystemDict(Model model, String systemName, String mode,String systemDictId) {
+        model.addAttribute("systemName",systemName);
+        model.addAttribute("mode",mode);
+        model.addAttribute("systemDictId",systemDictId);
+        model.addAttribute("contentPage","/dict/editSystemDict");
+        return "emptyView";
+    }
+
+    /*系统字典详情的新增*/
+    @RequestMapping("editSystemDictDetail")
+    public String editSystemDictDetail(Model model, String mode,String code,String name,String catalog,String systemDictId) {
+        model.addAttribute("code",code);
+        model.addAttribute("mode",mode);
+        model.addAttribute("name",name);
+        model.addAttribute("catalog",catalog);
+        model.addAttribute("systemDictId",systemDictId);
+        model.addAttribute("contentPage","/dict/editSystemDictDetail");
+        return "emptyView";
+    }
+
 
     @RequestMapping("/createDict")
     @ResponseBody
