@@ -1,6 +1,5 @@
 package com.yihu.ehr.qcReport.controller;
 
-import com.yihu.ehr.emergency.controller.AmbulanceController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateUtil;
@@ -32,13 +31,19 @@ public class QcReportController extends BaseUIController {
     private String username;
     @Value("${service-gateway.password}")
     private String password;
-    @Value("${service-gateway.url}")
-    private String comUrl;
+    @Value("${service-gateway.adminInnerUrl}")
+    private String adminInnerUrl;
 
     @RequestMapping("initial")
     public String initial(Model model) {
         model.addAttribute("nowDate", DateUtil.getNowDate(DateUtil.DEFAULT_DATE_YMD_FORMAT));
         model.addAttribute("contentPage", "/qcReport/receive/receive");
+        return "pageView";
+    }
+
+    @RequestMapping("detail")
+    public String patientInitial(Model model) {
+        model.addAttribute("contentPage", "/qcReport/qcReportDetail");
         return "pageView";
     }
 
@@ -95,15 +100,175 @@ public class QcReportController extends BaseUIController {
     public Envelop dailyReport(String startDate, String endDate, String orgCode) {
         Envelop envelop = new Envelop();
         try {
-            String url = "/packQcReport/dailyReport";
+            String url = "/pack-analyzer/api/v1.0/packQcReport/dailyReport";
             Map<String, Object> params = new HashMap<>();
             params.put("startDate", startDate);
             params.put("endDate", endDate);
             params.put("orgCode", orgCode);
-            String envelopStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         } catch (Exception e){
-            LogService.getLogger(AmbulanceController.class).error(e.getMessage());
+            LogService.getLogger(QcReportController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/datasetWarningList", method = RequestMethod.GET)
+    @ApiOperation(value = "预警数据集列表", notes = "预警数据集列表")
+    @ResponseBody
+    public Envelop datasetWarningList(String orgCode, String type, int page, int rows) {
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/pack-analyzer/api/v1.0/packQcReport/datasetWarningList";
+            Map<String, Object> params = new HashMap<>();
+            params.put("orgCode", orgCode);
+            params.put("type", type);
+            params.put("page", page);
+            params.put("size", rows);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        } catch (Exception e){
+            LogService.getLogger(QcReportController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/resourceSuccessfulCount", method = RequestMethod.GET)
+    @ApiOperation(value = "资源化成功的计数统计")
+    @ResponseBody
+    public Envelop resourceSuccessfulCount(
+            @ApiParam(name = "startDate", value = "开始日期")
+            @RequestParam(name = "startDate") String startDate,
+            @ApiParam(name = "endDate", value = "结束日期")
+            @RequestParam(name = "endDate") String endDate,
+            @ApiParam(name = "orgCode", value = "医院代码")
+            @RequestParam(name = "orgCode", required = false) String orgCode){
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/pack-analyzer/api/v1.0/packQcReport/resourceSuccessfulCount";
+            Map<String, Object> params = new HashMap<>();
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            params.put("orgCode", orgCode);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        } catch (Exception e){
+            LogService.getLogger(QcReportController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/archiveReport", method = RequestMethod.GET)
+    @ApiOperation(value = "获取接收档案数据")
+    @ResponseBody
+    public Envelop archiveReport(
+            @ApiParam(name = "startDate", value = "开始日期")
+            @RequestParam(name = "startDate") String startDate,
+            @ApiParam(name = "endDate", value = "结束日期")
+            @RequestParam(name = "endDate") String endDate,
+            @ApiParam(name = "orgCode", value = "医院代码")
+            @RequestParam(name = "orgCode", required = false) String orgCode) {
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/pack-analyzer/api/v1.0/packQcReport/archiveReport";
+            Map<String, Object> params = new HashMap<>();
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            params.put("orgCode", orgCode);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        } catch (Exception e){
+            LogService.getLogger(QcReportController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/dataSetList", method = RequestMethod.GET)
+    @ApiOperation(value = "获取接收数据集列表")
+    @ResponseBody
+    public Envelop dataSetList(
+            @ApiParam(name = "startDate", value = "开始日期")
+            @RequestParam(name = "startDate") String startDate,
+            @ApiParam(name = "endDate", value = "结束日期")
+            @RequestParam(name = "endDate") String endDate,
+            @ApiParam(name = "orgCode", value = "医院代码")
+            @RequestParam(name = "orgCode", required = false) String orgCode) {
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/pack-analyzer/api/v1.0/packQcReport/dataSetList";
+            Map<String, Object> params = new HashMap<>();
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            params.put("orgCode", orgCode);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        } catch (Exception e){
+            LogService.getLogger(QcReportController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/archiveFailed", method = RequestMethod.GET)
+    @ApiOperation(value = "获取资源化解析失败")
+    @ResponseBody
+    public Envelop archiveFailed(
+            @ApiParam(name = "startDate", value = "开始日期")
+            @RequestParam(name = "startDate") String startDate,
+            @ApiParam(name = "endDate", value = "结束日期")
+            @RequestParam(name = "endDate") String endDate,
+            @ApiParam(name = "orgCode", value = "医院代码")
+            @RequestParam(name = "orgCode", required = false) String orgCode) {
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/pack-analyzer/api/v1.0/packQcReport/archiveFailed";
+            Map<String, Object> params = new HashMap<>();
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            params.put("orgCode", orgCode);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        } catch (Exception e){
+            LogService.getLogger(QcReportController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/metadataError", method = RequestMethod.GET)
+    @ApiOperation(value = "获取解析异常")
+    @ResponseBody
+    public Envelop metadataError(
+            @ApiParam(name = "step", value = "异常环节")
+            @RequestParam(name = "step") String step,
+            @ApiParam(name = "startDate", value = "开始日期")
+            @RequestParam(name = "startDate") String startDate,
+            @ApiParam(name = "endDate", value = "结束日期")
+            @RequestParam(name = "endDate") String endDate,
+            @ApiParam(name = "orgCode", value = "医院代码")
+            @RequestParam(name = "orgCode", required = false) String orgCode) {
+        Envelop envelop = new Envelop();
+        try {
+            String url = "/pack-analyzer/api/v1.0/packQcReport/metadataError";
+            Map<String, Object> params = new HashMap<>();
+            params.put("step", step);
+            params.put("startDate", startDate);
+            params.put("endDate", endDate);
+            params.put("orgCode", orgCode);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        } catch (Exception e){
+            LogService.getLogger(QcReportController.class).error(e.getMessage());
             envelop.setSuccessFlg(false);
             envelop.setErrorMsg(e.getMessage());
         }
