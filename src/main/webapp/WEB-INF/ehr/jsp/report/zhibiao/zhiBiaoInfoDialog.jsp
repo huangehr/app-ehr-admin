@@ -20,7 +20,7 @@
         </div>
         <div class="m-form-group">
             <label>指标分类：</label>
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control essential" style="padding-right: 0px;">
                 <input type="text" id="inp_quota_type" class="required ajax useTitle" placeholder="请选择指标分类" data-type="select" data-attr-scan="quotaType" required-title=<spring:message code="lbl.must.input"/>>
             </div>
         </div>
@@ -93,14 +93,14 @@
         <div class="m-form-group">
             <label>对象类：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control essential" style="padding-right: 0px;">
                 <input type="text" id="inp_object_class" class="required"  data-attr-scan="jobClazz">
             </div>
         </div>
         <div class="m-form-group">
             <label>数据源：</label>
 
-            <div class="l-text-wrapper m-form-control essential">
+            <div class="l-text-wrapper m-form-control essential" style="padding-right: 0px;">
                 <input type="text" id="inp_data_source" class="required ajax useTitle" placeholder="请选择数据源" data-type="select"  required-title=<spring:message code="lbl.must.input"/>>
             </div>
         </div>

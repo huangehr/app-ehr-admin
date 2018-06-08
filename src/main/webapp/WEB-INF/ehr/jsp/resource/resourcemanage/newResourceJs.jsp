@@ -40,12 +40,6 @@
             };
             //档案数据基本数据
             var defauleColumnModel = [
-                {"key": 'patient_name', "name": "病人姓名"},
-                {"key": 'event_type', "name": "就诊类型"},
-                {"key": 'org_name', "name": "机构名称"},
-                {"key": 'org_code', "name": "机构编号"},
-                {"key": 'event_date', "name": "时间"},
-                {"key": 'demographic_id', "name": "病人身份证号码"}
             ];
             var Util = $.Util,
                 rsInfoDialog = null,//视图弹窗（增、改）
@@ -261,6 +255,7 @@
                                                     parent._LIGERDIALOG.success('删除成功');
                                                     var zTree = $.fn.zTree.getZTreeObj(me.type == 1 ? "treeDom" : "treeDomZB");
                                                     zTree.removeNode(treeNode);
+                                                    me.loadTree();//重新加载树
                                                 }else{
                                                     parent._LIGERDIALOG.error(data.errorMsg);
                                                 }
@@ -287,6 +282,7 @@
                 addTreeAjaxFun: function (data, me) {//初始化树
                     if (data.successFlg && data.detailModelList) {
                         var zNodes = data.detailModelList;
+                        debugger
                         $.each(zNodes, function (k, obj) {
                             if(obj.child.length>0){
                                 obj.child[0].isParent = true
@@ -299,6 +295,9 @@
                                 })
                             }else{
                                 obj.children = obj.detailList;
+                                if(obj.level==0){
+                                    obj.isParent = true;
+                                }
                             }
                         });
                         $.fn.zTree.init(me.type == 1 ? me.$treeDom : me.$treeDomZB, me.getZTreeOption(), zNodes);

@@ -185,7 +185,7 @@
                                         if (sta == '0') {
                                             str = '未开启'
                                         }else if (sta == '1') {
-                                            str = '执行中'
+                                            str = '<span style="color: red">执行中</span>'
                                         }
                                         return str;
                                     }

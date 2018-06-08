@@ -23,6 +23,7 @@
     .width-50{
         width: 50%;
     }
+    .ui-grid{display: flex;display: -webkit-flex}
     .ui-grid-vertical { -webkit-box-orient: vertical; box-orient: vertical; }
     .ui-grid-label { -webkit-box-flex: 0; box-flex: 0; width: 100px; font-weight: 600; }
     .ui-col-0 { -webkit-box-flex: 0; box-flex: 0; }

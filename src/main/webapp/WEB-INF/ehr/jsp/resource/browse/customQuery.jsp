@@ -40,10 +40,11 @@
     <%--树--%>
     <div class="query-tree">
         <div class="m-form-control ser-con">
-            <input type="text" id="searchInp" placeholder="请输入名称">
+            <input type="text" id="searchInp" placeholder="请输入名称" style="display: none;">
         </div>
         <div class="tree-con-zhcx">
-            <div id="divLeftTree" style="padding: 10px;min-height: 100px;"></div>
+            <div id="divLeftTree1" style="padding: 10px;min-height: 100px;"></div>
+            <div id="divLeftTree2" style="padding: 10px;min-height: 100px;display: none;"></div>
         </div>
     </div>
 
