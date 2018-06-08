@@ -67,7 +67,7 @@
         </div>
     </div>
     <!--######平台接收######-->
-    <div id="div_patient_info_grid" style="display: none">
+    <div id="div_patient_info_grid" style="display: none;">
 
     </div>
     <!--######平台接收#结束######-->

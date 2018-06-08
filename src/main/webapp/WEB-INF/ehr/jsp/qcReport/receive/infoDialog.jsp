@@ -16,15 +16,13 @@
         font-weight: normal;
     }
     .receive {
-        float: left;
         width: 100%;
         min-height: 30px;
         line-height: 30px;
         padding-right: 10px;
         padding-left: 10px;
         font-weight: 700;
-        font-size: 20px;
-        margin-top: 20px;
+        font-size: 20px!important;
     }
     .hospital {
         float: left;
@@ -34,7 +32,7 @@
         padding-right: 10px;
         padding-left: 10px;
         font-weight: 700;
-        font-size: 25px;
+        font-size: 25px!important;
         margin-bottom: 20px;
     }
 </style>
@@ -87,13 +85,13 @@
     </div>
 
     <!--######接收详情######-->
-    <div id="div_info_grid" style="border: none;">
+    <div id="div_info_grid">
 
     </div>
     <!--######接收详情#结束######-->
 </div>
 
-<div class="m-form-control pane-attribute-toolbar btm-btns">
+<div class="m-form-control pane-attribute-toolbar btm-btns" style="text-align: center;padding-top: 15px;">
     <div class="l-button u-btn u-btn-cancel u-btn-large f-ib f-vam close-toolbar" id="div_cancel_btn">
         <span>返回</span>
     </div>

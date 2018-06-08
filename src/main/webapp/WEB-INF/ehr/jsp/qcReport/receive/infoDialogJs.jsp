@@ -14,7 +14,6 @@
 
         // 表单校验工具类
         var receiveModel = "";
-
         /* ************************** 变量定义结束 ******************************** */
         var receiveDetail = JSON.parse('${receiveDetail}');
         /* *************************** 函数定义 ******************************* */
@@ -39,7 +38,6 @@
             infoGrid:null,
             init: function () {
                 var self = this;
-                debugger;
                 self.$hospital.text(receiveDetail.orgName+"("+receiveDetail.orgCode+")");
                 self.$visitTime.html(receiveDetail.startDate+" - "+receiveDetail.endDate);
                 self.$totalVisit.html(receiveDetail.totalVisit);
@@ -47,22 +45,25 @@
                 self.$visitIntimeRate.html(receiveDetail.visitIntimeRate);
                 self.$visitIntegrity.html(receiveDetail.visitIntegrity);
                 self.$visitIntegrityRate.html(receiveDetail.visitIntegrityRate);
-                self.infoGrid =grid = $("#div_info_grid").ligerGrid($.LigerGridEx.config({
+                self.infoGrid = $("#div_info_grid").ligerGrid($.LigerGridEx.config({
                     url: '${contextRoot}/qcReport/packetNumList',
                     // 传给服务器的ajax 参数
-                    pageSize:10,
+                    pageSize:15,
                     method:'get',
                     parms: {
                         orgCode: receiveDetail.orgCode,
                         eventDateStart: receiveDetail.startDate,
                         eventDateEnd: receiveDetail.endDate
                     },
-                    allowHideColumn:false,
                     columns: [
                         {display: '接收时间', name: 'receiveDate', width: '50%',align: 'left'},
                         {display: '档案数', name: 'packetCount', width: '50%', align: 'left'}
                     ],
-                    enabledSort:false
+                    height:"300px",
+                    selectRowButtonOnly: false,
+                    validate: true,
+                    unSetValidateAttr: false,
+                    allowHideColumn: false
                 }));
                 self.infoGrid.adjustToWidth();
                 self.bindEvents();
