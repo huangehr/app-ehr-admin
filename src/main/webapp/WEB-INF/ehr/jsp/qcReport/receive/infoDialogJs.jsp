@@ -16,7 +16,7 @@
         var receiveModel = "";
 
         /* ************************** 变量定义结束 ******************************** */
-
+        var receiveDetail = JSON.parse('${receiveDetail}');
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             info.init();
@@ -27,30 +27,45 @@
 
         /* *************************** 模块初始化 ***************************** */
         info = {
-            $form: $("#div_patient_info_form"),
-            $realName: $("#inp_realName"),
-            $idCardNo: $("#inp_idCardNo"),
-            $patientNation: $("#inp_patientNation"),
+            $form: $("#div_info_form"),
+            $cancelBtn: $("#div_cancel_btn"),
+            $hospital: $("#hospital"),
+            $visitTime: $("#visitTime"),
+            $totalVisit: $("#totalVisit"),
+            $visitIntime: $("#visitIntime"),
+            $visitIntimeRate: $("#visitIntimeRate"),
+            $visitIntegrity: $("#visitIntegrity"),
+            $visitIntegrityRate: $("#visitIntegrityRate"),
+            infoGrid:null,
             init: function () {
                 var self = this;
-                self.initForm();
+                debugger;
+                self.$hospital.text(receiveDetail.orgName+"("+receiveDetail.orgCode+")");
+                self.$visitTime.html(receiveDetail.startDate+" - "+receiveDetail.endDate);
+                self.$totalVisit.html(receiveDetail.totalVisit);
+                self.$visitIntime.html(receiveDetail.visitIntime);
+                self.$visitIntimeRate.html(receiveDetail.visitIntimeRate);
+                self.$visitIntegrity.html(receiveDetail.visitIntegrity);
+                self.$visitIntegrityRate.html(receiveDetail.visitIntegrityRate);
+                self.infoGrid =grid = $("#div_info_grid").ligerGrid($.LigerGridEx.config({
+                    url: '${contextRoot}/qcReport/packetNumList',
+                    // 传给服务器的ajax 参数
+                    pageSize:10,
+                    method:'get',
+                    parms: {
+                        orgCode: receiveDetail.orgCode,
+                        eventDateStart: receiveDetail.startDate,
+                        eventDateEnd: receiveDetail.endDate
+                    },
+                    allowHideColumn:false,
+                    columns: [
+                        {display: '接收时间', name: 'receiveDate', width: '50%',align: 'left'},
+                        {display: '档案数', name: 'packetCount', width: '50%', align: 'left'}
+                    ],
+                    enabledSort:false
+                }));
+                self.infoGrid.adjustToWidth();
                 self.bindEvents();
-            },
-            initForm: function () {
-                var self = this;
-                self.$realName.ligerTextBox({width: 240});
-                self.$idCardNo.ligerTextBox({width: 240});
-                self.$resetArea.hide();
-                self.$form.attrScan();
-                self.$resetArea.show();
-                self.$form.Fields.fillValues({
-                    name: receiveModel.name,
-                    idCardNo: receiveModel.idCardNo,
-                    nativePlace: receiveModel.nativePlace,
-                    residenceType: receiveModel.residenceType,
-                    telephoneNo: receiveModel.telephoneNo,
-                    email: receiveModel.email
-                });
             },
             bindEvents: function () {
                 var self = this;
