@@ -80,6 +80,10 @@ public class QcReportController extends BaseUIController {
     @ResponseBody
     public Envelop receiveList(@ApiParam(name = "orgCode", value = "机构编码", required = true)
                                @RequestParam(name = "orgCode") String orgCode,
+                               @ApiParam(name = "page", value = "第几页", required = true)
+                               @RequestParam(name = "page") Integer page,
+                               @ApiParam(name = "rows", value = "每页数", required = true)
+                               @RequestParam(name = "rows") Integer rows,
                                @ApiParam(name = "eventDateStart", value = "就诊时间（起始），格式 yyyy-MM-dd", required = true)
                                @RequestParam(name = "eventDateStart") String eventDateStart,
                                @ApiParam(name = "eventDateEnd", value = "就诊时间（截止），格式 yyyy-MM-dd", required = true)
@@ -89,6 +93,8 @@ public class QcReportController extends BaseUIController {
             String url = packAnalyzerUrl+"/dataQuality/receivedPacket/packetNumList";
             Map<String, Object> params = new HashMap<>();
             params.put("type", "2");
+            params.put("pageIndex", page);
+            params.put("pageSize", rows);
             params.put("orgCode", orgCode);
             params.put("eventDateStart", eventDateStart);
             params.put("eventDateEnd", eventDateEnd);
