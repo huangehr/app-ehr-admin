@@ -12,7 +12,7 @@
 
     <div class="m-form-group f-mt10 f-mb10">
         <div class="m-form-control">
-            <input type="text" id="searchContent" placeholder="请输入发布者应用ID">
+            <input type="text" id="searchContent" placeholder="请输入微服务ID">
         </div>
 
         <div class="m-form-control m-form-control-fr">
