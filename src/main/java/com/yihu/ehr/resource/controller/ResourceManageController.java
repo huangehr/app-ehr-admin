@@ -622,7 +622,7 @@ public class ResourceManageController extends BaseUIController {
         }
     }
 
-    @RequestMapping("/getQuotaByResourceId")
+    @RequestMapping(value = "/getQuotaByResourceId", produces = "text/html;charset=UTF-8")
     @ResponseBody
     public Object getQuotaByResourceId(String resourceId){
         Envelop envelop = new Envelop();

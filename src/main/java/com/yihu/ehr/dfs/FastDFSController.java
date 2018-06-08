@@ -1,9 +1,7 @@
 package com.yihu.ehr.dfs;
 
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
-import com.yihu.ehr.util.log.LogService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -11,9 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,27 +42,17 @@ public class FastDFSController extends BaseUIController {
     @ResponseBody
     public Object search(String sn, String name, int page, int rows) {
         Map<String, Object> params = new HashMap<>();
-        List<Map<String, Object>> filterList = new ArrayList<>();
+        StringBuilder filter = new StringBuilder();
 
         if (!StringUtils.isEmpty(sn)) {
-            Map<String, Object> snMap = new HashMap<>();
-            snMap.put("andOr", "and");
-            snMap.put("condition", "=");
-            snMap.put("field", "sn");
-            snMap.put("value", sn);
-            filterList.add(snMap);
+            filter.append("sn=" + sn);
         }
         if (!StringUtils.isEmpty(name)) {
-            Map<String, Object> nameMap = new HashMap<>();
-            nameMap.put("andOr", "and");
-            nameMap.put("condition", "?");
-            nameMap.put("field", "name");
-            nameMap.put("value", name);
-            filterList.add(nameMap);
+            filter.append(";name?" + name);
         }
 
         try {
-            params.put("filter", objectMapper.writeValueAsString(filterList));
+            params.put("filter", filter.toString());
             params.put("page", page);
             params.put("size", rows);
 
