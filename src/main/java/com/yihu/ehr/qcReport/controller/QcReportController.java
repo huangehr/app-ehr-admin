@@ -1,7 +1,6 @@
 package com.yihu.ehr.qcReport.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.yihu.ehr.emergency.controller.AmbulanceController;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateUtil;
@@ -52,7 +51,7 @@ public class QcReportController extends BaseUIController {
         json.put("endDate", endDate);
         model.addAttribute("receiveDetail", json);
         model.addAttribute("contentPage", "/qcReport/receive/infoDialog");
-        return "pageView";
+        return "emptyView";
     }
 
     @RequestMapping("detail")

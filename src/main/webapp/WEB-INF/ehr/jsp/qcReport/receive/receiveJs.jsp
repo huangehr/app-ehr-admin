@@ -18,7 +18,7 @@
             // 页面主模块，对应于用户信息表区域
             var master = null;
 
-            var dialog = null;
+            var infoDialog = null;
             /* ************************** 变量定义结束 ******************************** */
             var nowDate = '${nowDate}';
             /* *************************** 函数定义 ******************************* */
@@ -127,9 +127,8 @@
                         }
                     });
                     $.subscribe('receive:infoDialog:open',function (event,orgCode,orgName,visitIntime,visitIntegrity,totalVisit,visitIntimeRate,visitIntegrityRate) {
-                        var wait = null;
-                        wait = parent._LIGERDIALOG.waitting('正在加载中...');
-                        var dialog = parent._LIGERDIALOG.open({
+                        var wait = parent._LIGERDIALOG.waitting('正在加载中...');
+                         infoDialog = parent._LIGERDIALOG.open({
                             title:'接收详情',
                             height: 630,
                             width: 600,
@@ -151,7 +150,7 @@
                             isHidden: false,
                             onLoaded:function() {
                                 wait.close();
-                                dialog.show();
+                                infoDialog.show();
                             },
                             complete: function () {
                                 wait.close();
@@ -166,7 +165,7 @@
                 master.reloadGrid();
             };
             win.parent.dialogClose = function () {
-                dialog.close();
+                infoDialog.close();
                 master.reloadGrid();
             };
             /* ************************* Dialog页面回调接口结束 ************************** */
