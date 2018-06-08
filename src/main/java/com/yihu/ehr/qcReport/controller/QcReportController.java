@@ -54,7 +54,7 @@ public class QcReportController extends BaseUIController {
         json.put("endDate", endDate);
         model.addAttribute("receiveDetail", json);
         model.addAttribute("contentPage", "/qcReport/receive/infoDialog");
-        return "pageView";
+        return "emptyView";
     }
 
     @RequestMapping("detail")

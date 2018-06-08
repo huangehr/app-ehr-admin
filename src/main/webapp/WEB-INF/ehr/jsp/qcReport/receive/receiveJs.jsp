@@ -16,6 +16,8 @@
 
             // 页面主模块，对应于用户信息表区域
             var master = null;
+
+            var infoDialog = null;
             /* ************************** 变量定义结束 ******************************** */
             var nowDate = '${nowDate}';
             /* *************************** 函数定义 ******************************* */
@@ -131,17 +133,15 @@
                         }
                     });
                     $.subscribe('receive:infoDialog:open',function (event,orgCode,orgName,visitIntime,visitIntegrity,totalVisit,visitIntimeRate,visitIntegrityRate) {
-//                        var wait = parent._LIGERDIALOG.waitting('正在加载中...');
-                        master.dialog = parent._LIGERDIALOG.open({
+                        var wait = parent._LIGERDIALOG.waitting('正在加载中...');
+                         infoDialog = parent._LIGERDIALOG.open({
                             title:'接收详情',
                             height: 700,
                             width: 600,
                             url: '${contextRoot}/qcReport/initReceiveDetail',
-                            isHidden: false,
-                            opener: true,
-                            load:true,
+                            load: true,
                             isDrag:true,
-                            show:false,
+                            show:true,
                             urlParms: {
                                 orgCode: orgCode,
                                 orgName: orgName,
@@ -153,9 +153,13 @@
                                 startDate: retrieve.$starTime.val(),
                                 endDate: retrieve.$endTime.val()
                             },
+                            isHidden: false,
                             onLoaded:function() {
-//                                wait.close();
-//                                master.dialog.show();
+                                wait.close();
+                                infoDialog.show();
+                            },
+                            complete: function () {
+                                wait.close();
                             }
                         });
                     })
@@ -167,8 +171,7 @@
                 master.reloadGrid();
             };
             win.parent.dialogClose = function () {
-                debugger
-                master.dialog.close();
+                infoDialog.close();
                 master.reloadGrid();
             };
             /* ************************* Dialog页面回调接口结束 ************************** */
