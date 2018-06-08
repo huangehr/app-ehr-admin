@@ -44,7 +44,6 @@
                 $searchBtn: $('#btn_search'),
                 $starTime: $('#star_time'),
                 $endTime: $('#end_time'),
-//                $jg: $('#jg'),
                 init: function () {
                     this.$element.show();
                     this.$starTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:false,initValue:nowDate});
@@ -60,32 +59,31 @@
                 resourceGrid:null,
                 init: function () {
                     var self = this;
-                    var num=1 ;
-                    var afternum;
                     self.resourceGrid =grid = $("#div_platform_receive_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/qcReport/receptionList',
                         // 传给服务器的ajax 参数
                         pageSize:20,
                         method:'get',
                         parms: {
-                            startTime: '',
-                            endTime: ''
+                            startDate: retrieve.$starTime.val(),
+                            endDate: retrieve.$endTime.val()
                         },
                        allowHideColumn:false,
                         columns: [
-                            {display: '机构/部门', name: 'orgName', width: '10%',align: 'left'},
-                            {display: '就诊及时率', name: 'visitIntimeRate', width: '10%', align: 'left'},
-                            {display: '门诊及时率', name: 'outpatientInTimeRate', width: '10%'},
-                            {display: '住院及时率', name: 'hospitalInTimeRate', width: '10%'},
-                            {display: '体检及时率', name: 'peInTimeRate', width: '10%',align: 'left'},
-                            {display: '就诊完整率', name: 'visitIntegrityRate', width: '10%', align: 'left'},
-                            {display: '门诊完整率', name: 'outpatientIntegrityRate', width: '10%'},
-                            {display: '住院完整率', name: 'hospitalIntegrityRate', width: '10%'},
-                            {display: '体检完整率', name: 'peIntegrityRate', width: '10%',align: 'left'},
+                            {display: '机构/部门', name: 'orgName', width: '15%',align: 'left'},
+                            {display: '就诊及时率', name: 'visitIntimeRate', width: '9%', align: 'left'},
+                            {display: '门诊及时率', name: 'outpatientInTimeRate', width: '9%'},
+                            {display: '住院及时率', name: 'hospitalInTimeRate', width: '9%'},
+                            {display: '体检及时率', name: 'peInTimeRate', width: '9%',align: 'left'},
+                            {display: '就诊完整率', name: 'visitIntegrityRate', width: '9%', align: 'left'},
+                            {display: '门诊完整率', name: 'outpatientIntegrityRate', width: '9%'},
+                            {display: '住院完整率', name: 'hospitalIntegrityRate', width: '9%'},
+                            {display: '体检完整率', name: 'peIntegrityRate', width: '9%',align: 'left'},
                             {
-                                display: '操作', name: 'operator', minWidth: 160, render: function (row) {
-                                    var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 33px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "patient:patientBroswerInfoDialog:open", row.idCardNo) + '">档案查询</a>';
-                                    html += '<sec:authorize url="/qcReport/packetNumList"><a class="grid_edit" title="查看" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "patient:patientInfoModifyDialog:open", row.idCardNo,row.userId) + '"></a></sec:authorize>';
+                                display: '操作', name: 'operator', minWidth: 120, render: function (row) {
+                                    var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 33px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:'
+                                            + Util.format("$.publish('{0}',['{1}','{2}','{3}','{4}','{5}','{6}','{7}'])", "receive:infoDialog:open",row.orgCode,row.orgName,row.visitIntime,row.visitIntegrity,row.totalVisit,row.visitIntimeRate,row.visitIntegrityRate)
+                                            + '">查看</a>';
                                     return html;
                                 }
                             }
@@ -96,46 +94,15 @@
                     self.resourceGrid.adjustToWidth();
                     this.bindEvents();
                 },
-                showUserInfo: function (id,userId) {
-                    var wait=null;
-                    wait = parent._LIGERDIALOG.waitting('正在加载中...');
-                    var dialog = parent._LIGERDIALOG.open({
-                        title:'居民信息详情',
-                        height: 630,
-                        width: 600,
-                        url: '${contextRoot}/patient/patientDialogType',
-                        load: true,
-                        isDrag:true,
-                        show:false,
-                        urlParms: {
-                            idCardNo: id,
-                            userId:userId,
-                            patientDialogType: 'patientInfoMessage'
-                        },
-                        isHidden: false,
-                        onLoaded:function() {
-                            wait.close();
-                            dialog.show();
-                        }
-                    });
-                    dialog.hide();
-                },
-                /*searchPatient: function (searchNm) {
-                    grid.setOptions({parms: {searchNm: searchNm}});
-                    grid.loadData(true);
-                },*/
                 reloadGrid: function () {
                     //var values = retrieve.$element.Fields.getValues();
 
                     retrieve.$element.attrScan();
-                    var homeAddress = retrieve.$element.Fields.homeAddress.getValue();
-                    var values = $.extend({},retrieve.$element.Fields.getValues(),
-                            {province: (homeAddress.names[0]==null?'':homeAddress.names[0])},
-                            {city:  (homeAddress.names[1]==null?'':homeAddress.names[1])},
-                            {district: (homeAddress.names[2]==null?'':homeAddress.names[2])});
-                    values.gender = values.gender.trim() == '男' ? '1' : values.gender.trim() == '女' ? '2' : '';
-                    reloadGrid.call(this, '${contextRoot}/patient/searchPatientByParams', values);
-                },
+                    var values ={
+                        startDate: retrieve.$starTime.val(),
+                        endDate: retrieve.$endTime.val()
+                    };
+                    reloadGrid.call(this, '${contextRoot}/qcReport/receptionList', values);              },
                 bindEvents: function () {
                     var self = this;
                     retrieve.$searchBtn.click(function () {
@@ -159,23 +126,35 @@
                             self.UnknowArchivesGrid.reload();
                         }
                     });
-                    $.subscribe('patient:patientBroswerInfoDialog:open',function (event,idCardNo) {
-                        $.ajax({
-                            url: '${contextRoot}/login/checkInfo',
-                            data: {
-                                idCardNo: idCardNo
+                    $.subscribe('receive:infoDialog:open',function (event,orgCode,orgName,visitIntime,visitIntegrity,totalVisit,visitIntimeRate,visitIntegrityRate) {
+                        var wait = null;
+                        wait = parent._LIGERDIALOG.waitting('正在加载中...');
+                        var dialog = parent._LIGERDIALOG.open({
+                            title:'接收详情',
+                            height: 630,
+                            width: 600,
+                            url: '${contextRoot}/qcReport/initReceiveDetail',
+                            load: true,
+                            isDrag:true,
+                            show:true,
+                            urlParms: {
+                                orgCode: orgCode,
+                                orgName: orgName,
+                                visitIntime: visitIntime,
+                                visitIntegrity: visitIntegrity,
+                                totalVisit: totalVisit,
+                                visitIntimeRate: visitIntimeRate.substr(0,visitIntimeRate.length-1),
+                                visitIntegrityRate: visitIntegrityRate.substr(0,visitIntegrityRate.length-1),
+                                startDate: retrieve.$starTime.val(),
+                                endDate: retrieve.$endTime.val()
                             },
-                            dataType: 'json',
-                            type: 'GET',
-                            success: function (data) {
-                                if (data.successFlg) {
-                                    window.open('${contextRoot}/login/broswerSignin?idCardNo='+idCardNo,'_blank');
-                                } else {
-                                    parent._LIGERDIALOG.success('该居民无档案信息');
-                                }
+                            isHidden: false,
+                            onLoaded:function() {
+                                wait.close();
+                                dialog.show();
                             },
-                            error: function (e) {
-                                parent._LIGERDIALOG.error('出错了');
+                            complete: function () {
+                                wait.close();
                             }
                         });
                     })
