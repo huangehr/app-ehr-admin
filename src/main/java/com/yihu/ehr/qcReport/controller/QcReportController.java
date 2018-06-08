@@ -9,6 +9,7 @@ import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.word.ExportUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,8 +60,8 @@ public class QcReportController extends BaseUIController {
 
     @RequestMapping("detail")
     public String patientInitial(Model model) {
-        model.addAttribute("contentPage", "/qcReport/qcReportDetail");
-        return "pageView";
+        model.addAttribute("contentPage", "/qcReport/receive/receiveDetail");
+        return "emptyView";
     }
 
     @RequestMapping(value = "/receptionList", method = RequestMethod.GET)
@@ -232,6 +233,35 @@ public class QcReportController extends BaseUIController {
             params.put("orgCode", orgCode);
             params.put("eventDateStart", eventDateStart);
             params.put("eventDateEnd", eventDateEnd);
+            String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
+            envelop = toModel(envelopStr, Envelop.class);
+        } catch (Exception e){
+            LogService.getLogger(QcReportController.class).error(e.getMessage());
+            envelop.setSuccessFlg(false);
+            envelop.setErrorMsg(e.getMessage());
+        }
+        return envelop;
+    }
+
+    @RequestMapping(value = "/qualityMonitoringList", method = RequestMethod.GET)
+    @ApiOperation(value = "质量监控查询")
+    @ResponseBody
+    public Envelop qualityMonitoringList(
+            @ApiParam(name = "start", value = "开始时间")
+            @RequestParam(value = "start", required = false) String start,
+            @ApiParam(name = "end", value = "结束时间", defaultValue = "")
+            @RequestParam(value = "end", required = false) String end,
+            @ApiParam(name = "eventType", value = "就诊类型 0门诊 1住院 2体检,null全部", defaultValue = "")
+            @RequestParam(value = "eventType", required = false) String eventType) throws Exception {
+        Envelop envelop = new Envelop();
+        try {
+            String url = packAnalyzerUrl+"/dataQuality/quality/qualityMonitoringList";
+            Map<String, Object> params = new HashMap<>();
+            if(StringUtils.isNotEmpty(eventType)){
+                params.put("eventType", eventType);
+            }
+            params.put("start", start);
+            params.put("end", end);
             String envelopStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
             envelop = toModel(envelopStr, Envelop.class);
         } catch (Exception e){
