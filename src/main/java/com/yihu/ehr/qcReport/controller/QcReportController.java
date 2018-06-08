@@ -6,6 +6,7 @@ import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.datetime.DateUtil;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import com.yihu.ehr.util.word.ExportUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,6 +81,132 @@ public class QcReportController extends BaseUIController {
             envelop.setErrorMsg(e.getMessage());
         }
         return envelop;
+    }
+
+    @RequestMapping("index")
+    public String index(HttpServletRequest request, HttpServletResponse response) {
+        String context = "<html>\n" +
+                "  <head>\n" +
+                "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n" +
+                "  </head>\n" +
+                "  <body style=\"width: 500px;font-size: 15px;margin:0 auto;\">\n" +
+                "  <div id=\"head\" style=\"margin-top: 10px;\">\n" +
+                "    <div id=\"title\" style=\"text-align: center;font-size: 30px;font-weight: 700;\">{搜索条件时间范围}接收数据报告</div>\n" +
+                "    <div id=\"author\">\n" +
+                "        <div id=\"calTime\" style=\"margin-left: 250px;\">统计时间:{报告生成时间}</div>\n" +
+                "        <div id=\"reportTime\" style=\"margin-left: 250px;\">报告时间:</div>\n" +
+                "        <div id=\"reporter\" style=\"margin-left: 250px;\">报告人: {账号名称}</div>\n" +
+                "    </div>\n" +
+                "    <div id=\"total\" style=\"margin-top: 10px;\">\n" +
+                "        <div id=\"receiveTotal\" style=\"font-size: 20px;font-weight: 700; \">接收总量:{统计所选机构的总量（选择了医疗云平台的除外）}</div>\n" +
+                "        <div id=\"successAnalyze\" style=\"font-size: 20px;font-weight: 700; \">成功解析:{统计所选机构的解析成功总量（选择了医疗云平台的除外）}</div>\n" +
+                "    </div>\n" +
+                "  </div>\n" +
+                "  <div id=\"hospitals\" style=\"margin-top: 10px;\">\n" +
+                "    <div id=\"hospital\">\n" +
+                "        <div id=\"org\" style=\"font-size: 25px;font-weight: 700;margin-bottom: 10px;\">1.医院名称(机构编码)</div>\n" +
+                "        <div id=\"receiveDetail\">\n" +
+                "            <div id=\"title2\" style=\"font-size: 18px;font-weight: 700;line-height: 40px;\">1.数据接收情况</div>\n" +
+                "            <div id=\"hospitalData\">\n" +
+                "                <div id=\"title3\" style=\"\">1.1医院上报及采集情况</div>\n" +
+                "                  <table width=\"100%\" border=\"1\" bordercolor=\"black\" cellspacing=\"0px\">\n" +
+                "                    <tr style=\"\">\n" +
+                "                      <td style=\"width: 20%;\">环节</td>\n" +
+                "                      <td style=\"width: 20%;\">门诊档案数</td>\n" +
+                "                      <td style=\"width: 20%;\">住院档案数</td>\n" +
+                "                      <td style=\"width: 20%;\">体检档案数</td>\n" +
+                "                      <td style=\"width: 20%;\">总计</td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "            </div>\n" +
+                "            <div id=\"collection\">\n" +
+                "                <br>\n" +
+                "                <div id=\"title3\" style=\"\">1.2采集内容</div>\n" +
+                "                 <table width=\"100%\" border=\"1\" bordercolor=\"black\" cellspacing=\"0px\" >\n" +
+                "                    <tr style=\"\">\n" +
+                "                      <td style=\"width: 20%;\">日期</td>\n" +
+                "                      <td style=\"width: 20%;\">门诊档案数</td>\n" +
+                "                      <td style=\"width: 20%;\">住院档案数</td>\n" +
+                "                      <td style=\"width: 20%;\">体检档案数</td>\n" +
+                "                      <td style=\"width: 20%;\">总计</td>\n" +
+                "                    </tr>\n" +
+                "                    <tr>\n" +
+                "                      <td style=\"width: 20%;\">2016-01-01</td>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                      <td style=\"width: 20%;\">1000</td>\n" +
+                "                    </tr>\n" +
+                "                  </table>\n" +
+                "            </div>\n" +
+                "        </div>\n" +
+                "        <div id=\"analyzeDetail\">\n" +
+                "            <br>\n" +
+                "            <div id=\"title2\" style=\"font-size: 18px;font-weight: 700;line-height: 40px;\">2.数据解析情况{解析状态（正在解析中、已解析完毕，根据是否还有未解析判断）}</div>\n" +
+                "                <table width=\"100%\" border=\"1\" bordercolor=\"black\" cellspacing=\"0px\" >\n" +
+                "                  <tr style=\"\">\n" +
+                "                    <td style=\"width: 25%;\">接收总量</td>\n" +
+                "                    <td style=\"width: 25%;\">解析成功</td>\n" +
+                "                    <td style=\"width: 25%;\">解析失败</td>\n" +
+                "                    <td style=\"width: 25%;\">未解析</td>\n" +
+                "                  </tr>\n" +
+                "                  <tr>\n" +
+                "                    <td style=\"width: 25%;\">1000</td>\n" +
+                "                    <td style=\"width: 25%;\">1000</td>\n" +
+                "                    <td style=\"width: 25%;\">1000</td>\n" +
+                "                    <td style=\"width: 25%;\">1000</td>\n" +
+                "                  </tr>\n" +
+                "                </table>\n" +
+                "        </div>\n" +
+                "        <div id=\"datasetTotal\">\n" +
+                "            <br>\n" +
+                "            <div id=\"title2\" style=\"font-size: 18px;font-weight: 700;line-height: 40px;\">3.数据集总量{解析状态（正在解析中、已解析完毕，根据是否还有未解析判断）}</div>\n" +
+                "                <table width=\"100%\" border=\"1\" bordercolor=\"black\" cellspacing=\"0px\" >\n" +
+                "                  <tr style=\"\">\n" +
+                "                    <td style=\"width: 25%;\">数据集编码</td>\n" +
+                "                    <td style=\"width: 25%;\">数据集名称</td>\n" +
+                "                    <td style=\"width: 25%;\">总数</td>\n" +
+                "                    <td style=\"width: 25%;\">行数</td>\n" +
+                "                  </tr>\n" +
+                "                  <tr>\n" +
+                "                    <td style=\"width: 25%;\">1000</td>\n" +
+                "                    <td style=\"width: 25%;\">1000</td>\n" +
+                "                    <td style=\"width: 25%;\">1000</td>\n" +
+                "                    <td style=\"width: 25%;\">1000</td>\n" +
+                "                  </tr>\n" +
+                "                </table>\n" +
+                "        </div>\n" +
+                "        <div id=\"analysis\">\n" +
+                "            <br>\n" +
+                "            <div id=\"title2\" style=\"font-size: 18px;font-weight: 700;line-height: 40px;\">4.分析</div>\n" +
+                "            <div id=\"title3\" style=\"\">4.1解析失败分析</div>\n" +
+                "            <table width=\"100%\" border=\"1\" bordercolor=\"black\" cellspacing=\"0px\" >\n" +
+                "                  <tr style=\"\">\n" +
+                "                    <td style=\"width: 50%;\">错误原因</td>\n" +
+                "                    <td style=\"width: 50%;\">数量</td>\n" +
+                "                  </tr>\n" +
+                "                  <tr>\n" +
+                "                    <td style=\"width: 50%;\">1000</td>\n" +
+                "                    <td style=\"width: 50%;\">1000</td>\n" +
+                "                  </tr>\n" +
+                "                </table>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "  </div>\n" +
+                "  </body>\n" +
+                "</html>\n";
+
+//        ExportUtil.exportWord(request, response, context);
+
+        ExportUtil.test(request, response);
+        return "index";
     }
 
     @RequestMapping(value = "/packetNumList", method = RequestMethod.GET)

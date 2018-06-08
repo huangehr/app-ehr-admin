@@ -9,7 +9,6 @@
             // 通用工具类库
             var Util = $.Util;
 
-            // 画面用户信息表对象
             var grid = null;
 
             // 页面表格条件部模块
@@ -57,6 +56,7 @@
             };
             master = {
                 resourceGrid:null,
+                dialog : null,
                 init: function () {
                     var self = this;
                     self.resourceGrid =grid = $("#div_platform_receive_info_grid").ligerGrid($.LigerGridEx.config({
@@ -71,14 +71,20 @@
                        allowHideColumn:false,
                         columns: [
                             {display: '机构/部门', name: 'orgName', width: '15%',align: 'left'},
-                            {display: '就诊及时率', name: 'visitIntimeRate', width: '9%', align: 'left'},
-                            {display: '门诊及时率', name: 'outpatientInTimeRate', width: '9%'},
-                            {display: '住院及时率', name: 'hospitalInTimeRate', width: '9%'},
-                            {display: '体检及时率', name: 'peInTimeRate', width: '9%',align: 'left'},
-                            {display: '就诊完整率', name: 'visitIntegrityRate', width: '9%', align: 'left'},
-                            {display: '门诊完整率', name: 'outpatientIntegrityRate', width: '9%'},
-                            {display: '住院完整率', name: 'hospitalIntegrityRate', width: '9%'},
-                            {display: '体检完整率', name: 'peIntegrityRate', width: '9%',align: 'left'},
+                            {display: '及时率',
+                                columns:[
+                                    {display: '就诊', name: 'visitIntimeRate', width: '9%', align: 'left'},
+                                    {display: '门诊', name: 'outpatientInTimeRate', width: '9%'},
+                                    {display: '住院', name: 'hospitalInTimeRate', width: '9%'},
+                                    {display: '体检', name: 'peInTimeRate', width: '9%',align: 'left'}]
+                               },
+                            {display: '完整率',
+                                columns:[
+                                    {display: '就诊', name: 'visitIntegrityRate', width: '9%', align: 'left'},
+                                    {display: '门诊', name: 'outpatientIntegrityRate', width: '9%'},
+                                    {display: '住院', name: 'hospitalIntegrityRate', width: '9%'},
+                                    {display: '体检', name: 'peIntegrityRate', width: '9%',align: 'left'}]
+                            },
                             {
                                 display: '操作', name: 'operator', minWidth: 120, render: function (row) {
                                     var html = '<a href="javascript:void(0)" target="_blank" style="display: inline-block;height: 33px;padding: 0 10px;line-height: 40px;vertical-align: top;" onclick="javascript:'
@@ -130,7 +136,7 @@
                         var wait = parent._LIGERDIALOG.waitting('正在加载中...');
                          infoDialog = parent._LIGERDIALOG.open({
                             title:'接收详情',
-                            height: 630,
+                            height: 700,
                             width: 600,
                             url: '${contextRoot}/qcReport/initReceiveDetail',
                             load: true,
