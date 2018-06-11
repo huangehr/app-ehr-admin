@@ -579,4 +579,26 @@ public class LoginController extends BaseUIController {
         }
     }
 
+    /**
+     * 根据字典id和字典项编码获取logo
+     * @param dictId 字典id
+     * @param code 字典项编码
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getLogoByDictIdAndEntry", method = RequestMethod.GET)
+    @ResponseBody
+    public Envelop getLogoByDictIdAndEntry (long dictId, String code) throws Exception {
+        Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put("dictId", dictId);
+        paramsMap.put("code", code);
+        String url =  "/dfs/api/v1.0/open/fastDfs/getFileByDictEntry";
+        String result = HttpClientUtil.doGet(adminInnerUrl + url, paramsMap, username, password);
+        Envelop envelop;
+        if(StringUtils.isNotEmpty(result)){
+            return  objectMapper.readValue(result,Envelop.class);
+        }
+        return failed("查询失败！");
+    }
+
 }
