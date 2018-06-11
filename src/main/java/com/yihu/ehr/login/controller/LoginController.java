@@ -594,7 +594,6 @@ public class LoginController extends BaseUIController {
         paramsMap.put("code", code);
         String url =  "/dfs/api/v1.0/open/fastDfs/getFileByDictEntry";
         String result = HttpClientUtil.doGet(adminInnerUrl + url, paramsMap, username, password);
-        Envelop envelop;
         if(StringUtils.isNotEmpty(result)){
             return  objectMapper.readValue(result,Envelop.class);
         }
