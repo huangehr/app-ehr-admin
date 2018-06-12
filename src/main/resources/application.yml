@@ -53,7 +53,7 @@ service-gateway:
   standard: http://172.19.103.73:10000/api/v1.0/std
   #browseClientUrl: http://192.168.1.221:8010/profile/browser
   browseClientUrl: http://172.19.103.70:1235/profile
-  browseClientOutSizeUrl: http://27.154.233.186:9480/profile/
+  browseClientOutSizeUrl: http://27.154.233.186:9480/profile
   profileurl: http://172.19.103.74:9009/api/v1.0
 fast-dfs:
   tracker-server: 172.19.103.13:22122

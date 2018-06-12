@@ -447,9 +447,6 @@ public class UserController extends BaseUIController {
         response.setContentType("image/jpeg");
         OutputStream outputStream = null;
         String fileStream = (String) session.getAttribute("userImageStream");
-
-//        String imageStream = URLDecoder.decode(fileStream,"UTF-8");
-
         try {
             outputStream = response.getOutputStream();
             byte[] bytes = Base64.getDecoder().decode(fileStream);
