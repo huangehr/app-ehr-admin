@@ -184,7 +184,7 @@
                             for (var i = 0, len = d.length; i < len; i++) {
                                 mechanisms.push({
                                     text: d[i].fullName,
-                                    id: d[i].fullName
+                                    id: d[i].orgCode
                                 });
                             }
                             me.$inpMechanism.ligerComboBox({
@@ -272,6 +272,7 @@
                                 return false;
                             },
                             onClick: function (e, id, data) {
+                                debugger
                                 me.initDDL(me.type == 1 ? data.code : data.id);
                                 me.addClickTreeNode.call(this, e, id, data, me);
                             }
@@ -355,10 +356,10 @@
                                 } else {
                                     me.$autBtn.hide();
                                 }
-                                if(data&&data.rs_interface=="getEhrCenterSub"){
-                                    me.$ddSeach.show();
-                                }else{
+                                if (data && data.rs_interface == "getEhrCenterSub"){ //详细数据表隐藏搜索框
                                     me.$ddSeach.hide();
+                                } else {
+                                    me.$ddSeach.show();
                                 }
                                 me.loadDAGridData(data.code);
                                 break;
@@ -377,6 +378,7 @@
                     var columnModel = new Array();
                     //获取列名
                     if (!Util.isStrEmpty(resourcesCode)) {
+                        debugger
                         if (me.resourceInfoGrid) {
                             me.reloadDAGridData(resourcesCode);
                         } else {
@@ -416,6 +418,7 @@
                                     }
                                 }
                             }
+                            debugger
                             for (var i = 0; i < data.length; i++) {
                                 columnModel.push({display: data[i].value, name: data[i].code, width: 100});
                             }
@@ -431,6 +434,7 @@
                     return columnModel;
                 },
                 reloadDAGridData: function (resourcesCode) {
+                    debugger
                     if (resourcesCode) {
                         this.resourceInfoGrid.setOptions({parms: {
                             searchParams: this.queryCondition,
