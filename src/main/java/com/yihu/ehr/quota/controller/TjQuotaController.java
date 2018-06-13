@@ -410,9 +410,9 @@ public class TjQuotaController extends BaseUIController {
             Map<String, Object> filters = new HashMap<>();
             filters.put("startTime", startTime);
             filters.put("endTime", endTime);
-            filters.put("orgName", orgName);
+            filters.put("org", orgName);
             filters.put("province", province);
-            filters.put("townName", city);
+            filters.put("town", city);
             filters.put("district", district);
              // 结果大于0
             filters.put("result", res);

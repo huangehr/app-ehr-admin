@@ -753,6 +753,25 @@ public class OrganizationController extends BaseUIController {
     }
 
 
-
+    @RequestMapping("/getOrgList")
+    @ResponseBody
+    public Object getOrgList(String searchParm) {
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params =  new HashMap<>();
+            params.put("pid", 361100);
+            if (!StringUtils.isEmpty(searchParm)) {
+                params.put("fullName", searchParm);
+            }
+            String url = "/organizations/getOrgListByAddressPid";
+            String resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            envelop = objectMapper.readValue(resultStr, Envelop.class);
+        }catch (Exception e){
+            e.getMessage();
+            envelop.setErrorMsg(e.getMessage());
+            envelop.setSuccessFlg(false);
+        }
+        return envelop;
+    }
 
 }

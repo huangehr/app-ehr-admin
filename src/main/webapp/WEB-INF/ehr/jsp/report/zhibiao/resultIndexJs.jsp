@@ -42,7 +42,8 @@
                         <%--{name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}--%>
                     <%--]});--%>
 
-                    this.$location.ligerTextBox({labelWidth: 100, labelAlign: 'center' });
+//                    this.$location.ligerTextBox({labelWidth: 100, labelAlign: 'center' });
+                    this.initDistribute(361100, this.$location);
 
                     this.$select.ligerComboBox({
                         width : 150,
@@ -61,11 +62,51 @@
                             }
                         }
                     });
-                    this.$orgName.ligerTextBox({width: 140 });
+                    this.$orgName.customCombo('${contextRoot}/organization/getOrgList',{searchParm:''},null,null,null,
+                        {
+                            valueField: 'orgCode',
+                            textField: 'fullName'
+                        },
+                        {
+                            columns: [
+                                { header: 'fullName', name: 'fullName', width: '100%' }
+                            ]
+                        });
+//                    this.initOrg(this.$orgName);
                     this.bindEvents();
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
+                },
+                initDistribute: function (pid, target) {
+                    var target = $(target);
+                    var dataModel = $.DataModel.init();
+                    dataModel.fetchRemote("${contextRoot}/address/getDistrictByParent", {
+                        data: {pid: pid},
+                        success: function (data) {
+                            target.ligerComboBox({
+                                valueField: 'id',
+                                textField: 'name',
+                                width: '150',
+                                data: [].concat(data.obj)
+                            });
+                        }
+                    });
+                },
+                initOrg: function (target) {
+                    var target = $(target);
+                    var dataModel = $.DataModel.init();
+                    dataModel.fetchRemote("${contextRoot}/organization/getOrgList", {
+                        data: {},
+                        success: function (data) {
+                            target.ligerComboBox({
+                                valueField: 'orgCode',
+                                textField: 'fullName',
+                                width: '150',
+                                data: [].concat(data.detailModelList)
+                            });
+                        }
+                    });
                 },
                 bindEvents: function () {
                     var self = this;
@@ -127,8 +168,8 @@
                     // 起止时间
                     var startTime = patientRetrieve.$starTime.val();
                     var endTime = patientRetrieve.$endTime.val();
-                    var address = patientRetrieve.$location.val();
-                    var orgName = patientRetrieve.$orgName.val();
+                    var address = $("#inp_location_val").val();
+                    var orgName = $("#inp_org_name_val").val();
 
                     var values = $.extend({},
 //                            {province: (address.names[0] == null ? '' : address.names[0])},
