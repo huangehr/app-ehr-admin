@@ -113,6 +113,9 @@ public class HttpClientUtil {
             if (getMethod != null) {
                 getMethod.releaseConnection();
             }
+            if (httpClient != null) {
+                ((SimpleHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
+            }
         }
         return response;
     }
