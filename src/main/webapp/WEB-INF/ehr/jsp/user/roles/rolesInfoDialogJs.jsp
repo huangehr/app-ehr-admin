@@ -51,7 +51,6 @@
 						name:info.name,
 						description:info.description
 					});
-
 					$("#inp_appRole_orgCode").ligerGetComboBoxManager().setValue(info.orgCode);
 					$("#inp_appRole_orgCode").ligerGetComboBoxManager().setText(info.orgName);
 				}
@@ -66,6 +65,7 @@
 
 				//验证编码、名字不可重复
 				function checkUnique(url,appId, value,orgCode, errorMsg) {
+				    debugger;
 					var result = new jValidation.ajax.Result();
 					var dataModel = $.DataModel.init();
 					dataModel.fetchRemote(url, {
@@ -84,21 +84,24 @@
 				}
 
 				$("#btn_save").click(function () {
+                    debugger;
 					var orgCode = $("#inp_appRole_orgCode_val").val();
 					var validator =  new jValidation.Validation(self.$form, {immediate: true, onSubmit: false,
 						onElementValidateForAjax: function (elm) {
+                            if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {
+                                var code = $("#inp_roles_code").val();
+                                if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy) )){
+                                    return checkUnique("${contextRoot}/userRoles/isCodeExistence",appId,code,orgCode,"此机构下的角色组编码已被使用！");
+                                }
+                            }
+
 							if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_name')) {
 								var name = $("#inp_roles_name").val();
-								if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy)  && !Util.isStrEmpty(orgCode) )){
+								if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
 									return checkUnique("${contextRoot}/userRoles/isNameExistence",appId,name,orgCode,"此机构下的角色组名称已被使用！");
 								}
 							}
-							if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {
-								var code = $("#inp_roles_code").val();
-								if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy)  && !Util.isStrEmpty(orgCode) )){
-									return checkUnique("${contextRoot}/userRoles/isCodeExistence",appId,code,orgCode,"此机构下的角色组编码已被使用！");
-								}
-							}
+
 						}
 					});
 					if(validator.validate() == false){return}
