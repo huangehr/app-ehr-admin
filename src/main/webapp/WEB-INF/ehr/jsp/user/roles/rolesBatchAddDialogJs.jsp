@@ -106,11 +106,11 @@
 				}
 
 				$("#btn_save").click(function () {
-                    var orgCode = $("#orgCodes").val();
 
 					var validator =  new jValidation.Validation(self.$form, {immediate: true, onSubmit: false,
 						onElementValidateForAjax: function (elm) {
                             if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_code')) {
+                                var orgCode = $('#inpMechanism').ligerGetComboBoxManager().getValue();
                                 var code = $("#inp_roles_code").val();
                                 if(Util.isStrEmpty(codeCopy)||(!Util.isStrEmpty(codeCopy)&&!Util.isStrEquals(code,codeCopy) )){
                                     return checkUnique("${contextRoot}/userRoles/isCodeExistence",appId,code,orgCode,"角色组编码已被使用！");
@@ -118,6 +118,7 @@
                             }
 
                             if (Util.isStrEquals($(elm).attr("id"), 'inp_roles_name')) {
+                                var orgCode = $('#inpMechanism').ligerGetComboBoxManager().getValue();
                                 var name = $("#inp_roles_name").val();
                                 if(Util.isStrEmpty(nameCopy)||(!Util.isStrEmpty(nameCopy)&&!Util.isStrEquals(name,nameCopy))){
                                     return checkUnique("${contextRoot}/userRoles/isNameExistence",appId,name,orgCode,"角色组名称已被使用！");
