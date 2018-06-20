@@ -1017,7 +1017,7 @@
                             var values = {andOr: '', condition: '', field: '', value: ''};
                             values.field = code;
                             if (valArr[j] && valArr[j] != '') {
-                                values.andOr = 'OR';
+                                values.andOr = 'AND';
                                 values.condition = '=';
                                 if (($(resetInp[i]).attr('id')).indexOf('inpStarTime') > -1) {
                                     values.andOr = 'AND';
