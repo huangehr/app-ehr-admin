@@ -266,7 +266,22 @@
                         self.$updateSystemDictEntityValue.val(value);
                         self.$updateSystemDictEntitySort.val(sort);
                         self.$updateSystemDictEntityCatalog.val(catalog);
-                        self.updateSystemEntityDialog();
+                        systemDictEntityDialog = parent._LIGERDIALOG.open({
+                            height:280,
+                            width: 416,
+                            title : "修改字典详情",
+                            url: '${contextRoot}/dict/editSystemDictDetail',
+                            urlParms: {
+                                mode:"modify",
+                                code:code,
+                                name:value,
+                                catalog:catalog,
+                                systemDictId:master.$systemDictId.val()
+                            },
+                            isHidden: false,
+                            opener: true,
+                            load:true
+                        });
                     });
 
                 },
@@ -305,26 +320,6 @@
                             code:"",
                             name:"",
                             catalog:"",
-                            systemDictId:master.$systemDictId.val()
-                        },
-                        isHidden: false,
-                        opener: true,
-                        load:true
-                    });
-                },
-                updateSystemEntityDialog: function () {
-
-                    var self = this;
-                    systemDictEntityDialog = parent._LIGERDIALOG.open({
-                        height:280,
-                        width: 416,
-                        title : "修改字典详情",
-                        url: '${contextRoot}/dict/editSystemDictDetail',
-                        urlParms: {
-                            mode:"modify",
-                            code:self.$updateSystemDictEntityCode.val(),
-                            name:self.$updateSystemDictEntityValue.val(),
-                            catalog:self.$updateSystemDictEntityCatalog.val(),
                             systemDictId:master.$systemDictId.val()
                         },
                         isHidden: false,
