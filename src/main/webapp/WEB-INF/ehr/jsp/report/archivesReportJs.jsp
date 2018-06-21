@@ -1093,10 +1093,10 @@
                 me.myCharts5.setOption(option);
             },
             loadChart6:function(data){
-                var colors=["#EE9A13","#F8C400","#EFEE00","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78","#96C6EA","#BA72A4","#BBB4D6","#D9C7DF","#00AA90","#00AA90","#61BBA1","#7CC5B1","#E4EC65","#E3EF8D","#E6EA00","#D5649A","#DCA89A","#D4561B","#E2AA99","#138A6A","#739C5A","#3FB3B2","#B7DCB1","#F09B4A","#59BBD8","#76C5E6","#B4DEEC","#95D0DE","#B6DEDE","#A1A6A2","#E46713","#EE9A13","#F8C400","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78","#96C6EA","#BA72A4","#BBB4D6","#D9C7DF","#00AA90","#61BBA1","#7CC5B1","#E4EC65","#E3EF8D","#EDF4CA","#E6EA00","#D5649A","#DCA89A","#D4561B","#D66543","#E2AA99","#138A6A","#418F68","#739C5A","#389688","#3FB3B2","#B7DCB1","#F09B4A","#59BBD8","#76C5E6","#B4DEEC","#95D0DE","#B6DEDE","#A1A6A2"];
-                console.info(colors.length);
+                var colors=["#EE9A13","#F8C400","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78","#96C6EA","#BA72A4","#BBB4D6","#D9C7DF","#00AA90","#00AA90","#61BBA1","#7CC5B1","#E4EC65","#E3EF8D","#E6EA00","#D5649A","#DCA89A","#D4561B","#E2AA99","#138A6A","#739C5A","#3FB3B2","#B7DCB1","#F09B4A","#59BBD8","#76C5E6","#B4DEEC","#95D0DE","#B6DEDE","#A1A6A2","#E46713","#EE9A13","#F8C400","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78","#96C6EA","#BA72A4","#BBB4D6","#D9C7DF","#00AA90","#61BBA1","#7CC5B1","#E4EC65","#E3EF8D","#EDF4CA","#E6EA00","#D5649A","#DCA89A","#D4561B","#D66543","#E2AA99","#138A6A","#418F68","#739C5A","#389688","#3FB3B2","#B7DCB1","#F09B4A","#59BBD8","#76C5E6","#B4DEEC","#95D0DE","#B6DEDE","#A1A6A2"];
                 var me = this;
                 var list=[];
+                var legend=[];
                 if (data&&data.length>0){
                     $("#grid").show();
                 }
@@ -1104,12 +1104,12 @@
                 if(data && data.length>0) {
                     $.each(data, function (id, item) {
                         var obj = {};
-                        obj.value = item.row;
-                        obj.name = item.dataSet;
+                        obj.value = item.count;
+                        obj.name = item.dataset +'-'+item.name;
                         list.push(obj);
                         html.push('<tr>');
                         html.push('<td align="center"><div style="background:' + colors[id] + ';width:20px;height:10px;margin:5px auto;"></div></td>');
-                        html.push('<td>' + item.dataSet + '</td>');
+                        html.push('<td>' + item.dataset +'-'+item.name+'</td>');
                         html.push('<td>' + item.count + '</td>');
                         html.push('<td>' + item.row + '</td>');
                         html.push('</tr>');
@@ -1119,7 +1119,7 @@
                 var option = {
                     tooltip: {
                         trigger: 'item',
-                        formatter: "{b}<br/> {c} ({d}%)"
+                        formatter: "{b} <br/> {c} ({d}%)"
                     },
                     color: colors,
                     series: [
@@ -1147,7 +1147,7 @@
             },
             loadChart7:function(data){
                 var me = this;
-                var colors=["#EE9A13","#F8C400","#EFEE00","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78"];
+                var colors=["#EE9A13","#F8C400","#EFEE00","#1EA839","#68B92E","#9DCD17","#B5DFF8","#D7EDFB","#EDF6FD","#901D78"];
                 var list1=[];
                 var legend1=[];
                 var list2=[];
@@ -1166,10 +1166,18 @@
                 $.each(data.errorCode,function (id,item) {
                     var obj = {};
                     obj.value = item.count;
-                    if (item.errorCode=="E00001"){
+                    if (item.qc_error_type==1){
                         obj.name = "为空";
-                    }else if (item.errorCode=="E00002"){
+                    }else if (item.qc_error_type==2){
                         obj.name = "超出值域";
+                    }else if (item.qc_error_type==3){
+                        obj.name = "类型错误";
+                    }else if (item.qc_error_type==4){
+                        obj.name = "格式错误";
+                    }else if (item.qc_error_type==5){
+                        obj.name = "资源适配错误";
+                    }else if (item.qc_error_type==6){
+                        obj.name = "字典适配错误";
                     }else{
                         obj.name = "其他";
                     }
@@ -1179,7 +1187,7 @@
                 $.each(data.code,function (id,item) {
                     var obj = {};
                     obj.value = item.count;
-                    obj.name = item.code;
+                    obj.name = item.metadata;
                     legend2.push(obj.name);
                     list2.push(obj);
                 });
