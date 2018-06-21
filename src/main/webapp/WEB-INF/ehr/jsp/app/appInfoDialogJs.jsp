@@ -88,6 +88,7 @@
                         id:app.id,
                         secret:app.secret,
                         url:app.url,
+                        outUrl:app.outUrl,
                         description:app.description,
                         code: app.code,
                         manageType: app.manageType
