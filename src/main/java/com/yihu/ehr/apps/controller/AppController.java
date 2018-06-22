@@ -202,27 +202,28 @@ public class AppController extends BaseUIController {
         Envelop result = new Envelop();
         Envelop envelop = new Envelop();
         String resultStr="";
-        String url="/apps";
+        String url = "/apps";
         try {
             RestTemplates template = new RestTemplates();
             //获取app
             String id = appDetailModel.getId();
             MultiValueMap<String,String> map = new LinkedMultiValueMap<>();
             map.add("app_id", id);
-            resultStr = template.doGet(comUrl+url+'/'+id,map);
+            resultStr = template.doGet(comUrl + url + '/' + id, map);
             envelop = getEnvelop(resultStr);
-            if(envelop.isSuccessFlg()){
+            if (envelop.isSuccessFlg()){
                 AppDetailModel appUpdate = getEnvelopModel(envelop.getObj(), AppDetailModel.class);
                 appUpdate.setName(appDetailModel.getName());
                 appUpdate.setOrg(appDetailModel.getOrg());
                 appUpdate.setCatalog(appDetailModel.getCatalog());
                 appUpdate.setTags(appDetailModel.getTags());
                 appUpdate.setUrl(appDetailModel.getUrl());
+                appUpdate.setOutUrl(appDetailModel.getOutUrl());
                 appUpdate.setDescription(appDetailModel.getDescription());
                 appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
                 String icon = appDetailModel.getIcon();
-                if(!StringUtils.isEmpty(icon)){
+                if (!StringUtils.isEmpty(icon)){
                     icon = icon.substring(icon.indexOf("group1"), icon.length()).replace("group1/", "group1:");
                     appUpdate.setIcon(icon);
                 }
