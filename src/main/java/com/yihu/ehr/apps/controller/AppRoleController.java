@@ -8,11 +8,14 @@ import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
@@ -348,6 +351,44 @@ public class AppRoleController extends BaseUIController {
         } catch (Exception ex){
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
             return failed("系统出错");
+        }
+    }
+
+    //角色一键授权
+    @RequestMapping("/rolesGrantResourcesByCategoryId")
+    @ResponseBody
+    public Object rolesGrantResourcesByCategoryId(String rolesId,String appId, String categoryIds, String resourceIds) {
+        try {
+            String url = "/resource/api/v1.0" + ServiceApi.Resources.RolesGrantResourcesByCategoryId;
+            Map<String, Object> params = new HashMap<>();
+            params.put("rolesId", rolesId);
+            params.put("appId", appId);
+            params.put("categoryIds", categoryIds);
+            params.put("resourceIds", resourceIds);
+            String envelopStr = HttpClientUtil.doPost(adminInnerUrl + url, params, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+            return failed("内部服务请求失败");
+        }
+    }
+
+    //角色一键取消授权
+    @RequestMapping("/deleteRolesGrantResourcesByCategoryId")
+    @ResponseBody
+    public Object deleteRolesGrantResourcesByCategoryId(String rolesId,String appId, String categoryIds, String resourceIds) {
+        try {
+            String url = "/resource/api/v1.0" + ServiceApi.Resources.DeleteRolesGrantResourcesByCategoryId;
+            Map<String, Object> params = new HashMap<>();
+            params.put("rolesId", rolesId);
+            params.put("appId", appId);
+            params.put("categoryIds", categoryIds);
+            params.put("resourceIds", resourceIds);
+            String envelopStr = HttpClientUtil.doPost(adminInnerUrl + url, params, username, password);
+            return envelopStr;
+        } catch (Exception ex) {
+            LogService.getLogger(AppController.class).error(ex.getMessage());
+            return failed("内部服务请求失败");
         }
     }
 
