@@ -282,11 +282,12 @@
                         }
                         parent._LIGERDIALOG.confirm('确认要授权所有视图？', function (r) {
                             if(r){
-                                debugger
                                 var dataModel = $.DataModel.init();
+                                var waittingDialog = $.ligerDialog.waitting("正在处理中，请稍候..");
                                 dataModel.updateRemote('${contextRoot}/app/grantByCategoryId',{
                                     data:{appId:appId,categoryIds:categoryId,resourceIds:ids},
                                     success:function(data){
+                                        waittingDialog.close();
                                         if(data.successFlg){
                                             appRsIds = [];
                                             isFirstPage = false;
@@ -295,6 +296,36 @@
                                             master.reloadGrid();
                                         }else{
                                             parent._LIGERDIALOG.error('授权失败！');
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                    });
+
+                    //一键取消资源授权
+                    $('#btn_grant_cancel_all').click(function(){
+                        $.publish('app:rs:grant:cancel:all',['']);
+                    });
+                    $.subscribe('app:rs:grant:cancel:all',function(event,ids){
+                        if(!categoryId){
+                            parent._LIGERDIALOG.warn('请选择要授权的视图分类！');
+                            return;
+                        }
+                        parent._LIGERDIALOG.confirm('确认要取消所有视图的授权？', function (r) {
+                            if(r){
+                                var dataModel = $.DataModel.init();
+                                dataModel.updateRemote('${contextRoot}/app/deleteAppsGrantResourcesByCategoryId',{
+                                    data:{appId:appId,categoryIds:categoryId,resourceIds:ids},
+                                    success:function(data){
+                                        if(data.successFlg){
+                                            appRsIds = [];
+                                            isFirstPage = false;
+                                            parent._LIGERDIALOG.success( '取消授权成功！');
+                                            master.loadResourceIds();
+                                            master.reloadGrid();
+                                        }else{
+                                            parent._LIGERDIALOG.error('取消授权失败！');
                                         }
                                     }
                                 });

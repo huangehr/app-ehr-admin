@@ -1,7 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
+<style>
+	.go-backa {
+		float: right;
+		margin-top: 4px;
+		margin-right: 11px;
+	}
+</style>
 <!-- ####### Title设置 ####### -->
 <div class="f-dn" data-head-title="true">维度授权</div>
 

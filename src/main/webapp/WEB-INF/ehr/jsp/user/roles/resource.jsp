@@ -44,6 +44,16 @@
 						<span>确认授权</span>
 					</div>
 				</div>
+				<div class="f-db f-fr f-pt10 f-mr10">
+					<div id="btn_grant_cancel_all" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+						<span>一键取消授权</span>
+					</div>
+				</div>
+				<div class="f-db f-fr f-pt10 f-mr10">
+					<div id="btn_grant_all" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam" >
+						<span>一键确认授权</span>
+					</div>
+				</div>
 			</div>
 			<div class="div-result-msg">
 				<div id="div_resource_info_grid"></div>
