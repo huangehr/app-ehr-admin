@@ -64,6 +64,16 @@
 				expandNode(id);
 				typeTree.selectNode(id);
 			}
+			//添加碎片
+            function appendNav(str, url, data) {
+                $('#navLink').append('<span class="weidu"> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $(".go-back").hide();
+                $(".applevel1").find("span").css("color","");
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-backa"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
+                $("#contentPage").css({
+                    'height': 'calc(100% - 40px)'
+                }).empty().load(url,data);
+            }
 			/* *************************** 模块初始化 ***************************** */
 			conditionArea = {
 				$appName :$('#msg_appName'),
@@ -317,9 +327,22 @@
 							'resourceSub':categoryName,
 							'backParams':backParams,//资源页面顶app信息
 						}
-						$("#contentPage").empty();
-						$("#contentPage").load('${contextRoot}/app/resourceManage/initial?appId='+appId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});
+                        var url='${contextRoot}/app/resourceManage/initial?appId='+appId+'&resourceId='+resourceId;
+                        appendNav('维度授权', url,{dataModel:JSON.stringify(data)});
+						<%--$("#contentPage").empty();--%>
+						<%--$("#contentPage").load('${contextRoot}/app/resourceManage/initial?appId='+appId+'&resourceId='+resourceId,{dataModel:JSON.stringify(data)});--%>
 					});
+                    $(document).on('click', '.go-backa', function (e) {
+                        debugger;
+                        $('.go-backa').remove();
+                        $(".go-back").show();
+                        $(".applevel1").find("span").css("color","#337ab7");
+                        $(".weidu").remove();
+                        var data = JSON.parse(sessionStorage.getItem("applevel1"));
+                        var url = '${contextRoot}/app/resource/initial';
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url,data);
+                    });
 				},
 			};
 			win.reloadMasterUpdateGrid = function () {
