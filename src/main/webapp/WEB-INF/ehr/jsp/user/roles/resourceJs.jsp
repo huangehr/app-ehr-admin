@@ -406,7 +406,7 @@
                         $(".go-back").show();
                         $(".applevel1").find("span").css("color","#337ab7");
                         $(".weidu").remove();
-                        var data = JSON.parse(sessionStorage.getItem("applevel1"));
+                        var data = JSON.parse(sessionStorage.getItem("rolelevel1"));
                         var url = '${contextRoot}/app/resource/initial';
                         $("#contentPage").empty();
                         $("#contentPage").load(url,data);
