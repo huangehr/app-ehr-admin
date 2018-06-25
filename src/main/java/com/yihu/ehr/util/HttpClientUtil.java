@@ -183,6 +183,9 @@ public class HttpClientUtil {
             if (postMethod != null) {
                 postMethod.releaseConnection();
             }
+            if (httpClient != null) {
+                ((SimpleHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
+            }
         }
         return response;
     }
@@ -240,6 +243,9 @@ public class HttpClientUtil {
             if (putMethod != null) {
                 putMethod.releaseConnection();
             }
+            if (httpClient != null) {
+                ((SimpleHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
+            }
         }
         return response;
     }
@@ -296,6 +302,9 @@ public class HttpClientUtil {
         } finally {
             if (deleteMethod != null) {
                 deleteMethod.releaseConnection();
+            }
+            if (httpClient != null) {
+                ((SimpleHttpConnectionManager)httpClient.getHttpConnectionManager()).shutdown();
             }
         }
         return response;
