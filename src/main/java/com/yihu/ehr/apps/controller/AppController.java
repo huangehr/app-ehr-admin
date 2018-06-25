@@ -588,6 +588,7 @@ public class AppController extends BaseUIController {
     @RequestMapping("/grantByCategoryId")
     @ResponseBody
     public Object grantByCategoryId(String appId, String categoryIds, String resourceIds) {
+        System.out.print("---");
         try {
             String url = "/resource/api/v1.0" + ServiceApi.Resources.AppsGrantResourcesByCategoryId;
             Map<String, Object> params = new HashMap<>();

@@ -271,6 +271,37 @@
 						})
 					});
 
+                    //一键资源授权
+                    $('#btn_grant_all').click(function(){
+                        $.publish('app:rs:grant:all',['']);
+                    });
+                    $.subscribe('app:rs:grant:all',function(event,ids){
+                        if(!categoryId){
+                            parent._LIGERDIALOG.warn('请选择要授权的视图分类！');
+                            return;
+                        }
+                        parent._LIGERDIALOG.confirm('确认要授权所有视图？', function (r) {
+                            if(r){
+                                debugger
+                                var dataModel = $.DataModel.init();
+                                dataModel.updateRemote('${contextRoot}/app/grantByCategoryId',{
+                                    data:{appId:appId,categoryIds:categoryId,resourceIds:ids},
+                                    success:function(data){
+                                        if(data.successFlg){
+                                            appRsIds = [];
+                                            isFirstPage = false;
+                                            parent._LIGERDIALOG.success( '授权成功！');
+                                            master.loadResourceIds();
+                                            master.reloadGrid();
+                                        }else{
+                                            parent._LIGERDIALOG.error('授权失败！');
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                    });
+
 					//资源授权删除
 					$('#btn_grant_cancel').click(function(){
 						$.publish("app:rs:grant:cancel",[''])
