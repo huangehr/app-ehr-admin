@@ -45,6 +45,7 @@
                 $searchPatient: $("#inp_search"),
                 $homeAddress: $("#search_homeAddress"),
                 $newPatient: $("#div_new_patient"),
+                $searchHhomeAddress: $("#search_homeAddress"),
                 $sex: $('#sex'),
                 $starTime: $('#star_time'),
                 $endTime: $('#end_time'),
@@ -66,12 +67,13 @@
                     this.$starTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime:true});
                     this.$endTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime:true});
 
-                    this.$homeAddress.addressDropdown({tabsData:[
+                   /* this.$homeAddress.addressDropdown({tabsData:[
                         {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
                         {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
                         {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}
-                    ]});
+                    ]});*/
                     this.$searchPatient.ligerTextBox({width: 240 });
+                    this.$searchHhomeAddress.ligerTextBox({width: 200 });
                     this.bindEvents();
                 },
                 bindEvents: function () {
@@ -92,9 +94,7 @@
                         parms: {
                             searchNm: '',
                             searchType: '',
-                            province:'',
-                            city:'',
-                            district:'',
+                            homeAddress:'',
                             searchRegisterTimeStart: '',
                             searchRegisterTimeEnd: '',
                             gender: ''
@@ -137,14 +137,22 @@
                                 }
                                 return html;
                             }},
-                            {display: '性别', name: 'gender', width: '5%'},
+                            {display: '性别', name: 'gender', width: '5%',  render : function (row) {
+                                if (row.gender == 0){
+                                    return "未知";
+                                } else if(row.gender == 1){
+                                    return "男";
+                                } else {
+                                    return "女";
+                                }
+                            }},
                             {display: '联系方式', name: 'telephoneNo', width: '10%', resizable: true,align: 'left', render: function(row) {
                                 var telephoneNo = row.telephoneNo;
                                 var html = "";
                                 if (null != telephoneNo && telephoneNo != "") {
                                     var length = telephoneNo.length;
                                     var pre = telephoneNo.substring(0, 2);
-                                    var suf = telephoneNo.substring(length-2, length);
+                                    var suf = telephoneNo.substring(length - 2, length);
                                     var middle = "";
                                     for (var i=0; i < length-4; i++) {
                                         middle += "*";
@@ -184,15 +192,15 @@
                             {display: '档案编号', name: 'sn', width: '10%', isAllowHide: false, align: 'left'},
                             {display: '姓名', name: 'name', width: '10%',isAllowHide: false, align: 'left'},
                             {display: '性别', name: 'gender', width: '5%', isAllowHide: false, align: 'left',
-                            render:function (row) {
-                                if(row.gender == 0){
-                                    return "未知";
-                                }else if(row.gender == 1){
-                                    return "男";
-                                }else {
-                                    return "女";
+                                render : function (row) {
+                                    if (row.gender == 0){
+                                        return "未知";
+                                    } else if(row.gender == 1){
+                                        return "男";
+                                    } else {
+                                        return "女";
+                                    }
                                 }
-                            }
                             },
                             {display: '就诊卡类型', name: 'card_type', width: '20%',isAllowHide: false, align: 'left'},
                             {display: '就诊卡号码', name: 'card_no', width: '20%',isAllowHide: false, align: 'left'},
@@ -239,14 +247,10 @@
                 },*/
                 reloadGrid: function () {
                     //var values = retrieve.$element.Fields.getValues();
-
                     patientRetrieve.$element.attrScan();
-                    var homeAddress = patientRetrieve.$element.Fields.homeAddress.getValue();
-                    var values = $.extend({},patientRetrieve.$element.Fields.getValues(),
-                            {province: (homeAddress.names[0]==null?'':homeAddress.names[0])},
-                            {city:  (homeAddress.names[1]==null?'':homeAddress.names[1])},
-                            {district: (homeAddress.names[2]==null?'':homeAddress.names[2])});
+                    var values = patientRetrieve.$element.Fields.getValues();
                     values.gender = values.gender.trim() == '男' ? '1' : values.gender.trim() == '女' ? '2' : '';
+                    debugger
                     reloadGrid.call(this, '${contextRoot}/patient/searchPatientByParams', values);
                 },
                 bindEvents: function () {
