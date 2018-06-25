@@ -11,7 +11,7 @@
     })
 </script>
 <%--<script src="${staticRoot}/common/base.js"></script>--%>
-<%--<script src="${staticRoot}/Scripts/polyfill.min.js" ></script>è§£å†³å…¼å®¹æ€§jsï¼Œä¸æ·»åŠ åœ¨å…¨å±€é‡Œ--%>
+<%--<script src="${staticRoot}/Scripts/polyfill.min.js" ></script>½â¾ö¼æÈÝÐÔjs£¬²»Ìí¼ÓÔÚÈ«¾ÖÀï--%>
 <script src="${staticRoot}/module/cookie.js"></script>
 <script src="${staticRoot}/module/util.js"></script>
 <script src="${staticRoot}/module/juicer.js"></script>
