@@ -46,6 +46,27 @@
 		</div>
 	</div>
 
+	<div id="dataMeasurementDiv" class="m-form-group" style="display: none;">
+		<label>计量单位<spring:message code="spe.colon"/></label>
+		<div class="m-form-control l-text-wrapper essential">
+			<input type="text" id="dataMeasurement" placeholder="数字" class="required useTitle f-h28 f-w240 max-length-15 validate-number" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dataMeasurement">
+		</div>
+	</div>
+
+	<div id="dataUnitDiv" class="m-form-group" style="display: none;">
+		<label>单位<spring:message code="spe.colon"/></label>
+		<div class="m-form-control l-text-wrapper essential">
+			<input type="text" id="dataUnit" class="required useTitle f-h28 f-w240 max-length-30 validate-special-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dataUnit">
+		</div>
+	</div>
+
+	<div id="dataPositionDiv" class="m-form-group" style="display: none;">
+		<label>位置<spring:message code="spe.colon"/></label>
+		<div class="m-form-control l-text-wrapper essential">
+			<input type="text" id="dataPosition" class="required useTitle f-h28 f-w240 validate-special-char" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="dataPosition">
+		</div>
+	</div>
+
 	<div class="m-form-group">
 		<label>数据查询维度<spring:message code="spe.colon"/></label>
 		<div class="m-form-control l-text-wrapper">

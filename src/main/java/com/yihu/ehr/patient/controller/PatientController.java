@@ -5,6 +5,7 @@ import com.yihu.ehr.agModel.fileresource.FileResourceModel;
 import com.yihu.ehr.agModel.patient.PatientDetailModel;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.service.GetInfoService;
@@ -426,25 +427,25 @@ public class PatientController extends BaseUIController {
 
     @RequestMapping("searchPatientByParams")
     @ResponseBody
-    public Object searchPatientByParams(String searchNm,String gender, String province, String city, String district,
-                                        String searchRegisterTimeStart,String searchRegisterTimeEnd,int page, int rows,HttpServletRequest request) {
-        String url = "/populationsByParams";
-        String resultStr = "";
-        Envelop result = new Envelop();
+    public Object searchPatientByParams(String searchNm,
+                                        String gender,
+                                        String homeAddress,
+                                        String searchRegisterTimeStart,
+                                        String searchRegisterTimeEnd,
+                                        int page,
+                                        int rows) {
+        String url = "/basic/api/v1.0/populations/byParams";
+
         try {
             Map<String, Object> params = new HashMap<>();
-//            String districtList = getInfoService.getDistrictList();
             params.put("search", searchNm.trim());
             params.put("gender", gender);
-            params.put("page", page);
-            params.put("rows", rows);
-            params.put("home_province", province);
-            params.put("home_city", city);
-            params.put("home_district", district);
+            params.put("homeAddress", homeAddress);
             params.put("searchRegisterTimeStart", searchRegisterTimeStart);
             params.put("searchRegisterTimeEnd", searchRegisterTimeEnd);
-       /* params.put("districtList", org.apache.commons.lang.StringUtils.isBlank(districtList) ? "-1" : districtList);*/
-            resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
+            params.put("rows", rows);
+            params.put("page", page);
+            String resultStr = HttpClientUtil.doGet(adminInnerUrl + url, params, username, password);
             return resultStr;
         } catch (Exception e) {
             e.printStackTrace();

@@ -21,19 +21,15 @@
                 <input type="text" id="inp_search" placeholder="请输入姓名或身份证号" class="f-ml10" data-attr-scan="searchNm"/>
             </div>
 
+            <div class="m-form-control f-ml10 f-mb10">
+                <!--输入框-->
+                <input type="text" id="search_homeAddress" placeholder="请输入家庭地址" class="f-ml10" data-attr-scan="homeAddress"/>
+            </div>
 
             <%--new add--%>
             <div class="m-form-control f-ml10 f-mb10">
                 <!--下拉框：性别-->
                 <input type="text" id="sex" data-attr-scan="gender" placeholder="性别"/>
-            </div>
-
-
-
-
-            <div class="m-form-control f-ml10 f-mb10">
-                <!--下拉框-->
-                <input type="text" id="search_homeAddress" data-type="comboSelect" data-attr-scan="homeAddress"/>
             </div>
 
             <%--new add--%>

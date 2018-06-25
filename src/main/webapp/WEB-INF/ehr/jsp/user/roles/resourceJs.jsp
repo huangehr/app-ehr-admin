@@ -22,8 +22,10 @@
 
             //添加碎片
             function appendNav(str, url, data) {
-                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
-                $('#div_nav_breadcrumb_bar').show();
+                $('#navLink').append('<span class="weidu"> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                $(".go-back").hide();
+                $(".applevel1").find("span").css("color","");
+                $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-backa"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
                 $("#contentPage").css({
                     'height': 'calc(100% - 40px)'
                 }).empty().load(url,data);
@@ -321,7 +323,70 @@
 						})
 					});
 
-					//维度授权页面跳转
+                    //一键资源授权
+                    $('#btn_grant_all').click(function(){
+                        $.publish('app:rs:grant:all',['']);
+                    });
+                    $.subscribe('app:rs:grant:all',function(event,ids){
+                        if(!categoryId){
+                            parent._LIGERDIALOG.warn('请选择要授权的视图分类！');
+                            return;
+                        }
+                        parent._LIGERDIALOG.confirm('确认要授权所有视图？', function (r) {
+                            if(r){
+                                var dataModel = $.DataModel.init();
+                                var waittingDialog = $.ligerDialog.waitting("正在处理中，请稍候..");
+                                dataModel.updateRemote('${contextRoot}/appRole/rolesGrantResourcesByCategoryId',{
+                                    data:{rolesId:rolesId,appId:appId,categoryIds:categoryId,resourceIds:ids},
+                                    success:function(data){
+                                        waittingDialog.close();
+                                        if(data.successFlg){
+                                            appRsIds = [];
+                                            isFirstPage = false;
+                                            parent._LIGERDIALOG.success( '授权成功！');
+                                            master.loadResourceIds();
+                                            master.reloadGrid();
+                                        }else{
+                                            parent._LIGERDIALOG.error('授权失败！');
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                    });
+
+                    //一键取消资源授权
+                    $('#btn_grant_cancel_all').click(function(){
+                        $.publish('app:rs:grant:cancel:all',['']);
+                    });
+                    $.subscribe('app:rs:grant:cancel:all',function(event,ids){
+                        if(!categoryId){
+                            parent._LIGERDIALOG.warn('请选择要授权的视图分类！');
+                            return;
+                        }
+                        parent._LIGERDIALOG.confirm('确认要取消所有视图的授权？', function (r) {
+                            if(r){
+                                var dataModel = $.DataModel.init();
+                                dataModel.updateRemote('${contextRoot}/appRole/deleteRolesGrantResourcesByCategoryId',{
+                                    data:{rolesId:rolesId,appId:appId,categoryIds:categoryId,resourceIds:ids},
+                                    success:function(data){
+                                        if(data.successFlg){
+                                            appRsIds = [];
+                                            isFirstPage = false;
+                                            parent._LIGERDIALOG.success( '取消授权成功！');
+                                            master.loadResourceIds();
+                                            master.reloadGrid();
+                                        }else{
+                                            parent._LIGERDIALOG.error('取消授权失败！');
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                    });
+
+
+                    //维度授权页面跳转
 					$.subscribe('roles:resourceManage:list', function (event,resourceId,code,resourceName,categoryName) {
                         var url = '${contextRoot}/userRoles/resourceManage/initial?rolesId='+rolesId+'&resourceId='+resourceId;
 						master.savePageParamsToSession();//页面数据保存sessionStorage
@@ -336,6 +401,16 @@
 						}
                         appendNav('维度授权', url, {dataModel:JSON.stringify(data)});
 					});
+                    $(document).on('click', '.go-backa', function (e) {
+                        $('.go-backa').remove();
+                        $(".go-back").show();
+                        $(".applevel1").find("span").css("color","#337ab7");
+                        $(".weidu").remove();
+                        var data = JSON.parse(sessionStorage.getItem("rolelevel1"));
+                        var url = '${contextRoot}/app/resource/initial';
+                        $("#contentPage").empty();
+                        $("#contentPage").load(url,data);
+                    });
 				},
 			};
 			win.reloadMasterUpdateGrid = function () {

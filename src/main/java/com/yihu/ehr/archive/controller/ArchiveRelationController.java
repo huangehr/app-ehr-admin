@@ -37,7 +37,7 @@ public class ArchiveRelationController extends BaseUIController {
         } else {
             params.put("filters", "identify_flag=0;" + filters);
         }
-        String url = "/pack-resolve/api/v1.0/archiveRelation";
+        String url = "/pack-resolve/api/v1.0/resolve/archiveRelation";
         params.put("sorts", "-relation_date");
         params.put("page", page);
         params.put("size", size);

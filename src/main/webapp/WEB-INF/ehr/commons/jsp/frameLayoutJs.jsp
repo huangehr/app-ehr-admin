@@ -63,11 +63,24 @@
          * @type {Function}
          */
         function pageInit() {
+//            getDictSetting()
             mainLayout.init();
             $.MenuInit(".l-layout-left",menuData)
             notice.init();
         }
-        
+
+        function getDictSetting(){
+            debugger
+            $.ajax({
+                type: "GET",
+                url: "${contextRoot}/login/getLogoByDictIdAndEntry",
+                data: {"dictId":125,"code":"appAdminLogo"},
+                dataType: "json",
+                success: function(data) {
+                    $(".m-logo").css("background",'url(' + data.detailModelList[0].path + ')');
+                }
+            });
+        }
         
         /* ************************** 函数定义结束 **************************** */
 

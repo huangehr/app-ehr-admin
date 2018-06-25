@@ -32,6 +32,9 @@
 			$btnCancel: $("#btn_cancel"),
             $echartType: $("#echartType"),
 			$dimension: $("#dimension"),
+			$dataMeasurement: $("#dataMeasurement"),
+			$dataUnit: $("#dataUnit"),
+			$dataPosition: $("#dataPosition"),
 
 
 			init: function () {
@@ -58,6 +61,14 @@
                     ]
                 });
 				this.$dimension.ligerTextBox({width:240});
+				this.$dataMeasurement.ligerTextBox({width:240});
+				this.$dataUnit.ligerTextBox({width:240});
+				this.$dataPosition.ligerComboBox({
+				    data: [
+                        {text:"X轴", id:"x"},
+                        {text:"Y轴", id:"y"}
+                    ]
+                });
 //				this.$dataSource.ligerRadio();
 //                this.$dataSource.ligerGetRadioManager().setDisabled();
 				var mode = '${mode}';
@@ -68,7 +79,7 @@
 				}
 				this.$form.attrScan();
 				if ('${dataSource}' == 2) {
-				    $("#dataShowType").show()
+				    $("#dataShowType").show();
                 }
 				if(mode == 'new'){
                     $("#inp_category").attr('data-id', '${categoryId}');
@@ -78,7 +89,6 @@
 					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
 					<%--$("#inp_category").ligerGetComboBoxManager().setText('${categoryName}');--%>
 				}
-				debugger
 				if(mode !='new'){
 					var info = ${envelop}.obj;
 					debugger
@@ -94,10 +104,14 @@
 						grantType:info.grantType,
 						dataSource:info.dataSource.toString() == '1' ? '档案数据' : '指标统计',
                         echartType:info.echartType,
-						description:info.description
+						description:info.description,
+                        dataMeasurement: info.dataMeasurement,
+                        dataUnit: info.dataUnit,
+                        dataPosition: info.dataPosition,
 					});
 
                     this.$echartType.ligerGetComboBoxManager().setValue(info.echartType);
+                    this.$dataPosition.ligerGetComboBoxManager().setValue(info.dataPosition);
                     $("#inp_category").attr('data-id', info.categoryId);
                     this.$dataSource.attr('data-source', info.dataSource);
 					<%--$("#inp_category").ligerGetComboBoxManager().setValue('${categoryId}');--%>
@@ -169,6 +183,13 @@
                     values.dataSource = self.$dataSource.attr('data-source');
                     values.categoryId = self.$category.attr('data-id');
                     values.echartType = $("#echartType_val").val().trim();
+                    if (values.echartType == 'bar' || values.echartType == 'line') {
+                        values.dataPosition = $("#dataPosition_val").val().trim();
+                    } else {
+                        values.dataPosition = null;
+                        values.dataUnit = null;
+                        values.dataMeasurement = null;
+                    }
 					var categoryId = values.categoryId;
 					if(Util.isStrEquals(categoryIdOld,categoryId)){
 						update(values)
@@ -203,6 +224,22 @@
 				});
 			}
 		};
+		$(document).on('change','#echartType',function(){
+                switch ($(this).val()){
+                    case '柱状图' :
+                    case '线形图' :
+                        $("#dataMeasurementDiv").show();
+                        $("#dataUnitDiv").show();
+                        $("#dataPositionDiv").show();
+                        $('.l-dialog-body').height(780);
+                        break;
+                    default:
+                        $("#dataMeasurementDiv").hide();
+                        $("#dataUnitDiv").hide();
+                        $("#dataPositionDiv").hide();
+                        $('.l-dialog-body').height(630);
+                }
+        })
 		/* *************************** 页面初始化 **************************** */
 		pageInit();
 	})(jQuery, window);

@@ -118,21 +118,26 @@
 
         // 模板视图配置
         $.subscribe('resource:report:tmpViewSetting', function (event, id, code) {
-            var wait = parent._LIGERDIALOG.waitting("请稍后...");
-            tmpSettingDialog = parent._LIGERDIALOG.open({
-                height: 700,
-                width: 1000,
+            // var wait = parent._LIGERDIALOG.waitting("请稍后...");
+            <%--tmpSettingDialog = parent._LIGERDIALOG.open({--%>
+                <%--height: 700,--%>
+                <%--width: 1000,--%>
+                <%--title: '模板视图配置',--%>
+                <%--url: '${contextRoot}/resource/report/tmpViewSetting',--%>
+                <%--urlParms: {id: id, code: code},--%>
+                <%--opener: true,--%>
+                <%--load: true,--%>
+                <%--onLoaded: function () {--%>
+                    <%--wait.close();--%>
+                    <%--tmpSettingDialog.show();--%>
+                <%--}--%>
+            <%--});--%>
+            <%--tmpSettingDialog.hide();--%>
+            $.ligerDialog.open({
                 title: '模板视图配置',
-                url: '${contextRoot}/resource/report/tmpViewSetting',
-                urlParms: {id: id, code: code},
-                opener: true,
-                load: true,
-                onLoaded: function () {
-                    wait.close();
-                    tmpSettingDialog.show();
-                }
-            });
-            tmpSettingDialog.hide();
+                url:'http://172.19.103.70:1235/ehr/reporter/index.html#/reportManager/'+code+'/'+id,
+                height: $(window).height() - 100,
+                width: $(window).width() -200})
         });
 
         // 模版导入
