@@ -44,7 +44,8 @@
 			}
 			//添加碎片
 			function appendNav(str, url, data) {
-                $('#navLink').append('<span class=""> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
+                sessionStorage.setItem("applevel1",JSON.stringify(data));
+                $('#navLink').append('<span class="applevel1"> <i class="glyphicon glyphicon-chevron-right"></i> <span style="color: #337ab7">'  +  str+'</span></span>');
                 $('#div_nav_breadcrumb_bar').show().append('<div class="btn btn-default go-back"><i class="glyphicon glyphicon-chevron-left"></i>返回上一层</div>');
                 $("#contentPage").css({
                     'height': 'calc(100% - 40px)'
