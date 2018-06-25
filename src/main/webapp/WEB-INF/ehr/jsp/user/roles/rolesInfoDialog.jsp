@@ -22,8 +22,8 @@
 
 	<div class="m-form-group">
 		<label class="label_title" style="width:120px">所属机构<spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential" style="padding-right: 0">
-			<input type="text" id="inp_appRole_orgCode" data-type="select" class="required ajax useTitle"  placeholder="请选择机构"  data-attr-scan="orgCode"/>
+		<div class="l-text-wrapper m-form-control" style="padding-right: 0">
+			<input type="text" id="inp_appRole_orgCode" data-type="select" class="ajax useTitle"  placeholder="请选择机构"  data-attr-scan="orgCode"/>
 		</div>
 	</div>
 

@@ -184,7 +184,7 @@
                             for (var i = 0, len = d.length; i < len; i++) {
                                 mechanisms.push({
                                     text: d[i].fullName,
-                                    id: d[i].fullName
+                                    id: d[i].orgCode
                                 });
                             }
                             me.$inpMechanism.ligerComboBox({
@@ -272,7 +272,7 @@
                                 return false;
                             },
                             onClick: function (e, id, data) {
-                                me.initDDL(me.type == 1 ? data.code : data.id);
+                                me.initDDL(me.type == 1 ? data.code : data.id, data.rs_interface);
                                 me.addClickTreeNode.call(this, e, id, data, me);
                             }
                         }
@@ -282,7 +282,6 @@
                 addTreeAjaxFun: function (data, me) {//初始化树
                     if (data.successFlg && data.detailModelList) {
                         var zNodes = data.detailModelList;
-                        debugger
                         $.each(zNodes, function (k, obj) {
                             if(obj.child.length>0){
                                 obj.child[0].isParent = true
@@ -354,11 +353,6 @@
                                     me.$autBtn.show();
                                 } else {
                                     me.$autBtn.hide();
-                                }
-                                if(data&&data.rs_interface=="getEhrCenterSub"){
-                                    me.$ddSeach.show();
-                                }else{
-                                    me.$ddSeach.hide();
                                 }
                                 me.loadDAGridData(data.code);
                                 break;
@@ -859,7 +853,7 @@
                     window.open("${contextRoot}/resourceBrowse/outExcel?size=" + size + "&resourcesCode=" + this.daSelData.code + "&searchParams=" + RSsearchParams, "视图数据导出");
                 },
                 //下拉框列表项初始化
-                initDDL: function (v) {
+                initDDL: function (v, interface) {
                     var me = this;
                     var url = me.type == 1 ? infa.getGridCloumnNames : infa.searchQuotaResourceParam,
                         param =  me.type == 1 ? (function () {
@@ -883,7 +877,7 @@
                             if (me.type == 1) {
                                 if (data.length > 0) {
                                     me.GridCloumnNamesData = data;
-                                    me.setSearchData();
+                                    me.setSearchData(interface);
                                 }
                             } else {
                                 me.setZBSearchData(data);
@@ -944,63 +938,65 @@
                     return JSON.stringify(jsonData);
                 },
                 //筛选存在数据字典中的字段
-                setSearchData: function () {
+                setSearchData: function (interface) {
                     var me = this,
                         data = me.GridCloumnNamesData;
-                    if (data[me.index].dict && !Util.isStrEquals(data[me.index].dict, 0) && data[me.index].dict != '') {
-                        if (data[me.index].dict == 'DATECONDITION') {
-                            var $div1 = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                html1 = ['<label class="inp-label" for="inpStarTime' + me.index + '">' +
-                                data[me.index].value + '(开始日期): </label>',
-                                    '<div class="inp-text">',
-                                    '<input type="text" id="inpStarTime' +
-                                    me.index + '" data-code="' +
-                                    data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                    '</div>'].join('');
-                            var $div2 = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                html2 = ['<label class="inp-label" for="inpEndTime' + me.index + '">' +
-                                data[me.index].value + '(结束日期): </label>',
-                                    '<div class="inp-text">',
-                                    '<input type="text" id="inpEndTime' +
-                                    me.index + '" data-code="' +
-                                    data[me.index].code +
-                                    '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                    '</div>'].join('');
-                            $div1.append(html1);
-                            $div2.append(html2);
-                            $div1.find('input').ligerDateEditor({
-                                format: 'yyyy-MM-dd'
-                            });
-                            $div2.find('input').ligerDateEditor({
-                                format: 'yyyy-MM-dd'
-                            });
-                            $div1.find('input').attr('readonly',true);
-                            $div2.find('input').attr('readonly',true);
-                            me.$addSearchDom.append($div1);
-                            me.$addSearchDom.append($div2);
-                        } else {
-                            var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
-                                html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
-                                    '<div class="inp-text">',
-                                    '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
-                                    '</div>'].join('');
-                            $div.append(html);
-                            var inp = $div.find('input').ligerComboBox({
-                                url: infa.getRsDictEntryList,
-                                parms: {dictId: data[me.index].dict},
-                                valueField: 'code',
-                                textField: 'name',
-                                width: '240',
-                                dataParmName: 'detailModelList',
-                                isShowCheckBox: true,
-                                isMultiSelect: true
-                            });
-                            me.$addSearchDom.append($div);
+                    if (interface && interface == 'getEhrCenter') {
+                        if (data[me.index].dict && !Util.isStrEquals(data[me.index].dict, 0) && data[me.index].dict != '') {
+                            if (data[me.index].dict == 'DATECONDITION') {
+                                var $div1 = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
+                                    html1 = ['<label class="inp-label" for="inpStarTime' + me.index + '">' +
+                                    data[me.index].value + '(开始日期): </label>',
+                                        '<div class="inp-text">',
+                                        '<input type="text" id="inpStarTime' +
+                                        me.index + '" data-code="' +
+                                        data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                        '</div>'].join('');
+                                var $div2 = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
+                                    html2 = ['<label class="inp-label" for="inpEndTime' + me.index + '">' +
+                                    data[me.index].value + '(结束日期): </label>',
+                                        '<div class="inp-text">',
+                                        '<input type="text" id="inpEndTime' +
+                                        me.index + '" data-code="' +
+                                        data[me.index].code +
+                                        '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                        '</div>'].join('');
+                                $div1.append(html1);
+                                $div2.append(html2);
+                                $div1.find('input').ligerDateEditor({
+                                    format: 'yyyy-MM-dd'
+                                });
+                                $div2.find('input').ligerDateEditor({
+                                    format: 'yyyy-MM-dd'
+                                });
+                                $div1.find('input').attr('readonly', true);
+                                $div2.find('input').attr('readonly', true);
+                                me.$addSearchDom.append($div1);
+                                me.$addSearchDom.append($div2);
+                            } else {
+                                var $div = $('<div class="f-fl f-mr10 f-ml10 f-mt6">'),
+                                    html = ['<label class="inp-label" for="inp' + me.index + '">' + data[me.index].value + ': </label>',
+                                        '<div class="inp-text">',
+                                        '<input type="text" id="inp' + me.index + '" data-code="' + data[me.index].code + '" data-type="select" data-attr-scan="field" style="width: 238px" class="f-pr0 f-ml10 inp-reset div-table-colums "/>',
+                                        '</div>'].join('');
+                                $div.append(html);
+                                var inp = $div.find('input').ligerComboBox({
+                                    url: infa.getRsDictEntryList,
+                                    parms: {dictId: data[me.index].dict},
+                                    valueField: 'code',
+                                    textField: 'name',
+                                    width: '240',
+                                    dataParmName: 'detailModelList',
+                                    isShowCheckBox: true,
+                                    isMultiSelect: true
+                                });
+                                me.$addSearchDom.append($div);
+                            }
                         }
-                    }
-                    me.index++;
-                    if (me.index < me.GridCloumnNamesData.length) {
-                        me.setSearchData();
+                        me.index++;
+                        if (me.index < me.GridCloumnNamesData.length) {
+                            me.setSearchData(interface);
+                        }
                     }
                 },
                 //获取查询条件
@@ -1021,7 +1017,7 @@
                             var values = {andOr: '', condition: '', field: '', value: ''};
                             values.field = code;
                             if (valArr[j] && valArr[j] != '') {
-                                values.andOr = 'OR';
+                                values.andOr = 'AND';
                                 values.condition = '=';
                                 if (($(resetInp[i]).attr('id')).indexOf('inpStarTime') > -1) {
                                     values.andOr = 'AND';

@@ -214,6 +214,7 @@ public class AppController extends BaseUIController {
                 appUpdate.setCatalog(appDetailModel.getCatalog());
                 appUpdate.setTags(appDetailModel.getTags());
                 appUpdate.setUrl(appDetailModel.getUrl());
+                appUpdate.setOutUrl(appDetailModel.getOutUrl());
                 appUpdate.setDescription(appDetailModel.getDescription());
                 appUpdate.setCode(appDetailModel.getCode());
                 appUpdate.setRole(appDetailModel.getRole());
@@ -470,6 +471,7 @@ public class AppController extends BaseUIController {
     }
 
 
+
     //修改、查看授权资源
     //-------------------------------------------------------应用---资源授权管理---结束----------------
 
@@ -612,7 +614,7 @@ public class AppController extends BaseUIController {
             params.put("resourceIds", resourceIds);
             String envelopStr = HttpClientUtil.doPost(adminInnerUrl + url, params, username, password);
             return envelopStr;
-        } catch (Exception ex) {
+        } catch (Exception ex){
             LogService.getLogger(AppController.class).error(ex.getMessage());
             return failed("内部服务请求失败");
         }
