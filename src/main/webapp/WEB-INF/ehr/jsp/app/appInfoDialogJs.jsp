@@ -32,6 +32,7 @@
 			$appId: $("#inp_app_id"),
 			$secret: $("#inp_app_secret"),
 			$url: $("#inp_url"),
+			$outUrl: $("#inp_out_url"),
 			$manageType: $("#inp_dialog_manageType"),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
@@ -61,6 +62,7 @@
 				this.$appId.ligerTextBox({width:240});
 				this.$secret.ligerTextBox({width:240});
 				this.$url.ligerTextBox({width:240});
+				this.$outUrl.ligerTextBox({width:240});
                 this.$description.ligerTextBox({width:240, height: 50 });
                 var mode = '${mode}';
 				if(mode != 'view'){

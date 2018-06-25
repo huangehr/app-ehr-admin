@@ -107,7 +107,7 @@
 		<label>公网回调URL:</label>
 		<!--<div class="m-form-control essential">-->
 		<div class="l-text-wrapper m-form-control essential" >
-			<input id="inp_out_url" class="required useTitle max-length-500 validate-special-char newSize" placeholder="请输入公网回调URL"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="outUrl" maxlength="500"/>
+			<input id="inp_out_url" class="required useTitle max-length-500 validate-special-char" placeholder="请输入公网回调URL"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="outUrl" maxlength="500"/>
 		</div>
 	</div>
 	<div class="m-form-group">

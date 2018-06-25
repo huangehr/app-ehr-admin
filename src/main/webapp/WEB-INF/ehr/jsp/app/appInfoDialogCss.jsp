@@ -56,8 +56,5 @@
         text-indent: 0;
         line-height: 20px;
     }
-    .newSize {
-        width: 238px;
-        height: 28px;
-    }
+
 </style>
