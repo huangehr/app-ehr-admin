@@ -7,7 +7,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<script src="${contextRoot}/develop/Scripts/polyfill.min.js"></script>
+<script src="${contextRoot}/develop/Scripts/bluebird.core.js"></script>
 <div class="f-dn" data-head-title="true">视图注册</div>
 <div id="div_wrapper">
 
