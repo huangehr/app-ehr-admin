@@ -72,7 +72,7 @@
                         {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
                         {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}
                     ]});*/
-                    this.$searchPatient.ligerTextBox({width: 240 });
+                    this.$searchPatient.ligerTextBox({width: 170 });
                     this.$searchHhomeAddress.ligerTextBox({width: 200 });
                     this.bindEvents();
                 },
