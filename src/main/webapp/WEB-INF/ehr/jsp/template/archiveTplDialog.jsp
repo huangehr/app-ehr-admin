@@ -36,9 +36,8 @@
         <label>医疗类别：</label>
 
         <div id="inp_org_wrap" class="l-text-wrapper m-form-control essential">
-            <!--输入框带查询-->
-            <input type="text" id="inp_org"  class="f-ml10 required  useTitle f-w238"  data-type="select"
-                   required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="organizationCode"/>
+            <input type="text" id="inp_type"  class="f-ml10 required  useTitle f-w238"  data-type="select"
+                   required-title=<spring:message code="lbl.must.input"/>  data-attr-scan="type"/>
         </div>
     </div>
 

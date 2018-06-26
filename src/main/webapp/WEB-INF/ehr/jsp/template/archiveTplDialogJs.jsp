@@ -39,7 +39,7 @@
             addArchiveTplInfo = {
                 $form: $("#div_addArchiveTpl_form"),
                 $versionNo: $("#inp_versionNo"),
-                $org: $("#inp_org"),
+                $type: $("#inp_type"),
                 $title: $("#inp_title"),
 
                 versionNo: '',
@@ -83,30 +83,10 @@
                     self.versionNo = self.$versionNo.ligerTextBox({width: 240,disabled:true});
                     self.versionNo.setValue(versionNum);
 
-
                     this.initCombo(self.$dataset, urls.cdaDocument, {
                         version: versionCode
                     });
-                    <%--this.$org.addressDropdown({--%>
-                        <%--lazyLoad: mode!='new' || (mode=='new' && !Util.isStrEmpty(model.organizationCode)),--%>
-                        <%--width: 240,--%>
-                        <%--selectBoxWidth: 240,--%>
-                        <%--tabsData: [--%>
-                            <%--{name: '省份', code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},--%>
-                            <%--{name: '城市', code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},--%>
-                            <%--{--%>
-                                <%--name: '医院', code:'orgCode',value:'fullName', url: '${contextRoot}/address/getOrgs', beforeAjaxSend: function (ds, $options) {--%>
-                                <%--var province = $options.eq(0).attr('title'),--%>
-                                    <%--city = $options.eq(1).attr('title');--%>
-                                <%--ds.params = $.extend({}, ds.params, {--%>
-                                    <%--province: province,--%>
-                                    <%--city: city--%>
-                                <%--});--%>
-                            <%--}--%>
-                            <%--}--%>
-                        <%--]--%>
-                    <%--});--%>
-                    self.$org.ligerComboBox({
+                    self.$type.ligerComboBox({
                         width : 240,
                         valueField: 'id',
                         textField: 'text',
@@ -121,29 +101,27 @@
                         }
                     });
                     $('#inp_versionNo_wrap').addClass('u-ui-readonly');
-                    if(mode=='new' && !Util.isStrEmpty(model.organizationCode))
+                    if(mode=='new' && !Util.isStrEmpty(model.type))
 //                        $('#inp_org_wrap').addClass('u-ui-readonly');
 //                    this.$form.liger.get('div_addArchiveTpl_form');
                         this.$form.ligerForm();//初始化表单
                     this.$form.attrScan();
                     this.$form.Fields.fillValues({
                         id: model.id,
-                        title: mode=='copy'? '': model.title,
+                        title: mode == 'copy'? '': model.title,
 //                            cdaVersion: model.cdaVersion,
-                        type: this.category
+                        type: model.type
                     });
-//
                     $("#inp_dataset").ligerGetComboBoxManager().setValue(model.cdaDocumentId);
                     $("#inp_dataset").ligerGetComboBoxManager().setText(model.cdaDocumentName);
 
-
+                    self.name = model.cdaDocumentName;
 //                    var versionMgr = this.$versionNo.ligerGetTextBoxManager();
 //                    versionMgr.selectValue(version.v);
 //                    versionMgr.setText(version.n);
 
                     $('#oldTitle').val(model.title);
                     $('#inp_versionNo').focus();
-
                     if (!${staged}){
                         this.$addBtn.hide();
                     }
@@ -165,7 +143,7 @@
                             var values = addArchiveTplInfo.$form.Fields.getValues();
                             var newTitle = values.title;
                             var version = values.cdaVersion;
-                            var orgCode = values.organizationCode
+                            var orgCode = values.type;
                             if(mode=='modify'&&Util.isStrEquals(oldTitle,newTitle)){
                                 return true;
                             }else{
@@ -196,11 +174,12 @@
                         };
                     }
                     self.$addBtn.click(function () {
+                        debugger
                         if (validator.validate()) {
                             var TemplateModel = self.$form.Fields.getValues();
-                            TemplateModel.type = TemplateModel.organizationCode;
+                            TemplateModel.type = TemplateModel.type;
                             var dataModel = $.DataModel.init();
-//                            TemplateModel['organizationCode'] = TemplateModel.organizationCode;
+//                            TemplateModel['type'] = TemplateModel.type;
                             TemplateModel.cdaVersion = versionCode;
                             var parmes = $.extend({},TemplateModel,{cdaDocumentName:addArchiveTplInfo.name});
                             dataModel.createRemote(urls.update, {
