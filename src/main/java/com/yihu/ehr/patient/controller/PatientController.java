@@ -271,12 +271,13 @@ public class PatientController extends BaseUIController {
                     updatePatient.setLocalPath("");
 
                     imageId = fileUpload(updatePatient.getIdCardNo(),restStream,imageName);
-                    if (!StringUtils.isEmpty(imageId))
+                    if (!StringUtils.isEmpty(imageId)) {
                         updatePatient.setPicPath(imageId);
+                    }
 
                     //联系电话
-                    Map<String, String> telphoneNo = null;
-                    String tag = "联系电话";
+                    Map<String, String> telphoneNo = new HashMap<>();
+             /*       String tag = "联系电话";
                     telphoneNo = toModel(updatePatient.getTelephoneNo(), Map.class);
                     if (telphoneNo != null) {
                         if (telphoneNo.containsKey(tag)) {
@@ -284,8 +285,8 @@ public class PatientController extends BaseUIController {
                         }
                     } else {
                         telphoneNo = new HashMap<String, String>();
-                    }
-                    telphoneNo.put(tag, patientDetailModel.getTelephoneNo());
+                    }*/
+                    telphoneNo.put("联系电话", patientDetailModel.getTelephoneNo());
                     updatePatient.setTelephoneNo(toJson(telphoneNo));
                     updatePatient.setEmail(patientDetailModel.getEmail());
 
