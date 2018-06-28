@@ -78,14 +78,15 @@
                         data = {dictId: systemDictId, name: systemName};
                     }
                     var dataModel = $.DataModel.init();
-                    var waittingDialog = parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
+                    var waittingDialog = $.ligerDialog.waitting("正在保存中,请稍候...");//parent._LIGERDIALOG.waitting('正在保存中,请稍候...');
                     dataModel.createRemote(systemDictUpdateUrl, {
                         data: data,
                         success: function (data) {
                             setTimeout(function () {
                                 waittingDialog.close();
                                 if (data.successFlg) {
-                                    parent._LIGERDIALOG.success(mode=="add"?"新增成功":"更新成功");
+                                    $.ligerDialog.success(mode=="add"?"新增成功":"更新成功");
+//                                    parent._LIGERDIALOG.success(mode=="add"?"新增成功":"更新成功");
                                     win.reloadMasterGrid();
                                     win.closeDialog();
                                 } else {
