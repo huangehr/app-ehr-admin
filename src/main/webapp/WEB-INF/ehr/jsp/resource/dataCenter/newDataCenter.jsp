@@ -6,26 +6,26 @@
 <div ms-controller="dataCenter">
     <div class="tmp-top">
         <div class="top-list">
-            <a class="tmp-top-item tm-one" href="#div1">
+            <div class="tmp-top-item tm-one smooth" data-id="div1">
                 <div class="tmp-tit">居民建档数</div>
                 <div class="tmp-num" ms-text="byNum"></div>
                 <div class="tm-icon icon-one"></div>
-            </a>
-            <a class="tmp-top-item tm-two" href="#div2">
+            </div>
+            <div class="tmp-top-item tm-two smooth" data-id="div2">
                 <div class="tmp-tit">医疗资源建档数</div>
                 <div class="tmp-num" ms-text="mbNum"></div>
                 <div class="tm-icon icon-two"></div>
-            </a>
-            <a class="tmp-top-item tm-three" href="#div3">
+            </div>
+            <div class="tmp-top-item tm-three smooth" data-id="div3">
                 <div class="tmp-tit">健康档案建档数</div>
                 <div class="tmp-num" ms-text="jzNum"></div>
                 <div class="tm-icon icon-three"></div>
-            </a>
-            <a class="tmp-top-item tm-four" href="#div4">
+            </div>
+            <div class="tmp-top-item tm-four smooth" data-id="div4">
                 <div class="tmp-tit">电子病历建档数</div>
                 <div class="tmp-num" ms-text="zzNum"></div>
                 <div class="tm-icon icon-four"></div>
-            </a>
+            </div>
         </div>
     </div>
     <div class="hr-body" style="padding-bottom: 15px;padding-left: 15px;padding-right: 15px;">

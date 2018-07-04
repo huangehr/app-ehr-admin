@@ -1090,4 +1090,16 @@
             })
         }, 100);
     });
+    var pos={"div1":$("#div1").offset().top-165,"div2":$("#div2").offset().top-165,"div3":$("#div3").offset().top-165,"div4":$("#div4").offset().top-165};
+    $(".smooth").click(function(){
+        debugger
+        var id = $(this).attr("data-id");
+        for(var p in pos){
+            if(p==id){
+                console.log(id+" "+pos[p])
+                $("#contentPage").animate({scrollTop: pos[p]}, 1000);
+            }
+        }
+        return false;
+    });
 </script>
