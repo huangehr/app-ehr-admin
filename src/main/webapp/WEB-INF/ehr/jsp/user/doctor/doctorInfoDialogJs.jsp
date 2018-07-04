@@ -216,13 +216,13 @@
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
                         data: {doctorModelJsonData: doctorModelJsonData,jsonModel: jsonModel},
                         success: function (data) {
-                            waittingDialog.close();
+                          waittingDialog.close();
                             if (data.successFlg) {
                                 win.closeDoctorInfoDialog();
                                 win.reloadMasterUpdateGrid();
                                 $.Notice.success('修改成功');
                             } else {
-                                $.Notice.error('修改失败');
+                                $.Notice.error('修改失败：' + data.errorMsg);
                             }
                         }
                     })
