@@ -70,8 +70,8 @@
                 {display: '操作', name: 'operator', minWidth: 250, align: 'center',
                     render: function (row) {
                         var html = '';
-                        html += '<sec:authorize url="/resource/report/tmpViewSetting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}', '{2}'])", "resource:report:tmpViewSetting", row.id, row.code) + '">模板视图配置</a></sec:authorize>';
-                        <%--html += '<sec:authorize url="/resource/report/setting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';--%>
+                        <%--  html += '<sec:authorize url="/resource/report/tmpViewSetting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}', '{2}'])", "resource:report:tmpViewSetting", row.id, row.code) + '">模板视图配置</a></sec:authorize>';--%>
+                         <%--html += '<sec:authorize url="/resource/report/setting"><a class="label_a f-ml10" title="视图配置" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:setting", row.id) + '">视图配置</a></sec:authorize>';--%>
                         <%--html += '<sec:authorize url="/resource/report/upload"><a class="label_a f-ml10" title="模版导入" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}'])", "resource:report:upload", row.id) + '">模版导入</a></sec:authorize>';--%>
                         <%--html += '<sec:authorize url="/resource/report/preview"><a class="label_a f-ml10" title="预览" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}', '{2}'])", "resource:report:preview", row.code, row.templatePath) + '">预览</a></sec:authorize>';--%>
                         html += '<sec:authorize url="/resource/report/detail"><a class="grid_edit f-ml10" title="编辑" href="javascript:void(0)" onclick="javascript:' + $.Util.format("$.publish('{0}',['{1}','{2}'])", "resource:report:open", row.id, 'modify') + '"></a></sec:authorize>';
@@ -118,26 +118,27 @@
 
         // 模板视图配置
         $.subscribe('resource:report:tmpViewSetting', function (event, id, code) {
-            // var wait = parent._LIGERDIALOG.waitting("请稍后...");
-            <%--tmpSettingDialog = parent._LIGERDIALOG.open({--%>
-                <%--height: 700,--%>
-                <%--width: 1000,--%>
-                <%--title: '模板视图配置',--%>
-                <%--url: '${contextRoot}/resource/report/tmpViewSetting',--%>
-                <%--urlParms: {id: id, code: code},--%>
-                <%--opener: true,--%>
-                <%--load: true,--%>
-                <%--onLoaded: function () {--%>
-                    <%--wait.close();--%>
-                    <%--tmpSettingDialog.show();--%>
-                <%--}--%>
-            <%--});--%>
-            <%--tmpSettingDialog.hide();--%>
+            var wait = parent._LIGERDIALOG.waitting("请稍后...");
+            tmpSettingDialog = parent._LIGERDIALOG.open({
+                height: 700,
+                width: 1000,
+                title: '模板视图配置',
+                url: '${contextRoot}/resource/report/tmpViewSetting',
+                urlParms: {id: id, code: code},
+                opener: true,
+                load: true,
+                onLoaded: function () {
+                    wait.close();
+                    tmpSettingDialog.show();
+                }
+            });
+            tmpSettingDialog.hide();
+           /*
             $.ligerDialog.open({
                 title: '模板视图配置',
                 url:'http://172.19.103.70:1235/ehr/reporter/index.html#/reportManager/'+code+'/'+id,
                 height: $(window).height() - 100,
-                width: $(window).width() -200})
+                width: $(window).width() -200})*/
         });
 
         // 模版导入
