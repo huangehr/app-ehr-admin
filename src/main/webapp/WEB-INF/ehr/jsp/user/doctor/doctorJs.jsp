@@ -126,9 +126,9 @@
                                 render: function (row) {
                                     var html = '';
                                     if (row.status == 1) {
-                                        html += '<sec:authorize url="/doctor/updDoctorStatus"><a class="grid_on" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "doctor:doctorInfoModifyDialog:failure", row.id, '0','失效') + '"></a></sec:authorize>';
+                                        html += '<sec:authorize url="/doctor/updDoctorStatus"><a class="grid_on" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "doctor:doctorInfoModifyDialog:failure", row.id, '0','失效') + '">使失效</a></sec:authorize>';
                                     } else {
-                                        html += '<sec:authorize url="/doctor/updDoctorStatus"><a class="grid_off" title="未生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "doctor:doctorInfoModifyDialog:failure", row.id, '1','生效') + '"></a></sec:authorize>';
+                                        html += '<sec:authorize url="/doctor/updDoctorStatus"><a class="grid_off" title="未生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "doctor:doctorInfoModifyDialog:failure", row.id, '1','生效') + '">使生效</a></sec:authorize>';
                                     }
                                     return html;
                                 }
