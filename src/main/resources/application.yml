@@ -229,6 +229,6 @@ service-gateway:
   profileurl: http://10.128.100.66:9009/api/v1.0
 fast-dfs:
   tracker-server: 10.128.100.51:22122
-  public-server: http://10.128.100.51:23000
+  public-server: http://10.128.100.51:8888
 std:
   version: 59083976eebd
