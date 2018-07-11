@@ -9,6 +9,7 @@ import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.organization.controller.OrganizationController;
 import com.yihu.ehr.user.controller.model.DoctorMsgModel;
+import com.yihu.ehr.user.controller.model.WtDoctorMsgModel;
 import com.yihu.ehr.user.controller.service.DoctorService;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.excel.AExcelReader;
@@ -16,6 +17,8 @@ import com.yihu.ehr.util.excel.ObjectFileRW;
 import com.yihu.ehr.util.excel.TemPath;
 import com.yihu.ehr.util.excel.read.DoctorMsgModelReader;
 import com.yihu.ehr.util.excel.read.DoctorMsgModelWriter;
+import com.yihu.ehr.util.excel.read.WtDoctorMsgModelReader;
+import com.yihu.ehr.util.excel.read.WtDoctorMsgModelWriter;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.web.RestTemplates;
@@ -38,7 +41,8 @@ import java.io.OutputStream;
 import java.util.*;
 
 /**
- * Created by yeshijie on 2017/2/13.
+ * Created by zdm on 2017/2/13.
+ *
  */
 @Controller
 @RequestMapping("/doctorImport")
@@ -61,10 +65,10 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         try {
             writerResponse(response, 1 + "", "l_upd_progress");
             request.setCharacterEncoding("UTF-8");
-            AExcelReader excelReader = new DoctorMsgModelReader(username, password, comUrl, objectMapper);
+            AExcelReader excelReader = new WtDoctorMsgModelReader();
             excelReader.read(file.getInputStream());
-            List<DoctorMsgModel> errorLs = excelReader.getErrorLs();
-            List<DoctorMsgModel> correctLs = excelReader.getCorrectLs();
+            List<WtDoctorMsgModel> errorLs = excelReader.getErrorLs();
+            List<WtDoctorMsgModel> correctLs = excelReader.getCorrectLs();
             writerResponse(response, 20 + "", "l_upd_progress");
             List saveLs = new ArrayList<>();
             //获取医生表里面的手机号码
@@ -73,22 +77,15 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             Set<String> idCardNos = findExistIdCardNoInDoctor(toJson(excelReader.getRepeat().get("idCardNo")));
             //获取账户表里面的手机号码
             Set<String> userPhones = findExistPhoneInUser(toJson(excelReader.getRepeat().get("phone")));
-            //获取医生表里面的邮箱
-            Set<String> emails = findExistEmailInDoctor(toJson(excelReader.getRepeat().get("email")));
-            //获取账户表里面的邮箱
-            Set<String> userEmails = findExistEmailInUser(toJson(excelReader.getRepeat().get("email")));
             //获取医生表里面的身份证号码
             Set<String> userIdCardNos = findExistIdCardNoInUser(toJson(excelReader.getRepeat().get("idCardNo")));
             //判断机构是否存在
-
-            //判断机构部门是否存在
-
             writerResponse(response, 35 + "", "l_upd_progress");
-            DoctorMsgModel model;
+            WtDoctorMsgModel model;
             for (int i = 0; i < correctLs.size(); i++) {
                 model = correctLs.get(i);
                 //, Set<String> emails, Set<String> userEmails
-                if (validate(model, phones, userPhones, emails, userEmails, idCardNos, userIdCardNos) == 0) {
+                if (validate(model, phones, userPhones,idCardNos, userIdCardNos) == 0) {
                     errorLs.add(model);
                 } else {
                     saveLs.add(model);
@@ -96,7 +93,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             }
             for (int i = 0; i < errorLs.size(); i++) {
                 model = errorLs.get(i);
-                validate(model, phones, userPhones, emails, userEmails, idCardNos, userIdCardNos);
+                validate(model, phones, userPhones,idCardNos, userIdCardNos);
             }
             writerResponse(response, 55 + "", "l_upd_progress");
             Map rs = new HashMap<>();
@@ -137,17 +134,14 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         try {
             File file = new File(TemPath.getFullPath(datePath + TemPath.separator + filenName, parentFile));
             List ls = (List) ObjectFileRW.read(file);
-
             int start = (page - 1) * rows;
             int total = ls.size();
             int end = start + rows;
             end = end > total ? total : end;
-
             List g = new ArrayList<>();
             for (int i = start; i < end; i++) {
                 g.add(ls.get(i));
             }
-
             Envelop envelop = new Envelop();
             envelop.setDetailModelList(g);
             envelop.setTotalCount(total);
@@ -178,10 +172,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     private Set<String> findExistPhoneInDoctor(String phones) throws Exception {
         MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<String, String>();
         conditionMap.add("phones", phones);
-
         RestTemplates template = new RestTemplates();
         String rs = template.doPost(service.comUrl + "/doctor/phone/existence", conditionMap);
-
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {
         });
     }
@@ -190,10 +182,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     private Set<String> findExistIdCardNoInDoctor(String idCardNos) throws Exception {
         MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<String, String>();
         conditionMap.add("idCardNos", idCardNos);
-
         RestTemplates template = new RestTemplates();
         String rs = template.doPost(service.comUrl + "/doctor/idCardNo/existence", conditionMap);
-
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {
         });
     }
@@ -202,10 +192,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
     private Set<String> findExistIdCardNoInUser(String idCardNos) throws Exception {
         MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<String, String>();
         conditionMap.add("idCardNos", idCardNos);
-
         RestTemplates template = new RestTemplates();
         String rs = template.doPost(service.comUrl + "/user/idCardNo/existence", conditionMap);
-
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {
         });
     }
@@ -217,13 +205,12 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         conditionMap.add("phones", phones);
         RestTemplates template = new RestTemplates();
         String rs = template.doPost(service.comUrl + "/user/phone/existence", conditionMap);
-
         return objectMapper.readValue(rs, new TypeReference<Set<String>>() {
         });
     }
 
 
-    private int validate(DoctorMsgModel model, Set<String> phones, Set<String> userPhones, Set<String> emails, Set<String> userEmails, Set<String> idCardNos, Set<String> userIdCardNos) {
+    private int validate(WtDoctorMsgModel model, Set<String> phones, Set<String> userPhones, Set<String> idCardNos, Set<String> userIdCardNos) {
         int rs = 1;
         boolean existFlag = searchUsers(model.getIdCardNo(), model.getPhone());
         String orgId = searchOrgByCodes(model.getOrgCode(), model.getOrgFullName());
@@ -257,47 +244,19 @@ public class DoctorImportController extends ExtendController<DoctorService> {
                 rs = 0;
             }
         }
-        //医生表
-        if (emails.contains(model.getEmail())) {
-            model.addErrorMsg("email", "该邮箱在医生表已存在，请核对！");
-            rs = 0;
-        }
-        //账户表
-        if (userEmails.contains(model.getEmail())) {
-            model.addErrorMsg("email", "该邮箱对应的账户已存在，请核对！");
-            rs = 0;
-        }
         //机构不存在，报错
         if (StringUtils.isEmpty(orgId)) {
             model.addErrorMsg("orgCode", "该机构代码或机构名称不正确，请核对！");
             model.addErrorMsg("orgFullName", "该机构代码或机构名称不正确，请核对！");
             rs = 0;
-        } else {
-            //部门是否存在
-            try {
-                Map<String, Object> params = new HashMap<>();
-                String urlGet = "/orgDept/checkDeptName";
-                params.clear();
-                params.put("orgId", orgId);
-                params.put("name", model.getOrgDeptName());
-                String envelopGetStr2 = HttpClientUtil.doPut(comUrl + urlGet, params, username, password);
-                Envelop envelopGet2 = objectMapper.readValue(envelopGetStr2, Envelop.class);
-                if (envelopGet2.isSuccessFlg()) {
-                    model.addErrorMsg("orgDeptName", "该机构部门不存在，请核对！");
-                    rs = 0;
-                }
-            } catch (Exception ex) {
-                LogService.getLogger(DoctorImportController.class).error(ex.getMessage());
-            }
         }
-
         return rs;
     }
 
     private List saveMeta(String doctors) throws Exception {
         Map map = new HashMap<>();
         map.put("doctors", doctors);
-        EnvelopExt<DoctorMsgModel> envelop = getEnvelopExt(service.doPost(service.comUrl + "/doctor/batch", map), DoctorMsgModel.class);
+        EnvelopExt<WtDoctorMsgModel> envelop = getEnvelopExt(service.doPost(service.comUrl + "/doctor/batch", map), DoctorMsgModel.class);
         if (envelop.isSuccessFlg()) {
             return envelop.getDetailModelList();
         }
@@ -324,7 +283,7 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             response.setContentType("octets/stream");
             response.addHeader("Content-Disposition", "attachment; filename="
                     + new String((f.substring(0, f.length() - 4) + ".xls").getBytes("gb2312"), "ISO8859-1"));
-            new DoctorMsgModelWriter().write(toClient, (List) ObjectFileRW.read(file));
+            new WtDoctorMsgModelWriter().write(toClient, (List) ObjectFileRW.read(file));
             toClient.flush();
             toClient.close();
         } catch (Exception e) {
@@ -342,15 +301,15 @@ public class DoctorImportController extends ExtendController<DoctorService> {
             try {
                 eFile = datePath + TemPath.separator + eFile;
                 File file = new File(TemPath.getFullPath(eFile, parentFile));
-                List<DoctorMsgModel> all = (List<DoctorMsgModel>) ObjectFileRW.read(file);
-                List<DoctorMsgModel> doctorMsgModels = objectMapper.readValue(doctors, new TypeReference<List<DoctorMsgModel>>() {
+                List<WtDoctorMsgModel> all = (List<WtDoctorMsgModel>) ObjectFileRW.read(file);
+                List<WtDoctorMsgModel> doctorMsgModels = objectMapper.readValue(doctors, new TypeReference<List<WtDoctorMsgModel>>() {
                 });
                 Map<String, Set> repeat = new HashMap<>();
                 repeat.put("phone", new HashSet<String>());
                 repeat.put("code", new HashSet<String>());
                 repeat.put("email", new HashSet<String>());
                 repeat.put("idCardNo", new HashSet<String>());
-                for (DoctorMsgModel model : doctorMsgModels) {
+                for (WtDoctorMsgModel model : doctorMsgModels) {
                     model.validate(repeat);
                 }
                 //获取医生表里面的手机号码
@@ -365,11 +324,11 @@ public class DoctorImportController extends ExtendController<DoctorService> {
                 Set<String> userEmails = findExistEmailInUser(toJson(repeat.get("email")));
                 //获取医生表里面的身份证号码
                 Set<String> userIdCardNos = findExistIdCardNoInUser(toJson(repeat.get("idCardNo")));
-                DoctorMsgModel model;
+                WtDoctorMsgModel model;
                 List saveLs = new ArrayList<>();
                 for (int i = 0; i < doctorMsgModels.size(); i++) {
                     model = doctorMsgModels.get(i);
-                    if (validate(model, phones, userPhones, emails, userEmails, idCardNos, userIdCardNos) == 0 || model.errorMsg.size() > 0) {
+                    if (validate(model, phones, userPhones, idCardNos, userIdCardNos) == 0 || model.errorMsg.size() > 0) {
                         all.set(all.indexOf(model), model);
                     } else {
                         saveLs.add(model);
