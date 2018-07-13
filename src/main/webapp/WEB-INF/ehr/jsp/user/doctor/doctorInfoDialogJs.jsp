@@ -222,7 +222,7 @@
                                 win.reloadMasterUpdateGrid();
                                 $.Notice.success('修改成功');
                             } else {
-                                $.Notice.error('修改失败：' + data.errorMsg);
+                                $.Notice.error('修改失败');
                             }
                         }
                     })
