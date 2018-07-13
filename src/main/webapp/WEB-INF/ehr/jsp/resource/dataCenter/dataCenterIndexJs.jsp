@@ -221,6 +221,8 @@
                             d1 = me.getSeriesData(achievementsData)[0],
                             lenD1 = me.getSeriesData(achievementsData)[1];
                         option0 = me.getHandleOpt(lenD1, d1);
+                        option0.series[0].radius = ['30%','50%']
+                        debugger
                         me.dataHandle = res[0].detailModelList;
                         setTimeout(function () {
                             var myEchar1 = echarts.init(document.getElementById('echart1'));

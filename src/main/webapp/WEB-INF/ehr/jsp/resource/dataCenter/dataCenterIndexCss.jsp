@@ -518,7 +518,7 @@
         display: -webkit-flex;
     }
     .dc-cj-left{
-       flex: 0;
+
         padding: 0.078rem 0.15rem;
         text-align: center;
     }
