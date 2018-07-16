@@ -20,21 +20,21 @@
     </div>
     <div class="m-form-group">
         <label>报表分类：</label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control essential" style="padding-right: 0;">
             <input type="text" data-type="select" class="required"
                    id="reportCategoryId" data-attr-scan="reportCategoryId">
         </div>
     </div>
     <div class="m-form-group">
         <label>报表状态：</label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control essential" style="padding-right: 0;">
             <input type="text" data-type="select" class="required"
                    id="status" data-attr-scan="status">
         </div>
     </div>
     <div class="m-form-group">
         <label>报表展示类型：</label>
-        <div class="l-text-wrapper m-form-control essential">
+        <div class="l-text-wrapper m-form-control essential" style="padding-right: 0;">
             <input type="text" data-type="select" class="required"
                    id="showType" data-attr-scan="showType">
         </div>

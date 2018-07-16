@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: app-ehr-admin
+  cloud:
+    config:
+      username: user
+      password: configuration
+
+---
+spring:
+  profiles: dev
+  cloud:
+    config:
+      uri: ${spring.config.uri:http://172.19.107.73:1221}
+      label: ${spring.config.label:dev}
+
+---
+spring:
+  profiles: alpha
+  cloud:
+    config:
+      uri: ${spring.config.uri}
+      label: ${spring.config.label}
+
+---
+spring:
+  profiles: prod
+  cloud:
+    config:
+      uri: ${spring.config.uri}
+      label: ${spring.config.label}
