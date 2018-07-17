@@ -14,7 +14,7 @@
 	<div class="m-form-group">
 		<label>视图名称<spring:message code="spe.colon"/></label>
 		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_name" class="required useTitle ajax f-h28 f-w240" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
+			<input type="text" id="inp_name" class="required useTitle f-h28 f-w240" required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
 		</div>
 	</div>
 	<div class="m-form-group">
