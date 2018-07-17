@@ -71,7 +71,7 @@
                 title = '修改资源报表分类';
             }
             detailDialog = parent._LIGERDIALOG.open({
-                height: 450,
+                height: 500,
                 width: 480,
                 title: title,
                 url: '${contextRoot}/resource/reportCategory/detail',
