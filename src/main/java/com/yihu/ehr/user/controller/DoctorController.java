@@ -291,7 +291,7 @@ public class DoctorController extends BaseUIController {
             result.setErrorMsg(e.getMessage());
             return result;
         }
-        return objectMapper.readValue(resultStr, Envelop.class);
+        return resultStr;
     }
 
     /**
