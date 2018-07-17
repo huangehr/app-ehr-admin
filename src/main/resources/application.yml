@@ -203,7 +203,7 @@ std:
 spring:
   profiles: demo_guigang
   datasource:
-    url: jdbc:mysql://10.128.100.50:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://192.168.50.51:3310/healtharchive?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: healthcloud
     password: GP8Qz4qU
 app:
@@ -211,24 +211,24 @@ app:
   qcReportClientId: 2YTOSRI0tw
   resourceBrowseClientId: W8RDizgDIB
   browseClientId: uzs5G0HgTp
-  oauth2InnerUrl: http://10.128.100.63:10001/authentication/
-  oauth2OuterUrl: http://jksr.srswjw.gov.cn:1235/gateway/authentication/
+  oauth2InnerUrl: http://192.168.50.61:9660/gateway/authentication/
+  oauth2OuterUrl: http://125.73.45.32:9660/gateway/authentication/
 service-gateway:
   username: user
   password: eureka
-  url: http://10.128.100.63:10000/api/v1.0/admin
-  adminInnerUrl: http://10.128.100.63:10000
-  stdurl: http://10.128.100.63:10000/api/v1.0/admin/std
-  versionurl: http://10.128.100.63:10000/api/v1.0/admin/version
-  cdatypeurl: http://10.128.100.63:10000/api/v1.0/admin/cda_type
-  stdsourceurl: http://10.128.100.63:10000/api/v1.0/admin/standard_source
-  adaption: http://10.128.100.63:10000/api/v1.0/adapter
-  standard: http://10.128.100.63:10000/api/v1.0/std
-  browseClientUrl: http://10.128.100.64:8010/profile
-  browseClientOutSizeUrl: http://jksr.srswjw.gov.cn:1235/profile
-  profileurl: http://10.128.100.66:9009/api/v1.0
+  url: http://192.168.50.64:10000/api/v1.0/admin
+  adminInnerUrl: http://192.168.50.64:10000
+  stdurl: http://192.168.50.64:10000/api/v1.0/admin/std
+  versionurl: http://192.168.50.64:10000/api/v1.0/admin/version
+  cdatypeurl: http://192.168.50.64:10000/api/v1.0/admin/cda_type
+  stdsourceurl: http://192.168.50.64:10000/api/v1.0/admin/standard_source
+  adaption: http://192.168.50.64:10000/api/v1.0/adapter
+  standard: http://192.168.50.64:10000/api/v1.0/std
+  browseClientUrl: http://192.168.50.65:8010/profile
+  browseClientOutSizeUrl: http://125.73.45.32:9660/profile
+  profileurl: http://192.168.50.67:9009/api/v1.0
 fast-dfs:
-  tracker-server: 10.128.100.51:22122
-  public-server: http://10.128.100.51:8888
+  tracker-server: 192.168.50.52:22122
+  public-server: http://192.168.50.52:8888
 std:
   version: 59083976eebd
