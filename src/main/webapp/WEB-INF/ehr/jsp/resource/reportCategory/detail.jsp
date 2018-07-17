@@ -25,6 +25,13 @@
         </div>
     </div>
     <div class="m-form-group">
+        <label>排序：</label>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" class="f-w240 max-length-5 validate-number"
+                   id="sortNo" data-attr-scan="sortNo">
+        </div>
+    </div>
+    <div class="m-form-group">
         <label>说明：</label>
         <div class="m-form-control">
             <textarea rows="3" class="f-w240 max-length-255"
