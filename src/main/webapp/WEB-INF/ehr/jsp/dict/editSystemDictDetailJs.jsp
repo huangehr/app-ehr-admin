@@ -75,11 +75,12 @@
                         data: {dictId: systemDictId, code: code, value: value, sort: sort, catalog: catalog},
                         success: function (data) {
                             if (data.successFlg) {
-                                parent._LIGERDIALOG.success(mode=="add"?"新增成功":"更新成功");
+                                $.ligerDialog.success(mode=="add"?"新增成功":"更新成功");
+                                //parent._LIGERDIALOG.success(mode=="add"?"新增成功":"更新成功");
                                 win.reloadEntryMasterGrid();
                                 win.closeDetailDialog();
                             } else {
-                                parent._LIGERDIALOG.error(data.errorMsg);
+                                $.ligerDialog.error(data.errorMsg);
                             }
                         }
                     });

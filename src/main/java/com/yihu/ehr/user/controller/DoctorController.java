@@ -246,10 +246,11 @@ public class DoctorController extends BaseUIController {
                     updateDoctor.setJobScope(doctorDetailModel.getJobScope());
                     updateDoctor.setJobState(doctorDetailModel.getJobState());
                     updateDoctor.setRegisterFlag(doctorDetailModel.getRegisterFlag());
-                    imageId = fileUpload(String.valueOf(doctorId), restStream, imageName);
-                    if (!StringUtils.isEmpty(imageId)) {
+                    if (!StringUtils.isEmpty(restStream)) {
+                        imageId = fileUpload(String.valueOf(doctorId), restStream, imageName);
                         updateDoctor.setPhoto(imageId);
                     }
+
                     params.add("doctor_json_data", toJson(updateDoctor));
                     params.add("model", jsonModel);
                     resultStr = templates.doPut(comUrl + url, params);
@@ -264,10 +265,10 @@ public class DoctorController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params);
                 result = toModel(resultStr, Envelop.class);
                 if (result.isSuccessFlg()) {
-                    DoctorDetailModel addDoctorModel = toModel(toJson(result.getObj()), DoctorDetailModel.class);
-
-                    imageId = fileUpload(String.valueOf(addDoctorModel.getId()), restStream, imageName);
-
+                    DoctorDetailModel addDoctorModel = toModel(result.getObj().toString(), DoctorDetailModel.class);
+                    if (!StringUtils.isEmpty(restStream)) {
+                        imageId = fileUpload(String.valueOf(addDoctorModel.getId()), restStream, imageName);
+                    }
                     if (!StringUtils.isEmpty(imageId)) {
                         addDoctorModel.setPhoto(imageId);
 
@@ -281,7 +282,7 @@ public class DoctorController extends BaseUIController {
                         params.add("doctor_json_data", toJson(doctorModel));
                         resultStr = templates.doPut(comUrl + url, params);
                     }
-                }else {
+                } else {
                     return failed(result.getErrorMsg());
                 }
             }
