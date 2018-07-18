@@ -3,8 +3,8 @@
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
 
 <div class="f-mb30">
-    <div id="total" style="width: 400px;height: 300px; display: inline-block;"></div>
-    <div id="serviceList" style="width: 800px;height: 300px; display: inline-block;"></div>
+    <div id="total" style="width: 30%;height: 300px; display: inline-block;"></div>
+    <div id="serviceList" style="width: 65%;height: 300px; display: inline-block;"></div>
 </div>
 
 <div class="m-form-inline" id="searchForm">

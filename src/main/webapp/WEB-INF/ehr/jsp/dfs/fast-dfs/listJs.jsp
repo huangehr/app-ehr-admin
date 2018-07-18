@@ -142,11 +142,16 @@
                     });
 
                     var serviceListChart = echarts.init(document.getElementById('serviceList'));
-                    var serviceListChartOption = {
+                    var option = {
                         title: {
                             text: '服务器情况',
                             subtext: '总数：' + serverNameList.length,
                             x:'center'
+                        },
+                        legend: {
+                            show: false,
+                            selectedMode: false,
+                            data: ['已用空间', '可用空间']
                         },
                         tooltip: {
                             trigger: 'axis',
@@ -155,47 +160,35 @@
                             },
                             formatter: '{b}<br/>{a0}: {c0} G<br/>{a1}: {c1} G'
                         },
-                        legend: {
-                            show: false,
-                            selectedMode: false,
-                            data: ['已用空间', '可用空间']
+                        toolbox: {
+                            show : false,
+                            feature : {
+                                mark : {show: true},
+                                dataView : {show: true, readOnly: false},
+                                restore : {show: true},
+                                saveAsImage : {show: true}
+                            }
                         },
-                        xAxis: [
+                        calculable : true,
+                        xAxis : [
                             {
-                                type: 'category',
-                                axisLabel: {
-                                    interval: 0
-                                },
-                                axisLine: {
-                                    lineStyle: {
-                                        color: '#333333',
-                                        width: 1
-                                    }
-                                },
-                                data: serverNameList
+                                type : 'category',
+                                data : serverNameList
                             }
                         ],
-                        yAxis: [
+                        yAxis : [
                             {
-                                show: false,
-                                type: 'value',
+                                type : 'value',
                                 boundaryGap: [0, 0.1]
                             }
                         ],
-                        dataZoom : {
-                            show: true,
-                            height: 15,
-                            start : 0,
-                            end : 20,
-                            zoomLock: false
-                        },
-                        series: [
+                        series : [
                             {
-                                name: '已用空间',
-                                type: 'bar',
+                                name:'已用空间',
+                                type:'bar',
                                 stack: 'sum',
-                                barWidth: '70',
                                 barCategoryGap: '50%',
+                                barWidth: '50',
                                 itemStyle: {
                                     normal: {
                                         color: function(params) {
@@ -211,41 +204,46 @@
                                                 }
                                             }
                                         },
-                                        barBorderWidth: 0,
-                                        barBorderRadius: 0,
-                                        label: {
-                                            show: true,
+                                        barBorderColor: '#ccc',
+                                        barBorderWidth: 1,
+                                        barBorderRadius:0,
+                                        label : {
+                                            show: false,
                                             position: 'insideTop',
-                                             formatter: function(params) {
-                                                 for (var i = 0, l = serviceListChartOption.xAxis[0].data.length; i < l; i++) {
-                                                     if (serviceListChartOption.xAxis[0].data[i] == params.name) {
-                                                         return (params.value / (serviceListChartOption.series[1].data[i] + params.value) * 100).toFixed(2) + '%';
-                                                     }
-                                                 }
-                                             }
+                                            formatter: function(params) {
+                                                for (var i = 0, l = serviceListChartOption.xAxis[0].data.length; i < l; i++) {
+                                                    if (serviceListChartOption.xAxis[0].data[i] == params.name) {
+                                                        return (params.value / (serviceListChartOption.series[1].data[i] + params.value) * 100).toFixed(2) + '%';
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 },
-                                data: serverUsedStatusList
+                                data:serverUsedStatusList
                             },
                             {
-                                name: '可用空间',
-                                type: 'bar',
+                                name:'可用空间',
+                                type:'bar',
                                 stack: 'sum',
-                                barWidth: '70',
+                                barWidth: '50',
                                 itemStyle: {
                                     normal: {
                                         color: '#fff',
                                         barBorderColor: '#ccc',
                                         barBorderWidth: 1,
-                                        barBorderRadius: 0,
-                                        label: {
-                                            show: false,
+                                        barBorderRadius:0,
+                                        label : {
+                                            show: true,
                                             position: 'top',
                                             formatter: function(params) {
                                                 for (var i = 0, l = serviceListChartOption.xAxis[0].data.length; i < l; i++) {
                                                     if (serviceListChartOption.xAxis[0].data[i] == params.name) {
-                                                        return (serviceListChartOption.series[0].data[i] + params.value) + 'G';
+                                                        if (serviceListChartOption.series[0].data[i]+params.value==0){
+                                                            return "";
+                                                        }else{
+                                                            return '可用'+(params.value / (serviceListChartOption.series[0].data[i] + params.value) * 100).toFixed(2) + '%';
+                                                        }
                                                     }
                                                 }
                                             },
@@ -255,11 +253,11 @@
                                         }
                                     }
                                 },
-                                data: serverFreeStatusList
+                                data:serverFreeStatusList
                             }
                         ]
                     };
-                    serviceListChart.setOption(serviceListChartOption);
+                    serviceListChart.setOption(option);
                 } else {
                     parent._LIGERDIALOG.error('获取文件服务器状态数据失败');
                 }

@@ -228,6 +228,17 @@
                 self.initAddress(self.$birthPlace, (patientModel.birthPlace == null ? "请选择地址" : patientModel.birthPlace));
                 self.initAddress(self.$homeAddress, (patientModel.homeAddress == null ? "请选择地址" : patientModel.homeAddress));
                 self.initAddress(self.$workAddress, (patientModel.workAddress == null ? "请选择地址" : patientModel.workAddress));
+                setTimeout(function(){
+                    if (patientModel.birthPlace){
+                        $("#inp_birthPlace").parent().find(".u-select-title").removeClass("placehoder");
+                    }
+                    if (patientModel.homeAddress){
+                        $("#inp_homeAddress").parent().find(".u-select-title").removeClass("placehoder");
+                    }
+                    if (patientModel.workAddress){
+                        $("#inp_workAddress").parent().find(".u-select-title").removeClass("placehoder");
+                    }
+                },500);
                 self.$residenceType.ligerRadio();
                 self.$patientTel.ligerTextBox({width: 240});
                 self.$patientEmail.ligerTextBox({width: 240});
