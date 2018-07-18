@@ -56,7 +56,7 @@
 			</div>
 			<label>应用代码<spring:message code="spe.colon"/></label>
 			<div class="l-text-wrapper m-form-control essential">
-				<input type="text" id="inp_app_code" class="required max-length-20 validate-code-char ajax"  data-attr-scan="code" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"/>
+				<input type="text" id="inp_app_code" class="required max-length-30 validate-code-char ajax"  data-attr-scan="code" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"/>
 			</div>
 		</div>
 		</form>
