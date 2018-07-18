@@ -64,8 +64,8 @@
                             value: '女'
                         }]
                     });
-                    this.$starTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime:true});
-                    this.$endTime.ligerDateEditor({format: "yyyy-MM-dd hh:mm:ss",showTime:true});
+                    this.$starTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:false});
+                    this.$endTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:false});
 
                    /* this.$homeAddress.addressDropdown({tabsData:[
                         {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
