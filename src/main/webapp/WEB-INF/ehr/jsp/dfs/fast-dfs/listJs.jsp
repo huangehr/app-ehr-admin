@@ -142,7 +142,7 @@
                     });
 
                     var serviceListChart = echarts.init(document.getElementById('serviceList'));
-                    var option = {
+                    var serviceListChartOption = {
                         title: {
                             text: '服务器情况',
                             subtext: '总数：' + serverNameList.length,
@@ -257,7 +257,7 @@
                             }
                         ]
                     };
-                    serviceListChart.setOption(option);
+                    serviceListChart.setOption(serviceListChartOption);
                 } else {
                     parent._LIGERDIALOG.error('获取文件服务器状态数据失败');
                 }
