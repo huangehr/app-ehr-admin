@@ -160,6 +160,7 @@ public class ReportCategoryController extends BaseUIController {
                 updateModel.setCode(model.getCode());
                 updateModel.setName(model.getName());
                 updateModel.setPid(model.getPid());
+                updateModel.setSortNo(null == model.getSortNo() ? 99 : model.getSortNo());
                 updateModel.setRemark(model.getRemark());
 
                 params.put("rsReportCategory", objectMapper.writeValueAsString(updateModel));
