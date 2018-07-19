@@ -7,6 +7,7 @@ import com.yihu.ehr.agModel.resource.RsReportModel;
 import com.yihu.ehr.agModel.resource.RsReportViewModel;
 import com.yihu.ehr.agModel.resource.RsResourcesModel;
 import com.yihu.ehr.constants.ServiceApi;
+import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.http.HttpResponse;
 import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.rest.Envelop;
@@ -29,12 +30,14 @@ import java.util.stream.Collectors;
  * Created by janseny on 2017/11/10.
  */
 @Service
-public class ReportService{
+public class ReportService {
 
     @Autowired
     protected ObjectMapper objectMapper;
     @Value("${service-gateway.url}")
     private String comUrl;
+    @Value("${service-gateway.adminInnerUrl}")
+    protected String adminInnerUrl;
 
     public String getHttpRespons( Map<String, Object> params,String url) throws Exception {
         String resultStr = "";
@@ -69,12 +72,9 @@ public class ReportService{
             if (rsResourcesModel.getDataSource() == 1) {
                 // 档案视图场合
                 params.clear();
-                params.put("resourceId", linkageResourceId);
-                String queryEnvelopStr = getHttpRespons(params,ServiceApi.Resources.QueryByResourceId);
+                //params.put("filters", "resourcesId=" + linkageResourceId + ";paramKey=q");
+                //HttpResponse httpResponse = HttpUtils.doGet(adminInnerUrl + "/resource/api/v1.0/resources/params/no_paging", params);
                 String queryStr = "";
-                if(StringUtils.isNotEmpty(queryEnvelopStr) && queryEnvelopStr.length()> 4){
-                    objectMapper.readValue(queryEnvelopStr, Envelop.class).getObj().toString();
-                }
                 viewInfo.put("type", "record");
                 viewInfo.put("resourceCode", rsResourcesModel.getCode());
                 viewInfo.put("searchParams", queryStr);
