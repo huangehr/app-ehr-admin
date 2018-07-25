@@ -8,7 +8,6 @@
         /* ************************** 变量定义 ******************************** */
         // 通用工具类库
         var Util = $.Util;
-debugger
         // 表单校验工具类
         var jValidation = $.jValidation;
 
@@ -17,15 +16,15 @@ debugger
         var dialog = null;
 
         var source;
-		var trees;
+        var trees;
 
-		var jxzcDictId = 108; // 是否制证
-		var lczcDictId = 118; // 技术职称
-		var roleTypeDictId = 120; // 人员类别
-		var jobTypeDictId = 104; // 执业类别
-		var jobLevelDictId = 105; // 从事专业类别代码-执业级别
-		var jobScopeDictId = 103; // 执业范围
-		var jobStateDictId = 106; // 执业状态
+        var jxzcDictId = 108; // 是否制证
+        var lczcDictId = 118; // 技术职称
+        var roleTypeDictId = 120; // 人员类别
+        var jobTypeDictId = 104; // 执业类别
+        var jobLevelDictId = 105; // 从事专业类别代码-执业级别
+        var jobScopeDictId = 103; // 执业范围
+        var jobStateDictId = 106; // 执业状态
         var orgId = "";
         var orgSelectedValue = "";
         var deptSelectedValue = "";
@@ -57,24 +56,24 @@ debugger
             $addBtn: $("#div_btn_add"),
             $cancelBtn: $("#div_cancel_btn"),
             $imageShow: $("#div_file_list"),
-            $skill:$("#inp_skill"),
-            $idCardNo:$("#inp_idCardNo"),
-            $portal:$("#inp_portal"),
-            $email:$("#inp_email"),
-            $phone:$("#inp_phone"),
-            $secondPhone:$("#inp_secondPhone"),
-            $familyTel:$("#inp_familyTel"),
-            $officeTel:$("#inp_officeTel"),
-            $introduction:$("#inp_introduction"),
-            $jxzc:$("#inp_jxzc"),
-            $lczc:$("#inp_lczc"),
-            $xlzc:$("#inp_xlzc"),
-            $zxzc:$("#inp_zxzc"),
-            $roleType:$("#inp_roleType"),
-            $jobType:$("#inp_jobType"),
-            $jobLevel:$("#inp_jobLevel"),
-            $jobScope:$("#inp_jobScope"),
-            $jobState:$("#inp_jobState"),
+            $skill: $("#inp_skill"),
+            $idCardNo: $("#inp_idCardNo"),
+            $portal: $("#inp_portal"),
+            $email: $("#inp_email"),
+            $phone: $("#inp_phone"),
+            $secondPhone: $("#inp_secondPhone"),
+            $familyTel: $("#inp_familyTel"),
+            $officeTel: $("#inp_officeTel"),
+            $introduction: $("#inp_introduction"),
+            $jxzc: $("#inp_jxzc"),
+            $lczc: $("#inp_lczc"),
+            $xlzc: $("#inp_xlzc"),
+            $zxzc: $("#inp_zxzc"),
+            $roleType: $("#inp_roleType"),
+            $jobType: $("#inp_jobType"),
+            $jobLevel: $("#inp_jobLevel"),
+            $jobScope: $("#inp_jobScope"),
+            $jobState: $("#inp_jobState"),
             $registerFlag: $('input[name="registerFlag"]', this.$form),
             $divBtnShow: document.getElementById('divBtnShow'),
 //            $org:$("#inp_org"),
@@ -97,11 +96,13 @@ debugger
                     auto: false
                 });
                 self.$uploader.instance.on('uploadSuccess', function (file, resp) {
-                    if(!resp.successFlg)
+                    if (!resp.successFlg) {
                         $.Notice.error(resp.errorMsg);
-                    else
-                        $.Notice.success('新增成功');
+                    }else {
+                        win.parent.reloadMasterUpdateGrid();
+                        win.parent.showAddSuccPop();
                         win.parent.closeAddDoctorInfoDialog();
+                    }
                 });
             },
             initForm: function () {
@@ -160,7 +161,7 @@ debugger
                 <%--dataParmName: 'detailModelList',--%>
                 <%--urlParms: {page: 1, rows:10000}--%>
                 <%--});--%>
-                me.$introduction.ligerTextBox({width:600,height:100 });
+                me.$introduction.ligerTextBox({width: 600, height: 100});
                 me.initDDL(roleTypeDictId, this.$roleType);
                 me.initDDL(jobTypeDictId, this.$jobType);
                 me.initDDL(jobLevelDictId, this.$jobLevel);
@@ -184,22 +185,22 @@ debugger
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
-                        var checkObj = { result:true, errorMsg: ''};
+                        var checkObj = {result: true, errorMsg: ''};
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_code')) {
                             var code = $("#inp_code").val();
-                            checkObj= checkDataSourceName('code', code, "该账号已存在");
+                            checkObj = checkDataSourceName('code', code, "该账号已存在");
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCardNo')) {
                             var CardNo = $("#inp_idCardNo").val();
-                            checkObj= checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
+                            checkObj = checkDataSourceName('idCardNo', CardNo, "该身份证号已存在");
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_phone')) {
                             var phone = $("#inp_phone").val();
-                            checkObj= checkDataSourceName('phone', phone, "该电话号码已存在");
+                            checkObj = checkDataSourceName('phone', phone, "该电话号码已存在");
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_email')) {
                             var email = $("#inp_email").val();
-                            checkObj= checkDataSourceName('email', email, "该邮箱已存在");
+                            checkObj = checkDataSourceName('email', email, "该邮箱已存在");
                         }
                         if (!checkObj.result) {
                             return checkObj;
@@ -265,7 +266,7 @@ debugger
                     jsonModel = JSON.stringify(jsonModel);
                     win.ORGDEPTVAL = null;
                     dataModel.updateRemote("${contextRoot}/doctor/updateDoctor", {
-                        data: {doctorModelJsonData: doctorModelJsonData,jsonModel: jsonModel},
+                        data: {doctorModelJsonData: doctorModelJsonData, jsonModel: jsonModel},
                         success: function (data) {
                             waittingDialog.close();
                             if (data.successFlg) {
@@ -277,7 +278,7 @@ debugger
                                 $.Notice.error(data.errorMsg);
                             }
                         },
-                        error:function(){
+                        error: function () {
                             waittingDialog.close();
                             $.Notice.error('请求失败！');
                         }
@@ -301,11 +302,11 @@ debugger
                         },
                         isHidden: false,
                         show: false,
-                        onLoaded:function() {
+                        onLoaded: function () {
                             wait.close();
                             win.orgDeptDio.show();
                         },
-                        load:true
+                        load: true
                     });
                     win.orgDeptDio.hide();
                 }
