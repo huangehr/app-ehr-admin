@@ -265,17 +265,14 @@ public class DoctorController extends BaseUIController {
                 resultStr = templates.doPost(comUrl + url, params);
                 result = toModel(resultStr, Envelop.class);
                 if (result.isSuccessFlg()) {
-                    DoctorDetailModel addDoctorModel = toModel(toJson(result.getObj()), DoctorDetailModel.class);
+                    DoctorDetailModel doctorModel = toModel(toJson(result.getObj()), DoctorDetailModel.class);
                     if (!StringUtils.isEmpty(restStream)) {
-                        imageId = fileUpload(String.valueOf(addDoctorModel.getId()), restStream, imageName);
+                        imageId = fileUpload(String.valueOf(doctorModel.getId()), restStream, imageName);
                     }
                     if (!StringUtils.isEmpty(imageId)) {
-                        addDoctorModel.setPhoto(imageId);
-
-//                        params.remove("doctor_json_data");
-//                        params.add("doctor_json_data", toJson(doctorModel));
-//                        resultStr = templates.doPut(comUrl + url, params);
-                        params.add("doctor_json_data", toJson(addDoctorModel));
+                        doctorModel.setPhoto(imageId);
+                        params.remove("doctor_json_data");
+                        params.add("doctor_json_data", toJson(doctorModel));
                         params.add("model", jsonModel);
                         resultStr = templates.doPut(comUrl + url, params);
                     }
