@@ -65,40 +65,19 @@ public class OrgImportController extends ExtendController<OrgService> {
             List<OrgMsgModel> saveLs = new ArrayList<OrgMsgModel>();
             //获取机构代码
             Set<String> orgCodes = findExistOrgCode(toJson(excelReader.getRepeat().get("orgCode")));
-            //根据字典代码获取字典项列表--机构类型,如:行政\科研等
-            Set<String> orgTypes = getDictEntryByDictId("7");
-            //根据字典代码获取字典项列表--入驻方式：直连/第三方接入
-            Set<String> settledWays = getDictEntryByDictId("8");
-            //根据字典代码获取字典项列表--医院类型：综合性医院/眼科医院
-            Set<String> hosTypeIds = getDictEntryByDictId("62");
-            //根据字典代码获取字典项列表--医院归属：省属/市属。
-            Set<String> ascriptionTypes = getDictEntryByDictId("63");
-            //根据字典代码获取字典项列表--中西医标识：中医/西医
-            Set<String> zxys = getDictEntryByDictId("70");
-            //根据字典代码获取字典项列表--经济类型代码，如：国有全资\集体全资等
-            Set<String> hosEconomics = getCodeDictEntryByDictId("102");
-            //卫生机构分类代码信息
-            Set<String> classifications = getHealthCategoryList();
-
             writerResponse(response, 35 + "", "l_upd_progress");
             OrgMsgModel model;
             for (int i = 0; i < correctLs.size(); i++) {
                 model = correctLs.get(i);
-                model = getAdressIdByName(model, model.getProvinceName(), model.getCityName(), model.getDistrict());
-                if (model.isAdDivisionExist()) {
-                    if (validate(model, orgCodes, orgTypes, settledWays, hosTypeIds, ascriptionTypes, zxys, hosEconomics, classifications) == 0) {
-                        errorLs.add(model);
-                    } else {
-                        OrgMsgModel mod = getDictEntryKeyByName(model);
-                        saveLs.add(mod);
-                    }
-                } else {
+                if (validate(model, orgCodes) == 0) {
                     errorLs.add(model);
+                } else {
+                    saveLs.add(model);
                 }
             }
             for (int i = 0; i < errorLs.size(); i++) {
                 model = errorLs.get(i);
-                validate(model, orgCodes, orgTypes, settledWays, hosTypeIds, ascriptionTypes, zxys, hosEconomics, classifications);
+                validate(model, orgCodes);
             }
             writerResponse(response, 55 + "", "l_upd_progress");
             Map rs = new HashMap<>();
@@ -152,50 +131,12 @@ public class OrgImportController extends ExtendController<OrgService> {
         });
     }
 
-    private int validate(OrgMsgModel model, Set<String> orgCodes, Set<String> orgTypes, Set<String> settledWays,
-                         Set<String> hosTypeIds, Set<String> ascriptionTypes,
-                         Set<String> zxys, Set<String> hosEconomics, Set<String> classifications) {
+    private int validate(OrgMsgModel model, Set<String> orgCodes) {
         int rs = 1;
         if (orgCodes.contains(model.getOrgCode())) {
             model.addErrorMsg("orgCode", "该机构代码已存在，请核对！");
             rs = 0;
         }
-        if (!orgTypes.contains(model.getOrgType())) {
-            model.addErrorMsg("orgType", "该机构类型不存在，请参考系统字典的机构类型！");
-            rs = 0;
-        }
-        if (!settledWays.contains(model.getSettledWay())) {
-            model.addErrorMsg("settledWay", "该入驻方式不存在，请参考系统字典的连接方式！");
-            rs = 0;
-        }
-        if (!hosTypeIds.contains(model.getHosTypeId())) {
-            model.addErrorMsg("hosTypeId", "该医院类型不存在，请参考系统字典的医院类型！");
-            rs = 0;
-        }
-        if (!ascriptionTypes.contains(model.getAscriptionType())) {
-            model.addErrorMsg("ascriptionType", "该医院归属不存在，请参考系统字典的医院归属！");
-            rs = 0;
-        }
-        if (!zxys.contains(model.getZxy())) {
-            model.addErrorMsg("zxy", "该中西医标识不存在，请参考系统字典的中西医标识！");
-            rs = 0;
-        }
-
-        if (!hosEconomics.contains(model.getHosEconomic())) {
-            model.addErrorMsg("hosEconomic", "该经济类型代码不存在，请参考系统字典的经济类型代码！");
-            rs = 0;
-        }
-
-        if (!classifications.contains(model.getClassification())) {
-            model.addErrorMsg("classification", "该卫生机构分类不存在，请参考系统卫生机构分类！");
-            rs = 0;
-        }
-
-        if (!classifications.contains(model.getBigClassification())) {
-            model.addErrorMsg("bigClassification", "该卫生机构大分类不存在，请参考卫生机构大分类！");
-            rs = 0;
-        }
-
         return rs;
     }
 
@@ -297,47 +238,21 @@ public class OrgImportController extends ExtendController<OrgService> {
                 });
                 Map<String, Set> repeat = new HashMap<>();
                 repeat.put("orgCode", new HashSet<String>());
-                repeat.put("orgTypes", new HashSet<String>());
-                repeat.put("settledWays", new HashSet<String>());
-                repeat.put("hosTypeIds", new HashSet<String>());
-                repeat.put("ascriptionTypes", new HashSet<String>());
-                repeat.put("zxys", new HashSet<String>());
-
                 for (OrgMsgModel model : orgMsgModels) {
                     model.validate(repeat);
                 }
                 //获取机构代码
                 Set<String> orgCodes = findExistOrgCode(toJson(repeat.get("orgCode")));
-                //根据字典代码获取字典项列表--机构类型,如:行政\科研等
-                Set<String> orgTypes = getDictEntryByDictId("7");
-                //根据字典代码获取字典项列表--入驻方式：直连/第三方接入
-                Set<String> settledWays = getDictEntryByDictId("8");
-                //根据字典代码获取字典项列表--医院类型：综合性医院/眼科医院
-                Set<String> hosTypeIds = getDictEntryByDictId("62");
-                //根据字典代码获取字典项列表--医院归属：省属/市属。
-                Set<String> ascriptionTypes = getDictEntryByDictId("63");
-                //根据字典代码获取字典项列表--中西医标识：中医/西医
-                Set<String> zxys = getDictEntryByDictId("70");
-                //根据字典代码获取字典项列表--经济类型代码，如：国有全资\集体全资等
-                Set<String> hosEconomics = getCodeDictEntryByDictId("102");
-                //卫生机构分类代码信息
-                Set<String> classifications = getHealthCategoryList();
                 OrgMsgModel model;
                 List saveLs = new ArrayList<>();
                 for (int i = 0; i < orgMsgModels.size(); i++) {
                     model = orgMsgModels.get(i);
-                    model = getAdressIdByName(model, model.getProvinceName(), model.getCityName(), model.getDistrict());
-                    if (model.isAdDivisionExist()) {
-                        if (validate(model, orgCodes, orgTypes, settledWays, hosTypeIds, ascriptionTypes, zxys, hosEconomics, classifications) == 0 || model.errorMsg.size() > 0) {
+                        if (validate(model, orgCodes) == 0 || model.errorMsg.size() > 0) {
                             all.set(all.indexOf(model), model);
                         } else {
-                            OrgMsgModel mod = getDictEntryKeyByName(model);
-                            saveLs.add(mod);
+                            saveLs.add(model);
                             all.remove(model);
                         }
-                    } else {
-                        all.set(all.indexOf(model), model);
-                    }
                 }
                 saveMeta(toJson(saveLs));
                 ObjectFileRW.write(file, all);
@@ -351,134 +266,6 @@ public class OrgImportController extends ExtendController<OrgService> {
         }
     }
 
-    //根据字典代码获取字典项列表
-    private Set<String> getDictEntryByDictId(String dictId) throws Exception {
-        MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<String, String>();
-        conditionMap.add("dictId", dictId);
-        RestTemplates template = new RestTemplates();
-        String rs = template.doPost(service.comUrl + "/systemDict/getDictEntryByDictId/" + dictId, conditionMap);
-        Envelop envelopAddr = objectMapper.readValue(rs, Envelop.class);
-        Set<String> st = new HashSet<String>();
-        List<MDictionaryEntry> mDictionaryEntryList = (List<MDictionaryEntry>) getEnvelopList(envelopAddr.getDetailModelList(),
-                new ArrayList<MDictionaryEntry>(), MDictionaryEntry.class);
-        if (null != mDictionaryEntryList && mDictionaryEntryList.size() > 0) {
-            for (MDictionaryEntry mDictionaryEntry : mDictionaryEntryList) {
-                st.add(mDictionaryEntry.getValue());
-            }
-        }
-        return st;
-    }
 
-    //根据地址获取地址ID并获取最小区域
-    private OrgMsgModel getAdressIdByName(OrgMsgModel model, String province, String city, String district) throws Exception {
-        String urlAddr = ServiceApi.Geography.AddressDictByFields;
-        Map<String, Object> args = new HashMap<>();
-        int pid = 0;
-        int AdDivision = 0;
-        model.setAdDivisionExist(false);
-        String[] values = {province, city, district};
-        String[] fields = {"name"};
-        for (int i = 0; i < 3; i++) {
-            args.put("fields", fields[0]);
-            args.put("values", values[i]);
-            String envelopStrAddr = HttpClientUtil.doGet(comUrl + urlAddr, args, username, password);
-            Envelop envelopAddr = objectMapper.readValue(envelopStrAddr, Envelop.class);
-            if (envelopAddr.isSuccessFlg() && envelopAddr.getDetailModelList().size() > 0) {
-                List<MGeographyDict> mlist = (List<MGeographyDict>) getEnvelopList(envelopAddr.getDetailModelList(),
-                        new ArrayList<MGeographyDict>(), MGeographyDict.class);
-                for (MGeographyDict geographyDict : mlist) {
-                    if (pid <= geographyDict.getLevel()) {
-                        pid = geographyDict.getLevel();
-                        model.setAdDivisionExist(true);
-                        model.setAdministrativeDivision(geographyDict.getId());
-                    }
-                }
-            }
-        }
-        if (pid == 0) {
-            model.addErrorMsg("isAdDivisionExist", "该机构机构地址格式不正确，请核对！");
-        }
-        return model;
-    }
 
-    //根据字典代码获取字典项Map
-    private Map<String, String> getDictEntryMapByDictId(String dictId) throws Exception {
-        MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<String, String>();
-        conditionMap.add("dictId", dictId);
-        RestTemplates template = new RestTemplates();
-        String rs = template.doPost(service.comUrl + "/systemDict/getDictEntryByDictId/" + dictId, conditionMap);
-        Envelop envelopAddr = objectMapper.readValue(rs, Envelop.class);
-        List<MDictionaryEntry> mDictionaryEntryList = (List<MDictionaryEntry>) getEnvelopList(envelopAddr.getDetailModelList(),
-                new ArrayList<MDictionaryEntry>(), MDictionaryEntry.class);
-        Map<String, String> map = new HashMap<>();
-        if (null != mDictionaryEntryList && mDictionaryEntryList.size() > 0) {
-            for (MDictionaryEntry mDictionaryEntry : mDictionaryEntryList) {
-                map.put(mDictionaryEntry.getCode(), mDictionaryEntry.getValue());
-            }
-        }
-        return map;
-    }
-
-    private OrgMsgModel getDictEntryKeyByName(OrgMsgModel model) {
-        try {
-            //根据字典代码获取字典项列表--机构类型,如:行政\科研等
-            Map<String, String> orgTypes = getDictEntryMapByDictId("7");
-            //根据字典代码获取字典项列表--入驻方式：直连/第三方接入
-            Map<String, String> settledWays = getDictEntryMapByDictId("8");
-            //根据字典代码获取字典项列表--医院类型：综合性医院/眼科医院
-            Map<String, String> hosTypeIds = getDictEntryMapByDictId("62");
-            //根据字典代码获取字典项列表--医院归属：省属/市属。
-            Map<String, String> ascriptionTypes = getDictEntryMapByDictId("63");
-            //根据字典代码获取字典项列表--中西医标识：中医/西医
-            Map<String, String> zxys = getDictEntryMapByDictId("70");
-            for (String key : orgTypes.keySet()) {
-                if (model.getOrgType().equals(orgTypes.get(key).toString())) {
-                    model.setOrgType(key);
-                }
-            }
-            for (String key : settledWays.keySet()) {
-                if (model.getSettledWay().equals(settledWays.get(key).toString())) {
-                    model.setSettledWay(key);
-                }
-            }
-            for (String key : hosTypeIds.keySet()) {
-                if (model.getHosTypeId().equals(hosTypeIds.get(key).toString())) {
-                    model.setHosTypeId(key);
-                }
-            }
-            for (String key : ascriptionTypes.keySet()) {
-                if (model.getAscriptionType().equals(ascriptionTypes.get(key).toString())) {
-                    model.setAscriptionType(key);
-                }
-            }
-            for (String key : zxys.keySet()) {
-                if (model.getZxy().equals(zxys.get(key).toString())) {
-                    model.setZxy(key);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return model;
-    }
-
-    /**
-     * 获取所有的卫生机构类别
-     *
-     * @return
-     * @throws Exception
-     */
-    public Set<String> getHealthCategoryList() throws Exception {
-        String rs = HttpClientUtil.doGet(comUrl + ServiceApi.Org.HealthCategory.FindAll, username, password);
-        Envelop envelopAddr = objectMapper.readValue(rs, Envelop.class);
-        Set<String> st = new HashSet<String>();
-        List<MOrgHealthCategory> mOrgHealthCategoryList = (List<MOrgHealthCategory>) getEnvelopList(envelopAddr.getDetailModelList(),
-                new ArrayList<MOrgHealthCategory>(), MOrgHealthCategory.class);
-        if (null != mOrgHealthCategoryList && mOrgHealthCategoryList.size() > 0) {
-            for (MOrgHealthCategory mOrgHealthCategory : mOrgHealthCategoryList) {
-                st.add(mOrgHealthCategory.getCode());
-            }
-        }
-        return st;
-    }
 }
