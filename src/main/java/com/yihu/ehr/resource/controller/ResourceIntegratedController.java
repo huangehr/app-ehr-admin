@@ -65,6 +65,8 @@ public class ResourceIntegratedController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
+        //标准分类
+        params.put("categoryCode", "standard");
         HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
         return toModel(response.getContent(), Envelop.class);
     }
@@ -83,7 +85,10 @@ public class ResourceIntegratedController extends BaseUIController {
     @ResponseBody
     public Envelop getCategory() throws Exception {
         String url = "/resource/api/v1.0/resources/integrated/category";
-        HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, null);
+        Map<String, Object> params = new HashMap<>();
+        //标准分类
+        params.put("categoryCode", "standard");
+        HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
         return toModel(response.getContent(), Envelop.class);
     }
 
@@ -112,6 +117,8 @@ public class ResourceIntegratedController extends BaseUIController {
         if (!StringUtils.isEmpty(filters)) {
             params.put("filters", filters);
         }
+        //标准分类
+        params.put("categoryCode", "standard");
         HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
         Envelop envelop =  toModel(response.getContent(), Envelop.class);
         return envelop.getDetailModelList();

@@ -47,7 +47,7 @@
                         height: 450,
                         isScroll: true,
                         async: false,
-                        columns: [{display: '姓名', name: 'userName', width: '100%'}],
+                        columns: [{display: '姓名', name: 'userName',  width: '50%'},{display: '身份证号', name: 'idCardNo', width: '50%'}],
                         onAfterShowData: function (data) {
 							//获取角色组所有配置的人员
 							dataModel.updateRemote("${contextRoot}/userRoles/roleUsersByRoleId", {
@@ -69,7 +69,7 @@
                         isScroll: true,
                         async: false,
                         checkbox: true,
-                        columns: [{display: '姓名', name: 'realName', width: '100%'}],
+                        columns: [{display: '姓名', name: 'realName', width: '50%'},{display: '身份证号', name: 'idCardNo', width: '50%'}],
                         onCheckRow: function (checked, data, rowid, rowdata) {
                             var url = checked ? 'userCreate' : 'userDelete';
                             dataModel.updateRemote("${contextRoot}/userRoles/" + url, {

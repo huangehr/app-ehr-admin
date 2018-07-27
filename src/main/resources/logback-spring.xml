@@ -39,7 +39,7 @@
 	<appender name="business_m" class="com.yihu.base.es.ElasticsearchAppender">
 		<!--支持集群 逗号分割  上饶正式线172.10.10.5-->
 		<!-- 测试线 172.19.103.9:9200 -->
-		<hosts>http://172.10.10.5:9200</hosts>
+		<hosts>http://172.19.103.9:9200</hosts>
 		<!--es index 名称-->
 		<index>businesslog</index>
 		<!--es type 名称-->

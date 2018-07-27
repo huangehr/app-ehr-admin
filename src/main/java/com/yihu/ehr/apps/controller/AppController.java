@@ -168,6 +168,9 @@ public class AppController extends BaseUIController {
         String url = "/apps";
         MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<String, String>();
         try {
+            if(null!=appDetailModel&&appDetailModel.getCode().length()>30){
+                return failed("应用代码长度不超过30");
+            }
             //不能用 @ModelAttribute(SessionAttributeKeys.CurrentUser)获取，会与AppDetailModel中的id属性有冲突
             UsersModel userDetailModel = getCurrentUserRedis(request);
             appDetailModel.setCreator(userDetailModel.getId());
@@ -200,6 +203,9 @@ public class AppController extends BaseUIController {
         String resultStr = "";
         String url = "/apps";
         try {
+            if(null!=appDetailModel&&appDetailModel.getCode().length()>30){
+                return failed("应用代码长度不超过30");
+            }
             RestTemplates template = new RestTemplates();
             //获取app
             String id = appDetailModel.getId();
