@@ -3,7 +3,6 @@ package com.yihu.ehr.resource.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yihu.ehr.agModel.resource.RsCategoryModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.model.resource.MChartInfoModel;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -17,6 +16,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClientException;
 
@@ -77,6 +77,15 @@ public class ResourceManageController extends BaseUIController {
             LogService.getLogger(ResourceInterfaceController.class).error(ex.getMessage());
         }
         return "simpleView";
+    }
+
+    @RequestMapping(value = "/resourceInfo", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object getResourceInfo(String id) throws Exception {
+        String url = "/resources/" + id;
+        String envelopStr = "";
+        envelopStr = HttpClientUtil.doGet(comUrl + url, username, password);
+        return envelopStr;
     }
 
     /**

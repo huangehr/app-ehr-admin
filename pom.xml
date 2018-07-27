@@ -285,7 +285,7 @@
 		<dependency>
 			<groupId>com.yihu</groupId>
 			<artifactId>common-logback-starter</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.3</version>
 		</dependency>
 	</dependencies>
 	<build>

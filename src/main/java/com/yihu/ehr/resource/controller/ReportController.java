@@ -432,23 +432,22 @@ public class ReportController extends BaseUIController {
             for (RsReportViewModel view : rsReportViewList) {
                 String resourceEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.Resources + "/" + view.getResourceId(), params, username, password);
                 RsResourcesModel rsResourcesModel = getEnvelopModel(objectMapper.readValue(resourceEnvelopStr, Envelop.class).getObj(), RsResourcesModel.class);
-                if( rsResourcesModel.getEchartType().equals("twoDimensional")){//特殊二维表报表
+                if (rsResourcesModel.getEchartType().equals("twoDimensional")){//特殊二维表报表
                     //数据另外查询
-                }else {
+                } else {
                     params.clear();
-                    params.put("resourceId", view.getResourceId());
-                    String queryEnvelopStr = HttpClientUtil.doGet(comUrl + ServiceApi.Resources.QueryByResourceId, params, username, password);
-                    String queryStr = objectMapper.readValue(queryEnvelopStr, Envelop.class).getObj().toString();
-
+                    params.put("filters", "resourcesId=" + view.getResourceId() + ";paramKey=q");
+                    String queryStr = HttpClientUtil.doGet(adminInnerUrl + "/resource/api/v1.0/resources/params/no_paging", params, username, password);
+                    List<Map<String, String>> queryList = objectMapper.readValue(queryStr, List.class);
                     Map<String, Object> viewInfo = new HashMap<>();
-                    Map<String, Object> conditions = translateViewCondition(rsResourcesModel.getDataSource(), queryStr);
+                    Map<String, Object> conditions = translateViewCondition(rsResourcesModel.getDataSource(), queryList);
                     viewInfo.put("conditions", conditions); // 视图数据过滤条件。
                     List<Map<String, Object>> options = new ArrayList<>();
                     if (rsResourcesModel.getDataSource() == 1) {
                         // 档案视图场合
                         viewInfo.put("type", "record");
                         viewInfo.put("resourceCode", rsResourcesModel.getCode());
-                        viewInfo.put("searchParams", queryStr);
+                        viewInfo.put("searchParams", queryList.size() > 0 ? queryList.get(0).get("paramValue") : "[]");
                         // 获取展示的列名
                         params.clear();
                         params.put("resourcesCode", rsResourcesModel.getCode());
@@ -556,56 +555,58 @@ public class ReportController extends BaseUIController {
     /**
      * 转换视图数据筛选条件
      */
-    private Map<String, Object> translateViewCondition(Integer type, String queryStr) throws IOException, ParseException {
+    private Map<String, Object> translateViewCondition(Integer type, List<Map<String, String>> queryList) throws IOException, ParseException {
         Map<String, Object> conditions = new HashMap<>();
         if (type == 1) {
             // 档案视图场合
-            List<Map<String, Object>> filterList = objectMapper.readValue(queryStr, new TypeReference<List<Map<String, Object>>>() {
-            });
-            for (int i = 0; i < filterList.size(); i++) {
-                Map filter = filterList.get(i);
-                String field = filter.get("field").toString();
-                String condition = filter.get("condition").toString();
-                String value = filter.get("value").toString();
-                if ("event_date".equals(field)) {
-                    // 期间
-                    String date = DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(value));
-                    if (condition.contains(">")) {
-                        conditions.put("startDate", date);
-                    } else if (condition.contains("<")) {
-                        conditions.put("endDate", date);
+            for (int i = 0; i < queryList.size(); i++) {
+                List<Map<String, String>> paramList = objectMapper.readValue(queryList.get(i).get("paramValue"), List.class);
+                for (Map<String, String> filter : paramList) {
+                    String field = filter.get("field").toString();
+                    String condition = filter.get("condition").toString();
+                    String value = filter.get("value").toString();
+                    if ("event_date".equals(field)) {
+                        // 期间
+                        String date = DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(value));
+                        if (condition.contains(">")) {
+                            conditions.put("startDate", date);
+                        } else if (condition.contains("<")) {
+                            conditions.put("endDate", date);
+                        }
                     }
-                }
-                if ("EHR_000241".equals(field)) {
-                    // 地区
-                    conditions.put("area", value);
+                    if ("EHR_000241".equals(field)) {
+                        // 地区
+                        conditions.put("area", value);
+                    }
                 }
             }
         } else if (type == 2) {
             // 指标视图场合
-            Map filter = objectMapper.readValue(queryStr, Map.class);
-            if (filter.get("startTime") != null) {
-                // 起始日期
-                String date = filter.get("startTime").toString();
-                conditions.put("startDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
+            for (int i = 0; i < queryList.size(); i ++) {
+                Map<String, String> filter = objectMapper.readValue(queryList.get(i).get("paramValue"), Map.class);
+                if (filter.get("startTime") != null) {
+                    // 起始日期
+                    String date = filter.get("startTime").toString();
+                    conditions.put("startDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
+                }
+                if (filter.get("endTime") != null) {
+                    // 终止日期
+                    String date = filter.get("endTime").toString();
+                    conditions.put("endDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
+                }
+                // 地区
+                String area = "";
+                if (filter.get("province") != null) {
+                    area += filter.get("province").toString();
+                }
+                if (filter.get("city") != null) {
+                    area += filter.get("city").toString();
+                }
+                if (filter.get("town") != null) {
+                    area += filter.get("town").toString();
+                }
+                conditions.put("area", area);
             }
-            if (filter.get("endTime") != null) {
-                // 终止日期
-                String date = filter.get("endTime").toString();
-                conditions.put("endDate", DateTimeUtil.simpleDateFormat(DateTimeUtil.simpleDateParse(date)));
-            }
-            // 地区
-            String area = "";
-            if (filter.get("province") != null) {
-                area += filter.get("province").toString();
-            }
-            if (filter.get("city") != null) {
-                area += filter.get("city").toString();
-            }
-            if (filter.get("town") != null) {
-                area += filter.get("town").toString();
-            }
-            conditions.put("area", area);
         }
         return conditions;
     }

@@ -301,7 +301,7 @@ public class LoginController extends BaseUIController {
         //获取code
         HttpSession session = request.getSession();
         AccessToken token = (AccessToken) session.getAttribute("token");
-        String user = token.getUser();
+        String _token = token.getAccessToken();
         boolean isInnerIp = true;
         if(session.getAttribute("isInnerIp") != null){
             isInnerIp = (Boolean) session.getAttribute("isInnerIp");
@@ -309,10 +309,10 @@ public class LoginController extends BaseUIController {
         //System.out.println("isInnerIp:" + isInnerIp);
         if (isInnerIp) {
             String url = browseClientUrl + "/app/home/html/signin.html?idCardNo=" + idCardNo;
-            response.sendRedirect(authorize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
+            response.sendRedirect(authorize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&token=" + _token);
         } else {
             String url = browseClientOutSizeUrl + "/app/home/html/signin.html?idCardNo=" + idCardNo;
-            response.sendRedirect(oauth2OutSize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&user=" + user);
+            response.sendRedirect(oauth2OutSize + "oauth/sso?response_type=token&client_id=" + clientId + "&redirect_uri=" + url + "&scope=read&token=" + _token);
         }
     }
 

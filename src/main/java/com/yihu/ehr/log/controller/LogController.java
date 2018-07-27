@@ -92,7 +92,7 @@ public class LogController extends BaseUIController {
     @RequestMapping("searchListLogs")
     @ResponseBody
     public Object searchListLogs(String patient,String type,String startTime ,String endTime ,String caller, int page, int rows) {
-        String url = "/dfs/api/v1.0/elasticSearch/pageSort";
+        String url = "/dfs/api/v1.0/elasticSearch/page";
         String index = "";
         String sorts = "-time";
         if("3".equals(type)){

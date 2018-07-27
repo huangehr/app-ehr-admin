@@ -75,7 +75,7 @@ public class SystemDictController extends BaseUIController {
             return failed("字典名称不能为空");
         }
         SystemDictModel systemDictModel = new SystemDictModel();
-        systemDictModel.setName(name);
+        systemDictModel.setName(name.replace(" ", ""));
         systemDictModel.setAuthorId("System");
         params.put("dictionary", toJson(systemDictModel));
         try {
@@ -128,7 +128,7 @@ public class SystemDictController extends BaseUIController {
         try {
             Map<String, Object> dictParams = new HashMap<>();
             dictParams.put("id", dictId);
-            dictParams.put("name", name);
+            dictParams.put("name", name.replace(" ", ""));
             String url = "/basic/api/v1.0/dictionaries";
             HttpResponse httpResponse = HttpUtils.doJsonPut(adminInnerUrl + url, toJson(dictParams), null, username, password);
             if (httpResponse.isSuccessFlg()) {
@@ -198,8 +198,8 @@ public class SystemDictController extends BaseUIController {
 
         SystemDictEntryModel dictEntryModel = new SystemDictEntryModel();
         dictEntryModel.setDictId(dictId);
-        dictEntryModel.setCode(code);
-        dictEntryModel.setValue(value);
+        dictEntryModel.setCode(code.replace(" ", ""));
+        dictEntryModel.setValue(value.replace(" ", ""));
         dictEntryModel.setSort(sort);
         dictEntryModel.setCatalog(catalog);
         params.put("entry",toJson(dictEntryModel));
@@ -208,7 +208,7 @@ public class SystemDictController extends BaseUIController {
             String urlCheck = "/dictionaries/existence/" + dictId ;
             Map<String, Object> paramsCheck = new HashMap<>();
             paramsCheck.put("dict_id",dictId);
-            paramsCheck.put("code",code);
+            paramsCheck.put("code",code.replace(" ", ""));
             String resultCheckStr = HttpClientUtil.doGet(comUrl + urlCheck, paramsCheck, username, password);
 
             if(Boolean.parseBoolean(resultCheckStr)){
@@ -269,8 +269,8 @@ public class SystemDictController extends BaseUIController {
 
         SystemDictEntryModel dictEntryModel = new SystemDictEntryModel();
         dictEntryModel.setDictId(dictId);
-        dictEntryModel.setCode(code);
-        dictEntryModel.setValue(value);
+        dictEntryModel.setCode(code.replace(" ", ""));
+        dictEntryModel.setValue(value.replace(" ", ""));
         dictEntryModel.setSort(sort);
         dictEntryModel.setCatalog(catalog);
         params.put("dictionary",toJson(dictEntryModel));
@@ -285,7 +285,7 @@ public class SystemDictController extends BaseUIController {
 
             if(result.isSuccessFlg()){
                 SystemDictEntryModel systemDictEntryModel = getEnvelopModel(result.getObj(),SystemDictEntryModel.class);
-                systemDictEntryModel.setValue(value);
+                systemDictEntryModel.setValue(value.replace(" ", ""));
                 systemDictEntryModel.setSort(sort);
                 systemDictEntryModel.setCatalog(catalog);
                 params.put("entry",toJson(systemDictEntryModel));
