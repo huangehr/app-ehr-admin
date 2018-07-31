@@ -1075,9 +1075,38 @@ public class UserRolesController extends BaseUIController {
 
     // TODO 维护用户类别关联的角色组信息
 
+
     // TODO 基于用户类型查询类型定义的默认角色组信息
+    @RequestMapping("/user/usertype/roles")
+    public Envelop getUserTypeRolesByUserType(String userTypeId) {
+        String url = "/basic/api/v1.0/user/usertype/roles";
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeId",userTypeId);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
 
     // TODO 基于用户，查询用户所在部门及科室信息列表
-
-
+    @RequestMapping("/user/getOrgDepts")
+    public Envelop getOrgDeptByUserId(String userId) {
+        String url = "/basic/api/v1.0/orgDeptMember/getOrgDepts";
+        Envelop envelop = new Envelop();
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId",userId);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
 }
