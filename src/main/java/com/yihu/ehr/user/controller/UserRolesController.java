@@ -1069,12 +1069,78 @@ public class UserRolesController extends BaseUIController {
     }
 
 
-    // TODO 更新用户类别的生失效状态
+    /**
+     * 查询用户类别
+     * @param searchNm 用户类别名称
+     * @param page 当前页
+     * @param rows 分页大小
+     * @return
+     */
+    @RequestMapping("/user/searchUserType")
+    @ResponseBody
+    public Envelop searchUserType(String searchNm, int page, int rows) {
+        String url = "/basic/api/v1.0/user/searchUserType";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("fields", "");
+            params.put("filters", "name?" + searchNm);
+            params.put("sorts", "");
+            params.put("page", page);
+            params.put("size", rows);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
 
-    // TODO 复制用户类别，及其下定义的角色组信息
 
-    // TODO 维护用户类别关联的角色组信息
+    /**
+     * 复制用户类别，及其下定义的角色组信息
+     * @param userTypeId 用户类别id
+     * @return
+     */
+    @RequestMapping("/user/getUserTypeById")
+    @ResponseBody
+    public Envelop getUserTypeById(int userTypeId) {
+        String url = "/basic/api/v1.0/user/getUserTypeById";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeId", userTypeId);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
 
+    /**
+     * 新增、编辑、生失效用户类别关联的角色组信息
+     * @param userTypeJson 用户类别json串
+     * @return
+     */
+    @RequestMapping("/user/updateUserType")
+    @ResponseBody
+    public Envelop updateUserType(String userTypeJson) {
+        String url = "/basic/api/v1.0/user/updateUserType";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeJson",userTypeJson);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
 
     // TODO 基于用户类型查询类型定义的默认角色组信息
     @RequestMapping("/user/usertype/roles")
