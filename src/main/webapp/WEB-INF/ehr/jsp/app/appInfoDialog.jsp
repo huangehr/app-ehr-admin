@@ -29,7 +29,7 @@
 	}
 </style>
 <div id="div_app_info_form" data-role-form class="m-form-inline f-mt20 " data-role-form>
-	<%--<input type="hidden" id="inp_source_type"  data-attr-scan="sourceType" value="0">--%>
+	<input type="hidden" id="inp_doctorManageType"  data-attr-scan="doctorManageType" >
 
 	<div class="m-form-group">
 		<label><spring:message code="lbl.designation"/><spring:message code="spe.colon"/></label>
