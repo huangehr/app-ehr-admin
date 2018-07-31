@@ -25,7 +25,8 @@
 
 
         /* ************************** 变量定义结束 **************************** */
-
+        win.orgDeptDio = null;
+        win.ORGDEPTVAL = '';
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             userInfo.init();
@@ -78,6 +79,7 @@
             $toolbar: $('#div_toolbar'),
             $imageShow: $('#div_file_list'),
 			$jryycyc:$("#jryycyc"),//cyctodo
+            $divBtnShow: document.getElementById('divBtnShow'),
 
             init: function () {
 				var self = this;
@@ -346,6 +348,29 @@
                         }
                     });
                     return result;
+                };
+
+                // 选择机构部门
+                self.$divBtnShow.onclick = function () {
+                    var wait = $.Notice.waitting("请稍后...");
+                    win.orgDeptDio = win.$.ligerDialog.open({
+                        height: 620,
+                        width: 780,
+                        title: '选择机构部门',
+                        url: '${contextRoot}/doctor/selectOrgDept',
+                        urlParms: {
+                            idCardNo: self.$idCardNo.ligerGetComboBoxManager().getValue(),
+                            type: '${mode}'
+                        },
+                        isHidden: false,
+                        show: false,
+                        onLoaded:function() {
+                            wait.close();
+                            win.orgDeptDio.show();
+                        },
+                        load: true
+                    });
+                    win.orgDeptDio.hide();
                 }
 
                 //修改用户的点击事件
@@ -409,10 +434,17 @@
                 });
 
                 function updateUser(userModel) {
+                    var jsonModel = win.ORGDEPTVAL;
+                    if (jsonModel.length <= 0) {
+                        $.Notice.error('请选择机构部门');
+                        return;
+                    }
+
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
-                    dataModel.updateRemote("${contextRoot}/user/updateUser", {
-                        data: {userModelJsonData: userModelJsonData},
+                    dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
+                        data: {userModelJsonData: userModelJsonData,
+                            jsonModel: jsonModel },
                         success: function (data) {
                             if (data.successFlg) {
                                 win.closeUserInfoDialog();

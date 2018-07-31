@@ -13,6 +13,8 @@ import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.model.resource.MRsRolesResource;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
+import com.yihu.ehr.util.http.HttpResponse;
+import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
 import com.yihu.ehr.util.url.URLQueryBuilder;
@@ -589,7 +591,6 @@ public class UserRolesController extends BaseUIController {
         return resultStr;
     }
 
-
     //-------------------------------------------------------角色组---资源授权管理---开始----------------
     @RequestMapping("/resource/initial")
     public String resourceInitial(Model model, String backParams) {
@@ -715,7 +716,6 @@ public class UserRolesController extends BaseUIController {
         return envelop;
     }
 
-
     /**
      * 资源文件上传
      *
@@ -724,8 +724,7 @@ public class UserRolesController extends BaseUIController {
      */
     @RequestMapping("rolesIconFileUpload")
     @ResponseBody
-    public Object orgLogoFileUpload(
-            @RequestParam("iconFile") MultipartFile file) throws IOException {
+    public Object orgLogoFileUpload( @RequestParam("iconFile") MultipartFile file) throws IOException {
         Envelop result = new Envelop();
         InputStream inputStream = file.getInputStream();
         String fileName = file.getOriginalFilename(); //获取文件名
@@ -896,7 +895,6 @@ public class UserRolesController extends BaseUIController {
         return resultStr;
     }
 
-
     //获取所有有效机构列表
     @RequestMapping("/searchOrgs")
     @ResponseBody
@@ -996,7 +994,7 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
-    //获取用户角色组配置的所有 机构
+    //获取用户角色组配置的所有机构
     @RequestMapping("/roleOrgByRoleId")
     @ResponseBody
     public Object getRoleOrgListNoPage(String roleId) {
@@ -1014,4 +1012,72 @@ public class UserRolesController extends BaseUIController {
             return failed(ERR_SYSTEM_DES);
         }
     }
+
+    //基于用户，及用户类型、所属机构配置进行用户初始化授权，及机构部门关系维护
+    //主要用于新增用户、修改用户时调用，进行更新
+    public Envelop initUserRolesAndOrgRelation(String userId, int userType, int flag, String orgModel) {
+        String url = "/basic/api/v1.0/roles/roles/usertype/update";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId",userId);
+            params.put("userType",userType);
+            params.put("flag",flag);
+            params.put("orgModel",orgModel);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    //基于用户，所属机构配置进行用户机构部门关系维护
+    public Envelop initUserOrgRelation(String userId, String orgModel) {
+        String url = "/basic/api/v1.0/user/org/relation";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userId",userId);
+            params.put("orgModel",orgModel);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+    // TODO 新增用户类别
+    @RequestMapping("/user/usertype/create")
+    public Envelop updateUserType(String code, String name) {
+        String url = "/basic/api/v1.0/user/usertype";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("code",code);
+            params.put("name",name);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
+
+
+    // TODO 更新用户类别的生失效状态
+
+    // TODO 复制用户类别，及其下定义的角色组信息
+
+    // TODO 维护用户类别关联的角色组信息
+
+    // TODO 基于用户类型查询类型定义的默认角色组信息
+
+    // TODO 基于用户，查询用户所在部门及科室信息列表
+
+
 }

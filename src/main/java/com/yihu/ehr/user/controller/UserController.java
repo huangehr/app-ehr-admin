@@ -64,6 +64,8 @@ public class UserController extends BaseUIController {
 
     @Autowired
     private AddressController addressController;
+    @Autowired
+    private UserRolesController userRolesController;
 
     @RequestMapping("initial")
     public String userInitial(Model model) {
@@ -191,6 +193,7 @@ public class UserController extends BaseUIController {
         String userJsonDataModel = URLDecoder.decode(userModelJsonData,"UTF-8");
         UserDetailModel userDetailModel = mapper.readValue(userJsonDataModel, UserDetailModel.class);
 
+        // 个人头象图片信息上传
         request.setCharacterEncoding("UTF-8");
         InputStream inputStream = request.getInputStream();
         String imageName = request.getParameter("name");
@@ -202,9 +205,9 @@ public class UserController extends BaseUIController {
             fileBuffer = ArrayUtils.addAll(fileBuffer,ArrayUtils.subarray(tempBuffer,0,temp));
         }
         inputStream.close();
-
         String restStream = Base64.getEncoder().encodeToString(fileBuffer);
 
+        // 用户信息新增开始
         try {
             if (!StringUtils.isEmpty(userDetailModel.getId())) {
                 //修改
@@ -256,17 +259,13 @@ public class UserController extends BaseUIController {
             }else{
 
                 params.add("user_json_data", userJsonDataModel);
-
                 resultStr = templates.doPost(comUrl + url, params);
-
                 envelop = toModel(resultStr,Envelop.class);
                 UserDetailModel addUserModel = toModel(toJson(envelop.getObj()),UserDetailModel.class);
-
                 String imageId = fileUpload(addUserModel.getId(),restStream,imageName);
 
                 if (!StringUtils.isEmpty(imageId)){
                     addUserModel.setImgRemotePath(imageId);
-
                     String userData = templates.doGet(comUrl + "/users/admin/"+addUserModel.getId());
                     envelop = mapper.readValue(userData,Envelop.class);
                     String userJsonModel = mapper.writeValueAsString(envelop.getObj());
@@ -279,7 +278,6 @@ public class UserController extends BaseUIController {
                     resultStr = templates.doPut(comUrl + url, params);
 
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -287,6 +285,101 @@ public class UserController extends BaseUIController {
         }
         return resultStr;
 
+    }
+
+    @RequestMapping(value = "updateUserAndInitRoles", produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object updateUserAndInitRoles(String userModelJsonData, String orgModel,HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 1、参数初始化
+        String url = "/user/";
+        String resultStr = "";
+        String userId = "";
+        Envelop envelop = new Envelop();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        RestTemplates templates = new RestTemplates();
+
+        // 2、界面数据获取
+        String userJsonDataModel = URLDecoder.decode(userModelJsonData,"UTF-8");
+        UserDetailModel userDetailModel = mapper.readValue(userJsonDataModel, UserDetailModel.class);
+        String userType = userDetailModel.getUserType().toString();
+
+        // 3、个人头象图片信息上传
+        request.setCharacterEncoding("UTF-8");
+        InputStream inputStream = request.getInputStream();
+        String imageName = request.getParameter("name");
+
+        int temp = 0;
+        byte[] tempBuffer = new byte[1024];
+        byte[] fileBuffer = new byte[0];
+        while ((temp = inputStream.read(tempBuffer)) != -1) {
+            fileBuffer = ArrayUtils.addAll(fileBuffer,ArrayUtils.subarray(tempBuffer,0,temp));
+        }
+        inputStream.close();
+        String restStream = Base64.getEncoder().encodeToString(fileBuffer);
+
+        // 4、更新用户信息
+        try {
+            // 4-1、当用户信息存在的情况，调用修改方法
+            if (!StringUtils.isEmpty(userDetailModel.getId())) {
+                // 获取现有的用户数据
+                userId = userDetailModel.getId().toString();
+                String getUser = templates.doGet(comUrl + "/users/admin/"+userDetailModel.getId());
+                envelop = mapper.readValue(getUser,Envelop.class);
+                String userJsonModel = mapper.writeValueAsString(envelop.getObj());
+                UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                // 将界面上的维护信息维护到现有的数据中
+                userModel.setRealName(userDetailModel.getRealName());
+                userModel.setIdCardNo(userDetailModel.getIdCardNo());
+                userModel.setGender(userDetailModel.getGender());
+                userModel.setEmail(userDetailModel.getEmail());
+                userModel.setTelephone(userDetailModel.getTelephone());
+                userModel.setUserType(userType);
+                userModel.setImgLocalPath("");
+                // 基于传入的角色列表进行授权的维护，更新role_user,user_app表
+                userModel.setRole(userDetailModel.getRole());
+                String imageId = fileUpload(userModel.getId(),restStream,imageName);
+                if (!StringUtils.isEmpty(imageId)){
+                    userModel.setImgRemotePath(imageId);
+                }
+                userJsonDataModel = toJson(userModel);
+                params.add("user_json_data", userJsonDataModel);
+
+                resultStr = templates.doPut(comUrl + url, params);
+            }else{
+                //4-2、当用户信息不存在的情况，调用新增的方法
+                params.add("user_json_data", userJsonDataModel);
+                resultStr = templates.doPost(comUrl + url, params);
+                envelop = toModel(resultStr,Envelop.class);
+                UserDetailModel addUserModel = toModel(toJson(envelop.getObj()),UserDetailModel.class);
+                String imageId = fileUpload(addUserModel.getId(),restStream,imageName);
+
+                if (!StringUtils.isEmpty(imageId)){
+                    addUserModel.setImgRemotePath(imageId);
+                    String userData = templates.doGet(comUrl + "/users/admin/"+addUserModel.getId());
+                    envelop = mapper.readValue(userData,Envelop.class);
+                    String userJsonModel = mapper.writeValueAsString(envelop.getObj());
+                    UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
+                    userId = userModel.getId().toString();
+                    userModel.setImgRemotePath(imageId);
+                    params.remove("user_json_data");
+                    params.add("user_json_data",toJson(userModel));
+
+                    resultStr = templates.doPut(comUrl + url, params);
+                }
+            }
+            //4-3、进行用户机构关联关系维护
+            envelop = userRolesController.initUserOrgRelation( userId, orgModel);
+            if(!envelop.isSuccessFlg()){
+                envelop.setSuccessFlg(false);
+                envelop.setErrorMsg("初始化授权失败，请联系管理员进行手动授权操作！");
+                return envelop.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return failed(ERR_SYSTEM_DES);
+        }
+        return resultStr;
     }
 
     public String fileUpload(String userId,String inputStream,String fileName){
