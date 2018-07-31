@@ -34,6 +34,7 @@
 			$url: $("#inp_url"),
 			$outUrl: $("#inp_out_url"),
 			$manageType: $("#inp_dialog_manageType"),
+            $doctorManageType: $("#inp_doctorManageType"),
 			$description: $("#inp_description"),
 			$btnSave: $("#btn_save"),
 			$btnCancel: $("#btn_cancel"),
@@ -77,6 +78,7 @@
                  //$("input,select", this.$form).prop('disabled', false);
 				}
                 this.$form.attrScan();
+                debugger
                 if(mode !='new'){
                     app = ${model};
                     this.$form.Fields.fillValues({
@@ -93,7 +95,8 @@
                         outUrl:app.outUrl,
                         description:app.description,
                         code: app.code,
-                        manageType: app.manageType
+                        manageType: app.manageType,
+                        doctorManageType:app.doctorManageType
                     });
 					$("#inp_org_code").ligerGetComboBoxManager().setValue(app.org);
 					$("#inp_org_code").ligerGetComboBoxManager().setText(app.orgName);
@@ -146,6 +149,7 @@
                     }
                 });
                 this.$btnSave.click(function () {
+                    debugger
                     if(validator.validate()){
                         var wait = $.ligerDialog.waitting('正在保存中,请稍候...');
                         var role = '';

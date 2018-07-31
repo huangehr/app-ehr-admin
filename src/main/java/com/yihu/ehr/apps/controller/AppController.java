@@ -232,6 +232,7 @@ public class AppController extends BaseUIController {
                 appUpdate.setReleaseFlag(appDetailModel.getReleaseFlag());
                 appUpdate.setManageType(appDetailModel.getManageType());
                 appUpdate.setSourceType(appDetailModel.getSourceType());
+                appUpdate.setDoctorManageType(appDetailModel.getDoctorManageType());
                 //更新
                 MultiValueMap<String, String> conditionMap = new LinkedMultiValueMap<String, String>();
                 conditionMap.add("app", toJson(appUpdate));
