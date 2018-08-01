@@ -2,13 +2,11 @@ package com.yihu.ehr.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.fileresource.FileResourceModel;
-import com.yihu.ehr.agModel.resource.RsReportCategoryInfoModel;
 import com.yihu.ehr.agModel.resource.RsRolesResourceModel;
 import com.yihu.ehr.agModel.user.RoleFeatureRelationModel;
 import com.yihu.ehr.agModel.user.RoleOrgModel;
 import com.yihu.ehr.agModel.user.RoleUserModel;
 import com.yihu.ehr.agModel.user.RolesModel;
-import com.yihu.ehr.constants.ErrorCode;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.model.resource.MRsRolesResource;
 import com.yihu.ehr.util.HttpClientUtil;
@@ -1071,20 +1069,25 @@ public class UserRolesController extends BaseUIController {
 
     /**
      * 查询用户类别
-     * @param searchNm 用户类别名称
+     * @param searchParm 用户类别名称
      * @param page 当前页
      * @param rows 分页大小
      * @return
      */
     @RequestMapping("/user/searchUserType")
     @ResponseBody
-    public Envelop searchUserType(String searchNm, int page, int rows) {
+    public Envelop searchUserType(String searchParm, int page, int rows) {
         String url = "/basic/api/v1.0/user/searchUserType";
         Envelop envelop;
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("fields", "");
-            params.put("filters", "name?" + searchNm);
+            StringBuilder s=new StringBuilder();
+            if (!StringUtils.isEmpty(searchParm)) {
+                s.append("name?" + searchParm );
+            }
+            String filters = s.toString();
+            params.put("filters", filters);
             params.put("sorts", "");
             params.put("page", page);
             params.put("size", rows);
