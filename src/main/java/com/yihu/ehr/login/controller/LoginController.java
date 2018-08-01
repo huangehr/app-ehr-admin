@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yihu.ehr.agModel.app.AppFeatureModel;
 import com.yihu.ehr.agModel.user.AccessToken;
-import com.yihu.ehr.agModel.user.RoleOrgModel;
 import com.yihu.ehr.agModel.user.UserDetailModel;
 import com.yihu.ehr.agModel.user.UsersModel;
 import com.yihu.ehr.common.constants.AuthorityKey;
@@ -12,18 +11,13 @@ import com.yihu.ehr.common.utils.EnvelopExt;
 import com.yihu.ehr.constants.AgAdminConstants;
 import com.yihu.ehr.constants.ServiceApi;
 import com.yihu.ehr.constants.SessionAttributeKeys;
-import com.yihu.ehr.model.geography.MGeographyDict;
-import com.yihu.ehr.model.org.MOrganization;
 import com.yihu.ehr.model.user.EhrUserSimple;
-import com.yihu.ehr.model.user.MRoleOrg;
 import com.yihu.ehr.util.HttpClientUtil;
 import com.yihu.ehr.util.controller.BaseUIController;
 import com.yihu.ehr.util.http.HttpResponse;
 import com.yihu.ehr.util.http.HttpUtils;
 import com.yihu.ehr.util.http.IPInfoUtils;
-import com.yihu.ehr.util.log.LogService;
 import com.yihu.ehr.util.rest.Envelop;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,10 +31,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.rmi.MarshalledObject;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -359,6 +349,8 @@ public class LoginController extends BaseUIController {
                 session.setAttribute(AuthorityKey.UserRoles, roleList);
                 //获取角色机构
                 List<Map<String, Object>> roleOrgModels = gerRolesOrgs(roleList);
+                //获取默认机构,默认的角色只查看本机构的数据
+                List<String> listStr = gerOrgsByUserId(userId);
                 if (roleOrgModels.size() > 0){
                     Set<String> roleOrgCodes = new HashSet<>();
                     roleOrgModels.forEach(item -> {
@@ -367,7 +359,11 @@ public class LoginController extends BaseUIController {
                     getUserSaasOrgAndArea(roleOrgCodes, request);
                 } else {
                     List<String> userOrgList = new ArrayList<>();
-                    userOrgList.add(AuthorityKey.NoUserOrgSaas);
+                    if(null!=listStr&&listStr.size()>0){
+                        userOrgList.addAll(listStr);
+                    }else {
+                        userOrgList.add(AuthorityKey.NoUserOrgSaas);
+                    }
                     session.setAttribute(AuthorityKey.UserOrgSaas, userOrgList);
                 }
                 //获取角色视图
@@ -599,5 +595,28 @@ public class LoginController extends BaseUIController {
         }
         return failed("查询失败！");
     }
+
+    /**
+     * 获取角色机构
+     * @param userId 登录用户id
+     * @return
+     *
+     *  created by zdm on 2018-07-27
+     * 变更原因： 角色管理做变更-1、机构为非必填选项（特殊权限的角色会关联机构，默认角色不关联机构）；2、用户新增的时候会关联机构。
+     * 变更内容：追加-获取用户在org_member_relation中的机构信息。
+     *
+     */
+    public List<String> gerOrgsByUserId(String userId) throws Exception {
+        Map<String, Object> params = new HashMap<>();
+        List<String> listStr = new ArrayList<>();
+        String url = "/org/getUserOrglistByUserId/";
+        //获取用户所属机构，默认只授权当前机构，其他机构通过角色获取
+        params.put("userId", userId);
+        String rs = HttpClientUtil.doGet(comUrl + url, params);
+        Envelop envelop =objectMapper.readValue(rs,Envelop.class);
+        listStr = objectMapper.readValue(toJson(envelop.getDetailModelList()), new TypeReference<List<String>>() { });
+        return listStr;
+    }
+
 
 }
