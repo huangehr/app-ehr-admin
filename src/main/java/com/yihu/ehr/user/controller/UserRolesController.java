@@ -1175,4 +1175,28 @@ public class UserRolesController extends BaseUIController {
             return failed(ERR_SYSTEM_DES);
         }
     }
+
+    /**
+     * 新增、编辑用户类别-与角色组关联关系
+     * @param userTypeJson 用户类别json串
+     *  @param typeRolesJson 用户类别-与角色组关联关系json串
+     * @return
+     */
+    @RequestMapping("/user/saveUserTypeRoles")
+    @ResponseBody
+    public Envelop saveUserTypeRoles(String userTypeJson,String typeRolesJson) {
+        String url = "/basic/api/v1.0/user/saveUserTypeRoles";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeJson",userTypeJson);
+            params.put("typeRolesJson",typeRolesJson);
+            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
 }
