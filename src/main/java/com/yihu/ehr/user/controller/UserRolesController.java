@@ -1164,6 +1164,7 @@ public class UserRolesController extends BaseUIController {
 
     // TODO 基于用户，查询用户所在部门及科室信息列表
     @RequestMapping("/user/getOrgDepts")
+    @ResponseBody
     public Envelop getOrgDeptByUserId(String userId) {
         String url = "/basic/api/v1.0/orgDeptMember/getOrgDepts";
         Envelop envelop = new Envelop();

@@ -42,8 +42,8 @@
 	<%--</div>--%>
 	<div class="m-form-group">
 		<label><spring:message code="lbl.user.mail"/><spring:message code="spe.colon"/></label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="inp_userEmail" class="required useTitle validate-email ajax max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> validate-email-title=<spring:message code="lbl.input.true.email"/> data-attr-scan="email"/>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="inp_userEmail" class="useTitle validate-email ajax max-length-50 validate-special-char"  required-title=<spring:message code="lbl.must.input"/> validate-email-title=<spring:message code="lbl.input.true.email"/> data-attr-scan="email"/>
 		</div>
 	</div>
 	<div class="m-form-group">

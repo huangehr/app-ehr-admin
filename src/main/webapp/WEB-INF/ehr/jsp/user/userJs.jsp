@@ -188,8 +188,8 @@
                         self.userInfoDialog = parent._LIGERDIALOG.open({
                             //  关闭对话框时销毁对话框
                             title:'修改基本信息',
-                            height: 620,
-                            width: 800,
+                            height: 650,
+                            width: 600,
                             load: true,
                             isDrag: true,
                             isResize: true,
@@ -203,7 +203,8 @@
                             onLoaded:function() {
                                 wait.close(),
                                     self.userInfoDialog.show()
-                            }
+                            },
+                            load: true,
                         });
                         self.userInfoDialog.hide();
                     });

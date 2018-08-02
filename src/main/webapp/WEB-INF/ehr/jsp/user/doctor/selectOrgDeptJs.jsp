@@ -24,6 +24,7 @@
 
             var idCardNo = '${idCardNo}';
             var type = '${type}';
+            var origin = '${origin}';
 
             var SelOD = {
                 $orgTree: $('#orgTree'),
@@ -61,10 +62,11 @@
                     }
                 },
                 getOrgAllData: function () {
+                    debugger
                     var me = this;
                     me.leftTree = me.$orgTree.ligerSearchTree({
                         nodeWidth: 270,
-                        url: idCardNo == '' ? intf[0] : intf[2] + '?idCardNo=' + idCardNo,
+                        url: idCardNo == ''||origin ? intf[0] : intf[2] + '?idCardNo=' + idCardNo,
                         idFieldName: 'id',
                         textFieldName: 'fullName',
                         isExpand: false,
@@ -97,6 +99,22 @@
                                     }
                                 })
                             }else if (idCardNo != '') {
+                                if(origin){
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "${contextRoot}/userRoles/user/getOrgDepts",
+                                        data: {"userId":idCardNo},
+                                        dataType: "json",
+                                        success: function(data) {
+                                            debugger
+                                            res={
+                                                successFlg:true,
+                                                detailModelList:res,
+                                                obj:data.detailModelList
+                                            }
+                                        }
+                                    });
+                                }
                                 if (res.successFlg) {
                                     me.leftTree.setData(res.detailModelList);
                                     $.each(res.detailModelList, function (k, obj) {

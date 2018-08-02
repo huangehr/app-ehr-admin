@@ -137,10 +137,10 @@
                                 inputSourceByIdCard(idCard,cellphone);
                             }
                         }
-                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
-                            var email = $("#inp_userEmail").val();
-                            checkObj = checkDataSourceName('email', email, "该邮箱已存在");
-                        }
+//                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
+//                            var email = $("#inp_userEmail").val();
+//                            checkObj = checkDataSourceName('email', email, "该邮箱已存在");
+//                        }
 //                        新增用户手机号验证
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
                             var telephone = $("#inp_userTel").val();
@@ -258,7 +258,7 @@
                 function updateUser(userModel) {
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
-                    var jsonModel = win.ORGDEPTVAL;
+                    var jsonModel = JSON.stringify(win.ORGDEPTVAL);
                     if (jsonModel.length <= 0) {
                         $.Notice.error('请选择机构部门');
                         return;
@@ -314,7 +314,7 @@
                             title: '关联角色组',
                             url: '${contextRoot}/user/appRoleGroup',
                             urlParms: {
-                                loginCode: addUser.loginCode,
+                                roles: '',
                                 type: addUser.userType,
                             },
                             isHidden: false,

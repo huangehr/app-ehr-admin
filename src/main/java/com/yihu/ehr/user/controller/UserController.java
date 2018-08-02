@@ -457,7 +457,7 @@ public class UserController extends BaseUIController {
             model.addAttribute("allData", resultStr);
             model.addAttribute("mode", mode);
             model.addAttribute("contentPage", "user/userInfoDialog");
-            return "simpleView";
+            return "emptyView";
         } catch (Exception e) {
             e.printStackTrace();
             return failed(ERR_SYSTEM_DES);
@@ -605,8 +605,8 @@ public class UserController extends BaseUIController {
      * @return
      */
     @RequestMapping("appRoleGroup")
-    public String appRoleGroup(String idCardNo, String type, Model model) {
-        model.addAttribute("idCardNo", idCardNo);
+    public String appRoleGroup(String roles, String type, Model model) {
+        model.addAttribute("roles", roles);
         model.addAttribute("type", type);
         model.addAttribute("contentPage", "app/approle/appRoleGroup");
         return "emptyView";
