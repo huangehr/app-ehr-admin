@@ -1039,7 +1039,7 @@ public class UserRolesController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             params.put("userId",userId);
             params.put("orgModel",orgModel);
-            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
             envelop = toModel(response.getContent(), Envelop.class);
             return envelop;
         } catch (Exception ex) {
@@ -1050,6 +1050,7 @@ public class UserRolesController extends BaseUIController {
 
     // TODO 新增用户类别
     @RequestMapping("/user/usertype/create")
+    @ResponseBody
     public Envelop updateUserType(String code, String name) {
         String url = "/basic/api/v1.0/user/usertype";
         Envelop envelop;
@@ -1057,7 +1058,7 @@ public class UserRolesController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             params.put("code",code);
             params.put("name",name);
-            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
             envelop = toModel(response.getContent(), Envelop.class);
             return envelop;
         } catch (Exception ex) {
@@ -1136,7 +1137,7 @@ public class UserRolesController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("userTypeJson",userTypeJson);
-            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
             envelop = toModel(response.getContent(), Envelop.class);
             return envelop;
         } catch (Exception ex) {
@@ -1147,6 +1148,7 @@ public class UserRolesController extends BaseUIController {
 
     // TODO 基于用户类型查询类型定义的默认角色组信息
     @RequestMapping("/user/usertype/roles")
+    @ResponseBody
     public Envelop getUserTypeRolesByUserType(String userTypeId) {
         String url = "/basic/api/v1.0/user/usertype/roles";
         Envelop envelop = new Envelop();
@@ -1195,7 +1197,7 @@ public class UserRolesController extends BaseUIController {
             Map<String, Object> params = new HashMap<>();
             params.put("userTypeJson",userTypeJson);
             params.put("typeRolesJson",typeRolesJson);
-            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
             envelop = toModel(response.getContent(), Envelop.class);
             return envelop;
         } catch (Exception ex) {

@@ -289,7 +289,7 @@ public class UserController extends BaseUIController {
 
     @RequestMapping(value = "updateUserAndInitRoles", produces = "text/html;charset=UTF-8")
     @ResponseBody
-    public Object updateUserAndInitRoles(String userModelJsonData, String orgModel,HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Object updateUserAndInitRoles(String userModelJsonData, String orgModel, HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 1、参数初始化
         String url = "/user/";
         String resultStr = "";
@@ -353,6 +353,7 @@ public class UserController extends BaseUIController {
                 envelop = toModel(resultStr,Envelop.class);
                 UserDetailModel addUserModel = toModel(toJson(envelop.getObj()),UserDetailModel.class);
                 String imageId = fileUpload(addUserModel.getId(),restStream,imageName);
+                userId = addUserModel.getId().toString();
 
                 if (!StringUtils.isEmpty(imageId)){
                     addUserModel.setImgRemotePath(imageId);
@@ -360,7 +361,6 @@ public class UserController extends BaseUIController {
                     envelop = mapper.readValue(userData,Envelop.class);
                     String userJsonModel = mapper.writeValueAsString(envelop.getObj());
                     UserDetailModel userModel = mapper.readValue(userJsonModel,UserDetailModel.class);
-                    userId = userModel.getId().toString();
                     userModel.setImgRemotePath(imageId);
                     params.remove("user_json_data");
                     params.add("user_json_data",toJson(userModel));
