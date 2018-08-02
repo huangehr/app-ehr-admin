@@ -73,6 +73,12 @@ public class UserController extends BaseUIController {
         return "pageView";
     }
 
+    @RequestMapping("userType")
+    public String userTypeInitial(Model model) {
+        model.addAttribute("contentPage", "user/roles/userType");
+        return "pageView";
+    }
+
     @RequestMapping("initialChangePassword")
     public String inChangePassword(Model model) {
         model.addAttribute("contentPage", "user/changePassword");

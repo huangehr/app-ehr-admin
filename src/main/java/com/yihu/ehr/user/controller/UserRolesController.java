@@ -1168,12 +1168,12 @@ public class UserRolesController extends BaseUIController {
     @RequestMapping("/user/getOrgDepts")
     @ResponseBody
     public Envelop getOrgDeptByUserId(String userId) {
-        String url = "/basic/api/v1.0/orgDeptMember/getOrgDepts";
+        String url = "/users/getOrgAndDeptRelation";
         Envelop envelop = new Envelop();
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("userId",userId);
-            HttpResponse response = HttpUtils.doGet(adminInnerUrl + url, params);
+            HttpResponse response = HttpUtils.doGet(comUrl + url, params);
             envelop = toModel(response.getContent(), Envelop.class);
             return envelop;
         } catch (Exception ex) {
