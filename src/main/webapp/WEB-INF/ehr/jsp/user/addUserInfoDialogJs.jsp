@@ -258,7 +258,7 @@
                 function updateUser(userModel) {
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
-                    var jsonModel = win.ORGDEPTVAL;
+                    var jsonModel =JSON.stringify(win.ORGDEPTVAL) ;
                     if (jsonModel.length <= 0) {
                         $.Notice.error('请选择机构部门');
                         return;
