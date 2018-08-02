@@ -82,7 +82,7 @@ public class UserController extends BaseUIController {
     @RequestMapping("addUserInfoDialog")
     public String addUser(Model model) {
         model.addAttribute("contentPage", "user/addUserInfoDialog");
-        return "generalView";
+        return "emptyView";
     }
 
     @RequestMapping("searchUsers")
@@ -595,6 +595,21 @@ public class UserController extends BaseUIController {
             model.addAttribute("envelop", en);
         }
         return "simpleView";
+    }
+
+
+    /**
+     * 选择机构部门
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("appRoleGroup")
+    public String appRoleGroup(String idCardNo, String type, Model model) {
+        model.addAttribute("idCardNo", idCardNo);
+        model.addAttribute("type", type);
+        model.addAttribute("contentPage", "app/approle/appRoleGroup");
+        return "emptyView";
     }
 
     //获取应用-用户角色组关系列表,用于查看权限

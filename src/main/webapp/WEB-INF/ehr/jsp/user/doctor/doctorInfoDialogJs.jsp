@@ -237,7 +237,7 @@
                     var wait = $.Notice.waitting("请稍后...");
                     win.orgDeptDio = win.$.ligerDialog.open({
                         height: 620,
-                        width: 780,
+                        width: 800,
                         title: '选择机构部门',
                         url: '${contextRoot}/doctor/selectOrgDept',
                         urlParms: {

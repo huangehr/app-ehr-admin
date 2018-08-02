@@ -190,8 +190,8 @@
                     retrieve.$newDoctor.click(function(){
                         var wait = parent._LIGERDIALOG.waitting("请稍后...");
                         self.addDoctorInfoDialog = parent._LIGERDIALOG.open({
-                            height: 630,
-                            width: 820,
+                            height: 620,
+                            width: 800,
                             title: '新增医生信息',
                             url: '${contextRoot}/doctor/addDoctorInfoDialog',
                             isHidden: false,
@@ -201,7 +201,7 @@
                                 self.addDoctorInfoDialog.show()
                             },
                             opener: true,
-//                            load:true
+                            load:true
                         })
                         self.addDoctorInfoDialog.hide();
                     });
@@ -214,7 +214,7 @@
                             isHidden: false,
                             title:'修改基本信息',
                             height: 620,
-                            width: 760,
+                            width: 800,
                             isDrag:true,
                             isResize:true,
                             url: '${contextRoot}/doctor/getDoctor',

@@ -73,7 +73,7 @@ public class DoctorController extends BaseUIController {
     @RequestMapping("addDoctorInfoDialog")
     public String addUser(Model model) {
         model.addAttribute("contentPage", "user/doctor/addDoctorInfoDialog");
-        return "pageView";
+        return "emptyView";
     }
 
     /**

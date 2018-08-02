@@ -17,7 +17,7 @@
             var settledWayDictId = 15;
 
             var isFirstPage = true;
-
+            var dialog=null;
             /* *************************** 函数定义 ******************************* */
             /**
              * 页面初始化。
@@ -66,12 +66,12 @@
                     window.form = this.$element;
                     this.$searchBox.ligerTextBox({width:240});
                     /*var combo = self.$inpOrg.customCombo('${contextRoot}/deptMember/getOrgList');
-                    self.$inpOrg.parent().css({
-                        width:'240'
-                    }).parent().css({
-                        display:'inline-block',
-                        width:'240px'
-                    });*/
+                     self.$inpOrg.parent().css({
+                     width:'240'
+                     }).parent().css({
+                     display:'inline-block',
+                     width:'240px'
+                     });*/
                 },
                 //下拉框列表项初始化
                 initDDL: function (dictId, target) {
@@ -113,21 +113,21 @@
                             {display: '是否生/失效', name: 'activated', width: '8%', minColumnWidth: 20,render:function(row){
                                 var html = Util.isStrEquals(row.activated,true) ? "生效" : "失效";
                                 <sec:authorize url='User_Actived'>
-								if(Util.isStrEquals(row.activated,true)){
-									html = '<a class="grid_on" href="javascript:void(0)" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,0,"失效") + '"></a>';
-								}else if(Util.isStrEquals(row.activated,false)){
-									html ='<a class="grid_off" href="javascript:void(0)" title="已失效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,1,"生效") + '"></a>';
-								}
+                                if(Util.isStrEquals(row.activated,true)){
+                                    html = '<a class="grid_on" href="javascript:void(0)" title="已生效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,0,"失效") + '"></a>';
+                                }else if(Util.isStrEquals(row.activated,false)){
+                                    html ='<a class="grid_off" href="javascript:void(0)" title="已失效" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}','{3}'])", "user:userInfoModifyDialog:failure", row.id,1,"生效") + '"></a>';
+                                }
                                 </sec:authorize>
-								return html;
+                                return html;
 
                             }},
 //                            {display:'用户来源',name:'sourceName',width:'10%'},
-							{display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
+                            {display: '最近登录时间', name: 'lastLoginTime', width: '12%',align:'left'},
                             {display: '操作', name: 'operator', minWidth: 130, render: function (row) {
-								var html = '';
+                                var html = '';
                                 <sec:authorize url="/user/appFeatureInitial">
-								html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';
+                                html += '<a class="label_a" title="查看权限" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}'])", "user:feature:open", row.id) + '">查看权限</a>';
                                 </sec:authorize>
                                 <sec:authorize url="/user/updateUser">
                                 html += '<a class="grid_edit" title="编辑" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoModifyDialog:open", row.id, 'modify') + '"></a>';
@@ -136,7 +136,7 @@
                                 html += '<a class="grid_delete" title="删除" style="width:30px" href="javascript:void(0)" onclick="javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "user:userInfoDialog:del", row.id, 'delete') + '"></a>';
                                 </sec:authorize>
                                 return html;
-							}}
+                            }}
                         ],
                         enabledEdit: true,
                         validate: true,
@@ -158,10 +158,10 @@
                                     userId: row.id,
                                     mode:mode
                                 },
-								onLoaded:function() {
-									wait.close(),
-	                                rowDialog.show()
-								}
+                                onLoaded:function() {
+                                    wait.close(),
+                                        rowDialog.show()
+                                }
                             });
                             rowDialog.hide();
                         }
@@ -180,7 +180,7 @@
                     var self = this;
                     //查询事件
                     retrieve.$searchBtn.click(function(){
-                            master.reloadGrid();
+                        master.reloadGrid();
                     });
                     //修改用户信息
                     $.subscribe('user:userInfoModifyDialog:open', function (event, userId, mode) {
@@ -189,7 +189,7 @@
                             //  关闭对话框时销毁对话框
                             title:'修改基本信息',
                             height: 620,
-                            width: 600,
+                            width: 800,
                             load: true,
                             isDrag: true,
                             isResize: true,
@@ -200,21 +200,35 @@
                                 userId: userId,
                                 mode:mode
                             },
-							onLoaded:function() {
-								wait.close(),
-                                self.userInfoDialog.show()
-							}
+                            onLoaded:function() {
+                                wait.close(),
+                                    self.userInfoDialog.show()
+                            }
                         });
                         self.userInfoDialog.hide();
                     });
                     //新增用户
                     retrieve.$newRecordBtn.click(function () {
+                        var wait = parent._LIGERDIALOG.waitting("请稍后...");
                         self.addUserInfoDialog = parent._LIGERDIALOG.open({
-                            height: 620,
+                            height: 520,
                             width: 600,
+                            isDrag: true,
+                            //isResize:true,
                             title: '新增用户信息',
-                            url: '${contextRoot}/user/addUserInfoDialog?'+ $.now()
-                        })
+                            url: '${contextRoot}/user/addUserInfoDialog',
+                            load: true,
+                            urlParms: {
+
+                            },
+                            isHidden: false,
+                            show: false,
+                            onLoaded: function () {
+                                wait.close(),
+                                    self.addUserInfoDialog.show()
+                            }
+                        });
+                        self.addUserInfoDialog.hide();
                     });
                     //修改用户状态(生/失效)
                     $.subscribe('user:userInfoModifyDialog:failure', function (event, userId,activated,msg) {
@@ -258,8 +272,8 @@
                         });
 
                     });
-					//查看应用权限
-					$.subscribe('user:feature:open', function (event, userId) {
+                    //查看应用权限
+                    $.subscribe('user:feature:open', function (event, userId) {
                         var dataModel = $.DataModel.init();
                         dataModel.updateRemote("${contextRoot}/user/isRoleUser",{
                             data:{userId:userId},
@@ -283,7 +297,7 @@
                                 }
                             }
                         });
-					});
+                    });
                 }
             };
 
@@ -307,7 +321,7 @@
                     callback.call(win);
                     master.reloadGrid();
                 }
-//                master.addUserInfoDialog.close();
+                master.addUserInfoDialog.close();
             };
 
 
