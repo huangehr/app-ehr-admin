@@ -10,14 +10,12 @@
             var roles = '${roles}';
             var type = '${type}';
             var selroles=[];
+            var newselroles=[];
             var intf = [
                 //获取所有权限
                 '${contextRoot}/user/appRolesList','${contextRoot}/userRoles/user/getUserTypeById?userTypeId='+type,
             ];
-            var funAndApiTree = 'fun';
             var apiTreeType = ['apiFeatrueTree', 'configApiFeatrueTree'];
-            var functionFeatrueType = ['functionFeatrueTree', 'configFeatrueTree'];
-            var apiFeatrueType = ['apiFeatrueTree', 'configapiTree'];
             var dataModel = $.DataModel.init();
 
             function pageInit() {
@@ -25,17 +23,14 @@
                 master.clicks();
             }
 
-//            function reloadGrid(url, ps) {
-//                apiFeatrueType[1].options(url, {parms: ps});
-//                apiFeatrueType[1].loadData(true);
-//            }
-
             master = {
                 $apiFeatrueTree: $("#div_api_featrue_grid"),
                 $configApiFeatrueTree: $("#div_configApi_featrue_grid"),
                 $appRoleGridScrollbar: $(".div-appRole-grid-scrollbar"),
                 $roleGroupbtn: $(".div-roleGroup-btn"),
                 $featrueSaveBtn: $("#div_featrue_save_btn"),
+                $resetBtn: $("#div_reset_btn"),
+
 
                 apiInit: function () {
                     var self = this;
@@ -58,6 +53,12 @@
                         checkbox: true,
                         async: false,
                         onCheck: function (data, checked) {
+                            if(checked){
+                                newselroles.push(data.data.id)
+                            }else{
+                                newselroles.splice($.inArray(data.data.id,newselroles),1);
+                            }
+                            console.log(newselroles.join(","))
                             setTimeout(function () {
                                 var html = $("#div_api_featrue_grid").html();
                                 $("#div_configApi_featrue_grid").html(html);
@@ -107,25 +108,35 @@
                     if(roles){
                         selroles=roles.split(',');
                     }else{
-                        $.ajax({
-                            type: "GET",
-                            url: "${contextRoot}/userRoles/user/getUserTypeById",
-                            data: {"userTypeId":type},
-                            dataType: "json",
-                            success: function(data) {
-                                debugger
-                                if(data.successFlg){
-                                    selroles=_.map(data.detailModelList,function (item){
-                                        return item.roleId
-                                    })
-                                }
-                            }
-                        });
+                        me.resetRoles()
                     }
+                },
+                resetRoles:function () {
+                    var me = this;
+                    me.f_selectNode()
+                    $.ajax({
+                        type: "GET",
+                        url: "${contextRoot}/userRoles/user/getUserTypeById",
+                        data: {"userTypeId":type},
+                        dataType: "json",
+                        success: function(data) {
+                            debugger
+                            if(data.successFlg){
+                                selroles=_.map(data.detailModelList,function (item){
+                                    return item.roleId
+                                })
+                                me.f_selectNode()
+                            }
+                        }
+                    });
                 },
                 f_selectNode:function () {
                     debugger
                     var me = this;
+                    if(newselroles.length>0){
+                        selroles=newselroles;
+                        newselroles=[];
+                    }
                     _.each(selroles,function (item) {
                         if(apiTreeType[0].getDataByID(item)){
                             $("li#"+item).find(".l-checkbox").click();
@@ -148,6 +159,10 @@
                         win.roleIds = featureIds;
                         console.log(win.roleIds);
                         win.roleGroupDio.close();
+                    })
+
+                    self.$resetBtn.click(function () {
+                        self.resetRoles();
                     })
                 }
 

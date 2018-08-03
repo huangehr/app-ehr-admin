@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="utf-8" %>
 <%@include file="/WEB-INF/ehr/commons/jsp/commonInclude.jsp" %>
-<!--######新增角色组页面######-->
 <div id="div_feature_config">
     <div class="f-ml10 f-mb10 f-mt10">
         <div class="m-form-group">
@@ -14,8 +13,12 @@
             <%--<span>API权限</span>--%>
             <%--</div>--%>
             <div class="f-fr f-mr10 l-button u-btn u-btn-primary u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn"
-                 id="div_featrue_save_btn">
+                   id="div_featrue_save_btn">
                 <span>保存</span>
+            </div>
+            <div class="f-fr f-mr10 l-button u-btn u-btn-primary u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn"
+                 id="div_reset_btn" style="width: auto;padding: 0 10px;">
+                <span>重置为当前用户类别关联的角色组</span>
             </div>
         </div>
     </div>

@@ -60,11 +60,11 @@
 	<%--</div>--%>
 	<div class="m-form-group">
 		<label><spring:message code="lbl.user.role"/><spring:message code="spe.colon"/></label>
-		<div class="m-form-control">
+		<div  class="l-text-wrapper m-form-control essential" style="padding-right: 0px;">
 			<input type="text" id="inp_select_userType"  data-type="select" placeholder="请选择用户类别" data-attr-scan="userType">
 		</div>
 		<input type="hidden" id="inp_select_setrole">
-		<div class="l-button u-btn u-btn-primary u-btn f-ib f-vam f-mr10" id="div_btn_setrole">
+		<div class="l-button u-btn u-btn-primary u-btn f-ib f-vam f-mr10 f-ml10" id="div_btn_setrole">
 			<span>编辑权限</span>
 		</div>
 	</div>
