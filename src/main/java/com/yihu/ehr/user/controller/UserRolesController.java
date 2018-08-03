@@ -1137,8 +1137,8 @@ public class UserRolesController extends BaseUIController {
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("userTypeJson",userTypeJson);
-            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
-            envelop = toModel(response.getContent(), Envelop.class);
+            String response = HttpClientUtil.doPost(adminInnerUrl + url, params);
+            envelop = toModel(response, Envelop.class);
             return envelop;
         } catch (Exception ex) {
             LogService.getLogger(UserRolesController.class).error(ex.getMessage());
@@ -1205,4 +1205,19 @@ public class UserRolesController extends BaseUIController {
             return failed(ERR_SYSTEM_DES);
         }
     }
+
+
+    /**
+     * 新增页面
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping("addUserTypeInfoDialog")
+    public String addUserTypeInfoDialog(String json,Model model) {
+        model.addAttribute("userTypeJson", json);
+        model.addAttribute("contentPage", "user/roles/UserTypeDialog");
+        return "emptyView";
+    }
+
 }
