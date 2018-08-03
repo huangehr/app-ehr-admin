@@ -1220,4 +1220,26 @@ public class UserRolesController extends BaseUIController {
         return "emptyView";
     }
 
+
+    /**
+     * 根据用户类别获取关联居民，返回true表示关联居民（居民信息存在list中），返回false表示无关联居民
+     * @param userTypeId 用户类别id
+     * @return
+     */
+    @RequestMapping("/user/validateUserType")
+    @ResponseBody
+    public Envelop validateUserType(String userTypeId) {
+        String url = "/basic/api/v1.0/user/validateUserType";
+        Envelop envelop;
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("userTypeId",userTypeId);
+            HttpResponse response = HttpUtils.doPost(adminInnerUrl + url, params);
+            envelop = toModel(response.getContent(), Envelop.class);
+            return envelop;
+        } catch (Exception ex) {
+            LogService.getLogger(UserRolesController.class).error(ex.getMessage());
+            return failed(ERR_SYSTEM_DES);
+        }
+    }
 }
