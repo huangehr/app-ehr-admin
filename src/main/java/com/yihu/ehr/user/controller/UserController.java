@@ -443,7 +443,6 @@ public class UserController extends BaseUIController {
         Envelop envelop = new Envelop();
         Map<String, Object> params = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
-
         params.put("userId", userId);
         try {
             resultStr = HttpClientUtil.doGet(comUrl + url, params, username, password);
@@ -535,7 +534,6 @@ public class UserController extends BaseUIController {
             e.printStackTrace();
             return failed(ERR_SYSTEM_DES);
         }
-
     }
 
     @RequestMapping("showImage")

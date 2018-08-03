@@ -1048,7 +1048,6 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
-    // TODO 新增用户类别
     @RequestMapping("/user/usertype/create")
     @ResponseBody
     public Envelop updateUserType(String code, String name) {
@@ -1066,7 +1065,6 @@ public class UserRolesController extends BaseUIController {
             return failed(ERR_SYSTEM_DES);
         }
     }
-
 
     /**
      * 查询用户类别
@@ -1146,7 +1144,6 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
-    // TODO 基于用户类型查询类型定义的默认角色组信息
     @RequestMapping("/user/usertype/roles")
     @ResponseBody
     public Envelop getUserTypeRolesByUserType(String userTypeId) {
@@ -1164,7 +1161,6 @@ public class UserRolesController extends BaseUIController {
         }
     }
 
-    // TODO 基于用户，查询用户所在部门及科室信息列表
     @RequestMapping("/user/getOrgDepts")
     @ResponseBody
     public Envelop getOrgDeptByUserId(String userId) {
