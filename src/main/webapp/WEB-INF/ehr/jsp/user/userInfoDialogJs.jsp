@@ -27,6 +27,7 @@
         /* ************************** 变量定义结束 **************************** */
         win.orgDeptDio = null;
         win.ORGDEPTVAL = '';
+        win.roleIds=allData.obj.role;
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
             userInfo.init();
@@ -151,7 +152,17 @@
 //                this.$ssid.ligerTextBox({width: 240});
 //                this.$tel2.ligerTextBox({width: 240});
                 this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
-                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:''});
+                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:''},function(newvalue){
+                    if(win.roleIds){
+                        win.roleIds="";
+                        parent._LIGERDIALOG.confirm('是否重新前往编辑授权？', function (yes) {
+                            if (yes) {
+                                self.$divBtnSetrole.click();
+                            }
+                        });
+                    }
+                    console.log(newvalue)
+                });
                 <%--this.$org.addressDropdown({--%>
                     <%--tabsData: [--%>
                         <%--{name: '省份', code: 'id', value: 'name', url: '${contextRoot}/address/getParent', params: {level: '1'}},--%>
@@ -261,6 +272,7 @@
 
                     });
                     self.$inp_select_userType.ligerGetComboBoxManager().setValue(user.userType);
+                    self.$inp_select_userType.val(user.userTypeName);
 //                    $("#inp_select_userType_val").val(user.userType)
                     self.$publicKeyMessage.val(user.publicKey);
                     self.$publicKeyValidTime.html(user.validTime);
@@ -292,14 +304,14 @@
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
-                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
-                            var email = $("#inp_userEmail").val();
-                            var emailCopy = self.$emailCopy.val();
-                            if (emailCopy != null && emailCopy != '' && emailCopy == email) {
-                                return true;
-                            }
-                            return checkDataSourceName('email', email, "该邮箱已被绑定，请确认。");
-                        }
+//                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
+//                            var email = $("#inp_userEmail").val();
+//                            var emailCopy = self.$emailCopy.val();
+//                            if (emailCopy != null && emailCopy != '' && emailCopy == email) {
+//                                return true;
+//                            }
+//                            return checkDataSourceName('email', email, "该邮箱已被绑定，请确认。");
+//                        }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
                             var idCardCopy = self.$idCardCopy.val();
@@ -364,7 +376,7 @@
                             title: '关联角色组',
                             url: '${contextRoot}/user/appRoleGroup',
                             urlParms: {
-                                roles: allData.obj.role,
+                                roles: win.roleIds,
                                 type: addUser.userType,
                             },
                             isHidden: false,
@@ -420,7 +432,7 @@
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
-                        data: {userModelJsonData: userModelJsonData,orgModel:jsonModel },
+                        data: {userModelJsonData: userModelJsonData,orgModel:jsonModel},
                         success: function (data) {
                             if (data.successFlg) {
                                 win.closeUserInfoDialog();
@@ -431,6 +443,7 @@
                             }
                         }
                     })
+
                 }
 
                 //重置密码的点击事件

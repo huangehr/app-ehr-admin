@@ -89,6 +89,7 @@
 
             },
             initForm: function () {
+                var self = this;
                 this.$loginCode.ligerTextBox({width: 240});
                 this.$userName.ligerTextBox({width: 240});
                 this.$idCard.ligerTextBox({width: 240});
@@ -98,8 +99,18 @@
                 this.$sex.ligerRadio();
 
 
-                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:''});
-
+                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:''},function(newvalue){
+                    if(win.roleIds){
+                        win.roleIds="";
+                        parent._LIGERDIALOG.confirm('是否重新前往编辑授权？', function (yes) {
+                            if (yes) {
+                                self.$divBtnSetrole.click();
+                            }
+                        });
+                    }
+                    console.log(newvalue)
+                });
+//                this.$inp_select_userType.customCombo()
                 <%--source = this.$source.ligerComboBox({--%>
                 <%--url: '${contextRoot}/dict/searchDictEntryList',--%>
                 <%--valueField: 'code',--%>
@@ -263,6 +274,7 @@
                         $.Notice.error('请选择机构部门');
                         return;
                     }
+                    debugger
                     dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
                         data: {userModelJsonData: userModelJsonData,orgModel:jsonModel},
                         success: function (data) {
@@ -314,7 +326,7 @@
                             title: '关联角色组',
                             url: '${contextRoot}/user/appRoleGroup',
                             urlParms: {
-                                roles: '',
+                                roles: win.roleIds,
                                 type: addUser.userType,
                             },
                             isHidden: false,
@@ -331,6 +343,7 @@
                     }
                 })
             },
+
             cycToDo:function(){
                 var self=this;
                 trees=self.$jryycyc.ligerComboBox({

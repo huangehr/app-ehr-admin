@@ -7,13 +7,14 @@
 
             var Util = $.Util;
             var master = null;
-            var roles = '${roles}';
-            var type = '${type}';
+            var json = JSON.parse('${userTypeJson}');
+            var type = json.type;
+            var olddata = JSON.stringify(json.jsonStr);
             var selroles=[];
             var newselroles=[];
             var intf = [
                 //获取所有权限
-                '${contextRoot}/user/appRolesList','${contextRoot}/userRoles/user/getUserTypeById?userTypeId='+type,
+                '${contextRoot}/user/appRolesList','${contextRoot}/userRoles/user/getUserTypeById?userTypeId='+jsonStr.id,
             ];
             var apiTreeType = ['apiFeatrueTree', 'configApiFeatrueTree'];
             var dataModel = $.DataModel.init();

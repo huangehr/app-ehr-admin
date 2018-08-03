@@ -62,8 +62,8 @@
     <%--</div>--%>
     <div class="m-form-group">
         <label><spring:message code="lbl.user.mail"/><spring:message code="spe.colon"/></label>
-        <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="inp_userEmail" class="required useTitle ajax validate-email max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/> validate-email-title=<spring:message code="lbl.input.true.email"/> data-attr-scan="email"/>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" id="inp_userEmail" class="useTitle ajax validate-email max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/> validate-email-title=<spring:message code="lbl.input.true.email"/> data-attr-scan="email"/>
         </div>
     </div>
     <div class="m-form-group">
@@ -86,11 +86,11 @@
     <%--</div>--%>
     <div class="m-form-group">
         <label><spring:message code="lbl.user.role"/><spring:message code="spe.colon"/></label>
-        <div class="m-form-control">
+        <div class="l-text-wrapper m-form-control essential" style="padding-right: 0px;">
             <input type="text" id="inp_select_userType"  data-type="select" placeholder="请选择用户类别" data-attr-scan="userType">
         </div>
         <input type="hidden" id="inp_select_setrole">
-        <div class="l-button u-btn u-btn-primary u-btn f-ib f-vam f-mr10" id="div_btn_setrole">
+        <div class="l-button u-btn u-btn-primary u-btn f-ib f-vam f-mr10 f-ml10" id="div_btn_setrole">
             <span>编辑权限</span>
         </div>
     </div>
@@ -109,7 +109,7 @@
     <%--</div>--%>
     <div class="m-form-group">
         <label>选择机构部门:</label>
-        <div class="l-text-wrapper m-form-control">
+        <div class="l-text-wrapper m-form-control essential" style="padding-right: 0px;">
             <div class="l-button u-btn u-btn-primary u-btn-large f-ib f-vam f-mr10" style="width: 238px !important;    height: 30px;line-height: 30px;" id="divBtnShow">
                 <span>选择机构部门</span>
             </div>
