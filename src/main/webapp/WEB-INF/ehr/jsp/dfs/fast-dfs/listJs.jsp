@@ -223,7 +223,7 @@
                                 data:serverUsedStatusList
                             },
                             {
-                                name:'可用空间',
+                                name: '可用空间',
                                 type:'bar',
                                 stack: 'sum',
                                 barWidth: '50',
