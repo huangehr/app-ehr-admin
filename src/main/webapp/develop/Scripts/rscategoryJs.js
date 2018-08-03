@@ -218,6 +218,7 @@ cateType.attr = {
     ipt_view: null,
     iptViewData: [
         {id: 'standard', name: '标准分类'},
+        {id: 'business', name: '业务分类'},
         {id: 'derived', name: '派生分类'}
     ],
     init: function () {

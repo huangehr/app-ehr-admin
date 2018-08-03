@@ -20,6 +20,7 @@
     function initForm() {
         var codeTb = $('#code').ligerTextBox({width: 240});
         $('#name').ligerTextBox({width: 240});
+        $('#sortNo').ligerTextBox({width: 240});
         var lingerPid = $("#pid").ligerComboBox({
             treeLeafOnly: false,
             tree: {
@@ -43,6 +44,7 @@
             code: detailModel.code,
             name: detailModel.name,
             pid: detailModel.pid,
+            sortNo: detailModel.sortNo,
             remark: detailModel.remark
         });
     }
