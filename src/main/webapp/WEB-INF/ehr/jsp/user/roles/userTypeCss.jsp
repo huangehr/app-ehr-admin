@@ -5,7 +5,7 @@
 
     .f-mw100{ width:100%; }
     .f-mw99{ width:99%; }
-    .f-mw25{ width: 400px }
+    .f-mw25{ width: 450px }
     .f-ds1{ border: 1px solid #D6D6D6; }
     .div-app-role{ height:100%; float:right;border: 1px solid #D6D6D6;}
 

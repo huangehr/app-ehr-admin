@@ -7,17 +7,24 @@
 
             var Util = $.Util;
             var master = null;
-            var json = JSON.parse('${userTypeJson}');
-            var type = json.type;
-            var olddata = JSON.stringify(json.jsonStr);
+
+            debugger
+            var userTypeJson = JSON.parse('${userTypeJson}');
+            var type = userTypeJson.type;
+            var olddata = userTypeJson.jsonStr;
+            var newdata = {};
             var selroles=[];
             var newselroles=[];
+            var typeRolesJson={};
             var intf = [
                 //获取所有权限
-                '${contextRoot}/user/appRolesList','${contextRoot}/userRoles/user/getUserTypeById?userTypeId='+jsonStr.id,
+                '${contextRoot}/user/appRolesList','${contextRoot}/userRoles/user/getUserTypeById?userTypeId='+olddata.id,
             ];
             var apiTreeType = ['apiFeatrueTree', 'configApiFeatrueTree'];
             var dataModel = $.DataModel.init();
+
+            // 表单校验工具类
+            var jValidation = $.jValidation;
 
             function pageInit() {
                 master.apiInit();
@@ -28,16 +35,42 @@
                 $apiFeatrueTree: $("#div_api_featrue_grid"),
                 $configApiFeatrueTree: $("#div_configApi_featrue_grid"),
                 $appRoleGridScrollbar: $(".div-appRole-grid-scrollbar"),
-                $roleGroupbtn: $(".div-roleGroup-btn"),
-                $featrueSaveBtn: $("#div_featrue_save_btn"),
-                $resetBtn: $("#div_reset_btn"),
+
+                $form: $("#div_user_type_form"),
+                $addUserBtn: $("#div_btn_add"),
+                $cancelBtn: $("#div_cancel_btn"),
+
+                $userTypeId: $("#inp_Id"),
+                $userTypeCode: $("#inp_Code"),
+                $userTypeName: $('#inp_Name'),
+                $userTypeMemo: $('#inp_Memo'),
+                $userTypeActiveFlag: $('#inp_activeFlag'),
 
 
                 apiInit: function () {
                     var self = this;
                     self.$appRoleGridScrollbar.mCustomScrollbar({});
                     var apiEle = [self.$apiFeatrueTree, self.$configApiFeatrueTree];
-                    this.getUserRole();
+                    this.$userTypeCode.ligerTextBox({width: 240});
+                    this.$userTypeName.ligerTextBox({width: 240});
+                    this.$userTypeMemo.ligerTextBox({width: 600});
+
+                    this.$form.attrScan();
+                    if(type!="add") {
+                        this.$form.Fields.fillValues({
+                            id: olddata.id,
+                            code: olddata.code,
+                            name: olddata.name,
+                            memo: olddata.memo,
+                            activeFlag: olddata.activeFlag,
+                        });
+                        self.resetRoles();
+                    }else{
+                        this.$form.Fields.fillValues({
+                            activeFlag: "1",
+                        });
+                    }
+
                     this.loadRightTree();
                     this.getAllData();
                 },
@@ -104,24 +137,15 @@
                         }
                     });
                 },
-                getUserRole:function () {
-                    var me = this;
-                    if(roles){
-                        selroles=roles.split(',');
-                    }else{
-                        me.resetRoles()
-                    }
-                },
                 resetRoles:function () {
                     var me = this;
                     me.f_selectNode()
                     $.ajax({
                         type: "GET",
                         url: "${contextRoot}/userRoles/user/getUserTypeById",
-                        data: {"userTypeId":type},
+                        data: {"userTypeId":olddata.id},
                         dataType: "json",
                         success: function(data) {
-                            debugger
                             if(data.successFlg){
                                 selroles=_.map(data.detailModelList,function (item){
                                     return item.roleId
@@ -132,7 +156,6 @@
                     });
                 },
                 f_selectNode:function () {
-                    debugger
                     var me = this;
                     if(newselroles.length>0){
                         selroles=newselroles;
@@ -144,27 +167,65 @@
                         }
                     })
                 },
+                getRoles:function () {
+                    var gridType = apiTreeType[1];
+                    var datas = apiTreeType[0].getChecked();
+                    typeRolesJson=_.map(datas, function (key, value) {
+                        if(/^[0-9]+$/.test(key.data.id)){
+                            key.data.roleId=key.data.id;
+                            key.data.roleName=key.data.name;
+                            return key.data;
+                        }
+                    });
+                    typeRolesJson=_.compact(typeRolesJson);
+                },
+                saveRoles:function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "${contextRoot}/userRoles/user/saveUserTypeRoles",
+                        data: {userTypeJson :JSON.stringify(newdata) ,typeRolesJson :JSON.stringify(typeRolesJson) },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data.successFlg) {
+                               win.closeAppRoleGroupInfoDialog();
+                               win.reloadMasterUpdateGrid();
+                                $.Notice.success('保存成功');
+                            } else {
+                                $.Notice.error(data.errorMsg);
+                            }
+                        }
+                    });
+                },
                 clicks: function () {
                     var self = this;
 
-                    self.$featrueSaveBtn.click(function () {
-                        var gridType = apiTreeType[1];
-                        var datas = apiTreeType[0].getChecked();
+                    var validator = new jValidation.Validation(this.$form, {
+                        immediate: true, onSubmit: false,
+                        onElementValidateForAjax: function (elm) {
+                        }
+                    });
 
-                        var featureIds = '';
-                        $.each(datas, function (key, value) {
-                            if(/^[0-9]+$/.test(value.data.id)){
-                                featureIds += Util.isStrEquals(datas.length-1,key)?value.data.id:value.data.id + ",";
-                            }
-                        });
-                        win.roleIds = featureIds;
-                        console.log(win.roleIds);
-                        win.roleGroupDio.close();
-                    })
+                    //新增的点击事件
+                    this.$addUserBtn.click(function () {
+                        self.getRoles();
+                        if(typeRolesJson.length==0){
+                            $.Notice.warn("请选择关联的角色组");
+                            return;
+                        }
+                        if (validator.validate()) {
+                            newdata = self.$form.Fields.getValues();
+                            if(type=="copyUserType"){newdata.id="";newdata.activeFlag="1"}
+                            self.saveRoles();
+                        } else {
+                            return;
+                        }
 
-                    self.$resetBtn.click(function () {
-                        self.resetRoles();
-                    })
+
+                    });
+
+                    self.$cancelBtn.click(function () {
+                        win.parent.closeAppRoleGroupInfoDialog();
+                    });
                 }
 
             };

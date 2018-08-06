@@ -17,7 +17,7 @@
                 <span>保存</span>
             </div>
             <div class="f-fr f-mr10 l-button u-btn u-btn-primary u-btn-large f-ib f-vam close-toolbar div-roleGroup-btn"
-                 id="div_reset_btn" style="width: auto;padding: 0 10px;">
+                 id="div_reset_btn" style="width: auto!important;padding: 0 10px;">
                 <span>重置为当前用户类别关联的角色组</span>
             </div>
         </div>

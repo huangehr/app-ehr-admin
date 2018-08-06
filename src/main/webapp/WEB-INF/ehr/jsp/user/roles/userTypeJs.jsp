@@ -76,12 +76,13 @@
                             {
                                 display: '操作', name: 'operator', width: '35%', render: function (row) {
                                 var activerow={"id": row.id,"code": row.code,"name": row.name,"activeFlag": row.activeFlag,"memo": row.memo};
-                                var copyrow={"code": row.code,"name": row.name,"activeFlag": row.activeFlag,"memo": row.memo};
+//                                var copyrow={"id": row.id,"code": row.code,"name": row.name,"activeFlag": row.activeFlag,"memo": row.memo};
                                 var html = '<sec:authorize url="/user/updateUserType"><a class="label_a" title="失效" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:userType", JSON.stringify(activerow), 'activeFlag') + '>失效</a>&nbsp;&nbsp;</sec:authorize>';
                                 if(row.activeFlag==0){
                                     html = '<sec:authorize url="/user/updateUserType"><a class="label_a" title="生效" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:userType", JSON.stringify(activerow), 'activeFlag') + '>生效</a>&nbsp;&nbsp;</sec:authorize>';
                                 }
-                                html += '<sec:authorize url="/user/updateUserType"><a class="label_a" title="复制用户类别" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:userType", JSON.stringify(copyrow), 'copyUserType') + '>复制用户类别</a></sec:authorize>';
+                                html += '<sec:authorize url="/user/updateUserType"><a class="label_a" title="复制用户类别" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:userType", JSON.stringify(activerow), 'copyUserType') + '>复制用户类别</a></sec:authorize>';
+                                html +='<sec:authorize url="/user/updateUserType"><a class="grid_edit" title="编辑" style="width:30px" href="javascript:void(0)" onclick=javascript:' + Util.format("$.publish('{0}',['{1}','{2}'])", "app:userType",  JSON.stringify(activerow), 'modify') + '></a></sec:authorize>';
                                 return html;
                             }
                             }
@@ -90,6 +91,9 @@
                             userTypeJsonData=data;
                             self.resetRoles(data.id);
                             self.$featrueSaveBtn.show();
+                        },
+                        onReload:function () {
+                            self.$featrueSaveBtn.hide();
                         },
                     }));
                     
@@ -103,12 +107,39 @@
                             case 'activeFlag':
                                 var model = JSON.parse(jsonStr);
                                 var content="生效";
-                                if(model.activeFlag=="1"){content="失效";model.activeFlag="0"}else{model.activeFlag="1"}
-                                parent._LIGERDIALOG.confirm('请问您是否确认'+content+'此用户类别（'+model.name+'）？', function (yes) {
-                                    if (yes) {
-                                        self.updateUserType(model,type);
-                                    }
-                                });
+                                if(model.activeFlag=="1"){
+                                    content="失效";model.activeFlag="0";
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "${contextRoot}/userRoles/user/validateUserType",
+                                        data: {"userTypeId":model.id},
+                                        dataType: "json",
+                                        success: function(data) {
+                                            if (data.successFlg) {
+                                                if(data.detailModelList){
+                                                    parent._LIGERDIALOG.confirm('此用户类别（'+model.name+'）的权限已授权给用户，若失效此用户分类，归属该分类的用户的权限将全部失效，请问您是否确认继续此操作？', function (yes) {
+                                                        if (yes) {
+                                                            self.updateUserType(model,type);
+                                                        }
+                                                    });
+                                                }else {
+                                                    parent._LIGERDIALOG.confirm('请问您是否确认此用户类别（'+model.name+'）'+content+'？', function (yes) {
+                                                        if (yes) {
+                                                            self.updateUserType(model,type);
+                                                        }
+                                                    });
+                                                }
+                                            } else {
+                                                $.Notice.error(data.errorMsg);
+                                            }
+                                        }
+                                    });
+                                }else{model.activeFlag="1";
+                                    parent._LIGERDIALOG.confirm('请问您是否确认此用户类别（'+model.name+'）'+content+'？', function (yes) {
+                                        if (yes) {
+                                            self.updateUserType(model,type);
+                                        }
+                                    });}
                                 break;
                             case 'delete':
                                 parent._LIGERDIALOG.confirm('确认删除该行信息？<br>如果是请点击确认按钮，否则请点击取消。', function (yes) {
@@ -131,8 +162,8 @@
                             case 'copyUserType':
                                 self.ligerDialogOpen(jsonStr, type, "复制用户类别", 800, 620);
                                 break;
-                            case 'edit':
-                                self.ligerDialogOpen(jsonStr, type, "修改角色组", 400, 500);
+                            case 'modify':
+                                self.ligerDialogOpen(jsonStr, type, "修改用户类别", 800, 620);
                                 break;
                             default:
                                 break;
@@ -150,7 +181,6 @@
                             }
                         });
                         typeRolesJson=_.compact(typeRolesJson);
-                        debugger
                         $.ajax({
                             type: "POST",
                             url: "${contextRoot}/userRoles/user/saveUserTypeRoles",
@@ -172,11 +202,11 @@
                 },
                 ligerDialogOpen: function (jsonStr, type, title, width, height) {
                     var wait = parent._LIGERDIALOG.waitting("请稍后...");
-                    var _model={jsonStr: jsonStr,type: type}
+                    var _model={jsonStr: JSON.parse(jsonStr),type: type};//jsonStr：用户类型数据 type：形式（新增或复制/修改）
                     RoleGroupInfoDialog = parent._LIGERDIALOG.open({
                         title: title,
-                        height: width,
-                        width: height,
+                        height: height,
+                        width: width,
                         url: '${contextRoot}/userRoles/addUserTypeInfoDialog',
                         load: true,
                         isHidden: false,
@@ -306,14 +336,18 @@
                     })
                 },
             };
+            win.parent.reloadMasterUpdateGrid = win.reloadMasterUpdateGrid = function () {
+                debugger
+                userTypeGrid.reload();
+            };
 
             win.parent.closeAppRoleGroupInfoDialog = function (callback) {
                 RoleGroupInfoDialog.close();
-                master.reloadAppRoleGrid("appRoleGroup", userTypeId, "");
+//                master.reloadAppRoleGrid("appRoleGroup", userTypeId, "");
             };
             pageInit();
             $(window).resize(function(){
-                master.$appBrowseMsg.width($(window).width()-420);
+                master.$appBrowseMsg.width($(window).width()-470);
             });
 
         })

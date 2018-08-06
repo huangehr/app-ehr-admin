@@ -28,7 +28,7 @@
         </div>
     </div>
     <!--应用角色组部分-->
-    <div id="div_app_browse_msg" class="div-app-role" style="position: absolute;left: 410px;top: 0;bottom: 0;right: 0">
+    <div id="div_app_browse_msg" class="div-app-role" style="position: absolute;left: 460px;top: 0;bottom: 0;right: 0">
         <div class="div-result-msg">
             <div class="f-ml10 f-mb10 f-mt10">
                 <span class="f-fl f-lh30 f-f14">关联角色组</span>
