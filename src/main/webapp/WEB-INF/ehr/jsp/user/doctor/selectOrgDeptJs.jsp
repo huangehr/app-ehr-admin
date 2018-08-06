@@ -111,31 +111,52 @@
                                                 successFlg:true,
                                                 detailModelList:res,
                                                 obj:data.detailModelList
+                                            };
+                                            if (res.successFlg) {
+                                                me.leftTree.setData(res.detailModelList);
+                                                $.each(res.detailModelList, function (k, obj) {
+                                                    if (obj.checked) {
+                                                        me.leftTree.selectNode(obj.id);
+                                                    }
+                                                })
+                                                me.rightTree.setData(res.obj);
+                                                $.each(res.obj, function (k, obj) {
+                                                    var cLen = obj.children.length,
+                                                        num = 0;
+                                                    $.each(obj.children, function (key,o) {
+                                                        if (o.checked) {
+                                                            num++;
+                                                            me.rightTree.selectNode(o.id);
+                                                        }
+                                                    });
+                                                    me.rightTree.selectNode(obj.id);
+                                                });
                                             }
                                         }
                                     });
-                                }
-                                if (res.successFlg) {
-                                    me.leftTree.setData(res.detailModelList);
-                                    $.each(res.detailModelList, function (k, obj) {
-                                        if (obj.checked) {
-                                            me.leftTree.selectNode(obj.id);
-                                        }
-                                    })
-                                    me.rightTree.setData(res.obj);
-                                    $.each(res.obj, function (k, obj) {
-                                        var cLen = obj.children.length,
-                                                num = 0;
-                                        $.each(obj.children, function (key,o) {
-                                            if (o.checked) {
-                                                num++;
-                                                me.rightTree.selectNode(o.id);
+                                }else{
+                                    if (res.successFlg) {
+                                        me.leftTree.setData(res.detailModelList);
+                                        $.each(res.detailModelList, function (k, obj) {
+                                            if (obj.checked) {
+                                                me.leftTree.selectNode(obj.id);
                                             }
-                                        });
-                                        me.rightTree.selectNode(obj.id);
+                                        })
+                                        me.rightTree.setData(res.obj);
+                                        $.each(res.obj, function (k, obj) {
+                                            var cLen = obj.children.length,
+                                                num = 0;
+                                            $.each(obj.children, function (key,o) {
+                                                if (o.checked) {
+                                                    num++;
+                                                    me.rightTree.selectNode(o.id);
+                                                }
+                                            });
+                                            me.rightTree.selectNode(obj.id);
 //                                        if (cLen == num) {
 //                                        }
-                                    });
+                                        });
+                                    }
                                 }
                             }
                         }

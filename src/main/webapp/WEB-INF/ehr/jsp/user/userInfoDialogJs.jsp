@@ -403,7 +403,7 @@
                     if (validator.validate()) {
                         userModel = self.$form.Fields.getValues();
                         delete userModel.location;
-						userModel.role = userInfo.roleIds(userModel.role);
+                        userModel.role = win.roleIds;
 //                        var organizationKeys = userModel.organization['keys'];
 //                        userModel.organization = organizationKeys[2];
                         if (userImgHtml == 0) {
