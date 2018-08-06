@@ -27,10 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -293,7 +290,7 @@ public class UserController extends BaseUIController {
 
     }
 
-    @RequestMapping(value = "updateUserAndInitRoles", produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "updateUserAndInitRoles")
     @ResponseBody
     public Object updateUserAndInitRoles(String userModelJsonData, String orgModel, HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 1、参数初始化
