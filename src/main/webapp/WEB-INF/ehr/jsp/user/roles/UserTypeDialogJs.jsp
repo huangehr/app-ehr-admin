@@ -174,6 +174,8 @@
                         if(/^[0-9]+$/.test(key.data.id)){
                             key.data.roleId=key.data.id;
                             key.data.roleName=key.data.name;
+                            key.data.clientId=key.data.pid;
+                            key.data.typeName=newdata.name;
                             return key.data;
                         }
                     });
