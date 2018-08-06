@@ -48,19 +48,19 @@ public class OrgMsgModelReader extends AExcelReader {
                     orgMsgModel.setFoundingTime(null == getCellCont(sheet, i, 21) ? "" : getCellCont(sheet, i, 21).trim());
                     orgMsgModel.setRegisteredCapital(null == getCellCont(sheet, i, 22) ? "" : getCellCont(sheet, i, 22).trim());
                     orgMsgModel.setLegalPerson(null == getCellCont(sheet, i, 23) ? "" : getCellCont(sheet, i, 23).trim());
-                    orgMsgModel.setHosEconomic(null == getCellCont(sheet, i, 24) ? "" : getCellCont(sheet, i, 24).trim());
-                    orgMsgModel.setBranchOrgFlag(null == getCellCont(sheet, i, 25) ? "" : getCellCont(sheet, i, 25).trim());
-                    orgMsgModel.setLocation(null == getCellCont(sheet, i, 26) ? "" : getCellCont(sheet, i, 26).trim());
-                    orgMsgModel.setPostalcode(null == getCellCont(sheet, i, 27) ? "" : getCellCont(sheet, i, 27).trim());
-                    orgMsgModel.setTel(null == getCellCont(sheet, i, 28) ? "" : getCellCont(sheet, i, 28).trim());
-                    orgMsgModel.setEmail(null == getCellCont(sheet, i, 29) ? "" : getCellCont(sheet, i, 29).trim());
-                    orgMsgModel.setDomainName(null == getCellCont(sheet, i, 30) ? "" : getCellCont(sheet, i, 30).trim());
-                    orgMsgModel.setRegistrationNumber(null == getCellCont(sheet, i, 31) ? "" : getCellCont(sheet, i, 31).trim());
-                    orgMsgModel.setRegistrationRatificationAgency(null == getCellCont(sheet, i, 32) ? "" : getCellCont(sheet, i, 32).trim());
-                    orgMsgModel.setCertificateDate(null == getCellCont(sheet, i, 33) ? "" : getCellCont(sheet, i, 33).trim());
-                    orgMsgModel.setOperator(null == getCellCont(sheet, i, 34) ? "" : getCellCont(sheet, i, 34).trim());
-                    orgMsgModel.setEntryStaff(null == getCellCont(sheet, i, 35) ? "" : getCellCont(sheet, i, 35).trim());
-                    orgMsgModel.setCreateTime(null == getCellCont(sheet, i, 36) ? "" : getCellCont(sheet, i, 36).trim());
+                    orgMsgModel.setBranchOrgFlag(null == getCellCont(sheet, i, 24) ? "" : getCellCont(sheet, i, 24).trim());
+                    orgMsgModel.setLocation(null == getCellCont(sheet, i, 25) ? "" : getCellCont(sheet, i, 25).trim());
+                    orgMsgModel.setPostalcode(null == getCellCont(sheet, i, 26) ? "" : getCellCont(sheet, i, 26).trim());
+                    orgMsgModel.setTel(null == getCellCont(sheet, i, 27) ? "" : getCellCont(sheet, i, 27).trim());
+                    orgMsgModel.setEmail(null == getCellCont(sheet, i, 28) ? "" : getCellCont(sheet, i, 28).trim());
+                    orgMsgModel.setDomainName(null == getCellCont(sheet, i, 29) ? "" : getCellCont(sheet, i, 29).trim());
+                    orgMsgModel.setRegistrationNumber(null == getCellCont(sheet, i, 30) ? "" : getCellCont(sheet, i, 30).trim());
+                    orgMsgModel.setRegistrationRatificationAgency(null == getCellCont(sheet, i, 31) ? "" : getCellCont(sheet, i, 31).trim());
+                    orgMsgModel.setCertificateDate(null == getCellCont(sheet, i, 32) ? "" : getCellCont(sheet, i, 32).trim());
+                    orgMsgModel.setOperator(null == getCellCont(sheet, i, 33) ? "" : getCellCont(sheet, i, 33).trim());
+                    orgMsgModel.setEntryStaff(null == getCellCont(sheet, i, 34) ? "" : getCellCont(sheet, i, 34).trim());
+                    orgMsgModel.setCreateTime(null == getCellCont(sheet, i, 35) ? "" : getCellCont(sheet, i, 35).trim());
+                    orgMsgModel.setCancelTime(null == getCellCont(sheet, i, 36) ? "" : getCellCont(sheet, i, 36).trim());
                     orgMsgModel.setUpdateTime(null == getCellCont(sheet, i, 37) ? "" : getCellCont(sheet, i, 37).trim());
                     orgMsgModel.setTermValidityStart(null == getCellCont(sheet, i, 38) ? "" : getCellCont(sheet, i, 38).trim());
                     orgMsgModel.setTermValidityEnd(null == getCellCont(sheet, i, 39) ? "" : getCellCont(sheet, i, 39).trim());
@@ -75,6 +75,7 @@ public class OrgMsgModelReader extends AExcelReader {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("模板不正确，请下载新的模板，并按照示例正确填写后上传！");
         } finally {
             if (rwb != null) {
