@@ -28,13 +28,13 @@
                    data-attr-scan="realName"/>
         </div>
     </div>
-    <div class="m-form-group">
-        <label><spring:message code="lbl.user.birthday"/><spring:message code="spe.colon"/></label>
-        <div class="m-form-control">
-            <input type="text" id="inp_birthday" class="validate-date l-text-field validate-date"  placeholder="输入日期 格式(2016-04-15)"
-                   required-title=<spring:message code="lbl.must.input"/> data-attr-scan="birthday"/>
-        </div>
-    </div>
+    <%--<div class="m-form-group">--%>
+        <%--<label><spring:message code="lbl.user.birthday"/><spring:message code="spe.colon"/></label>--%>
+        <%--<div class="m-form-control">--%>
+            <%--<input type="text" id="inp_birthday" class="validate-date l-text-field validate-date"  placeholder="输入日期 格式(2016-04-15)"--%>
+                   <%--required-title=<spring:message code="lbl.must.input"/> data-attr-scan="birthday"/>--%>
+        <%--</div>--%>
+    <%--</div>--%>
     <div class="m-form-group m-form-readonly">
         <label><spring:message code="lbl.identity.card"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">

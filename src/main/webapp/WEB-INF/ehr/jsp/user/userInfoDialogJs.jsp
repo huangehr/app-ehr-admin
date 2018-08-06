@@ -20,6 +20,9 @@
         var jValidation = $.jValidation;
 
         var allData = ${allData};
+
+        var isinit=true;
+
         var user = allData.obj;
 		var trees;
 
@@ -153,7 +156,7 @@
 //                this.$tel2.ligerTextBox({width: 240});
                 this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
                 var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:''},function(newvalue){
-                    if(win.roleIds){
+                    if(win.roleIds&&!isinit){
                         win.roleIds="";
                         parent._LIGERDIALOG.confirm('是否重新前往编辑授权？', function (yes) {
                             if (yes) {
@@ -161,6 +164,7 @@
                             }
                         });
                     }
+                    isinit=false
                     console.log(newvalue)
                 });
                 <%--this.$org.addressDropdown({--%>

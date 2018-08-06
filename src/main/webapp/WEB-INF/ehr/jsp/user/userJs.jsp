@@ -188,7 +188,7 @@
                         self.userInfoDialog = parent._LIGERDIALOG.open({
                             //  关闭对话框时销毁对话框
                             title:'修改基本信息',
-                            height: 650,
+                            height: 600,
                             width: 600,
                             load: true,
                             isDrag: true,
