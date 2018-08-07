@@ -49,6 +49,9 @@
 
                 apiInit: function () {
                     var self = this;
+
+                    self.$apiFeatrueTree.css("height","300px");
+
                     self.$appRoleGridScrollbar.mCustomScrollbar({});
                     var apiEle = [self.$apiFeatrueTree, self.$configApiFeatrueTree];
                     this.$userTypeCode.ligerTextBox({width: 240});
@@ -101,6 +104,7 @@
                             }, 300)
                         },
                         onSuccess: function (data) {
+                            me.$apiFeatrueTree.css("height","");
                             me.f_selectNode();
                             $("#div_configApi_featrue_grid").hide();
                             if (Util.isStrEquals(this.id, 'div_api_featrue_grid')) {

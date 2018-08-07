@@ -42,6 +42,8 @@
                     var self = this;
 
                     self.$featrueSaveBtn.hide();
+                    self.$apiFeatrueTree.height($(window).height()-110);
+                    master.$appRoleGridScrollbar.height($(window).height()-110);
 
                     self.$appRoleGridScrollbar.mCustomScrollbar({});
                     var apiEle = [self.$apiFeatrueTree, self.$configApiFeatrueTree];
@@ -271,6 +273,7 @@
                             }, 300)
                         },
                         onSuccess: function (data) {
+                            me.$apiFeatrueTree.css("height","");
                             me.f_selectNode();
                             $("#div_configApi_featrue_grid").hide();
                             if (Util.isStrEquals(this.id, 'div_api_featrue_grid')) {
@@ -350,6 +353,7 @@
             pageInit();
             $(window).resize(function(){
                 master.$appBrowseMsg.width($(window).width()-470);
+                master.$appRoleGridScrollbar.height($(window).height()-110);
             });
 
         })
