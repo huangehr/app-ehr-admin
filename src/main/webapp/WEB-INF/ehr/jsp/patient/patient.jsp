@@ -13,7 +13,7 @@
             </div>
         </div>
 
-    <div class="m-retrieve-area f-dn f-pr  m-form-inline" data-role-form>
+    <div class="m-retrieve-area f-dn f-pr  m-form-inline" data-role-form id="known_form">
         <%--<input type="text" id="inp_search" placeholder="输入姓名或身份证号"/>--%>
         <div class="m-form-group">
             <div class="m-form-control f-mb10">
@@ -78,6 +78,35 @@
             </div>--%>
         </div>
     </div>
+    <div class="m-retrieve-area f-dn f-pr  m-form-inline" data-role-form id="unknown_form" style="display: none">
+            <%--<input type="text" id="inp_search" placeholder="输入姓名或身份证号"/>--%>
+            <div class="m-form-group">
+                <div class="m-form-control f-mb10">
+                    <!--输入框-->
+                    <input type="text" id="inp_name" placeholder="请输入姓名" class="f-ml10" data-attr-scan="name"/>
+                </div>
+
+                <div class="m-form-control f-ml10 f-mb10">
+                    <!--输入框-->
+                    <input type="text" id="inp_card_no" placeholder="请输入就诊卡号" class="f-ml10" data-attr-scan="card_no"/>
+                </div>
+
+                <%--new add--%>
+                <div class="m-form-control f-ml10 f-mb10">
+                    <!--下拉框：性别-->
+                    <input type="text" id="inp_telephone" data-attr-scan="telephone" placeholder="请输入手机号码"/>
+                </div>
+
+                <div class="m-form-control f-ml10 f-mb10">
+                    <!--按钮:查询 & 新增-->
+                    <sec:authorize url="/patient/searchPatient">
+                        <div id="btn_search_un" class="l-button u-btn u-btn-primary u-btn-small f-ib f-vam">
+                            <span><spring:message code="btn.search"/></span>
+                        </div>
+                    </sec:authorize>
+                </div>
+            </div>
+        </div>
     <!--######人口信息表######-->
     <div id="div_patient_info_grid">
 

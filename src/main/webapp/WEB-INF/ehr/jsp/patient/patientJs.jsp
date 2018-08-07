@@ -19,6 +19,8 @@
             var patientMaster = null;
 
             var patientDialog=null;
+
+            var filters="";//未识别列表搜索
             /* ************************** 变量定义结束 ******************************** */
 
             /* *************************** 函数定义 ******************************* */
@@ -41,6 +43,8 @@
 
             patientRetrieve = {
                 $element: $(".m-retrieve-area"),
+                $knownForm: $("#known_form"),
+                $unknownForm: $("#unknown_form"),
                 $searchBtn: $('#btn_search'),
                 $searchPatient: $("#inp_search"),
                 $homeAddress: $("#search_homeAddress"),
@@ -49,9 +53,15 @@
                 $sex: $('#sex'),
                 $starTime: $('#star_time'),
                 $endTime: $('#end_time'),
+                //未识别筛选框
+                $searchName: $("#inp_name"),
+                $searchCardNo: $("#inp_card_no"),
+                $searchTelephone: $("#inp_telephone"),
+                $searchBtnUn: $('#btn_search_un'),
+
 //                $jg: $('#jg'),
                 init: function () {
-                    this.$element.show();
+                    this.$knownForm.show();
                     this.$sex.ligerComboBox({
                         valueField: 'code',
                         textField: 'value',
@@ -67,13 +77,11 @@
                     this.$starTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:false});
                     this.$endTime.ligerDateEditor({format: "yyyy-MM-dd",showTime:false});
 
-                   /* this.$homeAddress.addressDropdown({tabsData:[
-                        {name: '省份',code:'id',value:'name', url: '${contextRoot}/address/getParent', params: {level:'1'}},
-                        {name: '城市',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'},
-                        {name: '县区',code:'id',value:'name', url: '${contextRoot}/address/getChildByParent'}
-                    ]});*/
                     this.$searchPatient.ligerTextBox({width: 170 });
                     this.$searchHhomeAddress.ligerTextBox({width: 200 });
+                    this.$searchName.ligerTextBox({width: 200 });
+                    this.$searchCardNo.ligerTextBox({width: 200 });
+                    this.$searchTelephone.ligerTextBox({width: 200 });
                     this.bindEvents();
                 },
                 bindEvents: function () {
@@ -185,8 +193,11 @@
                     self.UnknowArchivesGrid = $("#div_unknowarchives_info_grid").ligerGrid($.LigerGridEx.config({
                         url: '${contextRoot}/archiveRelation/page',
                         parms:{
-                            size:15
+                            filters:filters,
+                            size:15,
+                            sort:'',
                         },
+                        pageSize:15,
                         width:'97%',
                         columns: [
                             {display: '档案编号', name: 'sn', width: '10%', isAllowHide: false, align: 'left'},
@@ -247,11 +258,23 @@
                 },*/
                 reloadGrid: function () {
                     //var values = retrieve.$element.Fields.getValues();
-                    patientRetrieve.$element.attrScan();
-                    var values = patientRetrieve.$element.Fields.getValues();
+                    patientRetrieve.$knownForm.attrScan();
+                    var values = patientRetrieve.$knownForm.Fields.getValues();
                     values.gender = values.gender.trim() == '男' ? '1' : values.gender.trim() == '女' ? '2' : '';
                     debugger
                     reloadGrid.call(this, '${contextRoot}/patient/searchPatientByParams', values);
+                },
+                reloadunknownGrid: function () {
+                    //var values = retrieve.$element.Fields.getValues();
+                    patientRetrieve.$unknownForm.attrScan();
+                    var values = patientRetrieve.$unknownForm.Fields.getValues();
+                    filters="";
+                    if(values.name){filters+="name="+values.name+";"}
+                    if(values.card_no){filters+="card_no="+values.card_no+";"}
+                    if(values.telephone){filters+="telephone="+values.telephone+";"}
+                    debugger
+                    this.UnknowArchivesGrid.setOptions({parms: {filters: filters,sort:"",size:15}});
+                    this.UnknowArchivesGrid.reload()
                 },
                 bindEvents: function () {
                     var self = this;
@@ -259,18 +282,24 @@
                         grid.options.newPage = 1;
                         patientMaster.reloadGrid();
                     });
+                    patientRetrieve.$searchBtnUn.click(function () {
+                        self.UnknowArchivesGrid.options.newPage = 1;
+                        patientMaster.reloadunknownGrid();
+                    });
 //                    点击tab 切换表格
                     $(".btn-group").on("click",".btn",function() {
                         var index = $(this).index();
                         $(".btn-group").find(".btn").removeClass("active");
                         $(this).addClass("active");
                         if(index==0){
-                            patientRetrieve.$element.show();
+                            patientRetrieve.$knownForm.show();
+                            patientRetrieve.$unknownForm.hide();
                             $("#div_patient_info_grid").show();
                             $("#div_unknowarchives_info_grid").hide();
                             self.KnownPatientGrid.reload();
                         }else {
-                            patientRetrieve.$element.hide();
+                            patientRetrieve.$unknownForm.show();
+                            patientRetrieve.$knownForm.hide();
                             $("#div_patient_info_grid").hide();
                             $("#div_unknowarchives_info_grid").show();
                             self.UnknowArchivesGrid.reload();
