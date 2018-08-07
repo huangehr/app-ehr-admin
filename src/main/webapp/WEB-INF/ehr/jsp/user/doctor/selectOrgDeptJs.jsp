@@ -107,30 +107,23 @@
                                         dataType: "json",
                                         success: function(data) {
                                             debugger
-                                            res={
-                                                successFlg:true,
-                                                detailModelList:res,
-                                                obj:data.detailModelList
-                                            };
-                                            if (res.successFlg) {
-                                                me.leftTree.setData(res.detailModelList);
-                                                $.each(res.detailModelList, function (k, obj) {
-                                                    if (obj.checked) {
-                                                        me.leftTree.selectNode(obj.id);
-                                                    }
-                                                })
-                                                me.rightTree.setData(res.obj);
-                                                $.each(res.obj, function (k, obj) {
-                                                    var cLen = obj.children.length,
-                                                        num = 0;
-                                                    $.each(obj.children, function (key,o) {
-                                                        if (o.checked) {
-                                                            num++;
-                                                            me.rightTree.selectNode(o.id);
+                                            if (data.successFlg) {
+                                                me.leftTree.setData(res);
+                                                $.each(res, function (k, obj) {
+                                                    $.each(data.detailModelList,function (i,cobj) {
+                                                        if(cobj.id==obj.id){
+                                                            $("#orgTree #"+obj.id).find(".l-checkbox").click();
+
                                                         }
+                                                    })
+                                                })
+                                                setTimeout(function () {
+                                                    $.each(data.detailModelList, function (k, obj) {
+                                                        $.each(obj.children, function (key,o) {
+                                                            $("#deptTree #"+o.id).find(".l-checkbox").click();
+                                                        });
                                                     });
-                                                    me.rightTree.selectNode(obj.id);
-                                                });
+                                                },500)
                                             }
                                         }
                                     });

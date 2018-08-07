@@ -24,12 +24,13 @@
         var isinit=true;
 
         var user = allData.obj;
+        debugger
 		var trees;
 
 
         /* ************************** 变量定义结束 **************************** */
         win.orgDeptDio = null;
-        win.ORGDEPTVAL = '';
+        win.ORGDEPTVAL = allData.obj.organization;
         win.roleIds=allData.obj.role;
         /* *************************** 函数定义 ******************************* */
         function pageInit() {
@@ -275,6 +276,11 @@
 //                        realnameFlag:user.realnameFlag,
 
                     });
+
+//                    $("#divBtnShow").find("span").attr("data-cd",JSON.parse(user.organization));
+//                    if(user.organizationName){
+//                        $("#divBtnShow").find("span").html(user.organizationName);
+//                    }
                     self.$inp_select_userType.ligerGetComboBoxManager().setValue(user.userType);
                     self.$inp_select_userType.val(user.userTypeName);
 //                    $("#inp_select_userType_val").val(user.userType)
@@ -404,10 +410,17 @@
                         userModel = self.$form.Fields.getValues();
                         delete userModel.location;
                         userModel.role = win.roleIds;
+                        var jsonModel = JSON.stringify(win.ORGDEPTVAL);
+                        if (jsonModel.length <= 0) {
+                            $.Notice.error('请选择机构部门');
+                            return;
+                        }
+//                        userModel.organization=JSON.stringify(win.ORGDEPTVAL);
+//                        userModel.organizationName=$("#divBtnShow").find("span").html();
 //                        var organizationKeys = userModel.organization['keys'];
 //                        userModel.organization = organizationKeys[2];
                         if (userImgHtml == 0) {
-                            updateUser(userModel);
+                            updateUser(userModel,jsonModel);
                         } else {
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
@@ -417,7 +430,7 @@
                                 win.closeUserInfoDialog();
                                 win.reloadMasterUpdateGrid();
                             } else {
-                                updateUser(userModel);
+                                updateUser(userModel,jsonModel);
                             }
                         }
                     } else {
@@ -425,13 +438,8 @@
                     }
                 });
 
-                function updateUser(userModel) {
+                function updateUser(userModel,jsonModel) {
                     debugger
-                    var jsonModel = JSON.stringify(win.ORGDEPTVAL);
-                    if (jsonModel.length <= 0) {
-                        $.Notice.error('请选择机构部门');
-                        return;
-                    }
 
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
