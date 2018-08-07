@@ -609,12 +609,11 @@ public class LoginController extends BaseUIController {
     public List<String> gerOrgsByUserId(String userId) throws Exception {
         Map<String, Object> params = new HashMap<>();
         List<String> listStr = new ArrayList<>();
-        String url = "/org/getUserOrglistByUserId/";
+        String url = "/basic/api/v1.0/org/getUserOrgCodelistByUserId";
         //获取用户所属机构，默认只授权当前机构，其他机构通过角色获取
         params.put("userId", userId);
-        String rs = HttpClientUtil.doGet(comUrl + url, params);
-        Envelop envelop =objectMapper.readValue(rs,Envelop.class);
-        listStr = objectMapper.readValue(toJson(envelop.getDetailModelList()), new TypeReference<List<String>>() { });
+        String rs = HttpClientUtil.doGet(adminInnerUrl + url, params);
+        listStr = objectMapper.readValue(rs, new TypeReference<List<String>>() { });
         return listStr;
     }
 
