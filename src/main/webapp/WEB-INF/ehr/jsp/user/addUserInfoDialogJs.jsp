@@ -240,13 +240,20 @@
                     var roles = win.roleIds;
                     console.log('selroles'+roles);
                     addUser.role = roles;
+                    var jsonModel = JSON.stringify(win.ORGDEPTVAL);
+                    if (jsonModel.length <= 0) {
+                        $.Notice.error('请选择机构部门');
+                        return;
+                    }
+//                    addUser.organization=JSON.stringify(win.ORGDEPTVAL);
+//                    addUser.organizationName=$("#divBtnShow").find("span").html();
                     if (validator.validate()) {
 //                        var organizationKeys = addUser.organization['keys'];
 //
 //                        addUser.organization = organizationKeys[2];
 //                        addUser.source = source.getValue();
                         if (userImgHtml == 0) {
-                            updateUser(addUser);
+                            updateUser(addUser,jsonModel);
                         } else {
                             var upload = self.$uploader.instance;
                             var image = upload.getFiles().length;
@@ -254,7 +261,7 @@
                                 upload.options.formData.userModelJsonData = encodeURIComponent(JSON.stringify(addUser));
                                 upload.upload();
                             } else {
-                                updateUser(addUser);
+                                updateUser(addUser,jsonModel);
                             }
                         }
 
@@ -266,14 +273,9 @@
                 });
 
 
-                function updateUser(userModel) {
+                function updateUser(userModel,jsonModel) {
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
-                    var jsonModel = JSON.stringify(win.ORGDEPTVAL);
-                    if (jsonModel.length <= 0) {
-                        $.Notice.error('请选择机构部门');
-                        return;
-                    }
                     debugger
                     dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
                         data: {userModelJsonData: userModelJsonData,orgModel:jsonModel},

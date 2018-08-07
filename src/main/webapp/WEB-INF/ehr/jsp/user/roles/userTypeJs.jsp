@@ -42,6 +42,8 @@
                     var self = this;
 
                     self.$featrueSaveBtn.hide();
+                    self.$apiFeatrueTree.height($(window).height()-110);
+                    master.$appRoleGridScrollbar.height($(window).height()-110);
 
                     self.$appRoleGridScrollbar.mCustomScrollbar({});
                     var apiEle = [self.$apiFeatrueTree, self.$configApiFeatrueTree];
@@ -177,6 +179,8 @@
                             if(/^[0-9]+$/.test(key.data.id)){
                                 key.data.roleId=key.data.id;
                                 key.data.roleName=key.data.name;
+                                key.data.clientId=key.data.pid;
+                                key.data.typeName=userTypeJsonData.name;
                                 return key.data;
                             }
                         });
@@ -197,7 +201,7 @@
                     });
 
                     self.$newuserTypeBtn.click(function () {
-                        self.ligerDialogOpen("", "add", "新增用户类别", 800, 620);
+                        self.ligerDialogOpen("{}", "add", "新增用户类别", 800, 620);
                     });
                 },
                 ligerDialogOpen: function (jsonStr, type, title, width, height) {
@@ -269,6 +273,7 @@
                             }, 300)
                         },
                         onSuccess: function (data) {
+                            me.$apiFeatrueTree.css("height","");
                             me.f_selectNode();
                             $("#div_configApi_featrue_grid").hide();
                             if (Util.isStrEquals(this.id, 'div_api_featrue_grid')) {
@@ -348,6 +353,7 @@
             pageInit();
             $(window).resize(function(){
                 master.$appBrowseMsg.width($(window).width()-470);
+                master.$appRoleGridScrollbar.height($(window).height()-110);
             });
 
         })
