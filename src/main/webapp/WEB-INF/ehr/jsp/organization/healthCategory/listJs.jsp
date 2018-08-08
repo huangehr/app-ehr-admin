@@ -17,6 +17,7 @@
     }
 
     function initWidget() {
+        debugger
         $('#searchContent').ligerTextBox({
             width: 200, isSearch: true, search: function () {
                 reloadGrid();
@@ -42,7 +43,22 @@
             allowHideColumn: false,
             enabledSort:false,
             tree: {columnName: 'name'},
-            usePager: false
+            usePager: false,
+            onAfterShowData:function () {
+                debugger
+                $(".l-grid-tree-link").click(function () {
+                    setTimeout(function () {
+                        $(".l-grid-body.l-grid-body1").css("height",$(".l-panel-body").height()-40+"px");
+                        $(".m-custom-scroll").css("height",$(".l-panel-body").height()-40+"px");
+                            setTimeout(function () {
+                                if($(".m-custom-scroll").height()=="115"){
+                                    $(".l-grid-body.l-grid-body1").css("height",$(".l-panel-body").height()-40+"px");
+                                    $(".m-custom-scroll").css("height",$(".l-panel-body").height()-40+"px");
+                                }
+                            },1000)
+                    },1000)
+                })
+            }
         }));
         grid.collapseAll();
         grid.adjustToWidth();
