@@ -220,6 +220,9 @@
                         }
                         if (validator.validate()) {
                             newdata = self.$form.Fields.getValues();
+                            newdata.code=stripscript(newdata.code);
+                            newdata.name=stripscript(newdata.name);
+                            newdata.memo=stripscript(newdata.memo);
                             if(type=="copyUserType"){newdata.id="";newdata.activeFlag="1"}
                             self.saveRoles();
                         } else {
@@ -236,6 +239,20 @@
 
             };
             pageInit();
+
+            function stripscript(value) {
+                debugger
+                var pattern = new RegExp("[`~!@#%$^&*+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                var rs = "";
+                for (var i = 0; i < value.length; i++) {
+                    rs = rs+value.substr(i, 1).replace(pattern, '');
+                }
+                rs=rs.replace(/\"/g, "");
+                rs=rs.replace(/\s+/g,"");
+                $("#inp_userName").val(rs)
+                return rs;
+            }
+
             //cyc
             var treeCyc = {
                 CheckInit: function (e, tree) {

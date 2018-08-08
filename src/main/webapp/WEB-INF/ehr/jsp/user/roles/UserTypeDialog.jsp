@@ -7,20 +7,17 @@
         <div class="m-form-group">
             <label>用户类别编码：</label>
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_Code" class="required useTitle max-length-50"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code" onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5\w]/g,'')" ；
-                       this.value=this.value.replace(/[^\u4e00-\u9fa5\w]/g,''/>
+                <input type="text" id="inp_Code" class="required useTitle max-length-50"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="code"/>
             </div>
             <label>用户类别名称：</label>
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_Name" class="required useTitle ajax"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name" onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5\w]/g,'')" ；
-                       this.value=this.value.replace(/[^\u4e00-\u9fa5\w]/g,''/>
+                <input type="text" id="inp_Name" class="required useTitle ajax"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="name"/>
             </div>
         </div>
         <div class="m-form-group">
             <label>备注：</label>
             <div class="l-text-wrapper m-form-control essential">
-                <input type="text" id="inp_Memo" class="required useTitle ajax"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="memo" onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5\w]/g,'')" ；
-                       this.value=this.value.replace(/[^\u4e00-\u9fa5\w]/g,''/>
+                <input type="text" id="inp_Memo" class="required useTitle ajax"  required-title=<spring:message code="lbl.must.input"/> data-attr-scan="memo"/>
             </div>
         </div>
     </div>

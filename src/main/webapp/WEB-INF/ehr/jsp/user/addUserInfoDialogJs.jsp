@@ -21,6 +21,7 @@
         win.ORGDEPTVAL = '';
         win.roleIds = '';
 
+        debugger
 
         /* ************************** 变量定义结束 **************************** */
 
@@ -99,7 +100,7 @@
                 this.$sex.ligerRadio();
 
 
-                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:''},function(newvalue){
+                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:'',activeFlag:"1"},function(newvalue){
                     if(win.roleIds){
                         win.roleIds="";
                         parent._LIGERDIALOG.confirm('是否重新前往编辑授权？', function (yes) {
@@ -147,6 +148,10 @@
                             if (checkObj.result) {
                                 inputSourceByIdCard(idCard,cellphone);
                             }
+                        }
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userName')) {
+                            var realName = $("#inp_userName").val();
+                            checkObj = inputSourceByRealName(realName, "请输入8个字以内的汉字或16个字母以内的英文字母");
                         }
 //                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
 //                            var email = $("#inp_userEmail").val();
@@ -232,9 +237,47 @@
                     return result;
                 }
 
+                function inputSourceByRealName(str,errorMsg) {
+                    str=stripscript(str);
+                    var result=new jValidation.ajax.Result();
+                    var ta=str.split(""),str_l=0;
+                    var str_fa=Number(ta[0].charCodeAt());
+                    if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
+                    {
+                        for(var i=0;i<=ta.length-1;i++)
+                        {
+                            str_l++;
+                            if(Number(ta[i].charCodeAt())>255){str_l++;}
+                        }
+                        if(str_l<=16){
+                            result.setResult(true);
+                            result.setErrorMsg('');
+                        }else{
+                            result.setResult(false);
+                            result.setErrorMsg(errorMsg);
+                        }
+                    }else{
+                        result.setResult(false);
+                        result.setErrorMsg("不能以除中文或英文的字符开头");
+                    }
+                    return result;
+                }
+                function stripscript(value) {
+                    debugger
+                    var pattern = new RegExp("[`~!@#%$^&*+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                    var rs = "";
+                    for (var i = 0; i < value.length; i++) {
+                        rs = rs+value.substr(i, 1).replace(pattern, '');
+                    }
+                    rs=rs.replace(/\"/g, "");
+                    rs=rs.replace(/\s+/g,"");
+                    $("#inp_userName").val(rs)
+                    return rs;
+                }
+
+
                 //新增的点击事件
                 this.$addUserBtn.click(function () {
-                    debugger
                     var userImgHtml = self.$imageShow.children().length;
                     var addUser = self.$form.Fields.getValues();
                     var roles = win.roleIds;
@@ -276,7 +319,6 @@
                 function updateUser(userModel,jsonModel) {
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
-                    debugger
                     dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
                         data: {userModelJsonData: userModelJsonData,orgModel:jsonModel},
                         success: function (data) {
@@ -319,7 +361,6 @@
 
                 this.$divBtnSetrole.click(function () {
                     var addUser = self.$form.Fields.getValues();
-                    debugger
                     if(addUser.userType){
                         var wait = $.Notice.waitting("请稍后...");
                         win.roleGroupDio = $.ligerDialog.open({

@@ -24,7 +24,7 @@
     <div class="m-form-group">
         <label><spring:message code="lbl.name"/><spring:message code="spe.colon"/></label>
         <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="inp_user_name" class="required useTitle max-length-50 validate-special-char" required-title=<spring:message code="lbl.must.input"/>
+            <input type="text" id="inp_user_name"  class="required useTitle max-length-50 validate-special-char ajax" required-title=<spring:message code="lbl.must.input" />
                    data-attr-scan="realName"/>
         </div>
     </div>

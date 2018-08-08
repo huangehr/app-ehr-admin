@@ -57,7 +57,7 @@
                             userTypeJsonData={};
                             userTypeName=this.find('input').val();
                             userTypeGrid.setOptions({parms: {
-                                searchParm: userTypeName}
+                                searchParm: userTypeName,activeFlag:""}
                             });
                             userTypeGrid.reload();
                         }
@@ -65,7 +65,7 @@
 
                     userTypeGrid = self.$userTypeGrid.ligerGrid($.LigerGridEx.config({
                         url: url,
-                        parms: {searchParm: userTypeName},
+                        parms: {searchParm: userTypeName,activeFlag:""},
                         isScroll: true,
                         columns: [
                             {display: '用户类别编码', name: 'code', width: '25%'},

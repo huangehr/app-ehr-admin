@@ -156,7 +156,7 @@
 //                this.$ssid.ligerTextBox({width: 240});
 //                this.$tel2.ligerTextBox({width: 240});
                 this.$birthday.ligerDateEditor({format: "yyyy-MM-dd"});
-                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:''},function(newvalue){
+                var select_user_type = this.$inp_select_userType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:'',activeFlag:"1"},function(newvalue){
                     if(win.roleIds&&!isinit){
                         win.roleIds="";
                         parent._LIGERDIALOG.confirm('是否重新前往编辑授权？', function (yes) {
@@ -314,21 +314,19 @@
                 var validator = new jValidation.Validation(this.$form, {
                     immediate: true, onSubmit: false,
                     onElementValidateForAjax: function (elm) {
-//                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userEmail')) {
-//                            var email = $("#inp_userEmail").val();
-//                            var emailCopy = self.$emailCopy.val();
-//                            if (emailCopy != null && emailCopy != '' && emailCopy == email) {
-//                                return true;
-//                            }
-//                            return checkDataSourceName('email', email, "该邮箱已被绑定，请确认。");
-//                        }
-                        if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
-                            var idCard = $("#inp_idCard").val();
-                            var idCardCopy = self.$idCardCopy.val();
-                            if (idCardCopy != null && idCardCopy != '' && idCardCopy == idCard) {
-                                return true;
-                            }
-                            return checkDataSourceName('id_card_no', idCard, "该身份证号已被注册，请确认。");
+                        var checkObj = { result:true, errorMsg: ''};
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_user_name')) {
+                            var realName = $("#inp_user_name").val();
+                            checkObj = inputSourceByRealName(realName, "请输入8个字以内的汉字或16个字母以内的英文字母");
+                        }
+                        if (Util.isStrEquals($(elm).attr("id"), 'inp_userTel')) {
+                            var telephone = $("#inp_userTel").val();
+                            checkObj = checkDataSourceName('telephone', telephone, "该手机号码已存在");
+                        }
+                        if (!checkObj.result) {
+                            return checkObj;
+                        } else {
+                            return checkObj.result;
                         }
                     }
                 });
@@ -350,6 +348,43 @@
                     });
                     return result;
                 };
+
+                function inputSourceByRealName(str,errorMsg) {
+                    str=stripscript(str);
+                    var result=new jValidation.ajax.Result();
+                    var ta=str.split(""),str_l=0;
+                    var str_fa=Number(ta[0].charCodeAt());
+                    if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
+                    {
+                        for(var i=0;i<=ta.length-1;i++)
+                        {
+                            str_l++;
+                            if(Number(ta[i].charCodeAt())>255){str_l++;}
+                        }
+                        if(str_l<=16){
+                            result.setResult(true);
+                            result.setErrorMsg('');
+                        }else{
+                            result.setResult(false);
+                            result.setErrorMsg(errorMsg);
+                        }
+                    }
+                    return result;
+                }
+
+
+                function stripscript(value) {
+                    debugger
+                    var pattern = new RegExp("[`~!@#%$^&*+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                    var rs = "";
+                    for (var i = 0; i < value.length; i++) {
+                        rs = rs+value.substr(i, 1).replace(pattern, '');
+                    }
+                    rs=rs.replace(/\"/g, "");
+                    rs=rs.replace(/\s+/g,"");
+                    $("#inp_user_name").val(rs)
+                    return rs;
+                }
 
                 // 选择机构部门
                 self.$divBtnShow.onclick = function () {
@@ -440,7 +475,6 @@
 
                 function updateUser(userModel,jsonModel) {
                     debugger
-
                     var userModelJsonData = JSON.stringify(userModel);
                     var dataModel = $.DataModel.init();
                     dataModel.updateRemote("${contextRoot}/user/updateUserAndInitRoles", {
@@ -451,7 +485,7 @@
                                 win.reloadMasterUpdateGrid();
                                 $.Notice.success('修改成功');
                             } else {
-                                $.Notice.error('修改失败');
+                                $.Notice.error(data.errorMsg);
                             }
                         }
                     })
