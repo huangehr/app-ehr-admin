@@ -53,6 +53,8 @@
                     self.$userTypeComSearch.ligerTextBox({
                         width: 200, isSearch: true, search: function () {
                             debugger
+                            self.$featrueSaveBtn.hide();
+                            userTypeJsonData={};
                             userTypeName=this.find('input').val();
                             userTypeGrid.setOptions({parms: {
                                 searchParm: userTypeName}
@@ -93,9 +95,6 @@
                             userTypeJsonData=data;
                             self.resetRoles(data.id);
                             self.$featrueSaveBtn.show();
-                        },
-                        onReload:function () {
-                            self.$featrueSaveBtn.hide();
                         },
                     }));
                     
@@ -313,20 +312,22 @@
                 resetRoles:function (type) {
                     var me = this;
                     me.f_selectNode()
-                    $.ajax({
-                        type: "GET",
-                        url: "${contextRoot}/userRoles/user/getUserTypeById",
-                        data: {"userTypeId":type},
-                        dataType: "json",
-                        success: function(data) {
-                            if(data.successFlg){
-                                selroles=_.map(data.detailModelList,function (item){
-                                    return item.roleId
-                                })
-                                me.f_selectNode()
+                    if(type){
+                        $.ajax({
+                            type: "GET",
+                            url: "${contextRoot}/userRoles/user/getUserTypeById",
+                            data: {"userTypeId":type},
+                            dataType: "json",
+                            success: function(data) {
+                                if(data.successFlg){
+                                    selroles=_.map(data.detailModelList,function (item){
+                                        return item.roleId
+                                    })
+                                    me.f_selectNode()
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 },
                 f_selectNode:function () {
                     var me = this;
@@ -344,6 +345,8 @@
             win.parent.reloadMasterUpdateGrid = win.reloadMasterUpdateGrid = function () {
                 debugger
                 userTypeGrid.reload();
+                userTypeJsonData={};
+                master.$featrueSaveBtn.hide();
             };
 
             win.parent.closeAppRoleGroupInfoDialog = function (callback) {
