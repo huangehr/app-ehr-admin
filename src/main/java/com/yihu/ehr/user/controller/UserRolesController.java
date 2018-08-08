@@ -1069,13 +1069,14 @@ public class UserRolesController extends BaseUIController {
     /**
      * 查询用户类别
      * @param searchParm 用户类别名称
+     * @param activeFlag 用户类别是否有效
      * @param page 当前页
      * @param rows 分页大小
      * @return
      */
     @RequestMapping("/user/searchUserType")
     @ResponseBody
-    public Envelop searchUserType(String searchParm, int page, int rows) {
+    public Envelop searchUserType(String activeFlag,String searchParm, int page, int rows) {
         String url = "/basic/api/v1.0/user/searchUserType";
         Envelop envelop;
         try {
@@ -1083,7 +1084,10 @@ public class UserRolesController extends BaseUIController {
             params.put("fields", "");
             StringBuilder s=new StringBuilder();
             if (!StringUtils.isEmpty(searchParm)) {
-                s.append("name?" + searchParm );
+                s.append("name?" + searchParm+";" );
+            }
+            if (!StringUtils.isEmpty(activeFlag)) {
+                s.append("activeFlag=" + activeFlag +";");
             }
             String filters = s.toString();
             params.put("filters", filters);
