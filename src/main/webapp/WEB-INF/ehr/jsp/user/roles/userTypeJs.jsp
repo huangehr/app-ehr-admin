@@ -180,6 +180,7 @@
                                 key.data.roleName=key.data.name;
                                 key.data.clientId=key.data.pid;
                                 key.data.typeName=userTypeJsonData.name;
+                                key.data.clientName=$("#"+key.data.pid+" .l-body span").attr("title");
                                 return key.data;
                             }
                         });

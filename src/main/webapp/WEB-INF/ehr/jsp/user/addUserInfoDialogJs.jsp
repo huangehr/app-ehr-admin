@@ -139,7 +139,10 @@
                         var checkObj = { result:true, errorMsg: ''};
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_loginCode')) {
                             var loginCode = $("#inp_loginCode").val();
-                            checkObj = checkDataSourceName('login_code', loginCode, "该账号已存在");
+                            checkObj=isChinese(loginCode);
+                            if(checkObj.result){
+                                checkObj = checkDataSourceName('login_code', loginCode, "该账号已存在");
+                            }
                         }
                         if (Util.isStrEquals($(elm).attr("id"), 'inp_idCard')) {
                             var idCard = $("#inp_idCard").val();
@@ -238,27 +241,29 @@
                 }
 
                 function inputSourceByRealName(str,errorMsg) {
-                    str=stripscript(str);
                     var result=new jValidation.ajax.Result();
-                    var ta=str.split(""),str_l=0;
-                    var str_fa=Number(ta[0].charCodeAt());
-                    if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
-                    {
-                        for(var i=0;i<=ta.length-1;i++)
+                    result=checkSpecialChar(str);
+                    if(result.result){
+                        var ta=str.split(""),str_l=0;
+                        var str_fa=Number(ta[0].charCodeAt());
+                        if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
                         {
-                            str_l++;
-                            if(Number(ta[i].charCodeAt())>255){str_l++;}
-                        }
-                        if(str_l<=16){
-                            result.setResult(true);
-                            result.setErrorMsg('');
+                            for(var i=0;i<=ta.length-1;i++)
+                            {
+                                str_l++;
+                                if(Number(ta[i].charCodeAt())>255){str_l++;}
+                            }
+                            if(str_l<=16){
+                                result.setResult(true);
+                                result.setErrorMsg('');
+                            }else{
+                                result.setResult(false);
+                                result.setErrorMsg(errorMsg);
+                            }
                         }else{
                             result.setResult(false);
-                            result.setErrorMsg(errorMsg);
+                            result.setErrorMsg("不能以除中文或英文的字符开头");
                         }
-                    }else{
-                        result.setResult(false);
-                        result.setErrorMsg("不能以除中文或英文的字符开头");
                     }
                     return result;
                 }
@@ -273,6 +278,32 @@
                     rs=rs.replace(/\s+/g,"");
                     $("#inp_userName").val(rs)
                     return rs;
+                }
+
+                function checkSpecialChar(value) {
+                    var result=new jValidation.ajax.Result();
+                    var pattern = new RegExp("[`~!@#%$^&*-+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                    if(pattern.test(value)){
+                        result.setResult(false);
+                        result.setErrorMsg("请不要输入特殊字符");
+                    }else{
+                        result.setResult(true);
+                        result.setErrorMsg('');
+                    }
+                    return result;
+                }
+
+                function isChinese(str){
+                    var result=new jValidation.ajax.Result();
+                    var patrn=/[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/gi;
+                    if(!patrn.exec(str)){
+                        result.setResult(true);
+                        result.setErrorMsg('');
+                    }else{
+                        result.setResult(false);
+                        result.setErrorMsg("请不要输入汉字");
+                    }
+                    return result;
                 }
 
 

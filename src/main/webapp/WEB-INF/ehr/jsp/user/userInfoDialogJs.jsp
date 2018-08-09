@@ -350,8 +350,8 @@
                 };
 
                 function inputSourceByRealName(str,errorMsg) {
-                    str=stripscript(str);
                     var result=new jValidation.ajax.Result();
+                    result=checkSpecialChar(str);
                     var ta=str.split(""),str_l=0;
                     var str_fa=Number(ta[0].charCodeAt());
                     if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
@@ -384,6 +384,20 @@
                     rs=rs.replace(/\s+/g,"");
                     $("#inp_user_name").val(rs)
                     return rs;
+                }
+
+
+                function checkSpecialChar(value) {
+                    var result=new jValidation.ajax.Result();
+                    var pattern = new RegExp("[`~!@#%$^&*-+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                    if(pattern.test(value)){
+                        result.setResult(false);
+                        result.setErrorMsg("请不要输入特殊字符");
+                    }else{
+                        result.setResult(true);
+                        result.setErrorMsg('');
+                    }
+                    return result;
                 }
 
                 // 选择机构部门
