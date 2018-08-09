@@ -208,6 +208,20 @@
                     var validator = new jValidation.Validation(this.$form, {
                         immediate: true, onSubmit: false,
                         onElementValidateForAjax: function (elm) {
+                            var checkObj = { result:true, errorMsg: ''};
+                            if (Util.isStrEquals($(elm).attr("id"), 'inp_Code')) {
+                                var Code = $("#inp_Code").val();
+                                checkObj=isChinese(Code);
+                            }
+                            if (Util.isStrEquals($(elm).attr("id"), 'inp_Name')) {
+                                var Name = $("#inp_Name").val();
+                                checkObj=checkSpecialChar(Name);
+                            }
+                            if (!checkObj.result) {
+                                return checkObj;
+                            } else {
+                                return checkObj.result;
+                            }
                         }
                     });
 
@@ -220,7 +234,7 @@
                         }
                         if (validator.validate()) {
                             newdata = self.$form.Fields.getValues();
-                            newdata.code=stripscript(newdata.code);
+                            newdata.code=newdata.code.replace(/[\u4e00-\u9fa5]/g,'');
                             newdata.name=stripscript(newdata.name);
                             newdata.memo=stripscript(newdata.memo);
                             if(type=="copyUserType"){newdata.id="";newdata.activeFlag="1"}
@@ -251,6 +265,32 @@
                 rs=rs.replace(/\s+/g,"");
                 $("#inp_userName").val(rs)
                 return rs;
+            }
+
+            function checkSpecialChar(value) {
+                var result=new jValidation.ajax.Result();
+                var pattern = new RegExp("[`~!@#%$^&*-+()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]")
+                if(pattern.test(value)){
+                    result.setResult(false);
+                    result.setErrorMsg("请不要输入特殊字符");
+                }else{
+                    result.setResult(true);
+                    result.setErrorMsg('');
+                }
+                return result;
+            }
+
+            function isChinese(str){
+                var result=new jValidation.ajax.Result();
+                var patrn=/[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/gi;
+                if(!patrn.exec(str)){
+                    result.setResult(true);
+                    result.setErrorMsg('');
+                }else{
+                    result.setResult(false);
+                    result.setErrorMsg("请不要输入汉字");
+                }
+                return result;
             }
 
             //cyc
