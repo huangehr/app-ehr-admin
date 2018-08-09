@@ -352,21 +352,23 @@
                 function inputSourceByRealName(str,errorMsg) {
                     var result=new jValidation.ajax.Result();
                     result=checkSpecialChar(str);
-                    var ta=str.split(""),str_l=0;
-                    var str_fa=Number(ta[0].charCodeAt());
-                    if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
-                    {
-                        for(var i=0;i<=ta.length-1;i++)
+                    if(result.result){
+                        var ta=str.split(""),str_l=0;
+                        var str_fa=Number(ta[0].charCodeAt());
+                        if((str_fa>=65&&str_fa<=90)||(str_fa>=97&&str_fa<=122)||(str_fa>255))
                         {
-                            str_l++;
-                            if(Number(ta[i].charCodeAt())>255){str_l++;}
-                        }
-                        if(str_l<=16){
-                            result.setResult(true);
-                            result.setErrorMsg('');
-                        }else{
-                            result.setResult(false);
-                            result.setErrorMsg(errorMsg);
+                            for(var i=0;i<=ta.length-1;i++)
+                            {
+                                str_l++;
+                                if(Number(ta[i].charCodeAt())>255){str_l++;}
+                            }
+                            if(str_l<=16){
+                                result.setResult(true);
+                                result.setErrorMsg('');
+                            }else{
+                                result.setResult(false);
+                                result.setErrorMsg(errorMsg);
+                            }
                         }
                     }
                     return result;
