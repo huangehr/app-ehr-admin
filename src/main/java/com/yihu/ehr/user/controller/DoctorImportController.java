@@ -94,10 +94,6 @@ public class DoctorImportController extends ExtendController<DoctorService> {
                 if (validate(model, phones, userPhones, idCardNos, userIdCardNos,orgCode_FullName) == 0) {
                     errorLs.add(model);
                 } else {
-                    if(orgCode_id.get(model.getOrgCode()).equals("431")){
-                        System.out.println("i="+i+"orgName-"+model.getOrgFullName()+"orgCode-"+model.getOrgCode()+"orgId-"+orgCode_id.get(model.getOrgCode())+"idcard="+model.getIdCardNo());
-                    }
-
                     model.setOrgId(orgCode_id.get(model.getOrgCode()));
                     model.setDept_name(deptCode_value.get(model.getSzksdm()));
                     saveLs.add(model);
