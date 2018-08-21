@@ -74,11 +74,19 @@ $(function(){
                     $("a[data-find='" + MenuId + "']").click();
                     return;
                 }
+            }else{
+                $('.menucyc').find('.has-url').eq(0).trigger('click');
             }
-            $('.menucyc').find('.has-url').eq(0).trigger('click');
         },
         menu:function(){
             var ObjCyc=$(this).find("a");
+            if(!MenuId){
+                var $url=ObjCyc.closest("a").attr("data-url");
+                if($url){
+                    MenuId=ObjCyc.closest("a").attr("data-find");
+                    sessionStorage.setItem("MenuId",MenuId );
+                }
+            }
             ObjCyc.on('click', function (e) {
                 e.stopPropagation();
                 var $that = $(this),

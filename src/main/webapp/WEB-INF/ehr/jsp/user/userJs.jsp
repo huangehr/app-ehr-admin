@@ -60,7 +60,7 @@
                 //$inpOrg: $('#inp_org'),
                 init: function () {
                     var self = this;
-                    retrieve.initDDL(settledWayDictId,this.$searchType);
+//                    retrieve.initDDL(settledWayDictId,this.$searchType);
                     this.$element.show();
                     this.$element.attrScan();
                     window.form = this.$element;
@@ -72,12 +72,15 @@
                      display:'inline-block',
                      width:'240px'
                      });*/
+                    var select_user_type = this.$searchType.customCombo('${contextRoot}/userRoles/user/searchUserType',{searchParm:'',activeFlag:"1"},function(newvalue){
+
+                    });
                 },
                 //下拉框列表项初始化
                 initDDL: function (dictId, target) {
                     var target = $(target);
                     var dataModel = $.DataModel.init();
-                    dataModel.fetchRemote("${contextRoot}/dict/searchDictEntryList",{data:{dictId: dictId},
+                    dataModel.fetchRemote("${contextRoot}/userRoles/user/searchUserType",{data:{searchParm:'',activeFlag:"1"},
                         success: function(data) {
                             target.ligerComboBox({
                                 valueField: 'code',
