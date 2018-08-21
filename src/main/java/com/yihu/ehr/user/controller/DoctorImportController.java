@@ -253,7 +253,8 @@ public class DoctorImportController extends ExtendController<DoctorService> {
         }
 
         //机构不存在，报错
-        if (!orgCode_FullName.get(model.getOrgCode()).equals(model.getOrgFullName())) {
+
+        if (null==orgCode_FullName.get(model.getOrgCode())||!orgCode_FullName.get(model.getOrgCode()).equals(model.getOrgFullName())) {
             model.addErrorMsg("orgCode", "该机构代码或机构名称不正确，请核对！");
             model.addErrorMsg("orgFullName", "该机构代码或机构名称不正确，请核对！");
             rs = 0;
