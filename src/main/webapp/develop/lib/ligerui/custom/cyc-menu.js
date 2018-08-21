@@ -53,8 +53,8 @@ $(function(){
                     html+= htm + '</ul></li>';
                 }
             });
-            var ndnndn='<li class="li" id="1024" data-id="1024"><a href="javascript:void(0);" class="first-a on" data-url="/ehr/resourceBrowse/dataCenterIndex" title="数据资源中心" data-find="1024" data-pid=""><i class="menu-tit1 one"></i>数据资源中心</a><ul style="display: none"></ul></li><li class="li" id="727" data-id="727"><a href="javascript:void(0);" class="first-a" data-url="/ehr/resourceBrowse/customQuery" title="综合查询" data-find="727" data-pid=""><i class="menu-tit1 one"></i>综合查询</a><ul style="display: none"></ul></li><li class="li" id="761" data-id="761"><a href="javascript:void(0);" class="first-a" data-url="/ehr/resourceBrowse/dataCenter" title="数据存储分析" data-find="761" data-pid=""><i class="menu-tit1 one"></i>数据存储分析</a><ul style="display: none"></ul></li>'
-            $(obj).html('<ul class="menucyc">'+ndnndn+'</ul>');
+            // var ndnndn='<li class="li" id="1024" data-id="1024"><a href="javascript:void(0);" class="first-a on" data-url="/ehr/resourceBrowse/dataCenterIndex" title="数据资源中心" data-find="1024" data-pid=""><i class="menu-tit1 one"></i>数据资源中心</a><ul style="display: none"></ul></li><li class="li" id="727" data-id="727"><a href="javascript:void(0);" class="first-a" data-url="/ehr/resourceBrowse/customQuery" title="综合查询" data-find="727" data-pid=""><i class="menu-tit1 one"></i>综合查询</a><ul style="display: none"></ul></li><li class="li" id="761" data-id="761"><a href="javascript:void(0);" class="first-a" data-url="/ehr/resourceBrowse/dataCenter" title="数据存储分析" data-find="761" data-pid=""><i class="menu-tit1 one"></i>数据存储分析</a><ul style="display: none"></ul></li>'
+            // $(obj).html('<ul class="menucyc">'+ndnndn+'</ul>');
             $(obj).html('<ul class="menucyc">'+ html +'</ul>');
             $(".menucyc").menu(".menucyc")
             if($("#form_login").length==0){
