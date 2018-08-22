@@ -37,25 +37,25 @@ $(function(){
                                 }
                             });
                             htm += ['<li class="li" id="' + obj.id + '" data-id="'+ obj.id +'">',
-                                '<a href="javascript:void(0);" class="' + (h != '' ? '' : 'has-url no-child') + '" data-url="'+
+                                '<a href="javascript:void(0);" class="active ' + (h != '' ? 'has-child' : 'has-url no-child') + '" data-url="'+
                                 (obj.url ? obj.url : '') +
                                 '" title="'+ obj.text +
                                 '" data-find="'+ obj.id +'" data-pid="' + pid + '">',
-                                '<i class="' + (h != '' ? 'has-icon' : 'none-icon') + '"></i>'+ obj.text +'</a><ul style="display: none">'].join('');
+                                 obj.text +'<i class="' + (h != '' ? 'has-icon' : 'none-icon') + '"></i>'+'</a><ul style="display: block">'].join('');
                             htm += h + '</ul></li>';
                         }
                     });html += ['<li class="li" id="' + object.id + '" data-id="'+ object.id +'">',
-                                '<a href="javascript:void(0);" class="first-a" data-url="'+
+                                '<a href="javascript:void(0);" class="first-a active" data-url="'+
                                 (object.url ? object.url : '') +
                                 '" title="'+ object.text +
                                 '" data-find="'+ object.id +'" data-pid="">',
-                                    '<i class="menu-tit1 one"></i>'+ object.text + (htm != '' ? '<span class=" icon-jt"></span>' : '') + '</a><ul style="display: none">'].join('');
+                                    '<i class="menu-tit1 one"></i>'+ object.text + (htm != '' ? '<span class=" icon-jt"></span>' : '') + '</a><ul style="display: block">'].join('');
                     html+= htm + '</ul></li>';
                 }
             });
-            // var ndnndn='<li class="li" id="1024" data-id="1024"><a href="javascript:void(0);" class="first-a on" data-url="/ehr/resourceBrowse/dataCenterIndex" title="数据资源中心" data-find="1024" data-pid=""><i class="menu-tit1 one"></i>数据资源中心</a><ul style="display: none"></ul></li><li class="li" id="727" data-id="727"><a href="javascript:void(0);" class="first-a" data-url="/ehr/resourceBrowse/customQuery" title="综合查询" data-find="727" data-pid=""><i class="menu-tit1 one"></i>综合查询</a><ul style="display: none"></ul></li><li class="li" id="761" data-id="761"><a href="javascript:void(0);" class="first-a" data-url="/ehr/resourceBrowse/dataCenter" title="数据存储分析" data-find="761" data-pid=""><i class="menu-tit1 one"></i>数据存储分析</a><ul style="display: none"></ul></li>'
-            // $(obj).html('<ul class="menucyc">'+ndnndn+'</ul>');
-            $(obj).html('<ul class="menucyc">'+ html +'</ul>');
+            var ndnndn='<li class="li" id="1024" data-id="1024"><a href="javascript:void(0);" class="first-a on" data-url="/ehr/resourceBrowse/dataCenterIndex" title="数据资源中心" data-find="1024" data-pid=""><i class="menu-tit1 one"></i>数据资源中心</a><ul style="display: none"></ul></li><li class="li" id="727" data-id="727"><a href="javascript:void(0);" class="first-a" data-url="/ehr/resourceBrowse/customQuery" title="综合查询" data-find="727" data-pid=""><i class="menu-tit1 one"></i>综合查询</a><ul style="display: none"></ul></li><li class="li" id="761" data-id="761"><a href="javascript:void(0);" class="first-a" data-url="/ehr/resourceBrowse/dataCenter" title="数据存储分析" data-find="761" data-pid=""><i class="menu-tit1 one"></i>数据存储分析</a><ul style="display: none"></ul></li>'
+            $(obj).html('<ul class="menucyc">'+ndnndn+html +'</ul>');
+            // $(obj).html('<ul class="menucyc">'+ html +'</ul>');
             $(".menucyc").menu(".menucyc")
             if($("#form_login").length==0){
                 $('.menucyc').bind('mousewheel', function(event, delta, deltaX, deltaY) {
@@ -118,7 +118,7 @@ $(function(){
                         titArr.push($o.children('a').attr('title'))
                     });
                     titArr.push('<span style="color: #337ab7">' + title + '</span>');
-                    window._SHOWTAB({name: title, url: url, cb: function ($ifram) {
+                    window._SHOWTAB({name: title=="数据资源中心"?"首页":title, url: url,findid:thatId, cb: function ($ifram) {
                         if ($ifram[0].attachEvent){
                             $ifram[0].attachEvent("onload", function(){
                                 var cw = $ifram.prop('contentWindow');//window
@@ -135,11 +135,13 @@ $(function(){
                     }});
                     sessionStorage.setItem("MenuId", thatId);
                     if (!isTrigger) {
-                        var $ul = $that.closest('ul');
-                        debugger
-                        $ul.parent().parent().prev().trigger('click');
-                        $ul.prev().trigger('click');
-                        isTrigger = true;
+                        $("")
+
+                        // var $ul = $that.closest('ul');
+                        // debugger
+                        // $ul.parent().parent().prev().trigger('click');
+                        // $ul.prev().trigger('click');
+                        // isTrigger = true;
                     }
                 } else {
                     if ($that.hasClass('active')) {

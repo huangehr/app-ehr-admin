@@ -1,6 +1,6 @@
 (function (w, $) {
-    var getTabTmp = function (url, name, id) {
-            return '<a href="#" class="active J_menuTab" data-id="'+ (id || url) +'">'+ name +' <i class="glyphicon glyphicon-remove"></i></a>';
+    var getTabTmp = function (url, name, id,findid) {
+            return '<a href="#" class="active J_menuTab" data-id="'+ (id || url) +'" data-find="'+findid+'">'+ name +' <i class="glyphicon glyphicon-remove"></i></a>';
         },
         getIframTmp = function (len, url, id) {
             return $('<iframe class="J_iframe" method="post" name="iframe'+ len +'" src="'+ url +'" width="100%" height="100%" frameborder="0" data-id="'+ (id || url) +'" seamless>');
@@ -22,7 +22,7 @@
         });
         if (hasTab) return;
         $pageTabsContent.children().removeClass('active');
-        $pageTabsContent.append(getTabTmp(opt.url, opt.name, opt.id));
+        $pageTabsContent.append(getTabTmp(opt.url, opt.name, opt.id, opt.findid));
         cLen = $contentMain.children().length;
         $contentMain.children().hide();
         $iframe = getIframTmp(cLen, opt.url, opt.id);

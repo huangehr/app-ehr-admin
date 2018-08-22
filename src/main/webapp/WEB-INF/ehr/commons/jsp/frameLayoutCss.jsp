@@ -165,4 +165,8 @@
     .l-layout-center{
         z-index: 30;
     }
+
+
+    .m-index-nav{height:40px;background:url('${staticRoot}/images/local_icon.png') 8px 8px no-repeat #fff;padding-left:40px;line-height: 40px;border-bottom: 1px solid #d0d0d0;}
+
 </style>

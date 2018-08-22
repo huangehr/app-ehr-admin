@@ -62,8 +62,10 @@
 .menucyc a.on .icon-jt{background: url(../images/jiantou_zhan_icon.png) center no-repeat;transform: rotate(-90deg);}
 .menucyc a.on.active .icon-jt{background: url(../images/jiantou_zhan_icon.png) center no-repeat;    transform: rotate(0deg);}
 
-.menucyc li a i.has-icon{background-image:url(../images/jiantou_shou_icon.png);background-repeat: no-repeat;background-position: 70% 50%;}
-.menucyc li a.active i.has-icon{background-image:url(../images/jiantou_shou_icon.png);background-repeat: no-repeat;background-position: 49% 30%;transform: rotate(90deg);}
+.menucyc li a i.has-icon{background-image:url(../images/jiantou_shou_icon.png);background-repeat: no-repeat;display: inline-block!important;position: absolute;top: 0px;right: 45px;}
+.menucyc li a.active i.has-icon{background-image:url(../images/jiantou_shou_icon.png);background-repeat: no-repeat;transform: rotate(90deg);display: inline-block!important;position: absolute;top: 0px;right: 45px;}
 
-.menucyc li a.on i.has-icon{background-image:url(../images/jiantou_zhan_icon.png);background-repeat: no-repeat;background-position: 49% 70%;transform: rotate(-90deg);}
-.menucyc li a.on.active i.has-icon{background-image:url(../images/jiantou_zhan_icon.png);background-repeat: no-repeat;background-position: 70% 50%;transform: rotate(00deg);}
+.menucyc li a.on i.has-icon{background-image:url(../images/jiantou_zhan_icon.png);background-repeat: no-repeat;transform: rotate(-90deg);display: inline-block!important;position: absolute;top: 0px;right: 45px;}
+.menucyc li a.on.active i.has-icon{background-image:url(../images/jiantou_zhan_icon.png);background-repeat: no-repeat;transform: rotate(00deg);display: inline-block!important;position: absolute;top: 0px;right: 45px;}
+
+.has-child{padding-left: 38px;}
