@@ -70,8 +70,6 @@
             debugger
             if($("#div_top").css("display")!="none"){
                 $(".m-index-nav").hide();
-            }else{
-                $("#n_indexNav").html(sessionStorage.getItem("MenuName"));
             }
         }
 
