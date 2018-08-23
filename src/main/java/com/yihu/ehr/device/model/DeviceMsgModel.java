@@ -125,30 +125,30 @@ public class DeviceMsgModel extends ExcelUtil implements Validation {
             addErrorMsg("deviceType", "设备代号不能为空！" );
         }
 
-        if(StringUtils.isEmpty(originPlace)){
-            valid = 0;
-            addErrorMsg("originPlace", "产地不能为空！" );
-        }
-
-        if(StringUtils.isEmpty(manufacturerName)){
-            valid = 0;
-            addErrorMsg("manufacturerName", "生产厂家不能为空！" );
-        }
-
-        if(StringUtils.isEmpty(deviceModel)){
-            valid = 0;
-            addErrorMsg("deviceModel", "设备型号不能为空！" );
-        }
-
-        if(StringUtils.isEmpty(purchaseTime)){
-            valid = 0;
-            addErrorMsg("purchaseTime", "购买日期不能为空！" );
-        }
-
-        if(StringUtils.isEmpty(isNew)){
-            valid = 0;
-            addErrorMsg("isNew", "新旧情况不能为空！" );
-        }
+//        if(StringUtils.isEmpty(originPlace)){
+//            valid = 0;
+//            addErrorMsg("originPlace", "产地不能为空！" );
+//        }
+//
+//        if(StringUtils.isEmpty(manufacturerName)){
+//            valid = 0;
+//            addErrorMsg("manufacturerName", "生产厂家不能为空！" );
+//        }
+//
+//        if(StringUtils.isEmpty(deviceModel)){
+//            valid = 0;
+//            addErrorMsg("deviceModel", "设备型号不能为空！" );
+//        }
+//
+//        if(StringUtils.isEmpty(purchaseTime)){
+//            valid = 0;
+//            addErrorMsg("purchaseTime", "购买日期不能为空！" );
+//        }
+//
+//        if(StringUtils.isEmpty(isNew)){
+//            valid = 0;
+//            addErrorMsg("isNew", "新旧情况不能为空！" );
+//        }
 
         if(!StringUtils.isEmpty(orgCode)){
             repeatMap.get("orgCode").add(orgCode);
