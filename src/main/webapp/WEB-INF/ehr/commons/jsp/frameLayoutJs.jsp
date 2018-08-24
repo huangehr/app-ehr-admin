@@ -67,7 +67,6 @@
             mainLayout.init();
             $.MenuInit(".l-layout-left",menuData)
             notice.init();
-            debugger
             if($("#div_top").css("display")!="none"){
                 $(".m-index-nav").hide();
             }
