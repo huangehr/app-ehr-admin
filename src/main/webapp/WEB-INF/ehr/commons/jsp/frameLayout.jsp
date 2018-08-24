@@ -31,9 +31,9 @@
         上次登录：${last_login_time}&nbsp;&nbsp;|&nbsp;&nbsp;<a href="${contextRoot}/logout/reLogin" class="f-color-0">退出</a>
     </div>
 </div>
-<div class="m-index-nav">
-    当前位置：<span id="n_indexNav"></span>
-</div>
+<%--<div class="m-index-nav" style="display: none;">--%>
+    <%--当前位置：<span id="n_indexNav"></span>--%>
+<%--</div>--%>
 <div id="div_main_content" class="l-layout">
     <div position="left" class="l-layout-content f-hh" hidetitle="false">
         <!--菜单导航栏-->

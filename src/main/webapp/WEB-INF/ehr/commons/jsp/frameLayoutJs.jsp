@@ -67,9 +67,6 @@
             mainLayout.init();
             $.MenuInit(".l-layout-left",menuData)
             notice.init();
-            if($("#div_top").css("display")!="none"){
-                $(".m-index-nav").hide();
-            }
         }
 
         function getDictSetting(){
