@@ -55,37 +55,36 @@
 	</div>
 	<div class="m-form-group">
 		<label>产地:</label>
-		<div class="l-text-wrapper m-form-control f-pr0 essential">
-			<input type="text" id="origin_place" class="required" data-type="select" placeholder="请选择产地"
-                   data-attr-scan="originPlace" required-title=<spring:message code="lbl.must.input"/>/>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="origin_place" data-type="select" placeholder="请选择产地"
+                   data-attr-scan="originPlace" />
 		</div>
 		<label>生产厂家:</label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input type="text" id="manufacturer_name" class="required useTitle max-length-50 validate-special-char" data-attr-scan="manufacturerName"
-                   placeholder="请输入生产厂家" required-title=<spring:message code="lbl.must.input"/>/>
+		<div class="l-text-wrapper m-form-control">
+			<input type="text" id="manufacturer_name" class="useTitle max-length-50 validate-special-char" data-attr-scan="manufacturerName"
+                   placeholder="请输入生产厂家" />
 		</div>
 	</div>
     <div class="m-form-group">
         <label>设备型号:</label>
-        <div class="l-text-wrapper m-form-control essential">
-            <input type="text" id="device_model" class="required useTitle max-length-30 validate-special-char"  data-attr-scan="deviceModel" placeholder="请输入设备型号"
-                   required-title=<spring:message code="lbl.must.input"/>/>
+        <div class="l-text-wrapper m-form-control">
+            <input type="text" id="device_model" class="useTitle max-length-30 validate-special-char"  data-attr-scan="deviceModel" placeholder="请输入设备型号"
+                   />
         </div>
         <label>购买日期:</label>
-        <div class="l-text-wrapper m-form-control f-pr0 essential">
-            <input id="purchase_time" class="required" placeholder="请输入购买日期"  required-title=<spring:message code="lbl.must.input"/>
-                    data-attr-scan="purchaseTime"/>
+        <div class="l-text-wrapper m-form-control f-pr0">
+            <input id="purchase_time"  placeholder="请输入购买日期" data-attr-scan="purchaseTime"/>
         </div>
     </div>
 	<div class="m-form-group">
 		<label>新旧情况:</label>
-		<div class="l-text-wrapper m-form-control f-pr0 essential">
-			<input type="text" id="is_new" data-type="select" class="required" data-attr-scan="isNew"
-                   placeholder="请选择新旧情况" required-title=<spring:message code="lbl.must.input"/>/>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="is_new" data-type="select" data-attr-scan="isNew"
+                   placeholder="请选择新旧情况" />
 		</div>
 		<label>购买单价（千元）:</label>
-		<div class="l-text-wrapper m-form-control essential">
-			<input id="device_price" class="required validate-number" placeholder="请输入购买单价"  required-title=<spring:message code="lbl.must.input"/>
+		<div class="l-text-wrapper m-form-control">
+			<input id="device_price" class="validate-number" placeholder="请输入购买单价"
                     data-attr-scan="devicePrice"/>
 		</div>
 	</div>
@@ -95,9 +94,9 @@
 			<input type="text" id="year_limit" data-attr-scan="yearLimit" class="validate-positive-integer"  placeholder="请输入理论设计寿命">
 		</div>
 		<label>使用情况:</label>
-		<div class="l-text-wrapper m-form-control f-pr0 essential">
-			<input type="text" id="status" data-type="select" class="required" data-attr-scan="status"
-                   placeholder="请选择使用情况" required-title=<spring:message code="lbl.must.input"/>>
+		<div class="l-text-wrapper m-form-control f-pr0">
+			<input type="text" id="status" data-type="select" data-attr-scan="status"
+                   placeholder="请选择使用情况">
 		</div>
 	</div>
 	<div class="m-form-group">
