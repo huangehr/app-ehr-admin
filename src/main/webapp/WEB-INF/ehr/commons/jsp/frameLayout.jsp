@@ -20,6 +20,10 @@
             .menucyc >li>ul>li>ul>li ul{
                 border: none;
             }
+
+            .page-tabs a.active i{
+                display: none;
+            }
         </style>
 </head>
 <body>
@@ -57,13 +61,14 @@
             </nav>
             <button class="roll-nav roll-right J_tabRight"><i class="glyphicon glyphicon-chevron-right"></i></button>
             <div class="btn-group roll-nav roll-right">
-                <button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span></button>
-                <ul role="menu" class="dropdown-menu dropdown-menu-right">
-                    <li class="J_tabCloseAll"><a>关闭全部选项卡</a>
-                    </li>
-                    <li class="J_tabCloseOther"><a>关闭其他选项卡</a>
-                    </li>
-                </ul>
+                <div  class="J_tabCloseOther"><a style="color:#323232;">关闭其他</a></div>
+                <%--<button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span></button>--%>
+                <%--<ul role="menu" class="dropdown-menu dropdown-menu-right">--%>
+                    <%--<li class="J_tabCloseAll"><a>关闭全部选项卡</a>--%>
+                    <%--</li>--%>
+                    <%--<li class="J_tabCloseOther"><a>关闭其他选项卡</a>--%>
+                    <%--</li>--%>
+                <%--</ul>--%>
             </div>
         </div>
         <div class="J_mainContent" id="content-main">

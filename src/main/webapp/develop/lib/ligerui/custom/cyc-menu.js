@@ -135,8 +135,6 @@ $(function(){
                     }});
                     sessionStorage.setItem("MenuId", thatId);
                     if (!isTrigger) {
-                        $("")
-
                         // var $ul = $that.closest('ul');
                         // debugger
                         // $ul.parent().parent().prev().trigger('click');
