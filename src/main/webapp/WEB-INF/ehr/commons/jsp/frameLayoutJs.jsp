@@ -65,7 +65,11 @@
         function pageInit() {
 //            getDictSetting()
             mainLayout.init();
-            $.MenuInit(".l-layout-left",menuData)
+            if(menuData && menuData.length>0){
+                $.MenuInit(".l-layout-left",menuData)
+            }else{
+               alert("目录列表加载失败！");
+            }
             notice.init();
         }
 

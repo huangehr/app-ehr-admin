@@ -157,7 +157,9 @@
                             {display: '联系方式', name: 'telephoneNo', width: '10%', resizable: true,align: 'left', render: function(row) {
                                 var telephoneNo = row.telephoneNo;
                                 var html = "";
-                                if (null != telephoneNo && telephoneNo != "") {
+//                                var myreg=/^(\d{3,4}-)?\d{7,8}|^[1][0-9]{10}$/;
+                                var myreg=/^[1][0-9]{10}$/;
+                                if (telephoneNo && myreg.test(telephoneNo)) {
                                     var length = telephoneNo.length;
                                     var pre = telephoneNo.substring(0, 2);
                                     var suf = telephoneNo.substring(length - 2, length);
