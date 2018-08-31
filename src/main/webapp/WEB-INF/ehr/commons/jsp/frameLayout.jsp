@@ -24,6 +24,16 @@
             .page-tabs a.active i{
                 display: none;
             }
+            .J_tabCloseOther:hover{
+                color: #777;
+                background: #f2f2f2;
+                cursor: pointer
+            }
+
+            .J_tabCloseOther a{
+                background-color: #fafafa;
+                height:40px;
+            }
         </style>
 </head>
 <body>
