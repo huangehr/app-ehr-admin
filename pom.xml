@@ -20,7 +20,10 @@
 		<logback.version>1.1.2</logback.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
+		<ehr.version>1.13.0</ehr.version>
+		<eip.version>1.3.1</eip.version>
 	</properties>
+
     <pluginRepositories>
 	<pluginRepository>
 		<id>pluginCentral</id>
@@ -74,28 +77,16 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 			<version>1.3.3.RELEASE</version>
 		</dependency>
-
-		<!--<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-redis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-data-redis</artifactId>
-		</dependency>-->
-
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.3</version>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
@@ -117,7 +108,6 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 
-		<!---->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -125,7 +115,6 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!--1-->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
@@ -157,34 +146,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.yihu.ehr</groupId>
-			<artifactId>commons-rest-model</artifactId>
-			<version>1.2.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.yihu.hos</groupId>
-					<artifactId>common-rest-model</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-        <dependency>
-            <groupId>com.yihu.ehr</groupId>
-            <artifactId>commons-admin-gateway-model</artifactId>
-            <version>1.2.0</version>
-        </dependency>
-		<dependency>
-			<groupId>com.yihu.ehr</groupId>
-			<artifactId>commons-util</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-
-		<!--<dependency>
-			<groupId>com.yihu.ehr</groupId>
-			<artifactId>commons-web</artifactId>
-			<version>1.1.0</version>
-		</dependency>-->
-
-		<dependency>
 			<groupId>net.minidev</groupId>
 			<artifactId>json-smart</artifactId>
 			<version>2.2.1</version>
@@ -199,11 +160,6 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>javax.servlet</groupId>-->
-			<!--<artifactId>servlet-api</artifactId>-->
-			<!--<version>2.5</version>-->
-		<!--</dependency>-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
@@ -228,12 +184,6 @@
 			<artifactId>commons-collections4</artifactId>
 			<version>4.0</version>
 		</dependency>
-		<!--
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-		-->
 		<dependency>
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>jxl</artifactId>
@@ -245,11 +195,6 @@
 			<artifactId>spring-security-web</artifactId>
 			<version>4.0.0.RELEASE</version>
 		</dependency>
-		<!--<dependency>-->
-		<!--<groupId>org.springframework.security</groupId>-->
-		<!--<artifactId>spring-security-core</artifactId>-->
-		<!--<version>4.0.0.RELEASE</version>-->
-		<!--</dependency>-->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
@@ -271,23 +216,46 @@
 			<artifactId>gson</artifactId>
 			<version>2.7</version>
 		</dependency>
+
+		<!--ehr jar version controller-->
 		<dependency>
 			<groupId>com.yihu.ehr</groupId>
-			<artifactId>commons-ui-swagger</artifactId>
-			<version>1.2.0</version>
+			<artifactId>commons-rest-model</artifactId>
+			<version>${ehr.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.yihu.hos</groupId>
+					<artifactId>common-rest-model</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.yihu.ehr</groupId>
+			<artifactId>commons-admin-gateway-model</artifactId>
+			<version>${ehr.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yihu.ehr</groupId>
+			<artifactId>commons-util</artifactId>
+			<version>${ehr.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.yihu.hos</groupId>
 			<artifactId>common-rest-model</artifactId>
-			<version>1.3.1</version>
+			<version>${eip.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.yihu.ehr</groupId>
+			<artifactId>commons-ui-swagger</artifactId>
+			<version>${ehr.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.yihu</groupId>
 			<artifactId>common-logback-starter</artifactId>
 			<version>1.0.3</version>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
